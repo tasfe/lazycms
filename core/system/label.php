@@ -33,9 +33,8 @@ class Label extends Lazy{
 
     private $p;
     private $fetch;
-
+    
     private $_db;
-    private $_html;
     // __construct *** *** www.LazyCMS.net *** ***
     function __construct(){
         $this->_db = getConn();
@@ -56,7 +55,7 @@ class Label extends Lazy{
     //__get *** *** www.LazyCMS.net *** ***
     private function __get($name){
         if ($name=='fetch') {
-            return $this->_html;
+            return $this->p;
         }
         if(isset($this->$name)){
             return $this->$name;
@@ -70,30 +69,24 @@ class Label extends Lazy{
     }
     // result *** *** www.LazyCMS.net *** ***
     public function result($type=1){
-         return $this->_db->fetch($this->result,$type);
-    }
-    // p *** *** www.LazyCMS.net *** ***
-    public function p($data){
-        foreach ($data as &$v) {
-            $v = htmlencode($v);
-        }
-        $P = $this->p;
-        $P = str_replace('{fieldname}',$data['fieldname'],$P);
-        $P = str_replace('{fieldinput}',$this->tag($data['inputtype'],$data),$P);
-        $this->_html .= $P;
+        return $this->_db->fetch($this->result,$type);
     }
     // tag *** *** www.LazyCMS.net *** ***
-    private function tag($l1,$l2){
-        $I1     = null;
-        $l1     = strtolower($l1);
-        $data   = $l2;
+    public function tag($l1,$l2=null){
+        $I1   = null;
+        $data = array_map('htmlencode',$l1);
+        if (empty($l2)) {
+            $default = $data['fieldefault'];
+        } else {
+            $default = $l2;
+        }
         $module = getObject();
-        switch ($l1) {
+        switch (strtolower($data['inputtype'])) {
             case 'input': 
-                $I1 = '<input class="in4" type="text" id="'.$data['fieldename'].'" name="'.$data['fieldename'].'" maxlength="'.$data['fieldlength'].'" value="'.$data['fieldefault'].'" />';
+                $I1 = '<input class="in4" type="text" id="'.$data['fieldename'].'" name="'.$data['fieldename'].'" maxlength="'.$data['fieldlength'].'" value="'.$default.'" />';
                 break;
             case 'textarea': 
-                $I1 = '<textarea name="'.$data['fieldename'].'" id="'.$data['fieldename'].'" rows="5" class="in4">'.$data['fieldefault'].'</textarea>';
+                $I1 = '<textarea name="'.$data['fieldename'].'" id="'.$data['fieldename'].'" rows="5" class="in4">'.$default.'</textarea>';
                 break;
             case 'radio': 
                 $I1 = '<span>';
@@ -101,7 +94,7 @@ class Label extends Lazy{
                 foreach ($I2 as $v) {
                     $I3 = explode(":",$v);
                     foreach ($I3 as &$l3) { $l3 = htmlencode($l3); }
-                    $checked = !empty($data['fieldefault']) ? (instr($data['fieldefault'],$I3[1]) ? ' checked="checked"' : null) : null;
+                    $checked = !empty($default) ? (instr($default,$I3[1]) ? ' checked="checked"' : null) : null;
                     $I1.= '<input name="'.$data['fieldename'].'[]" id="'.$data['fieldename'].'_'.$I3[0].'" type="radio" value="'.$I3[1].'"'.$checked.' /><label for="'.$data['fieldename'].'_'.$I3[0].'">'.$I3[0].'</label>';
                 }
                 $I1.= '</span>';
@@ -112,7 +105,7 @@ class Label extends Lazy{
                 foreach ($I2 as $v) {
                     $I3 = explode(":",$v);
                     foreach ($I3 as &$l3) { $l3 = htmlencode(trim($l3)); }
-                    $checked = !empty($data['fieldefault']) ? (instr($data['fieldefault'],$I3[1]) ? ' checked="checked"' : null) : null;
+                    $checked = !empty($default) ? (instr($default,$I3[1]) ? ' checked="checked"' : null) : null;
                     $I1.= '<input name="'.$data['fieldename'].'[]" id="'.$data['fieldename'].'_'.$I3[0].'" type="checkbox" value="'.$I3[1].'"'.$checked.' /><label for="'.$data['fieldename'].'_'.$I3[0].'">'.$I3[0].'</label> ';
                 }
                 $I1.= '</span>';
@@ -123,13 +116,13 @@ class Label extends Lazy{
                 foreach ($I2 as $v) {
                     $I3 = explode(":",$v);
                     foreach ($I3 as &$l3) { $l3 = htmlencode(trim($l3)); }
-                    $selected = !empty($data['fieldefault']) ? ((string)$data['fieldefault']==(string)$I3[1] ? ' selected="selected"' : null) : null;
+                    $selected = !empty($default) ? ((string)$default==(string)$I3[1] ? ' selected="selected"' : null) : null;
                     $I1.= '<option value="'.$I3[1].'"'.$selected.'>'.$I3[0].'</option>';
                 }
                 $I1.= '</select>';
                 break;
             case 'basic': 
-                $I1 = $module->editor($data['fieldename'],$data['fieldefault'],array(
+                $I1 = $module->editor($data['fieldename'],$default,array(
                     'toolbar' => 'Basic',
                     'width'   => '450px',
                     'height'  => '150px',
@@ -137,18 +130,18 @@ class Label extends Lazy{
                 break;
             case 'editor': 
                 $I1 = '<span><input type="checkbox" name="setfirst" id="setfirst" onclick="$(this).setFirst(\'#img\',\''.$_SERVER["HTTP_HOST"].C('SITE_BASE').'\');" /><label for="setfirst">设第一幅图为缩略图</label></span>';
-				$I1.= $module->editor($data['fieldename'],$data['fieldefault']);
+				$I1.= $module->editor($data['fieldename'],$default);
                 break;
             case 'date': 
                 try{
-                    $default = eval('return '.$data['fieldefault'].';');
+                    $default = eval('return '.$default.';');
                 } catch (Error $err){
                     $default = date('Y-m-d',time());
                 }
                 $I1 = '<input class="in2 date-pick" type="text" id="'.$data['fieldename'].'" name="'.$data['fieldename'].'" value="'.$default.'" />';
                 break;
             case 'upfile': 
-                $I1 = '<input class="in4" type="text" id="'.$data['fieldename'].'" name="'.$data['fieldename'].'" maxlength="'.$data['fieldlength'].'" value="'.$data['fieldefault'].'" />&nbsp;<button type="button" onclick="$(\'#'.$data['fieldename'].'\').browseFiles(\''.url('System','browseFiles').'\',\''.C('UPFILE_PATH').'\',true);">'.L('common/browse').'</button>';
+                $I1 = '<input class="in4" type="text" id="'.$data['fieldename'].'" name="'.$data['fieldename'].'" maxlength="'.$data['fieldlength'].'" value="'.$default.'" />&nbsp;<button type="button" onclick="$(\'#'.$data['fieldename'].'\').browseFiles(\''.url('System','browseFiles').'\',\''.C('UPFILE_PATH').'\',true);">'.L('common/browse').'</button>';
                 break;
         }
         return $I1;

@@ -101,7 +101,7 @@ class LazyOnepage extends LazyCMS{
             'ishome' => '1',
         );
         $where = $db->quoteInto('`oneid` = ?',$oneid);
-        $db->update('onepage',$set,$where);
+        $db->update('#@_onepage',$set,$where);
         redirect($_SERVER['HTTP_REFERER']);
     }
     // _edit *** *** www.LazyCMS.net *** ***
@@ -112,9 +112,9 @@ class LazyOnepage extends LazyCMS{
         $sql = "onename,onetitle,onepath,onecontent,onekeyword,onedescription,onetemplate1,onetemplate2";//7
         $oneid = isset($_REQUEST['oneid']) ? (int)$_REQUEST['oneid'] : null;
         if (empty($oneid)) {
-            $menu = $this->L('common/add').'|'.url('Onepage','Edit').'|true';
+            $menu = $this->L('common/add').'|#|true';
         } else {
-            $menu = $this->L('common/add').'|'.url('Onepage','Edit').';'.$this->L('common/edit').'|'.url('Onepage','Edit',array('oneid' => $oneid)).'|true';
+            $menu = $this->L('common/add').'|'.url('Onepage','Edit').';'.$this->L('common/edit').'|#|true';
         }
         // 循环取得各POST值
         foreach (explode(',',$sql) as $val) {
@@ -154,7 +154,7 @@ class LazyOnepage extends LazyCMS{
                         'onetemplate2'   => $data[7],
                         'ishome'         => ($num>0 ? '0' : '1'),
                     );
-                    $db->insert('onepage',$row);
+                    $db->insert('#@_onepage',$row);
                     $oneid = $db->lastInsertId();
                 } else { // update
                     $set = array(
@@ -168,7 +168,7 @@ class LazyOnepage extends LazyCMS{
                         'onetemplate2'   => $data[7],
                     );
                     $where = $db->quoteInto('`oneid` = ?',$oneid);
-                    $db->update('onepage',$set,$where);
+                    $db->update('#@_onepage',$set,$where);
                 }
                 Onepage::create($oneid,$data[8]);
                 redirect(url('Onepage'));

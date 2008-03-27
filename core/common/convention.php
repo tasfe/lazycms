@@ -85,7 +85,7 @@ return array(
     'DEFAULT_ACTION' => 'Index', // 默认操作名称
 
     /* 静态缓存设置 */
-    'HTML_URL_SUFFIX' => '.shtml',  // 伪静态后缀设置
+    'HTML_URL_SUFFIX' => '.htm',  // 伪静态后缀设置 or 生成文件的后缀
 
     /* Cookie设置 */
     'COOKIE_DOMAIN' => '',      // Cookie有效域名

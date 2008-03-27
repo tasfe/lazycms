@@ -38,14 +38,14 @@ class Archives{
             return 0;
         }
     }
-    // getModelId *** *** www.LazyCMS.net *** ***
-    static function getModelId($l1){
+    // getModel *** *** www.LazyCMS.net *** ***
+    static function getModel($l1){
         $db  = getConn();
-        $res = $db->query("SELECT `modelid` FROM `#@_sort` WHERE `sortid` = '{$l1}';");
-        if ($data = $db->fetch($res,0)) {
-            return $data[0];
+        $res = $db->query("SELECT * FROM `#@_sort` AS `s` LEFT JOIN `#@_model` AS `m` ON `s`.`modelid` = `m`.`modelid` WHERE `s`.`sortid` = '{$l1}';");
+        if ($data = $db->fetch($res)) {
+            return $data;
         } else {
-            return 0;
+            return array();
         }
     }
     // __sort *** *** www.LazyCMS.net *** ***
@@ -67,6 +67,16 @@ class Archives{
             }
         }
         return $I1;
+    }
+    // getData *** *** www.LazyCMS.net *** ***
+    static function getData($l1,$l2){
+        $db    = getConn(); $I1 = array();
+        $where = $db->quoteInto('WHERE `aid` = ?',$l1);
+        $res   = $db->query("SELECT * FROM `{$l2}` {$where};");
+        if (!$data = $db->fetch($res)) {
+            return false;
+        }
+        return $data;
     }
     // __model *** *** www.LazyCMS.net *** ***
     static function __model($l1){
@@ -116,6 +126,10 @@ class Archives{
         $sortid = $l1;
         $db     = getConn();
         return $sortid;
+    }
+    // showArchive *** *** www.LazyCMS.net *** ***
+    static function showArchive($l1){
+        return url('Archives','ShowArchive','aid='.$l1);
     }
     // isOpen *** *** www.LazyCMS.net *** ***
     static function isOpen($l1){

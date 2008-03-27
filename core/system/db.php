@@ -130,7 +130,7 @@ abstract class DB extends Lazy{
         }
 
         $sql = "INSERT INTO "
-             . $this->quoteIdentifier($this->_config['prefix'].$l1)
+             . $this->quoteIdentifier($l1)
              . ' (' . implode(', ', $cols) . ') '
              . 'VALUES (' . implode(', ', $vals) . ')';
 
@@ -150,7 +150,7 @@ abstract class DB extends Lazy{
         $l3 = $this->whereExpr($l3);
         // build the statement
         $sql = "UPDATE "
-             . $this->quoteIdentifier($this->_config['prefix'].$l1)
+             . $this->quoteIdentifier($l1)
              . ' SET ' . implode(', ', $set)
              . (($l3) ? " WHERE {$l3}" : '');
         $this->exec($sql);
@@ -164,7 +164,7 @@ abstract class DB extends Lazy{
         $l2 = $this->whereExpr($l2);
         // build the statement
         $sql = "DELETE FROM "
-             . $this->quoteIdentifier($this->_config['prefix'].$l1)
+             . $this->quoteIdentifier($l1)
              . (($l2) ? " WHERE {$l2}" : '');
         $this->exec($sql);
         return mysql_affected_rows($this->_conn);

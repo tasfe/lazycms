@@ -183,7 +183,7 @@ class Mysql extends DB{
     // max *** *** www.LazyCMS.net *** ***
     function max($l1,$l2){
         // $l1:field, $l2:table
-        return $this->result("SELECT max( `{$l1}` ) FROM `#@_{$l2}` WHERE 1") + 1;
+        return $this->result("SELECT max( `{$l1}` ) FROM `{$l2}` WHERE 1") + 1;
     }
     // errno *** *** www.LazyCMS.net *** ***
     public function errno() {

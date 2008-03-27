@@ -73,9 +73,9 @@ class LazyArchives extends LazyCMS{
         $sortid   = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : null;
         $modelNum = $db->result("SELECT count(`modelid`) FROM `#@_model` WHERE 1;");if ((int)$modelNum==0) { throwError(L('error/nomodels')); }
         if (empty($sortid)) {
-            $menu = $this->L('common/addsort').'|'.url('Archives','EditSort').'|true';
+            $menu = $this->L('common/addsort').'|#|true';
         } else {
-            $menu = $this->L('common/addsort').'|'.url('Archives','EditSort').';'.$this->L('common/editsort').'|'.url('Archives','EditSort',array('sortid' => $sortid)).'|true';
+            $menu = $this->L('common/addsort').'|'.url('Archives','EditSort').';'.$this->L('common/editsort').'|#|true';
         }
         foreach (explode(',',$sql) as $val) {
             $data[] = isset($_POST[$val]) ? $_POST[$val] : null;
@@ -105,7 +105,7 @@ class LazyArchives extends LazyCMS{
                         'pagetemplate1' => $data[8],
                         'pagetemplate2' => $data[9],
                     );
-                    $db->insert('sort',$row);
+                    $db->insert('#@_sort',$row);
                     $sortid = $db->lastInsertId();
                 } else { // update
                     $set = array(
@@ -120,7 +120,7 @@ class LazyArchives extends LazyCMS{
                         'pagetemplate2' => $data[9],
                     );
                     $where = $db->quoteInto('`sortid` = ?',$sortid);
-                    $db->update('sort',$set,$where);
+                    $db->update('#@_sort',$set,$where);
                 }
                 Archives::createSort($sortid,$data[10]);
                 redirect(url('Archives'));
@@ -218,30 +218,159 @@ class LazyArchives extends LazyCMS{
                 break;
         }
     }
+    // _list *** *** www.LazyCMS.net *** ***
+    function _list(){
+        $this->checker('archives');
+        $sortid = isset($_GET['sortid']) ? (int)$_GET['sortid'] : null;
+        $db = getConn();
+        $model = Archives::getModel($sortid);
+        $dp = O('Record');
+        $dp->create("SELECT * FROM `".$model['maintable']."` WHERE `sortid`='{$sortid}' ORDER BY `order` DESC,`id` DESC");
+        $dp->action = url('Archives','Set');
+        $dp->url = url('Archives','List','page=$');
+        $dp->but = $dp->button().$dp->plist();
+        $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"".url('Archives','Edit','aid=$',"' + K[0] + '")."\">' + K[1] + '</a>'";
+        $dp->td  = 'ison(K[2])';
+        $dp->td  = 'ison(K[3])';
+        $dp->td  = 'ison(K[4])';
+        $dp->td  = !C('SITE_MODE') ? "isExist(K[0],K[8],'create:".C('SITE_BASE')."' + K[6]) + K[6]" : "browse(K[9]) + K[9]";
+        $dp->td  = 'K[7]';
+        $dp->td  = "ico('edit','".url('Archives','Edit','aid=$',"' + K[0] + '")."') + updown('up',K[0],0) + updown('down',K[0],0)";
+        $dp->open();
+        $dp->thead  = '<tr><th>'.$this->L('list/id').') '.$this->L('list/title').'</th><th>'.$this->L('list/show').'</th><th>'.$this->L('list/commend').'</th><th>'.$this->L('list/top').'</th><th>'.$this->L('list/path').'</th><th>'.$this->L('list/date').'</th><th>'.$this->L('list/action').'</th></tr>';
+        while ($data = $dp->result()) {
+            $dp->tbody = "ll(".$data['id'].",'".t2js(htmlencode($data['title']))."',".$data['show'].",".$data['commend'].",".$data['top'].",'".t2js(htmlencode($data['img']))."','".t2js(htmlencode($model['sortpath'].'/'.$data['path']))."','".date('Y-m-d H:i:s',$data['date'])."',".(file_exists(LAZY_PATH.$data['sortpath'].'/'.$data['path']) ? 1 : 0).",'".Archives::showArchive($data['id'])."');";
+        }
+        $dp->close();
+
+        $this->outHTML = $dp->fetch;
+
+        $tpl = getTpl($this);
+        $tpl->assign(array(
+            'menu' => $model['sortname'].'|#|true;'.$this->L('common/addpage').'|'.url('Archives','Edit','sortid='.$sortid),
+        ));
+        $tpl->display('list.php');
+    }
     // _edit *** *** www.LazyCMS.net *** ***
     function _edit(){
         $this->checker('archives');
         $db  = getConn();
+        $tpl = getTpl($this);
         $aid = isset($_REQUEST['aid']) ? (int)$_REQUEST['aid'] : null;
-        $sortNum = $db->result("SELECT count(`sortid`) FROM `#@_sort` WHERE 1;");if ((int)$sortNum==0) { throwError(L('error/nosort')); }
-        $sortid  = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : (int)Archives::getTopSortId();
-        $modelid = (int)Archives::getModelId($sortid);
+        
+        $show    = isset($_POST['show'])     ? $_POST['show'] : null;
+        $commend = isset($_POST['commend'])  ? $_POST['commend'] : null;
+        $top     = isset($_POST['top'])      ? $_POST['top'] : null;
+        $snapimg = isset($_POST['snapimg'])  ? $_POST['snapimg'] : null;
+        $upsort  = isset($_POST['upsort'])   ? $_POST['upsort'] : null;
+        $checktitle = isset($_POST['checktitle']) ? $_POST['checktitle'] : null;
+
+        $title = isset($_POST['title']) ? $_POST['title'] : null;
+        $img   = isset($_POST['img'])   ? $_POST['img'] : null;
+        $path  = isset($_POST['path'])  ? $_POST['path'] : null;
+        $pathtype = isset($_POST['pathtype']) ? $_POST['pathtype'] : null;
+        
+        $sortNum  = $db->result("SELECT count(`sortid`) FROM `#@_sort` WHERE 1;");if ((int)$sortNum==0) { throwError(L('error/nosort')); }
+        $sortid   = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : (int)Archives::getTopSortId();
+        $model    = Archives::getModel($sortid);
+        
+        $maxid = $db->max('id',$model['maintable']);
+        
+        $menu  = $model['sortname'].'|'.url('Archives','List','sortid='.$sortid).';'.$this->L('common/addpage').'|#|true';
+
         $label = O('Label');
-        $label->create("SELECT * FROM `#@_fields` WHERE `modelid`='{$modelid}' ORDER BY `fieldorder` ASC, `fieldid` ASC;");
-        $label->p = '<p><label>{fieldname}</label>{fieldinput}</p>';
+        $where = $db->quoteInto('WHERE `modelid` = ?',$model['modelid']);
+        $label->create("SELECT * FROM `#@_fields` {$where} ORDER BY `fieldorder` ASC, `fieldid` ASC;");
+        $formData  = array();
+        $fieldData = array();
         while ($data = $label->result()) {
-             $label->p($data);
+            $fieldData[$data['fieldename']] = $data;
+            $formData[$data['fieldename']]  = isset($_POST[$data['fieldename']]) ? $_POST[$data['fieldename']] : null;
+        }
+
+        // 需要检查标题
+        if ($cktitle) {
+            if (empty($aid)) {
+                $cktitle = $this->check("title|1|".$this->L('check/title')."|1-255;title|3|".$this->L('check/title1')."|SELECT COUNT(`id`) FROM `".$model['maintable']."` WHERE `title`='#pro#';");
+            } else {
+                $cktitle = $this->check("title|1|".$this->L('check/title')."|1-255;title|3|".$this->L('check/title1')."|SELECT COUNT(`id`) FROM `".$model['maintable']."` WHERE `title`='#pro#' AND `id`<>'{$aid}';");
+            }
+        } else {
+            $cktitle = $this->check("title|1|".$this->L('check/title')."|1-255");
+        }
+        // 路径检查
+        if (empty($aid)) {
+            $checkpath = $this->check("path|1|".$this->L('check/path')."|1-255;path|4|".$this->L('check/path1').";path|3|".$this->L('check/path2')."|SELECT COUNT(`id`) FROM `".$model['maintable']."` WHERE `path`='#pro#';");
+        } else {
+            $checkpath = $this->check("path|1|".$this->L('check/path')."|1-255;path|4|".$this->L('check/path1').";path|3|".$this->L('check/path2')."|SELECT COUNT(`id`) FROM `".$model['maintable']."` WHERE `path`='#pro#' AND `id`<>'{$aid}';");
+        }
+        $this->validate(array(
+            'title' => $cktitle,
+            'path'  => $checkpath,
+        ));
+        if ($this->method()) {
+            if ($this->validate()) {
+                if (empty($aid)) { // insert
+                    $row = array(
+                        'order'   => (int)$maxid,
+                        'sortid'  => (int)$sortid,
+                        'title'   => (string)$title,
+                        'show'    => (int)$show,
+                        'commend' => (int)$commend,
+                        'top'     => (int)$top,
+                        'img'     => (string)$img,
+                        'path'    => (string)$path,
+                        'date'    => now(),
+                    );
+                    $db->insert($model['maintable'],$row);
+                    $aid = $db->lastInsertId();
+                    $addrows = array_merge($getData,array('aid'=>$aid));
+                    $db->insert($model['addtable'],$addrows);
+                    redirect(url('Archives','List','sortid='.$sortid));
+                } else { // update
+                    
+                }
+            }
+        } else {
+            if (!empty($aid)) {
+                $where = $db->quoteInto('WHERE `id` = ?',$aid);
+                $res   = $db->query("SELECT * FROM `".$model['maintable']."` {$where};");
+                if ($data = $db->fetch($res)) {
+                    $sortid  = $data['sortid'];
+                    $title   = $data['title'];
+                    $show    = $data['show'];
+                    $commend = $data['commend'];
+                    $top     = $data['top'];
+                    $img     = $data['img'];
+                    $path    = $data['path'];
+                    $formData = Archives::getData($aid,$model['addtable']);
+                } else {
+                    throwError(L('error/invalid'));
+                }
+            }
+        }
+
+        while (list($name,$data) = each($fieldData)) {
+            $label->p = '<p><label>'.$data['fieldname'].'</label>'.$label->tag($data,$formData[$name]).'</p>';
         }
         $this->outHTML = $label->fetch;
 
-        $tpl = getTpl($this);
         $tpl->assign(array(
             'aid'    => $aid,
             'sortid' => $sortid,
-            'title'  => '',
-            'img'    => '',
-            'path'   => '',
-            'upath'  => C('UPFILE_PATH'),
+            'title'  => $title,
+            'img'    => $img,
+            'path'   => empty($aid) ? $maxid.C('HTML_URL_SUFFIX') :$path,
+            'show'   => !empty($show) ? ' checked="checked"' : null,
+            'top'    => !empty($top) ? ' checked="checked"' : null,
+            'snapimg' => !empty($snapimg) ? ' checked="checked"' : null,
+            'upsort'  => !empty($upsort) ? ' checked="checked"' : null,
+            'commend' => !empty($commend) ? ' checked="checked"' : null,
+            'checktitle' => !empty($checktitle) ? ' checked="checked"' : null,
+            'pathtype_id' => $maxid.C('HTML_URL_SUFFIX'),
+            'pathtype_date' => date('Y/m/d/').$maxid,
+            'upath' => C('UPFILE_PATH'),
+            'menu'  => $menu,
         ));
         $tpl->display('edit.php');
     }

@@ -191,9 +191,9 @@ class LazySystem extends LazyCMS{
         $sql = "adminname,adminpass,adminlevel,adminlanguage,admineditor,diymenu";//5
         $adminid = isset($_REQUEST['adminid']) ? $_REQUEST['adminid']:0;
         if (empty($adminid)) {
-            $menu = $this->L('admin/add').'|'.url('System','AdminEdit').'|true';
+            $menu = $this->L('admin/add').'|#|true';
         } else {
-            $menu = $this->L('admin/add').'|'.url('System','AdminEdit').';'.$this->L('admin/edit').'|'.url('System','AdminEdit',array('adminid' => $adminid)).'|true';
+            $menu = $this->L('admin/add').'|'.url('System','AdminEdit').';'.$this->L('admin/edit').'|#|true';
         }
         // 循环取得各POST值
         foreach (explode(',',$sql) as $val) {
@@ -229,7 +229,7 @@ class LazySystem extends LazyCMS{
                         'admindate'     => now(),
                         'diymenu'       => $data[5],
                     );
-                    $db->insert('admin',$row);
+                    $db->insert('#@_admin',$row);
                 } else {//update
                     // 更新用户资料
                     $set = array(
@@ -239,7 +239,7 @@ class LazySystem extends LazyCMS{
                         'diymenu'       => $data[5],
                     );
                     $where = $db->quoteInto('`adminid` = ?',$adminid);
-                    $db->update('admin',$set,$where);
+                    $db->update('#@_admin',$set,$where);
                     // 更新密码
                     if(!empty($data[1])){
                         $set = array(
@@ -247,7 +247,7 @@ class LazySystem extends LazyCMS{
                             'adminkey'  => $newkey,
                         );
                         $where = $db->quoteInto('`adminid` = ?',$adminid);
-                        $db->update('admin',$set,$where);
+                        $db->update('#@_admin',$set,$where);
                     }
                 }
                 redirect(url('System','Admin'));
@@ -303,7 +303,7 @@ class LazySystem extends LazyCMS{
                     'diymenu'       => $diymenu,
                 );
                 $where = $db->quoteInto('`adminid` = ?',$adminid);
-                $db->update('admin',$set,$where);
+                $db->update('#@_admin',$set,$where);
                 // 更新密码
                 if(!empty($adminpass)){
                     $newkey  = substr($this->admin['adminpass'],0,6);
@@ -313,7 +313,7 @@ class LazySystem extends LazyCMS{
                         'adminkey'  => $newkey,
                     );
                     $where = $db->quoteInto('`adminid` = ?',$adminid);
-                    $db->update('admin',$set,$where);
+                    $db->update('#@_admin',$set,$where);
                     // 重置Cookie密码
                     Cookie::set('adminpass',$newpass);
                 }
@@ -346,13 +346,13 @@ class LazySystem extends LazyCMS{
                 $set = array(
                     'diymenu' => $diyMenu,
                 );
-                $db->update('diymenu',$set,$where);
+                $db->update('#@_diymenu',$set,$where);
             } else { // insert
                 $row = array(
                     'diymenulang' => $this->admin['adminlanguage'],
                     'diymenu'     => $diyMenu,
                 );
-                $db->insert('diymenu',$row);
+                $db->insert('#@_diymenu',$row);
             }
             $this->succeed($this->L('common/upok'));
         } else {
@@ -389,7 +389,7 @@ class LazySystem extends LazyCMS{
                     'lockip'       => $lockip,
                 );
                 $where = $db->quoteInto('`systemname` = ?','LazyCMS');
-                $db->update('system',$set,$where);
+                $db->update('#@_system',$set,$where);
                 $this->succeed($this->L('common/upok'));
             }
         } else {
@@ -506,13 +506,13 @@ class LazySystem extends LazyCMS{
                             $set = array(
                                 'diymenu' => $mMenu.str_replace($mMenu,'',$data[0]),
                             );
-                            $db->update('diymenu',$set,$where);
+                            $db->update('#@_diymenu',$set,$where);
                         } else {
                             $row = array(
                                 'diymenulang' => $this->admin['adminlanguage'],
                                 'diymenu'     => $mMenu.defmenu(),
                             );
-                            $db->insert('diymenu',$row);
+                            $db->insert('#@_diymenu',$row);
                         }
                     }
                 }
@@ -582,7 +582,7 @@ class LazySystem extends LazyCMS{
             'modules' => $modules,
         );
         $where = $db->quoteInto('`systemname` = ?','LazyCMS');
-        $db->update('system',$set,$where);
+        $db->update('#@_system',$set,$where);
 
         if ($submit=='install') {
             $this->poping(array(
@@ -697,7 +697,7 @@ class LazySystem extends LazyCMS{
             'modelstate' => $state,
         );
         $where = $db->quoteInto('`modelid` = ?',$modelid);
-        $db->update('model',$set,$where);
+        $db->update('#@_model',$set,$where);
         redirect($_SERVER['HTTP_REFERER']);
     }
     // _modelexport *** *** www.LazyCMS.net *** ***
@@ -762,9 +762,9 @@ class LazySystem extends LazyCMS{
             $data[]= isset($_POST[$val]) ? $_POST[$val] : null;
         }
         if (empty($modelid)) {
-            $menu = $this->L('models/add').'|'.url('System','ModelEdit').'|true';
+            $menu = $this->L('models/add').'|#|true';
         } else {
-            $menu = $this->L('models/add').'|'.url('System','ModelEdit').';'.$this->L('models/edit').'|'.url('System','ModelEdit',array('modelid' => $modelid)).'|true';
+            $menu = $this->L('models/add').'|'.url('System','ModelEdit').';'.$this->L('models/edit').'|#|true';
         }
 
         $this->validate(array(
@@ -780,7 +780,7 @@ class LazySystem extends LazyCMS{
                         'maintable'  => $data[2],
                         'addtable'   => '#@_'.C('MODEL_PREFIX').$data[1],
                     );
-                    $db->insert('model',$row);
+                    $db->insert('#@_model',$row);
                     // 删除已存在的表
                     $db->exec("DROP TABLE IF EXISTS `#@_".C('MODEL_PREFIX').$data[1]."`;");
                     // 创建新表
@@ -794,7 +794,7 @@ class LazySystem extends LazyCMS{
                         'maintable'  => $data[2],
                     );
                     $where = $db->quoteInto('`modelid` = ?',$modelid);
-                    $db->update('model',$set,$where);
+                    $db->update('#@_model',$set,$where);
                 }
                 redirect(url('System','Models'));
             }
@@ -868,7 +868,7 @@ class LazySystem extends LazyCMS{
             $set = array(
                 'fieldindex' => $index,
             );
-            $db->update('fields',$set,$where);
+            $db->update('#@_fields',$set,$where);
         } catch(Error $err){}
         redirect($_SERVER['HTTP_REFERER']);
     }
@@ -927,9 +927,9 @@ class LazySystem extends LazyCMS{
         }
         $data[8] = isset($_POST['oldfieldename']) ? $_POST['oldfieldename'] : null;
         if (empty($fieldid)) {
-            $menu = $this->L('models/field/add').'|'.url('System','ModelFieldsEdit','modelid='.$modelid).'|true';
+            $menu = $this->L('models/field/add').'|#|true';
         } else {
-            $menu = $this->L('models/field/add').'|'.url('System','ModelFieldsEdit','modelid='.$modelid).';'.$this->L('models/field/edit').'|'.url('System','ModelFieldsEdit',"modelid={$modelid}&fieldid={$fieldid}").'|true';
+            $menu = $this->L('models/field/add').'|'.url('System','ModelFieldsEdit','modelid='.$modelid).';'.$this->L('models/field/edit').'|#|true';
         }
         $this->validate(array(
             'fieldname'  => $this->check('fieldname|1|'.$this->L('models/field/check/name').'|1-50'),
@@ -954,7 +954,7 @@ class LazySystem extends LazyCMS{
                 }
                 if(empty($fieldid)){//insert
                     $row = array(
-                        'fieldorder'  => $db->max('fieldid','fields'),
+                        'fieldorder'  => $db->max('fieldid','#@_fields'),
                         'modelid'     => $modelid,
                         'fieldname'   => $data[0],
                         'fieldename'  => $data[1],
@@ -965,7 +965,7 @@ class LazySystem extends LazyCMS{
                         'inputtype'   => $data[6],
                         'fieldvalue'  => $data[7],
                     );
-                    $db->insert('fields',$row);
+                    $db->insert('#@_fields',$row);
                     // 向附加表添加对应字段
                     $SQL     = "ALTER TABLE `{$addtable}` ADD ";
                     $db->exec($SQL."`".$data[1]."` ".$data[2].$length.$default.";");
@@ -991,7 +991,7 @@ class LazySystem extends LazyCMS{
                             ));
                         }
                     } catch(Error $err){}
-                    $db->update('fields',$set,$where);
+                    $db->update('#@_fields',$set,$where);
                     $db->exec("ALTER TABLE `{$addtable}` CHANGE `".$data[8]."` `".$data[1]."` ".$data[2].$length.$default.";");
                 }
                 redirect(url('System','ModelFields',"modelid={$modelid}"));
@@ -1219,7 +1219,7 @@ class LazySystem extends LazyCMS{
                         'adminkey'  => $newkey,
                     );
                     $where = $db->quoteInto('`adminname` = ?',$adminname);
-                    $db->update('admin',$set,$where);
+                    $db->update('#@_admin',$set,$where);
                     // 写登录记录
                     $row = array(
                         'adminname' => $adminname,
@@ -1227,7 +1227,7 @@ class LazySystem extends LazyCMS{
                         'lognum'    => 1,
                         'logdate'   => now(),
                     );
-                    $db->insert('log',$row);
+                    $db->insert('#@_log',$row);
                     // 设置登陆信息
                     Cookie::set('adminname',$adminname,$validity);
                     Cookie::set('adminpass',$newpass,$validity);
@@ -1241,7 +1241,7 @@ class LazySystem extends LazyCMS{
                         'lognum'    => 2,
                         'logdate'   => now(),
                     );
-                    $db->insert('log',$row);
+                    $db->insert('#@_log',$row);
                     // 密码不正确，登录失败
                     $this->validate(array(
                         'adminpass' => $this->L('login/check/error2'),
@@ -1255,7 +1255,7 @@ class LazySystem extends LazyCMS{
                     'lognum'    => 2,
                     'logdate'   => now(),
                 );
-                $db->insert('log',$row);
+                $db->insert('#@_log',$row);
                 // 用户名不存在，登录失败
                 $this->validate(array(
                     'adminname' => $this->L('login/check/error1'),
@@ -1285,7 +1285,7 @@ class LazySystem extends LazyCMS{
                 'lognum'    => 3,
                 'logdate'   => now(),
             );
-            $db->insert('log',$row);
+            $db->insert('#@_log',$row);
             unset($db);
         }
         // 跳转到登录页

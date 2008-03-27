@@ -172,7 +172,7 @@ if ($install && labelError()) {
             'diymenulang' => C('LANGUAGE'),
             'diymenu'     => $mMenu.defmenu(),
         );
-        $db->insert('diymenu',$diyMenu);
+        $db->insert('#@_diymenu',$diyMenu);
 
         // 添加站点设置
         $system = array(
@@ -185,7 +185,7 @@ if ($install && labelError()) {
             'modules'       => implode(',',$modules),
             'instdate'      => now(),
         );
-        $db->insert('system',$system);
+        $db->insert('#@_system',$system);
         
         // 添加管理员
         $adminkey = salt();
@@ -198,7 +198,7 @@ if ($install && labelError()) {
             'admineditor'   => $admineditor,
             'admindate'     => now(),
         );
-        $db->insert('admin',$admin);
+        $db->insert('#@_admin',$admin);
         saveFile(CORE_PATH.'/custom/config.php',"<?php\n".createNote('用户自定义配置文件')."\nreturn ".var_export($config,true).";\n?>");
         System::installModel($modelArticle,true);
         @unlink('install.php');

@@ -1,6 +1,6 @@
 <?php System::header();?>
 <?php $module->validate('outjs');?>
-<?php echo menu($module->L('title').'|'.url('Archives').';'.$module->L('common/addsort').'|'.url('Archives','EditSort').';'.$module->L('common/addpage').'|'.url('Archives','Edit').'|true');?>
+<?php echo menu($module->L('title').'|'.url('Archives').';'.$module->L('common/addsort').'|'.url('Archives','EditSort').';'.$menu);?>
 <div class="content">
     <form action="<?php echo url('Archives','Edit');?>" method="post" class="lz_form">
         <p><label><?php echo $module->L('label/archive/sort');?></label>
@@ -9,18 +9,24 @@
             </select>
         </p>
         <p><label><?php echo $module->L('label/archive/info');?></label><span>
-            <input name="show" type="checkbox" id="show" value="1" /><label for="show"><?php echo $module->L('label/archive/show');?></label>
-            <input name="commend" type="checkbox" id="commend" value="1" /><label for="commend"><?php echo $module->L('label/archive/commend');?></label>
-            <input name="top" type="checkbox" id="up" value="1" /><label for="up"><?php echo $module->L('label/archive/top');?></label> -
-            <input name="snapimg" type="checkbox" id="snapimg" value="1" /><label for="snapimg"><?php echo $module->L('label/archive/snapimg');?></label>
-            <input name="upsort" type="checkbox" id="upsort" value="1" /><label for="upsort"><?php echo $module->L('label/archive/upsort');?></label>
-            <input name="checktitle" type="checkbox" id="checktitle" value="1" /><label for="checktitle"><?php echo $module->L('label/archive/checktitle');?></label>            
+            <input name="show" type="checkbox" id="show" value="1"<?php echo $show;?> /><label for="show"><?php echo $module->L('label/archive/show');?></label>
+            <input name="commend" type="checkbox" id="commend" value="1"<?php echo $commend;?> /><label for="commend"><?php echo $module->L('label/archive/commend');?></label>
+            <input name="top" type="checkbox" id="up" value="1"<?php echo $top;?> /><label for="up"><?php echo $module->L('label/archive/top');?></label> -
+            <input name="snapimg" type="checkbox" id="snapimg" value="1"<?php echo $snapimg;?> /><label for="snapimg"><?php echo $module->L('label/archive/snapimg');?></label>
+            <input name="upsort" type="checkbox" id="upsort" value="1"<?php echo $upsort;?> /><label for="upsort"><?php echo $module->L('label/archive/upsort');?></label>
+            <input name="checktitle" type="checkbox" id="checktitle" value="1"<?php echo $checktitle;?> /><label for="checktitle"><?php echo $module->L('label/archive/checktitle');?></label>            
         </span></p>
-        <p><label><?php echo $module->L('label/archive/title');?></label><input class="in4" type="text" id="title" name="title" maxlength="100" value="<?php echo $title;?>" /></p>
+        <p><label><?php echo $module->L('label/archive/title');?></label><input class="in4" type="text" id="title" name="title" maxlength="255" value="<?php echo $title;?>" /></p>
         <p><label><?php echo $module->L('label/archive/img');?></label><input class="in4" type="text" id="img" name="img" maxlength="255" value="<?php echo $img;?>" />&nbsp;<button type="button" onclick="$('#img').browseFiles('<?php echo url('System','browseFiles');?>','<?php echo $upath;?>',true);"><?php echo L('common/browse');?></button></p>
         <p><label><?php echo $module->L('label/archive/path');?></label><input class="in4" type="text" id="path" name="path" maxlength="255" value="<?php echo $path;?>" />
-			[<a href="javascript:;" onclick="$('#path').val('ID');return false;">ID</a>] [<a href="javascript:;" onclick="$('#path').val('MD5');return false;">MD5</a>] [<a href="javascript:;" onclick="$('#path').val('English-Title');return false;">English Title</a>] [<a href="javascript:;" onclick="$('#path').val('PinYin');return false;">拼音</a>]</p>
+            [<a href="javascript:;" onclick="$('#path').val('<?php echo $pathtype_id;?>');"><?php echo $pathtype_id;?></a>]
+            [<a href="javascript:;" onclick="$('#path').val('<?php echo $pathtype_date;?>');"><?php echo $pathtype_date;?></a>]
+            [<a href="javascript:;" onclick="$('#path').val('English-Title');">English Title</a>]
+            [<a href="javascript:;" onclick="$('#path').val('<?php echo $module->L('common/pinyin');?>');"><?php echo $module->L('common/pinyin');?></a>]
+            [<a href="javascript:;" onclick="$('#path').val('MD5');">MD5</a>]
+	    </p>
         <?php echo $module->outHTML;?>
+        <input name="aid" type="hidden" id="aid" value="<?php echo $aid;?>" />
         <?php echo $module->but('submit');?>
     </form>
 </div>

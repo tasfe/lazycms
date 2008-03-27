@@ -27,6 +27,17 @@
         <path>路径</path>
         <action>操作</action>
     </sort>
+    
+    <list>
+        <id>ID</id>
+        <title>标题</title>
+        <top>置顶</top>
+        <show>显示</show>
+        <commend>推荐</commend>
+        <path>路径</path>
+        <date>发布日期</date>
+        <action>操作</action>
+    </list>
 
     <label>
         <supsort>上级分类</supsort>
@@ -58,9 +69,11 @@
 
     <check>
         <path>路径不能为空</path>
-        <path1>目录路径格式错误</path1>
-        <path2>目录路径重复，请另取名</path2>
+        <path1>路径格式错误</path1>
+        <path2>路径重复，请另取名</path2>
         <sortname>分类名不能为空</sortname>
+        <title>标题不能为空</title>
+        <title1>标题不能重复</title1>
     </check>
     
     <pop>

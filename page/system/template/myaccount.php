@@ -1,6 +1,6 @@
 <?php System::header();?>
 <?php $module->validate('outjs');?>
-<?php echo menu($module->L('config/@title').'|'.url('System','Config').';'.$module->L('module/@title').'|'.url('System','Module').';'.$module->L('diymenu/@title').'|'.url('System','DiyMenu').';'.$module->L('account/@title').'|'.url('System','MyAccount').'|true');?>
+<?php echo menu($module->L('config/@title').'|'.url('System','Config').';'.$module->L('module/@title').'|'.url('System','Module').';'.$module->L('diymenu/@title').'|'.url('System','DiyMenu').';'.$module->L('account/@title').'|#|true');?>
 <div class="content">
     <form action="<?php echo url('System','MyAccount');?>" method="post" class="lz_form">
         <?php echo $module->succeed();?>

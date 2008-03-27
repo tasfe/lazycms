@@ -121,7 +121,7 @@ class System{
             'addtable'   => $data[3],
             'modelstate' => $data[4],
         );
-        $db->insert('model',$row);
+        $db->insert('#@_model',$row);
 
         // Insert fields
         $inSQL      = null;
@@ -156,7 +156,7 @@ class System{
             if (!empty($row['fieldindex'])){ 
                 $indexSQL.= "KEY `".$row['fieldename']."` (`".$row['fieldename']."`),";
             }
-            $db->insert('fields',$row);
+            $db->insert('#@_fields',$row);
         }
         $db->exec("DROP TABLE IF EXISTS `".$data[3]."`;");
         // 创建新表
@@ -222,6 +222,7 @@ class System{
             CREATE TABLE IF NOT EXISTS `#@_archives` (
               `id` int(11) NOT NULL auto_increment,
               `sortid` int(11) default '0',                 # 分类编号
+              `order` int(11) default '0',                  # 排序编号
               `title` varchar(255) NOT NULL,                # 标题
               `show` tinyint(1) default '0',                # 显示
               `commend` tinyint(1) default '0',             # 推荐
