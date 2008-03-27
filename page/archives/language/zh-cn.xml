@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lazycms>
+    <title>文档管理</title>
+    <version memo="版本">1.0</version>
+    <author memo="作者">Lukin</author>
+    <email memo="作者常用邮箱，以便联系">mylukin@gmail.com</email>
+    <source memo="作者来自哪里？">http://www.lazycms.net</source>
+    <manage>url('Archives')</manage>
+
+    <common>
+        <root>根目录</root>
+        <addpage>添加文档</addpage>
+        <addsort>添加分类</addsort>
+        <editsort>编辑分类</editsort>
+        <create>全部生成</create>
+        <createsort>只生成列表</createsort>
+        <createpage>只生成文档</createpage>
+        <createall>生成列表及文档</createall>
+        <pinyin>拼音</pinyin>
+    </common>
+    
+    <sort>
+        <id>ID</id>
+        <name>分类名称</name>
+        <model>模型</model>
+        <count>文档数</count>
+        <path>路径</path>
+        <action>操作</action>
+    </sort>
+
+    <label>
+        <supsort>上级分类</supsort>
+        <sortname>分类名称</sortname>
+        <sortpath>路径 (不支持特殊符号；不能以/开始或结束)</sortpath>
+        <model>内容模型 (添加后不可修改)</model>
+        <keywords>Meta 关键词 (不填写自动补充，Max=255)</keywords>
+        <description>Meta 简述 (不填写自动补充，Max=255)</description>
+        <sorttemplate1>列表页外部模板</sorttemplate1>
+        <sorttemplate2>列表页内部模板</sorttemplate2>
+        <pagetemplate1>内容页外部模板</pagetemplate1>
+        <pagetemplate2>内容页内部模板</pagetemplate2>
+
+        <archive>
+            <info>文档属性</info>
+            <sort>所属分类</sort>
+            <top>置顶</top>
+            <show>显示</show>
+            <commend>推荐</commend>
+            <snapimg>远程抓图</snapimg>
+            <upsort>更新列表</upsort>
+            <checktitle>检查标题是否重复</checktitle>
+            <title>标题</title>
+            <img>图片 (若写远程路径，自动抓取图片保存到本地)</img>
+            <path>路径 (不支持特殊符号；不建议输入纯数字，以免覆盖列表)</path>
+        </archive>
+        
+    </label>
+
+    <check>
+        <path>路径不能为空</path>
+        <path1>目录路径格式错误</path1>
+        <path2>目录路径重复，请另取名</path2>
+        <sortname>分类名不能为空</sortname>
+    </check>
+    
+    <pop>
+        <select>请选择一个栏目</select>
+        <deleteok>删除成功</deleteok>
+        <createok>成功生成</createok>
+    </pop>
+
+</lazycms>

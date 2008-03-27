@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title><?php echo L('admin/title');?></title>
+<link href="../system/images/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../system/js/jquery.js"></script>
+<script type="text/javascript" src="../system/js/jquery.lazycms.js"></script>
+<script type="text/javascript">
+/*if (top.location == self.location) { top.location = '<?php echo url("System");?>'; }*/
+// 获取最新版本
+var lz_verison = "<?php echo url('System','Version');?>";
+$(function(){
+    $('#verison','.content .main').load(lz_verison);
+});
+</script>
+</head>
+
+<body>
+<div id="top">
+    <div class="logo">
+        <a href="<?php echo url('System','Main');?>"><img src="../system/images/logo.png" alt="logo" /></a>
+    </div>
+    <div class="menu">
+        <strong><?php echo Cookie::get('adminname');?></strong> -
+        <a href="<?php echo url('System','Admin');?>">[<?php echo L('menu/admin');?>]</a> -
+        <a href="<?php echo url('System','Config');?>">[<?php echo L('menu/config');?>]</a> -
+        <a href="<?php echo url('System','Module');?>">[<?php echo L('menu/module');?>]</a> -
+        <a href="<?php echo url('System','Models');?>">[<?php echo L('menu/model');?>]</a> -
+        <a href="<?php echo url('System','DiyMenu');?>">[<?php echo L('menu/diymenu');?>]</a> -
+        <a href="<?php echo url('System','MyAccount');?>">[<?php echo L('menu/account');?>]</a> -
+        <a href="<?php echo url('System','Logout');?>" target="_top" onclick="return confirm('<?php echo L('confirm/logout');?>');">[<?php echo L('login/out');?>]</a>
+    </div>
+    <ul class="diymenu">
+        <?php echo $module->diymenu();?>
+    </ul>
+</div>
+<div id="main">

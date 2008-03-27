@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lazycms>
+    <title>系统管理</title>
+    <version memo="版本">1.0</version>
+    <author memo="作者">Lukin</author>
+    <email memo="作者常用邮箱，以便联系">mylukin@gmail.com</email>
+    <source memo="作者来自哪里？">http://www.lazycms.net</source>
+
+    <menu>
+        <admin>管理员</admin>
+        <config>设置</config>
+        <module>模块</module>
+        <model>模型</model>
+        <diymenu>菜单</diymenu>
+        <account>帐户</account>
+    </menu>
+
+    <common>
+        <upok>更新成功!</upok>
+        <module>模块</module>
+        <action>操作</action>
+        <tautology>重试</tautology>
+        <back>返回</back>
+        <close>关闭</close>
+        <save>保存</save>
+        <insert>插入</insert>
+        <reset>重置</reset>
+        <up>更新</up>
+        <browse>浏览...</browse>
+        <memo>提示</memo>
+        <install>安装</install>
+        <submit>提交</submit>
+        <selectall>全选</selectall>
+        <reselect>反选</reselect>
+        <delete>删除</delete>
+        <redraw>刷新屏幕</redraw>
+        <create>生成</create>
+        <about>关于</about>
+        <help>帮助</help>
+        <config>设置</config>
+        <inserteditor>插入到编辑器</inserteditor>
+        <moreaction>更多操作...</moreaction>
+        <redirect>系统将在{$time}秒之后自动跳转到{$url}！</redirect>
+    </common>
+    
+    <parameters>
+        <systemname>系统名称</systemname>
+        <systemver>当前版本</systemver>
+        <newversion>最新版本</newversion>
+        <dbver>数据库版本</dbver>
+        <instdate>安装日期</instdate>
+        <support>技术支持</support>
+        <osite>官方网站</osite>
+        <forums>论坛支持</forums>
+        <newversion>最新版本</newversion>
+        <newversionerr>读取失败</newversionerr>
+        <downnew>去下载最新版</downnew>
+        <update>在线升级</update>
+        <notup>没有找到升级文件，请稍后再试！</notup>
+        <upok>成功升级到最新版！</upok>
+        <phpver>PHP版本</phpver>
+        <gdver>GD版本</gdver>
+        <xml_set_object>XML解析</xml_set_object>
+        <mysql>MySQL数据库</mysql>
+        <safe_mode>不运行于安全模式</safe_mode>
+        <max_execution_time>程序最长运行时间</max_execution_time>
+        <upload_max_filesize>允许最大上传文件</upload_max_filesize>
+        <allow_url_fopen>允许使用URL打开文件</allow_url_fopen>
+    </parameters>
+
+    <config title="参数设置">
+        <sitename>网站名称</sitename>
+        <sitemail>管理员信箱</sitemail>
+        <keywords>关键词组</keywords>
+        <lockip>限制访问的IP地址</lockip>
+        <check>
+            <sitename>网站名称不能为空,字节长度≤50</sitename>
+            <sitemail>管理员信箱格式不正确</sitemail>
+        </check>
+        <tip>
+            <keywords>(关键字之间用英文逗号分开)</keywords>
+            <lockip>(IP之间用英文逗号分开，可以封锁IP段)</lockip>
+        </tip>
+    </config>
+
+    <admin title="管理员">
+        <title>管理中心</title>
+        <list>管理员列表</list>
+        <add>新增管理员</add>
+        <edit>编辑管理员</edit>
+        <level>
+            <super>系统管理员</super>
+            <editor>普通管理员</editor>
+        </level>
+        <label>
+            <name>管理员名称</name>
+            <pass>管理员密码</pass>
+            <pass1>确认密码</pass1>
+            <language>界面语言</language>
+            <editor>编辑器</editor>
+            <level>级别设置</level>
+        </label>
+        <list>
+            <name>管理员名称</name>
+            <level>级别</level>
+            <language>界面语言</language>
+            <editor>编辑器</editor>
+            <regdate>注册时间</regdate>
+        </list>
+        <check>
+            <name>管理员名称长度为2-12个字符</name>
+            <name1>您输入的管理员名称已经存在</name1>
+            <pass1size>管理员密码长度为6-30个字符</pass1size>
+            <contrast>两次输入的密码不一致</contrast>
+        </check>
+        <pop>
+            <select>请选择一个管理员</select>
+            <deleteok>成功删除您选择的管理员</deleteok>
+        </pop>
+    </admin>
+    
+    <account title="我的帐户">
+        <my>帐户</my>
+        <oldpass>原密码</oldpass>
+        <newpass>新密码 若不修改密码,请留空</newpass>
+        <confirmedpass>确认新密码</confirmedpass>
+        <diymenu>定制菜单 (若留空，则调用默认自定义菜单)</diymenu>
+        <check>
+            <pwdsize>管理员密码长度不正确</pwdsize>
+            <pwderror>您的原密码不正确</pwderror>
+            <contrast>两次输入的新密码不正确</contrast>
+        </check>
+    </account>
+
+    <log title="访问日志">
+        <l1>成功登录</l1>
+        <l2>登录失败</l2>
+        <l3>退出登录</l3>
+        <l4>成功注册帐号</l4>
+        <l5>发送短信息</l5>
+        <delete>删除过期日志</delete>
+        <clear>清空日志</clear>
+        <list>
+            <id>ID</id>
+            <name>输入的帐号</name>
+            <num>动作</num>
+            <ip>IP地址</ip>
+            <date>日期时间</date>
+        </list>
+        <pop>
+            <select>请选择日志后再操作</select>
+            <logdeleteok>成功删除过期日志</logdeleteok>
+            <deleteok>已删除指定的日志</deleteok>
+            <clearok>已清空所有日志</clearok>
+        </pop>
+    </log>
+
+    <login title="管理员登录">
+        <name>用户名</name>
+        <pass><![CDATA[密&nbsp; &nbsp; 码]]></pass>
+        <save>保存信息</save>
+        <submit>登录</submit>
+        <out>退出</out>
+        <check>
+            <name>管理员名称不能为空或过长</name>
+            <pass>管理员密码不能为空或过长</pass>
+            <error1>会员名不存在或已被停用！</error1>
+            <error2>密码有误，请重新输入！</error2>
+        </check>
+    </login>
+    
+    <module title="模块管理">
+        <install>安装</install>
+        <list>
+            <name>模块名称</name>
+            <author>作者</author>
+            <source>来源</source>
+            <mail>邮箱</mail>
+            <version>版本</version>
+            <is>状态</is>
+            <folder>模块目录</folder>
+        </list>
+        <tip>
+            <install>成功安装指定的模块</install>
+            <welcome>点击这里进行访问</welcome>
+            <delete>成功删除指定的模块</delete>
+        </tip>
+        <is>
+            <true>已安装</true>
+            <false>待安装</false>
+        </is>
+        <pop>
+            <ok>模块设置，已成功提交</ok>
+        </pop>
+    </module>
+
+    <models title="模型管理">
+        <add>添加模型</add>
+        <edit>编辑模型</edit>
+		<leadin>导入模型</leadin>
+        <field title="字段管理">
+            <add>添加字段</add>
+            <edit>编辑字段</edit>
+            <list>
+                <id>ID</id>
+                <name>表单文字</name>
+                <ename>字段名</ename>
+                <type>输入类型</type>
+                <length>最大长度</length>
+                <default>默认值</default>
+                <key>索引</key>
+                <action>操作</action>
+            </list>
+            <label>
+                <name>表单文字</name>
+                <ename>字段名 (索引字段，不能修改字段名)</ename>
+                <type>输入类型</type>
+                <length>最大长度</length>
+                <default>默认值 (日期选择器可使用 date('Y-m-d',time()) 函数)</default>
+                <key>索引</key>
+                <value>值 (例：name:value)</value>
+            </label>
+            <check>
+                <name>表单文字不能为空</name>
+                <ename>字段名不能为空</ename>
+                <ename1>只允许输入：字母、数字、下划线</ename1>
+                <length>必须填写最大长度</length>
+                <length1>必须为整数，请重新输入</length1>
+                <value>值不能为空</value>
+            </check>
+            <type>
+                <input>输入框</input>
+                <textarea>文本框</textarea>
+                <select>下拉菜单</select>
+                <radio>单选框</radio>
+                <checkbox>复选框</checkbox>
+                <basic>简易编辑器</basic>
+                <editor>内容编辑器</editor>
+                <date>日期选择器</date>
+                <upfile>文件上传框</upfile>
+            </type>
+        </field>
+        <list>
+            <id>ID</id>
+            <name>模型名称</name>
+            <ename>模型标识</ename>
+            <addtable>附加表</addtable>
+            <state>状态</state>
+            <action>操作</action>
+        </list>
+        <label>
+            <name>模型名称</name>
+            <maintable>主索引表</maintable>
+            <ename>模型标识 (字母、数字、下划线；添加后不可修改)</ename>
+            <fieldset>字段配置</fieldset>
+            <fieldtip><![CDATA[添加模型后，点击 <img src="{$root}/system/images/os/fields.gif" class="os"/> 图标进行字段管理]]></fieldtip>
+			<leadin>请选择模型文件 (mod格式文件)</leadin>
+        </label>
+        <check>
+            <name>模型名称不能为空</name>
+            <ename>模型标识不能为空</ename>
+            <ename1>只允许输入：字母、数字、下划线</ename1>
+        </check>
+        <pop>
+            <select>请选择一个模型</select>
+            <deleteok>成功删除您选择的模型</deleteok>
+            <deletefieldok>成功删除您选择的字段</deletefieldok>
+            <deletefielderr>数据库字段可能已经被删除</deletefielderr>
+        </pop>
+    </models>
+
+    <filemanage title="文件浏览器">
+        <createfolder>新文件夹名称 (不能包含特殊字符)</createfolder>
+        <template>
+            <filename>文件名称</filename>
+            <filemtime>最后修改时间</filemtime>
+        </template>
+    </filemanage>
+
+    <diymenu title="自定义菜单">
+        <memo>
+<![CDATA[一级栏目名称1|链接地址1
+    二级栏目名称1|链接地址2
+    二级栏目名称2|链接地址3
+一级栏目名称2|链接地址4
+    二级栏目名称3|链接地址5
+    二级栏目名称4|链接地址6
+    二级栏目名称5|链接地址6
+
+注意：二级栏目前面需要写空格即可
+      链接地址支持 url() 函数
+]]></memo>
+    </diymenu>
+
+    <confirm>
+        <logout>确定要退出吗？</logout>
+        <reset>确定要重置吗？</reset>
+        <back>确定要返回吗？</back>
+        <clear>确定要清空吗？</clear>
+        <delete>确定要删除吗？</delete>
+    </confirm>
+
+    <error title="错误">
+        <invalid>您输入的参数有误！</invalid>
+        <nocontrol>模块没有定义！</nocontrol>
+        <noaction>操作没有定义！</noaction>
+        <system>系统发生错误</system>
+        <position>错误位置</position>
+        <errinfo>错误信息</errinfo>
+        <jurisdiction>您无权访问该页</jurisdiction>
+        <selectdb>没有找到指定的数据库！</selectdb>
+        <dblink>数据库链接出错，请检查数据库设置！</dblink>
+        <nodbver>MySQL数据库版本低于4.1，请升级你的MySQL数据库！</nodbver>
+        <dbconfig>数据库连接字符串，设置错误。</dbconfig>
+        <nologin>您的登录已经超时，请重新登录！</nologin>
+        <nomodule>还没有安装此模块，请先安装！</nomodule>
+        <nodefault>你还没有创建首页，请先创建首页。</nodefault>
+        <onepage>请先安装单页面模块。</onepage>
+        <rsnot>页面正在制作中，给您带来的不便敬请谅解！</rsnot>
+        <getdown>您的服务器不支持获取远程文件。</getdown>
+        <nomodels>请先创建模型</nomodels>
+        <nosort>请先创建分类</nosort>
+		<upload>
+			<err1>上传的文件超过了 php.ini 中 upload_max_filesize 选项限制的值</err1>
+			<err2>上传文件的大小超过了 HTML 表单中 MAX_FILE_SIZE 选项指定的值</err2>
+			<err3>文件只有部分被上传</err3>
+			<err4>没有文件被上传</err4>
+			<err5>上传的文件太大</err5>
+			<err6>找不到临时文件夹</err6>
+			<err7>文件写入失败</err7>
+			<err8>上传的文件类型不允许</err8>
+			<err9>非法提交</err9>
+		</upload>
+    </error>
+    
+    <other>
+        <select>您可以选择</select>
+        <or>或者</or>
+        <gohome>回到首页</gohome>
+    </other>
+</lazycms>

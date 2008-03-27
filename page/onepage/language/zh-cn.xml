@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lazycms>
+    <title>单页面</title>
+    <version memo="版本">1.0</version>
+    <author memo="作者">Lukin</author>
+    <email memo="作者常用邮箱，以便联系">mylukin@gmail.com</email>
+    <source memo="作者来自哪里？">http://www.lazycms.net</source>
+    <manage>url('Onepage')</manage>
+
+    <common>
+        <add>添加单页面</add>
+        <edit>编辑单页面</edit>
+    </common>
+    <list>
+        <id>ID</id>
+        <name>页面名称</name>
+        <action>操作</action>
+        <path>路径</path>
+		<home>是否为首页</home>
+    </list>
+    <label>
+        <name>页面名称</name>
+        <title>页面标题 (&amp;lt;title&amp;gt;中的内容)</title>
+        <description>简述</description>
+        <keyword>关键字 (关键字之间用英文逗号分开)</keyword>
+        <path>页面路径 (不支持 &amp;lt\:*?"|,;&amp;gt; 字符，不能以/开始或结束，格式：dir1/dir2，首页填“默认文档”即可，例：index.html)</path>
+        <content>页面内容</content>
+        <template1>外部模板</template1>
+        <template2>内部模板</template2>
+    </label>
+    <check>
+        <name>页面名称不能为空</name>
+        <title>页面标题不能为空</title>
+        <path>页面路径不能为空</path>
+        <path1>页面路径格式错误</path1>
+        <path2>页面路径重复，请另取名</path2>
+        <content>页面内容不能为空</content>
+        <keyword>关键字不能超过50个字符</keyword>
+        <description>简述不能超过250个字符</description>
+    </check>
+    <pop>
+        <select>请选择一个页面</select>
+        <createok>成功生成指定的页面</createok>
+        <deleteok>成功删除指定的页面</deleteok>
+        <invalid>您指定的页面已经被删除！请不要重复删除</invalid>
+    </pop>
+</lazycms>

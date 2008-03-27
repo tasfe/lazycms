@@ -1,0 +1,62 @@
+<?php
+/**
+ * +---------------------------------------------------------------------------+
+ * | LL                             LLLL   LL     L   LLLL                 LL  |
+ * | LL                            LL   L  LLL   LL  LL   L               LLL  |
+ * | LL      LLLL   LLLLL  LL  LL  LL      LLLL LLL  LL          LL  LL    LL  |
+ * | LL         LL     LL  LL  LL  LL      L LLL LL  LLLLL       LL  LL    LL  |
+ * | LL      LLLLL    LL    LLLL   LL      L  L  LL   LLLLL      LL  LL    LL  |
+ * | LL     LL  LL   LL     LLLL   LL      L     LL      LL       LLLL     LL  |
+ * | LL     LL  LL  LL       LL    LL   L  L     LL  L   LL       LLLL     LL  |
+ * | LLLLLL  LLLLL  LLLLL    LL     LLLL   L     LL   LLLL         LL     LLLL |
+ * |                        LL                                                 |
+ * |                        LL                                                 |
+ * +---------------------------------------------------------------------------+
+ * | Copyright (c) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * +---------------------------------------------------------------------------+
+ * | 许可协议，请查看源代码中附带的 LICENSE.txt 文件，                         |
+ * | 或者访问 http://www.lazycms.net/ 获得详细信息。                           |
+ * +---------------------------------------------------------------------------+
+ * | Author: Lukin <mylukin@gmail.com>                                         |
+ * +---------------------------------------------------------------------------+
+ */
+defined('CORE_PATH') or die('Restricted access!');
+/**
+ * LazyCMS 兼容函数库 针对5.2.0以下版本
+ *
+ * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
+ * @author      Lukin <mylukin@gmail.com>
+ */
+
+// property_exists *** *** www.LazyCMS.net *** ***
+if (!function_exists('property_exists')) {
+    function property_exists($l1, $l2) { // $l1:class, $l2:property
+        if (is_object($l1)) { $l1 = get_class($l1); }
+        return array_key_exists($l2,get_class_vars($l1));
+    }
+}
+
+// json_encode *** *** www.LazyCMS.net *** ***
+if (!function_exists('json_encode')) {
+    function json_encode($l1){
+        static $I1 = array();
+        if (!isset($I1[0])) {
+            vendor('json');
+            $I1[0] = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
+        }
+        return $I1[0]->encode($l1);
+    }
+}
+
+// json_decode *** *** www.LazyCMS.net *** ***
+if (!function_exists('json_decode')) {
+    function json_decode($l1){
+        static $I1 = array();
+        if (!isset($I1[0])) {
+            vendor('json');
+            $I1[0] = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
+        }
+        return $I1[0]->decode($l1);
+    }
+}
+?>

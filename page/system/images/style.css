@@ -1,0 +1,136 @@
+@import url("datePicker.css");
+
+body{ width:100%; height:100%; margin:0; padding:0; background:#FBFBFB;text-align:center;}
+body,p{ line-height:130%; font-family:Verdana; font-size:12px;}
+dl,dt,dd,form{ margin:0; padding:0;}
+pre{font-size:12px;line-height:14px;margin:0px;color:#008000;}
+img,input,button,select{vertical-align:middle;}
+img{border:none;}
+	img.os{width:16px;height:16px;vertical-align:middle;margin:0px 2px;}
+a img{ border:none; vertical-align:middle;}
+a:link{ color:#333333; text-decoration:none;}
+a:visited{ text-decoration:none; color:#333333;}
+a:hover{ text-decoration:underline; color:#000000;}
+a:active{ text-decoration:none; color:#333333;}
+textarea{ font-size:13px;}
+.red ,a.red{ color:#993300;}
+.gray ,a.gray{ color:#999999;}
+.green ,a.green{ color:#009900;}
+
+#top{width:100%; margin:0 auto; display:table; clear:both; background:#193441; color:#D1DBBD;}
+	#top .logo{ width:180px; padding:4px 0 5px 10px; float:left; text-align:center;}
+	#top a{ color:#D1DBBD;}
+	#top .menu{ position:absolute; right:0px; display:table; float:right; text-align:right; margin-right:10px; padding-top:3px;}
+	#top .diymenu{ display:table; margin:24px 0 0 5px; padding:0; list-style:none; zoom:100%; float:left;}
+	#top .diymenu li{ float:left; line-height:25px;	margin:0; padding:0; white-space: nowrap;}
+	#top .diymenu li a{ display:block; padding:0 10px;}
+	#top .diymenu li a:visited ,
+	#top .diymenu li a:link{ text-decoration:none; }
+	#top .diymenu li a:hover{ background:#3E606F; }
+	/* 下拉菜单 */
+	#top .diymenu ul{ width:140px; position:absolute; left:auto; text-align:left; line-height:20px; vertical-align:middle; border:1px solid #A8A8A8; border-top:none; z-index:2000; display:none; list-style:none; margin:0px; padding:0px;}
+	#top .diymenu ul li{ background:#F5F5F5; width:100%; margin:0px; padding:0px;}
+	#top .diymenu ul li a:hover{ color:#D1DBBD;}
+	#top .diymenu ul li a{ color:#193441;}
+	#top .diymenu ul li a:link ,
+	#top .diymenu ul li a:active,
+	#top .diymenu ul li a:visited { width:120px; display:block;}
+	#top .diymenu ul li a:link ,
+	#top .diymenu ul li a:active { color:#193441; }
+	
+
+#main{ width:97.5%;border:1px solid #A8A8A8;margin:6px auto;background:#F5F5F5;padding:6px;display:table;}
+	#main p{ text-align:left;}
+	#main .menu{ width:100%; position:relative; bottom:-1px; margin:0 0 0 5px; padding:0; list-style:none; clear:both;}
+	#main .menu li{ float:left; margin-right:5px; line-height:20px; border:1px solid #A8A8A8;}
+	#main .menu li a{ padding:1px 8px 0px 8px; display:block; color:#193441;}
+	#main .menu li a:hover{ text-decoration:none;}
+	#main .menu li.selected{ background:#FFFFFF; border-bottom:solid 1px #FFFFFF;}
+	#main .menu li.selected a{ color:#3E606F; background:url(menu_selected.png) repeat-x left top;}
+	#main .content{ width:100%; background:#FFFFFF; border:solid 1px #A8A8A8; margin:0 auto;clear:both;}
+
+	#main .main{ width:98%; border-collapse:collapse; margin:0 auto; margin-top:10px;}
+		#main .main th ,
+		#main .main td{ line-height:200%; border-top:solid 1px #DBDBDB;}
+		#main .main .selected{ background:#F5F5F5;}
+		#main .main th{ width:170px; letter-spacing: 3px;}
+		#main .main td{ text-align:left;}
+
+.lz_form{ padding:3px; text-align:left;}
+	.lz_form p{ margin:10px 0 1px 0; }
+	.lz_form p.succeed{ color:#993300; background:url(os/on.gif) no-repeat left center; padding-left:20px; font-weight:bold;}
+	.lz_form label{ display:block; color:#006600; line-height:12px;font-size:12px; margin-bottom:3px;}
+	.lz_form label.error{ color:#993300; clear:both; cursor:pointer; padding-top:2px;}
+	.lz_form span label{ display:inline; color:#000;}
+	.lz_form button{ margin-right:6px; letter-spacing:3px; padding:1px 2px; border:1px solid; border-color:#EEE #777 #777 #EEE; background:#D4D0C8; font-size:12px; line-height:100%; vertical-align:middle;}
+	.lz_form .button{ margin:5px 0;}
+	.checkbox{display:block;}
+	.checkbox span{display:block;}
+	.checkbox span label{display:inline; color:#666; font-size:12px;}
+
+.lz_table{ width:99.5%; border-collapse:collapse; margin:3px auto; text-align:left;}
+	.lz_table th ,
+	.lz_table td{ padding:3px; padding-bottom:2px;}
+	.lz_table th{ background:#F5F5F5;border-style:solid; border-width:1px; border-color:#CECECE #A8A8A8 #A8A8A8 #CECECE; color:#193441; letter-spacing:1px;}
+	.lz_table td{ border:solid 1px #CECECE;}
+	.lz_table .selected{ background:#F5F5F5;}
+	
+.lz_but{ width:99.5%; display:table; line-height:20px; margin:2px auto; clear:both;}
+	.lz_but .button{ text-align:right; margin:0; float:left;}
+		.lz_but .button button ,
+		.lz_but .button input{ margin-right:6px; padding:1px 2px; border:1px solid; border-color:#EEE #777 #777 #EEE; background:#D4D0C8; font-size:12px; line-height:100%; vertical-align:middle;}
+		.lz_but .button select{ margin-right:6px; vertical-align:middle;}
+	.lz_but .pagelist{ text-align:right; float:right;}
+		.lz_but .pagelist a ,
+		.lz_but .pagelist strong{ margin-right:3px;}
+		.lz_but .pagelist strong{ color:#993300;}
+		.lz_but .pagelist em {padding:2px;border:1px solid #C6C6C6;font-size:12px;margin:0px 1px;background:#F5F9FE;color:#14316B;font-weight:bold;font-style:normal; margin-right:3px;}
+		.lz_but .pagelist kbd input{ width:40px; height:14px; border:solid 1px #7F9DB9;}
+
+#poping{ clear:both; display:block; zoom:100%;}
+	#poping .title{ width:98%; clear:both; margin:0 auto; line-height:200%; font-weight:bold; color:#FFFFFF; padding:0px 1%; background:#193441; border-bottom:solid 3px #CECECE; display:table;zoom:100%;}
+	#poping .title span{ float:left;}
+	#poping .title a{ float:right; color:#FFFFFF; text-decoration:none; font-size:14px;}
+	#poping .main{ width:98%; height:88%; padding:5px 1%; margin:0 auto; display:block; clear:both; line-height:150%; overflow:auto;}
+	#poping .main a:hover{text-decoration:none;}
+	#poping .main .toolbar{ margin:0 auto; clear:both;}
+	#poping .main .toolbar span { width:539px; height:20px; line-height:20px; padding-left:25px;  font-size:11px; overflow:hidden; background:url(os/folder.gif) no-repeat 5px center; display:block; float:left;}
+	#poping .main .toolbar div { padding:3px 0;text-align:right; display:table; position:absolute; right:30px; }
+	#poping .pop{ width:55%; position:absolute; top:25%; left:22.5%; background:#FFFFFF; border-style:solid; border-width:2px; border-color:#CECECE #666 #666 #CECECE;}
+	#poping .pop-title{ width:95.5%; clear:both; margin:0 auto; line-height:200%; font-weight:bold; color:#FFFFFF; padding:0px 2%; background:#193441; border-bottom:solid 3px #CECECE; display:table;zoom:100%;}
+	#poping .pop-title span{ float:left;}
+	#poping .pop-title a{ float:right; color:#FFFFFF; text-decoration:none; font-size:14px;}
+	#poping .pop-main{ padding:0 10px 10px 10px;}
+
+/* located in demo.css and creates a little calendar icon
+ * instead of a text link for "Choose date"
+ */
+a.dp-choose-date { width: 16px; height: 16px; padding: 0; margin: 5px 3px 0; display: block; text-indent: -2000px; overflow: hidden; background: url(calendar.png) no-repeat; }
+a.dp-choose-date.dp-disabled { background-position: 0 -20px; cursor: default; }
+/* makes the input field shorter once the date picker code
+ * has run (to allow space for the calendar icon
+ */
+input.dp-applied { width: 140px; float: left; }
+
+/* 表单长度设置 */
+.in{ border:solid 1px #7F9DB9; display:table; cursor:text; }
+.in a:hover{ text-decoration:underline; background:#0A246A; color:#FFFFFF;}
+.in0{ width:50px;border:solid 1px #7F9DB9;}
+.in1{ width:100px;border:solid 1px #7F9DB9;}
+.in2{ width:200px;border:solid 1px #7F9DB9;}
+.in3{ width:300px;border:solid 1px #7F9DB9;}
+.in4{ width:400px;border:solid 1px #7F9DB9;}
+.in5{ width:500px;border:solid 1px #7F9DB9;}
+.in6{ width:600px;border:solid 1px #7F9DB9;}
+
+/* 百分比设置 */
+.wp0{ width:5%; }
+.wp1{ width:10%; }
+.wp2{ width:15%; }
+.wp3{ width:20%; }
+.wp4{ width:25%; }
+.wp5{ width:30%; }
+.wp6{ width:40%; }
+.wp7{ width:50%; }
+.wp8{ width:60%; }
+.wp9{ width:70%; }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <ar l="Arabic"/>
+    <bg l="Bulgarian"/>
+    <bs l="Bosnian"/>
+    <ca l="Catalan"/>
+    <cs l="Czech"/>
+    <da l="Danish"/>
+    <de l="German"/>
+    <el l="Greek"/>
+    <en l="English"/>
+    <en-au l="English (Australia)"/>
+    <en-uk l="English (United Kingdom)"/>
+    <eo l="Esperanto"/>
+    <es l="Spanish"/>
+    <et l="Estonian"/>
+    <eu l="Basque"/>
+    <fa l="Persian"/>
+    <fi l="Finnish"/>
+    <fr l="French"/>
+    <gl l="Galician"/>
+    <he l="Hebrew"/>
+    <hr l="Croatian"/>
+    <hu l="Hungarian"/>
+    <it l="Italian"/>
+    <ko l="Corea"/>
+    <lt l="Lithuanian"/>
+    <nl l="Dutch"/>
+    <no l="Norwegian"/>
+    <pl l="Polish"/>
+    <pt l="Portuguese (Portugal)"/>
+    <pt-br l="Portuguese (Brazil)"/>
+    <ro l="Romanian"/>
+    <ru l="Russian"/>
+    <sk l="Slovak"/>
+    <sl l="Slovenian"/>
+    <sr l="Serbian (Cyrillic)"/>
+    <sr-latn l="Serbian (Latin)"/>
+    <sv l="Swedish"/>
+    <th l="Thai"/>
+    <tr l="Turkish"/>
+    <uk l="Ukrainian"/>
+    <zh l="繁體中文"/>
+    <zh-cn l="简体中文"/>
+    <ja l="Japanese"/>
+</root>
