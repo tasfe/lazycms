@@ -18,7 +18,8 @@
         </span></p>
         <p><label><?php echo $module->L('label/archive/title');?></label><input class="in4" type="text" id="title" name="title" maxlength="100" value="<?php echo $title;?>" /></p>
         <p><label><?php echo $module->L('label/archive/img');?></label><input class="in4" type="text" id="img" name="img" maxlength="255" value="<?php echo $img;?>" />&nbsp;<button type="button" onclick="$('#img').browseFiles('<?php echo url('System','browseFiles');?>','<?php echo $upath;?>',true);"><?php echo L('common/browse');?></button></p>
-        <p><label><?php echo $module->L('label/archive/path');?></label><input class="in4" type="text" id="path" name="path" maxlength="255" value="<?php echo $path;?>" /></p>
+        <p><label><?php echo $module->L('label/archive/path');?></label><input class="in4" type="text" id="path" name="path" maxlength="255" value="<?php echo $path;?>" />
+			[<a href="javascript:;" onclick="$('#path').val('ID');return false;">ID</a>] [<a href="javascript:;" onclick="$('#path').val('MD5');return false;">MD5</a>] [<a href="javascript:;" onclick="$('#path').val('English-Title');return false;">English Title</a>] [<a href="javascript:;" onclick="$('#path').val('PinYin');return false;">拼音</a>]</p>
         <?php echo $module->outHTML;?>
         <?php echo $module->but('submit');?>
     </form>

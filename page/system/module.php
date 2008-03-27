@@ -95,7 +95,7 @@ class System{
         return $I1;
     }
     // installModel *** *** www.LazyCMS.net *** ***
-    static function installModel($modelCode){
+    static function installModel($modelCode,$isDeleteTable=false){
         $db       = getConn();
         $modelCode= base64_decode($modelCode);
         $modelDom = DOMDocument::loadXML($modelCode);
@@ -106,11 +106,13 @@ class System{
         $data[2] = $XPath->evaluate("//lazycms/model/maintable")->item(0)->nodeValue;
         $data[3] = $XPath->evaluate("//lazycms/model/addtable")->item(0)->nodeValue;
         $data[4] = $XPath->evaluate("//lazycms/model/modelstate")->item(0)->nodeValue;
-        $res = $db->query("SHOW TABLES LIKE '".$data[3]."'");
-        if ($db->fetch($res,0)) {
-            $data[1].= '_'.salt(4);
-            $data[3].= '_'.salt(4);
-        }
+		if (!$isDeleteTable) {
+			$res = $db->query("SHOW TABLES LIKE '".$data[3]."'");
+			if ($db->fetch($res,0)) {
+				$data[1].= '_'.salt(4);
+				$data[3].= '_'.salt(4);
+			}
+		}
         // Insert model
         $row = array(
             'modelname'  => $data[0],

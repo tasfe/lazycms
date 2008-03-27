@@ -200,7 +200,7 @@ if ($install && labelError()) {
         );
         $db->insert('admin',$admin);
         saveFile(CORE_PATH.'/custom/config.php',"<?php\n".createNote('用户自定义配置文件')."\nreturn ".var_export($config,true).";\n?>");
-        System::installModel($modelArticle);
+        System::installModel($modelArticle,true);
         @unlink('install.php');
         redirect(C('ADMIN_PATH'));
     } catch (Error $err) {

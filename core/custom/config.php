@@ -25,7 +25,7 @@ defined('CORE_PATH') or die('Restricted access!');
  * 用户自定义配置文件
  */
 return array (
-  'SITE_BASE' => '/',
+  'SITE_BASE' => '/LazyCMS/trunk/',
   'SITE_MODE' => false,
   'DSN_CONFIG' => 'mysql://root@localhost:3306/lazycms',
   'DSN_PREFIX' => 'lazy_',
