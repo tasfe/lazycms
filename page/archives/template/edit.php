@@ -2,6 +2,7 @@
 <?php $module->validate('outjs');?>
 <?php echo menu($module->L('title').'|'.url('Archives').';'.$module->L('common/addsort').'|'.url('Archives','EditSort').';'.$menu);?>
 <div class="content">
+    <script type="text/javascript" src="<?php echo LAZY_PATH.C('PAGES_PATH');?>/system/js/jquery.pinyin.js"></script>
     <form action="<?php echo url('Archives','Edit');?>" method="post" class="lz_form">
         <p><label><?php echo $module->L('label/archive/sort');?></label>
             <select name="sortid" id="sortid" onchange="$(this).jump('<?php echo url('Archives','Edit','sortid=$');?>');"<?php echo $disabled;?>>
@@ -23,8 +24,7 @@
             [<a href="javascript:;" onclick="$('#path').val('<?php echo $pathtype_id;?>');"><?php echo $pathtype_id;?></a>]
             [<a href="javascript:;" onclick="$('#path').val('<?php echo $pathtype_date;?>');"><?php echo $pathtype_date;?></a>]
             <?php endif;?>
-            [<a href="javascript:;" onclick="$('#path').EnglistTitle('#title');">English Title</a>]
-            [<a href="javascript:;" onclick="$('#path').val('<?php echo $module->L('common/pinyin');?>');"><?php echo $module->L('common/pinyin');?></a>]
+            [<a href="javascript:;" onclick="$('#path').val(CC2PY($('#title').val())+'<?php echo C('HTML_URL_SUFFIX');?>');">To English</a>]
             [<a href="javascript:;" onclick="$('#path').val('MD5');">MD5</a>]
         </p>
         <?php echo $module->outHTML;?>

@@ -35,23 +35,20 @@ class Tags extends Lazy{
         $this->_inValue = array();
     }
     // read *** *** www.LazyCMS.net *** ***
-    public function read($l1,$l2){
+    public function read($l1,$l2=null){
         //$l1:外部模板  $l2:内部模板
-        $l3 = LAZY_PATH.C('TEMPLATE_PATH');
+        $l3 = LAZY_PATH;
         $l4 = C('TEMPLATE_DEF');
-        $l5 = $l3.'/'.$l1;
-        $l5 = is_file($l5) ? $l5 : $l3.'/'.$l4;
-        $l6 = loadFile($l5);
+        $l5 = $l3.$l1;
+        $l5 = is_file($l5) ? $l5 : $l3.C('TEMPLATE_PATH').'/'.$l4;
+        $l6 = loadFile($l5); $l7 = null;
         if (strlen($l2)!==0) {
-            $l7 = $l3.'/inside/'.$l2;
-            if (!is_file($l7)) {
-                $I2 = explode('/',$l2);
-                $l7 = $l3.'/inside/'.$I2[0].'/'.$l4;
+            if (is_file($l2)) {
+                $l7 = loadFile($l2);
             }
-            $l8 = loadFile($l7);
         }
-        $l9 = !$l2 ? $l6 : replace('/(\{lazy:)(inside) {0,}?(\/\})/i',$l8,$l6);
-        return $this->format($l9);
+        $l8 = empty($l7) ? $l6 : replace('/(\{lazy:)(inside) {0,}?(\/\})/i',$l7,$l6);
+        return $this->format($l8);
     }
     // value *** *** www.LazyCMS.net *** ***
     public function value($l1,$l2){
@@ -64,6 +61,19 @@ class Tags extends Lazy{
         if (preg_match_all('/\{lazy\:(.+?[^{])\/\}|\{lazy\:(.+?)\}((.|\n)+?)\{\/lazy\}/i',$I1,$I2)) {
             foreach ($I2[0] as $v) {
                 $I1 = str_replace($v,$this->parseTags($v),$I1); 
+            }
+        }
+        return $I1;
+    }
+    // createhtm *** *** www.LazyCMS.net *** ***
+    public function createhtm($l1,$l2=null){
+        $I1 = $l1;
+        if (!empty($l2)) { $this->_inValue = $l2; }
+        if (preg_match_all('/(\(lazy\:).+?[^(](\/\))/i',$I1,$I2)) {
+            foreach ($I2[0] as $v) {
+                if (strpos($I1,$v)!==false){
+                    $I1 = str_replace($v,$this->parseTags($v),$I1); 
+                }
             }
         }
         return $I1;
@@ -195,8 +205,23 @@ class Tags extends Lazy{
         }
         return $I1;
     }
+    // getList *** *** www.LazyCMS.net *** ***
+    public function getList($l1,$l2,$l3){
+        $l4 = null;
+        if (preg_match('/(\{lazy:'.$l2.').+?type="list".{0,}?(\})(.|\n)+?\{\/lazy\}/i',$l1,$I2)) {
+            $l4 = $I2[0];
+        }
+        if ($l3===0) {
+            $l5 = sect($l4,'(\})','(\{\/lazy\})','');
+        } elseif ($l3===1){
+            $l5 = $l4;
+        } else{
+            $l5 = $this->getLabel($l4,$l3);
+        }
+        return $l5;
+    }
     // getLabel *** *** www.LazyCMS.net *** ***
-    static function getLabel($l1,$l2){
+    public function getLabel($l1,$l2){
         if ($l2===0) {
             $I1 = sect($l1,'(\})','(\{\/lazy\})','');
         } else {

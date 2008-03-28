@@ -65,6 +65,11 @@ class LazyArchives extends LazyCMS{
         $tpl = getTpl($this);
         $tpl->display('index.php');
     }
+    // _showsort *** *** www.LazyCMS.net *** ***
+    function _showsort(){
+        $sortid = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : null;
+        echo Archives::viewSort($sortid);
+    }
     // _editsort *** *** www.LazyCMS.net *** ***
     function _editsort(){
         $this->checker('archives');
@@ -233,13 +238,13 @@ class LazyArchives extends LazyCMS{
         $dp->td  = 'ison(K[2])';
         $dp->td  = 'ison(K[3])';
         $dp->td  = 'ison(K[4])';
-        $dp->td  = !C('SITE_MODE') ? "isExist(K[0],K[8],'create:".C('SITE_BASE')."' + K[6]) + K[6]" : "browse(K[9]) + K[9]";
+        $dp->td  = !C('SITE_MODE') ? "isExist(K[0],K[8],'create:".C('SITE_BASE')."' + K[6])" : "browse(K[9])";
         $dp->td  = 'K[7]';
         $dp->td  = "ico('edit','".url('Archives','Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."') + updown('up',K[0],0) + updown('down',K[0],0)";
         $dp->open();
         $dp->thead  = '<tr><th>'.$this->L('list/id').') '.$this->L('list/title').'</th><th>'.$this->L('list/show').'</th><th>'.$this->L('list/commend').'</th><th>'.$this->L('list/top').'</th><th>'.$this->L('list/path').'</th><th>'.$this->L('list/date').'</th><th>'.$this->L('list/action').'</th></tr>';
         while ($data = $dp->result()) {
-            $dp->tbody = "ll(".$data['id'].",'".t2js(htmlencode($data['title']))."',".$data['show'].",".$data['commend'].",".$data['top'].",'".t2js(htmlencode($data['img']))."','".t2js(htmlencode($model['sortpath'].'/'.$data['path']))."','".date('Y-m-d H:i:s',$data['date'])."',".(file_exists(LAZY_PATH.$data['sortpath'].'/'.$data['path']) ? 1 : 0).",'".Archives::showArchive($data['id'])."');";
+            $dp->tbody = "ll(".$data['id'].",'".t2js(htmlencode($data['title']))."',".$data['show'].",".$data['commend'].",".$data['top'].",'".t2js(htmlencode($data['img']))."','".t2js(htmlencode($model['sortpath'].'/'.$data['path']))."','".date('Y-m-d H:i:s',$data['date'])."',".(file_exists(LAZY_PATH.$data['sortpath'].'/'.$data['path']) ? 1 : 0).",'".Archives::showArchive($data['id'],$model)."');";
         }
         $dp->close();
 
@@ -254,7 +259,6 @@ class LazyArchives extends LazyCMS{
     // _edit *** *** www.LazyCMS.net *** ***
     function _edit(){
         $this->checker('archives');
-
         $db  = getConn();
         $tpl = getTpl($this);
         $aid = isset($_REQUEST['aid']) ? (int)$_REQUEST['aid'] : null;
@@ -262,9 +266,9 @@ class LazyArchives extends LazyCMS{
         $show    = isset($_POST['show'])     ? $_POST['show'] : true;
         $commend = isset($_POST['commend'])  ? $_POST['commend'] : null;
         $top     = isset($_POST['top'])      ? $_POST['top'] : null;
-        $snapimg = isset($_POST['snapimg'])  ? $_POST['snapimg'] : true;
-        $upsort  = isset($_POST['upsort'])   ? $_POST['upsort'] : null;
-        $checktitle = isset($_POST['checktitle']) ? $_POST['checktitle'] : null;
+        $snapimg = isset($_POST['snapimg'])  ? $_POST['snapimg'] : false;
+        $upsort  = isset($_POST['upsort'])   ? $_POST['upsort'] : true;
+        $checktitle = isset($_POST['checktitle']) ? $_POST['checktitle'] : true;
 
         $title = isset($_POST['title']) ? $_POST['title'] : null;
         $img   = isset($_POST['img'])   ? $_POST['img'] : null;
@@ -311,6 +315,9 @@ class LazyArchives extends LazyCMS{
         ));
         if ($this->method()) {
             if ($this->validate()) {
+                if ($path=='MD5') {
+                    $path = md5(salt(10).$maxid).C('HTML_URL_SUFFIX');
+                }
                 if (empty($aid)) { // insert
                     $row = array(
                         'order'   => (int)$maxid,

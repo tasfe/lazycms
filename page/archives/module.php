@@ -48,6 +48,18 @@ class Archives{
             return array();
         }
     }
+    // getFields *** *** www.LazyCMS.net *** ***
+    static function getFields($l1){
+        $modeid = $l1;
+        $fields = array();
+        $db    = getConn();
+        $where = $db->quoteInto('WHERE `modelid` = ?',$modeid);
+        $res   = $db->query("SELECT * FROM `#@_fields` {$where};");
+        while ($data = $db->fetch($res)) {
+            $fields[] = $data['fieldename'];
+        }
+        return $fields;
+    }
     // __sort *** *** www.LazyCMS.net *** ***
     static function __sort($l1,$l2,$l3=0,$l4=null){
         // $l1:sortid, $l2:current sortid, $l3:Space, $l4:selected
@@ -96,7 +108,7 @@ class Archives{
         $res    = $db->query("SELECT `sortpath` FROM `#@_sort` {$where}");
         if ($data = $db->fetch($res,0)) {
             if (C('SITE_MODE')) {
-                return url('Archives','ShowSort','sortid='.$l1);
+                return url('Archives','ShowSort','sortid='.$sortid);
             } else {
                 return C('SITE_BASE').$data[0];
             }
@@ -122,14 +134,74 @@ class Archives{
         }
     }
     // viewSort *** *** www.LazyCMS.net *** ***
-    static function viewSort($l1){
-        $sortid = $l1;
+    static function viewSort($l1,$page=1){
+        $sortid = $l1; $tmpList = null;
         $db     = getConn();
-        return $sortid;
+        $model  = self::getModel($sortid);
+        $fields = self::getFields($model['modelid']);
+
+        $path = self::showSort($sortid);
+        $tag  = O('Tags');
+        $HTML = $tag->read($model['sorttemplate1'],$model['sorttemplate2']);
+        $HTMList = $tag->getList($HTML,$model['modelename'],1);
+        $jsHTML  = $tag->getLabel($HTMList,0);
+        $jsOrder = $tag->getLabel($HTMList,'order');
+        $jsOrder = strtoupper($jsOrder)=='ASC' ? 'ASC' : 'DESC';
+        $jsNumber= floor($tag->getLabel($HTMList,'number'));
+        $zebra   = $tag->getLabel($HTMList,'zebra');
+        $rand    = chr(3).salt(20).chr(2);//随机出来的替换参数
+        $randpl  = chr(3).salt(16).chr(2);
+
+        // 把 HTML 中的{lazy:...type=list/}标签替换为一个随机的标签；pagelist设置为一个随机标签
+        $HTML = str_replace($HTMList,$rand,$HTML);
+
+        // 替换模板中的标签
+        $tag->clear();
+        $tag->value('title',encode(htmlencode($model['sortname'])));
+        $tag->value('sortname',encode(htmlencode($model['sortname'])));
+        $tag->value('sortpath',encode($path));
+        $tag->value('path',encode($path));
+        $tag->value('keywords',encode(htmlencode($model['keywords'])));
+        $tag->value('description',encode(htmlencode($model['description'])));
+        $tag->value('pagelist',encode($randpl));
+        
+        $HTML = $tag->create($HTML);
+
+        $res = $db->query("SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` WHERE `a`.`sortid` = '{$sortid}' ORDER BY `a`.`order` {$jsOrder},`a`.`sortid` {$jsOrder};");
+        $i = 1;
+        while ($data = $db->fetch($res)) {
+            $tag->clear();
+            $tag->value('id',encode($data['id']));
+            $tag->value('sortid',encode($data['sortid']));
+            $tag->value('sortname',encode(htmlencode($data['sortname'])));
+            $tag->value('sortpath',encode($path));
+            $tag->value('title',encode(htmlencode($data['title'])));
+            $tag->value('path',encode(self::showArchive($data['id'],$model)));
+            $tag->value('date',encode($data['date']));
+            $tag->value('zebra',encode(fmod($zebra,$i) ? 1 : 0));
+            foreach ($fields as $k) {
+                $tag->value($k,encode($data[$k]));
+            }
+            $tmpList.= $tag->createhtm($jsHTML);
+            $i++;
+        }
+        $outHTML = str_replace($rand,$tmpList,$HTML);
+        return $outHTML;
     }
     // showArchive *** *** www.LazyCMS.net *** ***
-    static function showArchive($l1){
-        return url('Archives','ShowArchive','aid='.$l1);
+    static function showArchive($l1,$l2){
+        $aid   = $l1;
+        $model = $l2;
+        $db    = getConn();       
+        $where = $db->quoteInto("WHERE `b`.`id` = ?",$aid);
+        $res   = $db->query("SELECT `a`.`sortpath`,`b`.`path` FROM `#@_sort` AS `a` LEFT JOIN `".$model['maintable']."` AS `b` ON `a`.`sortid` = `b`.`sortid` {$where}");
+        if ($data = $db->fetch($res,0)) {
+            if (C('SITE_MODE')) {
+                return url('Archives','ShowArchive','aid='.$aid);
+            } else {
+                return C('SITE_BASE').$data[0].'/'.$data[1];
+            }
+        }
     }
     // isOpen *** *** www.LazyCMS.net *** ***
     static function isOpen($l1){
