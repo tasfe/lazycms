@@ -93,7 +93,7 @@ class LazyArchives extends LazyCMS{
             if ($this->validate()) {
                 if (empty($sortid)) { // insert
                     $row = array(
-                        'sortorder'     => $db->max('sortid','sort'),
+                        'sortorder'     => $db->max('sortid','#@_sort'),
                         'sortid1'       => $data[0],
                         'modelid'       => $data[1],
                         'sortname'      => $data[2],
@@ -229,13 +229,13 @@ class LazyArchives extends LazyCMS{
         $dp->action = url('Archives','Set');
         $dp->url = url('Archives','List','page=$');
         $dp->but = $dp->button().$dp->plist();
-        $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"".url('Archives','Edit','aid=$',"' + K[0] + '")."\">' + K[1] + '</a>'";
+        $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"".url('Archives','Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."\">' + K[1] + '</a>'";
         $dp->td  = 'ison(K[2])';
         $dp->td  = 'ison(K[3])';
         $dp->td  = 'ison(K[4])';
         $dp->td  = !C('SITE_MODE') ? "isExist(K[0],K[8],'create:".C('SITE_BASE')."' + K[6]) + K[6]" : "browse(K[9]) + K[9]";
         $dp->td  = 'K[7]';
-        $dp->td  = "ico('edit','".url('Archives','Edit','aid=$',"' + K[0] + '")."') + updown('up',K[0],0) + updown('down',K[0],0)";
+        $dp->td  = "ico('edit','".url('Archives','Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."') + updown('up',K[0],0) + updown('down',K[0],0)";
         $dp->open();
         $dp->thead  = '<tr><th>'.$this->L('list/id').') '.$this->L('list/title').'</th><th>'.$this->L('list/show').'</th><th>'.$this->L('list/commend').'</th><th>'.$this->L('list/top').'</th><th>'.$this->L('list/path').'</th><th>'.$this->L('list/date').'</th><th>'.$this->L('list/action').'</th></tr>';
         while ($data = $dp->result()) {
@@ -254,14 +254,15 @@ class LazyArchives extends LazyCMS{
     // _edit *** *** www.LazyCMS.net *** ***
     function _edit(){
         $this->checker('archives');
-        $db  = getConn();
+
+		$db  = getConn();
         $tpl = getTpl($this);
         $aid = isset($_REQUEST['aid']) ? (int)$_REQUEST['aid'] : null;
         
-        $show    = isset($_POST['show'])     ? $_POST['show'] : null;
+        $show    = isset($_POST['show'])     ? $_POST['show'] : true;
         $commend = isset($_POST['commend'])  ? $_POST['commend'] : null;
         $top     = isset($_POST['top'])      ? $_POST['top'] : null;
-        $snapimg = isset($_POST['snapimg'])  ? $_POST['snapimg'] : null;
+        $snapimg = isset($_POST['snapimg'])  ? $_POST['snapimg'] : true;
         $upsort  = isset($_POST['upsort'])   ? $_POST['upsort'] : null;
         $checktitle = isset($_POST['checktitle']) ? $_POST['checktitle'] : null;
 
@@ -324,11 +325,23 @@ class LazyArchives extends LazyCMS{
                     );
                     $db->insert($model['maintable'],$row);
                     $aid = $db->lastInsertId();
-                    $addrows = array_merge($getData,array('aid'=>$aid));
+                    $addrows = array_merge($formData,array('aid'=>$aid));
                     $db->insert($model['addtable'],$addrows);
                     redirect(url('Archives','List','sortid='.$sortid));
                 } else { // update
-                    
+                    $set = array(
+                        'title'   => (string)$title,
+                        'show'    => (int)$show,
+                        'commend' => (int)$commend,
+                        'top'     => (int)$top,
+                        'img'     => (string)$img,
+                        'path'    => (string)$path,
+                    );
+					$where = $db->quoteInto('`id` = ?',$aid);
+                    $db->update($model['maintable'],$set,$where);
+					$where = $db->quoteInto('`aid` = ?',$aid);
+					$db->update($model['addtable'],$formData,$where);
+					redirect(url('Archives','List','sortid='.$sortid));
                 }
             }
         } else {
@@ -370,6 +383,7 @@ class LazyArchives extends LazyCMS{
             'pathtype_id' => $maxid.C('HTML_URL_SUFFIX'),
             'pathtype_date' => date('Y/m/d/').$maxid,
             'upath' => C('UPFILE_PATH'),
+			'disabled' => !empty($aid) ? ' disabled="disabled"' : null,
             'menu'  => $menu,
         ));
         $tpl->display('edit.php');

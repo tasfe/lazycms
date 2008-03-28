@@ -247,6 +247,7 @@ jQuery.extend(jQuery.fn,{
 	},
 	browseFiles : function(l1){
 		var value  = this.val();
+			value = value.substr(0,7).toLowerCase() == 'http://' ? "" : value;
 		var vPath  = value.substr(0,value.lastIndexOf('/'));
 		var params = {from:this.attr('id')};
 		if (typeof arguments[2] != "undefined")	{
@@ -304,6 +305,25 @@ jQuery.extend(jQuery.fn,{
 			$(l1).val('');
 		}
 		return this;
+	},
+	EnglistTitle : function (l1){
+		var title = $(l1).val();
+		var regs = title.match(/[a-zA-Z0-9\- ]/ig);
+		if (regs!=null) {
+			var result = '';
+			for (var i=0;i<regs.length;i++) {
+				result += regs[i];
+			}
+			if (result.length>0) {
+				result = result.replace(/ /g,'-');
+				while (result.search(/--/g)>0) {
+					result = result.replace(/--/g,'-');
+				}
+				this.val(result);
+			}
+		}else {
+			this.val(title);	
+		}
 	}
 });
 // inputValue *** *** www.LazyCMS.net *** ***

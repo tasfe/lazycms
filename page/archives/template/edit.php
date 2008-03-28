@@ -4,7 +4,7 @@
 <div class="content">
     <form action="<?php echo url('Archives','Edit');?>" method="post" class="lz_form">
         <p><label><?php echo $module->L('label/archive/sort');?></label>
-            <select name="sortid" id="sortid" onchange="$(this).jump('<?php echo url('Archives','Edit','sortid=$');?>');">
+            <select name="sortid" id="sortid" onchange="$(this).jump('<?php echo url('Archives','Edit','sortid=$');?>');"<?php echo $disabled;?>>
                 <?php echo Archives::__sort(0,0,0,$sortid);?>
             </select>
         </p>
@@ -19,14 +19,17 @@
         <p><label><?php echo $module->L('label/archive/title');?></label><input class="in4" type="text" id="title" name="title" maxlength="255" value="<?php echo $title;?>" /></p>
         <p><label><?php echo $module->L('label/archive/img');?></label><input class="in4" type="text" id="img" name="img" maxlength="255" value="<?php echo $img;?>" />&nbsp;<button type="button" onclick="$('#img').browseFiles('<?php echo url('System','browseFiles');?>','<?php echo $upath;?>',true);"><?php echo L('common/browse');?></button></p>
         <p><label><?php echo $module->L('label/archive/path');?></label><input class="in4" type="text" id="path" name="path" maxlength="255" value="<?php echo $path;?>" />
+			<?php if (empty($aid)):?>
             [<a href="javascript:;" onclick="$('#path').val('<?php echo $pathtype_id;?>');"><?php echo $pathtype_id;?></a>]
             [<a href="javascript:;" onclick="$('#path').val('<?php echo $pathtype_date;?>');"><?php echo $pathtype_date;?></a>]
-            [<a href="javascript:;" onclick="$('#path').val('English-Title');">English Title</a>]
+			<?php endif;?>
+            [<a href="javascript:;" onclick="$('#path').EnglistTitle('#title');">English Title</a>]
             [<a href="javascript:;" onclick="$('#path').val('<?php echo $module->L('common/pinyin');?>');"><?php echo $module->L('common/pinyin');?></a>]
             [<a href="javascript:;" onclick="$('#path').val('MD5');">MD5</a>]
 	    </p>
         <?php echo $module->outHTML;?>
-        <input name="aid" type="hidden" id="aid" value="<?php echo $aid;?>" />
+        <input name="aid" type="hidden" value="<?php echo $aid;?>" />
+		<?php if (!empty($aid)):?><input name="sortid" type="hidden" value="<?php echo $sortid;?>" /><?php endif;?>
         <?php echo $module->but('submit');?>
     </form>
 </div>

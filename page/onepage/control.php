@@ -143,7 +143,7 @@ class LazyOnepage extends LazyCMS{
                 if (empty($oneid)) { // insert
                     $num = $db->count("SELECT `oneid` FROM `#@_onepage` WHERE 1");
                     $row = array(
-                        'oneorder'       => $db->max('oneid','onepage'),
+                        'oneorder'       => $db->max('oneid','#@_onepage'),
                         'onename'        => $data[0],
                         'onetitle'       => $data[1],
                         'onepath'        => $data[2],

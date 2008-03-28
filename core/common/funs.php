@@ -138,6 +138,36 @@ function xmlcode($l1,$l2='utf-8',$l3="lazycms") {
 	return $I1;
 }
 
+// pinyin *** *** www.LazyCMS.net *** ***
+function pinyin($l1){
+	static $I3 = null; $I1 = null;
+	preg_match_all(C('CN_PATTERN'),trim($l1),$I2);
+	$l2 = $I2[0]; $l3 = count($l2);
+	if (empty($I3)) {
+		$I3 = include CORE_PATH."/common/pinyin.php";
+	}
+	for ($i=0;$i<$l3;$i++) {
+		if (validate($l2[$i],'^\w+$')){
+			$I1.= $l2[$i];
+		} elseif (!array_search_value($l2[$i],$I3)) {
+			$I1.= '-';
+		} else {
+			$I1.= ucfirst(array_search_value($l2[$i],$I3));
+		}
+	}
+	return $I1;
+}
+
+// array_search_value *** *** www.LazyCMS.net *** ***
+function array_search_value($l1,$l2){
+	while (list($k,$v)=each($l2)) {
+		if (strpos($v,$l1)!==false)	{
+			return $k;
+		}
+	}
+	return false;
+}
+
 // data2xml *** *** www.LazyCMS.net *** ***
 function data2xml($l1) {
     // $l1:object or array
@@ -173,7 +203,7 @@ function len($l1){
     } elseif (function_exists('iconv_strlen')){
         return iconv_strlen($l1,'utf-8');
     } else {
-        preg_match_all("/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|\xe0[\xa0-\xbf][\x80-\xbf]|[\xe1-\xef][\x80-\xbf][\x80-\xbf]|\xf0[\x90-\xbf][\x80-\xbf][\x80-\xbf]|[\xf1-\xf7][\x80-\xbf][\x80-\xbf][\x80-\xbf]/",$l1,$I2);
+        preg_match_all(C('CN_PATTERN'),$l1,$I2);
         return count($I2[0]);
     }
 }
@@ -350,7 +380,7 @@ function cnsubstr($l1,$l2){
     } elseif (function_exists('iconv_substr')){
         return iconv_substr($l1,$l3,$l4,'utf-8');
     } else {
-        preg_match_all("/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|\xe0[\xa0-\xbf][\x80-\xbf]|[\xe1-\xef][\x80-\xbf][\x80-\xbf]|\xf0[\x90-\xbf][\x80-\xbf][\x80-\xbf]|[\xf1-\xf7][\x80-\xbf][\x80-\xbf][\x80-\xbf]/",$l1,$I2);
+        preg_match_all(C('CN_PATTERN'),$l1,$I2);
         if (count($I2[0]) - $l3 > $l4) {
             return implode('',array_slice($I2[0],$l3,$l4));
         }
