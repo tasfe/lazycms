@@ -131,58 +131,58 @@ function salt($l1=6){
 // xmlcode *** *** www.LazyCMS.net *** ***
 function xmlcode($l1,$l2='utf-8',$l3="lazycms") {
     // $l1:data, $l2:encoding, $l3:root
-	$I1 = '<?xml version="1.0" encoding="'.$l2.'"?>';
-	$I1.= '<'.$l3.'>';
-	$I1.= data2xml($l1);   
-	$I1.= '</'.$l3.'>'; 
-	return $I1;
+    $I1 = '<?xml version="1.0" encoding="'.$l2.'"?>';
+    $I1.= '<'.$l3.'>';
+    $I1.= data2xml($l1);   
+    $I1.= '</'.$l3.'>'; 
+    return $I1;
 }
 
 // pinyin *** *** www.LazyCMS.net *** ***
 function pinyin($l1){
-	static $I3 = null; $I1 = null;
-	preg_match_all(C('CN_PATTERN'),trim($l1),$I2);
-	$l2 = $I2[0]; $l3 = count($l2);
-	if (empty($I3)) {
-		$I3 = include CORE_PATH."/common/pinyin.php";
-	}
-	for ($i=0;$i<$l3;$i++) {
-		if (validate($l2[$i],'^\w+$')){
-			$I1.= $l2[$i];
-		} elseif (!array_search_value($l2[$i],$I3)) {
-			$I1.= '-';
-		} else {
-			$I1.= ucfirst(array_search_value($l2[$i],$I3));
-		}
-	}
-	return $I1;
+    static $I3 = null; $I1 = null;
+    preg_match_all(C('CN_PATTERN'),trim($l1),$I2);
+    $l2 = $I2[0]; $l3 = count($l2);
+    if (empty($I3)) {
+        $I3 = include CORE_PATH."/common/pinyin.php";
+    }
+    for ($i=0;$i<$l3;$i++) {
+        if (validate($l2[$i],'^\w+$')){
+            $I1.= $l2[$i];
+        } elseif (!array_search_value($l2[$i],$I3)) {
+            $I1.= '-';
+        } else {
+            $I1.= ucfirst(array_search_value($l2[$i],$I3));
+        }
+    }
+    return $I1;
 }
 
 // array_search_value *** *** www.LazyCMS.net *** ***
 function array_search_value($l1,$l2){
-	while (list($k,$v)=each($l2)) {
-		if (strpos($v,$l1)!==false)	{
-			return $k;
-		}
-	}
-	return false;
+    while (list($k,$v)=each($l2)) {
+        if (strpos($v,$l1)!==false) {
+            return $k;
+        }
+    }
+    return false;
 }
 
 // data2xml *** *** www.LazyCMS.net *** ***
 function data2xml($l1) {
     // $l1:object or array
-	if(is_object($l1)) {
-		$l1 = get_object_vars($l1);
-	}
-	$I1 = null;
-	foreach($l1 as $k=>$v) {
-		is_numeric($k) && $k="item id=\"{$k}\"";
-		$I1.= "<{$k}>";
-		$I1.= (is_array($v)||is_object($v)) ? data2xml($v) : ((strlen($v)>0 && is($v)) ? "<![CDATA[{$v}]]>" : $v);
-		list($k,) = explode(' ',$k);
-		$I1.= "</{$k}>";
-	}
-	return $I1;
+    if(is_object($l1)) {
+        $l1 = get_object_vars($l1);
+    }
+    $I1 = null;
+    foreach($l1 as $k=>$v) {
+        is_numeric($k) && $k="item id=\"{$k}\"";
+        $I1.= "<{$k}>";
+        $I1.= (is_array($v)||is_object($v)) ? data2xml($v) : ((strlen($v)>0 && is($v)) ? "<![CDATA[{$v}]]>" : $v);
+        list($k,) = explode(' ',$k);
+        $I1.= "</{$k}>";
+    }
+    return $I1;
 }
 
 // is *** *** www.LazyCMS.net *** ***
@@ -1199,7 +1199,7 @@ function M($l1=null,$l2=null,$l3=null) {
 function O($l1,$l2='system'){
     // $l1:className, $l2:path
     static $_I1 = array();
-	$l1 = strtolower($l1);
+    $l1 = strtolower($l1);
     if(isset($_I1[$l1])) { return $_I1[$l1]; }
     // 导入类文件
     import("{$l2}.{$l1}");

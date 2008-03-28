@@ -255,7 +255,7 @@ class LazyArchives extends LazyCMS{
     function _edit(){
         $this->checker('archives');
 
-		$db  = getConn();
+        $db  = getConn();
         $tpl = getTpl($this);
         $aid = isset($_REQUEST['aid']) ? (int)$_REQUEST['aid'] : null;
         
@@ -337,11 +337,11 @@ class LazyArchives extends LazyCMS{
                         'img'     => (string)$img,
                         'path'    => (string)$path,
                     );
-					$where = $db->quoteInto('`id` = ?',$aid);
+                    $where = $db->quoteInto('`id` = ?',$aid);
                     $db->update($model['maintable'],$set,$where);
-					$where = $db->quoteInto('`aid` = ?',$aid);
-					$db->update($model['addtable'],$formData,$where);
-					redirect(url('Archives','List','sortid='.$sortid));
+                    $where = $db->quoteInto('`aid` = ?',$aid);
+                    $db->update($model['addtable'],$formData,$where);
+                    redirect(url('Archives','List','sortid='.$sortid));
                 }
             }
         } else {
@@ -383,7 +383,7 @@ class LazyArchives extends LazyCMS{
             'pathtype_id' => $maxid.C('HTML_URL_SUFFIX'),
             'pathtype_date' => date('Y/m/d/').$maxid,
             'upath' => C('UPFILE_PATH'),
-			'disabled' => !empty($aid) ? ' disabled="disabled"' : null,
+            'disabled' => !empty($aid) ? ' disabled="disabled"' : null,
             'menu'  => $menu,
         ));
         $tpl->display('edit.php');

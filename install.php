@@ -221,19 +221,19 @@ body,th,td,p{ line-height:150%; font-family:Verdana; font-size:12px; color:#3333
 
 .lz_form h2{ color:#193441; font-size:130%; padding:0px 0px 5px 0px; margin:10px 0px 10px 0px; border-bottom: 1px dashed #E0E0E0;}
 .lz_form .table{ width:100%; border-collapse:collapse; margin:3px auto; }
-	.lz_form .table th ,
-	.lz_form .table td{ padding:3px; padding-bottom:2px;}
-	.lz_form .table th{ background:#F5F5F5; border-style:solid; border-width:1px; border-color:#CECECE #A8A8A8 #A8A8A8 #CECECE; color:#193441; letter-spacing:1px;}
-	.lz_form .table td{ border:solid 1px #CECECE;}
-	
+    .lz_form .table th ,
+    .lz_form .table td{ padding:3px; padding-bottom:2px;}
+    .lz_form .table th{ background:#F5F5F5; border-style:solid; border-width:1px; border-color:#CECECE #A8A8A8 #A8A8A8 #CECECE; color:#193441; letter-spacing:1px;}
+    .lz_form .table td{ border:solid 1px #CECECE;}
+    
 .lz_form .license h4{ margin:0;padding:0; font-size:14px;}
-	.lz_form .license p{ margin:5px 0px;}
-	.lz_form .license blockquote{margin-left:10px;}
+    .lz_form .license p{ margin:5px 0px;}
+    .lz_form .license blockquote{margin-left:10px;}
 
 .lz_form .say{ width:97%; border:solid 1px #712704; padding:3px 1%; margin:10px auto; background:#FCFC8A; text-align:center; color:#0000FF;}
 .lz_form label.error{ display:block; color:#993300; clear:both; cursor:pointer; padding-top:2px;}
 .lz_form .button{ width:100%; text-align:center; margin:10px auto; display:table;}
-	.lz_form .button button{ margin-right:6px; letter-spacing:3px; padding:1px 2px; border:1px solid; border-color:#EEE #777 #777 #EEE; background:#D4D0C8; font-size:12px; line-height:100%; vertical-align:middle;}
+    .lz_form .button button{ margin-right:6px; letter-spacing:3px; padding:1px 2px; border:1px solid; border-color:#EEE #777 #777 #EEE; background:#D4D0C8; font-size:12px; line-height:100%; vertical-align:middle;}
 
 /* 表单长度设置 */
 .in0{ width:50px;border:solid 1px #7F9DB9;}
@@ -267,7 +267,7 @@ body,th,td,p{ line-height:150%; font-family:Verdana; font-size:12px; color:#3333
       <th>网站模式</th>
       <td><input type="radio" name="sitemode" id="sitemode_true" value="1"<?php echo $sitemode ? ' checked="checked"' : null;?>/><label for="sitemode_true">全站动态</label>
           <input name="sitemode" id="sitemode_false" type="radio" value="0"<?php echo !$sitemode ? ' checked="checked"' : null;?> /><label for="sitemode_false">全站静态</label>
-	  </td>
+      </td>
     </tr>
     <tr>
       <th>数据表前缀</th>
@@ -327,7 +327,7 @@ body,th,td,p{ line-height:150%; font-family:Verdana; font-size:12px; color:#3333
   </table>
   <div class="button">
     <input name="agree" type="hidden" id="agree" value="<?php echo $agree;?>" />
-	<input name="install" type="hidden" id="install" value="1" />
+    <input name="install" type="hidden" id="install" value="1" />
     <button type="submit"> 安 装 </button>
     <button type="button" onclick="javascript:self.location.href='install.php';"> 返 回 </button>
   </div>

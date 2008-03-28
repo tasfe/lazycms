@@ -61,7 +61,7 @@ if (is_file(RUNTIME_PATH.'/~runtime.php')) {
     // 加载调度器
     import("system.dispatcher");
     // 是否生成核心缓存
-	$cache = ( !defined('CACHE_RUNTIME') || CACHE_RUNTIME == true );
+    $cache = ( !defined('CACHE_RUNTIME') || CACHE_RUNTIME == true );
     if ($cache) {
         // 生成核心文件的缓存 去掉文件空白以减少大小
         $_I1  = php_strip_whitespace(CORE_PATH.'/common/defines.php');

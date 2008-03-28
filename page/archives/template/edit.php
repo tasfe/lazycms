@@ -19,17 +19,17 @@
         <p><label><?php echo $module->L('label/archive/title');?></label><input class="in4" type="text" id="title" name="title" maxlength="255" value="<?php echo $title;?>" /></p>
         <p><label><?php echo $module->L('label/archive/img');?></label><input class="in4" type="text" id="img" name="img" maxlength="255" value="<?php echo $img;?>" />&nbsp;<button type="button" onclick="$('#img').browseFiles('<?php echo url('System','browseFiles');?>','<?php echo $upath;?>',true);"><?php echo L('common/browse');?></button></p>
         <p><label><?php echo $module->L('label/archive/path');?></label><input class="in4" type="text" id="path" name="path" maxlength="255" value="<?php echo $path;?>" />
-			<?php if (empty($aid)):?>
+            <?php if (empty($aid)):?>
             [<a href="javascript:;" onclick="$('#path').val('<?php echo $pathtype_id;?>');"><?php echo $pathtype_id;?></a>]
             [<a href="javascript:;" onclick="$('#path').val('<?php echo $pathtype_date;?>');"><?php echo $pathtype_date;?></a>]
-			<?php endif;?>
+            <?php endif;?>
             [<a href="javascript:;" onclick="$('#path').EnglistTitle('#title');">English Title</a>]
             [<a href="javascript:;" onclick="$('#path').val('<?php echo $module->L('common/pinyin');?>');"><?php echo $module->L('common/pinyin');?></a>]
             [<a href="javascript:;" onclick="$('#path').val('MD5');">MD5</a>]
-	    </p>
+        </p>
         <?php echo $module->outHTML;?>
         <input name="aid" type="hidden" value="<?php echo $aid;?>" />
-		<?php if (!empty($aid)):?><input name="sortid" type="hidden" value="<?php echo $sortid;?>" /><?php endif;?>
+        <?php if (!empty($aid)):?><input name="sortid" type="hidden" value="<?php echo $sortid;?>" /><?php endif;?>
         <?php echo $module->but('submit');?>
     </form>
 </div>
