@@ -182,6 +182,8 @@ class LazyOnepage extends LazyCMS{
                 }    
             }
         }
+        $tplPath = C('TEMPLATE_PATH');
+        $tplDef  = C('TEMPLATE_DEF');
         $tpl->assign(array(
             'oneid'          => $oneid,
             'onename'        => htmlencode($data[0]),
@@ -190,8 +192,8 @@ class LazyOnepage extends LazyCMS{
             'onecontent'     => htmlencode($data[3]),
             'onekeyword'     => htmlencode($data[4]),
             'onedescription' => htmlencode($data[5]),
-            'onetemplate1'   => $data[6],
-            'onetemplate2'   => $data[7],
+            'onetemplate1'   => !empty($data[6]) ? $data[6] : "{$tplPath}/{$tplDef}",
+            'onetemplate2'   => !empty($data[7]) ? $data[7] : "{$tplPath}/inside/onepage/{$tplDef}",
             'menu'           => $menu,
         ));
         $tpl->display('edit.php');

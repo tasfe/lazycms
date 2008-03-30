@@ -30,9 +30,8 @@ defined('CORE_PATH') or die('Restricted access!');
 class Onepage{
     // index *** *** www.LazyCMS.net *** ***
     static function index(){
-        $db = getConn();
-        $where = $db->quoteInto('WHERE `ishome` = ?',1);
-        $res   = $db->query("SELECT `oneid` FROM `#@_onepage` {$where}");
+        $db  = getConn();
+        $res = $db->query("SELECT `oneid` FROM `#@_onepage` WHERE `ishome` = '1'");
         if ($data = $db->fetch($res,0)) {
             echo self::view($data[0]);
         } else {
@@ -49,7 +48,7 @@ class Onepage{
         $res   = $db->query("SELECT {$sql} FROM `#@_onepage` {$where}");
         if ($data = $db->fetch($res,0)) {
             $tag  = O('Tags');
-            $HTML = $tag->read($data[6],'onepage/'.$data[7]);
+            $HTML = $tag->read($data[6],$data[7]);
             $tag->clear();
             $tag->value('name',encode(htmlencode($data[0])));
             $tag->value('title',encode(htmlencode($data[1])));
