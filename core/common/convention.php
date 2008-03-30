@@ -41,9 +41,10 @@ return array(
     'SITE_MODE'  => false,           // 网站模式，true 动态模式，false静态模式
     'SITE_INDEX' => 'index.html',    // 默认首页，填写服务器可以支持的默认首页即可
 
-    /* 上传路径 */
-    'UPFILE_PATH'   => 'up_files',
-    'UPFILE_SUFFIX' => 'png,gif,jpg,jpeg,bmp',
+    /* 上传设置 */
+    'UPFILE_PATH'       => 'up_files', // 上传文件夹
+    'UPFILE_SUFFIX'     => 'png,gif,jpg,jpeg,bmp', // 上传允许的后缀名
+    'UPFILE_PATH_STYLE' => 'Y-m-d', // 图片保存路径风格，参考date函数参数
 
     /* 数据库设置 */
     'DSN_CONFIG' => 'mysql://root:123456@localhost:3306/lazycms', // 支持数组

@@ -129,8 +129,7 @@ class Label extends Lazy{
                 ));
                 break;
             case 'editor': 
-                $I1 = '<span><input type="checkbox" name="setfirst" id="setfirst" onclick="$(this).setFirst(\'#img\',\''.$_SERVER["HTTP_HOST"].C('SITE_BASE').'\');" /><label for="setfirst">设第一幅图为缩略图</label></span>';
-                $I1.= $module->editor($data['fieldename'],$default);
+                $I1 = $module->editor($data['fieldename'],$default);
                 break;
             case 'date': 
                 try{

@@ -10,6 +10,7 @@
     <common>
         <root>根目录</root>
         <addpage>添加文档</addpage>
+        <editpage>编辑文档</editpage>
         <addsort>添加分类</addsort>
         <editsort>编辑分类</editsort>
         <create>全部生成</create>
@@ -61,7 +62,8 @@
             <upsort>更新列表</upsort>
             <checktitle>检查标题是否重复</checktitle>
             <title>标题</title>
-            <img>图片 (若写远程路径，自动抓取图片保存到本地)</img>
+            <img>缩略图 (若写远程路径，自动抓取图片保存到本地)</img>
+            <setimg>设第一幅图为缩略图</setimg>
             <path>路径 (不支持特殊符号；不建议输入纯数字，以免覆盖列表)</path>
         </archive>
         

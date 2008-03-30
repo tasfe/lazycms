@@ -442,13 +442,66 @@ function validate($l1,$l2){
             $l3 = "^[0-9\,\.]+$";
             break;
         case '7' : // 图片连接 http://www.example.com/xxx.jpg
-            $l3 = "^(http|https|ftp):(\/\/|\\\\)(([\w\/\\\+\-~`@:%])+\.)+([\w\/\\\.\=\?\+\-~`@\':!%#]|(&amp;)|&)+\.(jpg|jpeg|png|gif)$";
+            $l4 = str_replace(',','|',C('UPFILE_SUFFIX'));
+            $l3 = "^(http|https|ftp):(\/\/|\\\\)(([\w\/\\\+\-~`@:%])+\.)+([\w\/\\\.\=\?\+\-~`@\':!%#]|(&amp;)|&)+\.({$l4})$";
             break;
         default  : // 自定义正则
             $l3 = $l2;
             break;
     }
     return preg_match("/{$l3}/i",$l1);
+}
+
+// snapImg *** *** www.LazyCMS.net *** ***
+function snapImg($l1){
+    $I1 = $l1;
+    if (preg_match_all('/<img.[^>]*src="(.[^>]+?)".[^>]*\/>/i',$l1,$imgs)) {
+        foreach ($imgs[1] as $img) {
+            if ($downImg = downPic($img)) {
+                $I1 = str_replace($img,C('SITE_BASE').ltrim($downImg,'/'),$I1);
+            }
+        }
+    }
+    return $I1;
+}
+
+// downPic *** *** www.LazyCMS.net *** ***
+function downPic($img,$path=null){
+    static $d = null;
+    if (validate($img,7)) {
+        if (!is_object($d)) {
+            import("system.downloader");
+            $d = new DownLoader();
+            $d->timeout = 100;
+        }
+        $d->connect($img,'GET',$d->timeout)->send();
+        if ($d->status() == 200) {
+            if (empty($path)) {
+                $imgInfo = pathinfo($img);
+                $imgPath = C('UPFILE_PATH').date('/'.C('UPFILE_PATH_STYLE').'/',now());
+                if (isset($imgInfo['extension']) && isset($imgInfo['filename'])) {
+                    $fileName = $imgInfo['filename'].'.'.$imgInfo['extension'];
+                    if (is_file(LAZY_PATH.$imgPath.$fileName)) {
+                        $fileName = salt(16).'.'.$imgInfo['extension'];
+                    }
+                } else {
+                    if(preg_match("/Content-Type\:(.+)\r\n/i",$d->header(),$imgInfo)){
+                        $fileName = salt(16).'.'.substr($imgInfo[1],strrpos($imgInfo[1],'/')+1,strlen($imgInfo[1]));
+                    }
+                }
+            } else {
+                $imgInfo = pathinfo($path);
+                $imgPath = $imgInfo['dirname'];
+                $fileName = $imgInfo['basename'];
+            }
+            mkdirs(LAZY_PATH.$imgPath);
+            saveFile(LAZY_PATH.$imgPath.$fileName,$d->body());
+            return $imgPath.$fileName;
+        } else {
+            return false;
+        }
+    }
+    return $img;
 }
 
 // url *** *** www.LazyCMS.net *** ***
@@ -720,7 +773,8 @@ function check($l1){
             }
             break;
         default :
-            if (!validate($l2,$I2[3])) { $I1 = $l4; }
+            $l5 = isset($I2[3]) ? $I2[3] : null;
+            if (!validate($l2,$l5)) { $I1 = $l4; }
             break;
     }
     return $I1;

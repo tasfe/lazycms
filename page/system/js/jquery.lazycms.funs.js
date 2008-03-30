@@ -187,16 +187,6 @@ jQuery.extend(jQuery.fn,{
 		}
 		return this;
 	},
-	readonly : function(l1,l2){
-		if (typeof $(l1).attr('readonly') == "undefined" && typeof this.attr('checked') != "undefined") {
-			$(l1).val(l2);
-			$(l1).attr('readonly','true');
-		} else {
-			$(l1).val('');
-			$(l1).removeAttr('readonly');
-		}
-		return this;
-	},
 	selectType : function(l1){
 		var type  = $('option[@value='+this.val()+']',this).attr('type');$(l1).val(type);
 		var value = this.val();
@@ -284,35 +274,6 @@ jQuery.extend(jQuery.fn,{
 			$.post(l2,params,function(data){
 				obj.parents(l1).after(data);
 			});
-	},
-	setFirst : function(l1,l2){
-		if (this.attr("checked")) {
-			var editor = this.parent().parent().find('iframe[@src*=fckeditor.html]').parent().find('input:hidden').editor().html();
-				if (editor != "") {
-					var firstIMG = $('img:first',editor).attr('src');
-					if (typeof firstIMG != "undefined") {
-						firstIMG = firstIMG.replace('http://'+l2,'');
-						$(l1).val(firstIMG);
-					} else {
-						alert("Please insert a picture to the Editor!");
-						this.attr("checked",false);
-					}
-				} else {
-					alert("editor content is empty!");
-					this.attr("checked",false);
-				}
-		} else {
-			$(l1).val('');
-		}
-		return this;
-	},
-	toEnglish : function(l1,l2){
-		var title = $(l1).val();
-		if (title!="") {
-			this.val(CC2PY(title) + l2);
-		} else {
-			this.val('');
-		}
 	}
 });
 // inputValue *** *** www.LazyCMS.net *** ***

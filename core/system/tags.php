@@ -43,12 +43,13 @@ class Tags extends Lazy{
         $l5 = is_file($l5) ? $l5 : $l3.C('TEMPLATE_PATH').'/'.$l4;
         $l6 = loadFile($l5); $l7 = null;
         if (strlen($l2)!==0) {
-            if (is_file($l2)) {
-                $l7 = loadFile($l2);
+            $l7 = $l3.$l2;
+            if (is_file($l7)) {
+                $l8 = loadFile($l7);
             }
         }
-        $l8 = empty($l7) ? $l6 : replace('/(\{lazy:)(inside) {0,}?(\/\})/i',$l7,$l6);
-        return $this->format($l8);
+        $l9 = empty($l8) ? $l6 : replace('/(\{lazy:)(inside) {0,}?(\/\})/i',$l8,$l6);
+        return $this->format($l9);
     }
     // value *** *** www.LazyCMS.net *** ***
     public function value($l1,$l2){
@@ -144,7 +145,8 @@ class Tags extends Lazy{
     }
     // parse *** *** www.LazyCMS.net *** ***
     public function parseValue($l1){
-        return decode($this->_inValue[$l1]);
+        $I1 = isset($this->_inValue[$l1]) ? $this->_inValue[$l1] : null;
+        return decode($I1);
     }
     //parseAtt *** *** www.LazyCMS.net *** ***
     public function parseAtt($l1,$l2,$l3=true){

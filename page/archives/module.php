@@ -45,7 +45,7 @@ class Archives{
         if ($data = $db->fetch($res)) {
             return $data;
         } else {
-            return array();
+            return false;
         }
     }
     // getFields *** *** www.LazyCMS.net *** ***
@@ -108,7 +108,7 @@ class Archives{
         $res    = $db->query("SELECT `sortpath` FROM `#@_sort` {$where}");
         if ($data = $db->fetch($res,0)) {
             if (C('SITE_MODE')) {
-                return url('Archives','ShowSort','sortid='.$sortid);
+                return url(C('CURRENT_PATH'),'ShowSort','sortid='.$sortid);
             } else {
                 return C('SITE_BASE').$data[0];
             }
@@ -138,6 +138,7 @@ class Archives{
         $sortid = $l1; $tmpList = null;
         $db     = getConn();
         $model  = self::getModel($sortid);
+        if (!$model) { return ;}
         $fields = self::getFields($model['modelid']);
 
         $path = self::showSort($sortid);
@@ -173,7 +174,7 @@ class Archives{
             $tag->clear();
             $tag->value('id',encode($data['id']));
             $tag->value('sortid',encode($data['sortid']));
-            $tag->value('sortname',encode(htmlencode($data['sortname'])));
+            $tag->value('sortname',encode(htmlencode($model['sortname'])));
             $tag->value('sortpath',encode($path));
             $tag->value('title',encode(htmlencode($data['title'])));
             $tag->value('path',encode(self::showArchive($data['id'],$model)));
@@ -197,7 +198,7 @@ class Archives{
         $res   = $db->query("SELECT `a`.`sortpath`,`b`.`path` FROM `#@_sort` AS `a` LEFT JOIN `".$model['maintable']."` AS `b` ON `a`.`sortid` = `b`.`sortid` {$where}");
         if ($data = $db->fetch($res,0)) {
             if (C('SITE_MODE')) {
-                return url('Archives','ShowArchive','aid='.$aid);
+                return url(C('CURRENT_PATH'),'ShowArchive','aid='.$aid);
             } else {
                 return C('SITE_BASE').$data[0].'/'.$data[1];
             }
@@ -233,7 +234,6 @@ class Archives{
     }
     // instsql *** *** www.LazyCMS.net *** ***
     static function instSQL(){
-        return <<<SQL
-SQL;
+        return ;
     }
 }

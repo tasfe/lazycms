@@ -231,7 +231,7 @@ class LazyArchives extends LazyCMS{
         $model = Archives::getModel($sortid);
         $dp = O('Record');
         $dp->create("SELECT * FROM `".$model['maintable']."` WHERE `sortid`='{$sortid}' ORDER BY `order` DESC,`id` DESC");
-        $dp->action = url(C('CURRENT_PATH'),'Set');
+        $dp->action = url(C('CURRENT_PATH'),'Set','sortid='.$sortid);
         $dp->url = url(C('CURRENT_PATH'),'List','page=$');
         $dp->but = $dp->button().$dp->plist();
         $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"".url(C('CURRENT_PATH'),'Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."\">' + K[1] + '</a>'";
@@ -244,7 +244,7 @@ class LazyArchives extends LazyCMS{
         $dp->open();
         $dp->thead  = '<tr><th>'.$this->L('list/id').') '.$this->L('list/title').'</th><th>'.$this->L('list/show').'</th><th>'.$this->L('list/commend').'</th><th>'.$this->L('list/top').'</th><th>'.$this->L('list/path').'</th><th>'.$this->L('list/date').'</th><th>'.$this->L('list/action').'</th></tr>';
         while ($data = $dp->result()) {
-            $dp->tbody = "ll(".$data['id'].",'".t2js(htmlencode($data['title']))."',".$data['show'].",".$data['commend'].",".$data['top'].",'".t2js(htmlencode($data['img']))."','".t2js(htmlencode($model['sortpath'].'/'.$data['path']))."','".date('Y-m-d H:i:s',$data['date'])."',".(file_exists(LAZY_PATH.$data['sortpath'].'/'.$data['path']) ? 1 : 0).",'".Archives::showArchive($data['id'],$model)."');";
+            $dp->tbody = "ll(".$data['id'].",'".t2js(htmlencode($data['title']))."',".$data['show'].",".$data['commend'].",".$data['top'].",'".t2js(htmlencode($data['img']))."','".t2js(htmlencode($model['sortpath'].'/'.$data['path']))."','".date('Y-m-d H:i:s',$data['date'])."',".(file_exists(LAZY_PATH.$model['sortpath'].'/'.$data['path']) ? 1 : 0).",'".Archives::showArchive($data['id'],$model)."');";
         }
         $dp->close();
 
@@ -264,16 +264,17 @@ class LazyArchives extends LazyCMS{
         $aid = isset($_REQUEST['aid']) ? (int)$_REQUEST['aid'] : null;
         
         $CURRENT_MODULE = C('CURRENT_MODULE');
-        $show    = isset($_POST['show'])     ? $_POST['show'] : M($CURRENT_MODULE,'ADD_SHOW');
-        $commend = isset($_POST['commend'])  ? $_POST['commend'] : M($CURRENT_MODULE,'ADD_COMMEND');
-        $top     = isset($_POST['top'])      ? $_POST['top'] : M($CURRENT_MODULE,'ADD_TOP');
-        $snapimg = isset($_POST['snapimg'])  ? $_POST['snapimg'] : M($CURRENT_MODULE,'ADD_SNAPIMG');
-        $upsort  = isset($_POST['upsort'])   ? $_POST['upsort'] : M($CURRENT_MODULE,'ADD_UPSORT');
-        $checktitle = isset($_POST['checktitle']) ? $_POST['checktitle'] : M($CURRENT_MODULE,'ADD_CHECKTITLE');
+        $show    = isset($_POST['show'])     ? $_POST['show'] : null;
+        $commend = isset($_POST['commend'])  ? $_POST['commend'] : null;
+        $top     = isset($_POST['top'])      ? $_POST['top'] : null;
+        $snapimg = isset($_POST['snapimg'])  ? $_POST['snapimg'] : null;
+        $upsort  = isset($_POST['upsort'])   ? $_POST['upsort'] : null;
+        $checktitle = isset($_POST['checktitle']) ? $_POST['checktitle'] : null;
 
         $title = isset($_POST['title']) ? $_POST['title'] : null;
         $img   = isset($_POST['img'])   ? $_POST['img'] : null;
         $path  = isset($_POST['path'])  ? $_POST['path'] : null;
+        $setimg = isset($_POST['setimg'])  ? $_POST['setimg'] : null;
         $pathtype = isset($_POST['pathtype']) ? $_POST['pathtype'] : null;
         
         $sortNum  = $db->result("SELECT count(`sortid`) FROM `#@_sort` WHERE 1;");if ((int)$sortNum==0) { throwError(L('error/nosort')); }
@@ -281,21 +282,14 @@ class LazyArchives extends LazyCMS{
         $model    = Archives::getModel($sortid);
         
         $maxid = $db->max('id',$model['maintable']);
-        
-        $menu  = $model['sortname'].'|'.url(C('CURRENT_PATH'),'List','sortid='.$sortid).';'.$this->L('common/addpage').'|#|true';
 
-        $label = O('Label');
-        $where = $db->quoteInto('WHERE `modelid` = ?',$model['modelid']);
-        $label->create("SELECT * FROM `#@_fields` {$where} ORDER BY `fieldorder` ASC, `fieldid` ASC;");
-        $formData  = array();
-        $fieldData = array();
-        while ($data = $label->result()) {
-            $fieldData[$data['fieldename']] = $data;
-            $formData[$data['fieldename']]  = isset($_POST[$data['fieldename']]) ? $_POST[$data['fieldename']] : null;
+        if (empty($aid)) {
+            $menu  = $model['sortname'].'|'.url(C('CURRENT_PATH'),'List','sortid='.$sortid).';'.$this->L('common/addpage').'|#|true';
+        } else {
+            $menu  = $model['sortname'].'|'.url(C('CURRENT_PATH'),'List','sortid='.$sortid).';'.$this->L('common/editpage').'|#|true;'.$this->L('common/addpage').'|'.url(C('CURRENT_PATH'),'Edit','sortid='.$sortid);
         }
-
         // 需要检查标题
-        if ($cktitle) {
+        if ($checktitle) {
             if (empty($aid)) {
                 $cktitle = $this->check("title|1|".$this->L('check/title')."|1-255;title|3|".$this->L('check/title1')."|SELECT COUNT(`id`) FROM `".$model['maintable']."` WHERE `title`='#pro#';");
             } else {
@@ -305,17 +299,50 @@ class LazyArchives extends LazyCMS{
             $cktitle = $this->check("title|1|".$this->L('check/title')."|1-255");
         }
         // 路径检查
+        if ($this->method() && !empty($title)) {
+            if ($path==$this->L('common/pinyin')) {
+                $path = pinyin($title).C('HTML_URL_SUFFIX');
+            }
+        }
         if (empty($aid)) {
-            $checkpath = $this->check("path|1|".$this->L('check/path')."|1-255;path|4|".$this->L('check/path1').";path|3|".$this->L('check/path2')."|SELECT COUNT(`id`) FROM `".$model['maintable']."` WHERE `path`='#pro#';");
+            $checkpath = $this->check("path|1|".$this->L('check/path')."|1-255;path|4|".$this->L('check/path1').";path|3|".$this->L('check/path2')."|SELECT COUNT(`id`) FROM `".$model['maintable']."` WHERE `path`='{$path}';");
         } else {
-            $checkpath = $this->check("path|1|".$this->L('check/path')."|1-255;path|4|".$this->L('check/path1').";path|3|".$this->L('check/path2')."|SELECT COUNT(`id`) FROM `".$model['maintable']."` WHERE `path`='#pro#' AND `id`<>'{$aid}';");
+            $checkpath = $this->check("path|1|".$this->L('check/path')."|1-255;path|4|".$this->L('check/path1').";path|3|".$this->L('check/path2')."|SELECT COUNT(`id`) FROM `".$model['maintable']."` WHERE `path`='{$path}' AND `id`<>'{$aid}';");
         }
         $this->validate(array(
             'title' => $cktitle,
             'path'  => $checkpath,
         ));
+
+        $label = O('Label');
+        $where = $db->quoteInto('WHERE `modelid` = ?',$model['modelid']);
+        $label->create("SELECT * FROM `#@_fields` {$where} ORDER BY `fieldorder` ASC, `fieldid` ASC;");
+        $formData  = array(); $fieldData = array(); $vsetimg = false; $downPic = null;
+        while ($data = $label->result()) {
+            $fieldData[$data['fieldename']] = $data;
+            $formData[$data['fieldename']]  = isset($_POST[$data['fieldename']]) ? $_POST[$data['fieldename']] : null;
+            if ($data['inputtype']=='editor') {
+                // 全部验证成功，进行抓图处理
+                if ($this->method() && $this->validate()) {
+                    // 远程抓图
+                    if ($snapimg) {
+                        $formData[$data['fieldename']] = snapImg($formData[$data['fieldename']]);
+                    }
+                    // 抓取第一张图片，作为缩略图
+                    if ($setimg) {
+                        if (preg_match('/<img.[^>]*src="(.[^>]+?)".[^>]*\/>/i',$formData[$data['fieldename']],$imgInfo) && empty($downPic)) {
+                            $downPic = ltrim(downPic($imgInfo[1]),'/');
+                        }
+                    }
+                }
+                if (!$vsetimg) {
+                    $vsetimg = true;
+                }
+            }
+        }
         if ($this->method()) {
             if ($this->validate()) {
+                if (!empty($downPic)) { $img = $downPic; }
                 if ($path=='MD5') {
                     $path = md5(salt(10).$maxid).C('HTML_URL_SUFFIX');
                 }
@@ -368,7 +395,14 @@ class LazyArchives extends LazyCMS{
                 } else {
                     throwError(L('error/invalid'));
                 }
+            } else {
+                $show    = M($CURRENT_MODULE,'ADD_SHOW');
+                $commend = M($CURRENT_MODULE,'ADD_COMMEND');
+                $top     = M($CURRENT_MODULE,'ADD_TOP');
             }
+            $snapimg = M($CURRENT_MODULE,'ADD_SNAPIMG');
+            $upsort  = M($CURRENT_MODULE,'ADD_UPSORT');
+            $checktitle = M($CURRENT_MODULE,'ADD_CHECKTITLE');
         }
 
         while (list($name,$data) = each($fieldData)) {
@@ -381,7 +415,8 @@ class LazyArchives extends LazyCMS{
             'sortid' => $sortid,
             'title'  => $title,
             'img'    => $img,
-            'path'   => empty($aid) ? $maxid.C('HTML_URL_SUFFIX') :$path,
+            'setimg' => $vsetimg,
+            'path'   => empty($aid) && empty($path) ? $this->L('common/pinyin') :$path,
             'show'   => !empty($show) ? ' checked="checked"' : null,
             'top'    => !empty($top) ? ' checked="checked"' : null,
             'snapimg' => !empty($snapimg) ? ' checked="checked"' : null,
@@ -395,6 +430,32 @@ class LazyArchives extends LazyCMS{
             'menu'  => $menu,
         ));
         $tpl->display('edit.php');
+    }
+    // _sortset *** *** www.LazyCMS.net *** ***
+    function _set(){
+        clearCache();
+        $this->checker(C('CURRENT_PATH'),true);
+        $db     = getConn();
+        $submit = isset($_POST['submit']) ? $_POST['submit'] : null;
+        $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
+        $sortid = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : null;
+        if (instr('delete,create',$submit) && empty($lists)) {
+            $this->poping($this->L('pop/select'),0);
+        }
+        $model = Archives::getModel($sortid);
+        switch($submit){
+            case 'delete' :
+                $db->exec("DELETE FROM `".$model['maintable']."` WHERE `id` IN({$lists});");
+                $db->exec("DELETE FROM `".$model['addtable']."` WHERE `aid` IN({$lists});");
+                $this->poping($this->L('pop/deleteok'),1);
+                break;
+            case 'create' :
+                $this->poping($this->L('pop/createok'),1);
+                break;
+            default :
+                $this->poping(L('error/invalid'),0);
+                break;
+        }
     }
     // _test *** *** www.LazyCMS.net *** ***
     function _test(){

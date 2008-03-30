@@ -27,7 +27,7 @@ defined('CORE_PATH') or die('Restricted access!');
  * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
  * @author      Lukin <mylukin@gmail.com>
  */
-// Record *** *** www.LazyCMS.net *** ***
+// DownLoader *** *** www.LazyCMS.net *** ***
 class DownLoader extends Lazy{
     // 目标网站无法打开时返回的错误代码
     const ERROR_CONNECT_FAILURE = 600;
@@ -35,29 +35,33 @@ class DownLoader extends Lazy{
     const SEND_USER_AGENT = 'LazyCMS::DownLoader';
     public $url,$method,$timeout;
     private $host,$port,$path,$query,$referer;
-    private $errno = 0;
-    private $errstr;
     private $header;
     private $body;
 
     // __construct *** *** www.LazyCMS.net *** ***
-    public function __construct($url=null,$method='GET',$timeout=5){
-        $this->connect($url,$method,$timeout);
+    public function __construct($url=null,$method='GET',$timeout=10){
+        set_time_limit(0);
+        if (!empty($url)) {
+            $this->connect($url,$method,$timeout);
+        }
     }
     // connect *** *** www.LazyCMS.net *** ***
-    public function connect($url=null,$method='GET',$timeout=5){
+    public function connect($url=null,$method='GET',$timeout=10){
+        $this->header  = null;
+        $this->body    = null;
         $this->url     = $url;
         $this->method  = strtoupper(empty($method) ? 'GET' : $method);
         $this->timeout = empty($timeout) ? 5 : $timeout;
         if (!empty($url)) {
             $this->parseURL($url);
         }
+        return $this;
     }
     // send *** *** www.LazyCMS.net *** ***
     public function send($params=array()){
         $header = null; $body = null; $QueryStr = null;
         if (function_exists('fsockopen')) {
-            $fp = @fsockopen($this->host,$this->port,$this->errno,$this->errstr,$this->timeout);
+            $fp = @fsockopen($this->host,$this->port,$errno,$errstr,$this->timeout);
             if (!$fp) { return false; }
             $SendStr = "{$this->method} {$this->path}{$this->query} HTTP/1.0\r\n";
             $SendStr.= "Host:{$this->host}:{$this->port}\r\n";
@@ -165,14 +169,11 @@ class DownLoader extends Lazy{
     // parseURL *** *** www.LazyCMS.net *** ***
     private function parseURL($url){
         $aUrl = parse_url($url);
+        $aUrl['query'] = isset($aUrl['query']) ? $aUrl['query'] : null;
         $this->host  = $aUrl['host'];
         $this->port  = empty($aUrl['port']) ? 80 : (int)$aUrl['host'];
         $this->path  = empty($aUrl['path']) ? '/' : (string)$aUrl['path'];
         $this->query = strlen($aUrl['query']) > 0 ? '?'.$aUrl['query'] : null;
         $this->referer = 'http://'.$aUrl['host'];
-    }
-    // __destruct *** *** www.LazyCMS.net *** ***
-    public function __destruct(){
-        
     }
 }
