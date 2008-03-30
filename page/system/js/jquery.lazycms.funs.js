@@ -305,6 +305,14 @@ jQuery.extend(jQuery.fn,{
 			$(l1).val('');
 		}
 		return this;
+	},
+	toEnglish : function(l1,l2){
+		var title = $(l1).val();
+		if (title!="") {
+			this.val(CC2PY(title) + l2);
+		} else {
+			this.val('');
+		}
 	}
 });
 // inputValue *** *** www.LazyCMS.net *** ***

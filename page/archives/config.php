@@ -25,7 +25,12 @@ defined('CORE_PATH') or die('Restricted access!');
  * Archives module configuration files
  */
 return array (
-  'MODULE_NAME' => 'Archives', // 模块名称
-  'MODULE_PATH' => 'PinYin', // 文章路径，默认为拼音
+  'MODULE_PATH' => 'Archives', // 模块路径，不区分大小写
+  'ADD_SHOW' => true, // 添加文档，默认是否显示
+  'ADD_COMMEND' => false, // 添加文档，默认是否推荐
+  'ADD_TOP' => false, // 添加文档，默认是否置顶
+  'ADD_SNAPIMG' => true, // 添加文档，默认是否下载远程图片
+  'ADD_UPSORT' => true, // 添加文档，默认是否更新列表
+  'ADD_CHECKTITLE' => true, // 添加文档，默认是否检查重复标题
 );
 ?>

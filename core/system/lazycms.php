@@ -151,6 +151,8 @@ abstract class LazyCMS extends Lazy{
         C('CURRENT_MODULE',$l1);
         // 设置当前的操作名称
         C('CURRENT_ACTION',$l2);
+        // 设置当前模块目录
+        C('CURRENT_PATH',M($l1,'MODULE_PATH'));
         // 组合出新的模块名称
         $l3 = 'Lazy'.ucfirst($l1);
         // 必须要加载system.module
@@ -243,7 +245,7 @@ abstract class LazyCMS extends Lazy{
         } elseif ($isLogin==false && !empty($l2)){
             $this->poping(L('error/nologin'),1);exit;
         }
-        if ($this->admin['adminlevel']=='admin' || instr($this->admin['adminlevel'],$l1)) {
+        if ($this->admin['adminlevel']=='admin' || instr($this->admin['adminlevel'],strtolower($l1))) {
         }else{
             // 权限不足，提示！
             if (empty($l2)) {

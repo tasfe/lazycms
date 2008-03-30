@@ -24,7 +24,7 @@
             [<a href="javascript:;" onclick="$('#path').val('<?php echo $pathtype_id;?>');"><?php echo $pathtype_id;?></a>]
             [<a href="javascript:;" onclick="$('#path').val('<?php echo $pathtype_date;?>');"><?php echo $pathtype_date;?></a>]
             <?php endif;?>
-            [<a href="javascript:;" onclick="$('#path').val(CC2PY($('#title').val())+'<?php echo C('HTML_URL_SUFFIX');?>');">To English</a>]
+            [<a href="javascript:;" onclick="$('#path').toEnglish('#title','<?php echo C('HTML_URL_SUFFIX');?>');">To English</a>]
             [<a href="javascript:;" onclick="$('#path').val('MD5');">MD5</a>]
         </p>
         <?php echo $module->outHTML;?>

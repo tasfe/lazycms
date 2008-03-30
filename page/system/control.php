@@ -430,7 +430,7 @@ class LazySystem extends LazyCMS{
                     $isAction  = 'delete';
                     $isExists  = null;
                     $module    = '<a href="'.eval('return '.L('manage',null,$v).';').'">'.L('title',null,$v).'</a>';
-                    $config    = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$v.'/config.php') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('config',{module:'".$v."'},{height:'300px'});\">".$this->L('common/config')."</a>]" : null;
+                    $config    = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$v.'/config.php') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('config',{module:'".$v."'},{width:'600px','margin-left':'-300px',height:'300px'});\">".$this->L('common/config')."</a>]" : null;
                 } else {
                     $isInstall = $this->L('module/is/false');
                     $isAction  = 'install';
@@ -534,7 +534,7 @@ class LazySystem extends LazyCMS{
                 $strCfg = loadFile(LAZY_PATH.C('PAGES_PATH').'/'.$module.'/config.php');
                 $_html = '<style type="text/css">.lz_form .button{ margin:10px auto; text-align:center; }</style>';
                 $_html.= '<form action="'.url('System','ModuleConfig').'" class="lz_form">';
-                $_html.= '<table class="lz_table">';
+                $_html.= '<table class="lz_table" style="width:97%;">';
                 $_html.= '<thead><tr>';
                 $_html.= '<th>Key</th>';
                 $_html.= '<th>Value</th>';
@@ -1162,7 +1162,12 @@ class LazySystem extends LazyCMS{
     }
     // _version *** *** www.LazyCMS.net *** ***
     function _version(){
-        $l1 = @getDown("http://www.lazycms.net/ver/index.php?".$_SERVER['HTTP_HOST'].C('SITE_BASE'));
+        import("system.downloader");
+        $d = new DownLoader("http://www.lazycms.net/ver/index.php?".$_SERVER['HTTP_HOST'].C('SITE_BASE'));
+        $d->send();
+        if ($d->status() == 200) {
+            $l1 = $d->body();
+        }
         $l1 = '1.1.0.0227';
         if (validate($l1,6)) {
             $I1 = $l1;

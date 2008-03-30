@@ -31,10 +31,10 @@ defined('CORE_PATH') or die('Restricted access!');
 class LazyArchives extends LazyCMS{
     // _index *** *** www.LazyCMS.net *** ***
     function _index(){
-        $this->checker('archives');
+        $this->checker(C('CURRENT_PATH'));
         $db = getConn();
         $dp = O('Record');
-        $dp->action = url('Archives','SortSet');
+        $dp->action = url(C('CURRENT_PATH'),'SortSet');
         $dp->result = $db->query("SELECT `s`.*,`m`.`modelname`,count(`a`.`id`) AS `count` 
                                     FROM `#@_sort` AS `s` 
                                     LEFT JOIN `#@_archives` AS `a` ON `s`.`sortid` = `a`.`sortid`
@@ -45,11 +45,11 @@ class LazyArchives extends LazyCMS{
         $dp->length = $db->count($dp->result);
         $button  = !C('SITE_MODE') ? '-|create:'.$this->L('common/create').'|-|createsort:'.$this->L('common/createsort').'|createpage:'.$this->L('common/createpage').'|-|createall:'.$this->L('common/createall') : null;
         $dp->but = $dp->button($button);
-        $dp->td  = "cklist(K[0]) + K[8] + K[0] + ') <a href=\"".url('Archives','List','sortid=$',"' + K[0] + '")."\">' + K[2] + '</a>'";
+        $dp->td  = "cklist(K[0]) + K[8] + K[0] + ') <a href=\"".url(C('CURRENT_PATH'),'List','sortid=$',"' + K[0] + '")."\">' + K[2] + '</a>'";
         $dp->td  = "K[3]";
         $dp->td  = "K[4]";
         $dp->td  = !C('SITE_MODE') ? "isExist(K[0],K[6],'createsort:".C('SITE_BASE')."' + K[5]) + K[5]" : "browse(K[7]) + K[7]";
-        $dp->td  = "ico('new','".url('Archives','Edit','sortid=$',"' + K[0] + '")."') + ico('edit','".url('Archives','EditSort','sortid=$',"' + K[0] + '")."') + updown('up',K[0],K[1]) + updown('down',K[0],K[1])";
+        $dp->td  = "ico('new','".url(C('CURRENT_PATH'),'Edit','sortid=$',"' + K[0] + '")."') + ico('edit','".url(C('CURRENT_PATH'),'EditSort','sortid=$',"' + K[0] + '")."') + updown('up',K[0],K[1]) + updown('down',K[0],K[1])";
         $dp->open();
         $dp->thead  = '<tr><th>'.$this->L('sort/id').') '.$this->L('sort/name').'</th><th>'.$this->L('sort/model').'</th><th>'.$this->L('sort/count').'</th><th>'.$this->L('sort/path').'</th><th class="wp2">'.$this->L('sort/action').'</th></tr>';
         while ($data = $dp->result()) {
@@ -72,7 +72,7 @@ class LazyArchives extends LazyCMS{
     }
     // _editsort *** *** www.LazyCMS.net *** ***
     function _editsort(){
-        $this->checker('archives');
+        $this->checker(C('CURRENT_PATH'));
         $db  = getConn();
         $sql = "sortid1,modelid,sortname,sortpath,keywords,description,sorttemplate1,sorttemplate2,pagetemplate1,pagetemplate2";//9
         $sortid   = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : null;
@@ -80,7 +80,7 @@ class LazyArchives extends LazyCMS{
         if (empty($sortid)) {
             $menu = $this->L('common/addsort').'|#|true';
         } else {
-            $menu = $this->L('common/addsort').'|'.url('Archives','EditSort').';'.$this->L('common/editsort').'|#|true';
+            $menu = $this->L('common/addsort').'|'.url(C('CURRENT_PATH'),'EditSort').';'.$this->L('common/editsort').'|#|true';
         }
         foreach (explode(',',$sql) as $val) {
             $data[] = isset($_POST[$val]) ? $_POST[$val] : null;
@@ -128,7 +128,7 @@ class LazyArchives extends LazyCMS{
                     $db->update('#@_sort',$set,$where);
                 }
                 Archives::createSort($sortid,$data[10]);
-                redirect(url('Archives'));
+                redirect(url(C('CURRENT_PATH')));
             }
         } else {
             if (!empty($sortid)) {
@@ -163,7 +163,7 @@ class LazyArchives extends LazyCMS{
     // _sortset *** *** www.LazyCMS.net *** ***
     function _sortset(){
         clearCache();
-        $this->checker('archives',true);
+        $this->checker(C('CURRENT_PATH'),true);
         $db     = getConn();
         $submit = isset($_POST['submit']) ? $_POST['submit'] : null;
         $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
@@ -225,22 +225,22 @@ class LazyArchives extends LazyCMS{
     }
     // _list *** *** www.LazyCMS.net *** ***
     function _list(){
-        $this->checker('archives');
+        $this->checker(C('CURRENT_PATH'));
         $sortid = isset($_GET['sortid']) ? (int)$_GET['sortid'] : null;
         $db = getConn();
         $model = Archives::getModel($sortid);
         $dp = O('Record');
         $dp->create("SELECT * FROM `".$model['maintable']."` WHERE `sortid`='{$sortid}' ORDER BY `order` DESC,`id` DESC");
-        $dp->action = url('Archives','Set');
-        $dp->url = url('Archives','List','page=$');
+        $dp->action = url(C('CURRENT_PATH'),'Set');
+        $dp->url = url(C('CURRENT_PATH'),'List','page=$');
         $dp->but = $dp->button().$dp->plist();
-        $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"".url('Archives','Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."\">' + K[1] + '</a>'";
+        $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"".url(C('CURRENT_PATH'),'Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."\">' + K[1] + '</a>'";
         $dp->td  = 'ison(K[2])';
         $dp->td  = 'ison(K[3])';
         $dp->td  = 'ison(K[4])';
         $dp->td  = !C('SITE_MODE') ? "isExist(K[0],K[8],'create:".C('SITE_BASE')."' + K[6])" : "browse(K[9])";
         $dp->td  = 'K[7]';
-        $dp->td  = "ico('edit','".url('Archives','Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."') + updown('up',K[0],0) + updown('down',K[0],0)";
+        $dp->td  = "ico('edit','".url(C('CURRENT_PATH'),'Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."') + updown('up',K[0],0) + updown('down',K[0],0)";
         $dp->open();
         $dp->thead  = '<tr><th>'.$this->L('list/id').') '.$this->L('list/title').'</th><th>'.$this->L('list/show').'</th><th>'.$this->L('list/commend').'</th><th>'.$this->L('list/top').'</th><th>'.$this->L('list/path').'</th><th>'.$this->L('list/date').'</th><th>'.$this->L('list/action').'</th></tr>';
         while ($data = $dp->result()) {
@@ -252,23 +252,24 @@ class LazyArchives extends LazyCMS{
 
         $tpl = getTpl($this);
         $tpl->assign(array(
-            'menu' => $model['sortname'].'|#|true;'.$this->L('common/addpage').'|'.url('Archives','Edit','sortid='.$sortid),
+            'menu' => $model['sortname'].'|#|true;'.$this->L('common/addpage').'|'.url(C('CURRENT_PATH'),'Edit','sortid='.$sortid),
         ));
         $tpl->display('list.php');
     }
     // _edit *** *** www.LazyCMS.net *** ***
     function _edit(){
-        $this->checker('archives');
+        $this->checker(C('CURRENT_PATH'));
         $db  = getConn();
         $tpl = getTpl($this);
         $aid = isset($_REQUEST['aid']) ? (int)$_REQUEST['aid'] : null;
         
-        $show    = isset($_POST['show'])     ? $_POST['show'] : true;
-        $commend = isset($_POST['commend'])  ? $_POST['commend'] : null;
-        $top     = isset($_POST['top'])      ? $_POST['top'] : null;
-        $snapimg = isset($_POST['snapimg'])  ? $_POST['snapimg'] : false;
-        $upsort  = isset($_POST['upsort'])   ? $_POST['upsort'] : true;
-        $checktitle = isset($_POST['checktitle']) ? $_POST['checktitle'] : true;
+        $CURRENT_MODULE = C('CURRENT_MODULE');
+        $show    = isset($_POST['show'])     ? $_POST['show'] : M($CURRENT_MODULE,'ADD_SHOW');
+        $commend = isset($_POST['commend'])  ? $_POST['commend'] : M($CURRENT_MODULE,'ADD_COMMEND');
+        $top     = isset($_POST['top'])      ? $_POST['top'] : M($CURRENT_MODULE,'ADD_TOP');
+        $snapimg = isset($_POST['snapimg'])  ? $_POST['snapimg'] : M($CURRENT_MODULE,'ADD_SNAPIMG');
+        $upsort  = isset($_POST['upsort'])   ? $_POST['upsort'] : M($CURRENT_MODULE,'ADD_UPSORT');
+        $checktitle = isset($_POST['checktitle']) ? $_POST['checktitle'] : M($CURRENT_MODULE,'ADD_CHECKTITLE');
 
         $title = isset($_POST['title']) ? $_POST['title'] : null;
         $img   = isset($_POST['img'])   ? $_POST['img'] : null;
@@ -281,7 +282,7 @@ class LazyArchives extends LazyCMS{
         
         $maxid = $db->max('id',$model['maintable']);
         
-        $menu  = $model['sortname'].'|'.url('Archives','List','sortid='.$sortid).';'.$this->L('common/addpage').'|#|true';
+        $menu  = $model['sortname'].'|'.url(C('CURRENT_PATH'),'List','sortid='.$sortid).';'.$this->L('common/addpage').'|#|true';
 
         $label = O('Label');
         $where = $db->quoteInto('WHERE `modelid` = ?',$model['modelid']);
@@ -334,7 +335,7 @@ class LazyArchives extends LazyCMS{
                     $aid = $db->lastInsertId();
                     $addrows = array_merge($formData,array('aid'=>$aid));
                     $db->insert($model['addtable'],$addrows);
-                    redirect(url('Archives','List','sortid='.$sortid));
+                    redirect(url(C('CURRENT_PATH'),'List','sortid='.$sortid));
                 } else { // update
                     $set = array(
                         'title'   => (string)$title,
@@ -348,7 +349,7 @@ class LazyArchives extends LazyCMS{
                     $db->update($model['maintable'],$set,$where);
                     $where = $db->quoteInto('`aid` = ?',$aid);
                     $db->update($model['addtable'],$formData,$where);
-                    redirect(url('Archives','List','sortid='.$sortid));
+                    redirect(url(C('CURRENT_PATH'),'List','sortid='.$sortid));
                 }
             }
         } else {
@@ -394,5 +395,17 @@ class LazyArchives extends LazyCMS{
             'menu'  => $menu,
         ));
         $tpl->display('edit.php');
+    }
+    // _test *** *** www.LazyCMS.net *** ***
+    function _test(){
+        import("system.downloader");
+        $d = new DownLoader('http://127.0.0.1/test.php');
+        $d->send();
+        if ($d->status() == 200) {
+            print_r("body:".$d->body());
+        } else {
+            print_r("status:".$d->status());
+        }
+        
     }
 }
