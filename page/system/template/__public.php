@@ -1,5 +1,5 @@
 <?php System::header();?>
-<?php echo menu($module->L('admin/@title').'|'.url('System','Main').';'.$module->L('log/@title').'|#|true');?>
+<?php echo menu($menu);?>
 <div class="content">
   <?php echo $module->outHTML;?>
 </div>

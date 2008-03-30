@@ -106,8 +106,9 @@ class LazySystem extends LazyCMS{
 
         // 取得模板对象
         $tpl = getTpl($this);
+        $tpl->assign('menu',$this->L('admin/title').'|'.url('System','Main').';'.$this->L('log/@title').'|#|true');
         // 显示模板
-        $tpl->display('log.php');
+        $tpl->display('__public.php');
     }
     // _logset *** *** www.LazyCMS.net *** ***
     function _logset(){
@@ -160,7 +161,8 @@ class LazySystem extends LazyCMS{
         $this->outHTML = $dp->fetch;
 
         $tpl = getTpl($this);
-        $tpl->display('admin.php');
+        $tpl->assign('menu',$this->L('admin/list').'|#|true;'.$this->L('admin/add').'|'.url('System','AdminEdit'));
+        $tpl->display('__public.php');
     }
     // _logset *** *** www.LazyCMS.net *** ***
     function _adminset(){
@@ -660,7 +662,8 @@ class LazySystem extends LazyCMS{
         $this->outHTML = $dp->fetch;
 
         $tpl = getTpl($this);
-        $tpl->display('models.php');
+        $tpl->assign('menu',$this->L('models/@title').'|#|true;'.$this->L('models/add').'|'.url('System','ModelEdit').';'.$this->L('models/leadin').'|'.url('System','ModelLeadIn'));
+        $tpl->display('__public.php');
     }
     // _modelset *** *** www.LazyCMS.net *** ***
     function _modelset(){
@@ -843,10 +846,8 @@ class LazySystem extends LazyCMS{
         $dp->close();
         $this->outHTML = $dp->fetch;
         $tpl = getTpl($this);
-        $tpl->assign(array(
-            'modelid' => $modelid,
-        ));
-        $tpl->display('modelfields.php');
+        $tpl->assign('menu',$this->L('models/@title').'|'.url('System','Models').';'.$this->L('models/add').'|'.url('System','ModelEdit').';'.$this->L('models/field/@title').'|#|true;'.$this->L('models/field/add').'|'.url('System','ModelFieldsEdit','modelid='.$modelid));
+        $tpl->display('__public.php');
     }
     // _modelfieldindex *** *** www.LazyCMS.net *** ***
     function _modelfieldindex(){
