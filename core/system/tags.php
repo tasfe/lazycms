@@ -234,7 +234,7 @@ class Tags extends Lazy{
             }
             $I1 = sect($l3,$l2.'="','"','');
         }
-        if (validate($I1,2)===false) {
+        if (validate($I1,2)==false) {
             switch ((string)$l2) {
                 case 'number':
                     $I1 = 20;

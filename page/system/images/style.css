@@ -94,7 +94,7 @@ textarea{ font-size:13px;}
 	#poping .main{ width:98%; height:88%; padding:5px 1%; margin:0 auto; display:block; clear:both; line-height:150%; overflow:auto;}
 	#poping .main a:hover{text-decoration:none;}
 	#poping .main .toolbar{ margin:0 auto; clear:both;}
-	#poping .main .toolbar span { width:539px; height:20px; line-height:20px; padding-left:25px;  font-size:11px; overflow:hidden; background:url(os/folder.gif) no-repeat 5px center; display:block; float:left;}
+	#poping .main .toolbar span { width:538px; height:20px; line-height:20px; padding-left:25px;  font-size:11px; overflow:hidden; background:url(os/folder.gif) no-repeat 5px center; display:block; float:left;}
 	#poping .main .toolbar div { padding:3px 0;text-align:right; display:table; position:absolute; right:30px; }
 	#poping .pop{ width:55%; position:absolute; top:25%; left:22.5%; background:#FFFFFF; border-style:solid; border-width:2px; border-color:#CECECE #666 #666 #CECECE;}
 	#poping .pop-title{ width:95.5%; clear:both; margin:0 auto; line-height:200%; font-weight:bold; color:#FFFFFF; padding:0px 2%; background:#193441; border-bottom:solid 3px #CECECE; display:table;zoom:100%;}

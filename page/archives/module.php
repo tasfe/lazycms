@@ -115,27 +115,16 @@ class Archives{
         }
     }
     // createSort *** *** www.LazyCMS.net *** ***
-    static function createSort($l1,$l2=null){
+    static function createSort($l1,$num,$page=1){
         if (C('SITE_MODE')) { return ; }
-        $sortid = $l1;
-        $db     = getConn();       
-        $res    = $db->query("SELECT `sortid`,`sortpath` FROM `#@_sort` WHERE `sortid` IN({$sortid})");
-        while ($data = $db->fetch($res,0)) {
-            $outHTML = self::viewSort($data[0]);
-            // 文件路径修改，删除老文件
-            if (!empty($l2) && $data[1]!=$l2) {
-                @unlink(LAZY_PATH.$l2.'/'.C('SITE_INDEX'));
-                $paths = explode('/',$l2);
-                rmdirs(LAZY_PATH.$paths[0],false);
-            }
-            // 生成新文件
-            mkdirs(LAZY_PATH.$data[1]);
-            saveFile(LAZY_PATH.$data[1].'/'.C('SITE_INDEX'),$outHTML);
-        }
+        $ids = $l1;
+        $db  = getConn();
+		$I2  = explode(',',$ids);
     }
     // viewSort *** *** www.LazyCMS.net *** ***
     static function viewSort($l1,$page=1){
         $sortid = $l1; $tmpList = null;
+		$page   = !empty($page) ? (int)$page : 1;
         $db     = getConn();
         $model  = self::getModel($sortid);
         if (!$model) { return ;}
@@ -152,7 +141,7 @@ class Archives{
         $zebra   = $tag->getLabel($HTMList,'zebra');
         $rand    = chr(3).salt(20).chr(2);//随机出来的替换参数
         $randpl  = chr(3).salt(16).chr(2);
-
+		
         // 把 HTML 中的{lazy:...type=list/}标签替换为一个随机的标签；pagelist设置为一个随机标签
         $HTML = str_replace($HTMList,$rand,$HTML);
 
@@ -168,7 +157,15 @@ class Archives{
         
         $HTML = $tag->create($HTML);
 
-        $res = $db->query("SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` WHERE `a`.`sortid` = '{$sortid}' ORDER BY `a`.`order` {$jsOrder},`a`.`sortid` {$jsOrder};");
+		$strSQL = "SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` WHERE `a`.`sortid` = '{$sortid}' ORDER BY `a`.`order` {$jsOrder},`a`.`sortid` {$jsOrder}";
+		$totalRows  = $db->count($strSQL);
+		$totalPages = ceil($totalRows/$jsNumber);
+        $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
+        if ((int)$page > (int)$totalPages) {
+            $page = $totalPages;
+        }
+        $strSQL .= ' LIMIT '.$jsNumber.' OFFSET '.($page-1)*$jsNumber.';';
+        $res = $db->query($strSQL);
         $i = 1;
         while ($data = $db->fetch($res)) {
             $tag->clear();
@@ -187,8 +184,62 @@ class Archives{
             $i++;
         }
         $outHTML = str_replace($rand,$tmpList,$HTML);
+		$pageExt = C('SITE_MODE') ? '&page=$' : '/index$'.C('HTML_URL_SUFFIX');
+		$outHTML = str_replace($randpl,self::pagelist($path.$pageExt,$page,$totalPages,$totalRows),$outHTML);
+		// 生成
+		if (!C('SITE_MODE')) { 
+			mkdirs(LAZY_PATH.$model['sortpath']);
+			if ((int)$page == 1) {
+				$arcPath = LAZY_PATH.$model['sortpath'].'/'.C('SITE_INDEX');
+			} elseif ((int)$page <= (int)$totalPages) {
+				$arcPath = LAZY_PATH.$model['sortpath'].'/index'.$page.C('HTML_URL_SUFFIX');
+			}
+			if (!empty($arcPath)) {
+				saveFile($arcPath,$outHTML);
+			}
+		}
         return $outHTML;
     }
+	// pagelist *** *** www.LazyCMS.net *** ***
+	static function pagelist($l1,$l2,$l3,$l4){
+		// url,page,总页数,记录总数
+		// 修要修改分页风格，直接修改此函数即可
+		$I1 = null;
+		if (strpos($l1,'%24')!==false) { $l1 = str_replace('%24','$',$l1); }
+		if (strpos($l1,'$')==0 || $l4==0) { return ; }
+		$l7 = C('SITE_MODE') ? 1 : null;
+		if ($l2 > 3) {
+			$I1 = '<a href="'.str_replace('$',$l7,$l1).'">1 ...</a>';
+		}
+		if ($l2 > 2) {
+			$I1 .= '<a href="'.str_replace('$',$l2-1,$l1).'">&lsaquo;&lsaquo;</a>';
+		} elseif ($l2==2) {
+			$I1 .= '<a href="'.str_replace('$',$l7,$l1).'">&lsaquo;&lsaquo;</a>';
+		}
+		$l5 = $l2-2;
+		$l6 = $l2+7;
+		for ($i=$l5; $i<=$l6; $i++) {
+			if ($i>=1 && $i<=$l3) {
+				if ((int)$i==(int)$l2) {
+					$I1 .= "<strong>$i</strong>";
+				} else {
+					if ($i==1) {
+						$I1 .= '<a href="'.str_replace('$',$l7,$l1).'">'.$i.'</a>';
+					} else {
+						$I1 .= '<a href="'.str_replace('$',$i,$l1).'">'.$i.'</a>';
+					}
+				}
+			}
+		}
+		if ($l2 < $l3) {
+			$I1 .= '<a href="'.str_replace('$',$l2+1,$l1).'">&rsaquo;&rsaquo;</a>';
+		}
+		if ($l2 < ($l3-7)) {
+			$I1 .= '<a href="'.str_replace('$',$l3,$l1).'">... '.$l3.'</a>';
+		}
+		$I2 = explode('$',$l1);
+		return '<div class="pagelist"><em>'.$l4.'</em>'.$I1.'</div>';
+	}
     // showArchive *** *** www.LazyCMS.net *** ***
     static function showArchive($l1,$l2){
         $aid   = $l1;

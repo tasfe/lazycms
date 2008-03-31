@@ -30,7 +30,6 @@ function resizeWeb(xx){
 <iframe src="<?php echo url('System','Main');?>" name="main" id="main" width="100%" marginwidth="0" height="95%" marginheight="0" scrolling="yes" frameborder="0" onload="resizeWeb($('#toolbar').height());"></iframe>
 <div id="toolbar">
     <div class="logo"><a href="<?php echo url('System');?>"><img src="../system/images/toolbar_logo.png" /></a></div>
-    <div class="close"><a href="javascript:;">&nbsp;</a></div>
 </div>
 </body>
 </html>

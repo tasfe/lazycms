@@ -43,7 +43,7 @@ class LazyArchives extends LazyCMS{
                                     GROUP BY `s`.`sortid` 
                                     ORDER BY `s`.`sortorder` DESC,`s`.`sortid` DESC");
         $dp->length = $db->count($dp->result);
-        $button  = !C('SITE_MODE') ? '-|create:'.$this->L('common/create').'|-|createsort:'.$this->L('common/createsort').'|createpage:'.$this->L('common/createpage').'|-|createall:'.$this->L('common/createall') : null;
+        $button  = !C('SITE_MODE') ? '-|create:'.$this->L('common/create').'|-|@createsort:'.$this->L('common/createsort').'|createpage:'.$this->L('common/createpage').'|-|createall:'.$this->L('common/createall') : null;
         $dp->but = $dp->button($button);
         $dp->td  = "cklist(K[0]) + K[8] + K[0] + ') <a href=\"".url(C('CURRENT_PATH'),'List','sortid=$',"' + K[0] + '")."\">' + K[2] + '</a>'";
         $dp->td  = "K[3]";
@@ -68,7 +68,8 @@ class LazyArchives extends LazyCMS{
     // _showsort *** *** www.LazyCMS.net *** ***
     function _showsort(){
         $sortid = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : null;
-        echo Archives::viewSort($sortid);
+		$page   = isset($_GET['page']) ? (int)$_GET['page'] : null;
+        echo Archives::viewSort($sortid,$page);
     }
     // _editsort *** *** www.LazyCMS.net *** ***
     function _editsort(){
@@ -85,7 +86,6 @@ class LazyArchives extends LazyCMS{
         foreach (explode(',',$sql) as $val) {
             $data[] = isset($_POST[$val]) ? $_POST[$val] : null;
         }
-        $data[10] = isset($_POST['oldpath']) ? $_POST['oldpath'] : null;
         if (!empty($sortid)) {
             $sortpath = " AND `sortid` <> ".$sortid;
         }
@@ -127,7 +127,7 @@ class LazyArchives extends LazyCMS{
                     $where = $db->quoteInto('`sortid` = ?',$sortid);
                     $db->update('#@_sort',$set,$where);
                 }
-                Archives::createSort($sortid,$data[10]);
+                Archives::createSort($sortid);
                 redirect(url(C('CURRENT_PATH')));
             }
         } else {
@@ -178,9 +178,16 @@ class LazyArchives extends LazyCMS{
             case 'create' :
                 $this->poping($this->L('pop/createok'),1);
                 break;
-            case 'createsort' :
-                Archives::createSort($lists);
-                $this->poping($this->L('pop/createok'),1);
+            case '@createsort' :
+				$num  = isset($_POST['num']) ? $_POST['num'] : null;
+				$page = isset($_POST['page']) ? $_POST['page'] : null;
+                //Archives::createSort($lists,$num,$page);
+				$data = array(
+					'params'  => array(
+						'amplitude' => 10,
+					),
+				);
+                echo json_encode($data);
                 break;
             case 'createpage' :
                 $this->poping($this->L('pop/createok'),1);
@@ -331,7 +338,7 @@ class LazyArchives extends LazyCMS{
                     // 抓取第一张图片，作为缩略图
                     if ($setimg) {
                         if (preg_match('/<img.[^>]*src="(.[^>]+?)".[^>]*\/>/i',$formData[$data['fieldename']],$imgInfo) && empty($downPic)) {
-                            $downPic = ltrim(downPic($imgInfo[1]),'/');
+                            $downPic = replace('/'.preg_quote(C('SITE_BASE'),'/').'/i','',downPic($imgInfo[1]),1);
                         }
                     }
                 }

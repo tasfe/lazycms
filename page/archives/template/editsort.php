@@ -23,7 +23,6 @@
         <p><label><?php echo $module->L('label/pagetemplate1');?></label><input class="in3" type="text" id="pagetemplate1" name="pagetemplate1" maxlength="50" readonly="true" value="<?php echo $pagetemplate1;?>" />&nbsp;<button type="button" onclick="$('#pagetemplate1').browseFiles('<?php echo url('System','browseFiles');?>');"><?php echo L('common/browse');?></button></p>
         <p><label><?php echo $module->L('label/pagetemplate2');?></label><input class="in3" type="text" id="pagetemplate2" name="pagetemplate2" maxlength="50" readonly="true" value="<?php echo $pagetemplate2;?>" />&nbsp;<button type="button" onclick="$('#pagetemplate2').browseFiles('<?php echo url('System','browseFiles');?>');"><?php echo L('common/browse');?></button></p>
         <input name="sortid" type="hidden" value="<?php echo $sortid;?>" />
-        <input name="oldpath" type="hidden" value="<?php echo $sortpath;?>" />
         <input name="modelname" id="modelname" type="hidden" />
         <?php echo $module->but('submit');?>
         <script type="text/javascript">$('#modelid').setTemplate('#modelname','#sorttemplate2','#pagetemplate2');</script>

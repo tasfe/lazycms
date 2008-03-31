@@ -1102,7 +1102,7 @@ class LazySystem extends LazyCMS{
             $CreateFolder = "<a href=\"javascript:CreateFolder('{$path}');\" onclick=\"\$(this).getPoping('.toolbar','".url('System','browseFiles')."',{action:'getfolder',path:'{$path}',from:'{$from}'});return false;\"><img src=\"".LAZY_PATH.C('PAGES_PATH')."/system/images/os/crtdir.gif\" alt=\"Create Folder...\" class=\"os\"/></a>";
         }
         $HTML = '<form class="lz_form"><div class="toolbar"><span class="in">'.System::filesPath($path,$from).'</span><div>'.$DelFolder.$CreateFolder.$UpLoadFile.'</div></div>';
-        $HTML.= '<table class="lz_table" style="width:566px;margin:3px 0;clear:both;">';
+        $HTML.= '<table class="lz_table" style="width:565px;margin:3px 0;clear:both;">';
         if (is_dir($cPath)) {
             $HTML.= '<tr><th>'.L('filemanage/template/filename').'</th><th class="wp5">'.L('filemanage/template/filemtime').'</th></tr>';
             $dh = opendir($cPath);
@@ -1192,6 +1192,25 @@ class LazySystem extends LazyCMS{
     function _login(){
         try {
             $db = getConn();
+			$adminname = Cookie::get('adminname');
+			$adminpass = Cookie::get('adminpass');
+			if (!empty($adminname) && !empty($adminpass)) {
+				$where = $db->quoteInto('WHERE `adminname` = ?',$adminname);
+				$res   = $db->query("SELECT * FROM `#@_admin` {$where};");
+				if ($data = $db->fetch($res)) {
+					if ($adminpass==$data['adminpass']) {
+						// 登录成功，写登录记录
+						$row = array(
+							'adminname' => $adminname,
+							'ip'        => ip(),
+							'lognum'    => 1,
+							'logdate'   => now(),
+						);
+						$db->insert('#@_log',$row);
+						redirect(url('System'));
+					}
+				}
+			}
         } catch (Error $e) {
             if (is_file(LAZY_PATH.'install.php')) {
                 redirect(LAZY_PATH.'install.php');exit;

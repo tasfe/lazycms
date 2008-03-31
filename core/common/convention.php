@@ -39,7 +39,7 @@ return array(
     'TIME_ZONE'  => 'Asia/Shanghai', // 设置系统时区，请参考http://php.net/manual/zh/timezones.php
     'SITE_BASE'  => '/',             // 程序安装目录，最后用 / 结束
     'SITE_MODE'  => false,           // 网站模式，true 动态模式，false静态模式
-    'SITE_INDEX' => 'index.html',    // 默认首页，填写服务器可以支持的默认首页即可
+    'SITE_INDEX' => 'index.htm',     // 默认首页，填写服务器可以支持的默认首页即可
 
     /* 上传设置 */
     'UPFILE_PATH'       => 'up_files', // 上传文件夹
@@ -94,7 +94,6 @@ return array(
 
     /* Template设置 */
     'TEMPLATE_PATH' => 'template',
-    'TEMPLATE_EXT'  => '{php,html,shtml,shtm,htm}',
     'TEMPLATE_DEF'  => 'default.html',
 
     /* 分页标签 */

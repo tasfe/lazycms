@@ -1,6 +1,6 @@
 /* 全局定义 */
 html,body{width:100%; height:100%; margin:0; padding:0;overflow:hidden;}
-body,th,td,p{ line-height:130%; font-family:"Courier New"; font-size:12px;}
+body,th,td,p{ line-height:130%; font-family:Verdana; font-size:12px;}
 iframe{ overflow-x:hidden; }
 a img{ border:none; vertical-align:middle;}
 a:link{ color:#333333; text-decoration:none;}
@@ -10,6 +10,6 @@ a:active{ text-decoration:none; color:#333333;}
 /* toolbar */
 #toolbar{ width:100%; height:30px; line-height:30px; background:url(toolbar_bg.png) repeat-x left center; border-top:solid 1px #CCCCCC;}
 #toolbar .logo{ width:110px; margin-left:10px; display:block; float:left;}
-#toolbar .close{ float:right; margin:6px 13px 0 0;}
-#toolbar .close a{ width:16px; height:16px; display:block; overflow:hidden; background:url(arrow_out.png) no-repeat;}
-#toolbar .close a:hover{ background:url(arrow_out_longer.png) no-repeat;}
+#toolbar .loading{ width:102px; height:15px; margin:6px 0; margin-left:50px; background:#F9F9F9; border:solid 1px #000000; display:block; float:left; overflow:hidden;}
+#toolbar .loading div{ width:100px; position:absolute; color:#FF0000; text-align:center; font-size:12px; line-height:14px;}
+#toolbar .loading span{ height:13px; border:solid 1px #FFFFFF; background:#0000CC; display:block; overflow:hidden;}

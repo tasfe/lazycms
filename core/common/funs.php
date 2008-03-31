@@ -458,7 +458,9 @@ function snapImg($l1){
     if (preg_match_all('/<img.[^>]*src="(.[^>]+?)".[^>]*\/>/i',$l1,$imgs)) {
         foreach ($imgs[1] as $img) {
             if ($downImg = downPic($img)) {
-                $I1 = str_replace($img,C('SITE_BASE').ltrim($downImg,'/'),$I1);
+				if (validate($img,7)) {
+					$I1 = str_replace($img,C('SITE_BASE').ltrim($downImg,'/'),$I1);
+				}
             }
         }
     }
@@ -645,13 +647,14 @@ function pagelist($l1,$l2,$l3,$l4){
     $I1 = null;
     if (strpos($l1,'%24')!==false) { $l1 = str_replace('%24','$',$l1); }
     if (strpos($l1,'$')==0 || $l4==0) { return ; }
+	$l7 = C('SITE_MODE') ? 1 : null;
     if ($l2 > 3) {
-        $I1 = '<a href="'.str_replace('$','',$l1).'">1 ...</a>';
+        $I1 = '<a href="'.str_replace('$',$l7,$l1).'">1 ...</a>';
     }
     if ($l2 > 2) {
         $I1 .= '<a href="'.str_replace('$',$l2-1,$l1).'">&lsaquo;&lsaquo;</a>';
     } elseif ($l2==2) {
-        $I1 .= '<a href="'.str_replace('$','',$l1).'">&lsaquo;&lsaquo;</a>';
+        $I1 .= '<a href="'.str_replace('$',$l7,$l1).'">&lsaquo;&lsaquo;</a>';
     }
     $l5 = $l2-2;
     $l6 = $l2+7;
@@ -661,7 +664,7 @@ function pagelist($l1,$l2,$l3,$l4){
                 $I1 .= "<strong>$i</strong>";
             } else {
                 if ($i==1) {
-                    $I1 .= '<a href="'.str_replace('$','',$l1).'">'.$i.'</a>';
+                    $I1 .= '<a href="'.str_replace('$',$l7,$l1).'">'.$i.'</a>';
                 } else {
                     $I1 .= '<a href="'.str_replace('$',$i,$l1).'">'.$i.'</a>';
                 }
@@ -982,14 +985,6 @@ function getArrDir($l1,$l2){
     $I1 = ($l2=='dir') ? glob("{$l1}*",GLOB_ONLYDIR) : glob("{$l1}*.{$l2}",GLOB_BRACE);
     array_walk($I1,$l3);
     return $I1;
-}
-
-// formTmp *** *** www.LazyCMS.net *** ***
-function formTmp($l1,$l2,$l3=''){
-    if (strlen($l3)!==0) {
-        $l3 = '/inside/'.strtolower($l3);
-    }
-    return formOpts(LAZY_PATH.C('TEMPLATE_PATH').$l3,C('TEMPLATE_EXT'),$l1,$l2);
 }
 
 // formOpts *** *** www.LazyCMS.net *** ***
