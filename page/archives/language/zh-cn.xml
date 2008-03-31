@@ -82,6 +82,7 @@
         <select>请选择一个栏目</select>
         <deleteok>删除成功</deleteok>
         <createok>成功生成</createok>
+        <loading>正在左下角生成，你可以进行其他操作。</loading>
     </pop>
 
 </lazycms>

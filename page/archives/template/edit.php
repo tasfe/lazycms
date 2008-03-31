@@ -1,10 +1,10 @@
 <?php System::header();?>
 <?php $module->validate('outjs');?>
-<?php echo menu($module->L('title').'|'.url('Archives').';'.$module->L('common/addsort').'|'.url('Archives','EditSort').';'.$menu);?>
+<?php echo menu($module->L('title').'|'.url(C('CURRENT_PATH')).';'.$module->L('common/addsort').'|'.url(C('CURRENT_PATH'),'EditSort').';'.$menu);?>
 <div class="content">
-    <form action="<?php echo url('Archives','Edit');?>" method="post" class="lz_form">
+    <form action="<?php echo url(C('CURRENT_PATH'),'Edit');?>" method="post" class="lz_form">
         <p><label><?php echo $module->L('label/archive/sort');?></label>
-            <select name="sortid" id="sortid" onchange="$(this).jump('<?php echo url('Archives','Edit','sortid=$');?>');"<?php echo $disabled;?>>
+            <select name="sortid" id="sortid" onchange="$(this).jump('<?php echo url(C('CURRENT_PATH'),'Edit','sortid=$');?>');"<?php echo $disabled;?>>
                 <?php echo Archives::__sort(0,0,0,$sortid);?>
             </select>
         </p>

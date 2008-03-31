@@ -126,29 +126,15 @@ jQuery.extend(jQuery.fn,{
 					}
 				}
 			});
-			if (I1.substr(0,1)=='@') {
-				var $this = this;
-				var __params = {'submit':I1,'lists':lists,'amplitude':1}; $.extend(__params,_params);
-				var percent = loading(I1.substr(1,I1.length),__params.amplitude);
-				$.post(_url,__params,function(data){
-					if ((typeof data) == 'string'){
-						data = $.parseJSON(data);
-					}
-					$.extend(__params,data.params);
-					if (percent < 100) {
-						$this.gm(I1,__params,null,_url);
-					}
-				});
-			} else {
-				var _object = {
-					url:_url,
-					params:{'submit':I1,'lists':lists},
-					opts:_opts
-					};
-				$.extend(_object.params,_params);
-				$.posts(_object);
-			}
+			var _object = {
+				url:_url,
+				params:{'submit':I1,'lists':lists},
+				opts:_opts
+				};
+			$.extend(_object.params,_params);
+			$.posts(_object);
 		}
+		return this;
 	},
 	// 循环下拉列表 *** *** www.LazyCMS.net *** ***
 	updown: function(l1,l2,l3){
@@ -327,23 +313,10 @@ function checkALL(e){$.each($(e.form).find('input:checkbox'),function(i,a){ if (
 function winSize(){ var e = {}; if (self.innerHeight) { e.h = self.innerHeight; e.w = self.innerWidth; }else if(document.documentElement){ e.h = document.documentElement.clientHeight; e.w = document.documentElement.clientWidth; } else { e.h = document.body.clientHeight; e.w = document.body.clientWidth;} return e; }
 function loadImage(){ var arrImage = loadImage.arguments; var objImage = new Image(); for (var i=0;i<arrImage.length;i++) {	objImage.src = arrImage[i];	} }
 function loading(l1,l2){
-	var percent = 0;
-	var amplitude = l2||1;
+	var src = l2 || 'about:blank';
 	var toolbar = window.parent.$('#toolbar');
 	var loading = $('#' + l1,toolbar);
-		if (loading.is('div')) {
-			percent = loading.attr('percent');
-			percent = parseInt(percent) + parseInt(amplitude);
-			if (percent>=100) {
-				percent = 100;
-				setTimeout("$('#" + l1 + ",#" + l1 + " div',window.parent.$('#toolbar')).fadeOut(5000,function(){$('#" + l1 + ",#" + l1 + " div',window.parent.$('#toolbar')).remove()});",5000);
-			}
-			loading.attr('percent',percent);
-			loading.attr('title',l1 + ':' + percent + '%');
-			$('#' + l1 + ' div',toolbar).html(percent + '%');
-			$('#' + l1 + ' span',toolbar).css('width',percent + 'px');
-		} else {
-			toolbar.append('<div id="' + l1 + '" class="loading" percent="0" title="' + l1 + ':0%"><div>0%</div><span style="width:0px;">&nbsp;</span></div>');
+		if (loading.is('iframe')==false) {
+			toolbar.append('<iframe class="loading" src="' + src + '" name="' + l1 + '" id="' + l1 + '" marginwidth="0" marginheight="0" scrolling="no" frameborder="0"></iframe>');
 		}
-		return percent;
 }
