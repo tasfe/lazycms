@@ -271,7 +271,12 @@ function loading($l1,$l2,$l3){
     $HTML.= '</head><body><div class="loading"><div>'.$l2.'%</div><span style="width:'.$l2.'px;">&nbsp;</span></div></body></html>';
     return $HTML;
 }
-
+// exeloading *** *** www.LazyCMS.net *** ***
+function exeloading($l1,$l2){
+    $js = '<script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.js"></script><script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.lazycms.js"></script>';
+	$js.= "<script type=\"text/javascript\">loading('{$l1}','{$l2}');</script>";
+    echo $js;
+}
 // ubbencode *** *** www.LazyCMS.net *** ***
 function ubbencode($l1){
     if (strlen($l1)==0) {return ;}

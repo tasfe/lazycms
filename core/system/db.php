@@ -121,7 +121,7 @@ abstract class DB extends Lazy{
     /* Insert */
     
     // insert *** *** www.LazyCMS.net *** ***
-    public function insert($l1,array $l2){ // $l1:table, $l2:array
+    public function insert($l1,$l2){ // $l1:table, $l2:array
         $cols = array();
         $vals = array();
         foreach ($l2 as $col => $val) {

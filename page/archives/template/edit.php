@@ -32,7 +32,9 @@
         </p>
         <?php echo $module->outHTML;?>
         <input name="aid" type="hidden" value="<?php echo $aid;?>" />
-        <?php if (!empty($aid)):?><input name="sortid" type="hidden" value="<?php echo $sortid;?>" /><?php endif;?>
+        <?php if (!empty($aid)):?>
+        <input name="sortid" type="hidden" value="<?php echo $sortid;?>" />
+        <?php endif;?>
         <?php echo $module->but('submit');?>
     </form>
 </div>

@@ -438,7 +438,6 @@ class LazyArchives extends LazyCMS{
                     $aid = $db->lastInsertId();
                     $addrows = array_merge($formData,array('aid'=>$aid));
                     $db->insert($model['addtable'],$addrows);
-                    redirect(url(C('CURRENT_PATH'),'List','sortid='.$sortid));
                 } else { // update
                     $set = array(
                         'title'   => (string)$title,
@@ -454,8 +453,11 @@ class LazyArchives extends LazyCMS{
                         $where = $db->quoteInto('`aid` = ?',$aid);
                         $db->update($model['addtable'],$formData,$where);
                     }
-                    redirect(url(C('CURRENT_PATH'),'List','sortid='.$sortid));
                 }
+                // 更新列表，自动添加一个更新loading到toolbar
+                if ($upsort) { exeloading("createsort_{$sortid}",url(C('CURRENT_PATH'),'loading',"submit=createsort&lists={$sortid}")); }
+                Archives::viewArchive($sortid,$aid);
+                redirect(url(C('CURRENT_PATH'),'List','sortid='.$sortid));return true;
             }
         } else {
             if (!empty($aid)) {
