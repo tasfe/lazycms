@@ -252,9 +252,9 @@ function loading($l1,$l2,$l3){
     $HTML.= '<script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.js"></script>';
     $HTML.= '<script language="javascript" type="text/javascript">';
     if ((int)$l2==100) {
-        $HTML.= "window.setTimeout(\"\$('#{$l1}',window.parent.\$('#toolbar')).fadeOut(5000,function(){\$('#{$l1}',window.parent.\$('#toolbar')).remove()});\",5000);";
+        $HTML.= "window.setTimeout(\"\$('#{$l1}',window.parent.\$('#toolbar')).fadeOut('slow',function(){\$('#{$l1}',window.parent.\$('#toolbar')).remove()});\",3000);";
     } else {
-        $HTML.= 'window.setTimeout(function () { self.location.href=\''.$l3.'\'; }, 0);';
+        $HTML.= '$(function () { self.location.href=\''.$l3.'\'; });';
     }
     $HTML.= '</script>';
     $HTML.= '<noscript><meta http-equiv="refresh" content="0;url='.$l3.'" /></noscript>';

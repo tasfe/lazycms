@@ -111,7 +111,7 @@ class LazyArchives extends LazyCMS{
                         'pagetemplate2' => $data[9],
                     );
                     $db->insert('#@_sort',$row);
-                    $sortid = $db->lastInsertId();
+                    //$sortid = $db->lastInsertId();
                 } else { // update
                     $set = array(
                         'sortid1'       => $data[0],
@@ -127,7 +127,6 @@ class LazyArchives extends LazyCMS{
                     $where = $db->quoteInto('`sortid` = ?',$sortid);
                     $db->update('#@_sort',$set,$where);
                 }
-                Archives::createSort($sortid);
                 redirect(url(C('CURRENT_PATH')));
             }
         } else {
@@ -179,7 +178,13 @@ class LazyArchives extends LazyCMS{
                 $this->poping($this->L('pop/createok'),1);
                 break;
             case 'createsort' :
-                $this->poping($this->L('pop/loading')."<script type=\"text/javascript\">loading('{$submit}','".url(C('CURRENT_PATH'),'loading',"submit={$submit}&lists={$lists}")."');</script>",0);
+				$I2 = explode(',',$lists);
+				$js = '<script type="text/javascript">';
+				foreach ($I2 as $sortid){
+					$js.= "loading('{$submit}_{$sortid}','".url(C('CURRENT_PATH'),'loading',"submit={$submit}&lists={$sortid}")."');";
+				}
+				$js.= '</script>';
+                $this->poping($this->L('pop/loading').$js,0);
                 break;
             case 'createpage' :
                 $this->poping($this->L('pop/createok'),1);
@@ -221,6 +226,23 @@ class LazyArchives extends LazyCMS{
                 $this->poping(L('error/invalid'),0);
                 break;
         }
+    }
+	// _loading *** *** www.LazyCMS.net *** ***
+    function _loading(){
+		clearCache();
+        $this->checker(C('CURRENT_PATH'));
+		$db  = getConn();
+        $submit  = isset($_GET['submit']) ? (string)$_GET['submit'] : null;
+        $lists   = isset($_GET['lists']) ? (string)$_GET['lists'] : null;
+		switch($submit){
+			case 'createsort' :
+				$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+				$percent = Archives::viewSort($lists,$page,true);
+				if ($percent<100) { $page++; }
+				echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_PATH'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
+				break;
+		}
+        
     }
     // _list *** *** www.LazyCMS.net *** ***
     function _list(){
@@ -456,16 +478,5 @@ class LazyArchives extends LazyCMS{
                 break;
         }
     }
-    // _loading *** *** www.LazyCMS.net *** ***
-    function _loading(){
-        $submit  = isset($_GET['submit']) ? (string)$_GET['submit'] : null;
-        $lists   = isset($_GET['lists']) ? (string)$_GET['lists'] : null;
-        $percent = isset($_GET['percent']) ? (int)$_GET['percent'] : 0;
-        if ($percent < 100) {
-            $percent = $percent + 5;
-        } else {
-            $percent = 100;
-        }
-        echo loading($submit,$percent,url(C('CURRENT_PATH'),'loading',"submit={$submit}&lists={$lists}&percent={$percent}"));
-    }
+    
 }

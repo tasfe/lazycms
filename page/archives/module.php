@@ -114,20 +114,12 @@ class Archives{
             }
         }
     }
-    // createSort *** *** www.LazyCMS.net *** ***
-    static function createSort($l1,$num,$page=1){
-        if (C('SITE_MODE')) { return ; }
-        $ids = $l1;
-        $db  = getConn();
-		$I2  = explode(',',$ids);
-    }
     // viewSort *** *** www.LazyCMS.net *** ***
-    static function viewSort($l1,$page=1){
+    static function viewSort($l1,$page=1,$type=false){
         $sortid = $l1; $tmpList = null;
 		$page   = !empty($page) ? (int)$page : 1;
         $db     = getConn();
-        $model  = self::getModel($sortid);
-        if (!$model) { return ;}
+        $model  = self::getModel($sortid); if (!$model) { return ;}
         $fields = self::getFields($model['modelid']);
 
         $path = self::showSort($sortid);
@@ -164,6 +156,7 @@ class Archives{
         if ((int)$page > (int)$totalPages) {
             $page = $totalPages;
         }
+		$percent = round($page/$totalPages*100,2);
         $strSQL .= ' LIMIT '.$jsNumber.' OFFSET '.($page-1)*$jsNumber.';';
         $res = $db->query($strSQL);
         $i = 1;
@@ -198,7 +191,11 @@ class Archives{
 				saveFile($arcPath,$outHTML);
 			}
 		}
-        return $outHTML;
+		if ($type) {
+			return $percent;
+		} else {
+			return $outHTML;
+		}
     }
 	// pagelist *** *** www.LazyCMS.net *** ***
 	static function pagelist($l1,$l2,$l3,$l4){
