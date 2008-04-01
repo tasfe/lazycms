@@ -138,7 +138,7 @@ class System{
             }
             $row = array_merge($row,array(
                 'modelid'    => $modelid,
-                'fieldorder' => $db->max('fieldid','fields'),
+                'fieldorder' => $db->max('fieldid','#@_fields'),
                 'fieldindex' => (string)$row['fieldindex'],
             ));
             if (instr('text,mediumtext,datetime',$row['fieldtype'])) {
