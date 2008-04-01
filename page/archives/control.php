@@ -75,7 +75,8 @@ class LazyArchives extends LazyCMS{
 	function _showarchive(){
 		$aid    = isset($_GET['aid']) ? (int)$_GET['aid'] : 0;
 		$sortid = isset($_GET['sortid']) ? (int)$_GET['sortid'] : 0;
-		echo Archives::viewArchive($sortid,$aid);
+		$page   = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+		echo Archives::viewArchive($sortid,$aid,$page);
 	}
     // _editsort *** *** www.LazyCMS.net *** ***
     function _editsort(){

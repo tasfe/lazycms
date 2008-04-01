@@ -244,7 +244,7 @@ class Archives{
 		return '<div class="pagelist"><em>'.$l4.'</em>'.$I1.'</div>';
 	}
     // showArchive *** *** www.LazyCMS.net *** ***
-    static function showArchive($l1,$l2){
+    static function showArchive($l1,$l2,$l3=null){
         $aid   = $l1;
         $model = $l2;
         $db    = getConn();       
@@ -252,14 +252,19 @@ class Archives{
         $res   = $db->query("SELECT `a`.`sortpath`,`b`.`path` FROM `#@_sort` AS `a` LEFT JOIN `".$model['maintable']."` AS `b` ON `a`.`sortid` = `b`.`sortid` {$where}");
         if ($data = $db->fetch($res,0)) {
             if (C('SITE_MODE')) {
-                return url(C('CURRENT_PATH'),'ShowArchive','sortid='.$model['sortid'].'&aid='.$aid);
+				if (!empty($l3)) {
+					$page = '&page='.$l3;
+				} else {
+					$page = null;
+				}
+                return url(C('CURRENT_PATH'),'ShowArchive','sortid='.$model['sortid'].'&aid='.$aid.$page);
             } else {
                 return C('SITE_BASE').$data[0].'/'.$data[1];
             }
         }
     }
 	// viewArchive *** *** www.LazyCMS.net *** ***
-	static function viewArchive($l1,$l2,$l3=null){
+	static function viewArchive($l1,$l2,$page=1){
 		$sortid = $l1; $aid = $l2; $db = getConn();
 		$model  = self::getModel($sortid);
 		$where = $db->quoteInto('WHERE `id` = ?',$aid);
@@ -274,7 +279,6 @@ class Archives{
 			$tag->value('title',encode(htmlencode($data['title'])));
 			$tag->value('sortname',encode(htmlencode($model['sortname'])));
 			$tag->value('sortpath',encode(self::showSort($sortid)));
-			$tag->value('path',encode(self::showArchive($data['id'],$model)));
 			if (is_file(LAZY_PATH.$data['img'])) {
 				$data['img'] = C('SITE_BASE').$data['img'];
 			} else {
@@ -282,11 +286,40 @@ class Archives{
 			}
 			$tag->value('image',encode($data['img']));
 			$tag->value('date',encode($data['date']));
+			
 			$fields = self::getFields($model['modelid']);
-			foreach ($fields as $k) {
-                $tag->value($k,encode($data[$k]));
-            }
-			$outHTML = $tag->create($HTML);
+
+			$result = $db->query("SELECT * FROM `#@_fields` WHERE `modelid` ='".$model['modelid']."' AND `inputtype`='editor';");
+			if ($field = $db->fetch($result)){// 有编辑器
+				$contents = explode(C('WEB_BREAK'),$data[$field['fieldename']]);
+				$length   = count($contents);
+				// 动态模式，只浏览不生成
+				if (C('SITE_MODE')) {
+					$page = (int)$page > (int)$length ? $length : $page;
+					$tag->value('path',encode(self::showArchive($data['id'],$model,$page)));
+					$tag->value('pagelist',encode(self::pagelists(self::showArchive($data['id'],$model,'$'),$length,$page)));
+					$tag->value($field['fieldename'],encode($contents[$page-1]));
+					$outHTML = $tag->create($HTML);
+				} else {
+					for ($i=0;$i<$length;$i++) {
+						foreach ($fields as $k) {
+							$tag->value($k,encode($data[$k]));
+						}
+						if ((int)$page > 0) {
+							$tag->value($field['fieldename'],encode($contents[$page-1]));
+						} else {
+							$tag->value($field['fieldename'],encode($contents[$i]));
+						}
+						$outHTML = $tag->create($HTML);
+					}
+				}
+			} else { // 没有编辑器的情况，不需要分页
+				$tag->value('path',encode(self::showArchive($data['id'],$model)));
+				foreach ($fields as $k) {
+					$tag->value($k,encode($data[$k]));
+				}
+				$outHTML = $tag->create($HTML);
+			}
 			if (!C('SITE_MODE')) { 
 				// 这里写生成
 			}
@@ -294,6 +327,26 @@ class Archives{
 			$outHTML = null;
 		}
 		return $outHTML;
+	}
+	// pagelists *** *** www.LazyCMS.net *** ***
+	static function pagelists($l1,$l2,$l3){
+		// url,总页数,page
+		$I1 = null;
+		if (strpos($l1,'%24')!==false) { $l1 = str_replace('%24','$',$l1); }
+		if (strpos($l1,'$')===false) { return ; }
+		$l4 = C('SITE_MODE') ? 1 : null;
+		for ($i=1; $i<=$l2; $i++) {
+			if ((int)$i==(int)$l3) {
+				$I1 .= "<strong>{$i}</strong>";
+			} else {
+				if ($i==1) {
+					$I1 .= '<a href="'.str_replace('$',$l4,$l1).'">'.$i.'</a>';
+				} else {
+					$I1 .= '<a href="'.str_replace('$',$i,$l1).'">'.$i.'</a>';
+				}
+			}
+		}
+		return $I1;
 	}
     // isOpen *** *** www.LazyCMS.net *** ***
     static function isOpen($l1){
