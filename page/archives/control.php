@@ -67,10 +67,16 @@ class LazyArchives extends LazyCMS{
     }
     // _showsort *** *** www.LazyCMS.net *** ***
     function _showsort(){
-        $sortid = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : null;
+        $sortid = isset($_GET['sortid']) ? (int)$_GET['sortid'] : null;
 		$page   = isset($_GET['page']) ? (int)$_GET['page'] : null;
         echo Archives::viewSort($sortid,$page);
     }
+	// _showarchive *** *** www.LazyCMS.net *** ***
+	function _showarchive(){
+		$aid    = isset($_GET['aid']) ? (int)$_GET['aid'] : 0;
+		$sortid = isset($_GET['sortid']) ? (int)$_GET['sortid'] : 0;
+		echo Archives::viewArchive($sortid,$aid);
+	}
     // _editsort *** *** www.LazyCMS.net *** ***
     function _editsort(){
         $this->checker(C('CURRENT_PATH'));
@@ -253,7 +259,7 @@ class LazyArchives extends LazyCMS{
         $dp = O('Record');
         $dp->create("SELECT * FROM `".$model['maintable']."` WHERE `sortid`='{$sortid}' ORDER BY `order` DESC,`id` DESC");
         $dp->action = url(C('CURRENT_PATH'),'Set','sortid='.$sortid);
-        $dp->url = url(C('CURRENT_PATH'),'List','page=$');
+        $dp->url = url(C('CURRENT_PATH'),'List','sortid='.$sortid.'&page=$');
         $dp->but = $dp->button().$dp->plist();
         $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"".url(C('CURRENT_PATH'),'Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."\">' + K[1] + '</a>'";
         $dp->td  = 'ison(K[2])';

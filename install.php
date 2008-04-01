@@ -97,7 +97,7 @@ $keywords  = isset($_POST['keywords']) ? $_POST['keywords'] : null;
 $sitemode  = isset($_POST['sitemode']) ? $_POST['sitemode'] : C('SITE_MODE');
 $dsnPrefix = isset($_POST['dsn_prefix']) ? $_POST['dsn_prefix'] : C('DSN_PREFIX');
 $dsnConfig = isset($_POST['dsn_config']) ? $_POST['dsn_config'] : C('DSN_CONFIG');
-$modules   = isset($_POST['modules']) ? $_POST['modules'] : null;
+$modules   = isset($_POST['modules']) ? $_POST['modules'] : 'archives,onepage';
 
 $adminname     = isset($_POST['adminname']) ? $_POST['adminname'] : null;
 $adminpass     = isset($_POST['adminpass']) ? $_POST['adminpass'] : null;

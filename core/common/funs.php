@@ -43,7 +43,7 @@ function using($l1,$l2='',$l3='.php',$l4=false){
 // replace *** *** www.LazyCMS.net *** ***
 function replace($l1,$l2,$l3,$l4=-1){
     //$l1:pattern, $l2:replacement, $l3:subject, $l4:limit
-    return preg_replace($l1,$l2,$l3,$l4=-1);
+    return preg_replace($l1,$l2,$l3,$l4);
 }
 
 // stripslashes_deep *** *** www.LazyCMS.net *** ***

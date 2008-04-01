@@ -96,6 +96,9 @@ class Record extends Lazy{
             $this->length = $this->size;
         } elseif ((int)$this->page >= (int)$this->totalPages) {
             $this->length = fmod($this->totalRows,$this->size);
+			if ($this->length==0) {
+				$this->length = $this->size;
+			}
         }
         if ((int)$this->page > (int)$this->totalPages) {
             $this->page = $this->totalPages;

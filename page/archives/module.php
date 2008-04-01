@@ -168,6 +168,12 @@ class Archives{
             $tag->value('sortpath',encode($path));
             $tag->value('title',encode(htmlencode($data['title'])));
             $tag->value('path',encode(self::showArchive($data['id'],$model)));
+			if (is_file(LAZY_PATH.$data['img'])) {
+				$data['img'] = C('SITE_BASE').$data['img'];
+			} else {
+				$data['img'] = C('SITE_BASE').C('PAGES_PATH').'/system/images/notpic.gif';
+			}
+			$tag->value('image',encode($data['img']));
             $tag->value('date',encode($data['date']));
             $tag->value('zebra',encode(fmod($zebra,$i) ? 1 : 0));
             foreach ($fields as $k) {
@@ -246,12 +252,49 @@ class Archives{
         $res   = $db->query("SELECT `a`.`sortpath`,`b`.`path` FROM `#@_sort` AS `a` LEFT JOIN `".$model['maintable']."` AS `b` ON `a`.`sortid` = `b`.`sortid` {$where}");
         if ($data = $db->fetch($res,0)) {
             if (C('SITE_MODE')) {
-                return url(C('CURRENT_PATH'),'ShowArchive','aid='.$aid);
+                return url(C('CURRENT_PATH'),'ShowArchive','sortid='.$model['sortid'].'&aid='.$aid);
             } else {
                 return C('SITE_BASE').$data[0].'/'.$data[1];
             }
         }
     }
+	// viewArchive *** *** www.LazyCMS.net *** ***
+	static function viewArchive($l1,$l2,$l3=null){
+		$sortid = $l1; $aid = $l2; $db = getConn();
+		$model  = self::getModel($sortid);
+		$where = $db->quoteInto('WHERE `id` = ?',$aid);
+        $res   = $db->query("SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` {$where};");
+        if ($data = $db->fetch($res)) {
+			$tag  = O('Tags');
+			$HTML = $tag->read($model['pagetemplate1'],$model['pagetemplate2']);
+			// 替换模板中的标签
+			$tag->clear();
+			$tag->value('id',encode($data['id']));
+            $tag->value('sortid',encode($data['sortid']));
+			$tag->value('title',encode(htmlencode($data['title'])));
+			$tag->value('sortname',encode(htmlencode($model['sortname'])));
+			$tag->value('sortpath',encode(self::showSort($sortid)));
+			$tag->value('path',encode(self::showArchive($data['id'],$model)));
+			if (is_file(LAZY_PATH.$data['img'])) {
+				$data['img'] = C('SITE_BASE').$data['img'];
+			} else {
+				$data['img'] = C('SITE_BASE').C('PAGES_PATH').'/system/images/notpic.gif';
+			}
+			$tag->value('image',encode($data['img']));
+			$tag->value('date',encode($data['date']));
+			$fields = self::getFields($model['modelid']);
+			foreach ($fields as $k) {
+                $tag->value($k,encode($data[$k]));
+            }
+			$outHTML = $tag->create($HTML);
+			if (!C('SITE_MODE')) { 
+				// 这里写生成
+			}
+        } else {
+			$outHTML = null;
+		}
+		return $outHTML;
+	}
     // isOpen *** *** www.LazyCMS.net *** ***
     static function isOpen($l1){
         $db    = getConn();
