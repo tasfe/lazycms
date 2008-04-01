@@ -64,6 +64,16 @@ function array_unset_empty($l1){
     return $I1;
 }
 
+// isfile *** *** www.LazyCMS.net *** ***
+function isfile($l1){
+    $paths = explode('/',$l1); $count = count($paths);
+    if (strpos($paths[$count-1],'.')!==false){
+        return true;
+    } else {
+        return false;
+    }
+}
+
 // defmenu *** *** www.LazyCMS.net *** ***
 function defmenu(){
     return L("diymenu/@title")."|url('System','DiyMenu')\r\n"

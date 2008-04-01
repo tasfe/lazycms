@@ -13,7 +13,6 @@
         <editpage>编辑文档</editpage>
         <addsort>添加分类</addsort>
         <editsort>编辑分类</editsort>
-        <create>全部生成</create>
         <createsort>只生成列表</createsort>
         <createpage>只生成文档</createpage>
         <createall>生成列表及文档</createall>

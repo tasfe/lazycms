@@ -115,13 +115,13 @@ class Archives{
         }
     }
     // viewSort *** *** www.LazyCMS.net *** ***
-    static function viewSort($l1,$page=1,$type=false){
+    static function viewSort($l1,$page=1,$type=false,$isCreatePage=false){
         $sortid = $l1; $tmpList = null;
 		$page   = !empty($page) ? (int)$page : 1;
         $db     = getConn();
-        $model  = self::getModel($sortid); if (!$model) { return ;}
+        $model  = self::getModel($sortid);
         $fields = self::getFields($model['modelid']);
-
+        
         $path = self::showSort($sortid);
         $tag  = O('Tags');
         $HTML = $tag->read($model['sorttemplate1'],$model['sorttemplate2']);
@@ -150,7 +150,7 @@ class Archives{
         $HTML = $tag->create($HTML);
 
 		$strSQL = "SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` WHERE `a`.`sortid` = '{$sortid}' ORDER BY `a`.`order` {$jsOrder},`a`.`sortid` {$jsOrder}";
-		$totalRows  = $db->count($strSQL);
+		$totalRows  = $db->count($strSQL); if ($totalRows==0) { return L('error/rsnot'); }
 		$totalPages = ceil($totalRows/$jsNumber);
         $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
         if ((int)$page > (int)$totalPages) {
@@ -181,6 +181,9 @@ class Archives{
             }
             $tmpList.= $tag->createhtm($jsHTML);
             $i++;
+            if ($isCreatePage && !C('SITE_MODE')) {
+                self::viewArchive($sortid,$data['id']);
+            }
         }
         $outHTML = str_replace($rand,$tmpList,$HTML);
 		$pageExt = C('SITE_MODE') ? '&page=$' : '/index$'.C('HTML_URL_SUFFIX');
@@ -259,13 +262,27 @@ class Archives{
 				}
                 return url(C('CURRENT_PATH'),'ShowArchive','sortid='.$model['sortid'].'&aid='.$aid.$page);
             } else {
-                return C('SITE_BASE').$data[0].'/'.$data[1];
+                if (!empty($l3)) {
+                    if (is_numeric($l3) && (int)$l3==1) {
+                        $l3 = null;
+                    }
+                    $l4 = $data[1];
+                    if (isfile($l4)) {
+                        $l5 = strrpos($l4,'.');
+                        $l4 = substr($l4,0,$l5).$l3.substr($l4,$l5,strlen($l4));
+                    } else {
+                        $l4.= $l3;
+                    }
+                } else {
+                    $l4 = $data[1];
+                }
+                return C('SITE_BASE').$data[0].'/'.$l4;
             }
         }
     }
 	// viewArchive *** *** www.LazyCMS.net *** ***
-	static function viewArchive($l1,$l2,$page=1){
-		$sortid = $l1; $aid = $l2; $db = getConn();
+	static function viewArchive($l1,$l2,$l3=1){
+		$sortid = $l1; $aid = $l2; $page = $l3; $db = getConn();
 		$model  = self::getModel($sortid);
 		$where = $db->quoteInto('WHERE `id` = ?',$aid);
         $res   = $db->query("SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` {$where};");
@@ -288,9 +305,9 @@ class Archives{
 			$tag->value('date',encode($data['date']));
 			
 			$fields = self::getFields($model['modelid']);
-
+            // 有编辑器，动态模式，分页
 			$result = $db->query("SELECT * FROM `#@_fields` WHERE `modelid` ='".$model['modelid']."' AND `inputtype`='editor';");
-			if ($field = $db->fetch($result)){// 有编辑器
+			if ($field = $db->fetch($result)){
 				$contents = explode(C('WEB_BREAK'),$data[$field['fieldename']]);
 				$length   = count($contents);
 				// 动态模式，只浏览不生成
@@ -299,39 +316,62 @@ class Archives{
 					$tag->value('path',encode(self::showArchive($data['id'],$model,$page)));
 					$tag->value('pagelist',encode(self::pagelists(self::showArchive($data['id'],$model,'$'),$length,$page)));
 					$tag->value($field['fieldename'],encode($contents[$page-1]));
-					$outHTML = $tag->create($HTML);
-				} else {
-					for ($i=0;$i<$length;$i++) {
-						foreach ($fields as $k) {
-							$tag->value($k,encode($data[$k]));
-						}
-						if ((int)$page > 0) {
-							$tag->value($field['fieldename'],encode($contents[$page-1]));
-						} else {
-							$tag->value($field['fieldename'],encode($contents[$i]));
-						}
-						$outHTML = $tag->create($HTML);
-					}
+					return $tag->create($HTML);
 				}
-			} else { // 没有编辑器的情况，不需要分页
-				$tag->value('path',encode(self::showArchive($data['id'],$model)));
-				foreach ($fields as $k) {
-					$tag->value($k,encode($data[$k]));
-				}
-				$outHTML = $tag->create($HTML);
+			} else {
+                $contents = null;
+                $length   = -1;
+            }
+
+            // 静态模式，且有编辑器，分页生成
+			if (!C('SITE_MODE') && (int)$length > 0) { 
+                for ($i=0;$i<$length;$i++) {
+                    foreach ($fields as $k) { $tag->value($k,encode($data[$k])); }
+                    $tag->value('path',encode(self::showArchive($data['id'],$model,($i+1))));
+                    $tag->value('pagelist',encode(self::pagelists(self::showArchive($data['id'],$model,'$'),$length,($i+1))));
+                    if ((int)$page > 1) {
+                        $tag->value($field['fieldename'],encode($contents[$page-1]));
+                    } else {
+                        $tag->value($field['fieldename'],encode($contents[$i]));
+                    }
+                    $outHTML = $tag->create($HTML);
+                    // 生成每一页
+                    $path = $data['path'];
+                    if ((int)$i>0) {
+                        if (isfile($path)) {
+                            $instr = strrpos($path,'.');
+                            $path = substr($path,0,$instr).($i+1).substr($path,$instr,strlen($path));
+                        } else {
+                            $path.= $i+1;
+                        }    
+                    }
+                    self::createHTML($model['sortpath'],$path,$outHTML);
+                }
+                return ;
 			}
-			if (!C('SITE_MODE')) { 
-				// 这里写生成
-			}
+
+            // 没有编辑器，动态模式 AND 没有编辑器静态模式
+            $tag->value('path',encode(self::showArchive($data['id'],$model)));
+            if (!empty($fields)) {
+                foreach ($fields as $k) {
+                    $tag->value($k,encode($data[$k]));
+                }
+            }
+            $outHTML = $tag->create($HTML);
+
+            if (!C('SITE_MODE')) {
+                // 静态模式，没有分页，只生成一页
+                self::createHTML($model['sortpath'],$data['path'],$outHTML);
+            }
         } else {
-			$outHTML = null;
-		}
-		return $outHTML;
+            $outHTML = null;
+        }
+        return $outHTML;
 	}
 	// pagelists *** *** www.LazyCMS.net *** ***
 	static function pagelists($l1,$l2,$l3){
 		// url,总页数,page
-		$I1 = null;
+		$I1 = null;if ($l2<=1) { return ; }
 		if (strpos($l1,'%24')!==false) { $l1 = str_replace('%24','$',$l1); }
 		if (strpos($l1,'$')===false) { return ; }
 		$l4 = C('SITE_MODE') ? 1 : null;
@@ -348,6 +388,24 @@ class Archives{
 		}
 		return $I1;
 	}
+    // createHTML *** *** www.LazyCMS.net *** ***
+    static function createHTML($l1,$l2,$l3){
+        // $l1:目录路径, $l2:文件路径, $l3:需要保存的内容
+        // 生成文件
+        $paths = explode('/',$l2);
+        $count = count($paths);
+        if (strpos($paths[$count-1],'.')!==false){ //文件
+            if (strpos($l2,'/')!==false){
+                $path = substr($l2,0,strlen($l2)-strlen($paths[$count-1]));
+                mkdirs(LAZY_PATH.$l1.'/'.$path);
+            }
+            mkdirs(LAZY_PATH.$l1);
+            saveFile(LAZY_PATH.$l1.'/'.$l2,$l3);
+        } else { //目录
+            mkdirs(LAZY_PATH.$l1.'/'.$l2);
+            saveFile(LAZY_PATH.$l1.'/'.$l2.'/'.C('SITE_INDEX'),$l3);
+        }
+    }
     // isOpen *** *** www.LazyCMS.net *** ***
     static function isOpen($l1){
         $db    = getConn();

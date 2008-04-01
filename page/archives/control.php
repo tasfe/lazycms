@@ -43,7 +43,7 @@ class LazyArchives extends LazyCMS{
                                     GROUP BY `s`.`sortid` 
                                     ORDER BY `s`.`sortorder` DESC,`s`.`sortid` DESC");
         $dp->length = $db->count($dp->result);
-        $button  = !C('SITE_MODE') ? '-|create:'.$this->L('common/create').'|-|createsort:'.$this->L('common/createsort').'|createpage:'.$this->L('common/createpage').'|-|createall:'.$this->L('common/createall') : null;
+        $button  = !C('SITE_MODE') ? '-|createsort:'.$this->L('common/createsort').'|createpage:'.$this->L('common/createpage').'|-|createall:'.$this->L('common/createall') : null;
         $dp->but = $dp->button($button);
         $dp->td  = "cklist(K[0]) + K[8] + K[0] + ') <a href=\"".url(C('CURRENT_PATH'),'List','sortid=$',"' + K[0] + '")."\">' + K[2] + '</a>'";
         $dp->td  = "K[3]";
@@ -181,9 +181,6 @@ class LazyArchives extends LazyCMS{
                 $db->exec("DELETE FROM `#@_sort` WHERE `sortid` IN({$lists});");
                 $this->poping($this->L('pop/deleteok'),1);
                 break;
-            case 'create' :
-                $this->poping($this->L('pop/createok'),1);
-                break;
             case 'createsort' :
 				$I2 = explode(',',$lists);
 				$js = '<script type="text/javascript">';
@@ -194,10 +191,22 @@ class LazyArchives extends LazyCMS{
                 $this->poping($this->L('pop/loading').$js,0);
                 break;
             case 'createpage' :
-                $this->poping($this->L('pop/createok'),1);
+                $I2 = explode(',',$lists);
+				$js = '<script type="text/javascript">';
+				foreach ($I2 as $sortid){
+					$js.= "loading('{$submit}_{$sortid}','".url(C('CURRENT_PATH'),'loading',"submit={$submit}&lists={$sortid}")."');";
+				}
+				$js.= '</script>';
+                $this->poping($this->L('pop/loading').$js,0);
                 break;
             case 'createall' :
-                $this->poping($this->L('pop/createok'),1);
+                $I2 = explode(',',$lists);
+				$js = '<script type="text/javascript">';
+				foreach ($I2 as $sortid){
+					$js.= "loading('{$submit}_{$sortid}','".url(C('CURRENT_PATH'),'loading',"submit={$submit}&lists={$sortid}")."');";
+				}
+				$js.= '</script>';
+                $this->poping($this->L('pop/loading').$js,0);
                 break;
             case 'updown' :
                 $updown = isset($_POST['updown']) ? (string)$_POST['updown'] : null;
@@ -248,6 +257,44 @@ class LazyArchives extends LazyCMS{
 				if ($percent<100) { $page++; }
 				echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_PATH'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
 				break;
+            case 'createpage' :
+                $model = Archives::getModel($lists);
+                $page  = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                $strSQL = "SELECT * FROM `".$model['maintable']."` WHERE `sortid`='{$lists}'";
+                $pageSize   = 1;
+		        $totalRows  = $db->count($strSQL);
+                $totalPages = ceil($totalRows/$pageSize);
+                $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
+                if ((int)$page > (int)$totalPages) {
+                    $page = $totalPages;
+                }
+                $percent = round($page/$totalPages*100,2);
+                $strSQL .= ' LIMIT '.$pageSize.' OFFSET '.($page-1)*$pageSize.';';
+                $res = $db->query($strSQL);
+                while ($data = $db->fetch($res)) {
+				    Archives::viewArchive($lists,$data['id']);
+                }
+				if ($percent<100) { $page++; }
+				echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_PATH'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
+                break;
+            case 'createall' :
+				$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+				$percent = Archives::viewSort($lists,$page,true,true);
+				if ($percent<100) { $page++; }
+				echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_PATH'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
+				break;
+            case 'create' :
+                $I2 = explode(',',$lists);
+                $count = count($I2);
+				$page = isset($_GET['page']) ? (int)$_GET['page'] : 0;
+                $sortid = isset($_GET['sortid']) ? (int)$_GET['sortid'] : 0;
+                if ((int)$page < (int)$count) {
+                    Archives::viewArchive($sortid,$I2[$page]);
+                }
+                $percent = round($page/$count*100,2);
+				if ($percent<100) { $page++; }
+				echo loading("{$submit}",$percent,url(C('CURRENT_PATH'),'loading',"submit={$submit}&lists={$lists}&sortid={$sortid}&page={$page}"));
+				break;
 		}
         
     }
@@ -261,7 +308,8 @@ class LazyArchives extends LazyCMS{
         $dp->create("SELECT * FROM `".$model['maintable']."` WHERE `sortid`='{$sortid}' ORDER BY `order` DESC,`id` DESC");
         $dp->action = url(C('CURRENT_PATH'),'Set','sortid='.$sortid);
         $dp->url = url(C('CURRENT_PATH'),'List','sortid='.$sortid.'&page=$');
-        $dp->but = $dp->button().$dp->plist();
+        $button  = !C('SITE_MODE') ? 'create:'.L('common/create') : null;
+        $dp->but = $dp->button($button).$dp->plist();
         $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"".url(C('CURRENT_PATH'),'Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."\">' + K[1] + '</a>'";
         $dp->td  = 'ison(K[2])';
         $dp->td  = 'ison(K[3])';
@@ -402,8 +450,10 @@ class LazyArchives extends LazyCMS{
                     );
                     $where = $db->quoteInto('`id` = ?',$aid);
                     $db->update($model['maintable'],$set,$where);
-                    $where = $db->quoteInto('`aid` = ?',$aid);
-                    $db->update($model['addtable'],$formData,$where);
+                    if (!empty($formData)) {
+                        $where = $db->quoteInto('`aid` = ?',$aid);
+                        $db->update($model['addtable'],$formData,$where);
+                    }
                     redirect(url(C('CURRENT_PATH'),'List','sortid='.$sortid));
                 }
             }
@@ -478,7 +528,10 @@ class LazyArchives extends LazyCMS{
                 $this->poping($this->L('pop/deleteok'),1);
                 break;
             case 'create' :
-                $this->poping($this->L('pop/createok'),1);
+				$js = '<script type="text/javascript">';
+			    $js.= "loading('{$submit}','".url(C('CURRENT_PATH'),'loading',"submit={$submit}&lists={$lists}&sortid={$sortid}")."');";
+				$js.= '</script>';
+                $this->poping($this->L('pop/loading').$js,0);
                 break;
             default :
                 $this->poping(L('error/invalid'),0);
