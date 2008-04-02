@@ -108,7 +108,7 @@ class Archives{
         $res    = $db->query("SELECT `sortpath` FROM `#@_sort` {$where}");
         if ($data = $db->fetch($res,0)) {
             if (C('SITE_MODE')) {
-                return url(C('CURRENT_PATH'),'ShowSort','sortid='.$sortid);
+                return url('Archives','ShowSort','sortid='.$sortid);
             } else {
                 return C('SITE_BASE').$data[0];
             }
@@ -260,7 +260,7 @@ class Archives{
 				} else {
 					$page = null;
 				}
-                return url(C('CURRENT_PATH'),'ShowArchive','sortid='.$model['sortid'].'&aid='.$aid.$page);
+                return url('Archives','ShowArchive','sortid='.$model['sortid'].'&aid='.$aid.$page);
             } else {
                 if (!empty($l3)) {
                     if (is_numeric($l3) && (int)$l3==1) {
@@ -432,14 +432,71 @@ class Archives{
     }
     // tags *** *** www.LazyCMS.net *** ***
     static function tags($tags,$inValue){ 
-		$I1 = null;
+		$inSQL = null; $tmpList = null; $db = getConn();
 		$tagName = sect($tags,"(lazy\:)","( |\/|\}|\))","");
-		switch (strtolower($tagName)){
-			case 'article' :
-				$I1 = 'article';
-				break;
+		// 根据tagName 取得modelid
+		$where = $db->quoteInto("WHERE `modelename` = ?",$tagName);
+		$res   = $db->query("SELECT * FROM `#@_model` {$where};");
+		if ($model = $db->fetch($res)) {
+			$fields  = self::getFields($model['modelid']);
+			$HTMList = $tags; $tag = O('Tags');
+			$jsHTML  = $tag->getLabel($HTMList,0);
+			$jsType  = $tag->getLabel($HTMList,'type');
+			$jsNumber= floor($tag->getLabel($HTMList,'number'));
+			$sortid  = $tag->getLabel($HTMList,'sortid');
+			$zebra   = $tag->getLabel($HTMList,'zebra');
+			if (validate($sortid,6)) {
+				$inSQL = " `m`.`sortid` IN({$sortid})";
+			} else {
+				$sortname = $tag->getLabel($HTMList,'sortname');
+				if (strlen($sortname) > 0) {
+					$inSQL = $db->quoteInto(" `s`.`sortname` = ?",$sortname);
+				}
+			}
+			$select = "SELECT * FROM `".$model['maintable']."` AS `m`
+						LEFT JOIN `".$model['addtable']."` AS `a` ON `m`.`id` = `a`.`aid`
+						LEFT JOIN `#@_sort` AS `s` ON `s`.`sortid` = `m`.`sortid`";
+
+			if (strlen($inSQL) > 0) { $inSQL = " WHERE ".$inSQL; }
+			switch (strtolower($jsType)) {
+				case 'hot':// 热门文章
+					$strSQL = $select." {$inSQL} ORDER BY `m`.`hits` DESC, `m`.`order` DESC,`m`.`id` DESC";
+					break;
+				case 'chill':// 冷门文章
+					$strSQL = $select." {$inSQL} ORDER BY `m`.`hits` ASC, `m`.`order` DESC,`m`.`id` DESC";
+					break;
+				default : // 最新文章
+                    $strSQL = $select." {$inSQL} ORDER BY `m`.`order` DESC,`m`.`id` DESC";
+					break;
+			}
+			$strSQL.= " LIMIT 0,{$jsNumber};";
+			$rs = $db->query($strSQL);
+			$i  = 1;
+			while ($data = $db->fetch($rs)) {
+				$tag->clear();
+				$tag->value('id',encode($data['id']));
+				$tag->value('sortid',encode($data['sortid']));
+				$tag->value('sortname',encode(htmlencode($data['sortname'])));
+				$tag->value('sortpath',encode(self::showSort($data['sortid'])));
+				$tag->value('title',encode(htmlencode($data['title'])));
+				$tag->value('path',encode(self::showArchive($data['id'],self::getModel($data['sortid']))));
+				if (is_file(LAZY_PATH.$data['img'])) {
+					$data['img'] = C('SITE_BASE').$data['img'];
+				} else {
+					$data['img'] = C('SITE_BASE').C('PAGES_PATH').'/system/images/notpic.gif';
+				}
+				$tag->value('image',encode($data['img']));
+				$tag->value('date',encode($data['date']));
+				$tag->value('zebra',encode(fmod($zebra,$i) ? 1 : 0));
+				$tag->value('++',$i);
+				foreach ($fields as $k) {
+					$tag->value($k,encode($data[$k]));
+				}
+				$tmpList.= $tag->createhtm($jsHTML);
+				$i++;
+			}
 		}
-		return $I1;
+		return $tmpList;
     }
     // instsql *** *** www.LazyCMS.net *** ***
     static function instSQL(){

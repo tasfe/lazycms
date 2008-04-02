@@ -26,7 +26,7 @@ defined('CORE_PATH') or die('Restricted access!');
  */
 return array (
   'SITE_BASE' => '/',
-  'SITE_MODE' => true,
+  'SITE_MODE' => false,
   'DSN_CONFIG' => 'mysql://root@localhost:3306/lazycms',
   'DSN_PREFIX' => 'lazy_',
   'DEBUG_MODE' => true,

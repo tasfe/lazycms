@@ -230,6 +230,7 @@ class System{
               `img` varchar(255),                           # 图片
               `path` varchar(255) NOT NULL,                 # 路径
               `date` int(11) NOT NULL,                      # 发布时间
+			  `hits` int(11) NOT NULL default '0',			# 浏览次数
               PRIMARY KEY  (`id`),
               UNIQUE KEY `path` (`path`),
               KEY `sortid` (`sortid`),
