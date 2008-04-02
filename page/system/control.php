@@ -1169,7 +1169,6 @@ class LazySystem extends LazyCMS{
         if ($d->status() == 200) {
             $l1 = $d->body();
         }
-        $l1 = '1.1.0.0227';
         if (validate($l1,6)) {
             $I1 = $l1;
             if (version_compare($this->system['systemver'], $l1, '<' )) {

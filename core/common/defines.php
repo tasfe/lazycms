@@ -54,5 +54,5 @@ define('VENDOR_PATH',CORE_PATH.'/vendor');
 // 为了方便导入第三方类库 设置vendor目录到include_path
 set_include_path(get_include_path() . PATH_SEPARATOR . VENDOR_PATH);
 
-define('LAZY_VERSION','1.1.0.0319');
+define('LAZY_VERSION','1.1.0.0402');
 ?>
