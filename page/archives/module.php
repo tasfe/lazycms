@@ -428,11 +428,18 @@ class Archives{
         } else {
             $state = 'os/dir'.$state;
         }
-        return t2js('<a href="javascript:;"'.$onclick.' id="dir'.$l1.'"><img src="'.LAZY_PATH.C('PAGES_PATH').'/system/images/'.$state.'.gif" class="os" /></a>');
+        return t2js('<a href="javascript:;"'.$onclick.' id="dir'.$l1.'"><img src="'.C('SITE_BASE').C('PAGES_PATH').'/system/images/'.$state.'.gif" class="os" /></a>');
     }
     // tags *** *** www.LazyCMS.net *** ***
     static function tags($tags,$inValue){ 
-        return true;
+		$I1 = null;
+		$tagName = sect($tags,"(lazy\:)","( |\/|\}|\))","");
+		switch (strtolower($tagName)){
+			case 'article' :
+				$I1 = 'article';
+				break;
+		}
+		return $I1;
     }
     // instsql *** *** www.LazyCMS.net *** ***
     static function instSQL(){

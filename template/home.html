@@ -1,0 +1,17 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>{lazy:title/}</title>
+</head>
+
+<body>
+	{lazy:inside/}
+	<ul>
+		{lazy:article type="list" number="10"}
+		<li><img src="(lazy:image/)"/><a href="(lazy:path/)">(lazy:title/)</a> <em>(lazy:date mode="Y-m-d H:i:s"/)</em></li>
+		{/lazy}
+	</ul>
+</div>
+</body>
+</html>

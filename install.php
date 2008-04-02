@@ -97,7 +97,7 @@ $keywords  = isset($_POST['keywords']) ? $_POST['keywords'] : null;
 $sitemode  = isset($_POST['sitemode']) ? $_POST['sitemode'] : C('SITE_MODE');
 $dsnPrefix = isset($_POST['dsn_prefix']) ? $_POST['dsn_prefix'] : C('DSN_PREFIX');
 $dsnConfig = isset($_POST['dsn_config']) ? $_POST['dsn_config'] : C('DSN_CONFIG');
-$modules   = isset($_POST['modules']) ? $_POST['modules'] : 'archives,onepage';
+$modules   = isset($_POST['modules']) ? $_POST['modules'] : null;
 
 $adminname     = isset($_POST['adminname']) ? $_POST['adminname'] : null;
 $adminpass     = isset($_POST['adminpass']) ? $_POST['adminpass'] : null;
@@ -199,6 +199,18 @@ if ($install && labelError()) {
             'admindate'     => now(),
         );
         $db->insert('#@_admin',$admin);
+		// 添加首页
+		$onepage = array(
+            'oneorder'     => $db->max('oneid','#@_onepage'),
+            'onetitle'     => L('common/home'),
+            'onepath'      => C('SITE_INDEX'),
+            'onename'      => L('common/home'),
+            'onecontent'   => L('common/home'),
+            'onetemplate1' => C('TEMPLATE_PATH').'/'.C('TEMPLATE_DEF'),
+            'onetemplate2' => C('TEMPLATE_PATH').'/inside/onepage/'.C('TEMPLATE_DEF'),
+			'ishome'       => '1',
+        );
+        $db->insert('#@_onepage',$onepage);
         saveFile(CORE_PATH.'/custom/config.php',"<?php\n".createNote('用户自定义配置文件')."\nreturn ".var_export($config,true).";\n?>");
         System::installModel($modelArticle,true);
         @unlink('install.php');
@@ -286,10 +298,18 @@ body,th,td,p{ line-height:150%; font-family:Verdana; font-size:12px; color:#3333
       <td>
         <?php 
         $_modules = getArrDir(C('PAGES_PATH'),'dir');
+		$selected = 'archives,onepage';
         foreach ($_modules as $m) {
             if (strtolower($m) != 'system') {
                 $checked = instr($modules,$m) ? ' checked="checked"' : null;
-                echo '<input type="checkbox" name="modules[]" id="m_'.$m.'" value="'.$m.'"'.$checked.'/><label for="m_'.$m.'">'.L('title',null,$m).'</label>'.chr(10);
+				if (instr($selected,$m)) { 
+					$checked = instr($selected,$m) ? ' checked="checked"' : null;
+					$disabled = ' disabled="disabled"';
+					echo '<input name="modules[]" type="hidden" value="'.$m.'" />';
+				} else {
+					$disabled = null;
+				}
+                echo '<input type="checkbox" name="modules[]" id="m_'.$m.'" value="'.$m.'"'.$checked.$disabled.'/><label for="m_'.$m.'">'.L('title',null,$m).'</label>'.chr(10);
             }
         }
         ?>

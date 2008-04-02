@@ -261,7 +261,7 @@ class LazyArchives extends LazyCMS{
                 $model = Archives::getModel($lists);
                 $page  = isset($_GET['page']) ? (int)$_GET['page'] : 1;
                 $strSQL = "SELECT * FROM `".$model['maintable']."` WHERE `sortid`='{$lists}'";
-                $pageSize   = 1;
+                $pageSize   = 100;
 		        $totalRows  = $db->count($strSQL);
                 $totalPages = ceil($totalRows/$pageSize);
                 $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;

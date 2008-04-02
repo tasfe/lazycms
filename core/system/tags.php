@@ -133,12 +133,25 @@ class Tags extends Lazy{
                 }
                 break;
             default :
-                if (class_exists($tagName)) {
-                    eval('$I1 = '.$tagName.'::tags($tags,$this->_inValue);');
-                    $I1 = $this->parseAtt($tags,$I1,false);
-                } else {
-                    $I1 = $this->parseAtt($tags,$tagName);
-                }
+				try {
+					if (class_exists('Archives')) {
+						$I1 = Archives::tags($tags,$this->_inValue);
+					} else {
+						throwError('Please module installed Archives');
+					}
+					if (empty($I1)) {
+						throwError('Did not find labels');
+					} else {
+						$I1 = $this->parseAtt($tags,$I1,false);
+					}
+				} catch (Error $err) {
+					if (class_exists($tagName)) {
+						eval('$I1 = '.$tagName.'::tags($tags,$this->_inValue);');
+						$I1 = $this->parseAtt($tags,$I1,false);
+					} else {
+						$I1 = $this->parseAtt($tags,$tagName);
+					}
+				}
                 break;
         }
         return $I1;

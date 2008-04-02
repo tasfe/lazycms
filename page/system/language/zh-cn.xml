@@ -16,6 +16,7 @@
     </menu>
 
     <common>
+		<home>首页</home>
         <upok>更新成功!</upok>
         <module>模块</module>
         <action>操作</action>

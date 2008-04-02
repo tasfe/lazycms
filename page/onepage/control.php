@@ -189,7 +189,7 @@ class LazyOnepage extends LazyCMS{
             'onename'        => htmlencode($data[0]),
             'onetitle'       => htmlencode($data[1]),
             'onepath'        => htmlencode($data[2]),
-            'onecontent'     => htmlencode($data[3]),
+            'onecontent'     => $data[3],
             'onekeyword'     => htmlencode($data[4]),
             'onedescription' => htmlencode($data[5]),
             'onetemplate1'   => !empty($data[6]) ? $data[6] : "{$tplPath}/{$tplDef}",
