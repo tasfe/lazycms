@@ -128,6 +128,19 @@ class Archives{
             }
         }
     }
+	// guide *** *** www.LazyCMS.net *** ***
+	function guide($l1){
+		if (empty($l1)) { return ;}
+		$I1 = null; $db = getConn();
+		$res = $db->query("SELECT `sortid1`,`sortname`,`sortpath` FROM `#@_sort` WHERE `sortid`='{$l1}';");
+		if ($data = $db->fetch($res,0)) {
+			$I1 = '<a href="'.C('SITE_BASE').htmlencode($data[2]).'/">'.htmlencode($data[1]).'</a>';
+			if ((int)$data[0] !== 0) {
+				$I1 = self::guide($data[0])." &gt;&gt; ".$I1;
+			}
+		}
+		return $I1;
+	}
     // viewSort *** *** www.LazyCMS.net *** ***
     static function viewSort($l1,$page=1,$type=false,$isCreatePage=false){
         $sortid = $l1; $tmpList = null;
@@ -161,6 +174,7 @@ class Archives{
         $tag->value('keywords',encode(htmlencode($model['keywords'])));
         $tag->value('description',encode(htmlencode($model['description'])));
         $tag->value('pagelist',encode($randpl));
+		$tag->value('guide',encode(self::guide($model['sortid'])));
         
         $HTML = $tag->create($HTML);
 
@@ -318,6 +332,7 @@ class Archives{
 			}
 			$tag->value('image',encode($data['img']));
 			$tag->value('date',$data['date']);
+			$tag->value('guide',encode(self::guide($data['sortid'])." &gt;&gt; ".htmlencode($data['title'])));
 			$tag->value('hits',encode("<span class=\"lz_hits\"><script type=\"text/javascript\">\$('.lz_hits').html('<img src=\"' + path() + '/images/loading.gif\" class=\"os\" />').load('".url('Archives','hits','sortid='.$sortid.'&id='.$data['id'])."');</script></span>"));
 			
 			$fields = self::getFields($model['modelid']);
