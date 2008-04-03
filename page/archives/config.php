@@ -25,7 +25,6 @@ defined('CORE_PATH') or die('Restricted access!');
  * Archives module configuration files
  */
 return array (
-  'MODULE_PATH' => 'Archives', // 模块路径，不区分大小写
   'ADD_SHOW' => true, // 添加文档，默认是否显示
   'ADD_COMMEND' => false, // 添加文档，默认是否推荐
   'ADD_TOP' => false, // 添加文档，默认是否置顶

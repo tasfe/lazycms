@@ -1,8 +1,8 @@
 <?php System::header();?>
 <?php $module->validate('outjs');?>
-<?php echo menu($module->L('title').'|'.url(C('CURRENT_PATH')).';'.$menu.';'.$module->L('common/addpage').'|'.url(C('CURRENT_PATH'),'Edit'));?>
+<?php echo menu($module->L('title').'|'.url(C('CURRENT_MODULE')).';'.$menu.';'.$module->L('common/addpage').'|'.url(C('CURRENT_MODULE'),'Edit'));?>
 <div class="content">
-    <form action="<?php echo url(C('CURRENT_PATH'),'EditSort');?>" method="post" class="lz_form">
+    <form action="<?php echo url(C('CURRENT_MODULE'),'EditSort');?>" method="post" class="lz_form">
         <p><label><?php echo $module->L('label/supsort');?></label>
             <select name="sortid1">
                 <option value="0"><?php echo $module->L("common/root");?></option>
