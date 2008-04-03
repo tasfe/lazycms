@@ -1,8 +1,10 @@
+var debug = false;
 // 加载所需的JavaScript文件，必须在文档完全载入之前加载。
-LoadScript('json');LoadScript('blockUI');LoadScript('lazycms.funs');
-LoadScript('date');
-LoadScript('bgiframe');
-LoadScript('datePicker');
+LoadScript('json');LoadScript('blockUI');
+// 载入公用函数和后台专用函数 *** *** www.LazyCMS.net *** ***
+LoadScript('common');LoadScript('lazycms.funs');
+// 载入日历控制脚本 *** *** www.LazyCMS.net *** ***
+LoadScript('date');LoadScript('bgiframe');LoadScript('datePicker');
 // 实现公用方法 *** *** www.LazyCMS.net *** ***
 $(function(){
 	loadImage(path()+'/images/os/dir0.gif',path()+'/images/os/dir1.gif',path()+'/images/loading.gif');
@@ -20,7 +22,7 @@ $(function(){
 			$('ul',this).hide();
 		});
 	});
-	// 日期选择器设置
+	// *** *** www.LazyCMS.net *** ***  日期选择器设置 开始  *** *** www.LazyCMS.net *** ***
 	Date.firstDayOfWeek = 7;
 	Date.format = 'yyyy-mm-dd';
 	Date.dayNames = ['日', '一', '二', '三', '四', '五', '六'];
@@ -55,6 +57,7 @@ $(function(){
 			}
 		}
 	);
+	// *** *** www.LazyCMS.net *** ***  日期选择器设置 结束  *** *** www.LazyCMS.net *** ***
 });
 // 函数加载JavaScript *** *** www.LazyCMS.net *** ***
 function LoadScript(plugin){ 

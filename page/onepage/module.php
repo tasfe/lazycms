@@ -116,7 +116,7 @@ class Onepage{
         }
     }
     // tags *** *** www.LazyCMS.net *** ***
-    static function tags($tags,$inValue){
+    static function tags($tags){
         // 根据id返回链接
         $id = Tags::getLabel($tags,'id');
         if (!empty($id)) {

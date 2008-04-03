@@ -151,8 +151,6 @@ abstract class LazyCMS extends Lazy{
         C('CURRENT_MODULE',$l1);
         // 设置当前的操作名称
         C('CURRENT_ACTION',$l2);
-        // 设置当前模块目录
-        C('CURRENT_PATH',M($l1,'MODULE_PATH'));
         // 组合出新的模块名称
         $l3 = 'Lazy'.ucfirst($l1);
         // 必须要加载system.module
@@ -451,5 +449,41 @@ abstract class LazyCMS extends Lazy{
         }
         unset($db);
     }
+	// keys *** *** www.LazyCMS.net *** ***
+	final public function keys($l1,$l2=null){
+		$I1 = null; $i = 0;
+		$db = getConn();
+		$rs = $db->query("SELECT `sitekeywords` FROM `#@_system` WHERE `systemname` = 'LazyCMS';");
+		if ($data = $db->fetch($rs,0)) {
+			$I2 = $data[0];
+		}
+		if (!empty($l2)) {
+			$I1 = $l2;
+			$I3 = explode(',',$l2);
+			foreach ($I3 as $keyword){
+				if (instr($I2,$keyword)) {
+					$l3 = trim($keyword);
+				} else {
+					$l3.= ','.trim($keyword);
+				}
+			}
+			$db->exec("UPDATE `#@_system` SET `sitekeywords`='".$db->quote($l3)."' WHERE `systemname`='LazyCMS';");
+		} else {
+			if (strlen($I2) > 0) {
+				$I3 = explode(',',$I2);
+				foreach ($I3 as $keyword){
+					if (strpos(strtolower($l1),strtolower($keyword))!==false) {
+						if (empty($I1)) {
+							$I1 = $keyword;
+						} else {
+							$I1.= ','.$keyword;
+						}
+						$i++; if ((int)$i > 11) {break;}	
+					}
+				}
+			}
+		}
+		return $I1;
+	}
 }
 ?>

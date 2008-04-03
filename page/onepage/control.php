@@ -140,6 +140,11 @@ class LazyOnepage extends LazyCMS{
                 if (empty($data[5])) {
                     $data[5] = cnsubstr($content,250);
                 }
+				if (empty($data[4])) {
+					$data[4] = $this->keys($data[0].$data[1].$data[3]);
+				} else {
+					$data[4] = $this->keys(null,$data[4]);
+				}
                 if (empty($oneid)) { // insert
                     $num = $db->count("SELECT `oneid` FROM `#@_onepage` WHERE 1");
                     $row = array(

@@ -29,6 +29,6 @@ return array (
   'SITE_MODE' => false,
   'DSN_CONFIG' => 'mysql://root@localhost:3306/lazycms',
   'DSN_PREFIX' => 'lazy_',
-  'DEBUG_MODE' => true,
+  'DEBUG_MODE' => false,
 );
 ?>

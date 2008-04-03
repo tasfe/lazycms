@@ -49,7 +49,11 @@ class Tags extends Lazy{
             }
         }
         $l9 = empty($l8) ? $l6 : replace('/(\{lazy:)(inside) {0,}?(\/\})/i',$l8,$l6);
-        return $this->format($l9);
+		$l9 = $this->format($l9);
+		$js = '<script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.js"></script>'.chr(10);
+		$js.= '<script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.common.js"></script>'.chr(10);
+		$I1 = replace('/<\/head>/i',"{$js}\n\$0",$l9);
+        return $I1;
     }
     // value *** *** www.LazyCMS.net *** ***
     public function value($l1,$l2){
@@ -80,8 +84,12 @@ class Tags extends Lazy{
         return $I1;
     }
     // getValue *** *** www.LazyCMS.net *** ***
-    public function getValue(){
-        return $this->_inValue;
+    public function getValue($l1=null){
+		if (empty($l1)) {
+			return $this->_inValue;
+		} else {
+			return $this->_inValue[$l1];
+		}
     }
     // format *** *** www.LazyCMS.net *** ***
     public function format($l1){
@@ -135,7 +143,7 @@ class Tags extends Lazy{
             default :
 				try {
 					if (class_exists('Archives')) {
-						$I1 = Archives::tags($tags,$this->_inValue);
+						$I1 = Archives::tags($tags);
 					} else {
 						throwError('Please module installed Archives');
 					}
@@ -146,7 +154,7 @@ class Tags extends Lazy{
 					}
 				} catch (Error $err) {
 					if (class_exists($tagName)) {
-						eval('$I1 = '.$tagName.'::tags($tags,$this->_inValue);');
+						eval('$I1 = '.$tagName.'::tags($tags);');
 						$I1 = $this->parseAtt($tags,$I1,false);
 					} else {
 						$I1 = $this->parseAtt($tags,$tagName);

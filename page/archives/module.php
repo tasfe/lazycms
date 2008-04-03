@@ -48,6 +48,20 @@ class Archives{
             return false;
         }
     }
+	// getSubSortIds *** *** www.LazyCMS.net *** ***
+	static function getSubSortIds($l1){
+		$I1  = $l1;
+		$db  = getConn();
+        $res = $db->query("SELECT `sortid` FROM `#@_sort` WHERE ".$db->quoteInto('`sortid1` = ?',$l1));
+        while ($data = $db->fetch($res,0)) {
+			if ($db->count("SELECT count(`sortid`) FROM `#@_sort` WHERE `sortid1`= '".$data[0]."';") > 0) {
+				$I1.= ",".self::getSubSortIds($data[0]);
+			} else {
+				$I1.= ",".$data[0];
+			}
+        }
+		return $I1;
+	}
     // getFields *** *** www.LazyCMS.net *** ***
     static function getFields($l1){
         $modeid = $l1;
@@ -140,6 +154,7 @@ class Archives{
         // 替换模板中的标签
         $tag->clear();
         $tag->value('title',encode(htmlencode($model['sortname'])));
+		$tag->value('sortid',$model['sortid']);
         $tag->value('sortname',encode(htmlencode($model['sortname'])));
         $tag->value('sortpath',encode($path));
         $tag->value('path',encode($path));
@@ -149,7 +164,7 @@ class Archives{
         
         $HTML = $tag->create($HTML);
 
-		$strSQL = "SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` WHERE `a`.`sortid` = '{$sortid}' ORDER BY `a`.`order` {$jsOrder},`a`.`sortid` {$jsOrder}";
+		$strSQL = "SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` WHERE `a`.`sortid` = '{$sortid}' AND `a`.`show` = 1 ORDER BY `a`.`top` DESC,`a`.`order` {$jsOrder},`a`.`sortid` {$jsOrder}";
 		$totalRows  = $db->count($strSQL); if ($totalRows==0) { return L('error/rsnot'); }
 		$totalPages = ceil($totalRows/$jsNumber);
         $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
@@ -162,8 +177,8 @@ class Archives{
         $i = 1;
         while ($data = $db->fetch($res)) {
             $tag->clear();
-            $tag->value('id',encode($data['id']));
-            $tag->value('sortid',encode($data['sortid']));
+            $tag->value('id',$data['id']);
+            $tag->value('sortid',$data['sortid']);
             $tag->value('sortname',encode(htmlencode($model['sortname'])));
             $tag->value('sortpath',encode($path));
             $tag->value('title',encode(htmlencode($data['title'])));
@@ -174,8 +189,8 @@ class Archives{
 				$data['img'] = C('SITE_BASE').C('PAGES_PATH').'/system/images/notpic.gif';
 			}
 			$tag->value('image',encode($data['img']));
-            $tag->value('date',encode($data['date']));
-            $tag->value('zebra',encode(fmod($zebra,$i) ? 1 : 0));
+            $tag->value('date',$data['date']);
+            $tag->value('zebra',fmod($zebra,$i) ? 1 : 0);
             foreach ($fields as $k) {
                 $tag->value($k,encode($data[$k]));
             }
@@ -291,8 +306,8 @@ class Archives{
 			$HTML = $tag->read($model['pagetemplate1'],$model['pagetemplate2']);
 			// 替换模板中的标签
 			$tag->clear();
-			$tag->value('id',encode($data['id']));
-            $tag->value('sortid',encode($data['sortid']));
+			$tag->value('id',$data['id']);
+            $tag->value('sortid',$data['sortid']);
 			$tag->value('title',encode(htmlencode($data['title'])));
 			$tag->value('sortname',encode(htmlencode($model['sortname'])));
 			$tag->value('sortpath',encode(self::showSort($sortid)));
@@ -302,7 +317,8 @@ class Archives{
 				$data['img'] = C('SITE_BASE').C('PAGES_PATH').'/system/images/notpic.gif';
 			}
 			$tag->value('image',encode($data['img']));
-			$tag->value('date',encode($data['date']));
+			$tag->value('date',$data['date']);
+			$tag->value('hits',encode("<span class=\"lz_hits\"><script type=\"text/javascript\">\$('.lz_hits').html('<img src=\"' + path() + '/images/loading.gif\" class=\"os\" />').load('".url('Archives','hits','sortid='.$sortid.'&id='.$data['id'])."');</script></span>"));
 			
 			$fields = self::getFields($model['modelid']);
             // 有编辑器，动态模式，分页
@@ -431,7 +447,7 @@ class Archives{
         return t2js('<a href="javascript:;"'.$onclick.' id="dir'.$l1.'"><img src="'.C('SITE_BASE').C('PAGES_PATH').'/system/images/'.$state.'.gif" class="os" /></a>');
     }
     // tags *** *** www.LazyCMS.net *** ***
-    static function tags($tags,$inValue){ 
+    static function tags($tags){ 
 		$inSQL = null; $tmpList = null; $db = getConn();
 		$tagName = sect($tags,"(lazy\:)","( |\/|\}|\))","");
 		// 根据tagName 取得modelid
@@ -445,37 +461,58 @@ class Archives{
 			$jsNumber= floor($tag->getLabel($HTMList,'number'));
 			$sortid  = $tag->getLabel($HTMList,'sortid');
 			$zebra   = $tag->getLabel($HTMList,'zebra');
-			if (validate($sortid,6)) {
-				$inSQL = " `m`.`sortid` IN({$sortid})";
+			
+			if (preg_match('/\(lazy:image.{0,}?\/\)/i',$jsHTML,$regs)){
+				$inSQL.= " AND `m`.`img` <> ''";
+			}
+			if (validate($sortid,6) || instr('sub,current',$sortid)) {
+				switch (strtolower($sortid)){
+					case 'sub':
+						$sortid = $tag->getValue('sortid');
+						$sortid = self::getSubSortIds($sortid);
+						break;
+					case 'current':
+						$sortid = $tag->getValue('sortid');
+						break;
+				}
+				if (empty($sortid)) { $sortid = 0; }
+				$inSQL.= " AND `m`.`sortid` IN({$sortid})";
 			} else {
 				$sortname = $tag->getLabel($HTMList,'sortname');
 				if (strlen($sortname) > 0) {
-					$inSQL = $db->quoteInto(" `s`.`sortname` = ?",$sortname);
+					$inSQL.= $db->quoteInto(" AND `s`.`sortname` = ?",$sortname);
 				}
 			}
 			$select = "SELECT * FROM `".$model['maintable']."` AS `m`
 						LEFT JOIN `".$model['addtable']."` AS `a` ON `m`.`id` = `a`.`aid`
 						LEFT JOIN `#@_sort` AS `s` ON `s`.`sortid` = `m`.`sortid`";
 
-			if (strlen($inSQL) > 0) { $inSQL = " WHERE ".$inSQL; }
 			switch (strtolower($jsType)) {
+				case 'sql':// 自定义SQL
+					$jsSQL  = $tag->getLabel($HTMList,'sql');
+					$strSQL = $select.$jsSQL;
+					break;
+				case 'commend':// 推荐文章
+					$strSQL = $select." WHERE `m`.`show` = 1 AND `m`.`commend` = 1 {$inSQL} ORDER BY `m`.`order` DESC,`m`.`id` DESC";
+					break;
 				case 'hot':// 热门文章
-					$strSQL = $select." {$inSQL} ORDER BY `m`.`hits` DESC, `m`.`order` DESC,`m`.`id` DESC";
+					$strSQL = $select." WHERE `m`.`show` = 1 {$inSQL} ORDER BY `m`.`hits` DESC ,`m`.`id` DESC";
 					break;
 				case 'chill':// 冷门文章
-					$strSQL = $select." {$inSQL} ORDER BY `m`.`hits` ASC, `m`.`order` DESC,`m`.`id` DESC";
+					$strSQL = $select." WHERE `m`.`show` = 1 {$inSQL} ORDER BY `m`.`hits` ASC ,`m`.`id` ASC";
 					break;
 				default : // 最新文章
-                    $strSQL = $select." {$inSQL} ORDER BY `m`.`order` DESC,`m`.`id` DESC";
+                    $strSQL = $select." WHERE `m`.`show` = 1 {$inSQL} ORDER BY `m`.`order` DESC,`m`.`id` DESC";
 					break;
 			}
 			$strSQL.= " LIMIT 0,{$jsNumber};";
+
 			$rs = $db->query($strSQL);
 			$i  = 1;
 			while ($data = $db->fetch($rs)) {
 				$tag->clear();
-				$tag->value('id',encode($data['id']));
-				$tag->value('sortid',encode($data['sortid']));
+				$tag->value('id',$data['id']);
+				$tag->value('sortid',$data['sortid']);
 				$tag->value('sortname',encode(htmlencode($data['sortname'])));
 				$tag->value('sortpath',encode(self::showSort($data['sortid'])));
 				$tag->value('title',encode(htmlencode($data['title'])));
@@ -486,8 +523,8 @@ class Archives{
 					$data['img'] = C('SITE_BASE').C('PAGES_PATH').'/system/images/notpic.gif';
 				}
 				$tag->value('image',encode($data['img']));
-				$tag->value('date',encode($data['date']));
-				$tag->value('zebra',encode(fmod($zebra,$i) ? 1 : 0));
+				$tag->value('date',$data['date']);
+				$tag->value('zebra',fmod($zebra,$i) ? 1 : 0);
 				$tag->value('++',$i);
 				foreach ($fields as $k) {
 					$tag->value($k,encode($data[$k]));
