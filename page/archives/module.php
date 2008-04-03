@@ -134,7 +134,7 @@ class Archives{
 		$I1 = null; $db = getConn();
 		$res = $db->query("SELECT `sortid1`,`sortname`,`sortpath` FROM `#@_sort` WHERE `sortid`='{$l1}';");
 		if ($data = $db->fetch($res,0)) {
-			$I1 = '<a href="'.C('SITE_BASE').htmlencode($data[2]).'/">'.htmlencode($data[1]).'</a>';
+			$I1 = '<a href="'.self::showSort($l1).'">'.htmlencode($data[1]).'</a>';
 			if ((int)$data[0] !== 0) {
 				$I1 = self::guide($data[0])." &gt;&gt; ".$I1;
 			}
@@ -197,11 +197,6 @@ class Archives{
             $tag->value('sortpath',encode($path));
             $tag->value('title',encode(htmlencode($data['title'])));
             $tag->value('path',encode(self::showArchive($data['id'],$model)));
-			if (is_file(LAZY_PATH.$data['img'])) {
-				$data['img'] = C('SITE_BASE').$data['img'];
-			} else {
-				$data['img'] = C('SITE_BASE').C('PAGES_PATH').'/system/images/notpic.gif';
-			}
 			$tag->value('image',encode($data['img']));
             $tag->value('date',$data['date']);
             $tag->value('zebra',fmod($zebra,$i) ? 1 : 0);
@@ -325,15 +320,12 @@ class Archives{
 			$tag->value('title',encode(htmlencode($data['title'])));
 			$tag->value('sortname',encode(htmlencode($model['sortname'])));
 			$tag->value('sortpath',encode(self::showSort($sortid)));
-			if (is_file(LAZY_PATH.$data['img'])) {
-				$data['img'] = C('SITE_BASE').$data['img'];
-			} else {
-				$data['img'] = C('SITE_BASE').C('PAGES_PATH').'/system/images/notpic.gif';
-			}
 			$tag->value('image',encode($data['img']));
 			$tag->value('date',$data['date']);
 			$tag->value('guide',encode(self::guide($data['sortid'])." &gt;&gt; ".htmlencode($data['title'])));
-			$tag->value('hits',encode("<span class=\"lz_hits\"><script type=\"text/javascript\">\$('.lz_hits').html('<img src=\"' + path() + '/images/loading.gif\" class=\"os\" />').load('".url('Archives','hits','sortid='.$sortid.'&id='.$data['id'])."');</script></span>"));
+			$tag->value('hits',encode("<span class=\"lz_hits\"><script type=\"text/javascript\">\$('.lz_hits').html(loadgif()).load('".url('Archives','hits','sortid='.$sortid.'&id='.$data['id'])."');</script></span>"));
+            $tag->value('lastpage',encode(self::lastPage($data,$model,$HTML)));
+            $tag->value('nextpage',encode(self::nextPage($data,$model,$HTML)));
 			
 			$fields = self::getFields($model['modelid']);
             // 有编辑器，动态模式，分页
@@ -437,6 +429,34 @@ class Archives{
             saveFile(LAZY_PATH.$l1.'/'.$l2.'/'.C('SITE_INDEX'),$l3);
         }
     }
+    // lastPage *** *** www.LazyCMS.net *** ***
+    static function lastPage($l1,$l2,$l3){
+        if (strpos($l3,'{lazy:lastpage')!==false) {
+            $data = $l1; $model = $l2; $HTML = $l3;
+            $db  = getConn();
+            $res = $db->query("SELECT `title`,`path`,`id` FROM `".$model['maintable']."` WHERE `show`=1 AND `sortid`='".$model['sortid']."' AND `order`<".$data['order']." ORDER BY `top` DESC,`order` DESC,`id` DESC LIMIT 0,1;");
+            if ($row = $db->fetch($res,0)) {
+                $I1 = '<a href="'.self::showArchive($row[2],$model).'">'.htmlencode($row[0]).'</a>';
+            } else {
+                $I1 = '<a href="'.self::showSort($model['sortid']).'">['.htmlencode($model['sortname']).']</a>';
+            }
+            return "<span class=\"lz_lastpage\">{$I1}</span>";
+        }
+    }
+    // nextPage *** *** www.LazyCMS.net *** ***
+    static function nextPage($l1,$l2,$l3){
+        if (strpos($l3,'{lazy:nextpage')!==false) {
+            $data = $l1; $model = $l2; $HTML = $l3;
+            $db  = getConn();
+            $res = $db->query("SELECT `title`,`path`,`id` FROM `".$model['maintable']."` WHERE `show`=1 AND `sortid`='".$model['sortid']."' AND `order`>".$data['order']." ORDER BY `top` ASC,`order` ASC,`id` ASC LIMIT 0,1;");
+            if ($row = $db->fetch($res,0)) {
+                $I1 = '<a href="'.self::showArchive($row[2],$model).'">'.htmlencode($row[0]).'</a>';
+            } else {
+                $I1 = "<script type=\"text/javascript\">\$('.lz_nextpage').html(loadgif()).load('".url('Archives','nextpage','sortid='.$model['sortid'].'&id='.$data['id'])."');</script>";
+            }
+            return "<span class=\"lz_nextpage\">{$I1}</span>";
+        }
+    }
     // isOpen *** *** www.LazyCMS.net *** ***
     static function isOpen($l1){
         $db    = getConn();
@@ -464,7 +484,7 @@ class Archives{
     // tags *** *** www.LazyCMS.net *** ***
     static function tags($tags){ 
 		$inSQL = null; $tmpList = null; $db = getConn();
-		$tagName = sect($tags,"(lazy\:)","( |\/|\}|\))","");
+		$tagName = sect($tags,"(lazy\:)","( |\/|\}|\))");
 		// 根据tagName 取得modelid
 		$where = $db->quoteInto("WHERE `modelename` = ?",$tagName);
 		$res   = $db->query("SELECT * FROM `#@_model` {$where};");

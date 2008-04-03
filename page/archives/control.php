@@ -555,5 +555,24 @@ class LazyArchives extends LazyCMS{
 			echo '0';
 		}
 	}
+    // _nextpage *** *** www.LazyCMS.net *** ***
+    function _nextpage(){
+        clearCache();$db = getConn();
+		$id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
+		$sortid = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : null;
+		$model  = Archives::getModel($sortid);
+        $res = $db->query("SELECT * FROM `".$model['maintable']."` ".$db->quoteInto(' WHERE `id` = ?',$id));
+        if (!$data = $db->fetch($res)) {
+            echo L('error/invalid');
+        }
+        $res = $db->query("SELECT `title`,`path`,`id` FROM `".$model['maintable']."` WHERE `show`=1 AND `sortid`='".$model['sortid']."' AND `order`>".$data['order']." ORDER BY `top` ASC,`order` ASC,`id` ASC LIMIT 0,1;");
+        if ($row = $db->fetch($res,0)) {
+            if (!C('SITE_MODE')) { Archives::viewArchive($model['sortid'],$row[2]); }
+            $I1 = '<a href="'.Archives::showArchive($row[2],$model).'">'.htmlencode($row[0]).'</a>';
+        } else {
+            $I1 = '<a href="'.Archives::showSort($model['sortid']).'">['.htmlencode($model['sortname']).']</a>';
+        }
+        echo $I1;
+    }
     
 }

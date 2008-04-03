@@ -100,7 +100,7 @@ class Tags extends Lazy{
         static $i = 1;
         $module  = getObject();
         $tags    = htmldecode($tags);
-        $tagName = sect($tags,"(lazy\:)","( |\/|\}|\))","");
+        $tagName = sect($tags,"(lazy\:)","( |\/|\}|\))");
         switch ((string)$tagName) {
             case 'sitename' : case 'sitemail' :
                 $I1 = $module->system[$tagName];
@@ -153,7 +153,7 @@ class Tags extends Lazy{
 						$I1 = $this->parseAtt($tags,$I1,false);
 					}
 				} catch (Error $err) {
-					if (class_exists($tagName)) {
+					if (class_exists($tagName) && !instr('image',strtolower($tagName))) {
 						eval('$I1 = '.$tagName.'::tags($tags);');
 						$I1 = $this->parseAtt($tags,$I1,false);
 					} else {
@@ -179,7 +179,7 @@ class Tags extends Lazy{
         if (strlen($l4)==0) { return ; }
         $I1 = $l4;
         
-        $l5 = sect($l1,'size="','"','');//size
+        $l5 = sect($l1,'size="','"');//size
         if (validate($l5,2)) {
             if ((int)len($l4)>(int)$l5) {
                 $I1 = cnsubstr($l4,$l5).'...';
@@ -188,19 +188,38 @@ class Tags extends Lazy{
             }
         }
         
-        $l6 = sect($l1,'left="','"','');
+        $l6 = sect($l1,'left="','"');
         if (validate($l6,2)){
             $I1 = leftHTML($l4,$l6);
         }
         if (is_numeric($l4)) {
-            $l7 = sect($l1,'mode="','"','');//datemode
+            $l7 = sect($l1,'mode="','"');//datemode
             if ($l7!='') {
                 $I1 = formatDate($l4,$l7);
             }
         }
-        //image 暂时不写
         
-        $l8 = sect($l1,'code="','"','');//code
+        // image
+        if (strtolower($l2) == 'image') {
+            $imgWidth  = sect($l1,'width="','"');
+            $imgHeight = sect($l1,'height="','"');
+            if (is_file(LAZY_PATH.$l4)) {
+                if (is_numeric($imgWidth) && is_numeric($imgHeight)) {
+                    import('system.image'); $I2 = pathinfo($l4); 
+                    $l8 = $I2['dirname'].'/TN/'.substr($I2['basename'],0,strrpos($I2['basename'], '.'))."_{$imgWidth}x{$imgHeight}.".$I2['extension'];
+                    $I1 = C('SITE_BASE').$l8;
+                    if (!is_file($l8)) {
+                        Image::thumb(LAZY_PATH.$l4,LAZY_PATH.$l8,$imgWidth,$imgHeight);
+                    }
+                } else {
+                    $I1 = C('SITE_BASE').$l4;
+                }    
+            } else {
+                $I1 = C('SITE_BASE').C('PAGES_PATH').'/system/images/notpic.gif';
+            }
+        }
+        
+        $l8 = sect($l1,'code="','"');//code
         if (strlen($I1)>0) {
             $l8 = strtolower($l8);
             switch ($l8) {
@@ -219,7 +238,7 @@ class Tags extends Lazy{
             }
         }
 
-        $l9 = sect($l1,'fun="','"','');//function
+        $l9 = sect($l1,'fun="','"');//function
         if (strlen($l9)>0) {
             if (strpos($l9,'@me')!==false) { 
                 $l9 = str_replace('@me',$I1,$l9);
@@ -235,7 +254,7 @@ class Tags extends Lazy{
             $l4 = $I2[0];
         }
         if ($l3===0) {
-            $l5 = sect($l4,'(\})','(\{\/lazy\})','');
+            $l5 = sect($l4,'(\})','(\{\/lazy\})');
         } elseif ($l3===1){
             $l5 = $l4;
         } else{
@@ -246,14 +265,14 @@ class Tags extends Lazy{
     // getLabel *** *** www.LazyCMS.net *** ***
     public function getLabel($l1,$l2){
         if ($l2===0) {
-            $I1 = sect($l1,'(\})','(\{\/lazy\})','');
+            $I1 = sect($l1,'(\})','(\{\/lazy\})');
         } else {
             if (preg_match('/\{lazy\:(.+?)\}/i',$l1,$I2)) {
                 $l3 = $I2[0];
             } else{
                 $l3 = null;
             }
-            $I1 = sect($l3,$l2.'="','"','');
+            $I1 = sect($l3,$l2.'="','"');
         }
         if (validate($I1,2)==false) {
             switch ((string)$l2) {

@@ -167,3 +167,4 @@ function cklist(l1){ return '<input name="list" id="list_'+l1+'" type="checkbox"
 function checkALL(e){$.each($(e.form).find('input:checkbox'),function(i,a){ if (checkALL.arguments[1]!=undefined) { this.checked = true; } else { this.checked = !this.checked; }});}
 function winSize(){ var e = {}; if (self.innerHeight) { e.h = self.innerHeight; e.w = self.innerWidth; }else if(document.documentElement){ e.h = document.documentElement.clientHeight; e.w = document.documentElement.clientWidth; } else { e.h = document.body.clientHeight; e.w = document.body.clientWidth;} return e; }
 function loadImage(){ var arrImage = loadImage.arguments; var objImage = new Image(); for (var i=0;i<arrImage.length;i++) {	objImage.src = arrImage[i];	} }
+function loadgif(){ return '<img src=\"' + path() + '/images/loading.gif\" class=\"os\" />'; }
