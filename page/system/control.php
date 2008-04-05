@@ -1058,12 +1058,16 @@ class LazySystem extends LazyCMS{
                 $I1.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>UpLoadFile</title></head><body>';
                 $I1.= '<script type="text/javascript" charset="utf-8">';
                 $upload = O('UpLoadFile');
-                $upload->allowExts = C('UPFILE_SUFFIX');
+                $upload->allowExts = C('UPFILE_SUFFIX').',zip,rar';
                 $upload->maxSize   = 2*1024*1024;//2M
                 $filePath = str_replace('//','/',$cPath.'/'.basename($_FILES['upfile']['name']));
                 if ($file = $upload->save('upfile',$filePath)) {
-                    $filePath = str_replace(LAZY_PATH,'',$filePath);
-                    $I1.= "window.parent.\$('#{$from}').browseFiles('".url('System','browseFiles')."',{from:'{$from}',path:'{$filePath}'});";
+                    if (instr('jpg,gif,png,bmp',fileICON($_FILES['upfile']['name']))) {
+                        $filePath = str_replace(LAZY_PATH,'',$filePath);
+                        $I1.= "window.parent.\$('#{$from}').browseFiles('".url('System','browseFiles')."',{from:'{$from}',path:'{$filePath}'});";
+                    } else {
+                        $I1.= "window.parent.\$('#{$from}').browseFiles('".url('System','browseFiles')."',{from:'{$from}',path:'{$path}'});";
+                    }
                 } else {
                     $I1.= "window.parent.alert('".$upload->getError()."');";
                 }

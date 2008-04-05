@@ -461,13 +461,12 @@ abstract class LazyCMS extends Lazy{
 			$I1 = $l2;
 			$I3 = explode(',',$l2);
 			foreach ($I3 as $keyword){
-				if (instr($I2,$keyword)) {
-					$l3 = trim($keyword);
-				} else {
-					$l3.= ','.trim($keyword);
+				if (!instr($I2,$keyword)) {
+					$I2.= ','.trim($keyword);
 				}
 			}
-			$db->exec("UPDATE `#@_system` SET `sitekeywords`=".$db->quote($l3)." WHERE `systemname`='LazyCMS';");
+            $I2 = ltrim($I2,',');
+			$db->exec("UPDATE `#@_system` SET `sitekeywords`=".$db->quote($I2)." WHERE `systemname`='LazyCMS';");
 		} else {
 			if (strlen($I2) > 0) {
 				$I3 = explode(',',$I2);

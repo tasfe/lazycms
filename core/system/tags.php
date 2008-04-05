@@ -30,6 +30,10 @@ defined('CORE_PATH') or die('Restricted access!');
 // Template *** *** www.LazyCMS.net *** ***
 class Tags extends Lazy{
     private $_inValue;
+    // __construct *** *** www.LazyCMS.net *** ***
+    public function __construct(){
+        $this->clear();
+    }
     // clear *** *** www.LazyCMS.net *** ***
     public function clear(){
         $this->_inValue = array();
@@ -60,24 +64,22 @@ class Tags extends Lazy{
         $this->_inValue[$l1] = $l2;
     }
     // create *** *** www.LazyCMS.net *** ***
-    public function create($l1,$l2=null){
+    public function create($l1,$l2){
         $I1 = $l1;
-        if (!empty($l2)) { $this->_inValue = $l2; }
         if (preg_match_all('/\{lazy\:(.+?[^{])\/\}|\{lazy\:(.+?)\}((.|\n)+?)\{\/lazy\}/i',$I1,$I2)) {
             foreach ($I2[0] as $v) {
-                $I1 = str_replace($v,$this->parseTags($v),$I1); 
+                $I1 = str_replace($v,$this->parseTags($v,$l2),$I1); 
             }
         }
         return $I1;
     }
     // createhtm *** *** www.LazyCMS.net *** ***
-    public function createhtm($l1,$l2=null){
+    public function createhtm($l1,$l2){
         $I1 = $l1;
-        if (!empty($l2)) { $this->_inValue = $l2; }
         if (preg_match_all('/(\(lazy\:).+?[^(](\/\))/i',$I1,$I2)) {
             foreach ($I2[0] as $v) {
                 if (strpos($I1,$v)!==false){
-                    $I1 = str_replace($v,$this->parseTags($v),$I1); 
+                    $I1 = str_replace($v,$this->parseTags($v,$l2),$I1); 
                 }
             }
         }
@@ -96,8 +98,8 @@ class Tags extends Lazy{
         return replace('/(<(script|link|img|input|embed|param|object|base|area|map|table|param).+?(src|href|background|value)\=.+?)(\.\.\/)*((images|js)\/.{0,}?>)/i','${1}'.C('SITE_BASE').C('TEMPLATE_PATH').'/${5}',$l1);
     }
     // parseTags *** *** www.LazyCMS.net *** ***
-    public function parseTags($tags){
-        static $i = 1;
+    public function parseTags($tags,$inValue){
+        static $i = 1; $this->_inValue = $inValue;
         $module  = getObject();
         $tags    = htmldecode($tags);
         $tagName = sect($tags,"(lazy\:)","( |\/|\}|\))");
@@ -135,31 +137,23 @@ class Tags extends Lazy{
             case 'guide':
                 $I1 = $this->parseAtt($tags,"guide");
                 if (strlen($I1)==0) {
-                    $I1 = '<a href="'.C('SITE_BASE').'">'.$module->system['sitename'].'</a> &gt;&gt; '.$this->parseAtt($tags,"title");
+                    $I1 = '<a href="'.C('SITE_BASE').'">'.L('common/home').'</a> &gt;&gt; '.$this->parseAtt($tags,"title");
                 } else {
-                    $I1 = '<a href="'.C('SITE_BASE').'">'.$module->system['sitename'].'</a> &gt;&gt; '.$I1;
+                    $I1 = '<a href="'.C('SITE_BASE').'">'.L('common/home').'</a> &gt;&gt; '.$I1;
                 }
                 break;
             default :
-				try {
-					if (class_exists('Archives')) {
-						$I1 = Archives::tags($tags);
-					} else {
-						throwError('Please module installed Archives');
-					}
-					if (empty($I1)) {
-						throwError('Did not find labels');
-					} else {
-						$I1 = $this->parseAtt($tags,$I1,false);
-					}
-				} catch (Error $err) {
-					if (class_exists($tagName) && !instr('image',strtolower($tagName))) {
-						eval('$I1 = '.$tagName.'::tags($tags);');
-						$I1 = $this->parseAtt($tags,$I1,false);
-					} else {
-						$I1 = $this->parseAtt($tags,$tagName);
-					}
-				}
+                if (class_exists('Archives')) {
+                    $I1 = Archives::tags($tags);
+                }
+                if (empty($I1)) {
+                    if (class_exists($tagName) && !instr('image',strtolower($tagName))) {
+                        eval('$I1 = '.$tagName.'::tags($tags);');
+                        $I1 = $this->parseAtt($tags,$I1,false);
+                    } else {
+                        $I1 = $this->parseAtt($tags,$tagName);
+                    }
+                }
                 break;
         }
         return $I1;
@@ -185,8 +179,9 @@ class Tags extends Lazy{
             return ; 
         }
         $I1 = $l4;
-        
-        $l5 = sect($l1,'size="','"');//size
+
+        // size
+        $l5 = sect($l1,'size="','"');
         if (validate($l5,2)) {
             if ((int)len($l4)>(int)$l5) {
                 $I1 = cnsubstr($l4,$l5).'...';
@@ -194,15 +189,18 @@ class Tags extends Lazy{
                 $I1 = $l4;
             }
         }
-        
-        $l6 = sect($l1,'left="','"');
-        if (validate($l6,2)){
-            $I1 = leftHTML($l4,$l6);
+
+        // left
+        $l5 = sect($l1,'left="','"');
+        if (validate($l5,2)){
+            $I1 = leftHTML($l4,$l5);
         }
+
+        // datemode
         if (is_numeric($l4)) {
-            $l7 = sect($l1,'mode="','"');//datemode
-            if ($l7!='') {
-                $I1 = formatDate($l4,$l7);
+            $l5 = sect($l1,'mode="','"');
+            if ($l5!='') {
+                $I1 = formatDate($l4,$l5);
             }
         }
         
@@ -225,11 +223,12 @@ class Tags extends Lazy{
                 $I1 = C('SITE_BASE').C('PAGES_PATH').'/system/images/notpic.gif';
             }
         }
-        
-        $l8 = sect($l1,'code="','"');//code
+
+        // code
+        $l5 = sect($l1,'code="','"');
         if (strlen($I1)>0) {
-            $l8 = strtolower($l8);
-            switch ($l8) {
+            $l5 = strtolower($l5);
+            switch ($l5) {
                 case 'javascript': case 'js':
                     $I1 = t2js($I1);
                     break;
@@ -244,13 +243,14 @@ class Tags extends Lazy{
                     break;
             }
         }
-
-        $l9 = sect($l1,'fun="','"');//function
-        if (strlen($l9)>0) {
-            if (strpos($l9,'@me')!==false) { 
-                $l9 = str_replace('@me',$I1,$l9);
+        
+        // function
+        $l5 = sect($l1,'fun="','"');
+        if (strlen($l5)>0) {
+            if (strpos($l5,'@me')!==false) { 
+                $l5 = str_replace('@me',$I1,$l5);
             }
-            eval('$I1 = '.$l9.';');
+            eval('$I1 = '.$l5.';');
         }
         return $I1;
     }
@@ -292,6 +292,6 @@ class Tags extends Lazy{
             }
         }
         return $I1;
-    }
+    }    
 }
 ?>

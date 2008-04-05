@@ -122,6 +122,7 @@ class LazyArchives extends LazyCMS{
                 } else { // update
                     $set = array(
                         'sortid1'       => $data[0],
+                        'modelid'       => $data[1],
                         'sortname'      => $data[2],
                         'sortpath'      => $data[3],
                         'keywords'      => $data[4],
@@ -314,7 +315,7 @@ class LazyArchives extends LazyCMS{
         $dp->td  = 'ison(K[2])';
         $dp->td  = 'ison(K[3])';
         $dp->td  = 'ison(K[4])';
-        $dp->td  = !C('SITE_MODE') ? "isExist(K[0],K[8],'create:".C('SITE_BASE')."' + K[6])" : "browse(K[6])";
+        $dp->td  = !C('SITE_MODE') ? "isExist(K[0],K[8],'create:' + K[6])" : "browse(K[6])";
         $dp->td  = 'K[7]';
         $dp->td  = "ico('edit','".url(C('CURRENT_MODULE'),'Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."') + updown('up',K[0],0) + updown('down',K[0],0)";
         $dp->open();

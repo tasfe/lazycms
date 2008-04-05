@@ -195,6 +195,16 @@ function data2xml($l1) {
     return $I1;
 }
 
+// lefte *** *** www.LazyCMS.net *** ***
+function lefte($l1,$l2){
+    if ((int)len($l1)>(int)$l2) {
+        $I1 = cnsubstr($l1,$l2).'...';
+    } else{
+        $I1 = $l1;
+    }
+    return $I1;
+}
+
 // is *** *** www.LazyCMS.net *** ***
 function is($l1,$l2="&,',\",>,<,\n"){
     $I2 = explode(',',$l2);
@@ -858,7 +868,7 @@ function clearCache(){
 //clearHTML *** *** www.LazyCMS.net *** ***
 function clearHTML($l1){
     if (strlen($l1)==0) { return ; }
-    return replace('/<script(.|\n)+?<\/script>|<style(.|\n)+?<\/style>|<[^>]*>/','',$l1);
+    return replace('/<script(.|\n)+?<\/script>|<style(.|\n)+?<\/style>|<[^>]*>/i','',$l1);
 }
 
 //getObject *** *** www.LazyCMS.net *** ***

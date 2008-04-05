@@ -12,7 +12,7 @@
         <p><label><?php echo $module->L('label/sortname');?></label><input class="in2" type="text" id="sortname" name="sortname" maxlength="50" value="<?php echo $sortname;?>" /></p>
         <p><label><?php echo $module->L('label/sortpath');?></label><input class="in4" type="text" id="sortpath" name="sortpath" maxlength="255" value="<?php echo $sortpath;?>" /></p>
         <p><label><?php echo $module->L('label/model');?></label>
-            <select name="modelid" id="modelid" onchange="$(this).setTemplate('#modelname','#sorttemplate2','#pagetemplate2');"<?php echo $disabled;?>>
+            <select name="modelid" id="modelid" onchange="$(this).setTemplate('#modelname','#sorttemplate2','#pagetemplate2');">
                 <?php echo Archives::__model($modelid);?>
             </select>
         </p>

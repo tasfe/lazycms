@@ -176,10 +176,10 @@ class Archives{
         $tag->value('pagelist',encode($randpl));
 		$tag->value('guide',encode(self::guide($model['sortid'])));
         
-        $HTML = $tag->create($HTML);
+        $HTML = $tag->create($HTML,$tag->getValue());
 
 		$strSQL = "SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` WHERE `a`.`sortid` = '{$sortid}' AND `a`.`show` = 1 ORDER BY `a`.`top` DESC,`a`.`order` {$jsOrder},`a`.`sortid` {$jsOrder}";
-		$totalRows  = $db->count($strSQL); if ($totalRows==0) { return L('error/rsnot'); }
+		$totalRows  = $db->count($strSQL);
 		$totalPages = ceil($totalRows/$jsNumber);
         $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
         if ((int)$page > (int)$totalPages) {
@@ -187,31 +187,36 @@ class Archives{
         }
 		$percent = round($page/$totalPages*100,2);
         $strSQL .= ' LIMIT '.$jsNumber.' OFFSET '.($page-1)*$jsNumber.';';
-        $res = $db->query($strSQL);
-        $i = 1;
-        while ($data = $db->fetch($res)) {
-            $tag->clear();
-            $tag->value('id',$data['id']);
-            $tag->value('sortid',$data['sortid']);
-            $tag->value('sortname',encode(htmlencode($model['sortname'])));
-            $tag->value('sortpath',encode($path));
-            $tag->value('title',encode(htmlencode($data['title'])));
-            $tag->value('path',encode(self::showArchive($data['id'],$model)));
-			$tag->value('image',encode($data['img']));
-            $tag->value('date',$data['date']);
-            $tag->value('zebra',fmod($zebra,$i) ? 1 : 0);
-            foreach ($fields as $k) {
-                $tag->value($k,encode($data[$k]));
+        if ((int)$totalRows > 0) {
+            $res = $db->query($strSQL);
+            $i = 1;
+            while ($data = $db->fetch($res)) {
+                $tag->clear();
+                $tag->value('id',$data['id']);
+                $tag->value('sortid',$data['sortid']);
+                $tag->value('sortname',encode(htmlencode($model['sortname'])));
+                $tag->value('sortpath',encode($path));
+                $tag->value('title',encode(htmlencode($data['title'])));
+                $tag->value('path',encode(self::showArchive($data['id'],$model)));
+                $tag->value('image',encode($data['img']));
+                $tag->value('date',$data['date']);
+                $tag->value('zebra',fmod($zebra,$i) ? 1 : 0);
+                foreach ($fields as $k) {
+                    $tag->value($k,encode($data[$k]));
+                }
+                $tmpList.= $tag->createhtm($jsHTML,$tag->getValue());
+                $i++;
+                if ($isCreatePage && !C('SITE_MODE')) {
+                    self::viewArchive($sortid,$data['id']);
+                }
             }
-            $tmpList.= $tag->createhtm($jsHTML);
-            $i++;
-            if ($isCreatePage && !C('SITE_MODE')) {
-                self::viewArchive($sortid,$data['id']);
-            }
+            $outHTML = str_replace($rand,$tmpList,$HTML);
+            $pageExt = C('SITE_MODE') ? '&page=$' : '/index$'.C('HTML_URL_SUFFIX');
+            $outHTML = str_replace($randpl,self::pagelist($path.$pageExt,$page,$totalPages,$totalRows),$outHTML);
+        } else {
+            $outHTML = str_replace($rand,L('error/rsnot'),$HTML);
+            $outHTML = str_replace($randpl,null,$outHTML);
         }
-        $outHTML = str_replace($rand,$tmpList,$HTML);
-		$pageExt = C('SITE_MODE') ? '&page=$' : '/index$'.C('HTML_URL_SUFFIX');
-		$outHTML = str_replace($randpl,self::pagelist($path.$pageExt,$page,$totalPages,$totalRows),$outHTML);
 		// 生成
 		if (!C('SITE_MODE')) { 
 			mkdirs(LAZY_PATH.$model['sortpath']);
@@ -339,7 +344,7 @@ class Archives{
 					$tag->value('path',encode(self::showArchive($data['id'],$model,$page)));
 					$tag->value('pagelist',encode(self::pagelists(self::showArchive($data['id'],$model,'$'),$length,$page)));
 					$tag->value($field['fieldename'],encode($contents[$page-1]));
-					return $tag->create($HTML);
+					return $tag->create($HTML,$tag->getValue());
 				}
 			} else {
                 $contents = null;
@@ -357,7 +362,7 @@ class Archives{
                     } else {
                         $tag->value($field['fieldename'],encode($contents[$i]));
                     }
-                    $outHTML = $tag->create($HTML);
+                    $outHTML = $tag->create($HTML,$tag->getValue());
                     // 生成每一页
                     $path = $data['path'];
                     if ((int)$i>0) {
@@ -520,7 +525,7 @@ class Archives{
 			}
 			$select = "SELECT * FROM `".$model['maintable']."` AS `m`
 						LEFT JOIN `".$model['addtable']."` AS `a` ON `m`.`id` = `a`.`aid`
-						LEFT JOIN `#@_sort` AS `s` ON `s`.`sortid` = `m`.`sortid`";
+						LEFT JOIN `#@_sort` AS `s` ON `s`.`sortid` = `m`.`sortid` WHERE `s`.`modelid`='".$model['modelid']."' AND `m`.`show` = 1 ";
 
 			switch (strtolower($jsType)) {
 				case 'sql':// 自定义SQL
@@ -528,16 +533,16 @@ class Archives{
 					$strSQL = $select.$jsSQL;
 					break;
 				case 'commend':// 推荐文章
-					$strSQL = $select." WHERE `m`.`show` = 1 AND `m`.`commend` = 1 {$inSQL} ORDER BY `m`.`order` DESC,`m`.`id` DESC";
+					$strSQL = $select." AND `m`.`commend` = 1 {$inSQL} ORDER BY `m`.`order` DESC,`m`.`id` DESC";
 					break;
 				case 'hot':// 热门文章
-					$strSQL = $select." WHERE `m`.`show` = 1 {$inSQL} ORDER BY `m`.`hits` DESC ,`m`.`id` DESC";
+					$strSQL = $select.$inSQL." ORDER BY `m`.`hits` DESC ,`m`.`id` DESC";
 					break;
 				case 'chill':// 冷门文章
-					$strSQL = $select." WHERE `m`.`show` = 1 {$inSQL} ORDER BY `m`.`hits` ASC ,`m`.`id` ASC";
+					$strSQL = $select.$inSQL." ORDER BY `m`.`hits` ASC ,`m`.`id` ASC";
 					break;
 				default : // 最新文章
-                    $strSQL = $select." WHERE `m`.`show` = 1 {$inSQL} ORDER BY `m`.`order` DESC,`m`.`id` DESC";
+                    $strSQL = $select.$inSQL." ORDER BY `m`.`order` DESC,`m`.`id` DESC";
 					break;
 			}
 			$strSQL.= " LIMIT 0,{$jsNumber};";
@@ -552,11 +557,6 @@ class Archives{
 				$tag->value('sortpath',encode(self::showSort($data['sortid'])));
 				$tag->value('title',encode(htmlencode($data['title'])));
 				$tag->value('path',encode(self::showArchive($data['id'],self::getModel($data['sortid']))));
-				if (is_file(LAZY_PATH.$data['img'])) {
-					$data['img'] = C('SITE_BASE').$data['img'];
-				} else {
-					$data['img'] = C('SITE_BASE').C('PAGES_PATH').'/system/images/notpic.gif';
-				}
 				$tag->value('image',encode($data['img']));
 				$tag->value('date',$data['date']);
 				$tag->value('zebra',fmod($zebra,$i) ? 1 : 0);
@@ -564,7 +564,7 @@ class Archives{
 				foreach ($fields as $k) {
 					$tag->value($k,encode($data[$k]));
 				}
-				$tmpList.= $tag->createhtm($jsHTML);
+				$tmpList.= $tag->createhtm($jsHTML,$tag->getValue());
 				$i++;
 			}
 		}

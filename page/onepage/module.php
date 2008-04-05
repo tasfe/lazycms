@@ -57,7 +57,8 @@ class Onepage{
             $tag->value('description',encode(htmlencode($data[4])));
             $tag->value('content',encode($data[5]));
             $tag->value('guide',encode(htmlencode($data[0])));
-            return $tag->create($HTML);
+            $outHTML = $tag->create($HTML,$tag->getValue());
+            return $outHTML;
         }
     }
     // create *** *** www.LazyCMS.net *** ***

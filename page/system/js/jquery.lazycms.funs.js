@@ -49,7 +49,9 @@ jQuery.extend(jQuery.fn,{
 				break;
 			case 'radio': case 'checkbox': case 'select':
 				$('.___length').hide().find('input:text').val('');
-				$('.___value').show().find('textarea').val(defval);
+				if ($('.___value').show().find('textarea').val()=="") {
+					$('.___value').show().find('textarea').val(defval);
+				}
 				break;
 			default:
 				$('.___length').hide().find('input:text').val('');
