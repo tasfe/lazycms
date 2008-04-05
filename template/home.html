@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="{lazy:keywords/}"/>
+<meta name="description" content="{lazy:description/}"/>
+<title>{lazy:sitename/} - {lazy:title/}</title>
+<link rel="shortcut icon" href="http://www.lazycms.net/favicon.ico" />
+<link href="images/style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div id="top">
+	<div class="left">
+		<a href="home.html"><img src="images/logo.png" alt="logo" /></a>
+	</div>
+	<div class="right">
+		<div class="tip">约有<strong>1000</strong>个网站正在使用LazyCMS</div>
+		<ul>
+			<li><a href="{lazy:inst/}" class="selected">首 页</a></li>
+			<li><a href="{lazy:inst/}news/">更 新</a></li>
+			<li><a href="{lazy:inst/}license/">许 可</a></li>
+			<li><a href="{lazy:inst/}news/">下 载</a></li>
+			<li><a href="{lazy:inst/}news/">帮 助</a></li>
+			<li><a href="{lazy:inst/}news/">服务项目</a></li>
+			<li><a href="#">讨论交流</a></li>
+		</ul>
+	</div>
+</div>
+
+<div id="main">
+	<div class="mleft">
+		<div class="opensource">
+			<a href="home.html"><img src="images/opensource.png" alt="opensource" /></a>
+		</div>
+		<div class="block">
+			<dl class="left template">
+				<dt><strong>模板下载</strong><a href="{lazy:inst/}download/template/"><img src="images/more.gif" alt="more" /></a></dt>
+				{lazy:template type="new" sortid="3" number="3"}
+				<dd><a href="(lazy:path/)"><img src="(lazy:image width="90" height="110"/)" width="90" height="110" /></a><a href="(lazy:path/)">(lazy:title size="5"/)</a></dd>
+				{/lazy}
+			</dl>
+			<dl class="right news">
+				<dt><strong>最近更新</strong><a href="#"><img src="images/more.gif" alt="more" /></a></dt>
+				{lazy:article type="new" number="6"}
+				<dd><a href="(lazy:path/)">(lazy:title size="20"/)</a><i>(lazy:date mode="m.d"/)</i></dd>
+				{/lazy}
+			</dl>
+		</div>
+		<div class="block">
+			<dl class="left template">
+				<dt><strong>演示网站</strong><a href="#"><img src="images/more.gif" alt="more" /></a></dt>
+				<dd><a href="#"><img src="www_ask369_cn_90_120.png" width="90" height="110" /></a><a href="">LazyCMS模板</a></dd>
+				<dd><a href="#"><img src="www_ask369_cn_90_120.png" width="90" height="110" /></a><a href="">LazyCMS模板</a></dd>
+				<dd><a href="#"><img src="www_ask369_cn_90_120.png" width="90" height="110" /></a><a href="">LazyCMS模板</a></dd>
+			</dl>
+			<dl class="right service">
+				<dt><strong>服务项目</strong><a href="#"><img src="images/more.gif" alt="more" /></a></dt>
+				<dd><a href="javascript:;">找不到数据库连接的原因分析</a></dd>
+				<dd><a href="javascript:;">找不到数据库连接的原因分析</a></dd>
+				<dd><a href="javascript:;">找不到数据库连接的原因分析</a></dd>
+				<dd><a href="javascript:;">找不到数据库连接的原因分析</a></dd>
+				<dd><a href="javascript:;">找不到数据库连接的原因分析</a></dd>
+				<dd><a href="javascript:;">找不到数据库连接的原因分析</a></dd>
+			</dl>
+		</div>
+		<div class="block">
+			<dl class="left help">
+				<dt><strong>使用帮助</strong><a href="{lazy:inst/}help/"><img src="images/more.gif" alt="more" /></a></dt>
+				{lazy:article type="new" sortid="1" number="10"}
+				<dd><a href="(lazy:path/)">(lazy:title size="20"/)</a><i>(lazy:date mode="m.d"/)</i></dd>
+				{/lazy}
+			</dl>
+			<dl class="right help">
+				<dt><strong>常见问题</strong><a href="{lazy:inst/}faq/"><img src="images/more.gif" alt="more" /></a></dt>
+				{lazy:article type="new" sortid="2" number="10"}
+				<dd><a href="(lazy:path/)">(lazy:title size="20"/)</a><i>(lazy:date mode="m.d"/)</i></dd>
+				{/lazy}
+			</dl>
+		</div>
+	</div>
+	<div class="mright">
+		<dl>
+			<dt><strong>源码下载</strong><a href="#"><img src="images/more.gif" alt="more" /></a></dt>
+			<dd class="version">当前最新版本是：1.1.0.0402</dd>
+			<dd class="download"><a href="#"><img src="images/download.png" alt="download"  /></a></dd>
+		</dl>
+		<ul class="download">
+			<li class="important"><a href="javascript:;">下载LazyCMS 1.1.0.0404</a></li>
+			<li class="important"><a href="javascript:;">下载LazyCMS 1.1.0.0404</a></li>
+			<li><a href="javascript:;">下载LazyCMS 1.1.0.0404</a></li>
+			<li><a href="javascript:;">下载LazyCMS 1.1.0.0404</a></li>
+			<li><a href="javascript:;">下载LazyCMS 1.1.0.0404</a></li>
+		</ul>
+		<dl>
+			<dt><strong>许可协议</strong><a href="#"><img src="images/more.gif" alt="more" /></a></dt>
+			<dd class="license"><strong>免费！</strong>可以用在商业用途网站。包括个人及企业网站，而无需支付使用费用，仅需保留LazyCMS支持信息链接即可。详细协议请阅读许可协议文档。</dd>
+		</dl>
+		<ul class="download">
+			<li><a href="javascript:;">下载完整许可协议文档(Word格式)</a></li>
+			<li><a href="javascript:;">进入许可协议页面</a></li>
+		</ul>
+		<dl class="links">
+			<dt><strong>友情链接</strong></dt>
+			<dd><a href="http://www.chinaz.com/" target="_blank">中国站长站</a><i>http://www.chinaz.com/</i></dd>
+			<dd><a href="http://www.im286.com/" target="_blank">落伍者</a><i>http://www.im286.com/</i></dd>
+		</dl>
+	</div>
+</div>
+
+<div id="footer">
+	<div class="left">Copyright &copy;2008 <a href="http://www.LazyCMS.net/">LazyCMS.net</a> All rights reserved.</div>
+	<div class="right">
+		<a href="javascript:;">关于LazyCMS</a> | 
+		<a href="javascript:;">联系方式</a> | 
+		<a href="javascript:;">付款方式</a> | 
+		<a href="javascript:;">免责条款</a>
+	</div>
+</div>
+</body>
+</html>

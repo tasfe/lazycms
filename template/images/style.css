@@ -1,0 +1,87 @@
+body{ width:100%; height:100%; margin:0; padding:0; zoom:100%; display:table; background:url(bg.png) repeat-x left top;}
+body,th,td,p{ line-height:130%; font-family:Verdana; font-size:12px;}
+dl,dt,dd{ margin:0; padding:0;}
+a img{ border:none; vertical-align:middle;}
+a:link{ color:#333333; text-decoration:none;}
+a:visited{ text-decoration:none; color:#333333;}
+a:hover{ text-decoration:underline; color:#000000;}
+a:active{ text-decoration:none; color:#333333;}
+
+#guide{line-height:21px; }
+#guide .home{ width:92px; height:21px; display:block; text-align:center; letter-spacing:3px; font-weight:bold; background:url(guide.gif) no-repeat left center; float:left;}
+#guide .sub{ padding-left:5px; float:left;}
+
+#top{ width:900px; height:80px; margin:0 auto; display:table; clear:both;}
+	#top .left{ width:250px; float:left;}
+	#top .left a{ width:250px; height:65px; padding-top:15px; display:block; text-align:center;}
+	#top .right{ width:650px; float:right;}
+	#top .right .tip{ padding-top:15px; color:#D1DBBD; text-align:right; margin-right:20px;}
+	#top .right .tip strong{ color:#FFFFFF;}
+	#top .right ul{ margin:20px 0 0 0; float:right; clear:both;}
+	#top .right ul li{ float:left; background:#3E606F; line-height:30px; font-size:14px; margin:0 5px;}
+	#top .right ul li a{ display:block; font-weight:bold; color:#91AA9D; padding:0 18px;}
+	#top .right ul li a:hover{ background:#EEEEEE; color:#193441; text-decoration:none;}
+	#top .right ul li a.selected{ background:#EEEEEE; color:#193441;}
+
+#main{ width:900px; margin:20px auto; display:table; clear:both;}
+	#main .block{ clear:both;}
+	#main .mleft{ width:650px; float:left; }
+	#main .mleft .opensource{ margin-bottom:10px; }
+	#main .mleft .left{ width:50%; float:left; }
+	#main .mleft .right{ width:48%; float:right;}
+	#main .mleft .news dt,
+	#main .mleft .template dt{ margin-bottom:5px;}
+	#main .mleft .template dd{ width:100px; margin:0 3px; float:left; text-align:center; background:#EBEBEB; border:solid 1px #C6C6C6;}
+	#main .mleft .template dd a{ clear:both; display:block; padding:2px 0;}
+	
+	#main .mleft .news dd,
+	#main .mleft .help dd,
+	#main .mleft .service dd{ padding-left:20px; line-height:190%; }
+	
+	#main .mleft .news dd{  background:url(bullet_blue.png) no-repeat left center; }
+	#main .mleft .news dd i{ font-style:normal; font-size:9px; padding-left:5px; }
+	
+	#main .mleft .service dd{ background:url(money_yen.png) no-repeat left center; }
+	#main .mleft .help dd{ background:url(text.png) no-repeat left center; }
+	#main .mleft .help dd i{ font-style:normal; font-size:9px; padding-left:5px; }
+	
+	#main .mleft dl{}
+	#main .mleft dl dt{ display:table; zoom:100%; line-height:25px; border-bottom:solid 1px #CCCCCC;}
+	#main .mleft dl dt strong{ color:#193441; font-size:14px; float:left;}
+	#main .mleft dl dt a{ float:right; display:block; margin-top:5px;}
+
+	#main .mright{ width:230px; float:right;}
+	#main .mright dl{}
+	#main .mright dl dt{ display:table; zoom:100%; line-height:25px; border-bottom:solid 1px #CCCCCC;}
+	#main .mright dl dt strong{ color:#193441; font-size:14px; float:left;}
+	#main .mright dl dt a{ float:right; display:block; margin-top:5px;}
+	#main .mright dd.version{ padding-top:10px;}
+	#main .mright dd.download{ padding:10px 0;}
+	#main .mright dd.license{ padding:5px; line-height:180%;}
+	#main .mright dd.license strong{ font-size:14px; color:#006600;}
+	#main .mright dl.links dd{ width:91%; float:right; background:url(arrow.gif) no-repeat left center; padding-left:12px; line-height:150%;}
+	#main .mright dl.links dd i{ margin-left:5px; font-size:9px; font-style:normal;}
+	#main .mright ul.download{ width:95%; margin:0 0 10px 0; padding:5px 0 0 5px; border-top:dashed 1px #CCCCCC;}
+	#main .mright ul.download li{ padding-left:20px; background:url(down.gif) no-repeat left center; line-height:200%;}
+	#main .mright ul.download li.important{background:url(down_important.gif) no-repeat left center;}
+	
+#footer{ width:900px; margin:30px auto 20px auto; padding:5px 0 20px 0; display:table; clear:both; border-top:dashed 1px #CCCCCC;}
+	#footer .left{ float:left; }
+	#footer .right{ float:right; }
+	
+#artlist{ margin:10px 0; clear:both;}
+	#artlist dt{ padding-left:10px; background:url(title.gif) no-repeat left center; color:#193441; font-size:14px; font-weight:bold;}
+	#artlist dd{ padding:5px 0; line-height:200%; border-bottom:dashed 1px #CCCCCC; }
+	#artlist dd a{ padding-left:20px; background:url(bullet_blue.png) no-repeat left center; font-weight:bold;}
+	#artlist dd .intro{ text-indent:26px; line-height:150%; color:#666666;}
+	
+#article{ clear:both; }
+#article h1{ text-align:center; font-size:14px;}
+#article .info{ text-align:center; color:#666666;}
+
+.pagelist{ text-align:right;}
+	.pagelist a ,
+	.pagelist strong{ margin-right:3px;}
+	.pagelist strong{ color:#993300;}
+	.pagelist em {padding:2px;border:1px solid #C6C6C6;font-size:12px;margin:0px 1px;background:#F5F9FE;color:#14316B;font-weight:bold;font-style:normal; margin-right:3px;}
+
