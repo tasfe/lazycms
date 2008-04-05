@@ -176,7 +176,14 @@ class Tags extends Lazy{
         } else {
             $l4 = $l2;
         }
-        if (strlen($l4)==0) { return ; }
+        
+        if (strlen($l4)==0) {
+            // no image
+            if (strtolower($l2) == 'image') {
+                return C('SITE_BASE').C('PAGES_PATH').'/system/images/notpic.gif';
+            }
+            return ; 
+        }
         $I1 = $l4;
         
         $l5 = sect($l1,'size="','"');//size

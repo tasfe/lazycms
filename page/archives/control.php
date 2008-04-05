@@ -45,15 +45,15 @@ class LazyArchives extends LazyCMS{
         $dp->length = $db->count($dp->result);
         $button  = !C('SITE_MODE') ? '-|createsort:'.$this->L('common/createsort').'|createpage:'.$this->L('common/createpage').'|-|createall:'.$this->L('common/createall') : null;
         $dp->but = $dp->button($button);
-        $dp->td  = "cklist(K[0]) + K[8] + K[0] + ') <a href=\"".url(C('CURRENT_MODULE'),'List','sortid=$',"' + K[0] + '")."\">' + K[2] + '</a>'";
+        $dp->td  = "cklist(K[0]) + K[7] + K[0] + ') <a href=\"".url(C('CURRENT_MODULE'),'List','sortid=$',"' + K[0] + '")."\">' + K[2] + '</a>'";
         $dp->td  = "K[3]";
         $dp->td  = "K[4]";
-        $dp->td  = !C('SITE_MODE') ? "isExist(K[0],K[6],'createsort:".C('SITE_BASE')."' + K[5]) + K[5]" : "browse(K[7]) + K[7]";
-        $dp->td  = "ico('new','".url(C('CURRENT_MODULE'),'Edit','sortid=$',"' + K[0] + '")."') + ico('edit','".url(C('CURRENT_MODULE'),'EditSort','sortid=$',"' + K[0] + '")."') + updown('up',K[0],K[1]) + updown('down',K[0],K[1])";
+        $dp->td  = !C('SITE_MODE') ? "isExist(K[0],K[6],'createsort:' + K[5]) + K[5]" : "browse(K[5]) + K[5]";
+        $dp->td  = "ico('add','".url(C('CURRENT_MODULE'),'Edit','sortid=$',"' + K[0] + '")."') + ico('edit','".url(C('CURRENT_MODULE'),'EditSort','sortid=$',"' + K[0] + '")."') + updown('up',K[0],K[1]) + updown('down',K[0],K[1])";
         $dp->open();
         $dp->thead  = '<tr><th>'.$this->L('sort/id').') '.$this->L('sort/name').'</th><th>'.$this->L('sort/model').'</th><th>'.$this->L('sort/count').'</th><th>'.$this->L('sort/path').'</th><th class="wp2">'.$this->L('sort/action').'</th></tr>';
         while ($data = $dp->result()) {
-            $dp->tbody = "ll(".$data['sortid'].",".$data['sortid1'].",'".t2js(htmlencode($data['sortname']))."','".t2js(htmlencode($data['modelname']))."',".$data['count'].",'".htmlencode($data['sortpath'])."',".(file_exists(LAZY_PATH.$data['sortpath']) ? 1 : 0).",'".Archives::showSort($data['sortid'])."','".Archives::subSort($data['sortid'])."');";
+            $dp->tbody = "ll(".$data['sortid'].",".$data['sortid1'].",'".t2js(htmlencode($data['sortname']))."','".t2js(htmlencode($data['modelname']))."',".$data['count'].",'".Archives::showSort($data['sortid'])."',".(file_exists(LAZY_PATH.$data['sortpath']) ? 1 : 0).",'".Archives::subSort($data['sortid'])."');";
             if (Archives::isOpen($data['sortid'])=="true") {
                 $dp->tbody = "$('#dir".$data['sortid']."').addsub(".$data['sortid'].",1,".Archives::isOpen($data['sortid']).");";
             }
@@ -229,7 +229,7 @@ class LazyArchives extends LazyCMS{
                         'sortid'=> $data['sortid'],
                         'isopen'=> (int)$data['sortopen'] == 0 ? false : true,
                         'issub' => Archives::isSub($data['sortid']),
-                        'js'    => "lll(".$data['sortid'].",".$data['sortid1'].",'".t2js(htmlencode($data['sortname']))."','".t2js(htmlencode($data['modelname']))."',".$data['count'].",'".htmlencode($data['sortpath'])."',".(file_exists(LAZY_PATH.$data['sortpath']) ? 1 : 0).",'".Archives::showSort($data['sortid'])."','".Archives::subSort($data['sortid'],$space+1)."');"
+                        'js'    => "lll(".$data['sortid'].",".$data['sortid1'].",'".t2js(htmlencode($data['sortname']))."','".t2js(htmlencode($data['modelname']))."',".$data['count'].",'".Archives::showSort($data['sortid'])."',".(file_exists(LAZY_PATH.$data['sortpath']) ? 1 : 0).",'".Archives::subSort($data['sortid'],$space+1)."');"
                     );
                 }
                 $db->exec("UPDATE `#@_sort` SET `sortopen`='1' WHERE `sortid`='{$lists}';");
@@ -310,17 +310,17 @@ class LazyArchives extends LazyCMS{
         $dp->url = url(C('CURRENT_MODULE'),'List','sortid='.$sortid.'&page=$');
         $button  = !C('SITE_MODE') ? 'create:'.L('common/create') : null;
         $dp->but = $dp->button($button).$dp->plist();
-        $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"".url(C('CURRENT_MODULE'),'Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."\">' + K[1] + '</a>'";
+        $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"".url(C('CURRENT_MODULE'),'Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."\">' + K[1] + '</a> '+image(K[5])";
         $dp->td  = 'ison(K[2])';
         $dp->td  = 'ison(K[3])';
         $dp->td  = 'ison(K[4])';
-        $dp->td  = !C('SITE_MODE') ? "isExist(K[0],K[8],'create:".C('SITE_BASE')."' + K[6])" : "browse(K[9])";
+        $dp->td  = !C('SITE_MODE') ? "isExist(K[0],K[8],'create:".C('SITE_BASE')."' + K[6])" : "browse(K[6])";
         $dp->td  = 'K[7]';
         $dp->td  = "ico('edit','".url(C('CURRENT_MODULE'),'Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."') + updown('up',K[0],0) + updown('down',K[0],0)";
         $dp->open();
         $dp->thead  = '<tr><th>'.$this->L('list/id').') '.$this->L('list/title').'</th><th>'.$this->L('list/show').'</th><th>'.$this->L('list/commend').'</th><th>'.$this->L('list/top').'</th><th>'.$this->L('list/path').'</th><th>'.$this->L('list/date').'</th><th>'.$this->L('list/action').'</th></tr>';
         while ($data = $dp->result()) {
-            $dp->tbody = "ll(".$data['id'].",'".t2js(htmlencode($data['title']))."',".$data['show'].",".$data['commend'].",".$data['top'].",'".t2js(htmlencode($data['img']))."','".t2js(htmlencode($model['sortpath'].'/'.$data['path']))."','".date('Y-m-d H:i:s',$data['date'])."',".(file_exists(LAZY_PATH.$model['sortpath'].'/'.$data['path']) ? 1 : 0).",'".Archives::showArchive($data['id'],$model)."');";
+            $dp->tbody = "ll(".$data['id'].",'".t2js(htmlencode($data['title']))."',".$data['show'].",".$data['commend'].",".$data['top'].",'".htmlencode(is_file(LAZY_PATH.$data['img']) ? LAZY_PATH.$data['img'] : null)."','".Archives::showArchive($data['id'],$model)."','".date('Y-m-d H:i:s',$data['date'])."',".(file_exists(LAZY_PATH.$model['sortpath'].'/'.$data['path']) ? 1 : 0).");";
         }
         $dp->close();
 

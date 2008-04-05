@@ -17,6 +17,9 @@ textarea{ font-size:13px;}
 .gray ,a.gray{ color:#999999;}
 .green ,a.green{ color:#009900;}
 
+.pop_image{ width:300px; position:absolute; border:solid 1px #000000; background:#FFFFFF;}
+.pop_image img{ width:100%; }
+
 #top{width:100%; margin:0 auto; display:table; clear:both; background:#193441; color:#D1DBBD;}
 	#top .logo{ width:180px; padding:4px 0 5px 10px; float:left; text-align:center;}
 	#top a{ color:#D1DBBD;}

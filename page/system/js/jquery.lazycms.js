@@ -58,6 +58,14 @@ $(function(){
 		}
 	);
 	// *** *** www.LazyCMS.net *** ***  日期选择器设置 结束  *** *** www.LazyCMS.net *** ***
+	$('.___images').each(function(i){
+		$(this).attr('target','_blank');
+		$(this).hover(function(){
+			$(this).after('<div class="pop_image"><img src="' + this + '" /></div>');
+		},function(){
+			$(this).next('.pop_image').remove();
+		});
+	});
 });
 // 函数加载JavaScript *** *** www.LazyCMS.net *** ***
 function LoadScript(plugin){ 

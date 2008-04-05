@@ -1036,7 +1036,7 @@ class LazySystem extends LazyCMS{
         switch (strtolower($action)) {
             case 'delete': 
                 $file = isset($_POST['file']) ? (string)$_POST['file'] : null;
-                unlink($file);
+                @unlink($file);
                 break;
             case 'createfolder' :
                 $folder = isset($_POST['folder']) ? (string)$_POST['folder'] : null;
@@ -1060,9 +1060,10 @@ class LazySystem extends LazyCMS{
                 $upload = O('UpLoadFile');
                 $upload->allowExts = C('UPFILE_SUFFIX');
                 $upload->maxSize   = 2*1024*1024;//2M
-                if ($file = $upload->save('upfile',LAZY_PATH.$path.'/'.basename($_FILES['upfile']['name']))) {
-                    $path = str_replace(LAZY_PATH,'',$file['path']);
-                    $I1.= "window.parent.\$('#{$from}').browseFiles('".url('System','browseFiles')."',{from:'{$from}',path:'{$path}'});";
+                $filePath = str_replace('//','/',$cPath.'/'.basename($_FILES['upfile']['name']));
+                if ($file = $upload->save('upfile',$filePath)) {
+                    $filePath = str_replace(LAZY_PATH,'',$filePath);
+                    $I1.= "window.parent.\$('#{$from}').browseFiles('".url('System','browseFiles')."',{from:'{$from}',path:'{$filePath}'});";
                 } else {
                     $I1.= "window.parent.alert('".$upload->getError()."');";
                 }

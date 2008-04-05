@@ -97,6 +97,7 @@ class UpLoadFile extends Lazy{
             if (file_exists($l2)) {
                 $l2 = substr($l2,0,strrpos($l2,'/')).'/'.basename($l2,'.'.$Info['ext']).salt().'.'.$Info['ext'];
             }
+            $l2 = substr($l2,0,strrpos($l2,'/')).'/'.pinyin(basename($l2,'.'.$Info['ext'])).'.'.$Info['ext'];
             $Info['path'] = $l2;
         }
         if (is_uploaded_file($Info['tmp_name'])){

@@ -18,9 +18,16 @@
         </span></p>
         <p><label><?php echo $module->L('label/archive/title');?></label><input class="in4" type="text" id="title" name="title" maxlength="255" value="<?php echo $title;?>" /></p>
         <p><label><?php echo $module->L('label/archive/img');?></label><input class="in4" type="text" id="img" name="img" maxlength="255" value="<?php echo $img;?>" />&nbsp;
-            <button type="button" onclick="$('#img').browseFiles('<?php echo url('System','browseFiles');?>','<?php echo $upath;?>',true);"><?php echo L('common/browse');?></button>&nbsp;
+            <button type="button" onclick="$('#img').browseFiles('<?php echo url('System','browseFiles');?>','<?php echo $upath;?>',true);"><?php echo L('common/browse');?></button>
+            <script type="text/javascript">
+            <?php if (!empty($img) && !is_file(LAZY_PATH.$img)):?>
+            document.write(ico('tip'));
+            <?php else:?>
+            document.write(image('<?php echo !empty($img) ? LAZY_PATH.$img : null;?>'));
+            <?php endif;?>
+            </script>
             <?php if ($setimg):?>
-            <span><input name="setimg" type="checkbox" id="setimg" value="1"<?php echo $setimg;?> /><label for="setimg"><?php echo $module->L('label/archive/setimg');?></label></span></p>
+            &nbsp;<span><input name="setimg" type="checkbox" id="setimg" value="1"<?php echo $setimg;?> /><label for="setimg"><?php echo $module->L('label/archive/setimg');?></label></span></p>
             <?php endif;?>
         <p><label><?php echo $module->L('label/archive/path');?></label><input class="in4" type="text" id="path" name="path" maxlength="255" value="<?php echo $path;?>" />
             <?php if (empty($aid)):?>

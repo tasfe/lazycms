@@ -144,6 +144,7 @@ function inputValue(l1,l2){
 // *** *** www.LazyCMS.net *** ***
 function index(l1,l2,l3,l4){ if (l1==1)	{ return '<img src="'+path()+'/images/os/index_gray.gif" class="os"  title="NO INDEX" />';}	return l2 ? ico('index',l3) : '<a href="'+l4+'"><img src="'+path()+'/images/os/index_gray.gif" class="os"  title="NO INDEX" /></a>';}
 function home(l1,l2){ return l1 ? '<img src="'+path()+'/images/os/on.gif" class="os" />' : '<a href="'+l2+'" title="SET HOME"><img src="'+path()+'/images/os/on_gray.gif" class="os" /></a>'; }
+function image(l1){	return l1!='' ? '<a href="'+l1+'" class="___images"><img src="'+path()+'/images/os/image.gif" class="os" /></a>' : '';}
 function state(l1,l2,l3){ return l1==0 ? '<a href="'+l2+'" title="LOCKED"><img src="'+path()+'/images/os/on.gif" class="os" /></a>' : '<a href="'+l3+'" title="UNLOCKED"><img src="'+path()+'/images/os/on_gray.gif" class="os" /></a>'; }
 function isExist(l1,l2,l3){ var I2 = l3.split(':');	return l2 ? browse(I2[1]) : '<a href="javascript:;" onclick="$(this).gm(\'' + I2[0] + '\',{lists:'+l1+'});" title="' + I2[0].toUpperCase() + '"><img src="'+path()+'/images/os/tip.gif" class="os" /></a>'; }
 function selevel(){var a=$('span#levels');if($('input#adminlevel').attr("checked")){a.slideUp("fast")}else{a.slideDown("fast")}}

@@ -39,7 +39,7 @@ class LazyOnepage extends LazyCMS{
         $button  = !C('SITE_MODE') ? 'create:'.L('common/create') : null;
         $dp->but = $dp->button($button).$dp->plist();
         $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"".url('Onepage','Edit','oneid=$',"' + K[0] + '")."\">' + K[1] + '</a>'";
-        $dp->td  = !C('SITE_MODE') ? "isExist(K[0],K[4],'create:".C('SITE_BASE')."' + K[2]) + K[2]" : "browse(K[5]) + K[5]";
+        $dp->td  = !C('SITE_MODE') ? "isExist(K[0],K[4],'create:' + K[2]) + K[2]" : "browse(K[2]) + K[2]";
         // 静态网站模式，不显示设为首页，将文件设置为服务器默认文档即可
         if (C('SITE_MODE')) {
             $dp->td  = "home(K[3],'".url('Onepage','SetHome','oneid=$',"' + K[0] + '")."')";
@@ -48,7 +48,7 @@ class LazyOnepage extends LazyCMS{
         $dp->open();
         $dp->thead  = '<tr><th>'.$this->L('list/id').') '.$this->L('list/name').'</th><th>'.$this->L('list/path').'</th>'.(C('SITE_MODE') ? '<th>'.$this->L('list/home').'</th>' : null).'<th class="wp2">'.$this->L('list/action').'</th></tr>';
         while ($data = $dp->result()) {
-            $dp->tbody = "ll(".$data['oneid'].",'".t2js(htmlencode($data['onename']))."','".htmlencode($data['onepath'])."',".$data['ishome'].",".(file_exists(LAZY_PATH.$data['onepath']) ? 1 : 0).",'".Onepage::show($data['oneid'])."');";
+            $dp->tbody = "ll(".$data['oneid'].",'".t2js(htmlencode($data['onename']))."','".Onepage::show($data['oneid'])."',".$data['ishome'].",".(file_exists(LAZY_PATH.$data['onepath']) ? 1 : 0).");";
         }
         $dp->close();
 
