@@ -38,6 +38,7 @@
             [<a href="javascript:;" onclick="$('#path').val('MD5');">MD5</a>]
         </p>
         <?php echo $module->outHTML;?>
+        <p><label><?php echo $module->L('label/archive/date');?></label><input class="in2 date-pick" type="text" id="date" name="date" value="<?php echo $date;?>" /></p>
         <input name="aid" type="hidden" value="<?php echo $aid;?>" />
         <?php if (!empty($aid)):?>
         <input name="sortid" type="hidden" value="<?php echo $sortid;?>" />

@@ -350,6 +350,7 @@ class LazyArchives extends LazyCMS{
         $title = isset($_POST['title']) ? $_POST['title'] : null;
         $img   = isset($_POST['img'])   ? $_POST['img'] : null;
         $path  = isset($_POST['path'])  ? $_POST['path'] : null;
+        $date  = isset($_POST['date'])  ? $_POST['date'] : null;
         $setimg = isset($_POST['setimg'])  ? $_POST['setimg'] : null;
         $pathtype = isset($_POST['pathtype']) ? $_POST['pathtype'] : null;
         
@@ -385,9 +386,11 @@ class LazyArchives extends LazyCMS{
         } else {
             $checkpath = $this->check("path|1|".$this->L('check/path')."|1-255;path|4|".$this->L('check/path1').";path|3|".$this->L('check/path2')."|SELECT COUNT(`id`) FROM `".$model['maintable']."` WHERE `path`='{$path}' AND `id`<>'{$aid}';");
         }
+
         $this->validate(array(
             'title' => $cktitle,
             'path'  => $checkpath,
+            'date'  => $this->check("date|0|".$this->L('check/date').";date|validate|".$this->L('check/date1')."|8"),
         ));
 
         $label = O('Label');
@@ -432,7 +435,7 @@ class LazyArchives extends LazyCMS{
                         'top'     => (int)$top,
                         'img'     => (string)$img,
                         'path'    => (string)$path,
-                        'date'    => now(),
+                        'date'    => (int)strtotime($date),
                     );
                     $db->insert($model['maintable'],$row);
                     $aid = $db->lastInsertId();
@@ -446,6 +449,7 @@ class LazyArchives extends LazyCMS{
                         'top'     => (int)$top,
                         'img'     => (string)$img,
                         'path'    => (string)$path,
+                        'date'    => (int)strtotime($date),
                     );
                     $where = $db->quoteInto('`id` = ?',$aid);
                     $db->update($model['maintable'],$set,$where);
@@ -471,6 +475,7 @@ class LazyArchives extends LazyCMS{
                     $top     = $data['top'];
                     $img     = $data['img'];
                     $path    = $data['path'];
+                    $date    = $data['date'];
                     $formData = Archives::getData($aid,$model['addtable']);
                 } else {
                     throwError(L('error/invalid'));
@@ -497,6 +502,7 @@ class LazyArchives extends LazyCMS{
             'img'    => $img,
             'setimg' => $vsetimg,
             'path'   => empty($aid) && empty($path) ? $this->L('common/pinyin') :$path,
+            'date'   => date('Y-m-d',(empty($date) ? now() : (!is_numeric($date) ? strtotime($date) : $date))),
             'show'   => !empty($show) ? ' checked="checked"' : null,
             'top'    => !empty($top) ? ' checked="checked"' : null,
             'snapimg' => !empty($snapimg) ? ' checked="checked"' : null,

@@ -35,28 +35,8 @@ $(function(){
 		TEXT_CLOSE			:	'关闭',
 		TEXT_CHOOSE_DATE	:	'选择日期'
 	};
-	$(".date-pick")
-		.datePicker({startDate:'1996-01-01'})
-		.dpSetPosition($.dpConst.POS_BOTTOM, $.dpConst.POS_LEFT)
-		.bind('focus',function(){$(this).dpDisplay();})
-		.bind('blur',function(event){
-			// works good in Firefox... But how to get it to work in IE?
-			if ($.browser.mozilla) {
-				var el = event.explicitOriginalTarget;
-				var cal = $('#dp-popup')[0];
-				while (true){
-					if (el == cal) {
-						return false;
-					} else if (el == document) {
-						$(this).dpClose();
-						return true;
-					} else {
-						el = $(el).parent()[0];
-					}
-				}
-			}
-		}
-	);
+	$(".date-pick").datePicker({startDate:'1996-01-01'}).dpSetPosition($.dpConst.POS_BOTTOM, $.dpConst.POS_LEFT);
+		
 	// *** *** www.LazyCMS.net *** ***  日期选择器设置 结束  *** *** www.LazyCMS.net *** ***
 	$('.___images').each(function(i){
 		$(this).attr('target','_blank');

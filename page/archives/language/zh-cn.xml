@@ -64,6 +64,7 @@
             <img>缩略图 (若写远程路径，自动抓取图片保存到本地)</img>
             <setimg>设第一幅图为缩略图</setimg>
             <path>路径 (不支持特殊符号；不建议输入纯数字，以免覆盖列表)</path>
+            <date>发布日期</date>
         </archive>
         
     </label>
@@ -75,6 +76,8 @@
         <sortname>分类名不能为空</sortname>
         <title>标题不能为空</title>
         <title1>标题不能重复</title1>
+        <date>发布日期不能为空</date>
+        <date1>日期格式错误</date1>
     </check>
     
     <pop>

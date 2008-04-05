@@ -467,7 +467,7 @@ abstract class LazyCMS extends Lazy{
 					$l3.= ','.trim($keyword);
 				}
 			}
-			$db->exec("UPDATE `#@_system` SET `sitekeywords`='".$db->quote($l3)."' WHERE `systemname`='LazyCMS';");
+			$db->exec("UPDATE `#@_system` SET `sitekeywords`=".$db->quote($l3)." WHERE `systemname`='LazyCMS';");
 		} else {
 			if (strlen($I2) > 0) {
 				$I3 = explode(',',$I2);
