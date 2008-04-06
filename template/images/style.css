@@ -7,7 +7,7 @@ a:visited{ text-decoration:none; color:#333333;}
 a:hover{ text-decoration:underline; color:#000000;}
 a:active{ text-decoration:none; color:#333333;}
 
-#guide{line-height:21px; }
+#guide{ width:100%; display:table; clear:both; zoom:100%; line-height:21px; }
 #guide .home{ width:92px; height:21px; display:block; text-align:center; letter-spacing:3px; font-weight:bold; background:url(guide.gif) no-repeat left center; float:left;}
 #guide .sub{ padding-left:5px; float:left;}
 
@@ -17,7 +17,7 @@ a:active{ text-decoration:none; color:#333333;}
 	#top .right{ width:650px; float:right;}
 	#top .right .tip{ padding-top:15px; color:#D1DBBD; text-align:right; margin-right:20px;}
 	#top .right .tip strong{ color:#FFFFFF;}
-	#top .right ul{ margin:20px 0 0 0; float:right; clear:both;}
+	#top .right ul{ margin:20px 0 0 0; padding:0; float:right; clear:both; list-style:none;}
 	#top .right ul li{ float:left; background:#3E606F; line-height:30px; font-size:14px; margin:0 5px;}
 	#top .right ul li a{ display:block; font-weight:bold; color:#91AA9D; padding:0 18px;}
 	#top .right ul li a:hover{ background:#EEEEEE; color:#193441; text-decoration:none;}
@@ -45,14 +45,14 @@ a:active{ text-decoration:none; color:#333333;}
 	#main .mleft .help dd{ background:url(text.png) no-repeat left center; }
 	#main .mleft .help dd i{ font-style:normal; font-size:9px; padding-left:5px; }
 	
-	#main .mleft dl{}
-	#main .mleft dl dt{ display:table; zoom:100%; line-height:25px; border-bottom:solid 1px #CCCCCC;}
+	#main .mleft dl{ width:100%;}
+	#main .mleft dl dt{ width:100%; display:table; zoom:100%; line-height:25px; border-bottom:solid 1px #CCCCCC;}
 	#main .mleft dl dt strong{ color:#193441; font-size:14px; float:left;}
 	#main .mleft dl dt a{ float:right; display:block; margin-top:5px;}
 
 	#main .mright{ width:230px; float:right;}
-	#main .mright dl{}
-	#main .mright dl dt{ display:table; zoom:100%; line-height:25px; border-bottom:solid 1px #CCCCCC;}
+	#main .mright dl{width:100%;}
+	#main .mright dl dt{ width:100%; display:table; zoom:100%; line-height:25px; border-bottom:solid 1px #CCCCCC;}
 	#main .mright dl dt strong{ color:#193441; font-size:14px; float:left;}
 	#main .mright dl dt a{ float:right; display:block; margin-top:5px;}
 	#main .mright dd.version{ padding-top:10px;}
@@ -61,25 +61,39 @@ a:active{ text-decoration:none; color:#333333;}
 	#main .mright dd.license strong{ font-size:14px; color:#006600;}
 	#main .mright dl.links dd{ width:91%; float:right; background:url(arrow.gif) no-repeat left center; padding-left:12px; line-height:150%;}
 	#main .mright dl.links dd i{ margin-left:5px; font-size:9px; font-style:normal;}
-	#main .mright ul.download{ width:95%; margin:0 0 10px 0; padding:5px 0 0 5px; border-top:dashed 1px #CCCCCC;}
+	#main .mright ul.download{ width:95%; margin:0 0 10px 0; padding:5px 0 0 5px; border-top:dashed 1px #CCCCCC; list-style:none;}
 	#main .mright ul.download li{ padding-left:20px; background:url(down.gif) no-repeat left center; line-height:200%;}
 	#main .mright ul.download li.important{background:url(down_important.gif) no-repeat left center;}
 	
 #footer{ width:900px; margin:30px auto 20px auto; padding:5px 0 20px 0; display:table; clear:both; border-top:dashed 1px #CCCCCC;}
 	#footer .left{ float:left; }
 	#footer .right{ float:right; }
-	
-#artlist{ margin:10px 0; clear:both;}
-	#artlist dt{ padding-left:10px; background:url(title.gif) no-repeat left center; color:#193441; font-size:14px; font-weight:bold;}
-	#artlist dd{ padding:5px 0; line-height:200%; border-bottom:dashed 1px #CCCCCC; }
-	#artlist dd a{ padding-left:20px; background:url(bullet_blue.png) no-repeat left center; font-weight:bold;}
-	#artlist dd .intro{ text-indent:26px; line-height:150%; color:#666666;}
-	
-#article{ clear:both; }
-#article h1{ text-align:center; font-size:14px;}
-#article .info{ text-align:center; color:#666666;}
 
-.pagelist{ text-align:right;}
+#onepage{ clear:both;}
+
+/* 列表通用样式 */
+.list{ margin:10px 0; clear:both;}
+	.list .title{ width:100%; margin-bottom:10px; padding-left:10px; background:url(title.gif) no-repeat left center; color:#193441; font-size:14px; font-weight:bold; display:table; zoom:100%; line-height:25px; border-bottom:solid 1px #CCCCCC;}
+
+/* 文章列表 */
+#artlist .item{ padding:0 0 5px 0; line-height:200%; border-bottom:dashed 1px #CCCCCC; }
+	#artlist .item a{ padding-left:20px; background:url(bullet_blue.png) no-repeat left center; font-weight:bold;}
+	#artlist .item .intro{ text-indent:26px; line-height:150%; color:#666666;}
+	
+/* 文章信息 */
+#article{ clear:both; }
+	#article h1{ text-align:center; font-size:14px;}
+	#article .info{ text-align:center; color:#666666;}
+
+/* 模板列表 */
+#template ul{ margin:0; padding:0; list-style:none;}
+	#template ul li{ width:49%; height:120px; margin:10px 0; padding:0; float:left;}
+	#template .picture{ width:90px; height:110px; border:solid 1px #CCCCCC; padding:3px; float:left; text-align:center; overflow:hidden;}
+	#template .info{ padding-left:10px; float:left;}
+	#template .info p{ width:95%; height:14px; overflow:hidden; white-space:nowrap; -o-text-overflow:ellipsis; text-overflow:ellipsis;}
+
+/* 分页样式 */
+.pagelist{ margin:5px 0; clear:both; text-align:right;}
 	.pagelist a ,
 	.pagelist strong{ margin-right:3px;}
 	.pagelist strong{ color:#993300;}

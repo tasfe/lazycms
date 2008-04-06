@@ -740,7 +740,7 @@ class LazySystem extends LazyCMS{
             $upload = O('UpLoadFile');
             $upload->allowExts = "mod";
             $upload->maxSize   = 500*1024;//500K
-            if ($file = $upload->save($field,LAZY_PATH.C('UPFILE_PATH').'/'.basename($_FILES[$field]['name']))) {
+            if ($file = $upload->save($field,LAZY_PATH.basename($_FILES[$field]['name']))) {
                 $modelCode = loadFile($file['path']); @unlink($file['path']);
                 if (!empty($modelCode)) {
                     System::installModel($modelCode);

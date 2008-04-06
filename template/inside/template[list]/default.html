@@ -1,11 +1,18 @@
-<dl id="artlist">
-	<dt>{lazy:sortname/}</dt>
-	<dd>{lazy:pagelist/}</dd>
-	{lazy:template type="list" number="10"}
-	<dd>
-		<a href="(lazy:path/)" target="_blank">(lazy:title size="30"/)</a>
-		<div class="intro">(lazy:content fun="lefte(clearHTML('@me'),80)"/)</div>
-	</dd>
-	{/lazy}
-	<dd>{lazy:pagelist/}</dd>
-</dl>
+<div id="template" class="list">
+	<div class="title">{lazy:sortname/}</div>
+	{lazy:pagelist/}
+	<ul>
+		{lazy:template type="list" number="10"}
+		<li>
+			<div class="picture"><a href="(lazy:path/)"><img src="(lazy:image width="90" height="110"/)" /></a></div>
+			<div class="info">
+				<p>模板名称：<a href="(lazy:path/)">(lazy:title/)</a></p>
+				<p>设计制作：(lazy:author/)</p>
+				<p>系统版本：(lazy:systemver/)</p>
+				<p>演示地址：<a href="(lazy:url/)" target="_blank">(lazy:url/)</a></p>
+			</div>
+		</li>
+		{/lazy}
+	</ul>
+	{lazy:pagelist/}
+</div>

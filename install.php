@@ -88,7 +88,7 @@ $install = isset($_POST['install']) ? $_POST['install'] : null;
 
 // 获取安装目录
 $sitebase = dirname(getUriBase());
-$sitebase = $sitebase=="\\" ? '/' : substr($sitebase.'/',0,strrpos($sitebase.'/','/')+1);
+$sitebase = ($sitebase=="\\" || $sitebase=="/") ? '/' : substr($sitebase.'/',0,strrpos($sitebase.'/','/')+1);
 $sitebase  = isset($_POST['sitebase']) ? $_POST['sitebase'] : $sitebase;
 
 $sitename  = isset($_POST['sitename']) ? $_POST['sitename'] : null;

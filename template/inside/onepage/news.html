@@ -1,7 +1,7 @@
 <div id="artlist" class="list">
-	<div class="title">{lazy:sortname/}</div>
+	<div class="title">{lazy:name/}</div>
 	{lazy:pagelist/}
-	{lazy:article type="list" number="10"}
+	{lazy:article type="new" number="10"}
 	<div class="item">
 		<a href="(lazy:path/)" target="_blank">(lazy:title size="30"/)</a>
 		<div class="intro">(lazy:content fun="lefte(clearHTML('@me'),80)"/)</div>

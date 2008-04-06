@@ -55,8 +55,12 @@ class Tags extends Lazy{
         $l9 = empty($l8) ? $l6 : replace('/(\{lazy:)(inside) {0,}?(\/\})/i',$l8,$l6);
 		$l9 = $this->format($l9);
 		$js = '<script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.js"></script>'.chr(10);
-		$js.= '<script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.common.js"></script>'.chr(10);
-		$I1 = replace('/<\/head>/i',"{$js}\n\$0",$l9);
+		$js.= '<script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.common.js"></script>';
+        if (preg_match('/<\/title>/i',$l9)) {
+            $I1 = replace('/<\/title>/i',"\$0\n{$js}",$l9,1);
+        } else {
+            $I1 = replace('/<head>/i',"\$0\n{$js}",$l9,1);
+        }
         return $I1;
     }
     // value *** *** www.LazyCMS.net *** ***
@@ -108,7 +112,7 @@ class Tags extends Lazy{
                 $I1 = $module->system[$tagName];
                 break;
             case 'cms':
-                $I1 = '<p id="lazycms">Powered by: <a href="http://www.lazycms.net" style="font-weight:bold" target="_blank">'.$module->system['systemname'].'</a> <span>'.$module->system['systemver'].'</span></p>';
+                $I1 = '<span id="lazycms">Powered by: <a href="http://www.lazycms.net" style="font-weight:bold" target="_blank">'.$module->system['systemname'].'</a> <span>'.$module->system['systemver'].'</span></span>';
                 break;
             case 'inst':
                 $I1 = C('SITE_BASE');

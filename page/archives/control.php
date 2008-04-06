@@ -455,8 +455,14 @@ class LazyArchives extends LazyCMS{
                     $where = $db->quoteInto('`id` = ?',$aid);
                     $db->update($model['maintable'],$set,$where);
                     if (!empty($formData)) {
-                        $where = $db->quoteInto('`aid` = ?',$aid);
-                        $db->update($model['addtable'],$formData,$where);
+                        $num = $db->count("SELECT * FROM `".$model['addtable']."` WHERE `aid` = '{$aid}';");
+                        if ($num>0) {
+                            $where = $db->quoteInto('`aid` = ?',$aid);
+                            $db->update($model['addtable'],$formData,$where);    
+                        } else {
+                            $addrows = array_merge($formData,array('aid'=>$aid));
+                            $db->insert($model['addtable'],$addrows);    
+                        }
                     }
                 }
                 // 更新列表，自动添加一个更新loading到toolbar

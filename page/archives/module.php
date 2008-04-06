@@ -201,10 +201,12 @@ class Archives{
                 $tag->value('image',encode($data['img']));
                 $tag->value('date',$data['date']);
                 $tag->value('zebra',fmod($zebra,$i) ? 1 : 0);
+
                 foreach ($fields as $k) {
                     $tag->value($k,encode($data[$k]));
                 }
                 $tmpList.= $tag->createhtm($jsHTML,$tag->getValue());
+                
                 $i++;
                 if ($isCreatePage && !C('SITE_MODE')) {
                     self::viewArchive($sortid,$data['id']);
@@ -333,6 +335,7 @@ class Archives{
             $tag->value('nextpage',encode(self::nextPage($data,$model,$HTML)));
 			
 			$fields = self::getFields($model['modelid']);
+            
             // 有编辑器，动态模式，分页
 			$result = $db->query("SELECT * FROM `#@_fields` WHERE `modelid` ='".$model['modelid']."' AND `inputtype`='editor';");
 			if ($field = $db->fetch($result)){
@@ -341,6 +344,7 @@ class Archives{
 				// 动态模式，只浏览不生成
 				if (C('SITE_MODE')) {
 					$page = (int)$page > (int)$length ? $length : $page;
+                    foreach ($fields as $k) { $tag->value($k,encode($data[$k])); }
 					$tag->value('path',encode(self::showArchive($data['id'],$model,$page)));
 					$tag->value('pagelist',encode(self::pagelists(self::showArchive($data['id'],$model,'$'),$length,$page)));
 					$tag->value($field['fieldename'],encode($contents[$page-1]));
@@ -385,7 +389,7 @@ class Archives{
                     $tag->value($k,encode($data[$k]));
                 }
             }
-            $outHTML = $tag->create($HTML);
+            $outHTML = $tag->create($HTML,$tag->getValue());
 
             if (!C('SITE_MODE')) {
                 // 静态模式，没有分页，只生成一页
