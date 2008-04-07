@@ -107,7 +107,7 @@ class Archives{
     // __model *** *** www.LazyCMS.net *** ***
     static function __model($l1){
         $db  = getConn(); $I1 = null;
-        $res = $db->query("SELECT `modelid`,`modelname`,`modelename` FROM `#@_model` WHERE 1 ORDER BY `modelid` ASC;");
+        $res = $db->query("SELECT `modelid`,`modelname`,`modelename` FROM `#@_model` WHERE `modelstate`='0' ORDER BY `modelid` ASC;");
         while ($data = $db->fetch($res,0)) {
             $selected = ($l1 == $data[0]) ? ' selected="selected"' : null;
             $I1 .= '<option value="'.$data[0].'"'.$selected.' name="'.$data[2].'">'.$data[1].'['.$data[2].']</option>';

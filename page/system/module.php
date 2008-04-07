@@ -97,7 +97,6 @@ class System{
     // installModel *** *** www.LazyCMS.net *** ***
     static function installModel($modelCode,$isDeleteTable=false){
         $db       = getConn();
-        $modelCode= base64_decode($modelCode);
         $modelDom = DOMDocument::loadXML($modelCode);
         $XPath    = new DOMXPath($modelDom);
         // Model Value

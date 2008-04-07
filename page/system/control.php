@@ -729,7 +729,7 @@ class LazySystem extends LazyCMS{
         header("Content-Disposition: attachment; filename=LazyCMS_".$modelName.".mod");
         header("Pragma: no-cache");
         header("Expires: 0");
-        echo chunk_split(base64_encode(xmlcode($XML)));
+        echo xmlcode($XML);
         ob_flush();
     }
     // _modelleadin *** *** www.LazyCMS.net *** ***

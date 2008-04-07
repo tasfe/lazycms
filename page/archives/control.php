@@ -401,6 +401,9 @@ class LazyArchives extends LazyCMS{
         while ($data = $label->result()) {
             $fieldData[$data['fieldename']] = $data;
             $formData[$data['fieldename']]  = isset($_POST[$data['fieldename']]) ? $_POST[$data['fieldename']] : null;
+            if (is_array($formData[$data['fieldename']])) {
+                $formData[$data['fieldename']] = implode(',',$formData[$data['fieldename']]);
+            }
             if ($data['inputtype']=='editor') {
                 // 全部验证成功，进行抓图处理
                 if ($this->method() && $this->validate()) {

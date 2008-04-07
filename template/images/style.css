@@ -1,4 +1,4 @@
-body{ width:100%; height:100%; margin:0; padding:0; zoom:100%; display:table; background:url(bg.png) repeat-x left top;}
+body{ width:100%; margin:0; padding:0; background:url(bg.png) repeat-x left top;}
 body,th,td,p{ line-height:130%; font-family:Verdana; font-size:12px;}
 dl,dt,dd{ margin:0; padding:0;}
 a img{ border:none; vertical-align:middle;}
@@ -23,9 +23,9 @@ a:active{ text-decoration:none; color:#333333;}
 	#top .right ul li a:hover{ background:#EEEEEE; color:#193441; text-decoration:none;}
 	#top .right ul li a.selected{ background:#EEEEEE; color:#193441;}
 
-#main{ width:900px; margin:20px auto; display:table; clear:both;}
+#main{ width:900px; margin:20px auto; display:block;}
 	#main .block{ clear:both;}
-	#main .mleft{ width:650px; float:left; }
+	#main .mleft{ width:650px; float:left; display:block;}
 	#main .mleft .opensource{ margin-bottom:10px; }
 	#main .mleft .left{ width:50%; float:left; }
 	#main .mleft .right{ width:48%; float:right;}
@@ -46,13 +46,13 @@ a:active{ text-decoration:none; color:#333333;}
 	#main .mleft .help dd i{ font-style:normal; font-size:9px; padding-left:5px; }
 	
 	#main .mleft dl{ width:100%;}
-	#main .mleft dl dt{ width:100%; display:table; zoom:100%; line-height:25px; border-bottom:solid 1px #CCCCCC;}
+	#main .mleft dl dt{ width:100%; display:table; line-height:25px; border-bottom:solid 1px #CCCCCC;}
 	#main .mleft dl dt strong{ color:#193441; font-size:14px; float:left;}
 	#main .mleft dl dt a{ float:right; display:block; margin-top:5px;}
 
-	#main .mright{ width:230px; float:right;}
+	#main .mright{ width:230px; float:right; display:block;}
 	#main .mright dl{width:100%;}
-	#main .mright dl dt{ width:100%; display:table; zoom:100%; line-height:25px; border-bottom:solid 1px #CCCCCC;}
+	#main .mright dl dt{ width:100%; display:table; line-height:25px; border-bottom:solid 1px #CCCCCC;}
 	#main .mright dl dt strong{ color:#193441; font-size:14px; float:left;}
 	#main .mright dl dt a{ float:right; display:block; margin-top:5px;}
 	#main .mright dd.version{ padding-top:10px;}
@@ -74,6 +74,7 @@ a:active{ text-decoration:none; color:#333333;}
 /* 列表通用样式 */
 .list{ margin:10px 0; clear:both;}
 	.list .title{ width:100%; margin-bottom:10px; padding-left:10px; background:url(title.gif) no-repeat left center; color:#193441; font-size:14px; font-weight:bold; display:table; zoom:100%; line-height:25px; border-bottom:solid 1px #CCCCCC;}
+	.list .box{ width:98%; margin:0 auto; clear:both;}
 
 /* 文章列表 */
 #artlist .item{ padding:0 0 5px 0; line-height:200%; border-bottom:dashed 1px #CCCCCC; }
@@ -81,16 +82,17 @@ a:active{ text-decoration:none; color:#333333;}
 	#artlist .item .intro{ text-indent:26px; line-height:150%; color:#666666;}
 	
 /* 文章信息 */
-#article{ clear:both; }
+#article{ width:100%; display:table; clear:both; }
 	#article h1{ text-align:center; font-size:14px;}
 	#article .info{ text-align:center; color:#666666;}
 
 /* 模板列表 */
-#template ul{ margin:0; padding:0; list-style:none;}
-	#template ul li{ width:49%; height:120px; margin:10px 0; padding:0; float:left;}
-	#template .picture{ width:90px; height:110px; border:solid 1px #CCCCCC; padding:3px; float:left; text-align:center; overflow:hidden;}
-	#template .info{ padding-left:10px; float:left;}
-	#template .info p{ width:95%; height:14px; overflow:hidden; white-space:nowrap; -o-text-overflow:ellipsis; text-overflow:ellipsis;}
+#template ul{ margin:0; padding:0; list-style:none; display:block;}
+	#template ul li{ width:49%; height:120px; margin:10px 0; padding:0; float:left; display:block;}
+	#template .picture{ width:90px; height:110px; border:solid 1px #CCCCCC; padding:3px; float:left; display:block; text-align:center; overflow:hidden;}
+	#template .picture img{ width:90px;}
+	#template .info{ width:200px; height:120px; padding-left:10px; float:left; display:block;}
+	#template .info p{ width:95%; height:14px; overflow:hidden; white-space:nowrap; -o-text-overflow:ellipsis; text-overflow:ellipsis; }
 
 /* 分页样式 */
 .pagelist{ margin:5px 0; clear:both; text-align:right;}
