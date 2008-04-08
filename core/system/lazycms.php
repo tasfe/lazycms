@@ -428,7 +428,7 @@ abstract class LazyCMS extends Lazy{
         $db = getConn();
         $I4[1] = ($I4[1] == "down") ? " DESC" : " ASC";
         $where = !empty($l3) ? "WHERE {$l3}" : null;
-        $res   = $db->query("SELECT `{$I3[1]}`,`{$I3[2]}` FROM `#@_{$I3[0]}` {$where} ORDER BY `{$I3[2]}`{$I4[1]},`{$I3[1]}`{$I4[1]};");
+        $res   = $db->query("SELECT `{$I3[1]}`,`{$I3[2]}` FROM `{$I3[0]}` {$where} ORDER BY `{$I3[2]}`{$I4[1]},`{$I3[1]}`{$I4[1]};");
         while ($data = $db->fetch($res,0)) {
             if ((int)$data[0] === (int)$I4[0]) {
                 $i = 0;
@@ -441,8 +441,8 @@ abstract class LazyCMS extends Lazy{
                 if ((int)$i === (int)$I4[2]) {
                     $I1[1] = $data[0];
                     $I2[1] = $data[1];
-                    $db->exec("UPDATE `#@_{$I3[0]}` SET `{$I3[2]}`='{$I2[1]}' WHERE `{$I3[1]}`='{$I1[0]}';");
-                    $db->exec("UPDATE `#@_{$I3[0]}` SET `{$I3[2]}`='{$I2[0]}' WHERE `{$I3[1]}`='{$I1[1]}';");
+                    $db->exec("UPDATE `{$I3[0]}` SET `{$I3[2]}`='{$I2[1]}' WHERE `{$I3[1]}`='{$I1[0]}';");
+                    $db->exec("UPDATE `{$I3[0]}` SET `{$I3[2]}`='{$I2[0]}' WHERE `{$I3[1]}`='{$I1[1]}';");
                     break;
                 }
             }

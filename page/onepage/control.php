@@ -84,7 +84,7 @@ class LazyOnepage extends LazyCMS{
             case 'updown' :
                 $updown = isset($_POST['updown']) ? (string)$_POST['updown'] : null;
                 $num    = isset($_POST['num']) ? (int)$_POST['num'] : null;
-                $this->order("onepage,oneid,oneorder","{$lists},{$updown},{$num}");
+                $this->order("#@_onepage,oneid,oneorder","{$lists},{$updown},{$num}");
                 break;
             default :
                 $this->poping(L('error/invalid'),0);

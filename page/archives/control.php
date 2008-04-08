@@ -213,7 +213,7 @@ class LazyArchives extends LazyCMS{
                 $updown = isset($_POST['updown']) ? (string)$_POST['updown'] : null;
                 $num    = isset($_POST['num']) ? (int)$_POST['num'] : null;
                 $upid   = isset($_POST['upid']) ? (int)$_POST['upid'] : null;
-                $this->order("sort,sortid,sortorder","{$lists},{$updown},{$num}","`sortid1`='{$upid}'");
+                $this->order("#@_sort,sortid,sortorder","{$lists},{$updown},{$num}","`sortid1`='{$upid}'");
                 break;
             case 'getsub' :
                 $space = isset($_POST['space']) ? $_POST['space'] : 1;
@@ -317,7 +317,7 @@ class LazyArchives extends LazyCMS{
         $dp->td  = 'ison(K[4])';
         $dp->td  = !C('SITE_MODE') ? "isExist(K[0],K[8],'create:' + K[6])" : "browse(K[6])";
         $dp->td  = 'K[7]';
-        $dp->td  = "ico('edit','".url(C('CURRENT_MODULE'),'Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."') + updown('up',K[0],0) + updown('down',K[0],0)";
+        $dp->td  = "ico('edit','".url(C('CURRENT_MODULE'),'Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."') + updown('up',K[0],{$sortid}) + updown('down',K[0],{$sortid})";
         $dp->open();
         $dp->thead  = '<tr><th>'.$this->L('list/id').') '.$this->L('list/title').'</th><th>'.$this->L('list/show').'</th><th>'.$this->L('list/commend').'</th><th>'.$this->L('list/top').'</th><th>'.$this->L('list/path').'</th><th>'.$this->L('list/date').'</th><th>'.$this->L('list/action').'</th></tr>';
         while ($data = $dp->result()) {
@@ -550,6 +550,13 @@ class LazyArchives extends LazyCMS{
 			    $js.= "loading('{$submit}','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&sortid={$sortid}")."');";
 				$js.= '</script>';
                 $this->poping($this->L('pop/loading').$js,0);
+                break;
+			case 'updown' :
+                $updown = isset($_POST['updown']) ? (string)$_POST['updown'] : null;
+                $num    = isset($_POST['num']) ? (int)$_POST['num'] : null;
+                $upid   = isset($_POST['upid']) ? (int)$_POST['upid'] : null;
+				$model  = Archives::getModel($upid);
+                $this->order($model['maintable'].",id,order","{$lists},{$updown},{$num}","`sortid`='{$upid}'");
                 break;
             default :
                 $this->poping(L('error/invalid'),0);

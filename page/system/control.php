@@ -912,7 +912,7 @@ class LazySystem extends LazyCMS{
                 $updown = isset($_POST['updown']) ? (string)$_POST['updown'] : null;
                 $num    = isset($_POST['num']) ? (int)$_POST['num'] : null;
                 $updown = $updown=='down' ? 'up' : 'down';
-                $this->order("fields,fieldid,fieldorder","{$lists},{$updown},{$num}","`modelid`='{$modelid}'");
+                $this->order("#@_fields,fieldid,fieldorder","{$lists},{$updown},{$num}","`modelid`='{$modelid}'");
                 break;
             default :
                 $this->poping(L('error/invalid'),0);

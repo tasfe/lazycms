@@ -140,7 +140,7 @@ jQuery.extend(jQuery.fn,{
 		var form = this.parents('form');
 		var I2 = (l1=='up') ? "&uarr;" : "&darr;";
 		var I3 = new Array(0,1,2,3,4,5,6,7,8,9,10,15,20);
-		var I1 = "<select onchange=\"javascript:$.post('" + form.attr('action') + "',{submit:'updown',updown:'" + l1 + "',num:this.value,lists:'" + l2 + "',upid:'" + l3 + "'},function(a){if(a!==''){ alert('ERROR: Parameter error!'); } else { self.location.reload(); }});if(this.options[this.selectedIndex].value){this.options[0].selected=true;}\">";
+		var I1 = "<select onchange=\"javascript:$.post('" + form.attr('action') + "',{submit:'updown',updown:'" + l1 + "',num:this.value,lists:'" + l2 + "',upid:'" + l3 + "'},function(a){if(a!==''){ alert(a+'ERROR: Parameter error!'); } else { self.location.reload(); }});if(this.options[this.selectedIndex].value){this.options[0].selected=true;}\">";
 		for(var i=0;i<I3.length;i++){
 			if (i===0){ I3[i] = ""; }
 			I1 += '<option value="' + I3[i] + '">' + I2 + I3[i] + '</option>';
