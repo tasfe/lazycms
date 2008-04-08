@@ -38,11 +38,11 @@ a:active{ text-decoration:none; color:#333333;}
 	#main .mleft .help dd,
 	#main .mleft .service dd{ padding-left:20px; line-height:190%; }
 	
-	#main .mleft .news dd{  background:url(bullet_blue.png) no-repeat left center; }
+	#main .mleft .news dd{  background:url(bullet_blue.gif) no-repeat left center; }
 	#main .mleft .news dd i{ font-style:normal; font-size:9px; padding-left:5px; }
 	
-	#main .mleft .service dd{ background:url(money_yen.png) no-repeat left center; }
-	#main .mleft .help dd{ background:url(text.png) no-repeat left center; }
+	#main .mleft .service dd{ background:url(money_yen.gif) no-repeat left center; }
+	#main .mleft .help dd{ background:url(text.gif) no-repeat left center; }
 	#main .mleft .help dd i{ font-style:normal; font-size:9px; padding-left:5px; }
 	
 	#main .mleft dl{ width:100%;}
