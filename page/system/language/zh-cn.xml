@@ -322,6 +322,7 @@
         <nomodels>请先创建模型</nomodels>
         <nosort>请先创建分类</nosort>
 		<upload>
+			<err0>POST值超过了 post_max_size({$max}) </err0>
 			<err1>上传的文件超过了 php.ini 中 upload_max_filesize 选项限制的值</err1>
 			<err2>上传文件的大小超过了 HTML 表单中 MAX_FILE_SIZE 选项指定的值</err2>
 			<err3>文件只有部分被上传</err3>

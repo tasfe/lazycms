@@ -31,7 +31,7 @@ a:active{ text-decoration:none; color:#333333;}
 	#main .mleft .right{ width:48%; float:right;}
 	#main .mleft .news dt,
 	#main .mleft .template dt{ margin-bottom:5px;}
-	#main .mleft .template dd{ width:100px; margin:0 3px; float:left; text-align:center; background:#EBEBEB; border:solid 1px #C6C6C6;}
+	#main .mleft .template dd{ width:100px; margin:0 2px; float:left; text-align:center; background:#EBEBEB; border:solid 1px #C6C6C6;}
 	#main .mleft .template dd a{ clear:both; display:block; padding:2px 0;}
 	
 	#main .mleft .news dd,
@@ -83,7 +83,7 @@ a:active{ text-decoration:none; color:#333333;}
 	
 /* 文章信息 */
 #article{ width:100%; display:table; clear:both; }
-	#article h1{ text-align:center; font-size:14px;}
+	#article h1{ margin:20px 0 10px 0; text-align:center; font-size:14px;}
 	#article .info{ text-align:center; color:#666666;}
 
 /* 模板列表 */

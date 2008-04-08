@@ -1028,6 +1028,12 @@ class LazySystem extends LazyCMS{
     function _browsefiles(){
         clearCache();
         $this->checker('filemanage',true);
+		if ((int)get_cfg_var('post_max_size') < (int)$_SERVER["CONTENT_LENGTH"]/1024/1024) {
+			$I1 = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
+            $I1.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>UpLoadFile</title></head><body>';
+			$I1.= '<script type="text/javascript" charset="utf-8">window.parent.alert(\''.L('error/upload/err0',array('max' => get_cfg_var('post_max_size'))).'\');</script>';
+			$I1.= '</body></html>';echo $I1;return ;
+		}
         $action= isset($_POST['action']) ? (string)$_POST['action'] : null;
         $path  = isset($_POST['path']) ? (string)$_POST['path'] : null; $path = ltrim($path,'/');
         $from  = isset($_POST['from']) ? (string)$_POST['from'] : null;
@@ -1060,11 +1066,10 @@ class LazySystem extends LazyCMS{
                 $I1.= '<script type="text/javascript" charset="utf-8">';
                 $upload = O('UpLoadFile');
                 $upload->allowExts = C('UPFILE_SUFFIX').',zip,rar';
-                $upload->maxSize   = 2*1024*1024;//2M
                 $filePath = str_replace('//','/',$cPath.'/'.basename($_FILES['upfile']['name']));
                 if ($file = $upload->save('upfile',$filePath)) {
                     if (instr('jpg,gif,png,bmp',fileICON($_FILES['upfile']['name']))) {
-                        $filePath = str_replace(LAZY_PATH,'',$filePath);
+                        $filePath = str_replace(LAZY_PATH,'',$file['path']);
                         $I1.= "window.parent.\$('#{$from}').browseFiles('".url('System','browseFiles')."',{from:'{$from}',path:'{$filePath}'});";
                     } else {
                         $I1.= "window.parent.\$('#{$from}').browseFiles('".url('System','browseFiles')."',{from:'{$from}',path:'{$path}'});";

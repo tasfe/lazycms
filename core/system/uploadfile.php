@@ -36,7 +36,7 @@ class UpLoadFile extends Lazy{
     // 非法提交
     const UPLOAD_ERR_NO_SUBMIT  = 9;
 
-    // 单个文件大小
+    // 单个文件大小，0:为不限制
     private $maxSize = 0;
     
     // 保存路径
@@ -85,7 +85,7 @@ class UpLoadFile extends Lazy{
         $Info = $_FILES[$l1];
         $Info['ext'] = $this->getExt($Info['name']);
         // 返回错误信息
-        if ($Info['error'] != 0){
+        if ((int)$Info['error'] != 0){
             $this->error = $Info['error'];
             return false;
         }
