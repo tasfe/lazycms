@@ -102,14 +102,15 @@ class System{
         // Model Value
         $data[0] = $XPath->evaluate("//lazycms/model/modelname")->item(0)->nodeValue;
         $data[1] = $XPath->evaluate("//lazycms/model/modelename")->item(0)->nodeValue;
-        $data[2] = $XPath->evaluate("//lazycms/model/maintable")->item(0)->nodeValue;
-        $data[3] = $XPath->evaluate("//lazycms/model/addtable")->item(0)->nodeValue;
+        $data[2] = C('DSN_PREFIX').$XPath->evaluate("//lazycms/model/maintable")->item(0)->nodeValue;
+        $data[3] = C('DSN_PREFIX').$XPath->evaluate("//lazycms/model/addtable")->item(0)->nodeValue;
         $data[4] = $XPath->evaluate("//lazycms/model/modelstate")->item(0)->nodeValue;
 		if (!$isDeleteTable) {
 			$res = $db->query("SHOW TABLES LIKE '".$data[3]."'");
 			if ($db->fetch($res,0)) {
-				$data[1].= '_'.salt(4);
-				$data[3].= '_'.salt(4);
+				$salt = salt(4);
+				$data[1].= '_'.$salt;
+				$data[3].= '_'.$salt;
 			}
 		}
         // Insert model

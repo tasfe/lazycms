@@ -715,7 +715,9 @@ class LazySystem extends LazyCMS{
         if ($data = $db->fetch($res)) {
             unset($data['modelid']);
             $modelName = $data['modelename'];
-            $XML['model'] = $data;
+			$data['maintable'] = str_replace(C('DSN_PREFIX'),'',$data['maintable']);
+			$data['addtable']  = str_replace(C('DSN_PREFIX'),'',$data['addtable']);
+            $XML['model']      = $data;
         } else {
             $modelName = 'Error';
         }

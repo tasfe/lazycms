@@ -41,34 +41,49 @@ if (is_file(CORE_PATH.'/custom/config.php')) {
     C(include CORE_PATH.'/custom/config.php');
 }
 
-$modelArticle = "
-PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48bGF6eWNtcz48bW9kZWw+PG1v
-ZGVsbmFtZT7mlofnq6DmqKHlnos8L21vZGVsbmFtZT48bW9kZWxlbmFtZT5hcnRpY2xlPC9tb2Rl
-bGVuYW1lPjxtYWludGFibGU+bGF6eV9hcmNoaXZlczwvbWFpbnRhYmxlPjxhZGR0YWJsZT5sYXp5
-X2FkZGFydGljbGU8L2FkZHRhYmxlPjxtb2RlbHN0YXRlPjA8L21vZGVsc3RhdGU+PC9tb2RlbD48
-ZmllbGRzPjxpdGVtIGlkPSIwIj48ZmllbGRuYW1lPuaWh+eroOadpea6kDwvZmllbGRuYW1lPjxm
-aWVsZGVuYW1lPmZyb208L2ZpZWxkZW5hbWU+PGZpZWxkdHlwZT52YXJjaGFyPC9maWVsZHR5cGU+
-PGZpZWxkbGVuZ3RoPjI1NTwvZmllbGRsZW5ndGg+PGZpZWxkZWZhdWx0PjwvZmllbGRlZmF1bHQ+
-PGZpZWxkaW5kZXg+MDwvZmllbGRpbmRleD48aW5wdXR0eXBlPmlucHV0PC9pbnB1dHR5cGU+PGZp
-ZWxkdmFsdWU+PC9maWVsZHZhbHVlPjwvaXRlbT48aXRlbSBpZD0iMSI+PGZpZWxkbmFtZT7kvZzo
-gIU8L2ZpZWxkbmFtZT48ZmllbGRlbmFtZT5hdXRob3I8L2ZpZWxkZW5hbWU+PGZpZWxkdHlwZT52
-YXJjaGFyPC9maWVsZHR5cGU+PGZpZWxkbGVuZ3RoPjUwPC9maWVsZGxlbmd0aD48ZmllbGRlZmF1
-bHQ+PC9maWVsZGVmYXVsdD48ZmllbGRpbmRleD4wPC9maWVsZGluZGV4PjxpbnB1dHR5cGU+aW5w
-dXQ8L2lucHV0dHlwZT48ZmllbGR2YWx1ZT48L2ZpZWxkdmFsdWU+PC9pdGVtPjxpdGVtIGlkPSIy
-Ij48ZmllbGRuYW1lPuWGheWuuTwvZmllbGRuYW1lPjxmaWVsZGVuYW1lPmNvbnRlbnQ8L2ZpZWxk
-ZW5hbWU+PGZpZWxkdHlwZT5tZWRpdW10ZXh0PC9maWVsZHR5cGU+PGZpZWxkbGVuZ3RoPjwvZmll
-bGRsZW5ndGg+PGZpZWxkZWZhdWx0PjwvZmllbGRlZmF1bHQ+PGZpZWxkaW5kZXg+MDwvZmllbGRp
-bmRleD48aW5wdXR0eXBlPmVkaXRvcjwvaW5wdXR0eXBlPjxmaWVsZHZhbHVlPjwvZmllbGR2YWx1
-ZT48L2l0ZW0+PGl0ZW0gaWQ9IjMiPjxmaWVsZG5hbWU+5YWz6ZSu6K+NPC9maWVsZG5hbWU+PGZp
-ZWxkZW5hbWU+a2V5d29yZHM8L2ZpZWxkZW5hbWU+PGZpZWxkdHlwZT52YXJjaGFyPC9maWVsZHR5
-cGU+PGZpZWxkbGVuZ3RoPjI1NTwvZmllbGRsZW5ndGg+PGZpZWxkZWZhdWx0PjwvZmllbGRlZmF1
-bHQ+PGZpZWxkaW5kZXg+MDwvZmllbGRpbmRleD48aW5wdXR0eXBlPmlucHV0PC9pbnB1dHR5cGU+
-PGZpZWxkdmFsdWU+PC9maWVsZHZhbHVlPjwvaXRlbT48aXRlbSBpZD0iNCI+PGZpZWxkbmFtZT5N
-ZXRhIOeugOi/sDwvZmllbGRuYW1lPjxmaWVsZGVuYW1lPmRlc2NyaXB0aW9uPC9maWVsZGVuYW1l
-PjxmaWVsZHR5cGU+dGV4dDwvZmllbGR0eXBlPjxmaWVsZGxlbmd0aD48L2ZpZWxkbGVuZ3RoPjxm
-aWVsZGVmYXVsdD48L2ZpZWxkZWZhdWx0PjxmaWVsZGluZGV4PjA8L2ZpZWxkaW5kZXg+PGlucHV0
-dHlwZT50ZXh0YXJlYTwvaW5wdXR0eXBlPjxmaWVsZHZhbHVlPjwvZmllbGR2YWx1ZT48L2l0ZW0+
-PC9maWVsZHM+PC9sYXp5Y21zPg==";
+$modelArticle = '
+<?xml version="1.0" encoding="utf-8"?>
+<lazycms>
+	<model>
+		<modelname>文章模型</modelname>
+		<modelename>article</modelename>
+		<maintable>archives</maintable>
+		<addtable>addarticle</addtable>
+		<modelstate>0</modelstate>
+	</model>
+	<fields>
+		<item id="0">
+			<fieldname>文章来源</fieldname>
+			<fieldename>from</fieldename>
+			<fieldtype>varchar</fieldtype>
+			<fieldlength>255</fieldlength>
+			<fieldefault></fieldefault>
+			<fieldindex>0</fieldindex>
+			<inputtype>input</inputtype>
+			<fieldvalue></fieldvalue>
+		</item>
+		<item id="1">
+			<fieldname>作者</fieldname>
+			<fieldename>author</fieldename>
+			<fieldtype>varchar</fieldtype>
+			<fieldlength>50</fieldlength>
+			<fieldefault></fieldefault>
+			<fieldindex>0</fieldindex>
+			<inputtype>input</inputtype>
+			<fieldvalue></fieldvalue>
+		</item>
+		<item id="2">
+			<fieldname>内容</fieldname>
+			<fieldename>content</fieldename>
+			<fieldtype>mediumtext</fieldtype>
+			<fieldlength></fieldlength>
+			<fieldefault></fieldefault>
+			<fieldindex>0</fieldindex>
+			<inputtype>editor</inputtype>
+			<fieldvalue></fieldvalue>
+		</item>
+	</fields>
+</lazycms>';
 
 
 // labelError *** *** www.LazyCMS.net *** ***
