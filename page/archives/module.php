@@ -504,8 +504,12 @@ class Archives{
 			$jsType  = $tag->getLabel($HTMList,'type');
 			$jsNumber= floor($tag->getLabel($HTMList,'number'));
 			$sortid  = $tag->getLabel($HTMList,'sortid');
+			$remove  = $tag->getLabel($HTMList,'remove');
 			$zebra   = $tag->getLabel($HTMList,'zebra');
-			
+
+			if (is_numeric($remove)) {
+				$inSQL.= " AND `m`.`sortid` NOT IN({$remove})";
+			}
 			if (preg_match('/\(lazy:image.{0,}?\/\)/i',$jsHTML,$regs)){
 				$inSQL.= " AND `m`.`img` <> ''";
 			}

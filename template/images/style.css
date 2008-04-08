@@ -78,7 +78,7 @@ a:active{ text-decoration:none; color:#333333;}
 
 /* 文章列表 */
 #artlist .item{ padding:0 0 5px 0; line-height:200%; border-bottom:dashed 1px #CCCCCC; }
-	#artlist .item a{ padding-left:20px; background:url(bullet_blue.png) no-repeat left center; font-weight:bold;}
+	#artlist .item a{ padding-left:20px; background:url(bullet_blue.gif) no-repeat left center; font-weight:bold;}
 	#artlist .item .intro{ text-indent:26px; line-height:150%; color:#666666;}
 	
 /* 文章信息 */
