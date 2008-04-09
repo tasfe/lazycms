@@ -58,6 +58,15 @@ abstract class DB extends Lazy{
 
     // count *** *** www.LazyCMS.net *** ***
     abstract public function count($l1); // $l1:sql or resource
+    
+    // config *** *** www.LazyCMS.net *** ***
+    public function config($config){
+        if (is_array($config)) {
+            $this->_config = array_merge($this->_config,$config);
+        } else {
+            return $this->_config[$config];
+        }
+    }
 
     // factory *** *** www.LazyCMS.net *** ***
     public function factory($config){
@@ -108,15 +117,6 @@ abstract class DB extends Lazy{
         }
         return $config;
     }
-    // config *** *** www.LazyCMS.net *** ***
-    public function config($config){
-        if (is_array($config)) {
-            $this->_config = array_merge($this->_config,$config);
-        } else {
-            return $this->_config[$config];
-        }
-    }
-    
 
     /* Insert */
     
