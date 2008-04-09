@@ -1181,12 +1181,14 @@ class LazySystem extends LazyCMS{
         $d->send();
         if ($d->status() == 200) {
             $l1 = $d->body();
+        } else {
+            $l1 = $d->status();
         }
         if (validate($l1,6)) {
             $I1 = $l1;
             if (version_compare($this->system['systemver'], $l1, '<' )) {
                 $I1 .= ' <a href="http://www.lazycms.net/download" target="_blank">【'.$this->L('parameters/downnew').'】</a>';
-                $I1 .= ' <a href="'.url('System','Update').'" onclick="$.posts(this.href,{version:\''.$l1.'\'});">【'.$this->L('parameters/update').'】</a>';
+                $I1 .= ' <a href="'.url('System','Update').'" onclick="$.posts(this.href,{version:\''.$l1.'\'});return false;">【'.$this->L('parameters/update').'】</a>';
             }
         } else {
             $I1 = $this->L('parameters/newversionerr');
@@ -1198,7 +1200,7 @@ class LazySystem extends LazyCMS{
         clearCache();
         $this->checker('admin',true);
         $version = isset($_POST['version']) ? $_POST['version'] : null;
-        $this->poping($this->L('parameters/upok'),1);
+        $this->poping($this->L('parameters/notup'),1);
     }
     // _login *** *** www.LazyCMS.net *** ***
     function _login(){

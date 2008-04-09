@@ -1,0 +1,50 @@
+{lazy:guide/} 任何页面都可以使用此标签，显示当前位置。
+{lazy:date mode="Y-m-d H:i:s"/} 只要是数字类型的都可以使用mode参数，格式化字符串和PHP的date函数参数一样
+
+{lazy:模型标识 type="new" number="10"}           标签开始
+<a href="(lazy:path/)">(lazy:title size="24"/)</a>      HTML循环输出部分
+{/lazy}
+
+[b]标签参数解析[/b]
+type        调用文章类型
+……sql   自定义SQL语句 （以AND开始，最后不要加“;”分号，也不要使用 LIMIT）
+……new   最新文章
+……hot   热门文章
+……chill   冷门文章
+……commend   推荐文章
+
+number  循环调用文章的数量，必须为数字
+
+zebra 斑马线，必须为数字，如zebra="2"，当第2、4、8等整除于zebra参数值的时候，输出1，其他输出0
+
+order 排序，默认值为desc，要按id顺序输出，则设置值为asc；限在type="list"的时候有效
+
+sortid 指定栏目调用，支持多栏目同时调用，用英文逗号分开
+
+sortname 指定栏目名称调用，不支持多栏目调用
+
+[b]循环体内标签[/b]
+(lazy:id/)          文章id
+(lazy:sortid/)      列表id
+(lazy:sortname/)    列表名称
+(lazy:sortpath/)    列表路径
+(lazy:path/)        文章路径
+(lazy:title/)       文章标题
+(lazy:image/)       缩略图路径
+(lazy:zebra/)       斑马线，同上
+(lazy:字段名/)      可根据模型里面的字段名调出填写的内容
+
+
+[b]文章页面标签解析[/b]
+{lazy:id/}       文章id
+{lazy:sortid/}      列表id
+{lazy:sortname/}    列表名称
+{lazy:sortpath/}    列表路径
+{lazy:path/}        路径
+{lazy:title/}       标题
+{lazy:hits/}        显示浏览量
+(lazy:字段名/)      可根据模型里面的字段名调出填写的内容
+{lazy:date mode="Y-m-d H:i:s"/}     文章发布日期
+{lazy:lastpage/}    上一篇
+{lazy:nextpage/}    下一篇
+{lazy:pageslist/}   显示分页列表
