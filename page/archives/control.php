@@ -179,6 +179,10 @@ class LazyArchives extends LazyCMS{
         }
         switch($submit){
             case 'delete' :
+				$res = $db->query("SELECT `sortpath` FROM `#@_sort` WHERE `sortid` IN({$lists})");
+				while ($data = $db->fetch($res,0)){
+					Archives::delArchive($data[0],true);
+				}
                 $db->exec("DELETE FROM `#@_sort` WHERE `sortid` IN({$lists});");
                 $this->poping($this->L('pop/deleteok'),1);
                 break;
@@ -541,6 +545,10 @@ class LazyArchives extends LazyCMS{
         $model = Archives::getModel($sortid);
         switch($submit){
             case 'delete' :
+				$res = $db->query("SELECT `path` FROM `".$model['maintable']."` WHERE `id` IN({$lists})");
+				while ($data = $db->fetch($res,0)){
+					Archives::delArchive($data[0]);
+				}
                 $db->exec("DELETE FROM `".$model['maintable']."` WHERE `id` IN({$lists});");
                 $db->exec("DELETE FROM `".$model['addtable']."` WHERE `aid` IN({$lists});");
                 $this->poping($this->L('pop/deleteok'),1);

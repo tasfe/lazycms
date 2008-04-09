@@ -74,6 +74,20 @@ class LazyOnepage extends LazyCMS{
         }
         switch($submit){
             case 'delete' :
+				$res = $db->query("SELECT `onepath` FROM `#@_onepage` WHERE `oneid` IN({$lists})");
+				while ($data = $db->fetch($res,0)){
+					$paths = explode('/',$data[0]);
+					if (strpos($paths[count($paths)-1],'.')!==false){ //文件
+						@unlink(LAZY_PATH.$data[0]);
+						if (strpos($data[0],'/')!==false){
+							$path = substr($data[0],0,strlen($data[0])-strlen($paths[count($paths)-1]));
+							rmdirs(LAZY_PATH.$path,false);
+						}
+					} else { //目录
+						@unlink(LAZY_PATH.$data[0].'/'.C('SITE_INDEX'));
+						rmdirs(LAZY_PATH.$data[0],false);
+					}
+				}
                 $db->exec("DELETE FROM `#@_onepage` WHERE `oneid` IN({$lists});");
                 $this->poping($this->L('pop/deleteok'),1);
                 break;

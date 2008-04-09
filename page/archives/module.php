@@ -114,6 +114,20 @@ class Archives{
         }
         return $I1;
     }
+	// delArchive *** *** www.LazyCMS.net *** ***
+	static function delArchive($l1,$l2=false){
+		$paths = explode('/',$l1);
+		if (strpos($paths[count($paths)-1],'.')!==false){ //文件
+			@unlink(LAZY_PATH.$l1);
+			if (strpos($l1,'/')!==false){
+				$path = substr($l1,0,strlen($l1)-strlen($paths[count($paths)-1]));
+				rmdirs(LAZY_PATH.$path,$l2);
+			}
+		} else { //目录
+			@unlink(LAZY_PATH.$l1.'/'.C('SITE_INDEX'));
+			rmdirs(LAZY_PATH.$l1,$l2);
+		}
+	}
     // showSort *** *** www.LazyCMS.net *** ***
     static function showSort($l1){
         $sortid = $l1;
