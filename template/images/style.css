@@ -94,6 +94,9 @@ a:active{ text-decoration:none; color:#333333;}
 	#template .info{ width:200px; height:120px; padding-left:10px; float:left; display:block;}
 	#template .info p{ width:95%; height:14px; overflow:hidden; white-space:nowrap; -o-text-overflow:ellipsis; text-overflow:ellipsis; }
 
+.downurl,
+.downurl a{ color:#009900; font-weight:bold;}
+
 /* 分页样式 */
 .pagelist{ margin:5px 0; clear:both; text-align:right;}
 	.pagelist a ,

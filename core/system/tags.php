@@ -75,19 +75,17 @@ class Tags extends Lazy{
                 $I1 = str_replace($v,$this->parseTags($v,$l2),$I1); 
             }
         }
-        return $I1;
+        return decode($I1);
     }
     // createhtm *** *** www.LazyCMS.net *** ***
     public function createhtm($l1,$l2){
         $I1 = $l1;
         if (preg_match_all('/(\(lazy\:).+?[^(](\/\))/i',$I1,$I2)) {
             foreach ($I2[0] as $v) {
-                if (strpos($I1,$v)!==false){
-                    $I1 = str_replace($v,$this->parseTags($v,$l2),$I1); 
-                }
+                $I1 = str_replace($v,$this->parseTags($v,$l2),$I1); 
             }
         }
-        return $I1;
+        return decode($I1);
     }
     // getValue *** *** www.LazyCMS.net *** ***
     public function getValue($l1=null){
@@ -103,7 +101,7 @@ class Tags extends Lazy{
     }
     // parseTags *** *** www.LazyCMS.net *** ***
     public function parseTags($tags,$inValue){
-        static $i = 1; $this->_inValue = $inValue;
+        static $i = 1; 
         $module  = getObject();
         $tags    = htmldecode($tags);
         $tagName = sect($tags,"(lazy\:)","( |\/|\}|\))");
@@ -127,19 +125,19 @@ class Tags extends Lazy{
                 $I1 = $i++;
                 break;
             case 'keywords': case 'keyword':
-                $I1 = $this->parseAtt($tags,'keywords');
+                $I1 = $this->parseAtt($tags,'keywords',$inValue);
                 if (strlen($I1)==0) { 
-                    $I1 = $this->parseAtt($tags,"title");
+                    $I1 = $this->parseAtt($tags,'title',$inValue);
                 }
                 break;
             case 'description':
-                $I1 = $this->parseAtt($tags,'description');
+                $I1 = $this->parseAtt($tags,'description',$inValue);
                 if (strlen($I1)==0) { 
-                    $I1 = $this->parseAtt($tags,"title");
+                    $I1 = $this->parseAtt($tags,'title',$inValue);
                 }
                 break;
             case 'guide':
-                $I1 = $this->parseAtt($tags,"guide");
+                $I1 = $this->parseAtt($tags,'guide',$inValue);
                 if (strlen($I1)==0) {
                     $I1 = '<a href="'.C('SITE_BASE').'">'.L('common/home').'</a> &gt;&gt; '.$this->parseAtt($tags,"title");
                 } else {
@@ -150,12 +148,13 @@ class Tags extends Lazy{
                 if (class_exists('Archives')) {
                     $I1 = Archives::tags($tags);
                 }
+				
                 if (empty($I1)) {
                     if (class_exists($tagName) && !instr('image',strtolower($tagName))) {
                         eval('$I1 = '.$tagName.'::tags($tags);');
-                        $I1 = $this->parseAtt($tags,$I1,false);
+                        $I1 = $this->parseAtt($tags,$I1,$inValue);
                     } else {
-                        $I1 = $this->parseAtt($tags,$tagName);
+                        $I1 = $this->parseAtt($tags,$tagName,$inValue);
                     }
                 }
                 break;
@@ -163,18 +162,12 @@ class Tags extends Lazy{
         return $I1;
     }
     // parse *** *** www.LazyCMS.net *** ***
-    public function parseValue($l1){
-        $I1 = isset($this->_inValue[$l1]) ? $this->_inValue[$l1] : null;
-        return decode($I1);
+    public function parseValue($l1,$l2){
+		$I1 = $l2; return isset($I1[$l1]) ? decode($I1[$l1]) : null;
     }
     //parseAtt *** *** www.LazyCMS.net *** ***
-    public function parseAtt($l1,$l2,$l3=true){
-        if ($l3) {
-            $l4 = $this->parseValue($l2);
-        } else {
-            $l4 = $l2;
-        }
-        
+    public function parseAtt($l1,$l2,$l3){
+        $l4 = $this->parseValue($l2,$l3);
         if (strlen($l4)==0) {
             // no image
             if (strtolower($l2) == 'image') {
@@ -256,7 +249,7 @@ class Tags extends Lazy{
             }
             eval('$I1 = '.$l5.';');
         }
-        return $I1;
+        return encode($I1);
     }
     // getList *** *** www.LazyCMS.net *** ***
     public function getList($l1,$l2,$l3){

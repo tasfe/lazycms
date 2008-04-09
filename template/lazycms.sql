@@ -1,9 +1,5 @@
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
-INSERT INTO `lazy_admin` (`adminid`, `adminname`, `adminpass`, `adminkey`, `adminlevel`, `adminlanguage`, `admineditor`, `admindate`, `diymenu`) VALUES
-(2, 'admin', '7659c9dc5dfb182c9a2908c5a4a083ed', '167106', 'admin', 'zh-cn', 'fckeditor', 1207482967, '');
-
-
 INSERT INTO `lazy_diymenu` (`diymenuid`, `diymenulang`, `diymenu`) VALUES
 (1, 'zh-cn', '文档管理|url(''Archives'')\r\n单页面|url(''Onepage'')\r\n自定义菜单|url(''System'',''DiyMenu'')\r\n技术支持|javascript:;\r\n    官方网站|http://www.lazycms.net/\r\n    论坛支持|http://forums.lazycms.net/');
 
@@ -29,7 +25,6 @@ INSERT INTO `lazy_model` (`modelid`, `modelname`, `modelename`, `maintable`, `ad
 (6, '演示网站', 'demo', 'lazy_archives', 'lazy_adddemo', '0');
 
 INSERT INTO `lazy_onepage` (`oneid`, `oneorder`, `onetitle`, `onepath`, `onename`, `onekeyword`, `onedescription`, `onecontent`, `onetemplate1`, `onetemplate2`, `ishome`) VALUES
-(1, 1, '力争做国内最优秀的内容管理系统(CMS)', 'index.htm', '首页', 'PHP,Lazy,CMS,内容管理系统', 'LazyCMS 是一款小巧、高效、人性化的开源内容管理系统。可装配、可自定义模型，使得进一步扩展功能和二次开发更加得心应手。运行环境：PHP 5+、MySQL 4.1+', '<p><strong>免费！</strong>可以用在商业用途网站。包括个人及企业网站，而无需支付使用费用，仅需保留LazyCMS支持信息链接即可。详细协议请阅读许可协议文档。</p>', 'template/home.html', 'template/inside/onepage/default.html', '1'),
 (2, 2, '关于LazyCMS', 'about.html', '关于LazyCMS', 'Lazy,CMS', '关于LazyCMS', '<p>关于LazyCMS</p>', 'template/default.html', 'template/inside/onepage/default.html', '0'),
 (3, 3, '联系方式', 'contact.html', '联系方式', '', '联系方式', '<p>联系方式</p>', 'template/default.html', 'template/inside/onepage/default.html', '0'),
 (4, 4, '付款方式', 'payment.html', '付款方式', '', '付款方式', '<p>付款方式</p>', 'template/default.html', 'template/inside/onepage/default.html', '0'),
@@ -44,6 +39,3 @@ INSERT INTO `lazy_sort` (`sortid`, `sortid1`, `modelid`, `sortorder`, `sortname`
 (4, 0, 4, 4, '程序下载', 'download', '', '', '0', 'template/default.html', 'template/inside/download[list]/default.html', 'template/default.html', 'template/inside/download[page]/default.html'),
 (5, 0, 1, 5, '服务项目', 'service', '', '', '0', 'template/default.html', 'template/inside/article[list]/default.html', 'template/default.html', 'template/inside/article[page]/default.html'),
 (6, 0, 6, 6, '演示网站', 'demo', '', '', '0', 'template/default.html', 'template/inside/demo[list]/default.html', 'template/default.html', 'template/inside/demo[page]/default.html');
-
-INSERT INTO `lazy_system` (`systemname`, `systemver`, `dbversion`, `sitename`, `sitemail`, `sitekeywords`, `lockip`, `modules`, `instdate`) VALUES
-('LazyCMS', '1.1.0.0408', '1.1.0', 'LazyCMS内容管理系统', 'mylukin@gmail.com', 'PHP,Lazy,CMS,内容管理系统', '', 'archives,onepage', 1207402970);
