@@ -245,7 +245,7 @@ class Tags extends Lazy{
         $l5 = sect($l1,'fun="','"');
         if (strlen($l5)>0) {
             if (strpos($l5,'@me')!==false) { 
-                $l5 = str_replace('@me',$I1,$l5);
+                $l5 = str_replace('@me',addslashes($I1),$l5);
             }
             eval('$I1 = '.$l5.';');
         }
