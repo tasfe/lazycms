@@ -8,6 +8,7 @@
             <select name="maintable" id="maintable">
                 <?php echo System::showTables($maintable);?>
             </select>
+            <span><input name="create" type="checkbox" id="create" value="1" onclick="$(this).change2input('#maintable');" /><label for="create">新建索引表</label></span>
         </p>
         <p><label><?php echo $module->L('models/label/ename');?></label><input id="modelename" name="modelename" type="text" maxlength="50" class="in3" value="<?php echo $modelename;?>"<?php echo $readonly;?>/></p>
         <?php if (empty($modelid)):?>

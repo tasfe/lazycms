@@ -35,9 +35,8 @@ class LazyArchives extends LazyCMS{
         $db = getConn();
         $dp = O('Record');
         $dp->action = url(C('CURRENT_MODULE'),'SortSet');
-        $dp->result = $db->query("SELECT `s`.*,`m`.`modelname`,count(`a`.`id`) AS `count` 
+        $dp->result = $db->query("SELECT `s`.*,`m`.`modelname` 
                                     FROM `#@_sort` AS `s` 
-                                    LEFT JOIN `#@_archives` AS `a` ON `s`.`sortid` = `a`.`sortid`
                                     LEFT JOIN `#@_model` AS `m` ON `s`.`modelid` = `m`.`modelid`
                                     WHERE `s`.`sortid1`='0' 
                                     GROUP BY `s`.`sortid` 
@@ -53,7 +52,7 @@ class LazyArchives extends LazyCMS{
         $dp->open();
         $dp->thead  = '<tr><th>'.$this->L('sort/id').') '.$this->L('sort/name').'</th><th>'.$this->L('sort/model').'</th><th>'.$this->L('sort/count').'</th><th>'.$this->L('sort/path').'</th><th class="wp2">'.$this->L('sort/action').'</th></tr>';
         while ($data = $dp->result()) {
-            $dp->tbody = "ll(".$data['sortid'].",".$data['sortid1'].",'".t2js(htmlencode($data['sortname']))."','".t2js(htmlencode($data['modelname']))."',".$data['count'].",'".Archives::showSort($data['sortid'])."',".(file_exists(LAZY_PATH.$data['sortpath']) ? 1 : 0).",'".Archives::subSort($data['sortid'])."');";
+            $dp->tbody = "ll(".$data['sortid'].",".$data['sortid1'].",'".t2js(htmlencode($data['sortname']))."','".t2js(htmlencode($data['modelname']))."',".Archives::Count($data['sortid']).",'".Archives::showSort($data['sortid'])."',".(file_exists(LAZY_PATH.$data['sortpath']) ? 1 : 0).",'".Archives::subSort($data['sortid'])."');";
             if (Archives::isOpen($data['sortid'])=="true") {
                 $dp->tbody = "$('#dir".$data['sortid']."').addsub(".$data['sortid'].",1,".Archives::isOpen($data['sortid']).");";
             }
@@ -221,9 +220,8 @@ class LazyArchives extends LazyCMS{
                 break;
             case 'getsub' :
                 $space = isset($_POST['space']) ? $_POST['space'] : 1;
-                $res   = $db->query("SELECT `s`.*,`m`.`modelname`,count(`a`.`id`) AS `count` 
+                $res   = $db->query("SELECT `s`.*,`m`.`modelname`
                                         FROM `#@_sort` AS `s` 
-                                        LEFT JOIN `#@_archives` AS `a` ON `s`.`sortid` = `a`.`sortid`
                                         LEFT JOIN `#@_model` AS `m` ON `s`.`modelid` = `m`.`modelid`
                                         WHERE `s`.`sortid1`='{$lists}' 
                                         GROUP BY `s`.`sortid` 
@@ -234,7 +232,7 @@ class LazyArchives extends LazyCMS{
                         'sortid'=> $data['sortid'],
                         'isopen'=> (int)$data['sortopen'] == 0 ? false : true,
                         'issub' => Archives::isSub($data['sortid']),
-                        'js'    => "lll(".$data['sortid'].",".$data['sortid1'].",'".t2js(htmlencode($data['sortname']))."','".t2js(htmlencode($data['modelname']))."',".$data['count'].",'".Archives::showSort($data['sortid'])."',".(file_exists(LAZY_PATH.$data['sortpath']) ? 1 : 0).",'".Archives::subSort($data['sortid'],$space+1)."');"
+                        'js'    => "lll(".$data['sortid'].",".$data['sortid1'].",'".t2js(htmlencode($data['sortname']))."','".t2js(htmlencode($data['modelname']))."',".Archives::Count($data['sortid']).",'".Archives::showSort($data['sortid'])."',".(file_exists(LAZY_PATH.$data['sortpath']) ? 1 : 0).",'".Archives::subSort($data['sortid'],$space+1)."');"
                     );
                 }
                 $db->exec("UPDATE `#@_sort` SET `sortopen`='1' WHERE `sortid`='{$lists}';");
@@ -350,6 +348,7 @@ class LazyArchives extends LazyCMS{
         $top     = isset($_POST['top'])      ? $_POST['top'] : null;
         $snapimg = isset($_POST['snapimg'])  ? $_POST['snapimg'] : null;
         $upsort  = isset($_POST['upsort'])   ? $_POST['upsort'] : null;
+        $uphome  = isset($_POST['uphome'])   ? $_POST['uphome'] : null;
         $checktitle = isset($_POST['checktitle']) ? $_POST['checktitle'] : null;
 
         $title = isset($_POST['title']) ? $_POST['title'] : null;
@@ -444,6 +443,8 @@ class LazyArchives extends LazyCMS{
                         'img'     => (string)$img,
                         'path'    => (string)$path,
                         'date'    => (int)strtotime($date),
+                        //'keywords'=> (string)$keywords,
+                        //'description' => (string)$description,
                     );
                     $db->insert($model['maintable'],$row);
                     $aid = $db->lastInsertId();
@@ -474,6 +475,8 @@ class LazyArchives extends LazyCMS{
                 }
                 // 更新列表，自动添加一个更新loading到toolbar
                 if ($upsort && !C('SITE_MODE')) { exeloading("createsort_{$sortid}",url(C('CURRENT_MODULE'),'loading',"submit=createsort&lists={$sortid}")); }
+                // 自动更新网站首页
+                if ($uphome && class_exists('Onepage') && !C('SITE_MODE')) { Onepage::updateIndex(); }
                 Archives::viewArchive($sortid,$aid);
                 redirect(url(C('CURRENT_MODULE'),'List','sortid='.$sortid));return true;
             }
@@ -501,6 +504,7 @@ class LazyArchives extends LazyCMS{
             }
             $snapimg = M($CURRENT_MODULE,'ADD_SNAPIMG');
             $upsort  = M($CURRENT_MODULE,'ADD_UPSORT');
+            $uphome  = M($CURRENT_MODULE,'ADD_UPHOME');
             $checktitle = M($CURRENT_MODULE,'ADD_CHECKTITLE');
         }
 
@@ -521,6 +525,7 @@ class LazyArchives extends LazyCMS{
             'top'    => !empty($top) ? ' checked="checked"' : null,
             'snapimg' => !empty($snapimg) ? ' checked="checked"' : null,
             'upsort'  => !empty($upsort) ? ' checked="checked"' : null,
+            'uphome'  => !empty($uphome) ? ' checked="checked"' : null,
             'commend' => !empty($commend) ? ' checked="checked"' : null,
             'checktitle' => !empty($checktitle) ? ' checked="checked"' : null,
             'pathtype_id' => $maxid.C('HTML_URL_SUFFIX'),

@@ -59,6 +59,7 @@
             <commend>推荐</commend>
             <snapimg>远程抓图</snapimg>
             <upsort>更新列表</upsort>
+			<uphome>更新首页</uphome>
             <checktitle>检查标题是否重复</checktitle>
             <title>标题</title>
             <img>缩略图 (若写远程路径，自动抓取图片保存到本地)</img>

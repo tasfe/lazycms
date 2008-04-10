@@ -829,6 +829,12 @@ function check($l1){
                 }
             }
             break;
+        case '5' :
+            $l5 = isset($I2[3]) ? $I2[3] : null;
+            if ($I2[3]=='false') {
+                $I1 = $l4; break;
+            }
+            break;
         default :
             $l5 = isset($I2[3]) ? $I2[3] : null;
             if (!validate($l2,$l5)) { $I1 = $l4; }

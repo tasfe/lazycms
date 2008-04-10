@@ -150,8 +150,14 @@ class Tags extends Lazy{
                 }
 				
                 if (empty($I1)) {
-                    if (class_exists($tagName) && !instr('image',strtolower($tagName))) {
-                        eval('$I1 = '.$tagName.'::tags($tags);');
+                    if (class_exists($tagName)) {
+                        $obj = new $tagName();
+                        if (property_exists($obj,'tags')) {
+                            $I1 = $obj->tags($tags);
+                        } else {
+                            $I1 = $tagName;
+                        }
+                        unset($obj);
                         $I1 = $this->parseAtt($tags,$I1,$inValue);
                     } else {
                         $I1 = $this->parseAtt($tags,$tagName,$inValue);

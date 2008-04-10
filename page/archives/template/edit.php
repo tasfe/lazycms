@@ -14,6 +14,7 @@
             <input name="top" type="checkbox" id="up" value="1"<?php echo $top;?> /><label for="up"><?php echo $module->L('label/archive/top');?></label> -
             <input name="snapimg" type="checkbox" id="snapimg" value="1"<?php echo $snapimg;?> /><label for="snapimg"><?php echo $module->L('label/archive/snapimg');?></label>
             <input name="upsort" type="checkbox" id="upsort" value="1"<?php echo $upsort;?> /><label for="upsort"><?php echo $module->L('label/archive/upsort');?></label>
+            <input name="uphome" type="checkbox" id="uphome" value="1"<?php echo $uphome;?> /><label for="uphome"><?php echo $module->L('label/archive/uphome');?></label>
             <input name="checktitle" type="checkbox" id="checktitle" value="1"<?php echo $checktitle;?> /><label for="checktitle"><?php echo $module->L('label/archive/checktitle');?></label>            
         </span></p>
         <p><label><?php echo $module->L('label/archive/title');?></label><input class="in4" type="text" id="title" name="title" maxlength="255" value="<?php echo $title;?>" /></p>

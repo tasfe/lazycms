@@ -123,6 +123,16 @@ jQuery.extend(jQuery.fn,{
 			$.post(l2,params,function(data){
 				obj.parents(l1).after(data);
 			});
+	},
+	change2input : function(l1){
+		if (this.attr('checked')) {
+			var keepcode = escape($(l1).html());
+			$(l1).replaceWith('<input class="in1" type="text" id="' + $(l1).attr('id') + '" name="' + $(l1).attr('id') + '" value="' + $(l1).val() + '" /><input name="keepcode" id="keepcode" type="hidden" value="" />');
+			$('#keepcode').val(keepcode);
+		} else {
+			var keepcode = unescape($('#keepcode').val())
+			$(l1).replaceWith('<select name="' + $(l1).attr('id') + '" id="' + $(l1).attr('id') + '">' + keepcode + '</select>');
+		}
 	}
 });
 // inputValue *** *** www.LazyCMS.net *** ***

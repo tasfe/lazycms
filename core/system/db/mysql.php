@@ -45,7 +45,7 @@ class Mysql extends DB{
     public function connect(){
         if ($this->_conn) { return $this->_conn; }
         // 连接数据库
-        $this->_conn = @mysql_connect($this->_config['host'],$this->_config['user'],$this->_config['pwd'],1);
+        $this->_conn = @mysql_connect($this->config('host'),$this->config('user'),$this->config('pwd'),1);
         // 验证连接是否正确
         if (!$this->_conn) {
             throwError(L('error/dblink'));
@@ -60,7 +60,7 @@ class Mysql extends DB{
         }
 
         if (empty($db)) {
-            $select = mysql_select_db($this->_config['name'],$this->_conn);
+            $select = mysql_select_db($this->config('name'),$this->_conn);
         } else {
             $select = mysql_select_db($db,$this->_conn);
         }
@@ -69,7 +69,7 @@ class Mysql extends DB{
             throwError(L('error/selectdb'));
         }
 
-        mysql_query("SET character_set_connection=".$this->_config['lang'].", character_set_results=".$this->_config['lang'].", character_set_client=binary;");
+        mysql_query("SET character_set_connection=".$this->config('lang').", character_set_results=".$this->config('lang').", character_set_client=binary;");
 
         if (version_compare($this->version(), '4.1', '<' )) {
             throwError(L('error/nodbver'));
@@ -83,7 +83,7 @@ class Mysql extends DB{
     private function execute($sql,$func,$type=''){
         $this->connect();
         $sql = preg_replace('/\#\~(.+)\~\#/e','$this->config(\'\\1\')',$sql);
-        if (strpos($sql,'#@_')!==false) { $sql = str_replace('#@_',$this->_config['prefix'],$sql); }
+        $sql = preg_replace('/`(#@_)(\w+)`/i','`'.$this->config('prefix').'$2`',$sql);
         $this->_sql = $sql;
         if(!($I1= $func($sql,$this->_conn))){
             if(in_array($this->errno(),array(2006,2013)) && substr($type,0,5) != 'RETRY') {
@@ -95,12 +95,24 @@ class Mysql extends DB{
         }
         return $I1;
     }
-
+    // isTable *** *** www.LazyCMS.net *** ***
+    public function isTable($l1){
+        $l1 = str_replace('#@_',$this->config('prefix'),$l1);
+        $res = mysql_list_tables($this->config('name'),$this->_conn);
+        while ($data = $this->fetch($res,0)) {
+            if (strtolower($l1)==strtolower($data[0])) {
+                $this->free($res);
+                return true;
+            }
+        }
+        $this->free($res);
+        return false;
+    }
     // batQuery *** *** www.LazyCMS.net *** ***
-    function batQuery($l1){ // $l1:sql
+    public function batQuery($l1){ // $l1:sql
         if (empty($l1)) { return ; }
-        if (strpos($l1,'#@_')!==false) { $l1 = str_replace('#@_',$this->_config['prefix'],$l1); }
         $l1 = preg_replace('/\#\~(.+)\~\#/e','$this->config(\'\\1\')',$l1);
+        $l1 = preg_replace('/`(#@_)(\w+)`/i','`'.$this->config('prefix').'$2`',$l1);
         $l1 = str_replace(chr(10).chr(10),chr(10),str_replace(chr(13),chr(10),$l1));
         $I2 = explode(chr(10),$l1);
         $I3 = create_function('&$l1,$l2','$l1=trim($l1);');array_walk($I2,$I3);
@@ -168,14 +180,7 @@ class Mysql extends DB{
     public function getConnect(){
         return $this->_conn;
     }
-    // getDataBase *** *** www.LazyCMS.net *** ***
-    public function getDataBase(){
-        return $this->_config['name'];
-    }
-    // getSQL *** *** www.LazyCMS.net *** ***
-    public function getSQL(){
-        return $this->_sql;
-    }
+    
     // error *** *** www.LazyCMS.net *** ***
     public function error() {
         return (($this->_conn) ? mysql_error($this->_conn) : mysql_error());

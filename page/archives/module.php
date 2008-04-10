@@ -28,6 +28,12 @@ defined('CORE_PATH') or die('Restricted access!');
  * @author      Lukin <mylukin@gmail.com>
  */
 class Archives{
+    // Count *** *** www.LazyCMS.net *** ***
+    static function Count($l1){
+        $db = getConn();
+        $model = self::getModel($l1);
+        return $db->count("SELECT * FROM `".$model['maintable']."` WHERE 1");
+    }
     // getTopSortId *** *** www.LazyCMS.net *** ***
     static function getTopSortId(){
         $db  = getConn();

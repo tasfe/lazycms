@@ -49,7 +49,7 @@ class LazySystem extends LazyCMS{
         if (class_exists('Onepage')) {
             Onepage::index();
         } else {
-            throwError($this->L('error/onepage'));
+            throwError(L('error/onepage'));
         }
     }
     // _main *** *** www.LazyCMS.net *** ***
@@ -81,7 +81,7 @@ class LazySystem extends LazyCMS{
         // 设置翻页url
         $dp->url = url('System','Log','page=$');
         // 设置按钮，button方法输出指定的按钮，plist方法输出分页
-        $dp->but = $dp->button('logdelete:'.$this->L('log/delete').'|clear:'.$this->L('log/clear')).$dp->plist();
+        $dp->but = $dp->button('logdelete:'.L('log/delete').'|clear:'.L('log/clear')).$dp->plist();
         // 设置第1个td的内容
         $dp->td  = "cklist(K[0]) + K[0] + ') ' + K[1]";
         // 设置第2个td的内容
@@ -93,11 +93,11 @@ class LazySystem extends LazyCMS{
         // 打开查询
         $dp->open();
         // 设置thead
-        $dp->thead  = '<tr><th>'.$this->L('log/list/id').') '.$this->L('log/list/name').'</th><th>'.$this->L('log/list/num').'</th><th>'.$this->L('log/list/ip').'</th><th>'.$this->L('log/list/date').'</th></tr>';
+        $dp->thead  = '<tr><th>'.L('log/list/id').') '.L('log/list/name').'</th><th>'.L('log/list/num').'</th><th>'.L('log/list/ip').'</th><th>'.L('log/list/date').'</th></tr>';
         
         // 循环设置tbody
         while ($data = $dp->result()) {
-            $dp->tbody = "ll(".$data['logid'].",'".t2js($data['adminname'])."','".$data['ip']."','".$this->L('log/l'.$data['lognum'])."','".date('Y-m-d H:i:s',$data['logdate'])."');";
+            $dp->tbody = "ll(".$data['logid'].",'".t2js($data['adminname'])."','".$data['ip']."','".L('log/l'.$data['lognum'])."','".date('Y-m-d H:i:s',$data['logdate'])."');";
         }
         // 关闭对象
         $dp->close();
@@ -106,7 +106,7 @@ class LazySystem extends LazyCMS{
 
         // 取得模板对象
         $tpl = getTpl($this);
-        $tpl->assign('menu',$this->L('admin/title').'|'.url('System','Main').';'.$this->L('log/@title').'|#|true');
+        $tpl->assign('menu',L('admin/title').'|'.url('System','Main').';'.L('log/@title').'|#|true');
         // 显示模板
         $tpl->display('__public.php');
     }
@@ -119,19 +119,19 @@ class LazySystem extends LazyCMS{
         switch($submit){
             case 'clear' :
                 $db->exec("TRUNCATE TABLE `#@_log`;");
-                $this->poping($this->L('log/pop/clearok'),1);
+                $this->poping(L('log/pop/clearok'),1);
                 break;
             case 'delete' :
                 $lists = isset($_POST['lists']) ? $_POST['lists'] : null;
                 if (empty($lists)) {
-                    $this->poping($this->L('log/pop/select'),0);
+                    $this->poping(L('log/pop/select'),0);
                 }
                 $db->exec("DELETE FROM `#@_log` WHERE `logid` IN({$lists});");
-                $this->poping($this->L('log/pop/deleteok'),1);
+                $this->poping(L('log/pop/deleteok'),1);
                 break;
             case 'logdelete' ://删除过期日志 7天
                 $db->exec("DELETE FROM `#@_log` WHERE `logdate`<".(now()-(7*24*3600)).";");
-                $this->poping($this->L('log/pop/logdeleteok'),1);
+                $this->poping(L('log/pop/logdeleteok'),1);
                 break;
             default :
                 $this->poping(L('error/invalid'),0);
@@ -152,16 +152,16 @@ class LazySystem extends LazyCMS{
         $dp->td  = 'K[4]';
         $dp->td  = 'K[5]';
         $dp->open();
-        $dp->thead  = '<tr><th>'.$this->L('admin/list/name').'</th><th>'.$this->L('admin/list/level').'</th><th>'.$this->L('admin/list/language').'</th><th>'.$this->L('admin/list/editor').'</th><th>'.$this->L('admin/list/regdate').'</th></tr>';
+        $dp->thead  = '<tr><th>'.L('admin/list/name').'</th><th>'.L('admin/list/level').'</th><th>'.L('admin/list/language').'</th><th>'.L('admin/list/editor').'</th><th>'.L('admin/list/regdate').'</th></tr>';
         while ($data = $dp->result()) {
-            $dp->tbody = "ll(".$data['adminid'].",'".t2js(htmlencode($data['adminname']))."','".($data['adminlevel']=='admin' ? $this->L('admin/level/super') : $this->L('admin/level/editor'))."','".langbox($data['adminlanguage'])."','".$data['admineditor']."','".date('Y-m-d H:i:s',$data['admindate'])."');";
+            $dp->tbody = "ll(".$data['adminid'].",'".t2js(htmlencode($data['adminname']))."','".($data['adminlevel']=='admin' ? L('admin/level/super') : L('admin/level/editor'))."','".langbox($data['adminlanguage'])."','".$data['admineditor']."','".date('Y-m-d H:i:s',$data['admindate'])."');";
         }
         $dp->close();
 
         $this->outHTML = $dp->fetch;
 
         $tpl = getTpl($this);
-        $tpl->assign('menu',$this->L('admin/list').'|#|true;'.$this->L('admin/add').'|'.url('System','AdminEdit'));
+        $tpl->assign('menu',L('admin/list').'|#|true;'.L('admin/add').'|'.url('System','AdminEdit'));
         $tpl->display('__public.php');
     }
     // _logset *** *** www.LazyCMS.net *** ***
@@ -174,11 +174,11 @@ class LazySystem extends LazyCMS{
             case 'delete' :
                 $lists = isset($_POST['lists']) ? $_POST['lists'] : null;
                 if (empty($lists)) {
-                    $this->poping($this->L('admin/pop/select'),0);
+                    $this->poping(L('admin/pop/select'),0);
                 }
                 $where = $db->quoteInto('`adminid` = ?',$this->admin['adminid']);
                 $db->exec("DELETE FROM `#@_admin` WHERE `adminid` IN({$lists}) AND NOT({$where});");
-                $this->poping($this->L('admin/pop/deleteok'),1);
+                $this->poping(L('admin/pop/deleteok'),1);
                 break;
             default :
                 $this->poping(L('error/invalid'),0);
@@ -193,9 +193,9 @@ class LazySystem extends LazyCMS{
         $sql = "adminname,adminpass,adminlevel,adminlanguage,admineditor,diymenu";//5
         $adminid = isset($_REQUEST['adminid']) ? $_REQUEST['adminid']:0;
         if (empty($adminid)) {
-            $menu = $this->L('admin/add').'|#|true';
+            $menu = L('admin/add').'|#|true';
         } else {
-            $menu = $this->L('admin/add').'|'.url('System','AdminEdit').';'.$this->L('admin/edit').'|#|true';
+            $menu = L('admin/add').'|'.url('System','AdminEdit').';'.L('admin/edit').'|#|true';
         }
         // 循环取得各POST值
         foreach (explode(',',$sql) as $val) {
@@ -207,8 +207,8 @@ class LazySystem extends LazyCMS{
         }
         // 验证
         $this->validate(array(
-            'adminname' => empty($adminid) ? $this->check("adminname|1|".$this->L('admin/check/name')."|2-12;adminname|3|".$this->L('admin/check/name1')."|SELECT COUNT(`adminid`) FROM `#@_admin` WHERE `adminname`='#pro#'") : null,
-            'adminpass' => (!empty($data[1]) || !empty($data[6]) || empty($adminid)) ? $this->check('adminpass|2|'.$this->L('admin/check/contrast').'|adminpass1;adminpass|1|'.$this->L('account/check/pwdsize').'|6-30') : null,
+            'adminname' => empty($adminid) ? $this->check("adminname|1|".L('admin/check/name')."|2-12;adminname|3|".L('admin/check/name1')."|SELECT COUNT(`adminid`) FROM `#@_admin` WHERE `adminname`='#pro#'") : null,
+            'adminpass' => (!empty($data[1]) || !empty($data[6]) || empty($adminid)) ? $this->check('adminpass|2|'.L('admin/check/contrast').'|adminpass1;adminpass|1|'.L('account/check/pwdsize').'|6-30') : null,
         ));
         // 验证通过
         if ($this->method()) {
@@ -263,7 +263,7 @@ class LazySystem extends LazyCMS{
                         redirect(url('System','MyAccount')); exit(0);
                     }
                 } else {
-                    throwError($this->L('error/invalid'));
+                    throwError(L('error/invalid'));
                 }
             }
         }
@@ -294,7 +294,7 @@ class LazySystem extends LazyCMS{
         $diymenu       = isset($_POST['diymenu']) ? $_POST['diymenu'] : null;
         // 验证
         $this->validate(array(
-            'adminpass' => (!empty($adminpass) || !empty($adminpass1)) ? $this->check('adminpass|2|'.$this->L('admin/check/contrast').'|adminpass1;adminpass|1|'.$this->L('account/check/pwdsize').'|6-30') : null,
+            'adminpass' => (!empty($adminpass) || !empty($adminpass1)) ? $this->check('adminpass|2|'.L('admin/check/contrast').'|adminpass1;adminpass|1|'.L('account/check/pwdsize').'|6-30') : null,
         ));
         if ($this->method()) {
             if ($this->validate()) {
@@ -320,7 +320,7 @@ class LazySystem extends LazyCMS{
                     Cookie::set('adminpass',$newpass);
                 }
                 Cookie::set('language',$adminlanguage);
-                $this->succeed($this->L('common/upok'));
+                $this->succeed(L('common/upok'));
             }
         } else {
             $adminlanguage = $this->admin['adminlanguage'];
@@ -356,7 +356,7 @@ class LazySystem extends LazyCMS{
                 );
                 $db->insert('#@_diymenu',$row);
             }
-            $this->succeed($this->L('common/upok'));
+            $this->succeed(L('common/upok'));
         } else {
             $res = $db->query("SELECT `diymenu` FROM `#@_diymenu` WHERE {$where};");
             if ($data = $db->fetch($res,0)) {
@@ -379,8 +379,8 @@ class LazySystem extends LazyCMS{
         $keywords = isset($_POST['keywords']) ? $_POST['keywords'] : null;
         $lockip   = isset($_POST['lockip']) ? $_POST['lockip'] : null;
         $this->validate(array(
-            'sitename' => $this->check('sitename|1|'.$this->L('config/check/sitename').'|1-50'),
-            'sitemail' => !empty($sitemail) ? $this->check('sitemail|validate|'.$this->L('config/check/sitemail').'|4') : null,
+            'sitename' => $this->check('sitename|1|'.L('config/check/sitename').'|1-50'),
+            'sitemail' => !empty($sitemail) ? $this->check('sitemail|validate|'.L('config/check/sitemail').'|4') : null,
         ));
         if ($this->method()) {
             if ($this->validate()) {
@@ -392,7 +392,7 @@ class LazySystem extends LazyCMS{
                 );
                 $where = $db->quoteInto('`systemname` = ?','LazyCMS');
                 $db->update('#@_system',$set,$where);
-                $this->succeed($this->L('common/upok'));
+                $this->succeed(L('common/upok'));
             }
         } else {
             $sitename = $this->system['sitename'];
@@ -415,40 +415,40 @@ class LazySystem extends LazyCMS{
         $_html = '<script type="text/javascript">var lz_delete = \''.L('confirm/delete').'\';</script>';
         $_html.= '<table class="lz_table">';
         $_html.= '<thead><tr>';
-        $_html.= '<th>'.$this->L('module/list/name').'</th>';
-        $_html.= '<th>'.$this->L('module/list/version').'</th>';
-        $_html.= '<th>'.$this->L('module/list/folder').'</th>';
-        $_html.= '<th>'.$this->L('module/list/author').'</th>';
-        $_html.= '<th>'.$this->L('module/list/source').'</th>';
-        $_html.= '<th>'.$this->L('module/list/mail').'</th>';
-        $_html.= '<th>'.$this->L('module/list/is').'</th>';
+        $_html.= '<th>'.L('module/list/name').'</th>';
+        $_html.= '<th>'.L('module/list/version').'</th>';
+        $_html.= '<th>'.L('module/list/folder').'</th>';
+        $_html.= '<th>'.L('module/list/author').'</th>';
+        $_html.= '<th>'.L('module/list/source').'</th>';
+        $_html.= '<th>'.L('module/list/mail').'</th>';
+        $_html.= '<th>'.L('module/list/is').'</th>';
         $_html.= '</tr></thead>';
 
         $_html.= '<tbody>';
         foreach ($dir as $k=>$v) {
             if (strtolower($v) != 'system') {
                 if (instr($this->system['modules'],$v)) {
-                    $isInstall = $this->L('module/is/true');
+                    $isInstall = L('module/is/true');
                     $isAction  = 'delete';
                     $isExists  = null;
                     $module    = '<a href="'.eval('return '.L('manage',null,$v).';').'">'.L('title',null,$v).'</a>';
-                    $config    = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$v.'/config.php') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('config',{module:'".$v."'},{width:'600px','margin-left':'-300px',height:'300px'});\">".$this->L('common/config')."</a>]" : null;
+                    $config    = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$v.'/config.php') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('config',{module:'".$v."'},{width:'600px','margin-left':'-300px',height:'300px'});\">".L('common/config')."</a>]" : null;
                 } else {
-                    $isInstall = $this->L('module/is/false');
+                    $isInstall = L('module/is/false');
                     $isAction  = 'install';
                     $isExists  = ' class="red"';
                     $module    = L('title',null,$v);
                     $config    = null;
                 }
-                $help  = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$v.'/help/help.html') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('help',{module:'".$v."'},{width:'600px','margin-left':'-300px',height:'300px'});\">".$this->L('common/help')."</a>]" : null;
-                $about = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$v.'/help/about.html') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('about',{module:'".$v."'});\">".$this->L('common/about')."</a>]" : null;
+                $help  = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$v.'/help/help.html') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('help',{module:'".$v."'},{width:'600px','margin-left':'-300px',height:'300px'});\">".L('common/help')."</a>]" : null;
+                $about = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$v.'/help/about.html') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('about',{module:'".$v."'});\">".L('common/about')."</a>]" : null;
                 $_html.= '<tr'.$isExists.'><td>'.($k+1).') '.$module.'</td>';
                 $_html.= '<td>'.L('version',null,$v).'</td>';
                 $_html.= '<td>'.$v.'</td>';
                 $_html.= '<td>'.L('author',null,$v).'</td>';
                 $_html.= '<td>'.L('source',null,$v).'</td>';
                 $_html.= '<td>'.L('email',null,$v).'</td>';
-                $_html.= '<td>'.$isInstall.$config.' [<a href="javascript:void(0);" onclick="$(this).gm(\''.$isAction.'\',{module:\''.$v.'\'});">'.$this->L('common/'.$isAction).'</a>]'.$about.$help.'</td></tr>';
+                $_html.= '<td>'.$isInstall.$config.' [<a href="javascript:void(0);" onclick="$(this).gm(\''.$isAction.'\',{module:\''.$v.'\'});">'.L('common/'.$isAction).'</a>]'.$about.$help.'</td></tr>';
             }
         }
         $_html.= '</tbody></table>';
@@ -521,13 +521,13 @@ class LazySystem extends LazyCMS{
                 break;
             case 'about' :
                 $this->poping(array(
-                    'title' => $this->L('common/about').' - '.L('title',null,$module),
+                    'title' => L('common/about').' - '.L('title',null,$module),
                     'main'  => ubbencode(loadFile(LAZY_PATH.C('PAGES_PATH').'/'.$module.'/help/about.html')),
                 ),0);
                 break;
             case 'help' :
                 $this->poping(array(
-                    'title' => $this->L('common/help').' - '.L('title',null,$module),
+                    'title' => L('common/help').' - '.L('title',null,$module),
                     'main'  => ubbencode(loadFile(LAZY_PATH.C('PAGES_PATH').'/'.$module.'/help/help.html')),
                 ),0);
                 break;
@@ -571,7 +571,7 @@ class LazySystem extends LazyCMS{
                 $_html.= '</form>';
                 
                 $this->poping(array(
-                    'title' => $this->L('config/@title').' - '.L('title',null,$module),
+                    'title' => L('config/@title').' - '.L('title',null,$module),
                     'main'  => $_html,
                 ));
                 break;
@@ -588,13 +588,13 @@ class LazySystem extends LazyCMS{
 
         if ($submit=='install') {
             $this->poping(array(
-                'title' => L('title',null,$module).' - '.$this->L('common/memo'),
-                'main'  => $this->L('module/tip/install').'<br/><a href="'.eval('return '.L('manage',null,$module).';').'">【'.$this->L("module/tip/welcome").'】</a>',
+                'title' => L('title',null,$module).' - '.L('common/memo'),
+                'main'  => L('module/tip/install').'<br/><a href="'.eval('return '.L('manage',null,$module).';').'">【'.L("module/tip/welcome").'】</a>',
             ),1);
         } else {
             $this->poping(array(
-                'title' => L('title',null,$module).' - '.$this->L('common/memo'),
-                'main'  => $this->L('module/tip/delete'),
+                'title' => L('title',null,$module).' - '.L('common/memo'),
+                'main'  => L('module/tip/delete'),
             ),1);
         }
     }
@@ -635,7 +635,7 @@ class LazySystem extends LazyCMS{
                 $this->poping(L('error/invalid'),0);
                 break;
         }
-        $this->poping($this->L('module/pop/ok'),0);
+        $this->poping(L('module/pop/ok'),0);
     }
     // _models *** *** www.LazyCMS.net *** ***
     function _models(){
@@ -652,17 +652,17 @@ class LazySystem extends LazyCMS{
         $dp->td  = "state(K[4],'".url('System','ModelState','modelid=$&state=1',"' + K[0] + '")."','".url('System','ModelState','modelid=$&state=0',"' + K[0] + '")."')";
         $dp->td  = "ico('edit','".url('System','ModelEdit','modelid=$',"' + K[0] + '")."') + ico('export','".url('System','ModelExport','modelid=$',"' + K[0] + '")."') + ico('fields','".url('System','ModelFields','modelid=$',"' + K[0] + '")."')";
         $dp->open();
-        $dp->thead = '<tr><th>'.$this->L('models/list/id').') '.$this->L('models/list/name').'</th><th>'.$this->L('models/list/ename').'</th><th>'.$this->L('models/list/addtable').'</th><th>'.$this->L('models/list/state').'</th><th>'.$this->L('models/list/action').'</th></tr>';
+        $dp->thead = '<tr><th>'.L('models/list/id').') '.L('models/list/name').'</th><th>'.L('models/list/ename').'</th><th>'.L('models/list/addtable').'</th><th>'.L('models/list/state').'</th><th>'.L('models/list/action').'</th></tr>';
         
         while ($data = $dp->result()) {
-            $dp->tbody = "ll(".$data['modelid'].",'".t2js(htmlencode($data['modelname']))."','".t2js(htmlencode($data['modelename']))."','".htmlencode($data['addtable'])."',".$data['modelstate'].");";
+            $dp->tbody = "ll(".$data['modelid'].",'".t2js(htmlencode($data['modelname']))."','".t2js(htmlencode($data['modelename']))."','".htmlencode(str_replace('#@_',C('DSN_PREFIX'),$data['addtable']))."',".$data['modelstate'].");";
         }
         $dp->close();
 
         $this->outHTML = $dp->fetch;
 
         $tpl = getTpl($this);
-        $tpl->assign('menu',$this->L('models/@title').'|#|true;'.$this->L('models/add').'|'.url('System','ModelEdit').';'.$this->L('models/leadin').'|'.url('System','ModelLeadIn'));
+        $tpl->assign('menu',L('models/@title').'|#|true;'.L('models/add').'|'.url('System','ModelEdit').';'.L('models/leadin').'|'.url('System','ModelLeadIn'));
         $tpl->display('__public.php');
     }
     // _modelset *** *** www.LazyCMS.net *** ***
@@ -675,7 +675,7 @@ class LazySystem extends LazyCMS{
             case 'delete' :
                 $lists = isset($_POST['lists']) ? $_POST['lists'] : null;
                 if (empty($lists)) {
-                    $this->poping($this->L('models/pop/select'),0);
+                    $this->poping(L('models/pop/select'),0);
                 }
                 $res = $db->query("SELECT `addtable` FROM `#@_model` WHERE `modelid` IN({$lists})");
                 while ($data = $db->fetch($res,0)){
@@ -683,7 +683,7 @@ class LazySystem extends LazyCMS{
                 }
                 $db->exec("DELETE FROM `#@_fields` WHERE `modelid` IN({$lists});");
                 $db->exec("DELETE FROM `#@_model` WHERE `modelid` IN({$lists});");
-                $this->poping($this->L('models/pop/deleteok'),1);
+                $this->poping(L('models/pop/deleteok'),1);
                 break;
             default :
                 $this->poping(L('error/invalid'),0);
@@ -715,8 +715,8 @@ class LazySystem extends LazyCMS{
         if ($data = $db->fetch($res)) {
             unset($data['modelid']);
             $modelName = $data['modelename'];
-			$data['maintable'] = str_replace(C('DSN_PREFIX'),'',$data['maintable']);
-			$data['addtable']  = str_replace(C('DSN_PREFIX'),'',$data['addtable']);
+			$data['maintable'] = str_replace('#@_','',$data['maintable']);
+			$data['addtable']  = str_replace('#@_','',$data['addtable']);
             $XML['model']      = $data;
         } else {
             $modelName = 'Error';
@@ -763,20 +763,44 @@ class LazySystem extends LazyCMS{
         $this->checker('models');
         $db      = getConn();
         $modelid = isset($_REQUEST['modelid']) ? (int)$_REQUEST['modelid'] : null;
-        $sql     = "modelname,modelename,maintable";//3
+        $sql     = "modelname,modelename,maintable";//2
         foreach (explode(',',$sql) as $val) {
             $data[]= isset($_POST[$val]) ? $_POST[$val] : null;
         }
         if (empty($modelid)) {
-            $menu = $this->L('models/add').'|#|true';
+            $menu = L('models/add').'|#|true';
         } else {
-            $menu = $this->L('models/add').'|'.url('System','ModelEdit').';'.$this->L('models/edit').'|#|true';
+            $menu = L('models/add').'|'.url('System','ModelEdit').';'.L('models/edit').'|#|true';
         }
-
+        // 验证表是否可以作为索引表
+        $isValdate = 'true';
+        if ($this->method() && strtolower($data[2])!='#@_archives') {
+            // 表不存在的时候，自动拷贝 #@_archives 创建新表
+            if (!$db->isTable($data[2])) {
+                $db->copy('#@_archives',$data[2]);
+            }
+            $fields = array();
+            $res = mysql_list_fields($db->getDataBase(),str_replace('#@_',C('DSN_PREFIX'),$data[2]),$db->getConnect());
+            $col = mysql_num_fields($res);
+            for ($i = 0; $i < $col; $i++) {
+                $fields[0][] = mysql_field_name($res, $i);
+            }
+            $res = mysql_list_fields($db->getDataBase(),C('DSN_PREFIX').'archives',$db->getConnect());
+            $col = mysql_num_fields($res);
+            for ($i = 0; $i < $col; $i++) {
+                $fields[1][] = mysql_field_name($res, $i);
+            }
+            if ($fields[1]!==$fields[0]) {
+                $isValdate = 'false';
+            }    
+        }
+        
         $this->validate(array(
-            'modelname'  => $this->check('modelname|1|'.$this->L('models/check/name').'|1-50'),
-            'modelename' => $this->check('modelename|1|'.$this->L('models/check/ename').'|1-50;modelename|validate|'.$this->L('models/check/ename1').'|^[A-Za-z0-9\_]+$'),
+            'modelname'  => $this->check('modelname|1|'.L('models/check/name').'|1-50'),
+            'maintable'  => $this->check('maintable|5|'.L('models/check/table',array('table'=>str_replace('#@_',C('DSN_PREFIX'),$data[2]))).'|'.$isValdate),
+            'modelename' => $this->check('modelename|1|'.L('models/check/ename').'|1-50;modelename|validate|'.L('models/check/ename1').'|^[A-Za-z0-9\_]+$'),
         ));
+
         if ($this->method()) {
             if ($this->validate()) {
                 if(empty($modelid)){//insert
@@ -819,7 +843,7 @@ class LazySystem extends LazyCMS{
             'modelid'    => $modelid,
             'modelname'  => htmlencode($data[0]),
             'modelename' => htmlencode($data[1]),
-            'maintable'  => htmlencode($data[2]),
+            'maintable'  => !empty($data[2]) ? $data[2] : '#@_archives',
             'menu'       => $menu,
             'readonly'   => !empty($modelid) ? ' readonly="true"' : null,
         ));
@@ -842,14 +866,14 @@ class LazySystem extends LazyCMS{
         $dp->td  = "index(K[8],K[6],'".url('System','ModelFieldIndex','modelid=:modelid&fieldid=:fieldid&index=0',array('modelid'=>"'+K[7]+'",'fieldid'=>"'+K[0]+'"))."','".url('System','ModelFieldIndex','modelid=:modelid&fieldid=:fieldid&index=1',array('modelid'=>"'+K[7]+'",'fieldid'=>"'+K[0]+'"))."')";
         $dp->td  = "ico('edit','".url('System','ModelFieldsEdit','modelid=:modelid&fieldid=:fieldid',array('modelid'=>"'+K[7]+'",'fieldid'=>"'+K[0]+'"))."') + updown('up',K[0]) + updown('down',K[0])";
         $dp->open();
-        $dp->thead = '<tr><th>'.$this->L('models/field/list/id').') '.$this->L('models/field/list/name').'</th><th>'.$this->L('models/field/list/ename').'</th><th>'.$this->L('models/field/list/type').'</th><th>'.$this->L('models/field/list/default').'</th><th>'.$this->L('models/field/list/key').'</th><th>'.$this->L('models/field/list/action').'</th></tr>';
+        $dp->thead = '<tr><th>'.L('models/field/list/id').') '.L('models/field/list/name').'</th><th>'.L('models/field/list/ename').'</th><th>'.L('models/field/list/type').'</th><th>'.L('models/field/list/default').'</th><th>'.L('models/field/list/key').'</th><th>'.L('models/field/list/action').'</th></tr>';
         while ($data = $dp->result()) {
-            $dp->tbody = "ll(".$data['fieldid'].",'".t2js(htmlencode($data['fieldname']))."','".t2js(htmlencode($data['fieldename']))."','".$this->L('models/field/type/'.$data['inputtype'])."','".t2js(htmlencode($data['fieldlength']))."','".t2js(htmlencode($data['fieldefault']))."',".$data['fieldindex'].",".$data['modelid'].",".(int)instr('text,mediumtext',$data['fieldtype']).",'".$data['inputtype']."');";
+            $dp->tbody = "ll(".$data['fieldid'].",'".t2js(htmlencode($data['fieldname']))."','".t2js(htmlencode($data['fieldename']))."','".L('models/field/type/'.$data['inputtype'])."','".t2js(htmlencode($data['fieldlength']))."','".t2js(htmlencode($data['fieldefault']))."',".$data['fieldindex'].",".$data['modelid'].",".(int)instr('text,mediumtext',$data['fieldtype']).",'".$data['inputtype']."');";
         }
         $dp->close();
         $this->outHTML = $dp->fetch;
         $tpl = getTpl($this);
-        $tpl->assign('menu',$this->L('models/@title').'|'.url('System','Models').';'.$this->L('models/add').'|'.url('System','ModelEdit').';'.$this->L('models/field/@title').'|#|true;'.$this->L('models/field/add').'|'.url('System','ModelFieldsEdit','modelid='.$modelid));
+        $tpl->assign('menu',L('models/@title').'|'.url('System','Models').';'.L('models/add').'|'.url('System','ModelEdit').';'.L('models/field/@title').'|#|true;'.L('models/field/add').'|'.url('System','ModelFieldsEdit','modelid='.$modelid));
         $tpl->display('__public.php');
     }
     // _modelfieldindex *** *** www.LazyCMS.net *** ***
@@ -887,7 +911,7 @@ class LazySystem extends LazyCMS{
         switch($submit){
             case 'delete' :
                 if (empty($lists)) {
-                    $this->poping($this->L('models/pop/select'),0);
+                    $this->poping(L('models/pop/select'),0);
                 }
                 // 取得附加表
                 $addtable = $db->result("SELECT `addtable` FROM `#@_model` WHERE `modelid`='{$modelid}';");
@@ -902,10 +926,10 @@ class LazySystem extends LazyCMS{
                     // 执行删除字段操作
                     $db->exec($DelSQL);
                     $db->exec("DELETE FROM `#@_fields` WHERE `modelid`='{$modelid}' AND `fieldid` IN({$lists});");
-                    $this->poping($this->L('models/pop/deletefieldok'),1);
+                    $this->poping(L('models/pop/deletefieldok'),1);
                 } catch (Error $err) {
                     $db->exec("DELETE FROM `#@_fields` WHERE `modelid`='{$modelid}' AND `fieldid` IN({$lists});");
-                    $this->poping($this->L('models/pop/deletefielderr'),1);
+                    $this->poping(L('models/pop/deletefielderr'),1);
                 }
                 break;
             case 'updown' :
@@ -931,15 +955,15 @@ class LazySystem extends LazyCMS{
         }
         $data[8] = isset($_POST['oldfieldename']) ? $_POST['oldfieldename'] : null;
         if (empty($fieldid)) {
-            $menu = $this->L('models/field/add').'|#|true';
+            $menu = L('models/field/add').'|#|true';
         } else {
-            $menu = $this->L('models/field/add').'|'.url('System','ModelFieldsEdit','modelid='.$modelid).';'.$this->L('models/field/edit').'|#|true';
+            $menu = L('models/field/add').'|'.url('System','ModelFieldsEdit','modelid='.$modelid).';'.L('models/field/edit').'|#|true';
         }
         $this->validate(array(
-            'fieldname'  => $this->check('fieldname|1|'.$this->L('models/field/check/name').'|1-50'),
-            'fieldename' => $this->check('fieldename|1|'.$this->L('models/field/check/ename').'|1-50;fieldename|validate|'.$this->L('models/field/check/ename1').'|^[A-Za-z0-9\_]+$'),
-            'fieldlength'=> instr('input',$data[6]) ? $this->check('fieldlength|1|'.$this->L('models/field/check/length').'|1-255;fieldlength|validate|'.$this->L('models/field/check/length1').'|2') : null,
-            'fieldvalue' => instr('radio,checkbox,select',$data[6]) ? $this->check('fieldvalue|0|'.$this->L('models/field/check/value')) : null,
+            'fieldname'  => $this->check('fieldname|1|'.L('models/field/check/name').'|1-50'),
+            'fieldename' => $this->check('fieldename|1|'.L('models/field/check/ename').'|1-50;fieldename|validate|'.L('models/field/check/ename1').'|^[A-Za-z0-9\_]+$'),
+            'fieldlength'=> instr('input',$data[6]) ? $this->check('fieldlength|1|'.L('models/field/check/length').'|1-255;fieldlength|validate|'.L('models/field/check/length1').'|2') : null,
+            'fieldvalue' => instr('radio,checkbox,select',$data[6]) ? $this->check('fieldvalue|0|'.L('models/field/check/value')) : null,
         ));
         if ($this->method()) {
             if ($this->validate()) {
@@ -1187,11 +1211,11 @@ class LazySystem extends LazyCMS{
         if (validate($l1,6)) {
             $I1 = $l1;
             if (version_compare($this->system['systemver'], $l1, '<' )) {
-                $I1 .= ' <a href="http://www.lazycms.net/download" target="_blank">【'.$this->L('parameters/downnew').'】</a>';
-                $I1 .= ' <a href="'.url('System','Update').'" onclick="$.posts(this.href,{version:\''.$l1.'\'});return false;">【'.$this->L('parameters/update').'】</a>';
+                $I1 .= ' <a href="http://www.lazycms.net/download" target="_blank">【'.L('parameters/downnew').'】</a>';
+                $I1 .= ' <a href="'.url('System','Update').'" onclick="$.posts(this.href,{version:\''.$l1.'\'});return false;">【'.L('parameters/update').'】</a>';
             }
         } else {
-            $I1 = $this->L('parameters/newversionerr');
+            $I1 = L('parameters/newversionerr');
         }
         echo $I1;
     }
@@ -1200,7 +1224,7 @@ class LazySystem extends LazyCMS{
         clearCache();
         $this->checker('admin',true);
         $version = isset($_POST['version']) ? $_POST['version'] : null;
-        $this->poping($this->L('parameters/notup'),1);
+        $this->poping(L('parameters/notup'),1);
     }
     // _login *** *** www.LazyCMS.net *** ***
     function _login(){
@@ -1239,8 +1263,8 @@ class LazySystem extends LazyCMS{
         $save      = isset($_POST['save']) ? $_POST['save'] : null;
         // 验证
         $this->validate(array(
-            'adminname' => $this->check('adminname|1|'.$this->L('login/check/name').'|2-30'),
-            'adminpass' => $this->check('adminpass|1|'.$this->L('login/check/pass').'|6-30'),
+            'adminname' => $this->check('adminname|1|'.L('login/check/name').'|2-30'),
+            'adminpass' => $this->check('adminpass|1|'.L('login/check/pass').'|6-30'),
         ));
         // 验证通过
         if ($this->method() && $this->validate()) {
@@ -1283,7 +1307,7 @@ class LazySystem extends LazyCMS{
                     $db->insert('#@_log',$row);
                     // 密码不正确，登录失败
                     $this->validate(array(
-                        'adminpass' => $this->L('login/check/error2'),
+                        'adminpass' => L('login/check/error2'),
                     ));
                 }
             } else {
@@ -1297,7 +1321,7 @@ class LazySystem extends LazyCMS{
                 $db->insert('#@_log',$row);
                 // 用户名不存在，登录失败
                 $this->validate(array(
-                    'adminname' => $this->L('login/check/error1'),
+                    'adminname' => L('login/check/error1'),
                 ));
             }
         }

@@ -251,7 +251,7 @@
         </list>
         <label>
             <name>模型名称</name>
-            <maintable>主索引表</maintable>
+            <maintable>主索引表 (索引表不存在时，自动创建)</maintable>
             <ename>模型标识 (字母、数字、下划线；添加后不可修改)</ename>
             <fieldset>字段配置</fieldset>
             <fieldtip><![CDATA[添加模型后，点击 <img src="{$root}/system/images/os/fields.gif" class="os"/> 图标进行字段管理]]></fieldtip>
@@ -261,6 +261,7 @@
             <name>模型名称不能为空</name>
             <ename>模型标识不能为空</ename>
             <ename1>只允许输入：字母、数字、下划线</ename1>
+			<table>{$table} 表不能作为主索引表</table>
         </check>
         <pop>
             <select>请选择一个模型</select>

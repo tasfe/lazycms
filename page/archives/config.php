@@ -30,6 +30,7 @@ return array (
   'ADD_TOP' => false, // 添加文档，默认是否置顶
   'ADD_SNAPIMG' => true, // 添加文档，默认是否下载远程图片
   'ADD_UPSORT' => true, // 添加文档，默认是否更新列表
+  'ADD_UPHOME' => true, // 添加文档，默认是否更新首页
   'ADD_CHECKTITLE' => true, // 添加文档，默认是否检查重复标题
 );
 ?>

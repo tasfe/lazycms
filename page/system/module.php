@@ -43,10 +43,10 @@ class System{
     // showTables *** *** www.LazyCMS.net *** ***
     static function showTables($l1=null){
         $db  = getConn(); $I1 = null;
-        $res = $db->query("SHOW TABLES LIKE '%archives%'");
+        $res = mysql_list_tables($db->getDataBase(),$db->getConnect());
         while ($data = $db->fetch($res,0)) {
-            $selected = ((string)$l1==(string)$data[0]) ? ' selected="selected"' : null;
-            $I1 .= '<option value="'.$data[0].'"'.$selected.'>'.$data[0].'</option>';
+            $selected = ((string)$l1==str_replace(C('DSN_PREFIX'),'#@_',(string)$data[0])) ? ' selected="selected"' : null;
+            $I1 .= '<option value="'.str_replace(C('DSN_PREFIX'),'#@_',$data[0]).'"'.$selected.'>'.$data[0].'</option>';
         }
         return $I1;
     }
@@ -102,16 +102,15 @@ class System{
         // Model Value
         $data[0] = $XPath->evaluate("//lazycms/model/modelname")->item(0)->nodeValue;
         $data[1] = $XPath->evaluate("//lazycms/model/modelename")->item(0)->nodeValue;
-        $data[2] = C('DSN_PREFIX').$XPath->evaluate("//lazycms/model/maintable")->item(0)->nodeValue;
-        $data[3] = C('DSN_PREFIX').$XPath->evaluate("//lazycms/model/addtable")->item(0)->nodeValue;
+        $data[2] = '#@_'.$XPath->evaluate("//lazycms/model/maintable")->item(0)->nodeValue;
+        $data[3] = '#@_'.$XPath->evaluate("//lazycms/model/addtable")->item(0)->nodeValue;
         $data[4] = $XPath->evaluate("//lazycms/model/modelstate")->item(0)->nodeValue;
-		if (!$isDeleteTable) {
-			$res = $db->query("SHOW TABLES LIKE '".$data[3]."'");
-			if ($db->fetch($res,0)) {
-				$salt = salt(4);
+        if (!$isDeleteTable) {
+            if ($db->isTable($data[3])) {
+                $salt = salt(4);
 				$data[1].= '_'.$salt;
 				$data[3].= '_'.$salt;
-			}
+            }
 		}
         // Insert model
         $row = array(
@@ -231,6 +230,8 @@ class System{
               `path` varchar(255) NOT NULL,                 # 路径
               `date` int(11) NOT NULL,                      # 发布时间
 			  `hits` int(11) NOT NULL default '0',			# 浏览次数
+              `keywords` varchar(255),                      # 关键词
+              `description` varchar(255),                   # 简述
               PRIMARY KEY  (`id`),
               UNIQUE KEY `path` (`path`),
               KEY `sortid` (`sortid`),

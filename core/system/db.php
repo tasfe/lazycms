@@ -41,12 +41,6 @@ abstract class DB extends Lazy{
     // connect *** *** www.LazyCMS.net *** ***
     abstract public function connect();
 
-    // getConnect *** *** www.LazyCMS.net *** ***
-    abstract public function getConnect();
-    
-    // getSQL *** *** www.LazyCMS.net *** ***
-    abstract public function getSQL();
-
     // query *** *** www.LazyCMS.net *** ***
     abstract public function query($sql,$bind=null);
 
@@ -118,6 +112,15 @@ abstract class DB extends Lazy{
         return $config;
     }
 
+    // getDataBase *** *** www.LazyCMS.net *** ***
+    public function getDataBase(){
+        return $this->config('name');
+    }
+    // getSQL *** *** www.LazyCMS.net *** ***
+    public function getSQL(){
+        return $this->_sql;
+    }
+
     /* Insert */
     
     // insert *** *** www.LazyCMS.net *** ***
@@ -169,7 +172,18 @@ abstract class DB extends Lazy{
         $this->exec($sql);
         return mysql_affected_rows($this->_conn);
     }
-
+    //copy *** *** www.LazyCMS.net *** ***
+    public function copy($l1,$l2){
+        $res = $this->query("SHOW CREATE TABLE `{$l1}`");
+        if ($data = $this->fetch($res,0)) {
+            $sql = $data[1];
+            $sql = preg_replace('/^(CREATE TABLE) `'.preg_quote($data[0],'/').'` (\()/i', '$1 IF NOT EXISTS `'.$l2.'` $2', $sql);
+            $this->exec($sql);
+            return true;
+        } else {
+            return false;
+        }
+    }
     // whereExpr *** *** www.LazyCMS.net *** ***
     public function whereExpr($l1) {
         if (empty($l1)) {

@@ -28,6 +28,15 @@ defined('CORE_PATH') or die('Restricted access!');
  * @author      Lukin <mylukin@gmail.com>
  */
 class Onepage{
+    // updateIndex *** *** www.LazyCMS.net *** ***
+    static function updateIndex(){
+        $db  = getConn();
+        $res = $db->query("SELECT `oneid` FROM `#@_onepage` WHERE `ishome` = '1'");
+        if ($data = $db->fetch($res,0)) {
+            self::create($data[0]);
+        }
+        unset($db);
+    }
     // index *** *** www.LazyCMS.net *** ***
     static function index(){
         $db  = getConn();
