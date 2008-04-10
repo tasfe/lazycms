@@ -226,7 +226,7 @@ class Archives{
                 $tag->value('path',encode(self::showArchive($data['id'],$_model)));
                 $tag->value('image',encode($data['img']));
                 $tag->value('date',$data['date']);
-                $tag->value('zebra',fmod($zebra,$i) ? 1 : 0);
+                $tag->value('zebra',($i % ($zebra+1)) ? 0 : 1);
 
                 foreach ($fields as $k) {
                     $tag->value($k,encode($data[$k]));
@@ -614,7 +614,7 @@ class Archives{
 				$tag->value('path',encode(self::showArchive($data['id'],self::getModel($data['sortid']))));
 				$tag->value('image',encode($data['img']));
 				$tag->value('date',$data['date']);
-				$tag->value('zebra',fmod($zebra,$i) ? 1 : 0);
+				$tag->value('zebra',($i % ($zebra+1)) ? 0 : 1);
 				$tag->value('++',$i);
 				foreach ($fields as $k) {
 					$tag->value($k,encode($data[$k]));
