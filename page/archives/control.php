@@ -99,6 +99,8 @@ class LazyArchives extends LazyCMS{
             'sortname' => $this->check("sortname|1|".$this->L('check/sortname')."|1-50"),
             'sortpath' => $this->check("sortpath|1|".$this->L('check/path')."|1-100;sortpath|4|".$this->L('check/path1').";sortpath|3|".$this->L('check/path2')."|SELECT COUNT(`sortid`) FROM `#@_sort` WHERE `sortpath`='#pro#'".(isset($sortpath) ? $sortpath : '')),
             'modelid'  => empty($sortid) ? $this->check("modelid|0|".L("error/nomodels")) : null,
+            'keywords' => !empty($data[4]) ? $this->check("keywords|1|".$this->L('check/keywords')."|1-250") : null,
+            'description' => !empty($data[5]) ? $this->check("description|1|".$this->L('check/description')."|1-250") : null,
         ));
         if ($this->method()) {
             if ($this->validate()) {
@@ -117,7 +119,6 @@ class LazyArchives extends LazyCMS{
                         'pagetemplate2' => $data[9],
                     );
                     $db->insert('#@_sort',$row);
-                    //$sortid = $db->lastInsertId();
                 } else { // update
                     $set = array(
                         'sortid1'       => $data[0],
@@ -357,6 +358,8 @@ class LazyArchives extends LazyCMS{
         $date  = isset($_POST['date'])  ? $_POST['date'] : null;
         $setimg = isset($_POST['setimg'])  ? $_POST['setimg'] : null;
         $pathtype = isset($_POST['pathtype']) ? $_POST['pathtype'] : null;
+        $keywords = isset($_POST['keywords'])  ? $_POST['keywords'] : null;
+        $description = isset($_POST['description'])  ? $_POST['description'] : null;
         
         $sortNum  = $db->result("SELECT count(`sortid`) FROM `#@_sort` WHERE 1;");if ((int)$sortNum==0) { throwError(L('error/nosort')); }
         $sortid   = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : (int)Archives::getTopSortId();
@@ -395,19 +398,22 @@ class LazyArchives extends LazyCMS{
             'title' => $cktitle,
             'path'  => $checkpath,
             'date'  => $this->check("date|0|".$this->L('check/date').";date|validate|".$this->L('check/date1')."|8"),
+            'keywords' => !empty($keywords) ? $this->check("keywords|1|".$this->L('check/keywords')."|1-250") : null,
+            'description' => !empty($description) ? $this->check("description|1|".$this->L('check/description')."|1-250") : null,
         ));
 
         $label = O('Label');
         $where = $db->quoteInto('WHERE `modelid` = ?',$model['modelid']);
         $label->create("SELECT * FROM `#@_fields` {$where} ORDER BY `fieldorder` ASC, `fieldid` ASC;");
-        $formData  = array(); $fieldData = array(); $vsetimg = false; $downPic = null;
+        $formData  = array(); $fieldData = array(); $vsetimg = false; $downPic = null; $isEditor = true;
         while ($data = $label->result()) {
             $fieldData[$data['fieldename']] = $data;
             $formData[$data['fieldename']]  = isset($_POST[$data['fieldename']]) ? $_POST[$data['fieldename']] : null;
             if (is_array($formData[$data['fieldename']])) {
                 $formData[$data['fieldename']] = implode(',',$formData[$data['fieldename']]);
             }
-            if ($data['inputtype']=='editor') {
+            // 只对第一个editor进行处理，其他的不进行处理
+            if ($data['inputtype']=='editor' && $isEditor) {
                 // 全部验证成功，进行抓图处理
                 if ($this->method() && $this->validate()) {
                     // 远程抓图
@@ -420,10 +426,16 @@ class LazyArchives extends LazyCMS{
                             $downPic = replace('/'.preg_quote(C('SITE_BASE'),'/').'/i','',downPic($imgInfo[1]),1);
                         }
                     }
+                    // 自动截取简述
+                    $content = clearHTML($formData[$data['fieldename']]);
+                    if (empty($description)) {
+                        $description = lefte($content,250);
+                    }
                 }
                 if (!$vsetimg) {
                     $vsetimg = true;
                 }
+                $isEditor = false;
             }
         }
         if ($this->method()) {
@@ -432,6 +444,11 @@ class LazyArchives extends LazyCMS{
                 if ($path=='MD5') {
                     $path = md5(salt(10).$maxid).C('HTML_URL_SUFFIX');
                 }
+                if (empty($keywords)) {
+					$keywords = $this->keys($title);
+				} else {
+					$keywords = $this->keys(null,$keywords);
+				}
                 if (empty($aid)) { // insert
                     $row = array(
                         'order'   => (int)$maxid,
@@ -443,8 +460,8 @@ class LazyArchives extends LazyCMS{
                         'img'     => (string)$img,
                         'path'    => (string)$path,
                         'date'    => (int)strtotime($date),
-                        //'keywords'=> (string)$keywords,
-                        //'description' => (string)$description,
+                        'keywords'=> (string)$keywords,
+                        'description' => (string)$description,
                     );
                     $db->insert($model['maintable'],$row);
                     $aid = $db->lastInsertId();
@@ -459,6 +476,8 @@ class LazyArchives extends LazyCMS{
                         'img'     => (string)$img,
                         'path'    => (string)$path,
                         'date'    => (int)strtotime($date),
+                        'keywords'=> (string)$keywords,
+                        'description' => (string)$description,
                     );
                     $where = $db->quoteInto('`id` = ?',$aid);
                     $db->update($model['maintable'],$set,$where);
@@ -493,6 +512,8 @@ class LazyArchives extends LazyCMS{
                     $img     = $data['img'];
                     $path    = $data['path'];
                     $date    = $data['date'];
+                    $keywords = $data['keywords'];
+                    $description = $data['description'];
                     $formData = Archives::getData($aid,$model['addtable']);
                 } else {
                     throwError(L('error/invalid'));
@@ -516,7 +537,7 @@ class LazyArchives extends LazyCMS{
         $tpl->assign(array(
             'aid'    => $aid,
             'sortid' => $sortid,
-            'title'  => $title,
+            'title'  => htmlencode($title),
             'img'    => $img,
             'setimg' => $vsetimg,
             'path'   => empty($aid) && empty($path) ? $this->L('common/pinyin') :$path,
@@ -527,6 +548,8 @@ class LazyArchives extends LazyCMS{
             'upsort'  => !empty($upsort) ? ' checked="checked"' : null,
             'uphome'  => !empty($uphome) ? ' checked="checked"' : null,
             'commend' => !empty($commend) ? ' checked="checked"' : null,
+            'keywords'=> htmlencode($keywords),
+            'description'=> htmlencode($description),
             'checktitle' => !empty($checktitle) ? ' checked="checked"' : null,
             'pathtype_id' => $maxid.C('HTML_URL_SUFFIX'),
             'pathtype_date' => date('Y/m/d/').$maxid,

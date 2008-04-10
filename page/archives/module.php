@@ -32,7 +32,7 @@ class Archives{
     static function Count($l1){
         $db = getConn();
         $model = self::getModel($l1);
-        return $db->count("SELECT * FROM `".$model['maintable']."` WHERE 1");
+        return $db->count("SELECT * FROM `".$model['maintable']."` WHERE `sortid`='{$l1}';");
     }
     // getTopSortId *** *** www.LazyCMS.net *** ***
     static function getTopSortId(){
@@ -174,13 +174,18 @@ class Archives{
         $HTML = $tag->read($model['sorttemplate1'],$model['sorttemplate2']);
         $HTMList = $tag->getList($HTML,$model['modelename'],1);
         $jsHTML  = $tag->getLabel($HTMList,0);
+        $jsType  = strtolower($tag->getLabel($HTMList,'type'));
         $jsOrder = $tag->getLabel($HTMList,'order');
         $jsOrder = strtoupper($jsOrder)=='ASC' ? 'ASC' : 'DESC';
         $jsNumber= floor($tag->getLabel($HTMList,'number'));
         $zebra   = $tag->getLabel($HTMList,'zebra');
         $rand    = chr(3).salt(20).chr(2);//随机出来的替换参数
         $randpl  = chr(3).salt(16).chr(2);
-		
+		if ($jsType=='sub') {
+            $sortids = self::getSubSortIds($sortid);
+        } else {
+            $sortids = $sortid;
+        }
         // 把 HTML 中的{lazy:...type=list/}标签替换为一个随机的标签；pagelist设置为一个随机标签
         $HTML = str_replace($HTMList,$rand,$HTML);
 
@@ -198,7 +203,7 @@ class Archives{
         
         $HTML = $tag->create($HTML,$tag->getValue());
 
-		$strSQL = "SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` WHERE `a`.`sortid` = '{$sortid}' AND `a`.`show` = 1 ORDER BY `a`.`top` DESC,`a`.`order` {$jsOrder},`a`.`sortid` {$jsOrder}";
+		$strSQL = "SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` WHERE `a`.`sortid` IN({$sortids}) AND `a`.`show` = 1 ORDER BY `a`.`top` DESC,`a`.`order` {$jsOrder},`a`.`sortid` {$jsOrder}";
 		$totalRows  = $db->count($strSQL);
 		$totalPages = ceil($totalRows/$jsNumber);
         $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
@@ -211,13 +216,14 @@ class Archives{
             $res = $db->query($strSQL);
             $i = 1;
             while ($data = $db->fetch($res)) {
+                $_model = self::getModel($data['sortid']);
                 $tag->clear();
                 $tag->value('id',$data['id']);
                 $tag->value('sortid',$data['sortid']);
-                $tag->value('sortname',encode(htmlencode($model['sortname'])));
-                $tag->value('sortpath',encode($path));
+                $tag->value('sortname',encode(htmlencode($_model['sortname'])));
+                $tag->value('sortpath',encode(self::showSort($data['sortid'])));
                 $tag->value('title',encode(htmlencode($data['title'])));
-                $tag->value('path',encode(self::showArchive($data['id'],$model)));
+                $tag->value('path',encode(self::showArchive($data['id'],$_model)));
                 $tag->value('image',encode($data['img']));
                 $tag->value('date',$data['date']);
                 $tag->value('zebra',fmod($zebra,$i) ? 1 : 0);
@@ -299,8 +305,12 @@ class Archives{
 	}
     // showArchive *** *** www.LazyCMS.net *** ***
     static function showArchive($l1,$l2,$l3=null){
+        if (is_numeric($l2)) {
+            $model = self::getModel($l2);
+        } else {
+            $model = $l2;
+        }
         $aid   = $l1;
-        $model = $l2;
         $db    = getConn();       
         $where = $db->quoteInto("WHERE `b`.`id` = ?",$aid);
         $res   = $db->query("SELECT `a`.`sortpath`,`b`.`path` FROM `#@_sort` AS `a` LEFT JOIN `".$model['maintable']."` AS `b` ON `a`.`sortid` = `b`.`sortid` {$where}");
@@ -349,6 +359,8 @@ class Archives{
 			$tag->value('sortpath',encode(self::showSort($sortid)));
 			$tag->value('image',encode($data['img']));
 			$tag->value('date',$data['date']);
+            $tag->value('keywords',encode(htmlencode($data['keywords'])));
+            $tag->value('description',encode(htmlencode($data['description'])));
 			$tag->value('guide',encode(self::guide($data['sortid'])." &gt;&gt; ".htmlencode($data['title'])));
 			$tag->value('hits',encode("<span class=\"lz_hits\"><script type=\"text/javascript\">\$('.lz_hits').html(loadgif()).load('".url('Archives','hits','sortid='.$sortid.'&id='.$data['id'])."');</script></span>"));
             $tag->value('lastpage',encode(self::lastPage($data,$model,$HTML)));
@@ -356,8 +368,8 @@ class Archives{
 			
 			$fields = self::getFields($model['modelid']);
             
-            // 有编辑器，动态模式，分页
-			$result = $db->query("SELECT * FROM `#@_fields` WHERE `modelid` ='".$model['modelid']."' AND `inputtype`='editor';");
+            // 有编辑器，动态模式，分页，只对第一个编辑器进行处理
+			$result = $db->query("SELECT * FROM `#@_fields` WHERE `modelid` ='".$model['modelid']."' AND `inputtype`='editor' ORDER BY `fieldorder` ASC, `fieldid` ASC;");
 			if ($field = $db->fetch($result)){
 				$contents = explode(C('WEB_BREAK'),$data[$field['fieldename']]);
 				$length   = count($contents);
@@ -511,7 +523,7 @@ class Archives{
         return t2js('<a href="javascript:;"'.$onclick.' id="dir'.$l1.'"><img src="'.C('SITE_BASE').C('PAGES_PATH').'/system/images/'.$state.'.gif" class="os" /></a>');
     }
     // tags *** *** www.LazyCMS.net *** ***
-    static function tags($tags){ 
+    static function tags($tags,$inValue){ 
 		$inSQL = null; $tmpList = null; $db = getConn();
 		$tagName = sect($tags,"(lazy\:)","( |\/|\}|\))");
 		// 根据tagName 取得modelid
@@ -536,11 +548,11 @@ class Archives{
 			if (validate($sortid,6) || instr('sub,current',$sortid)) {
 				switch (strtolower($sortid)){
 					case 'sub':
-						$sortid = $tag->getValue('sortid');
+						$sortid = $inValue['sortid'];
 						$sortid = self::getSubSortIds($sortid);
 						break;
 					case 'current':
-						$sortid = $tag->getValue('sortid');
+						$sortid = $inValue['sortid'];
 						break;
 				}
 				if (empty($sortid)) { $sortid = 0; }
@@ -556,6 +568,21 @@ class Archives{
 						LEFT JOIN `#@_sort` AS `s` ON `s`.`sortid` = `m`.`sortid` WHERE `s`.`modelid`='".$model['modelid']."' AND `m`.`show` = 1 ";
 
 			switch (strtolower($jsType)) {
+                case 'related':// 相关文章
+                    $key = $inValue['keywords'];
+                    $aid = $inValue['id'];
+                    $likey = likey("`m`.`keywords`",$key);
+                    if (strlen($likey) > 0) {
+                        $likey = " AND ({$likey})";
+                        if (validate($aid,2)) {
+                            $strSQL = $select.$inSQL.$likey." AND `m`.`id`<>{$aid} ORDER BY `m`.`order` DESC,`m`.`id` DESC";
+                        } else {
+                            $strSQL = $select.$inSQL.$likey." ORDER BY `m`.`order` DESC,`m`.`id` DESC";
+                        }
+                    } else {
+                        return ;
+                    }
+                    break;
 				case 'sql':// 自定义SQL
 					$jsSQL  = $tag->getLabel($HTMList,'sql');
 					$strSQL = $select.$jsSQL;
@@ -566,7 +593,7 @@ class Archives{
 				case 'hot':// 热门文章
 					$strSQL = $select.$inSQL." ORDER BY `m`.`hits` DESC ,`m`.`id` DESC";
 					break;
-				case 'chill':// 冷门文章
+				case 'chill': case 'cold':// 冷门文章
 					$strSQL = $select.$inSQL." ORDER BY `m`.`hits` ASC ,`m`.`id` ASC";
 					break;
 				default : // 最新文章
@@ -574,7 +601,7 @@ class Archives{
 					break;
 			}
 			$strSQL.= " LIMIT 0,{$jsNumber};";
-
+            
 			$rs = $db->query($strSQL);
 			$i  = 1;
 			while ($data = $db->fetch($rs)) {

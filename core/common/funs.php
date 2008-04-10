@@ -868,7 +868,7 @@ function getDir(){
     return substr($l2,strrpos($l2,'/')+1);
 }
 
-//clearCache *** *** www.LazyCMS.net *** ***
+// clearCache *** *** www.LazyCMS.net *** ***
 function clearCache(){
     header("Expires:".date("D,d M Y H:i:s",now()-60*10)." GMT");
     header("Last-Modified:".date("D,d M Y H:i:s")." GMT");
@@ -876,13 +876,13 @@ function clearCache(){
     header("Pragma:no-cache");
 }
 
-//clearHTML *** *** www.LazyCMS.net *** ***
+// clearHTML *** *** www.LazyCMS.net *** ***
 function clearHTML($l1){
-    if (strlen($l1)==0) { return ; }
+    if (strlen($l1)==0) { return ; } $l1 = replace('/\r\n|\n/',' ',$l1);
     return replace('/<script(.|\n)+?<\/script>|<style(.|\n)+?<\/style>|<[^>]*>/i','',$l1);
 }
 
-//getObject *** *** www.LazyCMS.net *** ***
+// getObject *** *** www.LazyCMS.net *** ***
 function getObject(){
     static $object = null;
     if (is_object($object)) { return $object; }
@@ -890,6 +890,19 @@ function getObject(){
     return $object;
 }
 
+// likey *** *** www.LazyCMS.net *** ***
+function likey($l1,$l2){
+    //$l1:字段名  $l2:值
+    $I1 = null; $I2 = explode(',',$l2);
+    foreach ($I2 as $l3) {
+        if (empty($I1)) {
+            $I1 = "binary ucase({$l1}) LIKE ucase('%{$l3}%')";
+        } else {
+            $I1 .= " OR binary ucase({$l1}) LIKE ucase('%{$l3}%')";
+        }
+    }
+    return $I1;
+}
 // getConn *** *** www.LazyCMS.net *** ***
 function getConn(){
     static $db = null;

@@ -39,6 +39,8 @@
             [<a href="javascript:;" onclick="$('#path').val('MD5');">MD5</a>]
         </p>
         <?php echo $module->outHTML;?>
+        <p><label><?php echo $module->L('label/archive/keywords');?></label><input class="in4" type="text" id="keywords" name="keywords" maxlength="255" value="<?php echo $keywords;?>" /></p>
+        <p><label><?php echo $module->L('label/archive/description');?></label><textarea name="description" id="description" rows="5" class="in4"><?php echo $description;?></textarea></p>
         <p><label><?php echo $module->L('label/archive/date');?></label><input class="in2 date-pick" type="text" id="date" name="date" value="<?php echo $date;?>" /></p>
         <input name="aid" type="hidden" value="<?php echo $aid;?>" />
         <?php if (!empty($aid)):?>

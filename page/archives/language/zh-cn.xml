@@ -44,8 +44,8 @@
         <sortname>分类名称</sortname>
         <sortpath>路径 (不支持特殊符号；不能以/开始或结束)</sortpath>
         <model>内容模型 (添加后不可修改)</model>
-        <keywords>Meta 关键词 (不填写自动补充，Max=255)</keywords>
-        <description>Meta 简述 (不填写自动补充，Max=255)</description>
+        <keywords>Meta 关键词 (Max=250)</keywords>
+        <description>Meta 简述 (Max=250)</description>
         <sorttemplate1>列表页外部模板</sorttemplate1>
         <sorttemplate2>列表页内部模板</sorttemplate2>
         <pagetemplate1>内容页外部模板</pagetemplate1>
@@ -65,6 +65,8 @@
             <img>缩略图 (若写远程路径，自动抓取图片保存到本地)</img>
             <setimg>设第一幅图为缩略图</setimg>
             <path>路径 (不支持特殊符号；不建议输入纯数字，以免覆盖列表)</path>
+			<keywords>Meta 关键词 (不填写自动补充，Max=250)</keywords>
+			<description>Meta 简述 (不填写自动补充，Max=250)</description>
             <date>发布日期</date>
         </archive>
         
@@ -79,6 +81,8 @@
         <title1>标题不能重复</title1>
         <date>发布日期不能为空</date>
         <date1>日期格式错误</date1>
+		<keywords>Meta 关键词 不能大于250个字符</keywords>
+		<description>Meta 简述 不能大于250个字符</description>
     </check>
     
     <pop>
