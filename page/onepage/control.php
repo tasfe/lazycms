@@ -152,7 +152,7 @@ class LazyOnepage extends LazyCMS{
                     $data[3] = L('error/rsnot');
                 }
                 if (empty($data[5])) {
-                    $data[5] = lefte($content,250);
+                    $data[5] = lefte($content,200);
                 }
 				if (empty($data[4])) {
 					$data[4] = $this->keys($data[0].$data[1].$data[3]);

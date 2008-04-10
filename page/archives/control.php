@@ -429,7 +429,7 @@ class LazyArchives extends LazyCMS{
                     // 自动截取简述
                     $content = clearHTML($formData[$data['fieldename']]);
                     if (empty($description)) {
-                        $description = lefte($content,250);
+                        $description = lefte($content,200);
                     }
                 }
                 if (!$vsetimg) {
