@@ -630,16 +630,6 @@ class Archives{
 		}
 		return $tmpList;
     }
-    // showTables *** *** www.LazyCMS.net *** ***
-    static function showTables($l1=null){
-        $db  = getConn(); $I1 = null;
-        $res = mysql_list_tables($db->getDataBase(),$db->getConnect());
-        while ($data = $db->fetch($res,0)) {
-            $selected = ((string)$l1==str_replace(C('DSN_PREFIX'),'#@_',(string)$data[0])) ? ' selected="selected"' : null;
-            $I1 .= '<option value="'.str_replace(C('DSN_PREFIX'),'#@_',$data[0]).'"'.$selected.'>'.$data[0].'</option>';
-        }
-        return $I1;
-    }
     // showTypes *** *** www.LazyCMS.net *** ***
     static function showTypes($l1=null){
         $I1 = null; $module = getObject();

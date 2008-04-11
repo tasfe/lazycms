@@ -40,7 +40,16 @@ class System{
         $tpl->path = LAZY_PATH.C('PAGES_PATH').'/system/template';
         $tpl->display('footer.php');
     }
-    
+    // showTables *** *** www.LazyCMS.net *** ***
+    static function showTables($l1=null){
+        $db  = getConn(); $I1 = null;
+        $res = mysql_list_tables($db->getDataBase(),$db->getConnect());
+        while ($data = $db->fetch($res,0)) {
+            $selected = ((string)$l1==str_replace(C('DSN_PREFIX'),'#@_',(string)$data[0])) ? ' selected="selected"' : null;
+            $I1 .= '<option value="'.str_replace(C('DSN_PREFIX'),'#@_',$data[0]).'"'.$selected.'>'.$data[0].'</option>';
+        }
+        return $I1;
+    }
     // filesPath *** *** www.LazyCMS.net *** ***
     static function filesPath($l1,$l2){
         $I1 = "<a href=\"javascript:Root();\" onclick=\"\$('#{$l2}').browseFiles('".url('System','browseFiles')."','/');return false;\">Root://</a>";

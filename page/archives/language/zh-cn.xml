@@ -9,6 +9,7 @@
 
     <common>
         <root>根目录</root>
+		<addtable>新建索引表</addtable>
         <addpage>添加文档</addpage>
         <editpage>编辑文档</editpage>
         <addsort>添加分类</addsort>

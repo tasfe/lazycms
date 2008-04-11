@@ -39,7 +39,6 @@ class LazyArchives extends LazyCMS{
                                     FROM `#@_sort` AS `s` 
                                     LEFT JOIN `#@_model` AS `m` ON `s`.`modelid` = `m`.`modelid`
                                     WHERE `s`.`sortid1`='0' 
-                                    GROUP BY `s`.`sortid` 
                                     ORDER BY `s`.`sortorder` DESC,`s`.`sortid` DESC");
         $dp->length = $db->count($dp->result);
         $button  = !C('SITE_MODE') ? '-|createsort:'.$this->L('common/createsort').'|createpage:'.$this->L('common/createpage').'|-|createall:'.$this->L('common/createall') : null;
@@ -225,7 +224,6 @@ class LazyArchives extends LazyCMS{
                                         FROM `#@_sort` AS `s` 
                                         LEFT JOIN `#@_model` AS `m` ON `s`.`modelid` = `m`.`modelid`
                                         WHERE `s`.`sortid1`='{$lists}' 
-                                        GROUP BY `s`.`sortid` 
                                         ORDER BY `s`.`sortorder` ASC,`s`.`sortid` ASC");
                 $array = array();
                 while ($data = $db->fetch($res)) {
@@ -601,7 +599,7 @@ class LazyArchives extends LazyCMS{
     }
     // _models *** *** www.LazyCMS.net *** ***
     function _models(){
-        $this->checker('models');
+        $this->checker(C('CURRENT_MODULE'));
         $db = getConn();
         $dp = O('Record');
         $dp->action = url(C('CURRENT_MODULE'),'ModelSet');
@@ -630,7 +628,7 @@ class LazyArchives extends LazyCMS{
     // _modelset *** *** www.LazyCMS.net *** ***
     function _modelset(){
         clearCache();
-        $this->checker('models',true);
+        $this->checker(C('CURRENT_MODULE'),true);
         $db     = getConn();
         $submit = isset($_POST['submit']) ? $_POST['submit'] : null;
         switch($submit){
@@ -654,9 +652,9 @@ class LazyArchives extends LazyCMS{
     }
     // _modelstate *** *** www.LazyCMS.net *** ***
     function _modelstate(){
-        $this->checker('models');
+        $this->checker(C('CURRENT_MODULE'));
         $modelid = isset($_GET['modelid']) ? (int)$_GET['modelid'] : null;
-        $state   = isset($_GET['state']) ? (string)$_GET['state'] : null;
+        $state   = isset($_GET['state']) ? (int)$_GET['state'] : null;
         $db  = getConn();
         $set = array(
             'modelstate' => $state,
@@ -668,7 +666,7 @@ class LazyArchives extends LazyCMS{
     // _modelexport *** *** www.LazyCMS.net *** ***
     function _modelexport(){
         clearCache();
-        $this->checker('models');
+        $this->checker(C('CURRENT_MODULE'));
         $db = getConn();
         $modelid = isset($_GET['modelid']) ? (int)$_GET['modelid'] : null;
         
@@ -683,11 +681,13 @@ class LazyArchives extends LazyCMS{
         } else {
             $modelName = 'Error';
         }
+        $fields = array();
         $res = $db->query("SELECT * FROM `#@_fields` WHERE `modelid`='{$modelid}' ORDER BY `fieldorder` ASC,`fieldid` ASC;");
         while ($data = $db->fetch($res)){
             unset($data['fieldid'],$data['modelid'],$data['fieldorder']);
-            $XML['fields'][] = $data;
+            $fields[] = $data;
         }
+        $XML['fields'] = $fields;
         ob_start();
         header("Content-type: application/octet-stream; charset=utf-8");
         header("Content-Disposition: attachment; filename=LazyCMS_".$modelName.".mod");
@@ -698,7 +698,7 @@ class LazyArchives extends LazyCMS{
     }
     // _modelleadin *** *** www.LazyCMS.net *** ***
     function _modelleadin(){
-        $this->checker('models');
+        $this->checker(C('CURRENT_MODULE'));
         $field = 'model';
         if ($this->method()) {
             $upload = O('UpLoadFile');
@@ -722,7 +722,7 @@ class LazyArchives extends LazyCMS{
     }
     // _modeledit *** *** www.LazyCMS.net *** ***
     function _modeledit(){
-        $this->checker('models');
+        $this->checker(C('CURRENT_MODULE'));
         $db      = getConn();
         $modelid = isset($_REQUEST['modelid']) ? (int)$_REQUEST['modelid'] : null;
         $sql     = "modelname,modelename,maintable";//2
@@ -813,7 +813,7 @@ class LazyArchives extends LazyCMS{
     }
     // _modelfields *** *** www.LazyCMS.net *** ***
     function _modelfields(){
-        $this->checker('models');
+        $this->checker(C('CURRENT_MODULE'));
         $db      = getConn();
         $modelid = isset($_REQUEST['modelid']) ? (int)$_REQUEST['modelid'] : null;
         $dp = O('Record');
@@ -840,7 +840,7 @@ class LazyArchives extends LazyCMS{
     }
     // _modelfieldindex *** *** www.LazyCMS.net *** ***
     function _modelfieldindex(){
-        $this->checker('models');
+        $this->checker(C('CURRENT_MODULE'));
         $fieldid = isset($_GET['fieldid']) ? (int)$_GET['fieldid'] : null;
         $modelid = isset($_GET['modelid']) ? (int)$_GET['modelid'] : null;
         $index   = isset($_GET['index']) ? (string)$_GET['index'] : null;
@@ -865,7 +865,7 @@ class LazyArchives extends LazyCMS{
     // _modelfieldset *** *** www.LazyCMS.net *** ***
     function _modelfieldset(){
         clearCache();
-        $this->checker('models',true);
+        $this->checker(C('CURRENT_MODULE'),true);
         $db      = getConn();
         $modelid = isset($_REQUEST['modelid']) ? (int)$_REQUEST['modelid'] : null;
         $submit  = isset($_POST['submit']) ? $_POST['submit'] : null;
@@ -907,7 +907,7 @@ class LazyArchives extends LazyCMS{
     }
     // _modelfieldsedit *** *** www.LazyCMS.net *** ***
     function _modelfieldsedit(){
-        $this->checker('models');
+        $this->checker(C('CURRENT_MODULE'));
         $db      = getConn();
         $modelid = isset($_REQUEST['modelid']) ? (int)$_REQUEST['modelid'] : null;
         $fieldid = isset($_REQUEST['fieldid']) ? (int)$_REQUEST['fieldid'] : null;

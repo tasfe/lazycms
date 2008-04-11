@@ -6,9 +6,9 @@
         <p><label><?php echo $module->L('models/label/name');?></label><input id="modelname" name="modelname" type="text" maxlength="50" class="in2" value="<?php echo $modelname;?>"/></p>
         <p><label><?php echo $module->L('models/label/maintable');?></label>
             <select name="maintable" id="maintable">
-                <?php echo Archives::showTables($maintable);?>
+                <?php echo System::showTables($maintable);?>
             </select>
-            <span><input name="create" type="checkbox" id="create" value="1" onclick="$(this).change2input('#maintable');" /><label for="create">新建索引表</label></span>
+            <span><input name="create" type="checkbox" id="create" value="1" onclick="$(this).change2input('#maintable');" /><label for="create"><?php echo $module->L('common/addtable');?></label></span>
         </p>
         <p><label><?php echo $module->L('models/label/ename');?></label><input id="modelename" name="modelename" type="text" maxlength="50" class="in3" value="<?php echo $modelename;?>"<?php echo $readonly;?>/></p>
         <?php if (empty($modelid)):?>

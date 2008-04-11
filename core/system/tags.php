@@ -261,14 +261,14 @@ class Tags extends Lazy{
         }
 
         // 内容加链接
-        $l5 = sect($l1,'link="','"');
+        $l5 = sect($l1,'key="','"');
         if (strlen($l5)>0) {
             $module = getObject();
             $keywords = $module->system['sitekeywords'];
             if (!empty($keywords)) {
                 $l5 = $this->createhtm($l5);
                 $keywords = str_replace(',','|',$keywords);
-                $I1 = preg_replace_callback("/([^<]{$keywords})/i",create_function('$l1','return "<a href=\"'.$l5.'".urlencode($l1[1])."\" target=\"_blank\">".$l1[1]."</a>";'),$I1);
+                $I1 = preg_replace_callback("/({$keywords})(?![^<]*<\/(a|b|strong|i|em)>)/i",create_function('$l1','return "<a href=\"'.$l5.'".urlencode($l1[0])."\" target=\"_blank\">".$l1[0]."</a>";'),$I1);
             }
         }
 

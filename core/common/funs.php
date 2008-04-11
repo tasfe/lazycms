@@ -734,7 +734,7 @@ function pagelist($l1,$l2,$l3,$l4){
 
 // sect *** *** www.LazyCMS.net *** ***
 function sect($l1,$l2,$l3,$l4=null){
-    $I1 = null;
+    $I1 = null; $l5 = null;
     if (empty($l1) || empty($l2) || empty($l3)) { return ;}
     if (substr($l2,0,1)==chr(40) && substr($l2,-1)==chr(41) && substr($l3,0,1)==chr(40) && substr($l3,-1)==chr(41)) {
         if (preg_match('/'.$l2.'((.|\n)+?)'.$l3.'/i',$l1,$I2)) {
@@ -755,6 +755,7 @@ function sect($l1,$l2,$l3,$l4=null){
     } else {
         $l5 = $l1; $l6 = $l2; $l7 = $l3;
     }
+    if (empty($l5)) { return ; }
     $l8 = strpos(strtolower($l5),strtolower($l6));
     if ($l8===false) {return ;}
     $l9 = strpos(strtolower(substr($l5,-(strlen($l5)-$l8-strlen($l6)))),strtolower($l7));
