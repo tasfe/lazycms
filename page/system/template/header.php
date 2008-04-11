@@ -26,7 +26,6 @@ $(function(){
         <a href="<?php echo url('System','Admin');?>">[<?php echo L('menu/admin');?>]</a> -
         <a href="<?php echo url('System','Config');?>">[<?php echo L('menu/config');?>]</a> -
         <a href="<?php echo url('System','Module');?>">[<?php echo L('menu/module');?>]</a> -
-        <a href="<?php echo url('System','Models');?>">[<?php echo L('menu/model');?>]</a> -
         <a href="<?php echo url('System','DiyMenu');?>">[<?php echo L('menu/diymenu');?>]</a> -
         <a href="<?php echo url('System','MyAccount');?>">[<?php echo L('menu/account');?>]</a> -
         <a href="<?php echo url('System','Logout');?>" target="_top" onclick="return confirm('<?php echo L('confirm/logout');?>');">[<?php echo L('login/out');?>]</a>

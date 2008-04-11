@@ -1,5 +1,5 @@
 <?php System::header();?>
-<?php echo menu($module->L('title').'|'.url(C('CURRENT_MODULE')).';'.$module->L('common/addsort').'|'.url(C('CURRENT_MODULE'),'EditSort').';'.$menu);?>
+<?php echo menu($module->L('title').'|'.url(C('CURRENT_MODULE')).';'.$module->L('models/@title').'|'.url(C('CURRENT_MODULE'),'Models').';'.$module->L('common/addsort').'|'.url(C('CURRENT_MODULE'),'EditSort').';'.$menu);?>
 <div class="content">
     <?php echo $module->outHTML;?>
 </div>

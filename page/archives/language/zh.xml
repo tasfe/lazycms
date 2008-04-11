@@ -92,4 +92,80 @@
         <loading>正在左下角生成，你可以進行其他操作。</loading>
     </pop>
 
+	<models title="模型管理">
+        <add>添加模型</add>
+        <edit>編輯模型</edit>
+		<leadin>導入模型</leadin>
+        <field title="字段管理">
+            <add>添加字段</add>
+            <edit>編輯字段</edit>
+            <list>
+                <id>ID</id>
+                <name>表單文字</name>
+                <ename>字段名</ename>
+                <type>輸入類型</type>
+                <length>最大長度</length>
+                <default>默認值</default>
+                <key>索引</key>
+                <action>操作</action>
+            </list>
+            <label>
+                <name>表單文字</name>
+                <ename>字段名 (索引字段，不能修改字段名)</ename>
+                <type>輸入類型</type>
+                <length>最大長度</length>
+                <default>默認值 (日期選擇器可使用 date('Y-m-d',time()) 函數)</default>
+                <key>索引</key>
+                <value>值 (例：name:value)</value>
+            </label>
+            <check>
+                <name>表單文字不能為空</name>
+                <ename>字段名不能為空</ename>
+                <ename1>只允許輸入：字母、數字、下劃線</ename1>
+                <length>必須填寫最大長度</length>
+                <length1>必須為整數，請重新輸入</length1>
+                <value>值不能為空</value>
+            </check>
+            <type>
+                <input>輸入框</input>
+                <textarea>文本框</textarea>
+                <select>下拉菜單</select>
+                <radio>單選框</radio>
+                <checkbox>復選框</checkbox>
+                <basic>簡易編輯器</basic>
+                <editor>內容編輯器</editor>
+                <date>日期選擇器</date>
+                <upfile>文件上傳框</upfile>
+            </type>
+        </field>
+        <list>
+            <id>ID</id>
+            <name>模型名稱</name>
+            <ename>模型標識</ename>
+            <addtable>附加表</addtable>
+            <state>狀態</state>
+            <action>操作</action>
+        </list>
+        <label>
+            <name>模型名稱</name>
+            <maintable>主索引表 (索引表不存在時，自動創建)</maintable>
+            <ename>模型標識 (字母、數字、下劃線；添加後不可修改)</ename>
+            <fieldset>字段配置</fieldset>
+            <fieldtip><![CDATA[添加模型後，點擊 <img src="{$root}/system/images/os/fields.gif" class="os"/> 圖標進行字段管理]]></fieldtip>
+			<leadin>請選擇模型文件 (mod格式文件)</leadin>
+        </label>
+        <check>
+            <name>模型名稱不能為空</name>
+            <ename>模型標識不能為空</ename>
+            <ename1>只允許輸入：字母、數字、下劃線</ename1>
+			<table>{$table} 表不能作為主索引表</table>
+        </check>
+        <pop>
+            <select>請選擇一個模型</select>
+            <deleteok>成功刪除您選擇的模型</deleteok>
+            <deletefieldok>成功刪除您選擇的字段</deletefieldok>
+            <deletefielderr>數據庫字段可能已經被刪除</deletefielderr>
+        </pop>
+    </models>
+
 </lazycms>

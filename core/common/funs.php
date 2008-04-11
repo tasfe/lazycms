@@ -571,15 +571,7 @@ function url($l1=null,$l2=null,$l3=null){
     if (!C('SITE_MODE') && $I2!=URL_REWRITE) { // 静态模式
         // 默认静态模式，静态模式 动态url从 page/index.php开始
         // 设置基础路径 C('PAGES_PATH')
-        $l8 = getDir();
-        if ($l8!=C('PAGES_PATH') && $l8!=C('ADMIN_PATH')) {
-            $l5 .= C('PAGES_PATH').'/';
-        } else {
-            $l5 .= $l8.'/';
-        }
-    } else { // 动态模式
-        // 动态模式 路径url从网站目录的index.php开始
-        // 设置基础路径
+        $l5 .= C('PAGES_PATH').'/';
     }
     // URL_REWRITE 模式不增加 index.php
     if ($I2==URL_PATHINFO || $I2==URL_COMMON) {
@@ -589,7 +581,11 @@ function url($l1=null,$l2=null,$l3=null){
     if ($I2==URL_COMMON) {
         $I1 = $l5.'?';
     } elseif ($I2==URL_PATHINFO) {
-        $I1 = $l5.$I3;
+        if (!IS_APACHE && IS_IIS) {
+            $I1 = $l5.'?'.$I3;
+        } else {
+            $I1 = $l5.$I3;
+        }
     } elseif ($I2==URL_REWRITE) {
         $I1 = $l5;
     }

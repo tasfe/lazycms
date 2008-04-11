@@ -21,5 +21,5 @@
  * +---------------------------------------------------------------------------+
  */
 define('LAZY_PATH', '../'); define('CORE_PATH', dirname(__FILE__).'/../core');
-require CORE_PATH."/LazyCMS.php"; LazyCMS::run('System','NoAccess');
+require CORE_PATH."/LazyCMS.php"; LazyCMS::run('System','Sysinfo');
 ?>

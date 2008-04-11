@@ -64,7 +64,7 @@ return array(
     'MODEL_PREFIX' => 'add',
 
     /* URL模式: URL_COMMON,URL_PATHINFO,URL_REWRITE */
-    'URL_MODEL' => URL_COMMON,   // 默认为 URL_COMMON 模式
+    'URL_MODEL' => URL_PATHINFO,   // 默认为 URL_COMMON 模式
     'PATH_DEPR' => '/',          // PATHINFO参数之间分割号
     'ROUTER_ON' => true,         // 启用路由判断
     
@@ -75,7 +75,6 @@ return array(
     'VAR_ROUTER' => 'r',         // 默认路由获取变量
     
     /* 系统目录设置 */
-    'ADMIN_PATH' => 'admin', // 管理目录
     'PAGES_PATH' => 'page',  // 前台目录
 
     /* dubug模式 */
@@ -86,7 +85,7 @@ return array(
     'DEFAULT_ACTION' => 'Index', // 默认操作名称
 
     /* 静态缓存设置 */
-    'HTML_URL_SUFFIX' => '.htm',  // 伪静态后缀设置 or 生成文件的后缀
+    'HTML_URL_SUFFIX' => '.html',  // 伪静态后缀设置 or 生成文件的后缀
 
     /* Cookie设置 */
     'COOKIE_DOMAIN' => '',      // Cookie有效域名

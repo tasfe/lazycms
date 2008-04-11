@@ -29,8 +29,10 @@ defined('CORE_PATH') or die('Restricted access!');
  */
 
 // 系统信息
-define('PHP_SAPI_NAME'  ,php_sapi_name());
-define('IS_CGI'         ,strncmp(PHP_SAPI_NAME,'cgi',3)==0 ? 1 : 0 );
+define('PHP_SAPI_NAME',php_sapi_name());
+define('IS_APACHE',strstr($_SERVER['SERVER_SOFTWARE'], 'Apache') || strstr($_SERVER['SERVER_SOFTWARE'], 'LiteSpeed') );
+define('IS_CGI',strncmp(PHP_SAPI_NAME,'cgi',3)==0 ? 1 : 0 );
+define('IS_IIS',PHP_SAPI_NAME =='isapi' ? 1 : 0);
 
 // 当前文件名
 if (!defined('PHP_FILE')) {
@@ -54,5 +56,5 @@ define('VENDOR_PATH',CORE_PATH.'/vendor');
 // 为了方便导入第三方类库 设置vendor目录到include_path
 set_include_path(get_include_path() . PATH_SEPARATOR . VENDOR_PATH);
 
-define('LAZY_VERSION','1.1.0.0408');
+define('LAZY_VERSION','1.1.0.0410');
 ?>

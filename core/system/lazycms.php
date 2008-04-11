@@ -52,7 +52,10 @@ abstract class LazyCMS extends Lazy{
         } else {
             $tpl = O('Template');
             $tpl->path = LAZY_PATH.C('PAGES_PATH').'/system/template';
-            $tpl->assign('Message',$err->getMessage());
+            $tpl->assign(array(
+                'title' => L('error/system'),
+                'Message' => $err->getMessage(),
+            ));
             $tpl->display('error.php');
         }
     }
@@ -83,10 +86,11 @@ abstract class LazyCMS extends Lazy{
         }
 
         // 取得真实的 PATH_INFO
-        if (!empty($_SERVER['PATH_INFO'])) {
+        if (!empty($_SERVER['PATH_INFO']) || !empty($_SERVER['QUERY_STRING'])) {
             if(C('HTML_URL_SUFFIX')) {
                 $suffix = substr(C('HTML_URL_SUFFIX'),1);
                 $_SERVER['PATH_INFO'] = preg_replace('/\.'.$suffix.'$/','',$_SERVER['PATH_INFO']);
+                $_SERVER['QUERY_STRING'] = preg_replace('/\.'.$suffix.'$/','',$_SERVER['QUERY_STRING']);
             }
         }
         

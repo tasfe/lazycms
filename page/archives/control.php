@@ -599,6 +599,419 @@ class LazyArchives extends LazyCMS{
                 break;
         }
     }
+    // _models *** *** www.LazyCMS.net *** ***
+    function _models(){
+        $this->checker('models');
+        $db = getConn();
+        $dp = O('Record');
+        $dp->action = url(C('CURRENT_MODULE'),'ModelSet');
+        $dp->result = $db->query("SELECT * FROM `#@_model` WHERE 1 ORDER BY `modelid` ASC;");
+        $dp->length = $db->count($dp->result);
+        $dp->but = $dp->button();
+        $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"".url(C('CURRENT_MODULE'),'ModelFields','modelid=$',"' + K[0] + '")."\">' + K[1] + '</a>'";
+        $dp->td  = 'K[2]';
+        $dp->td  = 'K[3]';
+        $dp->td  = "state(K[4],'".url(C('CURRENT_MODULE'),'ModelState','modelid=$&state=1',"' + K[0] + '")."','".url(C('CURRENT_MODULE'),'ModelState','modelid=$&state=0',"' + K[0] + '")."')";
+        $dp->td  = "ico('edit','".url(C('CURRENT_MODULE'),'ModelEdit','modelid=$',"' + K[0] + '")."') + ico('export','".url(C('CURRENT_MODULE'),'ModelExport','modelid=$',"' + K[0] + '")."') + ico('fields','".url(C('CURRENT_MODULE'),'ModelFields','modelid=$',"' + K[0] + '")."')";
+        $dp->open();
+        $dp->thead = '<tr><th>'.$this->L('models/list/id').') '.$this->L('models/list/name').'</th><th>'.$this->L('models/list/ename').'</th><th>'.$this->L('models/list/addtable').'</th><th>'.$this->L('models/list/state').'</th><th>'.$this->L('models/list/action').'</th></tr>';
+        
+        while ($data = $dp->result()) {
+            $dp->tbody = "ll(".$data['modelid'].",'".t2js(htmlencode($data['modelname']))."','".t2js(htmlencode($data['modelename']))."','".htmlencode(str_replace('#@_',C('DSN_PREFIX'),$data['addtable']))."',".$data['modelstate'].");";
+        }
+        $dp->close();
+
+        $this->outHTML = $dp->fetch;
+
+        $tpl = getTpl($this);
+        $tpl->assign('menu',$this->L('models/@title').'|#|true;'.$this->L('models/add').'|'.url(C('CURRENT_MODULE'),'ModelEdit').';'.$this->L('models/leadin').'|'.url(C('CURRENT_MODULE'),'ModelLeadIn'));
+        $tpl->display('__public.php');
+    }
+    // _modelset *** *** www.LazyCMS.net *** ***
+    function _modelset(){
+        clearCache();
+        $this->checker('models',true);
+        $db     = getConn();
+        $submit = isset($_POST['submit']) ? $_POST['submit'] : null;
+        switch($submit){
+            case 'delete' :
+                $lists = isset($_POST['lists']) ? $_POST['lists'] : null;
+                if (empty($lists)) {
+                    $this->poping($this->L('models/pop/select'),0);
+                }
+                $res = $db->query("SELECT `addtable` FROM `#@_model` WHERE `modelid` IN({$lists})");
+                while ($data = $db->fetch($res,0)){
+                    $db->exec("DROP TABLE IF EXISTS `".$data[0]."`;");
+                }
+                $db->exec("DELETE FROM `#@_fields` WHERE `modelid` IN({$lists});");
+                $db->exec("DELETE FROM `#@_model` WHERE `modelid` IN({$lists});");
+                $this->poping($this->L('models/pop/deleteok'),1);
+                break;
+            default :
+                $this->poping(L('error/invalid'),0);
+                break;
+        }
+    }
+    // _modelstate *** *** www.LazyCMS.net *** ***
+    function _modelstate(){
+        $this->checker('models');
+        $modelid = isset($_GET['modelid']) ? (int)$_GET['modelid'] : null;
+        $state   = isset($_GET['state']) ? (string)$_GET['state'] : null;
+        $db  = getConn();
+        $set = array(
+            'modelstate' => $state,
+        );
+        $where = $db->quoteInto('`modelid` = ?',$modelid);
+        $db->update('#@_model',$set,$where);
+        redirect($_SERVER['HTTP_REFERER']);
+    }
+    // _modelexport *** *** www.LazyCMS.net *** ***
+    function _modelexport(){
+        clearCache();
+        $this->checker('models');
+        $db = getConn();
+        $modelid = isset($_GET['modelid']) ? (int)$_GET['modelid'] : null;
+        
+        $XML = array();
+        $res = $db->query("SELECT * FROM `#@_model` WHERE `modelid`='{$modelid}';");
+        if ($data = $db->fetch($res)) {
+            unset($data['modelid']);
+            $modelName = $data['modelename'];
+			$data['maintable'] = str_replace('#@_','',$data['maintable']);
+			$data['addtable']  = str_replace('#@_','',$data['addtable']);
+            $XML['model']      = $data;
+        } else {
+            $modelName = 'Error';
+        }
+        $res = $db->query("SELECT * FROM `#@_fields` WHERE `modelid`='{$modelid}' ORDER BY `fieldorder` ASC,`fieldid` ASC;");
+        while ($data = $db->fetch($res)){
+            unset($data['fieldid'],$data['modelid'],$data['fieldorder']);
+            $XML['fields'][] = $data;
+        }
+        ob_start();
+        header("Content-type: application/octet-stream; charset=utf-8");
+        header("Content-Disposition: attachment; filename=LazyCMS_".$modelName.".mod");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        echo xmlcode($XML);
+        ob_flush();
+    }
+    // _modelleadin *** *** www.LazyCMS.net *** ***
+    function _modelleadin(){
+        $this->checker('models');
+        $field = 'model';
+        if ($this->method()) {
+            $upload = O('UpLoadFile');
+            $upload->allowExts = "mod";
+            $upload->maxSize   = 500*1024;//500K
+			$folder = LAZY_PATH.C('UPFILE_PATH');mkdirs($folder);
+            if ($file = $upload->save($field,$folder.'/'.basename($_FILES[$field]['name']))) {
+                $modelCode = loadFile($file['path']); @unlink($file['path']);
+                if (!empty($modelCode)) {
+                    Archives::installModel($modelCode);
+                }
+                redirect(url(C('CURRENT_MODULE'),'Models'));
+            } else {
+                $this->validate(array(
+                    $field => $upload->getError(),
+                ));
+            }
+        }
+        $tpl = getTpl($this);
+        $tpl->display('modelleadin.php');
+    }
+    // _modeledit *** *** www.LazyCMS.net *** ***
+    function _modeledit(){
+        $this->checker('models');
+        $db      = getConn();
+        $modelid = isset($_REQUEST['modelid']) ? (int)$_REQUEST['modelid'] : null;
+        $sql     = "modelname,modelename,maintable";//2
+        foreach (explode(',',$sql) as $val) {
+            $data[]= isset($_POST[$val]) ? $_POST[$val] : null;
+        }
+        if (empty($modelid)) {
+            $menu = $this->L('models/add').'|#|true';
+        } else {
+            $menu = $this->L('models/add').'|'.url(C('CURRENT_MODULE'),'ModelEdit').';'.$this->L('models/edit').'|#|true';
+        }
+        // 验证表是否可以作为索引表
+        $isValdate = 'true';
+        if ($this->method() && strtolower($data[2])!='#@_archives') {
+            // 表不存在的时候，自动拷贝 #@_archives 创建新表
+            if (!$db->isTable($data[2])) {
+                $db->copy('#@_archives',$data[2]);
+            }
+            $fields = array();
+            $res = mysql_list_fields($db->getDataBase(),str_replace('#@_',C('DSN_PREFIX'),$data[2]),$db->getConnect());
+            $col = mysql_num_fields($res);
+            for ($i = 0; $i < $col; $i++) {
+                $fields[0][] = mysql_field_name($res, $i);
+            }
+            $res = mysql_list_fields($db->getDataBase(),C('DSN_PREFIX').'archives',$db->getConnect());
+            $col = mysql_num_fields($res);
+            for ($i = 0; $i < $col; $i++) {
+                $fields[1][] = mysql_field_name($res, $i);
+            }
+            if ($fields[1]!==$fields[0]) {
+                $isValdate = 'false';
+            }    
+        }
+        
+        $this->validate(array(
+            'modelname'  => $this->check('modelname|1|'.$this->L('models/check/name').'|1-50'),
+            'maintable'  => $this->check('maintable|5|'.$this->L('models/check/table',array('table'=>str_replace('#@_',C('DSN_PREFIX'),$data[2]))).'|'.$isValdate),
+            'modelename' => $this->check('modelename|1|'.$this->L('models/check/ename').'|1-50;modelename|validate|'.$this->L('models/check/ename1').'|^[A-Za-z0-9\_]+$'),
+        ));
+
+        if ($this->method()) {
+            if ($this->validate()) {
+                if(empty($modelid)){//insert
+                    $row = array(
+                        'modelname'  => $data[0],
+                        'modelename' => $data[1],
+                        'maintable'  => $data[2],
+                        'addtable'   => '#@_'.C('MODEL_PREFIX').$data[1],
+                    );
+                    $db->insert('#@_model',$row);
+                    // 删除已存在的表
+                    $db->exec("DROP TABLE IF EXISTS `#@_".C('MODEL_PREFIX').$data[1]."`;");
+                    // 创建新表
+                    $db->exec("CREATE TABLE IF NOT EXISTS `#@_".C('MODEL_PREFIX').$data[1]."` (
+                                `aid` int(11) NOT NULL,
+                                PRIMARY KEY (`aid`)
+                               ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");
+                } else {//update
+                    $set = array(
+                        'modelname'  => $data[0],
+                        'maintable'  => $data[2],
+                    );
+                    $where = $db->quoteInto('`modelid` = ?',$modelid);
+                    $db->update('#@_model',$set,$where);
+                }
+                redirect(url(C('CURRENT_MODULE'),'Models'));
+            }
+        } else {
+            if (!empty($modelid)) {
+                $where = $db->quoteInto('WHERE `modelid` = ?',$modelid);
+                $res   = $db->query("SELECT {$sql} FROM `#@_model` {$where};");
+                if (!$data = $db->fetch($res,0)) {
+                    throwError(L('error/invalid'));
+                }    
+            }
+        }
+
+        $tpl = getTpl($this);
+        $tpl->assign(array(
+            'modelid'    => $modelid,
+            'modelname'  => htmlencode($data[0]),
+            'modelename' => htmlencode($data[1]),
+            'maintable'  => !empty($data[2]) ? $data[2] : '#@_archives',
+            'menu'       => $menu,
+            'readonly'   => !empty($modelid) ? ' readonly="true"' : null,
+        ));
+        $tpl->display('modeledit.php');
+    }
+    // _modelfields *** *** www.LazyCMS.net *** ***
+    function _modelfields(){
+        $this->checker('models');
+        $db      = getConn();
+        $modelid = isset($_REQUEST['modelid']) ? (int)$_REQUEST['modelid'] : null;
+        $dp = O('Record');
+        $dp->action = url(C('CURRENT_MODULE'),'ModelFieldSet','modelid='.$modelid);
+        $dp->result = $db->query("SELECT * FROM `#@_fields` WHERE `modelid`='{$modelid}' ORDER BY `fieldorder` ASC, `fieldid` ASC;");
+        $dp->length = $db->count($dp->result);
+        $dp->but = $dp->button();
+        $dp->td  = "cklist(K[0]) + '<a href=\"".url(C('CURRENT_MODULE'),'ModelFieldsEdit','modelid=:modelid&fieldid=:fieldid',array('modelid'=>"'+K[7]+'",'fieldid'=>"'+K[0]+'"))."\">' + K[0] + ') ' + K[1] + '</a>'";
+        $dp->td  = "K[2]";
+        $dp->td  = "K[3] + (K[9]=='input' ? '(' + K[4] + ')' : '')";
+        $dp->td  = "(K[5]=='' ? 'NULL' : K[5])";
+        $dp->td  = "index(K[8],K[6],'".url(C('CURRENT_MODULE'),'ModelFieldIndex','modelid=:modelid&fieldid=:fieldid&index=0',array('modelid'=>"'+K[7]+'",'fieldid'=>"'+K[0]+'"))."','".url(C('CURRENT_MODULE'),'ModelFieldIndex','modelid=:modelid&fieldid=:fieldid&index=1',array('modelid'=>"'+K[7]+'",'fieldid'=>"'+K[0]+'"))."')";
+        $dp->td  = "ico('edit','".url(C('CURRENT_MODULE'),'ModelFieldsEdit','modelid=:modelid&fieldid=:fieldid',array('modelid'=>"'+K[7]+'",'fieldid'=>"'+K[0]+'"))."') + updown('up',K[0]) + updown('down',K[0])";
+        $dp->open();
+        $dp->thead = '<tr><th>'.$this->L('models/field/list/id').') '.$this->L('models/field/list/name').'</th><th>'.$this->L('models/field/list/ename').'</th><th>'.$this->L('models/field/list/type').'</th><th>'.$this->L('models/field/list/default').'</th><th>'.$this->L('models/field/list/key').'</th><th>'.$this->L('models/field/list/action').'</th></tr>';
+        while ($data = $dp->result()) {
+            $dp->tbody = "ll(".$data['fieldid'].",'".t2js(htmlencode($data['fieldname']))."','".t2js(htmlencode($data['fieldename']))."','".$this->L('models/field/type/'.$data['inputtype'])."','".t2js(htmlencode($data['fieldlength']))."','".t2js(htmlencode($data['fieldefault']))."',".$data['fieldindex'].",".$data['modelid'].",".(int)instr('text,mediumtext',$data['fieldtype']).",'".$data['inputtype']."');";
+        }
+        $dp->close();
+        $this->outHTML = $dp->fetch;
+        $tpl = getTpl($this);
+        $tpl->assign('menu',$this->L('models/@title').'|'.url(C('CURRENT_MODULE'),'Models').';'.$this->L('models/add').'|'.url(C('CURRENT_MODULE'),'ModelEdit').';'.$this->L('models/field/@title').'|#|true;'.$this->L('models/field/add').'|'.url(C('CURRENT_MODULE'),'ModelFieldsEdit','modelid='.$modelid));
+        $tpl->display('__public.php');
+    }
+    // _modelfieldindex *** *** www.LazyCMS.net *** ***
+    function _modelfieldindex(){
+        $this->checker('models');
+        $fieldid = isset($_GET['fieldid']) ? (int)$_GET['fieldid'] : null;
+        $modelid = isset($_GET['modelid']) ? (int)$_GET['modelid'] : null;
+        $index   = isset($_GET['index']) ? (string)$_GET['index'] : null;
+        $db    = getConn();
+        try{
+            $where     = $db->quoteInto('`modelid` = :modelid AND `fieldid`= :fieldid ',array('modelid'=>$modelid,'fieldid'=>$fieldid));
+            $addtable  = $db->result("SELECT `addtable` FROM `#@_model` WHERE `modelid`='{$modelid}';");
+            $fieldname = $db->result("SELECT `fieldename` FROM `#@_fields` WHERE {$where};");
+            // 修改为不索引
+            if (empty($index)){
+                $db->exec("ALTER TABLE `{$addtable}` DROP INDEX `{$fieldname}`;");
+            } else {
+                $db->exec("ALTER TABLE `{$addtable}` ADD INDEX ( `{$fieldname}` ) ;");
+            }
+            $set = array(
+                'fieldindex' => $index,
+            );
+            $db->update('#@_fields',$set,$where);
+        } catch(Error $err){}
+        redirect($_SERVER['HTTP_REFERER']);
+    }
+    // _modelfieldset *** *** www.LazyCMS.net *** ***
+    function _modelfieldset(){
+        clearCache();
+        $this->checker('models',true);
+        $db      = getConn();
+        $modelid = isset($_REQUEST['modelid']) ? (int)$_REQUEST['modelid'] : null;
+        $submit  = isset($_POST['submit']) ? $_POST['submit'] : null;
+        $lists   = isset($_POST['lists']) ? $_POST['lists'] : null;
+        switch($submit){
+            case 'delete' :
+                if (empty($lists)) {
+                    $this->poping($this->L('models/pop/select'),0);
+                }
+                // 取得附加表
+                $addtable = $db->result("SELECT `addtable` FROM `#@_model` WHERE `modelid`='{$modelid}';");
+                // 组合删除数据库字段的SQL语句
+                $DelSQL = "ALTER TABLE `{$addtable}` ";
+                $res = $db->query("SELECT `fieldename` FROM `#@_fields` WHERE `modelid`='{$modelid}' AND `fieldid` IN({$lists});");
+                while ($data = $db->fetch($res,0)){
+                    $DelSQL.= " DROP `".$data[0]."`,";
+                }
+                $DelSQL = rtrim($DelSQL,',').";";
+                try { // 屏蔽所有错误
+                    // 执行删除字段操作
+                    $db->exec($DelSQL);
+                    $db->exec("DELETE FROM `#@_fields` WHERE `modelid`='{$modelid}' AND `fieldid` IN({$lists});");
+                    $this->poping($this->L('models/pop/deletefieldok'),1);
+                } catch (Error $err) {
+                    $db->exec("DELETE FROM `#@_fields` WHERE `modelid`='{$modelid}' AND `fieldid` IN({$lists});");
+                    $this->poping($this->L('models/pop/deletefielderr'),1);
+                }
+                break;
+            case 'updown' :
+                $updown = isset($_POST['updown']) ? (string)$_POST['updown'] : null;
+                $num    = isset($_POST['num']) ? (int)$_POST['num'] : null;
+                $updown = $updown=='down' ? 'up' : 'down';
+                $this->order("#@_fields,fieldid,fieldorder","{$lists},{$updown},{$num}","`modelid`='{$modelid}'");
+                break;
+            default :
+                $this->poping(L('error/invalid'),0);
+                break;
+        }
+    }
+    // _modelfieldsedit *** *** www.LazyCMS.net *** ***
+    function _modelfieldsedit(){
+        $this->checker('models');
+        $db      = getConn();
+        $modelid = isset($_REQUEST['modelid']) ? (int)$_REQUEST['modelid'] : null;
+        $fieldid = isset($_REQUEST['fieldid']) ? (int)$_REQUEST['fieldid'] : null;
+        $sql     = "fieldname,fieldename,fieldtype,fieldlength,fieldefault,fieldindex,inputtype,fieldvalue";//7
+        foreach (explode(',',$sql) as $val) {
+            $data[] = isset($_POST[$val]) ? $_POST[$val] : null;
+        }
+        $data[8] = isset($_POST['oldfieldename']) ? $_POST['oldfieldename'] : null;
+        if (empty($fieldid)) {
+            $menu = $this->L('models/field/add').'|#|true';
+        } else {
+            $menu = $this->L('models/field/add').'|'.url(C('CURRENT_MODULE'),'ModelFieldsEdit','modelid='.$modelid).';'.$this->L('models/field/edit').'|#|true';
+        }
+        $this->validate(array(
+            'fieldname'  => $this->check('fieldname|1|'.$this->L('models/field/check/name').'|1-50'),
+            'fieldename' => $this->check('fieldename|1|'.$this->L('models/field/check/ename').'|1-50;fieldename|validate|'.$this->L('models/field/check/ename1').'|^[A-Za-z0-9\_]+$'),
+            'fieldlength'=> instr('input',$data[6]) ? $this->check('fieldlength|1|'.$this->L('models/field/check/length').'|1-255;fieldlength|validate|'.$this->L('models/field/check/length1').'|2') : null,
+            'fieldvalue' => instr('radio,checkbox,select',$data[6]) ? $this->check('fieldvalue|0|'.$this->L('models/field/check/value')) : null,
+        ));
+        if ($this->method()) {
+            if ($this->validate()) {
+                // 取得附加表
+                $addtable = $db->result("SELECT `addtable` FROM `#@_model` WHERE `modelid`='{$modelid}';");
+                if (instr('text,mediumtext,datetime',$data[2])) {
+                    $data[3] = null;
+                } else {
+                    $data[3] = !empty($data[3]) ? $data[3] : 255;
+                }
+                $length  = !empty($data[3]) ? "( ".$data[3]." ) " : null;
+                if ((string)$data[2]!='datetime') {
+                    $default = (string)$data[4] ? " DEFAULT '".t2js($data[4])."' " : null;
+                } else {
+                    $default = null;
+                }
+                if(empty($fieldid)){//insert
+                    $row = array(
+                        'fieldorder'  => $db->max('fieldid','#@_fields'),
+                        'modelid'     => $modelid,
+                        'fieldname'   => $data[0],
+                        'fieldename'  => $data[1],
+                        'fieldtype'   => $data[2],
+                        'fieldlength' => $data[3],
+                        'fieldefault' => $data[4],
+                        'fieldindex'  => !empty($data[5]) ? (string)$data[5] : '0',
+                        'inputtype'   => $data[6],
+                        'fieldvalue'  => $data[7],
+                    );
+                    $db->insert('#@_fields',$row);
+                    // 向附加表添加对应字段
+                    $SQL     = "ALTER TABLE `{$addtable}` ADD ";
+                    $db->exec($SQL."`".$data[1]."` ".$data[2].$length.$default.";");
+                    // 添加为索引字段
+                    if (!empty($data[5])){ $db->exec($SQL."INDEX ( `".$data[1]."` ) ;"); }
+                } else {//update
+                    // 修改字段
+                    $set = array(
+                        'fieldname'   => $data[0],
+                        'fieldename'  => $data[1],
+                        'fieldtype'   => $data[2],
+                        'fieldlength' => $data[3],
+                        'fieldefault' => $data[4],
+                        'inputtype'   => $data[6],
+                        'fieldvalue'  => $data[7],
+                    );
+                    $where = $db->quoteInto('`modelid` = :modelid AND `fieldid`= :fieldid ',array('modelid'=>$modelid,'fieldid'=>$fieldid));
+                    try{ // 删除索引，并修改字段为不索引
+                        if (instr('text,mediumtext',$data[2])) {
+                            $db->exec("ALTER TABLE `{$addtable}` DROP INDEX `".$data[1]."`;");
+                            $set = array_merge($set,array(
+                                'fieldindex' => '0'
+                            ));
+                        }
+                    } catch(Error $err){}
+                    $db->update('#@_fields',$set,$where);
+                    $db->exec("ALTER TABLE `{$addtable}` CHANGE `".$data[8]."` `".$data[1]."` ".$data[2].$length.$default.";");
+                }
+                redirect(url(C('CURRENT_MODULE'),'ModelFields',"modelid={$modelid}"));
+            }
+        } else {
+            if (!empty($modelid) && !empty($fieldid)) {
+                $where = $db->quoteInto('WHERE `modelid` = :modelid AND `fieldid`= :fieldid ',array('modelid'=>$modelid,'fieldid'=>$fieldid));
+                $res   = $db->query("SELECT {$sql} FROM `#@_fields` {$where};");
+                if (!$data = $db->fetch($res,0)) {
+                    throwError(L('error/invalid'));
+                }
+            }
+        }
+        $tpl = getTpl($this);
+        $tpl->assign(array(
+            'fieldid'     => $fieldid,
+            'modelid'     => $modelid,
+            'fieldname'   => htmlencode($data[0]),
+            'fieldename'  => htmlencode($data[1]),
+            'fieldtype'   => htmlencode($data[2]),
+            'fieldlength' => htmlencode($data[3]),
+            'fieldefault' => htmlencode($data[4]),
+            'inputtype'   => htmlencode($data[6]),
+            'fieldvalue'  => htmlencode($data[7]),
+            'menu'        => $menu,
+            'fieldindex'  => !empty($data[5]) ? ' checked="true"' : null,
+            'readonly'    => (!empty($modelid) && !empty($data[5])) ? ' readonly="true"' : null,
+        ));
+        $tpl->display('modelfieldsedit.php');
+    }
 	// _hits *** *** www.LazyCMS.net *** ***
 	function _hits(){
 		clearCache();$db = getConn();

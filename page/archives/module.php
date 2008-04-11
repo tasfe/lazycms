@@ -625,8 +625,183 @@ class Archives{
 		}
 		return $tmpList;
     }
+    // showTables *** *** www.LazyCMS.net *** ***
+    static function showTables($l1=null){
+        $db  = getConn(); $I1 = null;
+        $res = mysql_list_tables($db->getDataBase(),$db->getConnect());
+        while ($data = $db->fetch($res,0)) {
+            $selected = ((string)$l1==str_replace(C('DSN_PREFIX'),'#@_',(string)$data[0])) ? ' selected="selected"' : null;
+            $I1 .= '<option value="'.str_replace(C('DSN_PREFIX'),'#@_',$data[0]).'"'.$selected.'>'.$data[0].'</option>';
+        }
+        return $I1;
+    }
+    // showTypes *** *** www.LazyCMS.net *** ***
+    static function showTypes($l1=null){
+        $I1 = null; $module = getObject();
+        $l2 = array(
+            'input'    => 'varchar',   // 输入框
+            'textarea' => 'text',      // 文本框
+            'radio'    => 'varchar',   // 单选框
+            'checkbox' => 'varchar',   // 复选框
+            'select'   => 'varchar',   // 下拉菜单
+            'basic'    => 'text',      // 简易编辑器
+            'editor'   => 'mediumtext',// 内容编辑器
+            'date'     => 'datetime',  // 日期选择器
+            'upfile'   => 'varchar',   // 文件上传框
+        );
+        foreach ($l2 as $k => $v){
+            $selected = ((string)$l1 == (string)$k) ? ' selected="selected"' : null;
+            $I1 .= '<option value="'.$k.'" type="'.$v.'"'.$selected.'>'.$module->L('models/field/type/'.$k).'</option>';
+        }
+        return $I1;
+    }
+    // installModel *** *** www.LazyCMS.net *** ***
+    static function installModel($modelCode,$isDeleteTable=false){
+        $db       = getConn();
+        $modelDom = DOMDocument::loadXML($modelCode);
+        $XPath    = new DOMXPath($modelDom);
+        // Model Value
+        $data[0] = $XPath->evaluate("//lazycms/model/modelname")->item(0)->nodeValue;
+        $data[1] = $XPath->evaluate("//lazycms/model/modelename")->item(0)->nodeValue;
+        $data[2] = '#@_'.$XPath->evaluate("//lazycms/model/maintable")->item(0)->nodeValue;
+        $data[3] = '#@_'.$XPath->evaluate("//lazycms/model/addtable")->item(0)->nodeValue;
+        $data[4] = $XPath->evaluate("//lazycms/model/modelstate")->item(0)->nodeValue;
+        if (!$isDeleteTable) {
+            if ($db->isTable($data[3])) {
+                $salt = salt(4);
+				$data[1].= '_'.$salt;
+				$data[3].= '_'.$salt;
+            }
+		}
+        // Insert model
+        $row = array(
+            'modelname'  => $data[0],
+            'modelename' => $data[1],
+            'maintable'  => $data[2],
+            'addtable'   => $data[3],
+            'modelstate' => $data[4],
+        );
+        $db->insert('#@_model',$row);
+
+        // Insert fields
+        $inSQL      = null;
+        $indexSQL   = null;
+        $modelid    = $db->lastInsertId();
+        $objFields  = $modelDom->getElementsByTagName('fields')->item(0)->childNodes;
+        $fieldCount = $objFields->length;
+        for ($i=0; $i<$fieldCount; $i++) {
+            $row       = array();
+            $objItem   = $objFields->item($i)->childNodes;
+            $itemCount = $objItem->length;
+            for ($j=0; $j<$itemCount; $j++) {
+                $row[$objItem->item($j)->nodeName] = $objItem->item($j)->nodeValue;
+            }
+            $row = array_merge($row,array(
+                'modelid'    => $modelid,
+                'fieldorder' => $db->max('fieldid','#@_fields'),
+                'fieldindex' => (string)$row['fieldindex'],
+            ));
+            if (instr('text,mediumtext,datetime',$row['fieldtype'])) {
+                $row['fieldlength'] = null;
+            } else {
+                $row['fieldlength'] = !empty($row['fieldlength']) ? $row['fieldlength'] : 255;
+            }
+            $length  = !empty($row['fieldlength']) ? "( ".$row['fieldlength']." ) " : null;
+            if ((string)$row['fieldtype']!='datetime') {
+                $default = (string)$row['fieldefault'] ? " default '".t2js($row['fieldefault'])."' " : null;
+            } else {
+                $default = null;
+            }
+            $inSQL.= "`".$row['fieldename']."` ".$row['fieldtype'].$length.$default.",";
+            if (!empty($row['fieldindex'])){ 
+                $indexSQL.= "KEY `".$row['fieldename']."` (`".$row['fieldename']."`),";
+            }
+            $db->insert('#@_fields',$row);
+        }
+        $db->exec("DROP TABLE IF EXISTS `".$data[3]."`;");
+        // 创建新表
+        $db->exec("CREATE TABLE IF NOT EXISTS `".$data[3]."` (
+                    `aid` int(11) NOT NULL,
+                    {$inSQL}{$indexSQL}
+                    PRIMARY KEY (`aid`)
+                   ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");
+    }
     // instsql *** *** www.LazyCMS.net *** ***
     static function instSQL(){
-        return ;
+        return <<<SQL
+            // 公共存档
+            DROP TABLE IF EXISTS `#@_archives`;
+            CREATE TABLE IF NOT EXISTS `#@_archives` (
+              `id` int(11) NOT NULL auto_increment,
+              `sortid` int(11) default '0',                 # 分类编号
+              `order` int(11) default '0',                  # 排序编号
+              `title` varchar(255) NOT NULL,                # 标题
+              `show` tinyint(1) default '0',                # 显示
+              `commend` tinyint(1) default '0',             # 推荐
+              `top` tinyint(1) default '0',                 # 置顶
+              `img` varchar(255),                           # 图片
+              `path` varchar(255) NOT NULL,                 # 路径
+              `date` int(11) NOT NULL,                      # 发布时间
+			  `hits` int(11) NOT NULL default '0',			# 浏览次数
+              `keywords` varchar(255),                      # 关键词
+              `description` varchar(255),                   # 简述
+              PRIMARY KEY  (`id`),
+              UNIQUE KEY `path` (`path`),
+              KEY `sortid` (`sortid`),
+              KEY `show` (`show`),
+              KEY `commend` (`commend`),
+              KEY `top` (`top`)
+            ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;
+            // 自定义模型
+            DROP TABLE IF EXISTS `#@_model`;
+            CREATE TABLE IF NOT EXISTS `#@_model` (
+              `modelid` int(11) NOT NULL auto_increment,
+              `modelname` varchar(50) NOT NULL,             # 模块名称
+              `modelename` varchar(50) NOT NULL,            # 模块E名称
+              `maintable` varchar(50) NOT NULL,             # 主索引表
+              `addtable` varchar(50) NOT NULL,              # 附加表
+              `modelstate` int(11) default '0',             # 状态 0:启用 1:禁用
+              PRIMARY KEY  (`modelid`)
+            ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;
+            // 模型字段
+            DROP TABLE IF EXISTS `#@_fields`;
+            CREATE TABLE IF NOT EXISTS `#@_fields` (
+              `fieldid` int(11) NOT NULL auto_increment,
+              `modelid` int(11) NOT NULL,                   # 所属模型
+              `fieldorder` int(11),                         # 字段排序
+              `fieldname` varchar(50),                      # 表单文字
+              `fieldename` varchar(50),                     # 字段名
+              `fieldtype` varchar(20),                      # 类型
+              `fieldlength` varchar(255),                   # 长度
+              `fieldefault` varchar(255),                   # 默认值
+              `fieldindex` int(11) default '0',             # 是否索引 0:不索引 1:索引
+              `inputtype` varchar(20),                      # 输入框类型
+              `fieldvalue` varchar(255),                    # radio,checkbox,select 值
+              PRIMARY KEY  (`fieldid`),
+              KEY `modelid` (`modelid`)
+            ) ENGINE=MyISAM  DEFAULT CHARSET=#~lang~#;
+            // 分类
+            DROP TABLE IF EXISTS `#@_sort`;
+            CREATE TABLE IF NOT EXISTS `#@_sort` (
+              `sortid` int(11) NOT NULL auto_increment,
+              `sortid1` int(11) default '0',                # 所属分类
+              `modelid` int(11) default '0',                # 模型编号
+              `sortorder` int(11) NOT NULL,                 # 排序
+              `sortname` varchar(50) NOT NULL,              # 分类名称
+              `sortpath` varchar(255) NOT NULL,             # 路径
+              `keywords` varchar(255),                      # meta 关键词
+              `description` varchar(255),                   # meta 简述
+              `sortopen` int(11) default '0',               # 是否展开 0:关闭 1:展开
+              `sorttemplate1` varchar(255),                 # 分类页外模板
+              `sorttemplate2` varchar(255),                 # 分类页内模板
+              `pagetemplate1` varchar(255),                 # 内容页外模板
+              `pagetemplate2` varchar(255),                 # 内容页内模板
+              PRIMARY KEY  (`sortid`),
+              UNIQUE KEY `sortpath` (`sortpath`),
+              KEY `sortid1` (`sortid1`),
+              KEY `sortname` (`sortname`),
+              KEY `modelid` (`modelid`)
+            ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;
+SQL;
     }
 }

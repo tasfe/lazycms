@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo L('error/system');?></title>
+<title><?php echo $title;?></title>
 <style type="text/css">
 body{ width:100%; height:100%; margin:0; padding:0; background:#FBFBFB;}
 body,th,td,p{ line-height:130%; font-family:Verdana; font-size:12px;}
@@ -17,7 +17,7 @@ dl,dt,dd{ margin:0; padding:0;}
 
 <body>
 <dl id="poping">
-    <dt><span><?php echo L('error/system');?></span><a href="javascript:top.window.close();">×</a></dt>
+    <dt><span><?php echo $title;?></span><a href="javascript:top.window.close();">×</a></dt>
     <dd><?php echo $Message;?><br/>[ <a href="javascript:history.back();"><?php echo L('common/back');?></a> ] [ <a href="javascript:top.window.close();"><?php echo L('common/close');?></a> ]</dd>
 </dl>
 </body>

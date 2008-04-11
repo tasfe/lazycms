@@ -1,6 +1,6 @@
 <?php System::header();?>
 <?php $module->validate('outjs');?>
-<?php echo menu($module->L('title').'|'.url(C('CURRENT_MODULE')).';'.$menu.';'.$module->L('common/addpage').'|'.url(C('CURRENT_MODULE'),'Edit'));?>
+<?php echo menu($module->L('title').'|'.url(C('CURRENT_MODULE')).';'.$module->L('models/@title').'|'.url(C('CURRENT_MODULE'),'Models').';'.$menu.';'.$module->L('common/addpage').'|'.url(C('CURRENT_MODULE'),'Edit'));?>
 <div class="content">
     <form action="<?php echo url(C('CURRENT_MODULE'),'EditSort');?>" method="post" class="lz_form">
         <p><label><?php echo $module->L('label/supsort');?></label>

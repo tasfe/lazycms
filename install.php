@@ -184,9 +184,10 @@ if ($install && labelError()) {
         );
         $db->insert('#@_onepage',$onepage);
         saveFile(CORE_PATH.'/custom/config.php',"<?php\n".createNote('用户自定义配置文件')."\nreturn ".var_export($config,true).";\n?>");
-        System::installModel($modelArticle,true);
+        // 导入文章模型
+        import("@.archives.module"); Archives::installModel($modelArticle,true);
         @unlink('install.php');
-        redirect(C('ADMIN_PATH'));
+        redirect('admin/index.php');
     } catch (Error $err) {
         $dsnConfig_err = labelError('dsn_config',$err->getMessage());
     }
