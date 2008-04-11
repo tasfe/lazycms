@@ -37,13 +37,13 @@
 			<dl class="left template">
 				<dt><strong>模板下载</strong><a href="{lazy:inst/}download/template/"><img src="images/more.gif" alt="more" /></a></dt>
 				{lazy:template type="new" sortid="3" number="3"}
-				<dd><a href="(lazy:path/)"><img src="(lazy:image width="90" height="110"/)" width="90" height="110" /></a><a href="(lazy:path/)">(lazy:title size="6"/)</a></dd>
+				<dd><a href="(lazy:path/)" title="(lazy:title/)"><img src="(lazy:image width="90" height="110"/)" width="90" height="110"  alt="(lazy:title/)"/></a><a href="(lazy:path/)">(lazy:title size="6"/)</a></dd>
 				{/lazy}
 			</dl>
 			<dl class="right news">
 				<dt><strong>最近更新</strong><a href="{lazy:inst/}news/"><img src="images/more.gif" alt="more" /></a></dt>
 				{lazy:article type="new" remove="5" number="6"}
-				<dd><a href="(lazy:path/)">(lazy:title size="20"/)</a><i>(lazy:date mode="m.d"/)</i></dd>
+				<dd><a href="(lazy:path/)" title="(lazy:title/)">(lazy:title size="20"/)</a><i>(lazy:date mode="m.d"/)</i></dd>
 				{/lazy}
 			</dl>
 		</div>
@@ -51,13 +51,13 @@
 			<dl class="left template">
 				<dt><strong>演示网站</strong><a href="{lazy:inst/}demo/"><img src="images/more.gif" alt="more" /></a></dt>
 				{lazy:demo type="new" sortid="6" number="3"}
-				<dd><a href="(lazy:path/)"><img src="(lazy:image width="90" height="110"/)" width="90" height="110" /></a><a href="(lazy:path/)">(lazy:title size="6"/)</a></dd>
+				<dd><a href="(lazy:path/)" title="(lazy:title/)"><img src="(lazy:image width="90" height="110"/)" width="90" height="110" alt="(lazy:title/)" /></a><a href="(lazy:path/)">(lazy:title size="6"/)</a></dd>
 				{/lazy}
 			</dl>
 			<dl class="right service">
 				<dt><strong>服务项目</strong><a href="{lazy:inst/}service/"><img src="images/more.gif" alt="more" /></a></dt>
 				{lazy:article sortname="服务项目" type="new" number="6"}
-				<dd><a href="(lazy:path/)">(lazy:title size="20"/)</a></dd>
+				<dd><a href="(lazy:path/)" title="(lazy:title/)">(lazy:title size="20"/)</a></dd>
 				{/lazy}
 			</dl>
 		</div>
@@ -65,13 +65,13 @@
 			<dl class="left help">
 				<dt><strong>使用帮助</strong><a href="{lazy:inst/}help/"><img src="images/more.gif" alt="more" /></a></dt>
 				{lazy:article type="new" sortid="1" number="10"}
-				<dd><a href="(lazy:path/)">(lazy:title size="20"/)</a><i>(lazy:date mode="m.d"/)</i></dd>
+				<dd><a href="(lazy:path/)" title="(lazy:title/)">(lazy:title size="20"/)</a><i>(lazy:date mode="m.d"/)</i></dd>
 				{/lazy}
 			</dl>
 			<dl class="right help">
 				<dt><strong>常见问题</strong><a href="{lazy:inst/}faq/"><img src="images/more.gif" alt="more" /></a></dt>
 				{lazy:article type="new" sortid="2" number="10"}
-				<dd><a href="(lazy:path/)">(lazy:title size="20"/)</a><i>(lazy:date mode="m.d"/)</i></dd>
+				<dd><a href="(lazy:path/)" title="(lazy:title/)">(lazy:title size="20"/)</a><i>(lazy:date mode="m.d"/)</i></dd>
 				{/lazy}
 			</dl>
 		</div>
@@ -84,10 +84,10 @@
 		</dl>
 		<ul class="download">
 			{lazy:download type="commend" number="2"}
-			<li class="important"><a href="(lazy:path/)">(lazy:title/)</a></li>
+			<li class="important"><a href="(lazy:path/)" title="(lazy:title/)">(lazy:title size="25"/)</a></li>
 			{/lazy}
 			{lazy:download type="new" number="3"}
-			<li><a href="(lazy:path/)">(lazy:title/)</a></li>
+			<li><a href="(lazy:path/)" title="(lazy:title/)">(lazy:title size="25"/)</a></li>
 			{/lazy}
 		</ul>
 		<dl>

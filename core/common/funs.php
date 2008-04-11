@@ -857,13 +857,6 @@ function formatTemplet($l1){
     return replace('/(<(script|link|img|input|embed|param|object|base|area|map|table|param).+?(src|href|background|value)\=.+?)(\.\.\/\.\.\/|\.\.\/)(([\w\-\.]+)\/(images|js)\/.{0,}?>)/i','${1}'.C('SITE_BASE').C('PAGES_PATH').'/${5}',$l1);
 }
 
-// getDir *** *** www.LazyCMS.net *** ***
-function getDir(){
-    $l1 = getUriBase();
-    $l2 = dirname($l1);
-    return substr($l2,strrpos($l2,'/')+1);
-}
-
 // clearCache *** *** www.LazyCMS.net *** ***
 function clearCache(){
     header("Expires:".date("D,d M Y H:i:s",now()-60*10)." GMT");

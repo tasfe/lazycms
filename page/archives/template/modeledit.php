@@ -14,7 +14,7 @@
         <?php if (empty($modelid)):?>
         <p><label><?php echo $module->L('models/label/fieldset');?></label>
         <blockquote class="red">
-            <?php echo $module->L('models/label/fieldtip',array('root'=>LAZY_PATH.C('PAGES_PATH')));?>
+            <?php echo $module->L('models/label/fieldtip',array('root'=>C('SITE_BASE').C('PAGES_PATH')));?>
         </blockquote>
         </p>
         <?php endif;?>

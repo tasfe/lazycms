@@ -146,6 +146,8 @@ class Archives{
             } else {
                 return C('SITE_BASE').$data[0];
             }
+        } else {
+            return C('SITE_BASE');
         }
     }
 	// guide *** *** www.LazyCMS.net *** ***
@@ -526,19 +528,22 @@ class Archives{
     static function tags($tags,$inValue){ 
 		$inSQL = null; $tmpList = null; $db = getConn();
 		$tagName = sect($tags,"(lazy\:)","( |\/|\}|\))");
+        $HTMList = $tags; $tag = O('Tags');
+        $jsHTML  = $tag->getLabel($HTMList,0);
+        $sortid  = $tag->getLabel($HTMList,'sortid');
+        $jsType  = strtolower($tag->getLabel($HTMList,'type'));
+        // 如果是请求链接直接返回链接地址
+        if ($jsType=='link') { return self::showSort($sortid); }
+
+        $jsNumber= floor($tag->getLabel($HTMList,'number'));
+        $remove  = $tag->getLabel($HTMList,'remove');
+        $zebra   = $tag->getLabel($HTMList,'zebra');
+
 		// 根据tagName 取得modelid
 		$where = $db->quoteInto("WHERE `modelename` = ?",$tagName);
 		$res   = $db->query("SELECT * FROM `#@_model` {$where};");
 		if ($model = $db->fetch($res)) {
 			$fields  = self::getFields($model['modelid']);
-			$HTMList = $tags; $tag = O('Tags');
-			$jsHTML  = $tag->getLabel($HTMList,0);
-			$jsType  = $tag->getLabel($HTMList,'type');
-			$jsNumber= floor($tag->getLabel($HTMList,'number'));
-			$sortid  = $tag->getLabel($HTMList,'sortid');
-			$remove  = $tag->getLabel($HTMList,'remove');
-			$zebra   = $tag->getLabel($HTMList,'zebra');
-
 			if (is_numeric($remove)) {
 				$inSQL.= " AND `m`.`sortid` NOT IN({$remove})";
 			}
@@ -567,7 +572,7 @@ class Archives{
 						LEFT JOIN `".$model['addtable']."` AS `a` ON `m`.`id` = `a`.`aid`
 						LEFT JOIN `#@_sort` AS `s` ON `s`.`sortid` = `m`.`sortid` WHERE `s`.`modelid`='".$model['modelid']."' AND `m`.`show` = 1 ";
 
-			switch (strtolower($jsType)) {
+			switch ($jsType) {
                 case 'related':// 相关文章
                     $key = $inValue['keywords'];
                     $aid = $inValue['id'];

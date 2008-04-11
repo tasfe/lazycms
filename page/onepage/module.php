@@ -123,6 +123,8 @@ class Onepage{
             } else {
                 return C('SITE_BASE').$data[0];
             }
+        } else {
+            return C('SITE_BASE');
         }
     }
     // tags *** *** www.LazyCMS.net *** ***
