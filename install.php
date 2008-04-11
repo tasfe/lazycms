@@ -20,7 +20,7 @@
  * | Author: Lukin <mylukin@gmail.com>                                         |
  * +---------------------------------------------------------------------------+
  */
-define('CACHE_RUNTIME',false);define('CORE_PATH', './core');require CORE_PATH."/LazyCMS.php";
+define('CACHE_RUNTIME',false);define('CORE_PATH', dirname(__FILE__).'/core');require CORE_PATH."/LazyCMS.php";
 /**
  * LazyCMS 系统引导安装程序
  *

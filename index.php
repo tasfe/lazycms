@@ -20,5 +20,5 @@
  * | Author: Lukin <mylukin@gmail.com>                                         |
  * +---------------------------------------------------------------------------+
  */
-define('CORE_PATH', './core');require CORE_PATH."/LazyCMS.php";LazyCMS::run('System','Default');
+define('CORE_PATH', dirname(__FILE__).'/core');require CORE_PATH."/LazyCMS.php";LazyCMS::run('System','Default');
 ?>
