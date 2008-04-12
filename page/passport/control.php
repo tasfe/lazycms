@@ -188,7 +188,7 @@ class LazyPassport extends LazyCMS{
         $XML['fields'] = $fields;
         ob_start();
         header("Content-type: application/octet-stream; charset=utf-8");
-        header("Content-Disposition: attachment; filename=LazyCMS_".$groupName.".mod");
+        header("Content-Disposition: attachment; filename=LazyCMS_".C('CURRENT_MODULE').'_'.$groupName.".mod");
         header("Pragma: no-cache");
         header("Expires: 0");
         echo xmlcode($XML);
