@@ -45,7 +45,7 @@ if (!defined('PHP_FILE')) {
     } unset($_I1);
 }
 if (!defined('LAZY_PATH')) {
-    define('LAZY_PATH','./');
+    define('LAZY_PATH',dirname(__FILE__).'/../../');
 }
 // 支持的URL模式
 define('URL_COMMON',   0);   //普通模式

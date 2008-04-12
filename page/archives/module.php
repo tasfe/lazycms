@@ -37,7 +37,7 @@ class Archives{
     // getTopSortId *** *** www.LazyCMS.net *** ***
     static function getTopSortId(){
         $db  = getConn();
-        $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_sort` WHERE `sortid1` = '0' ORDER BY `sortorder` DESC,`sortid` DESC;");
+        $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_archives_sort` WHERE `sortid1` = '0' ORDER BY `sortorder` DESC,`sortid` DESC;");
         if ($data = $db->fetch($res,0)) {
             return $data[0];
         } else {
@@ -47,7 +47,7 @@ class Archives{
     // getModel *** *** www.LazyCMS.net *** ***
     static function getModel($l1){
         $db  = getConn();
-        $res = $db->query("SELECT * FROM `#@_sort` AS `s` LEFT JOIN `#@_model` AS `m` ON `s`.`modelid` = `m`.`modelid` WHERE `s`.`sortid` = '{$l1}';");
+        $res = $db->query("SELECT * FROM `#@_archives_sort` AS `s` LEFT JOIN `#@_archives_model` AS `m` ON `s`.`modelid` = `m`.`modelid` WHERE `s`.`sortid` = '{$l1}';");
         if ($data = $db->fetch($res)) {
             return $data;
         } else {
@@ -58,9 +58,9 @@ class Archives{
 	static function getSubSortIds($l1){
 		$I1  = $l1;
 		$db  = getConn();
-        $res = $db->query("SELECT `sortid` FROM `#@_sort` WHERE ".$db->quoteInto('`sortid1` = ?',$l1));
+        $res = $db->query("SELECT `sortid` FROM `#@_archives_sort` WHERE ".$db->quoteInto('`sortid1` = ?',$l1));
         while ($data = $db->fetch($res,0)) {
-			if ($db->count("SELECT count(`sortid`) FROM `#@_sort` WHERE `sortid1`= '".$data[0]."';") > 0) {
+			if ($db->count("SELECT count(`sortid`) FROM `#@_archives_sort` WHERE `sortid1`= '".$data[0]."';") > 0) {
 				$I1.= ",".self::getSubSortIds($data[0]);
 			} else {
 				$I1.= ",".$data[0];
@@ -74,7 +74,7 @@ class Archives{
         $fields = array();
         $db    = getConn();
         $where = $db->quoteInto('WHERE `modelid` = ?',$modeid);
-        $res   = $db->query("SELECT * FROM `#@_fields` {$where};");
+        $res   = $db->query("SELECT * FROM `#@_archives_fields` {$where};");
         while ($data = $db->fetch($res)) {
             $fields[] = $data['fieldename'];
         }
@@ -88,12 +88,12 @@ class Archives{
             $nbsp .= "&nbsp; &nbsp;";
         }
         $db  = getConn();
-        $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_sort` WHERE `sortid1` = '{$l1}' ORDER BY `sortorder` DESC,`sortid` DESC;");
+        $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_archives_sort` WHERE `sortid1` = '{$l1}' ORDER BY `sortorder` DESC,`sortid` DESC;");
         while ($data = $db->fetch($res,0)) {
             if ($l2 != $data[0]) {
                 $selected = ((int)$l4 == (int)$data[0]) ? ' selected="selected"' : null;
                 $I1 .= '<option value="'.$data[0].'"'.$selected.'>'.$nbsp.'├ '.$data[1].'</option>';
-                if ($db->result("SELECT count(`sortid`) FROM `#@_sort` WHERE `sortid1`='{$data[0]}';") > 0) {
+                if ($db->result("SELECT count(`sortid`) FROM `#@_archives_sort` WHERE `sortid1`='{$data[0]}';") > 0) {
                     $I1 .= self::__sort($data[0],$l2,$l3+1,$l4);
                 }
             }
@@ -113,7 +113,7 @@ class Archives{
     // __model *** *** www.LazyCMS.net *** ***
     static function __model($l1){
         $db  = getConn(); $I1 = null;
-        $res = $db->query("SELECT `modelid`,`modelname`,`modelename` FROM `#@_model` WHERE `modelstate`='0' ORDER BY `modelid` ASC;");
+        $res = $db->query("SELECT `modelid`,`modelname`,`modelename` FROM `#@_archives_model` WHERE `modelstate`='0' ORDER BY `modelid` ASC;");
         while ($data = $db->fetch($res,0)) {
             $selected = ($l1 == $data[0]) ? ' selected="selected"' : null;
             $I1 .= '<option value="'.$data[0].'"'.$selected.' name="'.$data[2].'">'.$data[1].'['.$data[2].']</option>';
@@ -139,7 +139,7 @@ class Archives{
         $sortid = $l1;
         $db     = getConn();       
         $where  = $db->quoteInto("WHERE `sortid` = ?",$sortid);
-        $res    = $db->query("SELECT `sortpath` FROM `#@_sort` {$where}");
+        $res    = $db->query("SELECT `sortpath` FROM `#@_archives_sort` {$where}");
         if ($data = $db->fetch($res,0)) {
             if (C('SITE_MODE')) {
                 return url('Archives','ShowSort','sortid='.$sortid);
@@ -154,7 +154,7 @@ class Archives{
 	function guide($l1){
 		if (empty($l1)) { return ;}
 		$I1 = null; $db = getConn();
-		$res = $db->query("SELECT `sortid1`,`sortname`,`sortpath` FROM `#@_sort` WHERE `sortid`='{$l1}';");
+		$res = $db->query("SELECT `sortid1`,`sortname`,`sortpath` FROM `#@_archives_sort` WHERE `sortid`='{$l1}';");
 		if ($data = $db->fetch($res,0)) {
 			$I1 = '<a href="'.self::showSort($l1).'">'.htmlencode($data[1]).'</a>';
 			if ((int)$data[0] !== 0) {
@@ -315,7 +315,7 @@ class Archives{
         $aid   = $l1;
         $db    = getConn();       
         $where = $db->quoteInto("WHERE `b`.`id` = ?",$aid);
-        $res   = $db->query("SELECT `a`.`sortpath`,`b`.`path` FROM `#@_sort` AS `a` LEFT JOIN `".$model['maintable']."` AS `b` ON `a`.`sortid` = `b`.`sortid` {$where}");
+        $res   = $db->query("SELECT `a`.`sortpath`,`b`.`path` FROM `#@_archives_sort` AS `a` LEFT JOIN `".$model['maintable']."` AS `b` ON `a`.`sortid` = `b`.`sortid` {$where}");
         if ($data = $db->fetch($res,0)) {
             if (C('SITE_MODE')) {
 				if (!empty($l3)) {
@@ -371,7 +371,7 @@ class Archives{
 			$fields = self::getFields($model['modelid']);
             
             // 有编辑器，动态模式，分页，只对第一个编辑器进行处理
-			$result = $db->query("SELECT * FROM `#@_fields` WHERE `modelid` ='".$model['modelid']."' AND `inputtype`='editor' ORDER BY `fieldorder` ASC, `fieldid` ASC;");
+			$result = $db->query("SELECT * FROM `#@_archives_fields` WHERE `modelid` ='".$model['modelid']."' AND `inputtype`='editor' ORDER BY `fieldorder` ASC, `fieldid` ASC;");
 			if ($field = $db->fetch($result)){
 				$contents = explode(C('WEB_BREAK'),$data[$field['fieldename']]);
 				$length   = count($contents);
@@ -503,14 +503,14 @@ class Archives{
     // isOpen *** *** www.LazyCMS.net *** ***
     static function isOpen($l1){
         $db    = getConn();
-        $state = $db->result("SELECT `sortopen` FROM `#@_sort` WHERE `sortid` = '{$l1}';");
+        $state = $db->result("SELECT `sortopen` FROM `#@_archives_sort` WHERE `sortid` = '{$l1}';");
         $state = (string)$state == "1" ? 'true' : 'false';
         return $state;
     }
     // isSub *** *** www.LazyCMS.net *** ***
     static function isSub($l1){
         $db    = getConn();
-        $state = $db->result("SELECT count(*) FROM `#@_sort` WHERE `sortid1` = '{$l1}';") > 0 ? '1' : '2';
+        $state = $db->result("SELECT count(*) FROM `#@_archives_sort` WHERE `sortid1` = '{$l1}';") > 0 ? '1' : '2';
         return $state;
     }
     // subSort *** *** www.LazyCMS.net *** ***
@@ -541,7 +541,7 @@ class Archives{
 
 		// 根据tagName 取得modelid
 		$where = $db->quoteInto("WHERE `modelename` = ?",$tagName);
-		$res   = $db->query("SELECT * FROM `#@_model` {$where};");
+		$res   = $db->query("SELECT * FROM `#@_archives_model` {$where};");
 		if ($model = $db->fetch($res)) {
 			$fields  = self::getFields($model['modelid']);
 			if (is_numeric($remove)) {
@@ -570,7 +570,7 @@ class Archives{
 			}
 			$select = "SELECT * FROM `".$model['maintable']."` AS `m`
 						LEFT JOIN `".$model['addtable']."` AS `a` ON `m`.`id` = `a`.`aid`
-						LEFT JOIN `#@_sort` AS `s` ON `s`.`sortid` = `m`.`sortid` WHERE `s`.`modelid`='".$model['modelid']."' AND `m`.`show` = 1 ";
+						LEFT JOIN `#@_archives_sort` AS `s` ON `s`.`sortid` = `m`.`sortid` WHERE `s`.`modelid`='".$model['modelid']."' AND `m`.`show` = 1 ";
 
 			switch ($jsType) {
                 case 'related':// 相关文章
@@ -676,7 +676,7 @@ class Archives{
             'addtable'   => $data[3],
             'modelstate' => $data[4],
         );
-        $db->insert('#@_model',$row);
+        $db->insert('#@_archives_model',$row);
 
         // Insert fields
         $inSQL      = null;
@@ -693,7 +693,7 @@ class Archives{
             }
             $row = array_merge($row,array(
                 'modelid'    => $modelid,
-                'fieldorder' => $db->max('fieldid','#@_fields'),
+                'fieldorder' => $db->max('fieldid','#@_archives_fields'),
                 'fieldindex' => (string)$row['fieldindex'],
             ));
             if (instr('text,mediumtext,datetime',$row['fieldtype'])) {
@@ -711,7 +711,7 @@ class Archives{
             if (!empty($row['fieldindex'])){ 
                 $indexSQL.= "KEY `".$row['fieldename']."` (`".$row['fieldename']."`),";
             }
-            $db->insert('#@_fields',$row);
+            $db->insert('#@_archives_fields',$row);
         }
         $db->exec("DROP TABLE IF EXISTS `".$data[3]."`;");
         // 创建新表
@@ -748,8 +748,8 @@ class Archives{
               KEY `top` (`top`)
             ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;
             // 自定义模型
-            DROP TABLE IF EXISTS `#@_model`;
-            CREATE TABLE IF NOT EXISTS `#@_model` (
+            DROP TABLE IF EXISTS `#@_archives_model`;
+            CREATE TABLE IF NOT EXISTS `#@_archives_model` (
               `modelid` int(11) NOT NULL auto_increment,
               `modelname` varchar(50) NOT NULL,             # 模块名称
               `modelename` varchar(50) NOT NULL,            # 模块E名称
@@ -759,8 +759,8 @@ class Archives{
               PRIMARY KEY  (`modelid`)
             ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;
             // 模型字段
-            DROP TABLE IF EXISTS `#@_fields`;
-            CREATE TABLE IF NOT EXISTS `#@_fields` (
+            DROP TABLE IF EXISTS `#@_archives_fields`;
+            CREATE TABLE IF NOT EXISTS `#@_archives_fields` (
               `fieldid` int(11) NOT NULL auto_increment,
               `modelid` int(11) NOT NULL,                   # 所属模型
               `fieldorder` int(11),                         # 字段排序
@@ -776,8 +776,8 @@ class Archives{
               KEY `modelid` (`modelid`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=#~lang~#;
             // 分类
-            DROP TABLE IF EXISTS `#@_sort`;
-            CREATE TABLE IF NOT EXISTS `#@_sort` (
+            DROP TABLE IF EXISTS `#@_archives_sort`;
+            CREATE TABLE IF NOT EXISTS `#@_archives_sort` (
               `sortid` int(11) NOT NULL auto_increment,
               `sortid1` int(11) default '0',                # 所属分类
               `modelid` int(11) default '0',                # 模型编号

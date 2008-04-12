@@ -20,7 +20,7 @@
  * | Author: Lukin <mylukin@gmail.com>                                         |
  * +---------------------------------------------------------------------------+
  */
-define('LAZY_PATH', '../');
+define('LAZY_PATH', dirname(__FILE__).'/../');
 define('CORE_PATH', dirname(__FILE__).'/../core');
 require CORE_PATH."/LazyCMS.php";
 LazyCMS::run('System','Login');

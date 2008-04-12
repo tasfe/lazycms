@@ -40,7 +40,7 @@ class LazySystem extends LazyCMS{
             $db = getConn();
         } catch (Error $e) {
             if (is_file(LAZY_PATH.'install.php')) {
-                redirect(LAZY_PATH.'install.php');exit;
+                redirect(C('SITE_BASE').'install.php');exit;
             } else {
                 throwError($e->getMessage(),$e->getCode());
             }
@@ -721,17 +721,17 @@ class LazySystem extends LazyCMS{
             if ($path!='') {
                 $bPath = str_replace('\\','/',dirname('/'.$path));
                 $bPath = $bPath == '/' ? $bPath : ltrim($bPath,'/');
-                $DelFolder    = "<a href=\"javascript:DelFolder('{$path}');\" onclick=\"if(confirm('".L('confirm/delete')."')){\$('#{$from}').browseFiles('".url('System','browseFiles')."',{action:'deletefolder',folder:'{$path}',from:'{$from}',path:'{$bPath}'});};return false;\"><img src=\"".LAZY_PATH.C('PAGES_PATH')."/system/images/os/del.gif\" alt=\"Delete Folder...\" class=\"os\"/></a>";
+                $DelFolder    = "<a href=\"javascript:DelFolder('{$path}');\" onclick=\"if(confirm('".L('confirm/delete')."')){\$('#{$from}').browseFiles('".url('System','browseFiles')."',{action:'deletefolder',folder:'{$path}',from:'{$from}',path:'{$bPath}'});};return false;\"><img src=\"".C('SITE_BASE').C('PAGES_PATH')."/system/images/os/del.gif\" alt=\"Delete Folder...\" class=\"os\"/></a>";
             }
-            $UpLoadFile   = "<a href=\"javascript:UpLoadFile('{$path}');\" onclick=\"\$(this).getPoping('.toolbar','".url('System','browseFiles')."',{action:'getloadfile',path:'{$path}',from:'{$from}'});return false;\"><img src=\"".LAZY_PATH.C('PAGES_PATH')."/system/images/os/upfile.gif\" alt=\"UpLoad File...\" class=\"os\"/></a>";
-            $CreateFolder = "<a href=\"javascript:CreateFolder('{$path}');\" onclick=\"\$(this).getPoping('.toolbar','".url('System','browseFiles')."',{action:'getfolder',path:'{$path}',from:'{$from}'});return false;\"><img src=\"".LAZY_PATH.C('PAGES_PATH')."/system/images/os/crtdir.gif\" alt=\"Create Folder...\" class=\"os\"/></a>";
+            $UpLoadFile   = "<a href=\"javascript:UpLoadFile('{$path}');\" onclick=\"\$(this).getPoping('.toolbar','".url('System','browseFiles')."',{action:'getloadfile',path:'{$path}',from:'{$from}'});return false;\"><img src=\"".C('SITE_BASE').C('PAGES_PATH')."/system/images/os/upfile.gif\" alt=\"UpLoad File...\" class=\"os\"/></a>";
+            $CreateFolder = "<a href=\"javascript:CreateFolder('{$path}');\" onclick=\"\$(this).getPoping('.toolbar','".url('System','browseFiles')."',{action:'getfolder',path:'{$path}',from:'{$from}'});return false;\"><img src=\"".C('SITE_BASE').C('PAGES_PATH')."/system/images/os/crtdir.gif\" alt=\"Create Folder...\" class=\"os\"/></a>";
         }
         $HTML = '<form class="lz_form"><div class="toolbar"><span class="in">'.System::filesPath($path,$from).'</span><div>'.$DelFolder.$CreateFolder.$UpLoadFile.'</div></div>';
         $HTML.= '<table class="lz_table" style="width:565px;margin:3px 0;clear:both;">';
         if (is_dir($cPath)) {
             $HTML.= '<tr><th>'.L('filemanage/template/filename').'</th><th class="wp5">'.L('filemanage/template/filemtime').'</th></tr>';
             $dh = opendir($cPath);
-            $imgPath = LAZY_PATH.C('PAGES_PATH')."/system/images/os/";
+            $imgPath = C('SITE_BASE').C('PAGES_PATH')."/system/images/os/";
             while (false !== ($file=readdir($dh))) {
                 if ($file != ".") {
                     if ($file == "..") {
@@ -839,7 +839,7 @@ class LazySystem extends LazyCMS{
 			}
         } catch (Error $e) {
             if (is_file(LAZY_PATH.'install.php')) {
-                redirect(LAZY_PATH.'install.php');exit;
+                redirect(C('SITE_BASE').'install.php');exit;
             } else {
                 throwError($e->getMessage(),$e->getCode());
             }

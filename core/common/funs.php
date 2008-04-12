@@ -365,7 +365,7 @@ function fileICON($l1){
             $ext = $l3;
             break;
     }
-    if (!is_file(LAZY_PATH.C('PAGES_PATH')."/system/images/os/file/{$ext}.gif")) {
+    if (!is_file(C('SITE_BASE').C('PAGES_PATH')."/system/images/os/file/{$ext}.gif")) {
         $ext = 'icon';
     }
     return $ext;

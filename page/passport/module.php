@@ -58,7 +58,7 @@ class Passport{
             'purview'    => $data[3],
             'groupstate' => $data[4],
         );
-        $db->insert('#@_usergroup',$row);
+        $db->insert('#@_passport_group',$row);
 
         // Insert fields
         $inSQL      = null;
@@ -75,7 +75,7 @@ class Passport{
             }
             $row = array_merge($row,array(
                 'groupid'    => $groupid,
-                'fieldorder' => $db->max('fieldid','#@_userfields'),
+                'fieldorder' => $db->max('fieldid','#@_passport_fields'),
                 'fieldindex' => $row['fieldindex'],
             ));
             if (instr('text,mediumtext,datetime',$row['fieldtype'])) {
@@ -93,7 +93,7 @@ class Passport{
             if (!empty($row['fieldindex'])){ 
                 $indexSQL.= "KEY `".$row['fieldename']."` (`".$row['fieldename']."`),";
             }
-            $db->insert('#@_userfields',$row);
+            $db->insert('#@_passport_fields',$row);
         }
         $db->exec("DROP TABLE IF EXISTS `".$data[2]."`;");
         // 创建新表
@@ -107,8 +107,8 @@ class Passport{
     static function instSQL(){
         return <<<SQL
             // 用户表
-            DROP TABLE IF EXISTS `#@_users`;
-            CREATE TABLE IF NOT EXISTS `#@_users` (
+            DROP TABLE IF EXISTS `#@_passport`;
+            CREATE TABLE IF NOT EXISTS `#@_passport` (
               `userid` int(11) NOT NULL auto_increment,     # 编号
               `groupid` int(11) default '0',                # 用户所属组
               `username` varchar(30) NOT NULL,              # 用户名称
@@ -130,8 +130,8 @@ class Passport{
               KEY `islock` (`islock`)
             ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;
             // 用户组表
-            DROP TABLE IF EXISTS `#@_usergroup`;
-            CREATE TABLE IF NOT EXISTS `#@_usergroup` (
+            DROP TABLE IF EXISTS `#@_passport_group`;
+            CREATE TABLE IF NOT EXISTS `#@_passport_group` (
               `groupid` int(11) NOT NULL auto_increment,    # 编号
               `groupname` varchar(30) NOT NULL,             # 用户组名称
               `groupename` varchar(50) NOT NULL,            # 用户组标识
@@ -142,8 +142,8 @@ class Passport{
               KEY `groupname` (`groupname`)
             ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;
             // 用户信息模型字段
-            DROP TABLE IF EXISTS `#@_userfields`;
-            CREATE TABLE IF NOT EXISTS `#@_userfields` (
+            DROP TABLE IF EXISTS `#@_passport_fields`;
+            CREATE TABLE IF NOT EXISTS `#@_passport_fields` (
               `fieldid` int(11) NOT NULL auto_increment,
               `groupid` int(11) NOT NULL,                   # 所属模型
               `fieldorder` int(11),                         # 字段排序

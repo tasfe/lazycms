@@ -186,7 +186,7 @@ if ($install && labelError()) {
         saveFile(CORE_PATH.'/custom/config.php',"<?php\n".createNote('用户自定义配置文件')."\nreturn ".var_export($config,true).";\n?>");
         // 导入文章模型
         import("@.archives.module"); Archives::installModel($modelArticle,true);
-        @unlink('install.php');
+        @unlink(LAZY_PATH.'install.php');
         redirect('admin/index.php');
     } catch (Error $err) {
         $dsnConfig_err = labelError('dsn_config',$err->getMessage());

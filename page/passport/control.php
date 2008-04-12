@@ -37,8 +37,8 @@ class LazyPassport extends LazyCMS{
         $dp = O('Record');
         $dp->action = url(C('CURRENT_MODULE'),'GroupSet');
         $dp->result = $db->query("SELECT `g`.*,count(`u`.`userid`) AS `count`
-                                    FROM `#@_usergroup` AS `g` 
-                                    LEFT JOIN `#@_users` AS `u` ON `g`.`groupid` = `u`.`groupid`
+                                    FROM `#@_passport_group` AS `g` 
+                                    LEFT JOIN `#@_passport` AS `u` ON `g`.`groupid` = `u`.`groupid`
                                     GROUP BY `g`.`groupid`
                                     ORDER BY `g`.`groupid` DESC");
         $dp->length = $db->count($dp->result);
@@ -73,12 +73,12 @@ class LazyPassport extends LazyCMS{
                 if (empty($lists)) {
                     $this->poping($this->L('pop/group/select'),0);
                 }
-                $res = $db->query("SELECT `grouptable` FROM `#@_usergroup` WHERE `groupid` IN({$lists})");
+                $res = $db->query("SELECT `grouptable` FROM `#@_passport_group` WHERE `groupid` IN({$lists})");
                 while ($data = $db->fetch($res,0)){
                     $db->exec("DROP TABLE IF EXISTS `".$data[0]."`;");
                 }
-                $db->exec("DELETE FROM `#@_userfields` WHERE `groupid` IN({$lists});");
-                $db->exec("DELETE FROM `#@_usergroup` WHERE `groupid` IN({$lists});");
+                $db->exec("DELETE FROM `#@_passport_fields` WHERE `groupid` IN({$lists});");
+                $db->exec("DELETE FROM `#@_passport_group` WHERE `groupid` IN({$lists});");
                 $this->poping($this->L('pop/group/deleteok'),1);
                 break;
             default :
@@ -94,7 +94,7 @@ class LazyPassport extends LazyCMS{
         $db  = getConn();
         $set = array('groupstate' => $state);
         $where = $db->quoteInto('`groupid` = ?',$groupid);
-        $db->update('#@_usergroup',$set,$where);
+        $db->update('#@_passport_group',$set,$where);
         redirect($_SERVER['HTTP_REFERER']);
     }
     // _groupedit *** *** www.LazyCMS.net *** ***
@@ -125,7 +125,7 @@ class LazyPassport extends LazyCMS{
                         'groupename' => $data[1],
                         'grouptable' => '#@_user'.$data[1],
                     );
-                    $db->insert('#@_usergroup',$row);
+                    $db->insert('#@_passport_group',$row);
                     // 删除已存在的表
                     $db->exec("DROP TABLE IF EXISTS `#@_user".$data[1]."`;");
                     // 创建新表
@@ -138,14 +138,14 @@ class LazyPassport extends LazyCMS{
                         'groupname'  => $data[0],
                     );
                     $where = $db->quoteInto('`groupid` = ?',$groupid);
-                    $db->update('#@_usergroup',$set,$where);
+                    $db->update('#@_passport_group',$set,$where);
                 }
                 redirect(url(C('CURRENT_MODULE')));
             }
         } else {
             if (!empty($groupid)) {
                 $where = $db->quoteInto('WHERE `groupid` = ?',$groupid);
-                $res   = $db->query("SELECT {$sql} FROM `#@_usergroup` {$where};");
+                $res   = $db->query("SELECT {$sql} FROM `#@_passport_group` {$where};");
                 if (!$data = $db->fetch($res,0)) {
                     throwError(L('error/invalid'));
                 }    
@@ -170,7 +170,7 @@ class LazyPassport extends LazyCMS{
         $groupid = isset($_GET['groupid']) ? (int)$_GET['groupid'] : null;
         
         $XML = array();
-        $res = $db->query("SELECT * FROM `#@_usergroup` WHERE `groupid`='{$groupid}';");
+        $res = $db->query("SELECT * FROM `#@_passport_group` WHERE `groupid`='{$groupid}';");
         if ($data = $db->fetch($res)) {
             unset($data['groupid']);
             $groupName = $data['groupename'];
@@ -180,7 +180,7 @@ class LazyPassport extends LazyCMS{
             $groupName = 'Error';
         }
         $fields = array();
-        $res = $db->query("SELECT * FROM `#@_userfields` WHERE `groupid`='{$groupid}' ORDER BY `fieldorder` ASC,`fieldid` ASC;");
+        $res = $db->query("SELECT * FROM `#@_passport_fields` WHERE `groupid`='{$groupid}' ORDER BY `fieldorder` ASC,`fieldid` ASC;");
         while ($data = $db->fetch($res)){
             unset($data['fieldid'],$data['groupid'],$data['fieldorder']);
             $fields[] = $data;
