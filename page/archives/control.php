@@ -517,14 +517,14 @@ class LazyArchives extends LazyCMS{
                     throwError(L('error/invalid'));
                 }
             } else {
-                $show    = M($CURRENT_MODULE,'ADD_SHOW');
-                $commend = M($CURRENT_MODULE,'ADD_COMMEND');
-                $top     = M($CURRENT_MODULE,'ADD_TOP');
+                $show    = M($CURRENT_MODULE,'ARCHIVES_ADD_SHOW');
+                $commend = M($CURRENT_MODULE,'ARCHIVES_ADD_COMMEND');
+                $top     = M($CURRENT_MODULE,'ARCHIVES_ADD_TOP');
             }
-            $snapimg = M($CURRENT_MODULE,'ADD_SNAPIMG');
-            $upsort  = M($CURRENT_MODULE,'ADD_UPSORT');
-            $uphome  = M($CURRENT_MODULE,'ADD_UPHOME');
-            $checktitle = M($CURRENT_MODULE,'ADD_CHECKTITLE');
+            $snapimg = M($CURRENT_MODULE,'ARCHIVES_ADD_SNAPIMG');
+            $upsort  = M($CURRENT_MODULE,'ARCHIVES_ADD_UPSORT');
+            $uphome  = M($CURRENT_MODULE,'ARCHIVES_ADD_UPHOME');
+            $checktitle = M($CURRENT_MODULE,'ARCHIVES_ADD_CHECKTITLE');
         }
 
         while (list($name,$data) = each($fieldData)) {
@@ -770,13 +770,13 @@ class LazyArchives extends LazyCMS{
                         'modelname'  => $data[0],
                         'modelename' => $data[1],
                         'maintable'  => $data[2],
-                        'addtable'   => '#@_'.C('MODEL_PREFIX').$data[1],
+                        'addtable'   => '#@_archives_model_'.$data[1],
                     );
                     $db->insert('#@_archives_model',$row);
                     // 删除已存在的表
-                    $db->exec("DROP TABLE IF EXISTS `#@_".C('MODEL_PREFIX').$data[1]."`;");
+                    $db->exec("DROP TABLE IF EXISTS `#@_archives_model_".$data[1]."`;");
                     // 创建新表
-                    $db->exec("CREATE TABLE IF NOT EXISTS `#@_".C('MODEL_PREFIX').$data[1]."` (
+                    $db->exec("CREATE TABLE IF NOT EXISTS `#@_archives_model_".$data[1]."` (
                                 `aid` int(11) NOT NULL,
                                 PRIMARY KEY (`aid`)
                                ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");

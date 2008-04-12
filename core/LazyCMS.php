@@ -34,6 +34,10 @@ $GLOBALS['_beginTime'] = microtime(true);
 // 判断PHP版本不能低于5.0
 !version_compare(PHP_VERSION, '5', '<' ) or die('PHP version must not be lower than 5.0, please upgrade your PHP version!<br/>&lt;<a href="http://www.php.net/downloads.php" target="_blank">http://www.php.net/downloads.php</a>&gt;');
 
+
+// 开发模式请将此常量值设置为 false 防止缓存
+if (!defined('CACHE_RUNTIME')) { define('CACHE_RUNTIME',false); }
+
 // LazyCMS系统目录定义
 if (!defined('RUNTIME_PATH')) { define('RUNTIME_PATH',CORE_PATH); }
 

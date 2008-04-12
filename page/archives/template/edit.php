@@ -24,7 +24,7 @@
             <?php if (!empty($img) && !is_file(LAZY_PATH.$img)):?>
             document.write(ico('tip'));
             <?php else:?>
-            document.write(image('<?php echo !empty($img) ? C("SITE_BASE').$img : null;?>'));
+            document.write(image('<?php echo !empty($img) ? C("SITE_BASE").$img : null;?>'));
             <?php endif;?>
             </script>
             <?php if ($setimg):?>

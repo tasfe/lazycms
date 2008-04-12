@@ -60,9 +60,6 @@ return array(
     */
     'DSN_PREFIX' => 'lazy_', //表前缀
     
-    /* 模型表前缀 */
-    'MODEL_PREFIX' => 'add',
-
     /* URL模式: URL_COMMON,URL_PATHINFO,URL_REWRITE */
     'URL_MODEL' => URL_PATHINFO,   // 默认为 URL_COMMON 模式
     'PATH_DEPR' => '/',          // PATHINFO参数之间分割号

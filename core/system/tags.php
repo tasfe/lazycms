@@ -154,7 +154,7 @@ class Tags extends Lazy{
                 if (empty($I1)) {
                     if (class_exists($tagName)) {
                         $obj = new $tagName();
-                        if (property_exists($obj,'tags')) {
+                        if (method_exists($obj,'tags')) {
                             $I1 = $obj->tags($tags,$inValue);
                         } else {
                             $I1 = $tagName;

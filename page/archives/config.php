@@ -25,12 +25,12 @@ defined('CORE_PATH') or die('Restricted access!');
  * Archives module configuration files
  */
 return array (
-  'ADD_SHOW' => true, // 添加文档，默认是否显示
-  'ADD_COMMEND' => false, // 添加文档，默认是否推荐
-  'ADD_TOP' => false, // 添加文档，默认是否置顶
-  'ADD_SNAPIMG' => true, // 添加文档，默认是否下载远程图片
-  'ADD_UPSORT' => true, // 添加文档，默认是否更新列表
-  'ADD_UPHOME' => true, // 添加文档，默认是否更新首页
-  'ADD_CHECKTITLE' => true, // 添加文档，默认是否检查重复标题
+  'ARCHIVES_ADD_SHOW' => true, // 添加文档，默认是否显示
+  'ARCHIVES_ADD_COMMEND' => false, // 添加文档，默认是否推荐
+  'ARCHIVES_ADD_TOP' => false, // 添加文档，默认是否置顶
+  'ARCHIVES_ADD_SNAPIMG' => true, // 添加文档，默认是否下载远程图片
+  'ARCHIVES_ADD_UPSORT' => true, // 添加文档，默认是否更新列表
+  'ARCHIVES_ADD_UPHOME' => true, // 添加文档，默认是否更新首页
+  'ARCHIVES_ADD_CHECKTITLE' => true, // 添加文档，默认是否检查重复标题
 );
 ?>

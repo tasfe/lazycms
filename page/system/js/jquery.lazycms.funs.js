@@ -127,7 +127,7 @@ jQuery.extend(jQuery.fn,{
 	change2input : function(l1){
 		if (this.attr('checked')) {
 			var keepcode = escape($(l1).html());
-			$(l1).replaceWith('<input class="in1" type="text" id="' + $(l1).attr('id') + '" name="' + $(l1).attr('id') + '" value="' + $(l1).val() + '" /><input name="keepcode" id="keepcode" type="hidden" value="" />');
+			$(l1).replaceWith('<input class="in2" type="text" id="' + $(l1).attr('id') + '" name="' + $(l1).attr('id') + '" value="' + $(l1).val() + '" /><input name="keepcode" id="keepcode" type="hidden" value="" />');
 			$('#keepcode').val(keepcode);
 		} else {
 			var keepcode = unescape($('#keepcode').val())

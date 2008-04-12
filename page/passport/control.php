@@ -123,13 +123,13 @@ class LazyPassport extends LazyCMS{
                     $row = array(
                         'groupname'  => $data[0],
                         'groupename' => $data[1],
-                        'grouptable' => '#@_user'.$data[1],
+                        'grouptable' => '#@_passport_group_'.$data[1],
                     );
                     $db->insert('#@_passport_group',$row);
                     // 删除已存在的表
-                    $db->exec("DROP TABLE IF EXISTS `#@_user".$data[1]."`;");
+                    $db->exec("DROP TABLE IF EXISTS `#@_passport_group_".$data[1]."`;");
                     // 创建新表
-                    $db->exec("CREATE TABLE IF NOT EXISTS `#@_user".$data[1]."` (
+                    $db->exec("CREATE TABLE IF NOT EXISTS `#@_passport_group_".$data[1]."` (
                                 `userid` int(11) NOT NULL,
                                 PRIMARY KEY (`userid`)
                                ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");

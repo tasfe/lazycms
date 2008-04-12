@@ -491,8 +491,12 @@ class LazySystem extends LazyCMS{
                     if (file_exists($path.$module)) {       
                         $_module = ucfirst($module);
                         import("@.{$module}.module");
-                        eval('$instSQL = '.$_module.'::instSQL();');
-                        $db->batQuery($instSQL);
+                        $obj = new $_module();
+                        if (method_exists($obj,'instSQL')) {
+                            $instSQL = $obj->instSQL();
+                            $db->batQuery($instSQL);
+                        }
+                        unset($obj);
                         if (empty($modules)) {
                             $modules = $module;
                         } else {
