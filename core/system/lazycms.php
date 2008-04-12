@@ -453,40 +453,40 @@ abstract class LazyCMS extends Lazy{
         }
         unset($db);
     }
-	// keys *** *** www.LazyCMS.net *** ***
-	final public function keys($l1,$l2=null){
-		$I1 = null; $i = 0;
-		$db = getConn();
-		$rs = $db->query("SELECT `sitekeywords` FROM `#@_system` WHERE `systemname` = 'LazyCMS';");
-		if ($data = $db->fetch($rs,0)) {
-			$I2 = $data[0];
-		}
-		if (!empty($l2)) {
-			$I1 = $l2;
-			$I3 = explode(',',$l2);
-			foreach ($I3 as $keyword){
-				if (!instr($I2,$keyword)) {
-					$I2.= ','.trim($keyword);
-				}
-			}
+    // keys *** *** www.LazyCMS.net *** ***
+    final public function keys($l1,$l2=null){
+        $I1 = null; $i = 0;
+        $db = getConn();
+        $rs = $db->query("SELECT `sitekeywords` FROM `#@_system` WHERE `systemname` = 'LazyCMS';");
+        if ($data = $db->fetch($rs,0)) {
+            $I2 = $data[0];
+        }
+        if (!empty($l2)) {
+            $I1 = $l2;
+            $I3 = explode(',',$l2);
+            foreach ($I3 as $keyword){
+                if (!instr($I2,$keyword)) {
+                    $I2.= ','.trim($keyword);
+                }
+            }
             $I2 = ltrim($I2,',');
-			$db->exec("UPDATE `#@_system` SET `sitekeywords`=".$db->quote($I2)." WHERE `systemname`='LazyCMS';");
-		} else {
-			if (strlen($I2) > 0) {
-				$I3 = explode(',',$I2);
-				foreach ($I3 as $keyword){
-					if (strpos(strtolower($l1),strtolower($keyword))!==false) {
-						if (empty($I1)) {
-							$I1 = $keyword;
-						} else {
-							$I1.= ','.$keyword;
-						}
-						$i++; if ((int)$i > 11) {break;}	
-					}
-				}
-			}
-		}
-		return $I1;
-	}
+            $db->exec("UPDATE `#@_system` SET `sitekeywords`=".$db->quote($I2)." WHERE `systemname`='LazyCMS';");
+        } else {
+            if (strlen($I2) > 0) {
+                $I3 = explode(',',$I2);
+                foreach ($I3 as $keyword){
+                    if (strpos(strtolower($l1),strtolower($keyword))!==false) {
+                        if (empty($I1)) {
+                            $I1 = $keyword;
+                        } else {
+                            $I1.= ','.$keyword;
+                        }
+                        $i++; if ((int)$i > 11) {break;}    
+                    }
+                }
+            }
+        }
+        return $I1;
+    }
 }
 ?>

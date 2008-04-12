@@ -646,12 +646,12 @@ class LazySystem extends LazyCMS{
     function _browsefiles(){
         clearCache();
         $this->checker('filemanage',true);
-		if ((int)get_cfg_var('post_max_size') < (int)$_SERVER["CONTENT_LENGTH"]/1024/1024) {
-			$I1 = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
+        if ((int)get_cfg_var('post_max_size') < (int)$_SERVER["CONTENT_LENGTH"]/1024/1024) {
+            $I1 = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
             $I1.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>UpLoadFile</title></head><body>';
-			$I1.= '<script type="text/javascript" charset="utf-8">window.parent.alert(\''.L('error/upload/err0',array('max' => get_cfg_var('post_max_size'))).'\');</script>';
-			$I1.= '</body></html>';echo $I1;return ;
-		}
+            $I1.= '<script type="text/javascript" charset="utf-8">window.parent.alert(\''.L('error/upload/err0',array('max' => get_cfg_var('post_max_size'))).'\');</script>';
+            $I1.= '</body></html>';echo $I1;return ;
+        }
         $action= isset($_POST['action']) ? (string)$_POST['action'] : null;
         $path  = isset($_POST['path']) ? (string)$_POST['path'] : null; $path = ltrim($path,'/');
         $from  = isset($_POST['from']) ? (string)$_POST['from'] : null;
@@ -822,25 +822,25 @@ class LazySystem extends LazyCMS{
     function _login(){
         try {
             $db = getConn();
-			$adminname = Cookie::get('adminname');
-			$adminpass = Cookie::get('adminpass');
-			if (!empty($adminname) && !empty($adminpass)) {
-				$where = $db->quoteInto('WHERE `adminname` = ?',$adminname);
-				$res   = $db->query("SELECT * FROM `#@_admin` {$where};");
-				if ($data = $db->fetch($res)) {
-					if ($adminpass==$data['adminpass']) {
-						// 登录成功，写登录记录
-						$row = array(
-							'adminname' => $adminname,
-							'ip'        => ip(),
-							'lognum'    => 1,
-							'logdate'   => now(),
-						);
-						$db->insert('#@_log',$row);
-						redirect(url('System'));
-					}
-				}
-			}
+            $adminname = Cookie::get('adminname');
+            $adminpass = Cookie::get('adminpass');
+            if (!empty($adminname) && !empty($adminpass)) {
+                $where = $db->quoteInto('WHERE `adminname` = ?',$adminname);
+                $res   = $db->query("SELECT * FROM `#@_admin` {$where};");
+                if ($data = $db->fetch($res)) {
+                    if ($adminpass==$data['adminpass']) {
+                        // 登录成功，写登录记录
+                        $row = array(
+                            'adminname' => $adminname,
+                            'ip'        => ip(),
+                            'lognum'    => 1,
+                            'logdate'   => now(),
+                        );
+                        $db->insert('#@_log',$row);
+                        redirect(url('System'));
+                    }
+                }
+            }
         } catch (Error $e) {
             if (is_file(LAZY_PATH.'install.php')) {
                 redirect(C('SITE_BASE').'install.php');exit;

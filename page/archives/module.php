@@ -54,20 +54,20 @@ class Archives{
             return false;
         }
     }
-	// getSubSortIds *** *** www.LazyCMS.net *** ***
-	static function getSubSortIds($l1){
-		$I1  = $l1;
-		$db  = getConn();
+    // getSubSortIds *** *** www.LazyCMS.net *** ***
+    static function getSubSortIds($l1){
+        $I1  = $l1;
+        $db  = getConn();
         $res = $db->query("SELECT `sortid` FROM `#@_archives_sort` WHERE ".$db->quoteInto('`sortid1` = ?',$l1));
         while ($data = $db->fetch($res,0)) {
-			if ($db->count("SELECT count(`sortid`) FROM `#@_archives_sort` WHERE `sortid1`= '".$data[0]."';") > 0) {
-				$I1.= ",".self::getSubSortIds($data[0]);
-			} else {
-				$I1.= ",".$data[0];
-			}
+            if ($db->count("SELECT count(`sortid`) FROM `#@_archives_sort` WHERE `sortid1`= '".$data[0]."';") > 0) {
+                $I1.= ",".self::getSubSortIds($data[0]);
+            } else {
+                $I1.= ",".$data[0];
+            }
         }
-		return $I1;
-	}
+        return $I1;
+    }
     // getFields *** *** www.LazyCMS.net *** ***
     static function getFields($l1){
         $modeid = $l1;
@@ -120,20 +120,20 @@ class Archives{
         }
         return $I1;
     }
-	// delArchive *** *** www.LazyCMS.net *** ***
-	static function delArchive($l1,$l2=false){
-		$paths = explode('/',$l1);
-		if (strpos($paths[count($paths)-1],'.')!==false){ //文件
-			@unlink(LAZY_PATH.$l1);
-			if (strpos($l1,'/')!==false){
-				$path = substr($l1,0,strlen($l1)-strlen($paths[count($paths)-1]));
-				rmdirs(LAZY_PATH.$path,$l2);
-			}
-		} else { //目录
-			@unlink(LAZY_PATH.$l1.'/'.C('SITE_INDEX'));
-			rmdirs(LAZY_PATH.$l1,$l2);
-		}
-	}
+    // delArchive *** *** www.LazyCMS.net *** ***
+    static function delArchive($l1,$l2=false){
+        $paths = explode('/',$l1);
+        if (strpos($paths[count($paths)-1],'.')!==false){ //文件
+            @unlink(LAZY_PATH.$l1);
+            if (strpos($l1,'/')!==false){
+                $path = substr($l1,0,strlen($l1)-strlen($paths[count($paths)-1]));
+                rmdirs(LAZY_PATH.$path,$l2);
+            }
+        } else { //目录
+            @unlink(LAZY_PATH.$l1.'/'.C('SITE_INDEX'));
+            rmdirs(LAZY_PATH.$l1,$l2);
+        }
+    }
     // showSort *** *** www.LazyCMS.net *** ***
     static function showSort($l1){
         $sortid = $l1;
@@ -150,23 +150,23 @@ class Archives{
             return C('SITE_BASE');
         }
     }
-	// guide *** *** www.LazyCMS.net *** ***
-	function guide($l1){
-		if (empty($l1)) { return ;}
-		$I1 = null; $db = getConn();
-		$res = $db->query("SELECT `sortid1`,`sortname`,`sortpath` FROM `#@_archives_sort` WHERE `sortid`='{$l1}';");
-		if ($data = $db->fetch($res,0)) {
-			$I1 = '<a href="'.self::showSort($l1).'">'.htmlencode($data[1]).'</a>';
-			if ((int)$data[0] !== 0) {
-				$I1 = self::guide($data[0])." &gt;&gt; ".$I1;
-			}
-		}
-		return $I1;
-	}
+    // guide *** *** www.LazyCMS.net *** ***
+    function guide($l1){
+        if (empty($l1)) { return ;}
+        $I1 = null; $db = getConn();
+        $res = $db->query("SELECT `sortid1`,`sortname`,`sortpath` FROM `#@_archives_sort` WHERE `sortid`='{$l1}';");
+        if ($data = $db->fetch($res,0)) {
+            $I1 = '<a href="'.self::showSort($l1).'">'.htmlencode($data[1]).'</a>';
+            if ((int)$data[0] !== 0) {
+                $I1 = self::guide($data[0])." &gt;&gt; ".$I1;
+            }
+        }
+        return $I1;
+    }
     // viewSort *** *** www.LazyCMS.net *** ***
     static function viewSort($l1,$page=1,$type=false,$isCreatePage=false){
         $sortid = $l1; $tmpList = null;
-		$page   = !empty($page) ? (int)$page : 1;
+        $page   = !empty($page) ? (int)$page : 1;
         $db     = getConn();
         $model  = self::getModel($sortid);
         $fields = self::getFields($model['modelid']);
@@ -183,7 +183,7 @@ class Archives{
         $zebra   = $tag->getLabel($HTMList,'zebra');
         $rand    = chr(3).salt(20).chr(2);//随机出来的替换参数
         $randpl  = chr(3).salt(16).chr(2);
-		if ($jsType=='sub') {
+        if ($jsType=='sub') {
             $sortids = self::getSubSortIds($sortid);
         } else {
             $sortids = $sortid;
@@ -194,25 +194,25 @@ class Archives{
         // 替换模板中的标签
         $tag->clear();
         $tag->value('title',encode(htmlencode($model['sortname'])));
-		$tag->value('sortid',$model['sortid']);
+        $tag->value('sortid',$model['sortid']);
         $tag->value('sortname',encode(htmlencode($model['sortname'])));
         $tag->value('sortpath',encode($path));
         $tag->value('path',encode($path));
         $tag->value('keywords',encode(htmlencode($model['keywords'])));
         $tag->value('description',encode(htmlencode($model['description'])));
         $tag->value('pagelist',encode($randpl));
-		$tag->value('guide',encode(self::guide($model['sortid'])));
+        $tag->value('guide',encode(self::guide($model['sortid'])));
         
         $HTML = $tag->create($HTML,$tag->getValue());
 
-		$strSQL = "SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` WHERE `a`.`sortid` IN({$sortids}) AND `a`.`show` = 1 ORDER BY `a`.`top` DESC,`a`.`order` {$jsOrder},`a`.`sortid` {$jsOrder}";
-		$totalRows  = $db->count($strSQL);
-		$totalPages = ceil($totalRows/$jsNumber);
+        $strSQL = "SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` WHERE `a`.`sortid` IN({$sortids}) AND `a`.`show` = 1 ORDER BY `a`.`top` DESC,`a`.`order` {$jsOrder},`a`.`sortid` {$jsOrder}";
+        $totalRows  = $db->count($strSQL);
+        $totalPages = ceil($totalRows/$jsNumber);
         $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
         if ((int)$page > (int)$totalPages) {
             $page = $totalPages;
         }
-		$percent = round($page/$totalPages*100,2);
+        $percent = round($page/$totalPages*100,2);
         $strSQL .= ' LIMIT '.$jsNumber.' OFFSET '.($page-1)*$jsNumber.';';
         if ((int)$totalRows > 0) {
             $res = $db->query($strSQL);
@@ -247,64 +247,64 @@ class Archives{
             $outHTML = str_replace($rand,L('error/rsnot'),$HTML);
             $outHTML = str_replace($randpl,null,$outHTML);
         }
-		// 生成
-		if (!C('SITE_MODE')) { 
-			mkdirs(LAZY_PATH.$model['sortpath']);
-			if ((int)$page == 1) {
-				$arcPath = LAZY_PATH.$model['sortpath'].'/'.C('SITE_INDEX');
-			} elseif ((int)$page <= (int)$totalPages) {
-				$arcPath = LAZY_PATH.$model['sortpath'].'/index'.$page.C('HTML_URL_SUFFIX');
-			}
-			if (!empty($arcPath)) {
-				saveFile($arcPath,$outHTML);
-			}
-		}
-		if ($type) {
-			return $percent;
-		} else {
-			return $outHTML;
-		}
+        // 生成
+        if (!C('SITE_MODE')) { 
+            mkdirs(LAZY_PATH.$model['sortpath']);
+            if ((int)$page == 1) {
+                $arcPath = LAZY_PATH.$model['sortpath'].'/'.C('SITE_INDEX');
+            } elseif ((int)$page <= (int)$totalPages) {
+                $arcPath = LAZY_PATH.$model['sortpath'].'/index'.$page.C('HTML_URL_SUFFIX');
+            }
+            if (!empty($arcPath)) {
+                saveFile($arcPath,$outHTML);
+            }
+        }
+        if ($type) {
+            return $percent;
+        } else {
+            return $outHTML;
+        }
     }
-	// pagelist *** *** www.LazyCMS.net *** ***
-	static function pagelist($l1,$l2,$l3,$l4){
-		// url,page,总页数,记录总数
-		// 修要修改分页风格，直接修改此函数即可
-		$I1 = null;
-		if (strpos($l1,'%24')!==false) { $l1 = str_replace('%24','$',$l1); }
-		if (strpos($l1,'$')==0 || $l4==0) { return ; }
-		$l7 = C('SITE_MODE') ? 1 : null;
-		if ($l2 > 3) {
-			$I1 = '<a href="'.str_replace('$',$l7,$l1).'">1 ...</a>';
-		}
-		if ($l2 > 2) {
-			$I1 .= '<a href="'.str_replace('$',$l2-1,$l1).'">&lsaquo;&lsaquo;</a>';
-		} elseif ($l2==2) {
-			$I1 .= '<a href="'.str_replace('$',$l7,$l1).'">&lsaquo;&lsaquo;</a>';
-		}
-		$l5 = $l2-2;
-		$l6 = $l2+7;
-		for ($i=$l5; $i<=$l6; $i++) {
-			if ($i>=1 && $i<=$l3) {
-				if ((int)$i==(int)$l2) {
-					$I1 .= "<strong>$i</strong>";
-				} else {
-					if ($i==1) {
-						$I1 .= '<a href="'.str_replace('$',$l7,$l1).'">'.$i.'</a>';
-					} else {
-						$I1 .= '<a href="'.str_replace('$',$i,$l1).'">'.$i.'</a>';
-					}
-				}
-			}
-		}
-		if ($l2 < $l3) {
-			$I1 .= '<a href="'.str_replace('$',$l2+1,$l1).'">&rsaquo;&rsaquo;</a>';
-		}
-		if ($l2 < ($l3-7)) {
-			$I1 .= '<a href="'.str_replace('$',$l3,$l1).'">... '.$l3.'</a>';
-		}
-		$I2 = explode('$',$l1);
-		return '<div class="pagelist"><em>'.$l4.'</em>'.$I1.'</div>';
-	}
+    // pagelist *** *** www.LazyCMS.net *** ***
+    static function pagelist($l1,$l2,$l3,$l4){
+        // url,page,总页数,记录总数
+        // 修要修改分页风格，直接修改此函数即可
+        $I1 = null;
+        if (strpos($l1,'%24')!==false) { $l1 = str_replace('%24','$',$l1); }
+        if (strpos($l1,'$')==0 || $l4==0) { return ; }
+        $l7 = C('SITE_MODE') ? 1 : null;
+        if ($l2 > 3) {
+            $I1 = '<a href="'.str_replace('$',$l7,$l1).'">1 ...</a>';
+        }
+        if ($l2 > 2) {
+            $I1 .= '<a href="'.str_replace('$',$l2-1,$l1).'">&lsaquo;&lsaquo;</a>';
+        } elseif ($l2==2) {
+            $I1 .= '<a href="'.str_replace('$',$l7,$l1).'">&lsaquo;&lsaquo;</a>';
+        }
+        $l5 = $l2-2;
+        $l6 = $l2+7;
+        for ($i=$l5; $i<=$l6; $i++) {
+            if ($i>=1 && $i<=$l3) {
+                if ((int)$i==(int)$l2) {
+                    $I1 .= "<strong>$i</strong>";
+                } else {
+                    if ($i==1) {
+                        $I1 .= '<a href="'.str_replace('$',$l7,$l1).'">'.$i.'</a>';
+                    } else {
+                        $I1 .= '<a href="'.str_replace('$',$i,$l1).'">'.$i.'</a>';
+                    }
+                }
+            }
+        }
+        if ($l2 < $l3) {
+            $I1 .= '<a href="'.str_replace('$',$l2+1,$l1).'">&rsaquo;&rsaquo;</a>';
+        }
+        if ($l2 < ($l3-7)) {
+            $I1 .= '<a href="'.str_replace('$',$l3,$l1).'">... '.$l3.'</a>';
+        }
+        $I2 = explode('$',$l1);
+        return '<div class="pagelist"><em>'.$l4.'</em>'.$I1.'</div>';
+    }
     // showArchive *** *** www.LazyCMS.net *** ***
     static function showArchive($l1,$l2,$l3=null){
         if (is_numeric($l2)) {
@@ -318,11 +318,11 @@ class Archives{
         $res   = $db->query("SELECT `a`.`sortpath`,`b`.`path` FROM `#@_archives_sort` AS `a` LEFT JOIN `".$model['maintable']."` AS `b` ON `a`.`sortid` = `b`.`sortid` {$where}");
         if ($data = $db->fetch($res,0)) {
             if (C('SITE_MODE')) {
-				if (!empty($l3)) {
-					$page = '&page='.$l3;
-				} else {
-					$page = null;
-				}
+                if (!empty($l3)) {
+                    $page = '&page='.$l3;
+                } else {
+                    $page = null;
+                }
                 return url('Archives','ShowArchive','sortid='.$model['sortid'].'&aid='.$aid.$page);
             } else {
                 if (!empty($l3)) {
@@ -343,54 +343,54 @@ class Archives{
             }
         }
     }
-	// viewArchive *** *** www.LazyCMS.net *** ***
-	static function viewArchive($l1,$l2,$l3=1){
-		$sortid = $l1; $aid = $l2; $page = $l3; $db = getConn();
-		$model  = self::getModel($sortid);
-		$where = $db->quoteInto('WHERE `id` = ?',$aid);
+    // viewArchive *** *** www.LazyCMS.net *** ***
+    static function viewArchive($l1,$l2,$l3=1){
+        $sortid = $l1; $aid = $l2; $page = $l3; $db = getConn();
+        $model  = self::getModel($sortid);
+        $where = $db->quoteInto('WHERE `id` = ?',$aid);
         $res   = $db->query("SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` {$where};");
         if ($data = $db->fetch($res)) {
-			$tag  = O('Tags');
-			$HTML = $tag->read($model['pagetemplate1'],$model['pagetemplate2']);
-			// 替换模板中的标签
-			$tag->clear();
-			$tag->value('id',$data['id']);
+            $tag  = O('Tags');
+            $HTML = $tag->read($model['pagetemplate1'],$model['pagetemplate2']);
+            // 替换模板中的标签
+            $tag->clear();
+            $tag->value('id',$data['id']);
             $tag->value('sortid',$data['sortid']);
-			$tag->value('title',encode(htmlencode($data['title'])));
-			$tag->value('sortname',encode(htmlencode($model['sortname'])));
-			$tag->value('sortpath',encode(self::showSort($sortid)));
-			$tag->value('image',encode($data['img']));
-			$tag->value('date',$data['date']);
+            $tag->value('title',encode(htmlencode($data['title'])));
+            $tag->value('sortname',encode(htmlencode($model['sortname'])));
+            $tag->value('sortpath',encode(self::showSort($sortid)));
+            $tag->value('image',encode($data['img']));
+            $tag->value('date',$data['date']);
             $tag->value('keywords',encode(htmlencode($data['keywords'])));
             $tag->value('description',encode(htmlencode($data['description'])));
-			$tag->value('guide',encode(self::guide($data['sortid'])." &gt;&gt; ".htmlencode($data['title'])));
-			$tag->value('hits',encode("<span class=\"lz_hits\"><script type=\"text/javascript\">\$('.lz_hits').html(loadgif()).load('".url('Archives','hits','sortid='.$sortid.'&id='.$data['id'])."');</script></span>"));
+            $tag->value('guide',encode(self::guide($data['sortid'])." &gt;&gt; ".htmlencode($data['title'])));
+            $tag->value('hits',encode("<span class=\"lz_hits\"><script type=\"text/javascript\">\$('.lz_hits').html(loadgif()).load('".url('Archives','hits','sortid='.$sortid.'&id='.$data['id'])."');</script></span>"));
             $tag->value('lastpage',encode(self::lastPage($data,$model,$HTML)));
             $tag->value('nextpage',encode(self::nextPage($data,$model,$HTML)));
-			
-			$fields = self::getFields($model['modelid']);
+            
+            $fields = self::getFields($model['modelid']);
             
             // 有编辑器，动态模式，分页，只对第一个编辑器进行处理
-			$result = $db->query("SELECT * FROM `#@_archives_fields` WHERE `modelid` ='".$model['modelid']."' AND `inputtype`='editor' ORDER BY `fieldorder` ASC, `fieldid` ASC;");
-			if ($field = $db->fetch($result)){
-				$contents = explode(C('WEB_BREAK'),$data[$field['fieldename']]);
-				$length   = count($contents);
-				// 动态模式，只浏览不生成
-				if (C('SITE_MODE')) {
-					$page = (int)$page > (int)$length ? $length : $page;
+            $result = $db->query("SELECT * FROM `#@_archives_fields` WHERE `modelid` ='".$model['modelid']."' AND `inputtype`='editor' ORDER BY `fieldorder` ASC, `fieldid` ASC;");
+            if ($field = $db->fetch($result)){
+                $contents = explode(C('WEB_BREAK'),$data[$field['fieldename']]);
+                $length   = count($contents);
+                // 动态模式，只浏览不生成
+                if (C('SITE_MODE')) {
+                    $page = (int)$page > (int)$length ? $length : $page;
                     foreach ($fields as $k) { $tag->value($k,encode($data[$k])); }
-					$tag->value('path',encode(self::showArchive($data['id'],$model,$page)));
-					$tag->value('pagelist',encode(self::pagelists(self::showArchive($data['id'],$model,'$'),$length,$page)));
-					$tag->value($field['fieldename'],encode($contents[$page-1]));
-					return $tag->create($HTML,$tag->getValue());
-				}
-			} else {
+                    $tag->value('path',encode(self::showArchive($data['id'],$model,$page)));
+                    $tag->value('pagelist',encode(self::pagelists(self::showArchive($data['id'],$model,'$'),$length,$page)));
+                    $tag->value($field['fieldename'],encode($contents[$page-1]));
+                    return $tag->create($HTML,$tag->getValue());
+                }
+            } else {
                 $contents = null;
                 $length   = -1;
             }
 
             // 静态模式，且有编辑器，分页生成
-			if (!C('SITE_MODE') && (int)$length > 0) { 
+            if (!C('SITE_MODE') && (int)$length > 0) { 
                 for ($i=0;$i<$length;$i++) {
                     foreach ($fields as $k) { $tag->value($k,encode($data[$k])); }
                     $tag->value('path',encode(self::showArchive($data['id'],$model,($i+1))));
@@ -414,7 +414,7 @@ class Archives{
                     self::createHTML($model['sortpath'],$path,$outHTML);
                 }
                 return ;
-			}
+            }
 
             // 没有编辑器，动态模式 AND 没有编辑器静态模式
             $tag->value('path',encode(self::showArchive($data['id'],$model)));
@@ -433,27 +433,27 @@ class Archives{
             $outHTML = null;
         }
         return $outHTML;
-	}
-	// pagelists *** *** www.LazyCMS.net *** ***
-	static function pagelists($l1,$l2,$l3){
-		// url,总页数,page
-		$I1 = null;if ($l2<=1) { return ; }
-		if (strpos($l1,'%24')!==false) { $l1 = str_replace('%24','$',$l1); }
-		if (strpos($l1,'$')===false) { return ; }
-		$l4 = C('SITE_MODE') ? 1 : null;
-		for ($i=1; $i<=$l2; $i++) {
-			if ((int)$i==(int)$l3) {
-				$I1 .= "<strong>{$i}</strong>";
-			} else {
-				if ($i==1) {
-					$I1 .= '<a href="'.str_replace('$',$l4,$l1).'">'.$i.'</a>';
-				} else {
-					$I1 .= '<a href="'.str_replace('$',$i,$l1).'">'.$i.'</a>';
-				}
-			}
-		}
-		return $I1;
-	}
+    }
+    // pagelists *** *** www.LazyCMS.net *** ***
+    static function pagelists($l1,$l2,$l3){
+        // url,总页数,page
+        $I1 = null;if ($l2<=1) { return ; }
+        if (strpos($l1,'%24')!==false) { $l1 = str_replace('%24','$',$l1); }
+        if (strpos($l1,'$')===false) { return ; }
+        $l4 = C('SITE_MODE') ? 1 : null;
+        for ($i=1; $i<=$l2; $i++) {
+            if ((int)$i==(int)$l3) {
+                $I1 .= "<strong>{$i}</strong>";
+            } else {
+                if ($i==1) {
+                    $I1 .= '<a href="'.str_replace('$',$l4,$l1).'">'.$i.'</a>';
+                } else {
+                    $I1 .= '<a href="'.str_replace('$',$i,$l1).'">'.$i.'</a>';
+                }
+            }
+        }
+        return $I1;
+    }
     // createHTML *** *** www.LazyCMS.net *** ***
     static function createHTML($l1,$l2,$l3){
         // $l1:目录路径, $l2:文件路径, $l3:需要保存的内容
@@ -526,8 +526,8 @@ class Archives{
     }
     // tags *** *** www.LazyCMS.net *** ***
     static function tags($tags,$inValue){ 
-		$inSQL = null; $tmpList = null; $db = getConn();
-		$tagName = sect($tags,"(lazy\:)","( |\/|\}|\))");
+        $inSQL = null; $tmpList = null; $db = getConn();
+        $tagName = sect($tags,"(lazy\:)","( |\/|\}|\))");
         $HTMList = $tags; $tag = O('Tags');
         $jsHTML  = $tag->getLabel($HTMList,0);
         $sortid  = $tag->getLabel($HTMList,'sortid');
@@ -539,40 +539,40 @@ class Archives{
         $remove  = $tag->getLabel($HTMList,'remove');
         $zebra   = $tag->getLabel($HTMList,'zebra');
 
-		// 根据tagName 取得modelid
-		$where = $db->quoteInto("WHERE `modelename` = ?",$tagName);
-		$res   = $db->query("SELECT * FROM `#@_archives_model` {$where};");
-		if ($model = $db->fetch($res)) {
-			$fields  = self::getFields($model['modelid']);
-			if (is_numeric($remove)) {
-				$inSQL.= " AND `m`.`sortid` NOT IN({$remove})";
-			}
-			if (preg_match('/\(lazy:image.{0,}?\/\)/i',$jsHTML,$regs)){
-				$inSQL.= " AND `m`.`img` <> ''";
-			}
-			if (validate($sortid,6) || instr('sub,current',$sortid)) {
-				switch (strtolower($sortid)){
-					case 'sub':
-						$sortid = $inValue['sortid'];
-						$sortid = self::getSubSortIds($sortid);
-						break;
-					case 'current':
-						$sortid = $inValue['sortid'];
-						break;
-				}
-				if (empty($sortid)) { $sortid = 0; }
-				$inSQL.= " AND `m`.`sortid` IN({$sortid})";
-			} else {
-				$sortname = $tag->getLabel($HTMList,'sortname');
-				if (strlen($sortname) > 0) {
-					$inSQL.= $db->quoteInto(" AND `s`.`sortname` = ?",$sortname);
-				}
-			}
-			$select = "SELECT * FROM `".$model['maintable']."` AS `m`
-						LEFT JOIN `".$model['addtable']."` AS `a` ON `m`.`id` = `a`.`aid`
-						LEFT JOIN `#@_archives_sort` AS `s` ON `s`.`sortid` = `m`.`sortid` WHERE `s`.`modelid`='".$model['modelid']."' AND `m`.`show` = 1 ";
+        // 根据tagName 取得modelid
+        $where = $db->quoteInto("WHERE `modelename` = ?",$tagName);
+        $res   = $db->query("SELECT * FROM `#@_archives_model` {$where};");
+        if ($model = $db->fetch($res)) {
+            $fields  = self::getFields($model['modelid']);
+            if (is_numeric($remove)) {
+                $inSQL.= " AND `m`.`sortid` NOT IN({$remove})";
+            }
+            if (preg_match('/\(lazy:image.{0,}?\/\)/i',$jsHTML,$regs)){
+                $inSQL.= " AND `m`.`img` <> ''";
+            }
+            if (validate($sortid,6) || instr('sub,current',$sortid)) {
+                switch (strtolower($sortid)){
+                    case 'sub':
+                        $sortid = $inValue['sortid'];
+                        $sortid = self::getSubSortIds($sortid);
+                        break;
+                    case 'current':
+                        $sortid = $inValue['sortid'];
+                        break;
+                }
+                if (empty($sortid)) { $sortid = 0; }
+                $inSQL.= " AND `m`.`sortid` IN({$sortid})";
+            } else {
+                $sortname = $tag->getLabel($HTMList,'sortname');
+                if (strlen($sortname) > 0) {
+                    $inSQL.= $db->quoteInto(" AND `s`.`sortname` = ?",$sortname);
+                }
+            }
+            $select = "SELECT * FROM `".$model['maintable']."` AS `m`
+                        LEFT JOIN `".$model['addtable']."` AS `a` ON `m`.`id` = `a`.`aid`
+                        LEFT JOIN `#@_archives_sort` AS `s` ON `s`.`sortid` = `m`.`sortid` WHERE `s`.`modelid`='".$model['modelid']."' AND `m`.`show` = 1 ";
 
-			switch ($jsType) {
+            switch ($jsType) {
                 case 'related':// 相关文章
                     $key = $inValue['keywords'];
                     $aid = $inValue['id'];
@@ -588,47 +588,47 @@ class Archives{
                         return ;
                     }
                     break;
-				case 'sql':// 自定义SQL
-					$jsSQL  = $tag->getLabel($HTMList,'sql');
-					$strSQL = $select.$jsSQL;
-					break;
-				case 'commend':// 推荐文章
-					$strSQL = $select." AND `m`.`commend` = 1 {$inSQL} ORDER BY `m`.`order` DESC,`m`.`id` DESC";
-					break;
-				case 'hot':// 热门文章
-					$strSQL = $select.$inSQL." ORDER BY `m`.`hits` DESC ,`m`.`id` DESC";
-					break;
-				case 'chill': case 'cold':// 冷门文章
-					$strSQL = $select.$inSQL." ORDER BY `m`.`hits` ASC ,`m`.`id` ASC";
-					break;
-				default : // 最新文章
+                case 'sql':// 自定义SQL
+                    $jsSQL  = $tag->getLabel($HTMList,'sql');
+                    $strSQL = $select.$jsSQL;
+                    break;
+                case 'commend':// 推荐文章
+                    $strSQL = $select." AND `m`.`commend` = 1 {$inSQL} ORDER BY `m`.`order` DESC,`m`.`id` DESC";
+                    break;
+                case 'hot':// 热门文章
+                    $strSQL = $select.$inSQL." ORDER BY `m`.`hits` DESC ,`m`.`id` DESC";
+                    break;
+                case 'chill': case 'cold':// 冷门文章
+                    $strSQL = $select.$inSQL." ORDER BY `m`.`hits` ASC ,`m`.`id` ASC";
+                    break;
+                default : // 最新文章
                     $strSQL = $select.$inSQL." ORDER BY `m`.`order` DESC,`m`.`id` DESC";
-					break;
-			}
-			$strSQL.= " LIMIT 0,{$jsNumber};";
+                    break;
+            }
+            $strSQL.= " LIMIT 0,{$jsNumber};";
             
-			$rs = $db->query($strSQL);
-			$i  = 1;
-			while ($data = $db->fetch($rs)) {
-				$tag->clear();
-				$tag->value('id',$data['id']);
-				$tag->value('sortid',$data['sortid']);
-				$tag->value('sortname',encode(htmlencode($data['sortname'])));
-				$tag->value('sortpath',encode(self::showSort($data['sortid'])));
-				$tag->value('title',encode(htmlencode($data['title'])));
-				$tag->value('path',encode(self::showArchive($data['id'],self::getModel($data['sortid']))));
-				$tag->value('image',encode($data['img']));
-				$tag->value('date',$data['date']);
-				$tag->value('zebra',($i % ($zebra+1)) ? 0 : 1);
-				$tag->value('++',$i);
-				foreach ($fields as $k) {
-					$tag->value($k,encode($data[$k]));
-				}
-				$tmpList.= $tag->createhtm($jsHTML,$tag->getValue());
-				$i++;
-			}
-		}
-		return $tmpList;
+            $rs = $db->query($strSQL);
+            $i  = 1;
+            while ($data = $db->fetch($rs)) {
+                $tag->clear();
+                $tag->value('id',$data['id']);
+                $tag->value('sortid',$data['sortid']);
+                $tag->value('sortname',encode(htmlencode($data['sortname'])));
+                $tag->value('sortpath',encode(self::showSort($data['sortid'])));
+                $tag->value('title',encode(htmlencode($data['title'])));
+                $tag->value('path',encode(self::showArchive($data['id'],self::getModel($data['sortid']))));
+                $tag->value('image',encode($data['img']));
+                $tag->value('date',$data['date']);
+                $tag->value('zebra',($i % ($zebra+1)) ? 0 : 1);
+                $tag->value('++',$i);
+                foreach ($fields as $k) {
+                    $tag->value($k,encode($data[$k]));
+                }
+                $tmpList.= $tag->createhtm($jsHTML,$tag->getValue());
+                $i++;
+            }
+        }
+        return $tmpList;
     }
     // showTypes *** *** www.LazyCMS.net *** ***
     static function showTypes($l1=null){
@@ -664,10 +664,10 @@ class Archives{
         if (!$isDeleteTable) {
             if ($db->isTable($data[3])) {
                 $salt = salt(4);
-				$data[1].= '_'.$salt;
-				$data[3].= '_'.$salt;
+                $data[1].= '_'.$salt;
+                $data[3].= '_'.$salt;
             }
-		}
+        }
         // Insert model
         $row = array(
             'modelname'  => $data[0],
@@ -737,7 +737,7 @@ class Archives{
               `img` varchar(255),                           # 图片
               `path` varchar(255) NOT NULL,                 # 路径
               `date` int(11) NOT NULL,                      # 发布时间
-			  `hits` int(11) NOT NULL default '0',			# 浏览次数
+              `hits` int(11) NOT NULL default '0',          # 浏览次数
               `keywords` varchar(255),                      # 关键词
               `description` varchar(255),                   # 简述
               PRIMARY KEY  (`id`),

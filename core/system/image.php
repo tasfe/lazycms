@@ -29,7 +29,7 @@ class Image{
             $pathinfo  = pathinfo($image);
             $type = $pathinfo['extension'];
             $type = empty($type) ? $info['type'] : $type;
-			$type = strtolower($type); unset($info);
+            $type = strtolower($type); unset($info);
             $scale = min($maxWidth/$srcWidth, $maxHeight/$srcHeight); // 计算缩放比例
 
             // 缩略图尺寸
@@ -56,7 +56,7 @@ class Image{
 
             if('gif'==$type || 'png'==$type) {
                 $background_color = imagecolorallocate($thumbImg,0,255,0);  //  指派一个绿色  
-				imagecolortransparent($thumbImg,$background_color);  //  设置为透明色，若注释掉该行则输出绿色的图 
+                imagecolortransparent($thumbImg,$background_color);  //  设置为透明色，若注释掉该行则输出绿色的图 
             }
 
             // 对jpeg图形设置隔行扫描

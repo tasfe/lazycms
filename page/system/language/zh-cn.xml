@@ -16,7 +16,7 @@
     </menu>
 
     <common>
-		<home>首页</home>
+        <home>首页</home>
         <upok>更新成功!</upok>
         <module>模块</module>
         <action>操作</action>
@@ -248,18 +248,18 @@
         <getdown>您的服务器不支持获取远程文件。</getdown>
         <nomodels>请先创建模型</nomodels>
         <nosort>请先创建分类</nosort>
-		<upload>
-			<err0>POST值超过了 post_max_size({$max}) </err0>
-			<err1>上传的文件超过了 php.ini 中 upload_max_filesize 选项限制的值</err1>
-			<err2>上传文件的大小超过了 HTML 表单中 MAX_FILE_SIZE 选项指定的值</err2>
-			<err3>文件只有部分被上传</err3>
-			<err4>没有文件被上传</err4>
-			<err5>上传的文件太大</err5>
-			<err6>找不到临时文件夹</err6>
-			<err7>文件写入失败</err7>
-			<err8>上传的文件类型不允许</err8>
-			<err9>非法提交</err9>
-		</upload>
+        <upload>
+            <err0>POST值超过了 post_max_size({$max}) </err0>
+            <err1>上传的文件超过了 php.ini 中 upload_max_filesize 选项限制的值</err1>
+            <err2>上传文件的大小超过了 HTML 表单中 MAX_FILE_SIZE 选项指定的值</err2>
+            <err3>文件只有部分被上传</err3>
+            <err4>没有文件被上传</err4>
+            <err5>上传的文件太大</err5>
+            <err6>找不到临时文件夹</err6>
+            <err7>文件写入失败</err7>
+            <err8>上传的文件类型不允许</err8>
+            <err9>非法提交</err9>
+        </upload>
     </error>
     
     <other>

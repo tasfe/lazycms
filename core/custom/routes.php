@@ -30,8 +30,8 @@ defined('CORE_PATH') or die('Restricted access!');
 return array(
     'page' => array('Onepage','ShowPage','oneid'),
     'Article@'=>array(
-		array('/^\/(\d+)?$/i','Article','View','id'),
-		array('/^\/(\d+)\/(\d+)/i','Article','Archive','year,month'),
-	),
+        array('/^\/(\d+)?$/i','Article','View','id'),
+        array('/^\/(\d+)\/(\d+)/i','Article','Archive','year,month'),
+    ),
 );
 ?>

@@ -9,6 +9,7 @@
 
     <common>
         <root>根目錄</root>
+        <addtable>新建索引表</addtable>
         <addpage>添加文檔</addpage>
         <editpage>編輯文檔</editpage>
         <addsort>添加分類</addsort>
@@ -59,14 +60,14 @@
             <commend>推薦</commend>
             <snapimg>遠程抓圖</snapimg>
             <upsort>更新列表</upsort>
-			<uphome>更新首頁</uphome>
+            <uphome>更新首頁</uphome>
             <checktitle>檢查標題是否重復</checktitle>
             <title>標題</title>
             <img>縮略圖 (若寫遠程路徑，自動抓取圖片保存到本地)</img>
             <setimg>設第一幅圖為縮略圖</setimg>
             <path>路徑 (不支持特殊符號；不建議輸入純數字，以免覆蓋列表)</path>
-			<keywords>Meta 關鍵詞 (不填寫自動補充，Max=250)</keywords>
-			<description>Meta 簡述 (不填寫自動補充，Max=250)</description>
+            <keywords>Meta 關鍵詞 (不填寫自動補充，Max=250)</keywords>
+            <description>Meta 簡述 (不填寫自動補充，Max=250)</description>
             <date>發布日期</date>
         </archive>
         
@@ -81,8 +82,8 @@
         <title1>標題不能重復</title1>
         <date>發布日期不能為空</date>
         <date1>日期格式錯誤</date1>
-		<keywords>Meta 關鍵詞 不能大於250個字符</keywords>
-		<description>Meta 簡述 不能大於250個字符</description>
+        <keywords>Meta 關鍵詞 不能大於250個字符</keywords>
+        <description>Meta 簡述 不能大於250個字符</description>
     </check>
     
     <pop>
@@ -92,10 +93,10 @@
         <loading>正在左下角生成，你可以進行其他操作。</loading>
     </pop>
 
-	<models title="模型管理">
+    <models title="模型管理">
         <add>添加模型</add>
         <edit>編輯模型</edit>
-		<leadin>導入模型</leadin>
+        <leadin>導入模型</leadin>
         <field title="字段管理">
             <add>添加字段</add>
             <edit>編輯字段</edit>
@@ -152,13 +153,13 @@
             <ename>模型標識 (字母、數字、下劃線；添加後不可修改)</ename>
             <fieldset>字段配置</fieldset>
             <fieldtip><![CDATA[添加模型後，點擊 <img src="{$root}/system/images/os/fields.gif" class="os"/> 圖標進行字段管理]]></fieldtip>
-			<leadin>請選擇模型文件 (mod格式文件)</leadin>
+            <leadin>請選擇模型文件 (xml格式文件)</leadin>
         </label>
         <check>
             <name>模型名稱不能為空</name>
             <ename>模型標識不能為空</ename>
             <ename1>只允許輸入：字母、數字、下劃線</ename1>
-			<table>{$table} 表不能作為主索引表</table>
+            <table>{$table} 表不能作為主索引表</table>
         </check>
         <pop>
             <select>請選擇一個模型</select>

@@ -6,51 +6,51 @@
     <email memo="作者常用邮箱，以便联系">mylukin@gmail.com</email>
     <source memo="作者来自哪里？">http://www.lazycms.net</source>
     <manage>url('Passport')</manage>
-	
+    
 
-	<common>
-		<addgroup>添加用户组</addgroup>
-		<adduser>添加用户</adduser>
-		<editgroup>编辑用户组</editgroup>
-		<leadin>导入组模型</leadin>
-	</common>
+    <common>
+        <addgroup>添加用户组</addgroup>
+        <adduser>添加用户</adduser>
+        <editgroup>编辑用户组</editgroup>
+        <leadin>导入组模型</leadin>
+    </common>
 
-	<list>
-		<group title="用户组列表">
-			<id>ID</id>
-			<name>用户组</name>
-			<ename>组标识</ename>
-			<addtable>附加表</addtable>
-			<state>状态</state>
-			<count>用户数</count>
-			<action>操作</action>
-		</group>
-	</list>
+    <list>
+        <group title="用户组列表">
+            <id>ID</id>
+            <name>用户组</name>
+            <ename>组标识</ename>
+            <addtable>附加表</addtable>
+            <state>状态</state>
+            <count>用户数</count>
+            <action>操作</action>
+        </group>
+    </list>
 
-	<label>
-		<leadin>请选择组模型文件 (mod格式文件)</leadin>
-		<group>
-			<name>用户组名称</name>
-			<ename>用户组标识 (字母、数字、下划线；添加后不可修改)</ename>
-			<fieldset>字段配置</fieldset>
-			<fieldtip><![CDATA[添加用户组后，点击 <img src="{$root}/system/images/os/fields.gif" class="os"/> 图标进行字段管理]]></fieldtip>
-		</group>
-	</label>
+    <label>
+        <leadin>请选择组模型文件 (xml格式文件)</leadin>
+        <group>
+            <name>用户组名称</name>
+            <ename>用户组标识 (字母、数字、下划线；添加后不可修改)</ename>
+            <fieldset>字段配置</fieldset>
+            <fieldtip><![CDATA[添加用户组后，点击 <img src="{$root}/system/images/os/fields.gif" class="os"/> 图标进行字段管理]]></fieldtip>
+        </group>
+    </label>
 
-	<check>
-		<group>
+    <check>
+        <group>
             <name>用户组名称不能为空</name>
             <ename>用户组标识不能为空</ename>
             <ename1>只允许输入：字母、数字、下划线</ename1>
-		</group>
+        </group>
     </check>
 
-	<pop>
-		<group>
-			<select>请选择一个用户组</select>
-			<deleteok>成功删除您选择的用户组</deleteok>
-			<deletefieldok>成功删除您选择的字段</deletefieldok>
-			<deletefielderr>数据库字段可能已经被删除</deletefielderr>
-		</group>
-	</pop>
+    <pop>
+        <group>
+            <select>请选择一个用户组</select>
+            <deleteok>成功删除您选择的用户组</deleteok>
+            <deletefieldok>成功删除您选择的字段</deletefieldok>
+            <deletefielderr>数据库字段可能已经被删除</deletefielderr>
+        </group>
+    </pop>
 </lazycms>

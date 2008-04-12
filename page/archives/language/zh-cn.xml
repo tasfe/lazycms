@@ -9,7 +9,7 @@
 
     <common>
         <root>根目录</root>
-		<addtable>新建索引表</addtable>
+        <addtable>新建索引表</addtable>
         <addpage>添加文档</addpage>
         <editpage>编辑文档</editpage>
         <addsort>添加分类</addsort>
@@ -60,14 +60,14 @@
             <commend>推荐</commend>
             <snapimg>远程抓图</snapimg>
             <upsort>更新列表</upsort>
-			<uphome>更新首页</uphome>
+            <uphome>更新首页</uphome>
             <checktitle>检查标题是否重复</checktitle>
             <title>标题</title>
             <img>缩略图 (若写远程路径，自动抓取图片保存到本地)</img>
             <setimg>设第一幅图为缩略图</setimg>
             <path>路径 (不支持特殊符号；不建议输入纯数字，以免覆盖列表)</path>
-			<keywords>Meta 关键词 (不填写自动补充，Max=250)</keywords>
-			<description>Meta 简述 (不填写自动补充，Max=250)</description>
+            <keywords>Meta 关键词 (不填写自动补充，Max=250)</keywords>
+            <description>Meta 简述 (不填写自动补充，Max=250)</description>
             <date>发布日期</date>
         </archive>
         
@@ -82,8 +82,8 @@
         <title1>标题不能重复</title1>
         <date>发布日期不能为空</date>
         <date1>日期格式错误</date1>
-		<keywords>Meta 关键词 不能大于250个字符</keywords>
-		<description>Meta 简述 不能大于250个字符</description>
+        <keywords>Meta 关键词 不能大于250个字符</keywords>
+        <description>Meta 简述 不能大于250个字符</description>
     </check>
     
     <pop>
@@ -93,10 +93,10 @@
         <loading>正在左下角生成，你可以进行其他操作。</loading>
     </pop>
 
-	<models title="模型管理">
+    <models title="模型管理">
         <add>添加模型</add>
         <edit>编辑模型</edit>
-		<leadin>导入模型</leadin>
+        <leadin>导入模型</leadin>
         <field title="字段管理">
             <add>添加字段</add>
             <edit>编辑字段</edit>
@@ -153,13 +153,13 @@
             <ename>模型标识 (字母、数字、下划线；添加后不可修改)</ename>
             <fieldset>字段配置</fieldset>
             <fieldtip><![CDATA[添加模型后，点击 <img src="{$root}/system/images/os/fields.gif" class="os"/> 图标进行字段管理]]></fieldtip>
-			<leadin>请选择模型文件 (mod格式文件)</leadin>
+            <leadin>请选择模型文件 (xml格式文件)</leadin>
         </label>
         <check>
             <name>模型名称不能为空</name>
             <ename>模型标识不能为空</ename>
             <ename1>只允许输入：字母、数字、下划线</ename1>
-			<table>{$table} 表不能作为主索引表</table>
+            <table>{$table} 表不能作为主索引表</table>
         </check>
         <pop>
             <select>请选择一个模型</select>

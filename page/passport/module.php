@@ -46,10 +46,10 @@ class Passport{
         if (!$isDeleteTable) {
             if ($db->isTable($data[2])) {
                 $salt = salt(4);
-				$data[1].= '_'.$salt;
-				$data[2].= '_'.$salt;
+                $data[1].= '_'.$salt;
+                $data[2].= '_'.$salt;
             }
-		}
+        }
         // Insert model
         $row = array(
             'groupname'  => $data[0],

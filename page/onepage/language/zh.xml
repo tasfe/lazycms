@@ -16,7 +16,7 @@
         <name>頁面名稱</name>
         <action>操作</action>
         <path>路徑</path>
-		<home>是否為首頁</home>
+        <home>是否為首頁</home>
     </list>
     <label>
         <name>頁面名稱</name>

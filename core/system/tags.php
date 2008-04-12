@@ -53,9 +53,9 @@ class Tags extends Lazy{
             }
         }
         $l9 = empty($l8) ? $l6 : replace('/(\{lazy:)(inside) {0,}?(\/\})/i',$l8,$l6);
-		$l9 = $this->format($l9);
-		$js = '<script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.js"></script>'.chr(10);
-		$js.= '<script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.common.js"></script>';
+        $l9 = $this->format($l9);
+        $js = '<script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.js"></script>'.chr(10);
+        $js.= '<script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.common.js"></script>';
         if (preg_match('/<\/title>/i',$l9)) {
             $I1 = replace('/<\/title>/i',"\$0\n{$js}",$l9,1);
         } else {
@@ -89,11 +89,11 @@ class Tags extends Lazy{
     }
     // getValue *** *** www.LazyCMS.net *** ***
     public function getValue($l1=null){
-		if (empty($l1)) {
-			return $this->_inValue;
-		} else {
-			return $this->_inValue[$l1];
-		}
+        if (empty($l1)) {
+            return $this->_inValue;
+        } else {
+            return $this->_inValue[$l1];
+        }
     }
     // format *** *** www.LazyCMS.net *** ***
     public function format($l1){
@@ -150,7 +150,7 @@ class Tags extends Lazy{
                 if (class_exists('Archives')) {
                     $I1 = Archives::tags($tags,$inValue);
                 }
-				
+                
                 if (empty($I1)) {
                     if (class_exists($tagName)) {
                         $obj = new $tagName();
@@ -171,7 +171,7 @@ class Tags extends Lazy{
     }
     // parse *** *** www.LazyCMS.net *** ***
     public function parseValue($l1,$l2){
-		$I1 = $l2; return isset($I1[$l1]) ? decode($I1[$l1]) : null;
+        $I1 = $l2; return isset($I1[$l1]) ? decode($I1[$l1]) : null;
     }
     //parseAtt *** *** www.LazyCMS.net *** ***
     public function parseAtt($l1,$l2,$l3){

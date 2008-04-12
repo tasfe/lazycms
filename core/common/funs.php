@@ -289,7 +289,7 @@ function loading($l1,$l2,$l3){
 // exeloading *** *** www.LazyCMS.net *** ***
 function exeloading($l1,$l2){
     $js = '<script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.js"></script><script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.lazycms.js"></script>';
-	$js.= "<script type=\"text/javascript\">loading('{$l1}','{$l2}');</script>";
+    $js.= "<script type=\"text/javascript\">loading('{$l1}','{$l2}');</script>";
     echo $js;
 }
 // ubbencode *** *** www.LazyCMS.net *** ***
@@ -512,9 +512,9 @@ function snapImg($l1){
     if (preg_match_all('/<img.[^>]*src="(.[^>]+?)".[^>]*\/>/i',$l1,$imgs)) {
         foreach ($imgs[1] as $img) {
             if ($downImg = downPic($img)) {
-				if (validate($img,7)) {
-					$I1 = str_replace($img,C('SITE_BASE').ltrim($downImg,'/'),$I1);
-				}
+                if (validate($img,7)) {
+                    $I1 = str_replace($img,C('SITE_BASE').ltrim($downImg,'/'),$I1);
+                }
             }
         }
     }
@@ -697,7 +697,7 @@ function pagelist($l1,$l2,$l3,$l4){
     $I1 = null;
     if (strpos($l1,'%24')!==false) { $l1 = str_replace('%24','$',$l1); }
     if (strpos($l1,'$')==0 || $l4==0) { return ; }
-	$l7 = C('SITE_MODE') ? 1 : null;
+    $l7 = C('SITE_MODE') ? 1 : null;
     if ($l2 > 3) {
         $I1 = '<a href="'.str_replace('$',$l7,$l1).'">1 ...</a>';
     }
@@ -914,8 +914,10 @@ function getTpl(LazyCMS $this){
 
 // loadFile *** *** www.LazyCMS.net *** ***
 function loadFile($l1){
-    $fp = fopen($l1,'rb');
-    $I1 = fread($fp,filesize($l1));
+    $fp   = fopen($l1,'rb');
+    $size = filesize($l1);
+    if ((int)$size==0) { return ; }
+    $I1 = fread($fp,$size);
     fclose($fp);
     return $I1;
 }

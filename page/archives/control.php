@@ -66,16 +66,16 @@ class LazyArchives extends LazyCMS{
     // _showsort *** *** www.LazyCMS.net *** ***
     function _showsort(){
         $sortid = isset($_GET['sortid']) ? (int)$_GET['sortid'] : null;
-		$page   = isset($_GET['page']) ? (int)$_GET['page'] : null;
+        $page   = isset($_GET['page']) ? (int)$_GET['page'] : null;
         echo Archives::viewSort($sortid,$page);
     }
-	// _showarchive *** *** www.LazyCMS.net *** ***
-	function _showarchive(){
-		$aid    = isset($_GET['aid']) ? (int)$_GET['aid'] : 0;
-		$sortid = isset($_GET['sortid']) ? (int)$_GET['sortid'] : 0;
-		$page   = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-		echo Archives::viewArchive($sortid,$aid,$page);
-	}
+    // _showarchive *** *** www.LazyCMS.net *** ***
+    function _showarchive(){
+        $aid    = isset($_GET['aid']) ? (int)$_GET['aid'] : 0;
+        $sortid = isset($_GET['sortid']) ? (int)$_GET['sortid'] : 0;
+        $page   = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        echo Archives::viewArchive($sortid,$aid,$page);
+    }
     // _editsort *** *** www.LazyCMS.net *** ***
     function _editsort(){
         $this->checker(C('CURRENT_MODULE'));
@@ -178,38 +178,38 @@ class LazyArchives extends LazyCMS{
         }
         switch($submit){
             case 'delete' :
-				$res = $db->query("SELECT `sortpath` FROM `#@_archives_sort` WHERE `sortid` IN({$lists})");
-				while ($data = $db->fetch($res,0)){
-					Archives::delArchive($data[0],true);
-				}
+                $res = $db->query("SELECT `sortpath` FROM `#@_archives_sort` WHERE `sortid` IN({$lists})");
+                while ($data = $db->fetch($res,0)){
+                    Archives::delArchive($data[0],true);
+                }
                 $db->exec("DELETE FROM `#@_archives_sort` WHERE `sortid` IN({$lists});");
                 $this->poping($this->L('pop/deleteok'),1);
                 break;
             case 'createsort' :
-				$I2 = explode(',',$lists);
-				$js = '<script type="text/javascript">';
-				foreach ($I2 as $sortid){
-					$js.= "loading('{$submit}_{$sortid}','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$sortid}")."');";
-				}
-				$js.= '</script>';
+                $I2 = explode(',',$lists);
+                $js = '<script type="text/javascript">';
+                foreach ($I2 as $sortid){
+                    $js.= "loading('{$submit}_{$sortid}','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$sortid}")."');";
+                }
+                $js.= '</script>';
                 $this->poping($this->L('pop/loading').$js,0);
                 break;
             case 'createpage' :
                 $I2 = explode(',',$lists);
-				$js = '<script type="text/javascript">';
-				foreach ($I2 as $sortid){
-					$js.= "loading('{$submit}_{$sortid}','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$sortid}")."');";
-				}
-				$js.= '</script>';
+                $js = '<script type="text/javascript">';
+                foreach ($I2 as $sortid){
+                    $js.= "loading('{$submit}_{$sortid}','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$sortid}")."');";
+                }
+                $js.= '</script>';
                 $this->poping($this->L('pop/loading').$js,0);
                 break;
             case 'createall' :
                 $I2 = explode(',',$lists);
-				$js = '<script type="text/javascript">';
-				foreach ($I2 as $sortid){
-					$js.= "loading('{$submit}_{$sortid}','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$sortid}")."');";
-				}
-				$js.= '</script>';
+                $js = '<script type="text/javascript">';
+                foreach ($I2 as $sortid){
+                    $js.= "loading('{$submit}_{$sortid}','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$sortid}")."');";
+                }
+                $js.= '</script>';
                 $this->poping($this->L('pop/loading').$js,0);
                 break;
             case 'updown' :
@@ -245,26 +245,26 @@ class LazyArchives extends LazyCMS{
                 break;
         }
     }
-	// _loading *** *** www.LazyCMS.net *** ***
+    // _loading *** *** www.LazyCMS.net *** ***
     function _loading(){
-		clearCache();
+        clearCache();
         $this->checker(C('CURRENT_MODULE'));
-		$db  = getConn();
+        $db  = getConn();
         $submit  = isset($_GET['submit']) ? (string)$_GET['submit'] : null;
         $lists   = isset($_GET['lists']) ? (string)$_GET['lists'] : null;
-		switch($submit){
-			case 'createsort' :
-				$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-				$percent = Archives::viewSort($lists,$page,true);
-				if ($percent<100) { $page++; }
-				echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
-				break;
+        switch($submit){
+            case 'createsort' :
+                $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                $percent = Archives::viewSort($lists,$page,true);
+                if ($percent<100) { $page++; }
+                echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
+                break;
             case 'createpage' :
                 $model = Archives::getModel($lists);
                 $page  = isset($_GET['page']) ? (int)$_GET['page'] : 1;
                 $strSQL = "SELECT * FROM `".$model['maintable']."` WHERE `sortid`='{$lists}'";
                 $pageSize   = 100;
-		        $totalRows  = $db->count($strSQL);
+                $totalRows  = $db->count($strSQL);
                 $totalPages = ceil($totalRows/$pageSize);
                 $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
                 if ((int)$page > (int)$totalPages) {
@@ -274,30 +274,30 @@ class LazyArchives extends LazyCMS{
                 $strSQL .= ' LIMIT '.$pageSize.' OFFSET '.($page-1)*$pageSize.';';
                 $res = $db->query($strSQL);
                 while ($data = $db->fetch($res)) {
-				    Archives::viewArchive($lists,$data['id']);
+                    Archives::viewArchive($lists,$data['id']);
                 }
-				if ($percent<100) { $page++; }
-				echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
+                if ($percent<100) { $page++; }
+                echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
                 break;
             case 'createall' :
-				$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-				$percent = Archives::viewSort($lists,$page,true,true);
-				if ($percent<100) { $page++; }
-				echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
-				break;
+                $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                $percent = Archives::viewSort($lists,$page,true,true);
+                if ($percent<100) { $page++; }
+                echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
+                break;
             case 'create' :
                 $I2 = explode(',',$lists);
                 $count = count($I2);
-				$page = isset($_GET['page']) ? (int)$_GET['page'] : 0;
+                $page = isset($_GET['page']) ? (int)$_GET['page'] : 0;
                 $sortid = isset($_GET['sortid']) ? (int)$_GET['sortid'] : 0;
                 if ((int)$page < (int)$count) {
                     Archives::viewArchive($sortid,$I2[$page]);
                 }
                 $percent = round($page/$count*100,2);
-				if ($percent<100) { $page++; }
-				echo loading("{$submit}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&sortid={$sortid}&page={$page}"));
-				break;
-		}
+                if ($percent<100) { $page++; }
+                echo loading("{$submit}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&sortid={$sortid}&page={$page}"));
+                break;
+        }
         
     }
     // _list *** *** www.LazyCMS.net *** ***
@@ -443,10 +443,10 @@ class LazyArchives extends LazyCMS{
                     $path = md5(salt(10).$maxid).C('HTML_URL_SUFFIX');
                 }
                 if (empty($keywords)) {
-					$keywords = $this->keys($title);
-				} else {
-					$keywords = $this->keys(null,$keywords);
-				}
+                    $keywords = $this->keys($title);
+                } else {
+                    $keywords = $this->keys(null,$keywords);
+                }
                 if (empty($aid)) { // insert
                     $row = array(
                         'order'   => (int)$maxid,
@@ -571,25 +571,25 @@ class LazyArchives extends LazyCMS{
         $model = Archives::getModel($sortid);
         switch($submit){
             case 'delete' :
-				$res = $db->query("SELECT `path` FROM `".$model['maintable']."` WHERE `id` IN({$lists})");
-				while ($data = $db->fetch($res,0)){
-					Archives::delArchive($data[0]);
-				}
+                $res = $db->query("SELECT `path` FROM `".$model['maintable']."` WHERE `id` IN({$lists})");
+                while ($data = $db->fetch($res,0)){
+                    Archives::delArchive($data[0]);
+                }
                 $db->exec("DELETE FROM `".$model['maintable']."` WHERE `id` IN({$lists});");
                 $db->exec("DELETE FROM `".$model['addtable']."` WHERE `aid` IN({$lists});");
                 $this->poping($this->L('pop/deleteok'),1);
                 break;
             case 'create' :
-				$js = '<script type="text/javascript">';
-			    $js.= "loading('{$submit}','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&sortid={$sortid}")."');";
-				$js.= '</script>';
+                $js = '<script type="text/javascript">';
+                $js.= "loading('{$submit}','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&sortid={$sortid}")."');";
+                $js.= '</script>';
                 $this->poping($this->L('pop/loading').$js,0);
                 break;
-			case 'updown' :
+            case 'updown' :
                 $updown = isset($_POST['updown']) ? (string)$_POST['updown'] : null;
                 $num    = isset($_POST['num']) ? (int)$_POST['num'] : null;
                 $upid   = isset($_POST['upid']) ? (int)$_POST['upid'] : null;
-				$model  = Archives::getModel($upid);
+                $model  = Archives::getModel($upid);
                 $this->order($model['maintable'].",id,order","{$lists},{$updown},{$num}","`sortid`='{$upid}'");
                 break;
             default :
@@ -675,8 +675,8 @@ class LazyArchives extends LazyCMS{
         if ($data = $db->fetch($res)) {
             unset($data['modelid']);
             $modelName = $data['modelename'];
-			$data['maintable'] = str_replace('#@_','',$data['maintable']);
-			$data['addtable']  = str_replace('#@_','',$data['addtable']);
+            $data['maintable'] = str_replace('#@_','',$data['maintable']);
+            $data['addtable']  = str_replace('#@_','',$data['addtable']);
             $XML['model']      = $data;
         } else {
             $modelName = 'Error';
@@ -690,7 +690,7 @@ class LazyArchives extends LazyCMS{
         $XML['fields'] = $fields;
         ob_start();
         header("Content-type: application/octet-stream; charset=utf-8");
-        header("Content-Disposition: attachment; filename=LazyCMS_".C('CURRENT_MODULE').'_'.$modelName.".mod");
+        header("Content-Disposition: attachment; filename=LazyCMS_".C('CURRENT_MODULE').'_'.$modelName.".xml");
         header("Pragma: no-cache");
         header("Expires: 0");
         echo xmlcode($XML);
@@ -702,9 +702,9 @@ class LazyArchives extends LazyCMS{
         $field = 'model';
         if ($this->method()) {
             $upload = O('UpLoadFile');
-            $upload->allowExts = "mod";
+            $upload->allowExts = "xml";
             $upload->maxSize   = 500*1024;//500K
-			$folder = LAZY_PATH.C('UPFILE_PATH');mkdirs($folder);
+            $folder = LAZY_PATH.C('UPFILE_PATH');mkdirs($folder);
             if ($file = $upload->save($field,$folder.'/'.basename($_FILES[$field]['name']))) {
                 $modelCode = loadFile($file['path']); @unlink($file['path']);
                 if (!empty($modelCode)) {
@@ -1012,27 +1012,27 @@ class LazyArchives extends LazyCMS{
         ));
         $tpl->display('modelfieldsedit.php');
     }
-	// _hits *** *** www.LazyCMS.net *** ***
-	function _hits(){
-		clearCache();$db = getConn();
-		$id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
-		$sortid = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : null;
-		$model  = Archives::getModel($sortid);
-		$where  = $db->quoteInto('WHERE `id` = ?',$id);
-		$db->exec("UPDATE `".$model['maintable']."` SET `hits` = `hits` + 1 {$where};");
-		$res = $db->query("SELECT `hits` FROM `".$model['maintable']."` {$where};");
-		if ($data = $db->fetch($res,0)) {
-			echo $data[0];
-		} else {
-			echo '0';
-		}
-	}
+    // _hits *** *** www.LazyCMS.net *** ***
+    function _hits(){
+        clearCache();$db = getConn();
+        $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
+        $sortid = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : null;
+        $model  = Archives::getModel($sortid);
+        $where  = $db->quoteInto('WHERE `id` = ?',$id);
+        $db->exec("UPDATE `".$model['maintable']."` SET `hits` = `hits` + 1 {$where};");
+        $res = $db->query("SELECT `hits` FROM `".$model['maintable']."` {$where};");
+        if ($data = $db->fetch($res,0)) {
+            echo $data[0];
+        } else {
+            echo '0';
+        }
+    }
     // _nextpage *** *** www.LazyCMS.net *** ***
     function _nextpage(){
         clearCache();$db = getConn();
-		$id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
-		$sortid = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : null;
-		$model  = Archives::getModel($sortid);
+        $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
+        $sortid = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : null;
+        $model  = Archives::getModel($sortid);
         $res = $db->query("SELECT * FROM `".$model['maintable']."` ".$db->quoteInto(' WHERE `id` = ?',$id));
         if (!$data = $db->fetch($res)) {
             echo L('error/invalid');

@@ -174,7 +174,7 @@ class LazyPassport extends LazyCMS{
         if ($data = $db->fetch($res)) {
             unset($data['groupid']);
             $groupName = $data['groupename'];
-			$data['grouptable'] = str_replace('#@_','',$data['grouptable']);
+            $data['grouptable'] = str_replace('#@_','',$data['grouptable']);
             $XML['group'] = $data;
         } else {
             $groupName = 'Error';
@@ -188,7 +188,7 @@ class LazyPassport extends LazyCMS{
         $XML['fields'] = $fields;
         ob_start();
         header("Content-type: application/octet-stream; charset=utf-8");
-        header("Content-Disposition: attachment; filename=LazyCMS_".C('CURRENT_MODULE').'_'.$groupName.".mod");
+        header("Content-Disposition: attachment; filename=LazyCMS_".C('CURRENT_MODULE').'_'.$groupName.".xml");
         header("Pragma: no-cache");
         header("Expires: 0");
         echo xmlcode($XML);
@@ -200,9 +200,9 @@ class LazyPassport extends LazyCMS{
         $field = 'group';
         if ($this->method()) {
             $upload = O('UpLoadFile');
-            $upload->allowExts = "mod";
+            $upload->allowExts = "xml";
             $upload->maxSize   = 500*1024;//500K
-			$folder = LAZY_PATH.C('UPFILE_PATH');mkdirs($folder);
+            $folder = LAZY_PATH.C('UPFILE_PATH');mkdirs($folder);
             if ($file = $upload->save($field,$folder.'/'.basename($_FILES[$field]['name']))) {
                 $groupCode = loadFile($file['path']); @unlink($file['path']);
                 if (!empty($groupCode)) {

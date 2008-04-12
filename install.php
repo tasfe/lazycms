@@ -171,8 +171,8 @@ if ($install && labelError()) {
             'admindate'     => now(),
         );
         $db->insert('#@_admin',$admin);
-		// 添加首页
-		$onepage = array(
+        // 添加首页
+        $onepage = array(
             'oneorder'     => $db->max('oneid','#@_onepage'),
             'onetitle'     => L('common/home'),
             'onepath'      => C('SITE_INDEX'),
@@ -180,7 +180,7 @@ if ($install && labelError()) {
             'onecontent'   => L('common/home'),
             'onetemplate1' => C('TEMPLATE_PATH').'/'.C('TEMPLATE_DEF'),
             'onetemplate2' => C('TEMPLATE_PATH').'/inside/onepage/'.C('TEMPLATE_DEF'),
-			'ishome'       => '1',
+            'ishome'       => '1',
         );
         $db->insert('#@_onepage',$onepage);
         saveFile(CORE_PATH.'/custom/config.php',"<?php\n".createNote('用户自定义配置文件')."\nreturn ".var_export($config,true).";\n?>");
@@ -271,17 +271,17 @@ body,th,td,p{ line-height:150%; font-family:Verdana; font-size:12px; color:#3333
       <td>
         <?php 
         $_modules = getArrDir(C('PAGES_PATH'),'dir');
-		$selected = 'archives,onepage';
+        $selected = 'archives,onepage';
         foreach ($_modules as $m) {
             if (strtolower($m) != 'system') {
                 $checked = instr($modules,$m) ? ' checked="checked"' : null;
-				if (instr($selected,$m)) { 
-					$checked = instr($selected,$m) ? ' checked="checked"' : null;
-					$disabled = ' disabled="disabled"';
-					echo '<input name="modules[]" type="hidden" value="'.$m.'" />';
-				} else {
-					$disabled = null;
-				}
+                if (instr($selected,$m)) { 
+                    $checked = instr($selected,$m) ? ' checked="checked"' : null;
+                    $disabled = ' disabled="disabled"';
+                    echo '<input name="modules[]" type="hidden" value="'.$m.'" />';
+                } else {
+                    $disabled = null;
+                }
                 echo '<input type="checkbox" name="modules[]" id="m_'.$m.'" value="'.$m.'"'.$checked.$disabled.'/><label for="m_'.$m.'">'.L('title',null,$m).'</label>'.chr(10);
             }
         }

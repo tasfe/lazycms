@@ -16,7 +16,7 @@
         <name>页面名称</name>
         <action>操作</action>
         <path>路径</path>
-		<home>是否为首页</home>
+        <home>是否为首页</home>
     </list>
     <label>
         <name>页面名称</name>

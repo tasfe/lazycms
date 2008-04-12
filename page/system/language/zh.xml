@@ -16,7 +16,7 @@
     </menu>
 
     <common>
-		<home>首頁</home>
+        <home>首頁</home>
         <upok>更新成功!</upok>
         <module>模塊</module>
         <action>操作</action>
@@ -248,18 +248,18 @@
         <getdown>您的服務器不支持獲取遠程文件。</getdown>
         <nomodels>請先創建模型</nomodels>
         <nosort>請先創建分類</nosort>
-		<upload>
-			<err0>POST值超過了 post_max_size({$max}) </err0>
-			<err1>上傳的文件超過了 php.ini 中 upload_max_filesize 選項限制的值</err1>
-			<err2>上傳文件的大小超過了 HTML 表單中 MAX_FILE_SIZE 選項指定的值</err2>
-			<err3>文件只有部分被上傳</err3>
-			<err4>沒有文件被上傳</err4>
-			<err5>上傳的文件太大</err5>
-			<err6>找不到臨時文件夾</err6>
-			<err7>文件寫入失敗</err7>
-			<err8>上傳的文件類型不允許</err8>
-			<err9>非法提交</err9>
-		</upload>
+        <upload>
+            <err0>POST值超過了 post_max_size({$max}) </err0>
+            <err1>上傳的文件超過了 php.ini 中 upload_max_filesize 選項限制的值</err1>
+            <err2>上傳文件的大小超過了 HTML 表單中 MAX_FILE_SIZE 選項指定的值</err2>
+            <err3>文件只有部分被上傳</err3>
+            <err4>沒有文件被上傳</err4>
+            <err5>上傳的文件太大</err5>
+            <err6>找不到臨時文件夾</err6>
+            <err7>文件寫入失敗</err7>
+            <err8>上傳的文件類型不允許</err8>
+            <err9>非法提交</err9>
+        </upload>
     </error>
     
     <other>
