@@ -144,8 +144,7 @@ class LazyPassport extends LazyCMS{
             }
         } else {
             if (!empty($groupid)) {
-                $where = $db->quoteInto('WHERE `groupid` = ?',$groupid);
-                $res   = $db->query("SELECT {$sql} FROM `#@_passport_group` {$where};");
+                $res   = $db->query("SELECT {$sql} FROM `#@_passport_group` WHERE `groupid` = ?;",$groupid);
                 if (!$data = $db->fetch($res,0)) {
                     throwError(L('error/invalid'));
                 }    
@@ -170,7 +169,7 @@ class LazyPassport extends LazyCMS{
         $groupid = isset($_GET['groupid']) ? (int)$_GET['groupid'] : null;
         
         $XML = array();
-        $res = $db->query("SELECT * FROM `#@_passport_group` WHERE `groupid`='{$groupid}';");
+        $res = $db->query("SELECT * FROM `#@_passport_group` WHERE `groupid`=?;",$groupid);
         if ($data = $db->fetch($res)) {
             unset($data['groupid']);
             $groupName = $data['groupename'];
@@ -180,7 +179,7 @@ class LazyPassport extends LazyCMS{
             $groupName = 'Error';
         }
         $fields = array();
-        $res = $db->query("SELECT * FROM `#@_passport_fields` WHERE `groupid`='{$groupid}' ORDER BY `fieldorder` ASC,`fieldid` ASC;");
+        $res = $db->query("SELECT * FROM `#@_passport_fields` WHERE `groupid`=? ORDER BY `fieldorder` ASC,`fieldid` ASC;",$groupid);
         while ($data = $db->fetch($res)){
             unset($data['fieldid'],$data['groupid'],$data['fieldorder']);
             $fields[] = $data;

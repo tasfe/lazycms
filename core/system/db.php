@@ -209,7 +209,7 @@ abstract class DB extends Lazy{
         if (is_int($l1) || is_float($l1)) {
             return $l1;
         }
-        return "'".addcslashes($l1,"\000\n\r\\'\"\032")."'";
+        return "'".addcslashes($l1, "\000\n\r\\'\"\032")."'";
     }
     // quoteInto *** *** www.LazyCMS.net *** ***
     public function quoteInto($sql, $bind) {

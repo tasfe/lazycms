@@ -89,8 +89,8 @@ abstract class LazyCMS extends Lazy{
         if (!empty($_SERVER['PATH_INFO']) || !empty($_SERVER['QUERY_STRING'])) {
             if(C('HTML_URL_SUFFIX')) {
                 $suffix = substr(C('HTML_URL_SUFFIX'),1);
-                $_SERVER['PATH_INFO'] = preg_replace('/\.'.$suffix.'$/','',$_SERVER['PATH_INFO']);
-                $_SERVER['QUERY_STRING'] = preg_replace('/\.'.$suffix.'$/','',$_SERVER['QUERY_STRING']);
+                if (!empty($_SERVER['PATH_INFO'])) { $_SERVER['PATH_INFO'] = preg_replace('/\.'.$suffix.'$/','',$_SERVER['PATH_INFO']); }
+                if (!empty($_SERVER['QUERY_STRING'])) { $_SERVER['QUERY_STRING'] = preg_replace('/\.'.$suffix.'$/','',$_SERVER['QUERY_STRING']); }
             }
         }
         
@@ -123,16 +123,16 @@ abstract class LazyCMS extends Lazy{
     final private function build(){
         // 加载惯例配置文件
         C(include CORE_PATH.'/common/convention.php');
+        // 加载用户自定义配置
+        if (is_file(CORE_PATH.'/custom/config.php')) {
+            C(include CORE_PATH.'/custom/config.php');
+        }
         // 如果是调试模式加载调试模式配置文件
         if (C('DEBUG_MODE')) {
             // 加载系统默认的开发模式配置文件
             C(include CORE_PATH.'/common/debug.php');
         }
         
-        // 加载用户自定义配置
-        if (is_file(CORE_PATH.'/custom/config.php')) {
-            C(include CORE_PATH.'/custom/config.php');
-        }
         // 部署模式下面生成编译文件
         // 下次直接加载项目编译文件
         if (!C('DEBUG_MODE')) {
@@ -232,8 +232,7 @@ abstract class LazyCMS extends Lazy{
         } elseif ((empty($adminname) || empty($adminpass)) && !empty($l2)) {
             $this->poping(L('error/nologin'),1); exit;
         }
-        $where = $db->quoteInto('WHERE `adminname` = ?',$adminname);
-        $res   = $db->query("SELECT * FROM `#@_admin` {$where};");
+        $res   = $db->query("SELECT * FROM `#@_admin` WHERE `adminname` = ?;",$adminname);
         if ($data = $db->fetch($res)) {
             if ($adminpass==$data['adminpass']) {
                 // 登录成功，不做操作
@@ -358,14 +357,12 @@ abstract class LazyCMS extends Lazy{
     // diymenu *** *** www.LazyCMS.net *** ***
     final public function diymenu(){
         $db = getConn();
-        $where = $db->quoteInto('WHERE `adminname` = ?',$this->admin['adminname']);
-        $res   = $db->query("SELECT `diymenu` FROM `#@_admin` {$where};");
+        $res   = $db->query("SELECT `diymenu` FROM `#@_admin` WHERE `adminname` = ?;",$this->admin['adminname']);
         if ($data = $db->fetch($res,0)) {
             $I1 = $data[0];
         }
         if (empty($I1)) {
-            $where = $db->quoteInto('WHERE `diymenulang` = ?',$this->admin['adminlanguage']);
-            $res   = $db->query("SELECT `diymenu` FROM `#@_diymenu` {$where};");
+            $res   = $db->query("SELECT `diymenu` FROM `#@_diymenu` WHERE `diymenulang` = ?;",$this->admin['adminlanguage']);
             if ($data = $db->fetch($res,0)) {
                 $I1 = $data[0];
             }
@@ -470,7 +467,7 @@ abstract class LazyCMS extends Lazy{
                 }
             }
             $I2 = ltrim($I2,',');
-            $db->exec("UPDATE `#@_system` SET `sitekeywords`=".$db->quote($I2)." WHERE `systemname`='LazyCMS';");
+            $db->exec("UPDATE `#@_system` SET `sitekeywords`= ? WHERE `systemname`='LazyCMS';",$I2);
         } else {
             if (strlen($I2) > 0) {
                 $I3 = explode(',',$I2);

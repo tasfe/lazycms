@@ -194,8 +194,7 @@ class LazyOnepage extends LazyCMS{
             }
         } else {
             if (!empty($oneid)) {
-                $where = $db->quoteInto('WHERE `oneid` = ?',$oneid);
-                $res   = $db->query("SELECT {$sql} FROM `#@_onepage` {$where};");
+                $res   = $db->query("SELECT {$sql} FROM `#@_onepage` WHERE `oneid` = ?;",$oneid);
                 if (!$data = $db->fetch($res,0)) {
                     throwError(L('error/invalid'));
                 }    

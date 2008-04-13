@@ -53,8 +53,7 @@ class Onepage{
         $oneid = $l1;
         $db    = getConn();        
         $sql   = "onename,onetitle,onepath,onekeyword,onedescription,onecontent,onetemplate1,onetemplate2";//7
-        $where = $db->quoteInto('WHERE `oneid` = ?',$oneid);
-        $res   = $db->query("SELECT {$sql} FROM `#@_onepage` {$where}");
+        $res   = $db->query("SELECT {$sql} FROM `#@_onepage` WHERE `oneid` = ?",$oneid);
         if ($data = $db->fetch($res,0)) {
             $tag  = O('Tags');
             $HTML = $tag->read($data[6],$data[7]);
@@ -110,9 +109,8 @@ class Onepage{
     // show *** *** www.LazyCMS.net *** ***
     static function show($l1){
         $oneid = $l1;
-        $db    = getConn();       
-        $where = $db->quoteInto("WHERE `oneid` = ?",$oneid);
-        $res   = $db->query("SELECT `onepath`,`ishome` FROM `#@_onepage` {$where}");
+        $db    = getConn();
+        $res   = $db->query("SELECT `onepath`,`ishome` FROM `#@_onepage` WHERE `oneid` = ?",$oneid);
         if ($data = $db->fetch($res,0)) {
             // 被设为首页，直接返回网站根路径
             if ($data[1]) {

@@ -47,7 +47,7 @@ class Archives{
     // getModel *** *** www.LazyCMS.net *** ***
     static function getModel($l1){
         $db  = getConn();
-        $res = $db->query("SELECT * FROM `#@_archives_sort` AS `s` LEFT JOIN `#@_archives_model` AS `m` ON `s`.`modelid` = `m`.`modelid` WHERE `s`.`sortid` = '{$l1}';");
+        $res = $db->query("SELECT * FROM `#@_archives_sort` AS `s` LEFT JOIN `#@_archives_model` AS `m` ON `s`.`modelid` = `m`.`modelid` WHERE `s`.`sortid` = ?;",$l1);
         if ($data = $db->fetch($res)) {
             return $data;
         } else {
@@ -58,7 +58,7 @@ class Archives{
     static function getSubSortIds($l1){
         $I1  = $l1;
         $db  = getConn();
-        $res = $db->query("SELECT `sortid` FROM `#@_archives_sort` WHERE ".$db->quoteInto('`sortid1` = ?',$l1));
+        $res = $db->query("SELECT `sortid` FROM `#@_archives_sort` WHERE `sortid1` = ?;",$l1);
         while ($data = $db->fetch($res,0)) {
             if ($db->count("SELECT count(`sortid`) FROM `#@_archives_sort` WHERE `sortid1`= '".$data[0]."';") > 0) {
                 $I1.= ",".self::getSubSortIds($data[0]);
@@ -73,8 +73,7 @@ class Archives{
         $modeid = $l1;
         $fields = array();
         $db    = getConn();
-        $where = $db->quoteInto('WHERE `modelid` = ?',$modeid);
-        $res   = $db->query("SELECT * FROM `#@_archives_fields` {$where};");
+        $res   = $db->query("SELECT * FROM `#@_archives_fields` WHERE `modelid` = ?;",$modeid);
         while ($data = $db->fetch($res)) {
             $fields[] = $data['fieldename'];
         }
@@ -88,7 +87,7 @@ class Archives{
             $nbsp .= "&nbsp; &nbsp;";
         }
         $db  = getConn();
-        $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_archives_sort` WHERE `sortid1` = '{$l1}' ORDER BY `sortorder` DESC,`sortid` DESC;");
+        $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_archives_sort` WHERE `sortid1` = ? ORDER BY `sortorder` DESC,`sortid` DESC;",$l1);
         while ($data = $db->fetch($res,0)) {
             if ($l2 != $data[0]) {
                 $selected = ((int)$l4 == (int)$data[0]) ? ' selected="selected"' : null;
@@ -103,8 +102,7 @@ class Archives{
     // getData *** *** www.LazyCMS.net *** ***
     static function getData($l1,$l2){
         $db    = getConn(); $I1 = array();
-        $where = $db->quoteInto('WHERE `aid` = ?',$l1);
-        $res   = $db->query("SELECT * FROM `{$l2}` {$where};");
+        $res   = $db->query("SELECT * FROM `{$l2}` WHERE `aid` = ?;",$l1);
         if (!$data = $db->fetch($res)) {
             return false;
         }
@@ -138,8 +136,7 @@ class Archives{
     static function showSort($l1){
         $sortid = $l1;
         $db     = getConn();       
-        $where  = $db->quoteInto("WHERE `sortid` = ?",$sortid);
-        $res    = $db->query("SELECT `sortpath` FROM `#@_archives_sort` {$where}");
+        $res    = $db->query("SELECT `sortpath` FROM `#@_archives_sort` WHERE `sortid` = ?;",$sortid);
         if ($data = $db->fetch($res,0)) {
             if (C('SITE_MODE')) {
                 return url('Archives','ShowSort','sortid='.$sortid);
@@ -154,7 +151,7 @@ class Archives{
     function guide($l1){
         if (empty($l1)) { return ;}
         $I1 = null; $db = getConn();
-        $res = $db->query("SELECT `sortid1`,`sortname`,`sortpath` FROM `#@_archives_sort` WHERE `sortid`='{$l1}';");
+        $res = $db->query("SELECT `sortid1`,`sortname`,`sortpath` FROM `#@_archives_sort` WHERE `sortid`=?;",$l1);
         if ($data = $db->fetch($res,0)) {
             $I1 = '<a href="'.self::showSort($l1).'">'.htmlencode($data[1]).'</a>';
             if ((int)$data[0] !== 0) {
@@ -228,6 +225,7 @@ class Archives{
                 $tag->value('path',encode(self::showArchive($data['id'],$_model)));
                 $tag->value('image',encode($data['img']));
                 $tag->value('date',$data['date']);
+                $tag->value('hits',$data['hits']);
                 $tag->value('zebra',($i % ($zebra+1)) ? 0 : 1);
 
                 foreach ($fields as $k) {
@@ -314,8 +312,7 @@ class Archives{
         }
         $aid   = $l1;
         $db    = getConn();       
-        $where = $db->quoteInto("WHERE `b`.`id` = ?",$aid);
-        $res   = $db->query("SELECT `a`.`sortpath`,`b`.`path` FROM `#@_archives_sort` AS `a` LEFT JOIN `".$model['maintable']."` AS `b` ON `a`.`sortid` = `b`.`sortid` {$where}");
+        $res   = $db->query("SELECT `a`.`sortpath`,`b`.`path` FROM `#@_archives_sort` AS `a` LEFT JOIN `".$model['maintable']."` AS `b` ON `a`.`sortid` = `b`.`sortid` WHERE `b`.`id` = ?;",$aid);
         if ($data = $db->fetch($res,0)) {
             if (C('SITE_MODE')) {
                 if (!empty($l3)) {
@@ -347,8 +344,7 @@ class Archives{
     static function viewArchive($l1,$l2,$l3=1){
         $sortid = $l1; $aid = $l2; $page = $l3; $db = getConn();
         $model  = self::getModel($sortid);
-        $where = $db->quoteInto('WHERE `id` = ?',$aid);
-        $res   = $db->query("SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` {$where};");
+        $res   = $db->query("SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` WHERE `id` = ?;",$aid);
         if ($data = $db->fetch($res)) {
             $tag  = O('Tags');
             $HTML = $tag->read($model['pagetemplate1'],$model['pagetemplate2']);
@@ -371,7 +367,7 @@ class Archives{
             $fields = self::getFields($model['modelid']);
             
             // 有编辑器，动态模式，分页，只对第一个编辑器进行处理
-            $result = $db->query("SELECT * FROM `#@_archives_fields` WHERE `modelid` ='".$model['modelid']."' AND `inputtype`='editor' ORDER BY `fieldorder` ASC, `fieldid` ASC;");
+            $result = $db->query("SELECT * FROM `#@_archives_fields` WHERE `modelid` = ? AND `inputtype`='editor' ORDER BY `fieldorder` ASC, `fieldid` ASC;",$model['modelid']);
             if ($field = $db->fetch($result)){
                 $contents = explode(C('WEB_BREAK'),$data[$field['fieldename']]);
                 $length   = count($contents);
@@ -477,7 +473,7 @@ class Archives{
         if (strpos($l3,'{lazy:lastpage')!==false) {
             $data = $l1; $model = $l2; $HTML = $l3;
             $db  = getConn();
-            $res = $db->query("SELECT `title`,`path`,`id` FROM `".$model['maintable']."` WHERE `show`=1 AND `sortid`='".$model['sortid']."' AND `order`<".$data['order']." ORDER BY `top` DESC,`order` DESC,`id` DESC LIMIT 0,1;");
+            $res = $db->query("SELECT `title`,`path`,`id` FROM `".$model['maintable']."` WHERE `show`=1 AND `sortid`= :sortid AND `order`<:order ORDER BY `top` DESC,`order` DESC,`id` DESC LIMIT 0,1;",array('sortid'=>$model['sortid'],'order'=>$data['order']));
             if ($row = $db->fetch($res,0)) {
                 $I1 = '<a href="'.self::showArchive($row[2],$model).'">'.htmlencode($row[0]).'</a>';
             } else {
@@ -491,7 +487,7 @@ class Archives{
         if (strpos($l3,'{lazy:nextpage')!==false) {
             $data = $l1; $model = $l2; $HTML = $l3;
             $db  = getConn();
-            $res = $db->query("SELECT `title`,`path`,`id` FROM `".$model['maintable']."` WHERE `show`=1 AND `sortid`='".$model['sortid']."' AND `order`>".$data['order']." ORDER BY `top` ASC,`order` ASC,`id` ASC LIMIT 0,1;");
+            $res = $db->query("SELECT `title`,`path`,`id` FROM `".$model['maintable']."` WHERE `show`=1 AND `sortid`= :sortid AND `order`>:order ORDER BY `top` ASC,`order` ASC,`id` ASC LIMIT 0,1;",array('sortid'=>$model['sortid'],'order'=>$data['order']));
             if ($row = $db->fetch($res,0)) {
                 $I1 = '<a href="'.self::showArchive($row[2],$model).'">'.htmlencode($row[0]).'</a>';
             } else {
@@ -540,8 +536,7 @@ class Archives{
         $zebra   = $tag->getLabel($HTMList,'zebra');
 
         // 根据tagName 取得modelid
-        $where = $db->quoteInto("WHERE `modelename` = ?",$tagName);
-        $res   = $db->query("SELECT * FROM `#@_archives_model` {$where};");
+        $res   = $db->query("SELECT * FROM `#@_archives_model` WHERE `modelename` = ?;",$tagName);
         if ($model = $db->fetch($res)) {
             $fields  = self::getFields($model['modelid']);
             if (is_numeric($remove)) {

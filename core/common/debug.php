@@ -32,5 +32,7 @@ defined('CORE_PATH') or die('Restricted access!');
 return array(
     /* dubug模式 */
     'DEBUG_MODE' => true,
+    /* URL模式: URL_COMMON,URL_PATHINFO,URL_REWRITE */
+    'URL_MODEL' => URL_COMMON,   // 默认为 URL_COMMON 模式
 );
 ?>

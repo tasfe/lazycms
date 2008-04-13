@@ -97,7 +97,7 @@ class Tags extends Lazy{
     }
     // format *** *** www.LazyCMS.net *** ***
     public function format($l1){
-        return replace('/(<(script|link|img|input|embed|param|object|base|area|map|table|param).+?(src|href|background|value)\=.+?)(\.\.\/)*((images|js)\/.{0,}?>)/i','${1}'.C('SITE_BASE').C('TEMPLATE_PATH').'/${5}',$l1);
+        return replace('/(<(((script|link|img|input|embed|object|base|area|map|table|td|th|tr).+?(src|href|background))|((param).+?(src|value)))=([^\/]+?))((images|inside)\/.{0,}?\>)/i','${1}'.C('SITE_BASE').C('TEMPLATE_PATH').'/${10}',$l1);
     }
     // parseTags *** *** www.LazyCMS.net *** ***
     public function parseTags($tags,$inValue){

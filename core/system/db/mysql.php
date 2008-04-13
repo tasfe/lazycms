@@ -85,6 +85,7 @@ class Mysql extends DB{
         $sql = preg_replace('/\#\~(.+)\~\#/e','$this->config(\'\\1\')',$sql);
         $sql = preg_replace('/`(#@_)(\w+)`/i','`'.$this->config('prefix').'$2`',$sql);
         $this->_sql = $sql;
+        
         if(!($I1= $func($sql,$this->_conn))){
             if(in_array($this->errno(),array(2006,2013)) && substr($type,0,5) != 'RETRY') {
                 $this->close();$this->connect();
@@ -141,12 +142,12 @@ class Mysql extends DB{
 
     // query *** *** www.LazyCMS.net *** ***
     public function query($sql,$bind=null){
-        $sql = $this->quoteInto($sql,$bind);
+        if (!empty($bind)) { $sql = $this->quoteInto($sql,$bind); }
         return $this->execute($sql,'mysql_query');
     }
     // exec *** *** www.LazyCMS.net *** ***
     public function exec($sql,$bind=null){
-        $sql = $this->quoteInto($sql,$bind);
+        if (!empty($bind)) { $sql = $this->quoteInto($sql,$bind); }
         return $this->execute($sql,'mysql_unbuffered_query');
     }
     // fetch *** *** www.LazyCMS.net *** ***

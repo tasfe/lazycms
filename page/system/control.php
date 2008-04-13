@@ -130,7 +130,8 @@ class LazySystem extends LazyCMS{
                 $this->poping(L('log/pop/deleteok'),1);
                 break;
             case 'logdelete' ://删除过期日志 7天
-                $db->exec("DELETE FROM `#@_log` WHERE `logdate`<".(now()-(7*24*3600)).";");
+                $date = now()-(7*24*3600);
+                $db->exec("DELETE FROM `#@_log` WHERE `logdate`< ? ;",$date);
                 $this->poping(L('log/pop/logdeleteok'),1);
                 break;
             default :
@@ -176,8 +177,7 @@ class LazySystem extends LazyCMS{
                 if (empty($lists)) {
                     $this->poping(L('admin/pop/select'),0);
                 }
-                $where = $db->quoteInto('`adminid` = ?',$this->admin['adminid']);
-                $db->exec("DELETE FROM `#@_admin` WHERE `adminid` IN({$lists}) AND NOT({$where});");
+                $db->exec("DELETE FROM `#@_admin` WHERE `adminid` IN({$lists}) AND NOT(`adminid` = ?);",$this->admin['adminid']);
                 $this->poping(L('admin/pop/deleteok'),1);
                 break;
             default :
@@ -256,8 +256,7 @@ class LazySystem extends LazyCMS{
             }
         } else {
             if (!empty($adminid)) {
-                $where = $db->quoteInto('WHERE `adminid` = ?',$adminid);
-                $res   = $db->query("SELECT {$sql} FROM `#@_admin` {$where};");
+                $res   = $db->query("SELECT {$sql} FROM `#@_admin` WHERE `adminid` = ?;",$adminid);
                 if ($data = $db->fetch($res,0)) {
                     if ($data[0]==Cookie::get('adminname')) {
                         redirect(url('System','MyAccount')); exit(0);
@@ -366,6 +365,7 @@ class LazySystem extends LazyCMS{
                 $diyMenu = defmenu();
             }
         }
+        
         $tpl->assign('diyMenu',htmlencode($diyMenu));
         $tpl->display('diymenu.php');
     }
@@ -825,8 +825,7 @@ class LazySystem extends LazyCMS{
             $adminname = Cookie::get('adminname');
             $adminpass = Cookie::get('adminpass');
             if (!empty($adminname) && !empty($adminpass)) {
-                $where = $db->quoteInto('WHERE `adminname` = ?',$adminname);
-                $res   = $db->query("SELECT * FROM `#@_admin` {$where};");
+                $res   = $db->query("SELECT * FROM `#@_admin` WHERE `adminname` = ?;",$adminname);
                 if ($data = $db->fetch($res)) {
                     if ($adminpass==$data['adminpass']) {
                         // 登录成功，写登录记录
@@ -861,8 +860,7 @@ class LazySystem extends LazyCMS{
         // 验证通过
         if ($this->method() && $this->validate()) {
             $validity  = $save ? (now()+3600*24*7) : null;
-            $where = $db->quoteInto('WHERE `adminname` = ?',$adminname);
-            $res   = $db->query("SELECT * FROM `#@_admin` {$where};");
+            $res   = $db->query("SELECT * FROM `#@_admin` WHERE `adminname` = ?;",$adminname);
             if ($data = $db->fetch($res)) {
                 $md5pass = md5($adminpass.$data['adminkey']);
                 if ($md5pass==$data['adminpass']) {

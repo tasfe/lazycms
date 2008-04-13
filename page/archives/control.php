@@ -138,8 +138,7 @@ class LazyArchives extends LazyCMS{
             }
         } else {
             if (!empty($sortid)) {
-                $where = $db->quoteInto('WHERE `sortid` = ?',$sortid);
-                $res   = $db->query("SELECT {$sql} FROM `#@_archives_sort` {$where};");
+                $res   = $db->query("SELECT {$sql} FROM `#@_archives_sort` WHERE `sortid` = ?;",$sortid);
                 if (!$data = $db->fetch($res,0)) {
                     throwError(L('error/invalid'));
                 }
@@ -192,7 +191,7 @@ class LazyArchives extends LazyCMS{
                     $js.= "loading('{$submit}_{$sortid}','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$sortid}")."');";
                 }
                 $js.= '</script>';
-                $this->poping($this->L('pop/loading').$js,0);
+                $this->poping($this->L('pop/loading').$js,1);
                 break;
             case 'createpage' :
                 $I2 = explode(',',$lists);
@@ -201,7 +200,7 @@ class LazyArchives extends LazyCMS{
                     $js.= "loading('{$submit}_{$sortid}','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$sortid}")."');";
                 }
                 $js.= '</script>';
-                $this->poping($this->L('pop/loading').$js,0);
+                $this->poping($this->L('pop/loading').$js,1);
                 break;
             case 'createall' :
                 $I2 = explode(',',$lists);
@@ -210,7 +209,7 @@ class LazyArchives extends LazyCMS{
                     $js.= "loading('{$submit}_{$sortid}','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$sortid}")."');";
                 }
                 $js.= '</script>';
-                $this->poping($this->L('pop/loading').$js,0);
+                $this->poping($this->L('pop/loading').$js,1);
                 break;
             case 'updown' :
                 $updown = isset($_POST['updown']) ? (string)$_POST['updown'] : null;
@@ -223,8 +222,8 @@ class LazyArchives extends LazyCMS{
                 $res   = $db->query("SELECT `s`.*,`m`.`modelname`
                                         FROM `#@_archives_sort` AS `s` 
                                         LEFT JOIN `#@_archives_model` AS `m` ON `s`.`modelid` = `m`.`modelid`
-                                        WHERE `s`.`sortid1`='{$lists}' 
-                                        ORDER BY `s`.`sortorder` ASC,`s`.`sortid` ASC");
+                                        WHERE `s`.`sortid1`= ?  
+                                        ORDER BY `s`.`sortorder` ASC,`s`.`sortid` ASC;",$lists);
                 $array = array();
                 while ($data = $db->fetch($res)) {
                     $array[] = array(
@@ -234,11 +233,11 @@ class LazyArchives extends LazyCMS{
                         'js'    => "lll(".$data['sortid'].",".$data['sortid1'].",'".t2js(htmlencode($data['sortname']))."','".t2js(htmlencode($data['modelname']))."',".Archives::Count($data['sortid']).",'".Archives::showSort($data['sortid'])."',".(file_exists(LAZY_PATH.$data['sortpath']) ? 1 : 0).",'".Archives::subSort($data['sortid'],$space+1)."');"
                     );
                 }
-                $db->exec("UPDATE `#@_archives_sort` SET `sortopen`='1' WHERE `sortid`='{$lists}';");
+                $db->exec("UPDATE `#@_archives_sort` SET `sortopen`='1' WHERE `sortid`= ? ;",$lists);
                 echo json_encode($array);
                 break;
             case 'isopen' :
-                $db->exec("UPDATE `#@_archives_sort` SET `sortopen`='0' WHERE `sortid`='{$lists}';");
+                $db->exec("UPDATE `#@_archives_sort` SET `sortopen`='0' WHERE `sortid`= ? ;",$lists);
                 break;
             default :
                 $this->poping(L('error/invalid'),0);
@@ -499,8 +498,7 @@ class LazyArchives extends LazyCMS{
             }
         } else {
             if (!empty($aid)) {
-                $where = $db->quoteInto('WHERE `id` = ?',$aid);
-                $res   = $db->query("SELECT * FROM `".$model['maintable']."` {$where};");
+                $res   = $db->query("SELECT * FROM `".$model['maintable']."` WHERE `id` = ?;",$aid);
                 if ($data = $db->fetch($res)) {
                     $sortid  = $data['sortid'];
                     $title   = $data['title'];
@@ -671,7 +669,7 @@ class LazyArchives extends LazyCMS{
         $modelid = isset($_GET['modelid']) ? (int)$_GET['modelid'] : null;
         
         $XML = array();
-        $res = $db->query("SELECT * FROM `#@_archives_model` WHERE `modelid`='{$modelid}';");
+        $res = $db->query("SELECT * FROM `#@_archives_model` WHERE `modelid`= ? ;",$modelid);
         if ($data = $db->fetch($res)) {
             unset($data['modelid']);
             $modelName = $data['modelename'];
@@ -682,7 +680,7 @@ class LazyArchives extends LazyCMS{
             $modelName = 'Error';
         }
         $fields = array();
-        $res = $db->query("SELECT * FROM `#@_archives_fields` WHERE `modelid`='{$modelid}' ORDER BY `fieldorder` ASC,`fieldid` ASC;");
+        $res = $db->query("SELECT * FROM `#@_archives_fields` WHERE `modelid`= ? ORDER BY `fieldorder` ASC,`fieldid` ASC;",$modelid);
         while ($data = $db->fetch($res)){
             unset($data['fieldid'],$data['modelid'],$data['fieldorder']);
             $fields[] = $data;
@@ -792,8 +790,7 @@ class LazyArchives extends LazyCMS{
             }
         } else {
             if (!empty($modelid)) {
-                $where = $db->quoteInto('WHERE `modelid` = ?',$modelid);
-                $res   = $db->query("SELECT {$sql} FROM `#@_archives_model` {$where};");
+                $res   = $db->query("SELECT {$sql} FROM `#@_archives_model` WHERE `modelid` = ?;",$modelid);
                 if (!$data = $db->fetch($res,0)) {
                     throwError(L('error/invalid'));
                 }    
@@ -818,7 +815,7 @@ class LazyArchives extends LazyCMS{
         $modelid = isset($_REQUEST['modelid']) ? (int)$_REQUEST['modelid'] : null;
         $dp = O('Record');
         $dp->action = url(C('CURRENT_MODULE'),'ModelFieldSet','modelid='.$modelid);
-        $dp->result = $db->query("SELECT * FROM `#@_archives_fields` WHERE `modelid`='{$modelid}' ORDER BY `fieldorder` ASC, `fieldid` ASC;");
+        $dp->result = $db->query("SELECT * FROM `#@_archives_fields` WHERE `modelid`= ? ORDER BY `fieldorder` ASC, `fieldid` ASC;",$modelid);
         $dp->length = $db->count($dp->result);
         $dp->but = $dp->button();
         $dp->td  = "cklist(K[0]) + '<a href=\"".url(C('CURRENT_MODULE'),'ModelFieldsEdit','modelid=:modelid&fieldid=:fieldid',array('modelid'=>"'+K[7]+'",'fieldid'=>"'+K[0]+'"))."\">' + K[0] + ') ' + K[1] + '</a>'";
@@ -879,7 +876,7 @@ class LazyArchives extends LazyCMS{
                 $addtable = $db->result("SELECT `addtable` FROM `#@_archives_model` WHERE `modelid`='{$modelid}';");
                 // 组合删除数据库字段的SQL语句
                 $DelSQL = "ALTER TABLE `{$addtable}` ";
-                $res = $db->query("SELECT `fieldename` FROM `#@_archives_fields` WHERE `modelid`='{$modelid}' AND `fieldid` IN({$lists});");
+                $res = $db->query("SELECT `fieldename` FROM `#@_archives_fields` WHERE `modelid`= ? AND `fieldid` IN({$lists});",$modelid);
                 while ($data = $db->fetch($res,0)){
                     $DelSQL.= " DROP `".$data[0]."`,";
                 }
@@ -887,10 +884,10 @@ class LazyArchives extends LazyCMS{
                 try { // 屏蔽所有错误
                     // 执行删除字段操作
                     $db->exec($DelSQL);
-                    $db->exec("DELETE FROM `#@_archives_fields` WHERE `modelid`='{$modelid}' AND `fieldid` IN({$lists});");
+                    $db->exec("DELETE FROM `#@_archives_fields` WHERE `modelid`= ? AND `fieldid` IN({$lists});",$modelid);
                     $this->poping($this->L('models/pop/deletefieldok'),1);
                 } catch (Error $err) {
-                    $db->exec("DELETE FROM `#@_archives_fields` WHERE `modelid`='{$modelid}' AND `fieldid` IN({$lists});");
+                    $db->exec("DELETE FROM `#@_archives_fields` WHERE `modelid`= ? AND `fieldid` IN({$lists});",$modelid);
                     $this->poping($this->L('models/pop/deletefielderr'),1);
                 }
                 break;
@@ -988,8 +985,7 @@ class LazyArchives extends LazyCMS{
             }
         } else {
             if (!empty($modelid) && !empty($fieldid)) {
-                $where = $db->quoteInto('WHERE `modelid` = :modelid AND `fieldid`= :fieldid ',array('modelid'=>$modelid,'fieldid'=>$fieldid));
-                $res   = $db->query("SELECT {$sql} FROM `#@_archives_fields` {$where};");
+                $res   = $db->query("SELECT {$sql} FROM `#@_archives_fields` WHERE `modelid` = :modelid AND `fieldid`= :fieldid;",array('modelid'=>$modelid,'fieldid'=>$fieldid));
                 if (!$data = $db->fetch($res,0)) {
                     throwError(L('error/invalid'));
                 }
@@ -1018,9 +1014,8 @@ class LazyArchives extends LazyCMS{
         $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
         $sortid = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : null;
         $model  = Archives::getModel($sortid);
-        $where  = $db->quoteInto('WHERE `id` = ?',$id);
-        $db->exec("UPDATE `".$model['maintable']."` SET `hits` = `hits` + 1 {$where};");
-        $res = $db->query("SELECT `hits` FROM `".$model['maintable']."` {$where};");
+        $db->exec("UPDATE `".$model['maintable']."` SET `hits` = `hits` + 1 WHERE `id` = ?;",$id);
+        $res = $db->query("SELECT `hits` FROM `".$model['maintable']."` WHERE `id` = ?;",$id);
         if ($data = $db->fetch($res,0)) {
             echo $data[0];
         } else {
@@ -1037,7 +1032,7 @@ class LazyArchives extends LazyCMS{
         if (!$data = $db->fetch($res)) {
             echo L('error/invalid');
         }
-        $res = $db->query("SELECT `title`,`path`,`id` FROM `".$model['maintable']."` WHERE `show`=1 AND `sortid`='".$model['sortid']."' AND `order`>".$data['order']." ORDER BY `top` ASC,`order` ASC,`id` ASC LIMIT 0,1;");
+        $res = $db->query("SELECT `title`,`path`,`id` FROM `".$model['maintable']."` WHERE `show`=1 AND `sortid`=:sortid AND `order`>:order ORDER BY `top` ASC,`order` ASC,`id` ASC LIMIT 0,1;",array('sortid'=>$model['sortid'],'order'=>$data['order']));
         if ($row = $db->fetch($res,0)) {
             if (!C('SITE_MODE')) { Archives::viewArchive($model['sortid'],$row[2]); }
             $I1 = '<a href="'.Archives::showArchive($row[2],$model).'">'.htmlencode($row[0]).'</a>';
