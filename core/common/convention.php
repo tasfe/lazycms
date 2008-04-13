@@ -61,7 +61,7 @@ return array(
     'DSN_PREFIX' => 'lazy_', //表前缀
     
     /* URL模式: URL_COMMON,URL_PATHINFO,URL_REWRITE */
-    'URL_MODEL' => URL_PATHINFO,   // 默认为 URL_COMMON 模式
+    'URL_MODEL' => URL_PATHINFO, // 默认为 URL_PATHINFO 模式
     'PATH_DEPR' => '/',          // PATHINFO参数之间分割号
     'ROUTER_ON' => true,         // 启用路由判断
     

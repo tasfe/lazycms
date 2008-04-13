@@ -127,11 +127,6 @@ abstract class LazyCMS extends Lazy{
         if (is_file(CORE_PATH.'/custom/config.php')) {
             C(include CORE_PATH.'/custom/config.php');
         }
-        // 如果是调试模式加载调试模式配置文件
-        if (C('DEBUG_MODE')) {
-            // 加载系统默认的开发模式配置文件
-            C(include CORE_PATH.'/common/debug.php');
-        }
         
         // 部署模式下面生成编译文件
         // 下次直接加载项目编译文件

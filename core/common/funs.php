@@ -1245,8 +1245,8 @@ function L($l1,$l2=null,$l3='system'){
 }
 
 // createNote *** *** www.LazyCMS.net *** ***
-function createNote($l1){
-return <<<NOTE
+function createNote($l1=null){
+$I2 = <<<NOTE
 /**
  * +---------------------------------------------------------------------------+
  * | LL                             LLLL   LL     L   LLLL                 LL  |
@@ -1268,10 +1268,29 @@ return <<<NOTE
  * | Author: Lukin <mylukin@gmail.com>                                         |
  * +---------------------------------------------------------------------------+
  */
+NOTE;
+$I3 = <<<CODE
 defined('CORE_PATH') or die('Restricted access!');
 /**
  * {$l1}
  */
-NOTE;
+CODE;
+$I1 = $I2; if (!empty($l1)) { $I1.= $I3; } return $I1;
+}
+
+// reWrite *** *** www.LazyCMS.net *** ***
+function reWrite($l1){
+$I2 = <<<CODESTART
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+CODESTART;
+$I3 = "\n  RewriteBase {$l1}\n";
+$I4 = <<<CODEEND
+  RewriteRule ^(.*)$ index.php?/$1 [QSA,PT,L]
+</IfModule>
+CODEEND;
+$I1 = $I2.$I3.$I4; return $I1;
 }
 ?>

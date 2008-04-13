@@ -19,10 +19,9 @@
  * +---------------------------------------------------------------------------+
  * | Author: Lukin <mylukin@gmail.com>                                         |
  * +---------------------------------------------------------------------------+
- */
-defined('CORE_PATH') or die('Restricted access!');
+ */defined('CORE_PATH') or die('Restricted access!');
 /**
- * 用户自定义配置文件
+ * User-defined configuration files
  */
 return array (
   'SITE_BASE' => '/',

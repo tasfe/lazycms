@@ -72,6 +72,15 @@
     <config title="参数设置">
         <sitename>网站名称</sitename>
         <sitemail>管理员信箱</sitemail>
+        <sitemode title="网站模式">
+            <true>全站动态</true>
+            <false>全站静态</false>
+        </sitemode>
+        <urlmode title="URL模式">
+            <common>普通模式</common>
+            <pathinfo>PATHINFO</pathinfo>
+            <rewrite>REWRITE模式</rewrite>
+        </urlmode>
         <keywords>关键词组</keywords>
         <lockip>限制访问的IP地址</lockip>
         <check>

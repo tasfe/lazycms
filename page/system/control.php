@@ -376,14 +376,44 @@ class LazySystem extends LazyCMS{
         $db  = getConn();
         $sitename = isset($_POST['sitename']) ? $_POST['sitename'] : null;
         $sitemail = isset($_POST['sitemail']) ? $_POST['sitemail'] : null;
+        $sitemode = isset($_POST['sitemode']) ? (bool)($_POST['sitemode']=='true'?true:false) : C('SITE_MODE');
+        $urlmode  = isset($_POST['urlmode']) ? (int)$_POST['urlmode'] : C('URL_MODEL');
         $keywords = isset($_POST['keywords']) ? $_POST['keywords'] : null;
         $lockip   = isset($_POST['lockip']) ? $_POST['lockip'] : null;
+        // 判断服务器是否支持 rewrite
+        ob_start();phpinfo(); if (strpos(strtolower(ob_get_contents()),'mod_rewrite')!==false) { $isReWrite = true; } else { $isReWrite = false; } ob_end_clean();
         $this->validate(array(
             'sitename' => $this->check('sitename|1|'.L('config/check/sitename').'|1-50'),
             'sitemail' => !empty($sitemail) ? $this->check('sitemail|validate|'.L('config/check/sitemail').'|4') : null,
         ));
         if ($this->method()) {
             if ($this->validate()) {
+                // 不支持rewrite 还原 URL_MODEL 设置
+                if (!$isReWrite) { $urlmode = C('URL_MODEL'); }
+                $config = include CORE_PATH.'/custom/config.php';
+                $config = array_merge($config,array('SITE_MODE'=>$sitemode,'URL_MODEL'=>$urlmode));
+                // 全站动态模式，删除page/index.php 生成一个 page/index.html
+                if ($sitemode) {
+                    @unlink(LAZY_PATH.C('PAGES_PATH').'/index.php');
+                    saveFile(LAZY_PATH.C('PAGES_PATH').'/index.html');
+                    saveFile(LAZY_PATH.'/index.php',"<?php\n".createNote()."\ndefine('CORE_PATH', dirname(__FILE__).'/core');require CORE_PATH.'/LazyCMS.php';LazyCMS::run('System','Default');\n?>");
+                } else {
+                    // 全站静态模式，删除index.php 自动创建一个 page/index.php
+                    @unlink(LAZY_PATH.C('PAGES_PATH').'/index.html');
+                    @unlink(LAZY_PATH.'index.php');
+                    saveFile(LAZY_PATH.C('PAGES_PATH').'/index.php',"<?php\n".createNote()."\ndefine('LAZY_PATH', dirname(__FILE__).'/../'); define('CORE_PATH', dirname(__FILE__).'/../core');require CORE_PATH.'/LazyCMS.php'; LazyCMS::run('System','Sysinfo');\n?>");
+                }
+                if ($urlmode==URL_REWRITE) {
+                    if (is_file(LAZY_PATH.'/index.php')) {
+                        $RewriteBase = C('SITE_BASE');
+                    } else {
+                        $RewriteBase = C('SITE_BASE').C('PAGES_PATH').'/';
+                    }
+                    saveFile(LAZY_PATH.'/.htaccess',reWrite($RewriteBase));
+                } else {
+                    @unlink(LAZY_PATH.'/.htaccess');
+                }
+                C($config); saveFile(CORE_PATH.'/custom/config.php',"<?php\n".createNote('User-defined configuration files')."\nreturn ".var_export($config,true).";\n?>");
                 $set = array(
                     'sitename'     => $sitename,
                     'sitemail'     => $sitemail,
@@ -403,6 +433,8 @@ class LazySystem extends LazyCMS{
         $tpl->assign(array(
             'sitename' => htmlencode($sitename),
             'sitemail' => htmlencode($sitemail),
+            'sitemode' => $sitemode,
+            'urlmode'  => $urlmode,
             'keywords' => htmlencode($keywords),
             'lockip'   => htmlencode($lockip),
         ));
