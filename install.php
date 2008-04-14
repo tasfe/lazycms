@@ -41,8 +41,6 @@ if (is_file(CORE_PATH.'/custom/config.php')) {
     C(include CORE_PATH.'/custom/config.php');
 }
 
-$modelArticle = '<?xml version="1.0" encoding="utf-8"?><lazycms><model><modelname>文章模型</modelname><modelename>article</modelename><maintable>archives</maintable><addtable>archives_model_article</addtable><modelstate>0</modelstate></model><fields><item id="0"><fieldname>文章来源</fieldname><fieldename>from</fieldename><fieldtype>varchar</fieldtype><fieldlength>255</fieldlength><fieldefault></fieldefault><fieldindex>0</fieldindex><inputtype>input</inputtype><fieldvalue></fieldvalue></item><item id="1"><fieldname>作者</fieldname><fieldename>author</fieldename><fieldtype>varchar</fieldtype><fieldlength>50</fieldlength><fieldefault></fieldefault><fieldindex>0</fieldindex><inputtype>input</inputtype><fieldvalue></fieldvalue></item><item id="2"><fieldname>内容</fieldname><fieldename>content</fieldename><fieldtype>mediumtext</fieldtype><fieldlength></fieldlength><fieldefault></fieldefault><fieldindex>0</fieldindex><inputtype>editor</inputtype><fieldvalue></fieldvalue></item></fields></lazycms>';
-
 // labelError *** *** www.LazyCMS.net *** ***
 function labelError($l1=null,$l2=null){
     static $checkerr = array();
@@ -60,9 +58,9 @@ $install = isset($_POST['install']) ? $_POST['install'] : null;
 
 // 获取安装目录
 $sitebase = dirname(getUriBase());
-$sitebase = ($sitebase=="\\" || $sitebase=="/") ? '/' : substr($sitebase.'/',0,strrpos($sitebase.'/','/')+1);
+$sitebase = ($sitebase=="\\" || $sitebase=="/") ?
+			'/' : substr($sitebase.'/',0,strrpos($sitebase.'/','/')+1);
 $sitebase  = isset($_POST['sitebase']) ? $_POST['sitebase'] : $sitebase;
-
 $sitename  = isset($_POST['sitename']) ? $_POST['sitename'] : null;
 $sitemail  = isset($_POST['sitemail']) ? $_POST['sitemail'] : null;
 $keywords  = isset($_POST['keywords']) ? $_POST['keywords'] : null;
@@ -90,6 +88,7 @@ $adminpass_err = $install ? labelError('adminpass',check('adminpass|1|管理员�
 if (empty($adminpass_err)) {
     $adminpass_err = $install ? labelError('adminpass',check('adminpass|2|两次输入的密码不一致|adminpass1')) : null;
 }
+
 // install
 if ($install && labelError()) {
     $config = array(
@@ -184,8 +183,12 @@ if ($install && labelError()) {
         );
         $db->insert('#@_onepage',$onepage);
         saveFile(CORE_PATH.'/custom/config.php',"<?php\n".createNote('用户自定义配置文件')."\nreturn ".var_export($config,true).";\n?>");
-        // 导入文章模型
-        import("@.archives.module"); Archives::installModel($modelArticle,true);
+        // 导入默认模型
+		import("@.archives.module");
+		$models = getArrDir('@.archives.models','xml');
+		foreach ($models as $model){
+			Archives::installModel(loadFile(LAZY_PATH.C('PAGES_PATH')."/archives/{$model}"),true);
+		}
         @unlink(LAZY_PATH.'install.php');
         redirect('admin/index.php');
     } catch (Error $err) {

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lazycms>
+	<model>
+		<modelname>文章模型</modelname>
+		<modelename>article</modelename>
+		<maintable>archives</maintable>
+		<addtable>archives_model_article</addtable>
+		<modelstate>0</modelstate>
+	</model>
+	<fields>
+		<item id="0">
+			<fieldname>文章来源</fieldname>
+			<fieldename>from</fieldename>
+			<fieldtype>varchar</fieldtype>
+			<fieldlength>255</fieldlength>
+			<fieldefault></fieldefault>
+			<fieldindex>0</fieldindex>
+			<inputtype>input</inputtype>
+			<fieldvalue></fieldvalue>
+		</item>
+		<item id="1">
+			<fieldname>作者</fieldname>
+			<fieldename>author</fieldename>
+			<fieldtype>varchar</fieldtype>
+			<fieldlength>50</fieldlength>
+			<fieldefault></fieldefault>
+			<fieldindex>0</fieldindex>
+			<inputtype>input</inputtype>
+			<fieldvalue></fieldvalue>
+		</item>
+		<item id="2">
+			<fieldname>内容</fieldname>
+			<fieldename>content</fieldename>
+			<fieldtype>mediumtext</fieldtype>
+			<fieldlength></fieldlength>
+			<fieldefault></fieldefault>
+			<fieldindex>0</fieldindex>
+			<inputtype>editor</inputtype>
+			<fieldvalue></fieldvalue>
+		</item>
+	</fields>
+</lazycms>
