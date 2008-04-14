@@ -141,13 +141,13 @@ class Mysql extends DB{
     }
 
     // query *** *** www.LazyCMS.net *** ***
-    public function query($sql,$bind=null){
-        if (!empty($bind)) { $sql = $this->quoteInto($sql,$bind); }
+    public function query($sql,$bind=''){
+        if ((string)$bind!='') { $sql = $this->quoteInto($sql,$bind); }
         return $this->execute($sql,'mysql_query');
     }
     // exec *** *** www.LazyCMS.net *** ***
-    public function exec($sql,$bind=null){
-        if (!empty($bind)) { $sql = $this->quoteInto($sql,$bind); }
+    public function exec($sql,$bind=''){
+        if ((string)$bind!='') { $sql = $this->quoteInto($sql,$bind); }
         return $this->execute($sql,'mysql_unbuffered_query');
     }
     // fetch *** *** www.LazyCMS.net *** ***
