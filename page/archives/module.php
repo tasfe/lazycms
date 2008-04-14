@@ -648,7 +648,7 @@ class Archives{
     // installModel *** *** www.LazyCMS.net *** ***
     static function installModel($modelCode,$isDeleteTable=false){
         $db  = getConn();
-		$xml = simplexml_load_string($modelCode);
+		$xml = simplexml_load_string($modelCode,'SimpleXMLElement',LIBXML_NOCDATA);
 		// Model Value
 		$data[] = $xml->model->modelname;
         $data[] = $xml->model->modelename;

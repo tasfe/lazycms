@@ -174,9 +174,13 @@ abstract class LazyCMS extends Lazy{
                 unset($_modules);
             }
         } catch (Error $err) {
+            if (is_file(LAZY_PATH.'install.php')) {
+                redirect(C('SITE_BASE').'install.php');exit;
+            }
             // 这里数据库连接出错不进行错误提示。
             $modules = null;
             $system  = null;
+            
         }
         // 判断模块是否安装
         if (!instr($modules,strtolower($l1)) && strtolower($l1)!='system') {

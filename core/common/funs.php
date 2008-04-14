@@ -1227,7 +1227,7 @@ function L($l1,$l2=null,$l3='system'){
         $l6 = $l5.$l4.'.xml';
         if (!is_file($l6)) { $l6 = $l5.C('LANGUAGE').'.xml'; }
         if (!is_file($l6)) { return '['.$l1.']';}
-        $I2 = simplexml_load_file($l6);
+        $I2 = simplexml_load_file($l6,'SimpleXMLElement',LIBXML_NOCDATA);
         $_I1["{$l3}_{$l4}"] = $I2;
     }
 	$I3 = $I2->xpath("//lazycms/{$l1}");

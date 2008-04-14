@@ -36,15 +36,6 @@ class LazySystem extends LazyCMS{
     }
     // _default *** *** www.LazyCMS.net *** ***
     function _default(){
-        try {
-            $db = getConn();
-        } catch (Error $e) {
-            if (is_file(LAZY_PATH.'install.php')) {
-                redirect(C('SITE_BASE').'install.php');exit;
-            } else {
-                throwError($e->getMessage(),$e->getCode());
-            }
-        }
         // 读取首页
         if (class_exists('Onepage')) {
             Onepage::index();
@@ -852,31 +843,23 @@ class LazySystem extends LazyCMS{
     }
     // _login *** *** www.LazyCMS.net *** ***
     function _login(){
-        try {
-            $db = getConn();
-            $adminname = Cookie::get('adminname');
-            $adminpass = Cookie::get('adminpass');
-            if (!empty($adminname) && !empty($adminpass)) {
-                $res   = $db->query("SELECT * FROM `#@_admin` WHERE `adminname` = ?;",$adminname);
-                if ($data = $db->fetch($res)) {
-                    if ($adminpass==$data['adminpass']) {
-                        // 登录成功，写登录记录
-                        $row = array(
-                            'adminname' => $adminname,
-                            'ip'        => ip(),
-                            'lognum'    => 1,
-                            'logdate'   => now(),
-                        );
-                        $db->insert('#@_log',$row);
-                        redirect(url('System'));
-                    }
+        $db = getConn();
+        $adminname = Cookie::get('adminname');
+        $adminpass = Cookie::get('adminpass');
+        if (!empty($adminname) && !empty($adminpass)) {
+            $res   = $db->query("SELECT * FROM `#@_admin` WHERE `adminname` = ?;",$adminname);
+            if ($data = $db->fetch($res)) {
+                if ($adminpass==$data['adminpass']) {
+                    // 登录成功，写登录记录
+                    $row = array(
+                        'adminname' => $adminname,
+                        'ip'        => ip(),
+                        'lognum'    => 1,
+                        'logdate'   => now(),
+                    );
+                    $db->insert('#@_log',$row);
+                    redirect(url('System'));
                 }
-            }
-        } catch (Error $e) {
-            if (is_file(LAZY_PATH.'install.php')) {
-                redirect(C('SITE_BASE').'install.php');exit;
-            } else {
-                throwError($e->getMessage(),$e->getCode());
             }
         }
         // 取得模板对象

@@ -34,14 +34,14 @@ class Passport{
     }
     // installModel *** *** www.LazyCMS.net *** ***
     static function installModel($groupCode,$isDeleteTable=false){
-        $db       = getConn();
-		$xml = simplexml_load_string($modelCode);
+        $db  = getConn();
+		$xml = simplexml_load_string($groupCode,'SimpleXMLElement',LIBXML_NOCDATA);
         // Model Value
 		// Model Value
 		$data[] = $xml->group->groupname;
         $data[] = $xml->group->groupename;
-        $data[] = $xml->group->grouptable;
-        $data[] = '#@_'.$xml->group->purview;
+        $data[] = '#@_'.$xml->group->grouptable;
+        $data[] = $xml->group->purview;
         $data[] = $xml->group->groupstate;
         if (!$isDeleteTable) {
             if ($db->isTable($data[2])) {
