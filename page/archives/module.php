@@ -647,16 +647,15 @@ class Archives{
     }
     // installModel *** *** www.LazyCMS.net *** ***
     static function installModel($modelCode,$isDeleteTable=false){
-        $db       = getConn();
-        $modelDom = DOMDocument::loadXML($modelCode);
-        $XPath    = new DOMXPath($modelDom);
-        // Model Value
-        $data[0] = $XPath->evaluate("//lazycms/model/modelname")->item(0)->nodeValue;
-        $data[1] = $XPath->evaluate("//lazycms/model/modelename")->item(0)->nodeValue;
-        $data[2] = '#@_'.$XPath->evaluate("//lazycms/model/maintable")->item(0)->nodeValue;
-        $data[3] = '#@_'.$XPath->evaluate("//lazycms/model/addtable")->item(0)->nodeValue;
-        $data[4] = $XPath->evaluate("//lazycms/model/modelstate")->item(0)->nodeValue;
-        if (!$isDeleteTable) {
+        $db  = getConn();
+		$xml = simplexml_load_string($modelCode);
+		// Model Value
+		$data[] = $xml->model->modelname;
+        $data[] = $xml->model->modelename;
+        $data[] = $xml->model->maintable;
+        $data[] = '#@_'.$xml->model->addtable;
+        $data[] = $xml->model->modelstate;
+		if (!$isDeleteTable) {
             if ($db->isTable($data[3])) {
                 $salt = salt(4);
                 $data[1].= '_'.$salt;
@@ -672,24 +671,19 @@ class Archives{
             'modelstate' => $data[4],
         );
         $db->insert('#@_archives_model',$row);
-
-        // Insert fields
-        $inSQL      = null;
+		
+		// Insert fields
+		$inSQL      = null;
         $indexSQL   = null;
         $modelid    = $db->lastInsertId();
-        $objFields  = $modelDom->getElementsByTagName('fields')->item(0)->childNodes;
-        $fieldCount = $objFields->length;
-        for ($i=0; $i<$fieldCount; $i++) {
-            $row       = array();
-            $objItem   = $objFields->item($i)->childNodes;
-            $itemCount = $objItem->length;
-            for ($j=0; $j<$itemCount; $j++) {
-                $row[$objItem->item($j)->nodeName] = $objItem->item($j)->nodeValue;
-            }
-            $row = array_merge($row,array(
+		foreach ($xml->fields->item as $item){
+			$row = array();
+			foreach ($item as $k=>$v) {
+				$row[$k] = (string)$v;
+			}
+			$row = array_merge($row,array(
                 'modelid'    => $modelid,
                 'fieldorder' => $db->max('fieldid','#@_archives_fields'),
-                'fieldindex' => (string)$row['fieldindex'],
             ));
             if (instr('text,mediumtext,datetime',$row['fieldtype'])) {
                 $row['fieldlength'] = null;
@@ -707,7 +701,8 @@ class Archives{
                 $indexSQL.= "KEY `".$row['fieldename']."` (`".$row['fieldename']."`),";
             }
             $db->insert('#@_archives_fields',$row);
-        }
+		}
+		
         $db->exec("DROP TABLE IF EXISTS `".$data[3]."`;");
         // 创建新表
         $db->exec("CREATE TABLE IF NOT EXISTS `".$data[3]."` (

@@ -21,7 +21,7 @@
  * +---------------------------------------------------------------------------+
  */defined('CORE_PATH') or die('Restricted access!');
 /**
- * User-defined configuration files
+ * 用户自定义配置文件
  */
 return array (
   'SITE_BASE' => '/',

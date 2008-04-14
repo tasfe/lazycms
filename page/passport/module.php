@@ -35,14 +35,14 @@ class Passport{
     // installModel *** *** www.LazyCMS.net *** ***
     static function installModel($groupCode,$isDeleteTable=false){
         $db       = getConn();
-        $groupDom = DOMDocument::loadXML($groupCode);
-        $XPath    = new DOMXPath($groupDom);
+		$xml = simplexml_load_string($modelCode);
         // Model Value
-        $data[] = $XPath->evaluate("//lazycms/group/groupname")->item(0)->nodeValue;
-        $data[] = $XPath->evaluate("//lazycms/group/groupename")->item(0)->nodeValue;
-        $data[] = '#@_'.$XPath->evaluate("//lazycms/group/grouptable")->item(0)->nodeValue;
-        $data[] = $XPath->evaluate("//lazycms/group/purview")->item(0)->nodeValue;
-        $data[] = $XPath->evaluate("//lazycms/group/groupstate")->item(0)->nodeValue;
+		// Model Value
+		$data[] = $xml->group->groupname;
+        $data[] = $xml->group->groupename;
+        $data[] = $xml->group->grouptable;
+        $data[] = '#@_'.$xml->group->purview;
+        $data[] = $xml->group->groupstate;
         if (!$isDeleteTable) {
             if ($db->isTable($data[2])) {
                 $salt = salt(4);
@@ -64,19 +64,14 @@ class Passport{
         $inSQL      = null;
         $indexSQL   = null;
         $groupid    = $db->lastInsertId();
-        $objFields  = $groupDom->getElementsByTagName('fields')->item(0)->childNodes;
-        $fieldCount = $objFields->length;
-        for ($i=0; $i<$fieldCount; $i++) {
-            $row       = array();
-            $objItem   = $objFields->item($i)->childNodes;
-            $itemCount = $objItem->length;
-            for ($j=0; $j<$itemCount; $j++) {
-                $row[$objItem->item($j)->nodeName] = $objItem->item($j)->nodeValue;
-            }
-            $row = array_merge($row,array(
+		foreach ($xml->fields->item as $item){
+			$row = array();
+			foreach ($item as $k=>$v) {
+				$row[$k] = (string)$v;
+			}
+			$row = array_merge($row,array(
                 'groupid'    => $groupid,
                 'fieldorder' => $db->max('fieldid','#@_passport_fields'),
-                'fieldindex' => $row['fieldindex'],
             ));
             if (instr('text,mediumtext,datetime',$row['fieldtype'])) {
                 $row['fieldlength'] = null;
@@ -94,7 +89,8 @@ class Passport{
                 $indexSQL.= "KEY `".$row['fieldename']."` (`".$row['fieldename']."`),";
             }
             $db->insert('#@_passport_fields',$row);
-        }
+		}
+
         $db->exec("DROP TABLE IF EXISTS `".$data[2]."`;");
         // 创建新表
         $db->exec("CREATE TABLE IF NOT EXISTS `".$data[2]."` (
