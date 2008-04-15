@@ -217,4 +217,212 @@ class LazyPassport extends LazyCMS{
         $tpl = getTpl($this);
         $tpl->display('groupleadin.php');
     }
+    // _fields *** *** www.LazyCMS.net *** ***
+    function _fields(){
+        $this->checker(C('CURRENT_MODULE'));
+        $db      = getConn();
+        $groupid = isset($_REQUEST['groupid']) ? (int)$_REQUEST['groupid'] : null;
+        $dp = O('Record');
+        $dp->action = url(C('CURRENT_MODULE'),'FieldSet','groupid='.$groupid);
+        $dp->result = $db->query("SELECT * FROM `#@_passport_fields` WHERE `groupid`= ? ORDER BY `fieldorder` ASC, `fieldid` ASC;",$groupid);
+        $dp->length = $db->count($dp->result);
+        $dp->but = $dp->button();
+        $dp->td  = "cklist(K[0]) + '<a href=\"".url(C('CURRENT_MODULE'),'FieldsEdit','groupid=:groupid&fieldid=:fieldid',array('groupid'=>"'+K[7]+'",'fieldid'=>"'+K[0]+'"))."\">' + K[0] + ') ' + K[1] + '</a>'";
+        $dp->td  = "K[2]";
+        $dp->td  = "K[3] + (K[9]=='input' ? '(' + K[4] + ')' : '')";
+        $dp->td  = "(K[5]=='' ? 'NULL' : K[5])";
+        $dp->td  = "index(K[8],K[6],'".url(C('CURRENT_MODULE'),'FieldIndex','groupid=:groupid&fieldid=:fieldid&index=0',array('groupid'=>"'+K[7]+'",'fieldid'=>"'+K[0]+'"))."','".url(C('CURRENT_MODULE'),'FieldIndex','groupid=:groupid&fieldid=:fieldid&index=1',array('groupid'=>"'+K[7]+'",'fieldid'=>"'+K[0]+'"))."')";
+        $dp->td  = "ico('edit','".url(C('CURRENT_MODULE'),'FieldsEdit','groupid=:groupid&fieldid=:fieldid',array('groupid'=>"'+K[7]+'",'fieldid'=>"'+K[0]+'"))."') + updown('up',K[0]) + updown('down',K[0])";
+        $dp->open();
+        $dp->thead = '<tr><th>'.$this->L('list/field/id').') '.$this->L('list/field/name').'</th><th>'.$this->L('list/field/ename').'</th><th>'.$this->L('list/field/type').'</th><th>'.$this->L('list/field/default').'</th><th>'.$this->L('list/field/key').'</th><th>'.$this->L('list/field/action').'</th></tr>';
+        while ($data = $dp->result()) {
+            $dp->tbody = "ll(".$data['fieldid'].",'".t2js(htmlencode($data['fieldname']))."','".t2js(htmlencode($data['fieldename']))."','".$this->L('list/field/type/'.$data['inputtype'])."','".t2js(htmlencode($data['fieldlength']))."','".t2js(htmlencode($data['fieldefault']))."',".$data['fieldindex'].",".$data['groupid'].",".(int)instr('text,mediumtext',$data['fieldtype']).",'".$data['inputtype']."');";
+        }
+        $dp->close();
+        $this->outHTML = $dp->fetch;
+        $tpl = getTpl($this);
+        $tpl->assign('groupid',$groupid);
+        $tpl->display('fields.php');
+    }
+    // _fieldindex *** *** www.LazyCMS.net *** ***
+    function _fieldindex(){
+        $this->checker(C('CURRENT_MODULE'));
+        $fieldid = isset($_GET['fieldid']) ? (int)$_GET['fieldid'] : null;
+        $groupid = isset($_GET['groupid']) ? (int)$_GET['groupid'] : null;
+        $index   = isset($_GET['index']) ? (int)$_GET['index'] : null;
+        $db      = getConn();
+        try{
+            $where     = $db->quoteInto('`groupid` = :groupid AND `fieldid`= :fieldid ',array('groupid'=>$groupid,'fieldid'=>$fieldid));
+            $grouptable= $db->result("SELECT `grouptable` FROM `#@_passport_group` WHERE `groupid`='{$groupid}';");
+            $fieldname = $db->result("SELECT `fieldename` FROM `#@_passport_fields` WHERE {$where};");
+            // 修改为不索引
+            if (empty($index)){
+                $db->exec("ALTER TABLE `{$grouptable}` DROP INDEX `{$fieldname}`;");
+            } else {
+                $db->exec("ALTER TABLE `{$grouptable}` ADD INDEX ( `{$fieldname}` ) ;");
+            }
+            
+            $set = array('fieldindex' => $index);
+            $db->update('#@_passport_fields',$set,$where);
+        } catch(Error $err){}
+        redirect($_SERVER['HTTP_REFERER']);
+    }
+    // _fieldsedit *** *** www.LazyCMS.net *** ***
+    function _fieldsedit(){
+        $this->checker(C('CURRENT_MODULE'));
+        $db      = getConn();
+        $groupid = isset($_REQUEST['groupid']) ? (int)$_REQUEST['groupid'] : null;
+        $fieldid = isset($_REQUEST['fieldid']) ? (int)$_REQUEST['fieldid'] : null;
+        $sql     = "fieldname,fieldename,fieldtype,fieldlength,fieldefault,fieldindex,inputtype,fieldvalue";//7
+        foreach (explode(',',$sql) as $val) {
+            $data[] = isset($_POST[$val]) ? $_POST[$val] : null;
+        }
+        $data[8] = isset($_POST['oldfieldename']) ? $_POST['oldfieldename'] : null;
+        if (empty($fieldid)) {
+            $menu = $this->L('list/field/add').'|#|true';
+        } else {
+            $menu = $this->L('list/field/add').'|'.url(C('CURRENT_MODULE'),'FieldsEdit','groupid='.$groupid).';'.$this->L('list/field/edit').'|#|true';
+        }
+        $this->validate(array(
+            'fieldname'  => $this->check('fieldname|1|'.$this->L('check/field/name').'|1-50'),
+            'fieldename' => $this->check('fieldename|1|'.$this->L('check/field/ename').'|1-50;fieldename|validate|'.$this->L('check/field/ename1').'|^[A-Za-z0-9\_]+$'),
+            'fieldlength'=> instr('input',$data[6]) ? $this->check('fieldlength|1|'.$this->L('check/field/length').'|1-255;fieldlength|validate|'.$this->L('check/field/length1').'|2') : null,
+            'fieldvalue' => instr('radio,checkbox,select',$data[6]) ? $this->check('fieldvalue|0|'.$this->L('check/field/value')) : null,
+        ));
+        if ($this->method()) {
+            if ($this->validate()) {
+                // 取得附加表
+                $grouptable = $db->result("SELECT `grouptable` FROM `#@_passport_group` WHERE `groupid`='{$groupid}';");
+                if (instr('text,mediumtext,datetime',$data[2])) {
+                    $data[3] = null;
+                } else {
+                    $data[3] = !empty($data[3]) ? $data[3] : 255;
+                }
+                $length  = !empty($data[3]) ? "( ".$data[3]." ) " : null;
+                if ((string)$data[2]!='datetime') {
+                    $default = (string)$data[4] ? " DEFAULT '".t2js($data[4])."' " : null;
+                } else {
+                    $default = null;
+                }
+                if(empty($fieldid)){//insert
+                    $row = array(
+                        'fieldorder'  => $db->max('fieldid','#@_passport_fields'),
+                        'groupid'     => $groupid,
+                        'fieldname'   => $data[0],
+                        'fieldename'  => $data[1],
+                        'fieldtype'   => $data[2],
+                        'fieldlength' => $data[3],
+                        'fieldefault' => $data[4],
+                        'fieldindex'  => $data[5],
+                        'inputtype'   => $data[6],
+                        'fieldvalue'  => $data[7],
+                    );
+                    $db->insert('#@_passport_fields',$row);
+                    // 向附加表添加对应字段
+                    $SQL     = "ALTER TABLE `{$grouptable}` ADD ";
+                    $db->exec($SQL."`".$data[1]."` ".$data[2].$length.$default.";");
+                    // 添加为索引字段
+                    if (!empty($data[5])){ $db->exec($SQL."INDEX ( `".$data[1]."` ) ;"); }
+                } else {//update
+                    // 修改字段
+                    $set = array(
+                        'fieldname'   => $data[0],
+                        'fieldename'  => $data[1],
+                        'fieldtype'   => $data[2],
+                        'fieldlength' => $data[3],
+                        'fieldefault' => $data[4],
+                        'inputtype'   => $data[6],
+                        'fieldvalue'  => $data[7],
+                    );
+                    $where = $db->quoteInto('`groupid` = :groupid AND `fieldid`= :fieldid ',array('groupid'=>$groupid,'fieldid'=>$fieldid));
+                    try{ // 删除索引，并修改字段为不索引
+                        if (instr('text,mediumtext',$data[2])) {
+                            $db->exec("ALTER TABLE `{$grouptable}` DROP INDEX `".$data[1]."`;");
+                            $set = array_merge($set,array('fieldindex' => 0));
+                        }
+                    } catch(Error $err){}
+                    $db->update('#@_passport_fields',$set,$where);
+                    $db->exec("ALTER TABLE `{$grouptable}` CHANGE `".$data[8]."` `".$data[1]."` ".$data[2].$length.$default.";");
+                }
+                redirect(url(C('CURRENT_MODULE'),'Fields',"groupid={$groupid}"));
+            }
+        } else {
+            if (!empty($groupid) && !empty($fieldid)) {
+                $res   = $db->query("SELECT {$sql} FROM `#@_passport_fields` WHERE `groupid` = :groupid AND `fieldid`= :fieldid;",array('groupid'=>$groupid,'fieldid'=>$fieldid));
+                if (!$data = $db->fetch($res,0)) {
+                    throwError(L('error/invalid'));
+                }
+            }
+        }
+        $tpl = getTpl($this);
+        $tpl->assign(array(
+            'fieldid'     => $fieldid,
+            'groupid'     => $groupid,
+            'fieldname'   => htmlencode($data[0]),
+            'fieldename'  => htmlencode($data[1]),
+            'fieldtype'   => htmlencode($data[2]),
+            'fieldlength' => htmlencode($data[3]),
+            'fieldefault' => htmlencode($data[4]),
+            'inputtype'   => htmlencode($data[6]),
+            'fieldvalue'  => htmlencode($data[7]),
+            'menu'        => $menu,
+            'fieldindex'  => !empty($data[5]) ? ' checked="true"' : null,
+            'readonly'    => (!empty($groupid) && !empty($data[5])) ? ' readonly="true"' : null,
+        ));
+        $tpl->display('fieldsedit.php');
+    }
+    // _fieldset *** *** www.LazyCMS.net *** ***
+    function _fieldset(){
+        clearCache();
+        $this->checker(C('CURRENT_MODULE'),true);
+        $db      = getConn();
+        $groupid = isset($_REQUEST['groupid']) ? (int)$_REQUEST['groupid'] : null;
+        $submit  = isset($_POST['submit']) ? $_POST['submit'] : null;
+        $lists   = isset($_POST['lists']) ? $_POST['lists'] : null;
+        switch($submit){
+            case 'delete' :
+                if (empty($lists)) {
+                    $this->poping($this->L('pop/field/select'),0);
+                }
+                // 取得附加表
+                $grouptable = $db->result("SELECT `grouptable` FROM `#@_passport_group` WHERE `groupid`='{$groupid}';");
+                // 组合删除数据库字段的SQL语句
+                $DelSQL = "ALTER TABLE `{$grouptable}` ";
+                $res = $db->query("SELECT `fieldename` FROM `#@_passport_fields` WHERE `groupid`= ? AND `fieldid` IN({$lists});",$groupid);
+                while ($data = $db->fetch($res,0)){
+                    $DelSQL.= " DROP `".$data[0]."`,";
+                }
+                $DelSQL = rtrim($DelSQL,',').";";
+                try { // 屏蔽所有错误
+                    // 执行删除字段操作
+                    $db->exec($DelSQL);
+                    $db->exec("DELETE FROM `#@_passport_fields` WHERE `groupid`= ? AND `fieldid` IN({$lists});",$groupid);
+                    $this->poping($this->L('pop/field/deletefieldok'),1);
+                } catch (Error $err) {
+                    $db->exec("DELETE FROM `#@_passport_fields` WHERE `groupid`= ? AND `fieldid` IN({$lists});",$groupid);
+                    $this->poping($this->L('pop/field/deletefielderr'),1);
+                }
+                break;
+            case 'updown' :
+                $updown = isset($_POST['updown']) ? (string)$_POST['updown'] : null;
+                $num    = isset($_POST['num']) ? (int)$_POST['num'] : null;
+                $updown = $updown=='down' ? 'up' : 'down';
+                $this->order("#@_passport_fields,fieldid,fieldorder","{$lists},{$updown},{$num}","`groupid`='{$groupid}'");
+                break;
+            default :
+                $this->poping(L('error/invalid'),0);
+                break;
+        }
+    }
+    // _edit *** *** www.LazyCMS.net *** ***
+    function _edit(){
+        $this->checker(C('CURRENT_MODULE'));
+        $db  = getConn();
+        $tpl = getTpl($this);
+        $userid = isset($_REQUEST['userid']) ? (int)$_REQUEST['userid'] : null;
+
+        //$this->outHTML = $label->fetch;
+
+        $tpl->display('edit.php');
+    }
 }

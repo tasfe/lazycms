@@ -948,7 +948,7 @@ class LazyArchives extends LazyCMS{
                         'fieldtype'   => $data[2],
                         'fieldlength' => $data[3],
                         'fieldefault' => $data[4],
-                        'fieldindex'  => !empty($data[5]) ? (string)$data[5] : '0',
+                        'fieldindex'  => $data[5],
                         'inputtype'   => $data[6],
                         'fieldvalue'  => $data[7],
                     );
