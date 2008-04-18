@@ -28,6 +28,16 @@ defined('CORE_PATH') or die('Restricted access!');
  * @author      Lukin <mylukin@gmail.com>
  */
 class Passport{
+    // getModel *** *** www.LazyCMS.net *** ***
+    static function getModel($l1){
+        $db  = getConn();
+        $res = $db->query("SELECT * FROM `#@_archives_sort` AS `s` LEFT JOIN `#@_archives_model` AS `m` ON `s`.`modelid` = `m`.`modelid` WHERE `s`.`sortid` = ?;",$l1);
+        if ($data = $db->fetch($res)) {
+            return $data;
+        } else {
+            return false;
+        }
+    }
     // tags *** *** www.LazyCMS.net *** ***
     static function tags($tags,$inValue){
         return true;

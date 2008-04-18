@@ -425,4 +425,38 @@ class LazyPassport extends LazyCMS{
 
         $tpl->display('edit.php');
     }
+    // _list *** *** www.LazyCMS.net *** ***
+    function _list(){
+        $this->checker(C('CURRENT_MODULE'));
+        $groupid = isset($_GET['groupid']) ? (int)$_GET['groupid'] : null;
+        $db = getConn();
+        $model = Archives::getModel($sortid);
+        $dp = O('Record');
+        $dp->create("SELECT * FROM `".$model['maintable']."` WHERE `sortid`='{$sortid}' ORDER BY `order` DESC,`id` DESC");
+        $dp->action = url(C('CURRENT_MODULE'),'Set','sortid='.$sortid);
+        $dp->url = url(C('CURRENT_MODULE'),'List','sortid='.$sortid.'&page=$');
+        $button  = !C('SITE_MODE') ? 'create:'.L('common/create') : null;
+        $dp->but = $dp->button($button).$dp->plist();
+        $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"".url(C('CURRENT_MODULE'),'Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."\">' + K[1] + '</a> '+image(K[5])";
+        $dp->td  = 'ison(K[2])';
+        $dp->td  = 'ison(K[3])';
+        $dp->td  = 'ison(K[4])';
+        $dp->td  = !C('SITE_MODE') ? "isExist(K[0],K[8],'create:' + K[6])" : "browse(K[6])";
+        $dp->td  = 'K[7]';
+        $dp->td  = "ico('edit','".url(C('CURRENT_MODULE'),'Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."') + updown('up',K[0],{$sortid}) + updown('down',K[0],{$sortid})";
+        $dp->open();
+        $dp->thead  = '<tr><th>'.$this->L('list/id').') '.$this->L('list/title').'</th><th>'.$this->L('list/show').'</th><th>'.$this->L('list/commend').'</th><th>'.$this->L('list/top').'</th><th>'.$this->L('list/path').'</th><th>'.$this->L('list/date').'</th><th>'.$this->L('list/action').'</th></tr>';
+        while ($data = $dp->result()) {
+            $dp->tbody = "ll(".$data['id'].",'".t2js(htmlencode($data['title']))."',".$data['show'].",".$data['commend'].",".$data['top'].",'".htmlencode(is_file(LAZY_PATH.$data['img']) ? LAZY_PATH.$data['img'] : null)."','".Archives::showArchive($data['id'],$model)."','".date('Y-m-d H:i:s',$data['date'])."',".(file_exists(LAZY_PATH.$model['sortpath'].'/'.$data['path']) ? 1 : 0).");";
+        }
+        $dp->close();
+
+        $this->outHTML = $dp->fetch;
+
+        $tpl = getTpl($this);
+        $tpl->assign(array(
+            'menu' => $model['sortname'].'|#|true;'.$this->L('common/addpage').'|'.url(C('CURRENT_MODULE'),'Edit','sortid='.$sortid),
+        ));
+        $tpl->display('list.php');
+    }
 }
