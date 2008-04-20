@@ -7,7 +7,7 @@
 <script type="text/javascript" src="../system/js/jquery.js"></script>
 <script type="text/javascript" src="../system/js/jquery.lazycms.js"></script>
 <script type="text/javascript">
-if (top.location == self.location) { top.location = '<?php echo url("System");?>'; }
+//if (top.location == self.location) { top.location = '<?php echo url("System");?>'; }
 // 获取最新版本
 var lz_verison = "<?php echo url('System','Version');?>";
 $(function(){

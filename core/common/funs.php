@@ -1235,7 +1235,7 @@ function L($l1,$l2=null,$l3='system'){
 		$attr = substr($l1,strrpos($l1,'/@')+2);
         $I1 = $I3[0][$attr];
     } else {
-        $I1 = $I3[0];
+        $I1 = isset($I3[0])?$I3[0]:$I3;
     }
     if (is_array($l2)) {
         foreach ($l2 as $k=>$v) {

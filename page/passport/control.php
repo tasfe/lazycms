@@ -50,7 +50,7 @@ class LazyPassport extends LazyCMS{
         $dp->td  = "K[5]";
         $dp->td  = "ico('add','".url(C('CURRENT_MODULE'),'Edit','groupid=$',"' + K[0] + '")."') + ico('edit','".url(C('CURRENT_MODULE'),'GroupEdit','groupid=$',"' + K[0] + '")."') + ico('export','".url(C('CURRENT_MODULE'),'Export','groupid=$',"' + K[0] + '")."') + ico('fields','".url(C('CURRENT_MODULE'),'Fields','groupid=$',"' + K[0] + '")."')";
         $dp->open();
-        $dp->thead  = '<tr><th>'.$this->L('list/group/id').') '.$this->L('list/group/name').'</th><th>'.$this->L('list/group/ename').'</th><th>'.$this->L('list/group/addtable').'</th><th>'.$this->L('list/group/state').'</th><th>'.$this->L('list/group/count').'</th><th class="wp2">'.$this->L('list/group/action').'</th></tr>';
+        $dp->thead  = '<tr><th>'.$this->L('list/group/id').') '.$this->L('list/group/name').'</th><th>'.$this->L('list/group/ename').'</th><th>'.$this->L('list/group/addtable').'</th><th>'.$this->L('list/group/state').'</th><th>'.$this->L('list/group/count').'</th><th class="wp2">'.$this->L('list/action').'</th></tr>';
         while ($data = $dp->result()) {
             $dp->tbody = "ll(".$data['groupid'].",'".t2js(htmlencode($data['groupname']))."','".t2js(htmlencode($data['groupename']))."','".t2js(htmlencode(str_replace('#@_',C('DSN_PREFIX'),$data['grouptable'])))."',".$data['groupstate'].",".$data['count'].");";
         }
@@ -234,7 +234,7 @@ class LazyPassport extends LazyCMS{
         $dp->td  = "index(K[8],K[6],'".url(C('CURRENT_MODULE'),'FieldIndex','groupid=:groupid&fieldid=:fieldid&index=0',array('groupid'=>"'+K[7]+'",'fieldid'=>"'+K[0]+'"))."','".url(C('CURRENT_MODULE'),'FieldIndex','groupid=:groupid&fieldid=:fieldid&index=1',array('groupid'=>"'+K[7]+'",'fieldid'=>"'+K[0]+'"))."')";
         $dp->td  = "ico('edit','".url(C('CURRENT_MODULE'),'FieldsEdit','groupid=:groupid&fieldid=:fieldid',array('groupid'=>"'+K[7]+'",'fieldid'=>"'+K[0]+'"))."') + updown('up',K[0]) + updown('down',K[0])";
         $dp->open();
-        $dp->thead = '<tr><th>'.$this->L('list/field/id').') '.$this->L('list/field/name').'</th><th>'.$this->L('list/field/ename').'</th><th>'.$this->L('list/field/type').'</th><th>'.$this->L('list/field/default').'</th><th>'.$this->L('list/field/key').'</th><th>'.$this->L('list/field/action').'</th></tr>';
+        $dp->thead = '<tr><th>'.$this->L('list/field/id').') '.$this->L('list/field/name').'</th><th>'.$this->L('list/field/ename').'</th><th>'.$this->L('list/field/type').'</th><th>'.$this->L('list/field/default').'</th><th>'.$this->L('list/field/key').'</th><th>'.$this->L('list/action').'</th></tr>';
         while ($data = $dp->result()) {
             $dp->tbody = "ll(".$data['fieldid'].",'".t2js(htmlencode($data['fieldname']))."','".t2js(htmlencode($data['fieldename']))."','".$this->L('list/field/type/'.$data['inputtype'])."','".t2js(htmlencode($data['fieldlength']))."','".t2js(htmlencode($data['fieldefault']))."',".$data['fieldindex'].",".$data['groupid'].",".(int)instr('text,mediumtext',$data['fieldtype']).",'".$data['inputtype']."');";
         }
@@ -419,35 +419,48 @@ class LazyPassport extends LazyCMS{
         $this->checker(C('CURRENT_MODULE'));
         $db  = getConn();
         $tpl = getTpl($this);
+        $groupid = isset($_GET['groupid']) ? (int)$_GET['groupid'] : (int)Passport::getTopGroupId();
         $userid = isset($_REQUEST['userid']) ? (int)$_REQUEST['userid'] : null;
-
+        $model = Passport::getModel($groupid);
+                
+        if (empty($userid)) {
+            $menu  = $model['groupname'].'|'.url(C('CURRENT_MODULE'),'List','groupid='.$groupid).';'.$this->L('common/adduser').'|#|true';
+        } else {
+            $menu  = $model['groupname'].'|'.url(C('CURRENT_MODULE'),'List','groupid='.$groupid).';'.$this->L('common/edituser').'|#|true;'.$this->L('common/adduser').'|'.url(C('CURRENT_MODULE'),'Edit','groupid='.$groupid);
+        }
+        
         //$this->outHTML = $label->fetch;
-
+        
+        $tpl->assign(array(
+            'userid' => $userid,
+            'groupid'=> $groupid,
+            'menu'   => $menu,
+        ));
         $tpl->display('edit.php');
     }
     // _list *** *** www.LazyCMS.net *** ***
     function _list(){
-        $this->checker(C('CURRENT_MODULE'));
+    	$this->checker(C('CURRENT_MODULE'));
         $groupid = isset($_GET['groupid']) ? (int)$_GET['groupid'] : null;
         $db = getConn();
-        $model = Archives::getModel($sortid);
+        $model = Passport::getModel($groupid);
+        
         $dp = O('Record');
-        $dp->create("SELECT * FROM `".$model['maintable']."` WHERE `sortid`='{$sortid}' ORDER BY `order` DESC,`id` DESC");
-        $dp->action = url(C('CURRENT_MODULE'),'Set','sortid='.$sortid);
-        $dp->url = url(C('CURRENT_MODULE'),'List','sortid='.$sortid.'&page=$');
-        $button  = !C('SITE_MODE') ? 'create:'.L('common/create') : null;
-        $dp->but = $dp->button($button).$dp->plist();
-        $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"".url(C('CURRENT_MODULE'),'Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."\">' + K[1] + '</a> '+image(K[5])";
+        $dp->create("SELECT * FROM `#@_passport` AS `p` LEFT JOIN `#@_passport_group` AS `pg` ON `p`.`groupid`=`pg`.`groupid` WHERE `p`.`groupid`='{$groupid}' ORDER BY `p`.`userid` DESC");
+        $dp->action = url(C('CURRENT_MODULE'),'Set','groupid='.$groupid);
+        $dp->url = url(C('CURRENT_MODULE'),'List','groupid='.$groupid.'&page=$');
+        $dp->but = $dp->button().$dp->plist();
+        $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"".url(C('CURRENT_MODULE'),'Edit','groupid='.$groupid.'&userid=$',"' + K[0] + '")."\">' + K[1] + '</a> '";
         $dp->td  = 'ison(K[2])';
         $dp->td  = 'ison(K[3])';
         $dp->td  = 'ison(K[4])';
-        $dp->td  = !C('SITE_MODE') ? "isExist(K[0],K[8],'create:' + K[6])" : "browse(K[6])";
-        $dp->td  = 'K[7]';
-        $dp->td  = "ico('edit','".url(C('CURRENT_MODULE'),'Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."') + updown('up',K[0],{$sortid}) + updown('down',K[0],{$sortid})";
+        $dp->td  = 'ison(K[5])';
+        $dp->td  = 'ison(K[6])';
+        $dp->td  = "ico('edit','".url(C('CURRENT_MODULE'),'Edit','groupid='.$groupid.'&userid=$',"' + K[0] + '")."')";
         $dp->open();
-        $dp->thead  = '<tr><th>'.$this->L('list/id').') '.$this->L('list/title').'</th><th>'.$this->L('list/show').'</th><th>'.$this->L('list/commend').'</th><th>'.$this->L('list/top').'</th><th>'.$this->L('list/path').'</th><th>'.$this->L('list/date').'</th><th>'.$this->L('list/action').'</th></tr>';
+        $dp->thead  = '<tr><th>'.$this->L('list/user/id').') '.$this->L('list/user/name').'</th><th>'.$this->L('list/user/group').'</th><th>'.$this->L('list/user/email').'</th><th>'.$this->L('list/user/date').'</th><th>'.$this->L('list/user/islock').'</th><th>'.$this->L('list/action').'</th></tr>';
         while ($data = $dp->result()) {
-            $dp->tbody = "ll(".$data['id'].",'".t2js(htmlencode($data['title']))."',".$data['show'].",".$data['commend'].",".$data['top'].",'".htmlencode(is_file(LAZY_PATH.$data['img']) ? LAZY_PATH.$data['img'] : null)."','".Archives::showArchive($data['id'],$model)."','".date('Y-m-d H:i:s',$data['date'])."',".(file_exists(LAZY_PATH.$model['sortpath'].'/'.$data['path']) ? 1 : 0).");";
+            $dp->tbody = "ll(".$data['userid'].",'".t2js(htmlencode($data['username']))."','".t2js(htmlencode($data['groupname']))."','".t2js(htmlencode($data['usermail']))."','".date('Y-m-d H:i:s',$data['userdate'])."','".$data['islock']."');";
         }
         $dp->close();
 
@@ -455,7 +468,7 @@ class LazyPassport extends LazyCMS{
 
         $tpl = getTpl($this);
         $tpl->assign(array(
-            'menu' => $model['sortname'].'|#|true;'.$this->L('common/addpage').'|'.url(C('CURRENT_MODULE'),'Edit','sortid='.$sortid),
+            'menu' => $model['groupname'].'|#|true;'.$this->L('common/adduser').'|'.url(C('CURRENT_MODULE'),'Edit','groupid='.$groupid),
         ));
         $tpl->display('list.php');
     }

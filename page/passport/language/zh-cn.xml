@@ -11,11 +11,13 @@
     <common>
         <addgroup>添加用户组</addgroup>
         <adduser>添加用户</adduser>
+        <edituser>编辑用户</edituser>
         <editgroup>编辑用户组</editgroup>
         <leadin>导入组模型</leadin>
     </common>
 
     <list>
+    	<action>操作</action>
         <group title="用户组列表">
             <id>ID</id>
             <name>用户组</name>
@@ -23,7 +25,6 @@
             <addtable>附加表</addtable>
             <state>状态</state>
             <count>用户数</count>
-            <action>操作</action>
         </group>
 		<field title="字段管理">
 			<add>添加字段</add>
@@ -35,7 +36,6 @@
 			<length>最大长度</length>
 			<default>默认值</default>
 			<key>索引</key>
-			<action>操作</action>
 			<type>
                 <input>输入框</input>
                 <textarea>文本框</textarea>
@@ -48,7 +48,15 @@
                 <upfile>文件上传框</upfile>
             </type>
 		</field>
-    </list>
+		<user title="用户列表">
+			<id>ID</id>
+			<name>用户名</name>
+			<group>用户组</group>
+			<date>注册时间</date>
+			<email>Email</email>
+			<islock>状态</islock>
+		</user>
+	</list>
 
     <label>
         <leadin>请选择组模型文件 (xml格式文件)</leadin>

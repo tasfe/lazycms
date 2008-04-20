@@ -37,7 +37,7 @@ class Archives{
     // getTopSortId *** *** www.LazyCMS.net *** ***
     static function getTopSortId(){
         $db  = getConn();
-        $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_archives_sort` WHERE `sortid1` = '0' ORDER BY `sortorder` DESC,`sortid` DESC;");
+        $res = $db->query("SELECT `sortid` FROM `#@_archives_sort` WHERE `sortid1` = '0' ORDER BY `sortorder` DESC,`sortid` DESC;");
         if ($data = $db->fetch($res,0)) {
             return $data[0];
         } else {

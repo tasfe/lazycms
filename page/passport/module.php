@@ -28,10 +28,20 @@ defined('CORE_PATH') or die('Restricted access!');
  * @author      Lukin <mylukin@gmail.com>
  */
 class Passport{
+    // getTopGroupId *** *** www.LazyCMS.net *** ***
+    static function getTopGroupId(){
+        $db  = getConn();
+        $res = $db->query("SELECT `groupid` FROM `#@_passport_group` WHERE 1 ORDER BY `groupid` DESC;");
+        if ($data = $db->fetch($res,0)) {
+            return $data[0];
+        } else {
+            return 0;
+        }
+    }
     // getModel *** *** www.LazyCMS.net *** ***
     static function getModel($l1){
         $db  = getConn();
-        $res = $db->query("SELECT * FROM `#@_archives_sort` AS `s` LEFT JOIN `#@_archives_model` AS `m` ON `s`.`modelid` = `m`.`modelid` WHERE `s`.`sortid` = ?;",$l1);
+        $res = $db->query("SELECT * FROM `#@_passport_group` WHERE `groupid` = ?;",$l1);
         if ($data = $db->fetch($res)) {
             return $data;
         } else {
