@@ -419,6 +419,7 @@ class LazyPassport extends LazyCMS{
         $this->checker(C('CURRENT_MODULE'));
         $db  = getConn();
         $tpl = getTpl($this);
+        $groupNum = $db->result("SELECT count(`groupid`) FROM `#@_passport_group` WHERE 1;"); if ((int)$groupNum==0) { throwError($this->L('error/nogroup')); }
         $groupid = isset($_GET['groupid']) ? (int)$_GET['groupid'] : (int)Passport::getTopGroupId();
         $userid = isset($_REQUEST['userid']) ? (int)$_REQUEST['userid'] : null;
         $model = Passport::getModel($groupid);

@@ -59,7 +59,7 @@ class Passport{
         // Model Value
 		// Model Value
 		$data[] = $xml->group->groupname;
-        $data[] = $xml->group->groupename;
+        $data[] = '#@_'.$xml->group->groupename;
         $data[] = '#@_'.$xml->group->grouptable;
         $data[] = $xml->group->purview;
         $data[] = $xml->group->groupstate;

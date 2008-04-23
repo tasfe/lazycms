@@ -107,4 +107,8 @@
             <deletefielderr>数据库字段可能已经被删除</deletefielderr>
         </field>
     </pop>
+
+    <error>
+        <nogroup>没有用户组，请先创建一个用户组。</nogroup>
+    </error>
 </lazycms>

@@ -652,7 +652,7 @@ class Archives{
 		// Model Value
 		$data[] = $xml->model->modelname;
         $data[] = $xml->model->modelename;
-        $data[] = $xml->model->maintable;
+        $data[] = '#@_'.$xml->model->maintable;
         $data[] = '#@_'.$xml->model->addtable;
         $data[] = $xml->model->modelstate;
 		if (!$isDeleteTable) {
