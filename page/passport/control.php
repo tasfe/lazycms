@@ -36,9 +36,9 @@ class LazyPassport extends LazyCMS{
         $db = getConn();
         $dp = O('Record');
         $dp->action = url(C('CURRENT_MODULE'),'GroupSet');
-        $dp->result = $db->query("SELECT `g`.*,count(`u`.`userid`) AS `count`
+        $dp->result = $db->query("SELECT `g`.*,count(`p`.`userid`) AS `count`
                                     FROM `#@_passport_group` AS `g` 
-                                    LEFT JOIN `#@_passport` AS `u` ON `g`.`groupid` = `u`.`groupid`
+                                    LEFT JOIN `#@_passport` AS `p` ON (`g`.`groupid` = `p`.`groupid` And `p`.`isdel`=0)
                                     GROUP BY `g`.`groupid`
                                     ORDER BY `g`.`groupid` DESC");
         $dp->length = $db->count($dp->result);
@@ -420,7 +420,7 @@ class LazyPassport extends LazyCMS{
         $db  = getConn();
         $tpl = getTpl($this);
         $groupNum = $db->result("SELECT count(`groupid`) FROM `#@_passport_group` WHERE 1;"); if ((int)$groupNum==0) { throwError($this->L('error/nogroup')); }
-        $groupid = isset($_GET['groupid']) ? (int)$_GET['groupid'] : (int)Passport::getTopGroupId();
+        $groupid = isset($_REQUEST['groupid']) ? (int)$_REQUEST['groupid'] : (int)Passport::getTopGroupId();
         $userid = isset($_REQUEST['userid']) ? (int)$_REQUEST['userid'] : null;
         $model = Passport::getModel($groupid);
                 
@@ -430,12 +430,132 @@ class LazyPassport extends LazyCMS{
             $menu  = $model['groupname'].'|'.url(C('CURRENT_MODULE'),'List','groupid='.$groupid).';'.$this->L('common/edituser').'|#|true;'.$this->L('common/adduser').'|'.url(C('CURRENT_MODULE'),'Edit','groupid='.$groupid);
         }
         
-        //$this->outHTML = $label->fetch;
-        
+        $username  = isset($_POST['username']) ? $_POST['username'] : null;
+        $userpass  = isset($_POST['userpass']) ? $_POST['userpass'] : null;
+        $userpass1 = isset($_POST['userpass1']) ? $_POST['userpass1'] : null;
+        $usermail  = isset($_POST['usermail']) ? $_POST['usermail'] : null;
+        $mailis    = isset($_POST['mailis']) ? $_POST['mailis'] : null;
+        $question  = isset($_POST['question']) ? $_POST['question'] : null;
+        $answer    = isset($_POST['answer']) ? $_POST['answer'] : null;
+        $language  = isset($_POST['language']) ? $_POST['language'] : null;
+        $editor    = isset($_POST['editor']) ? $_POST['editor'] : null;
+        $islock    = isset($_POST['islock']) ? (int)$_POST['islock'] : null;
+
+        if (empty($userid)) {
+            $ckname = $this->check("username|1|".$this->L('check/user/name')."|1-30;username|3|".$this->L('check/user/name1')."|SELECT COUNT(`userid`) FROM `#@_passport` WHERE `username`='#pro#'");
+        } else {
+            $ckname = $this->check("username|1|".$this->L('check/user/name')."|1-30");
+        }
+        $this->validate(array(
+            'username' => $ckname,
+            'userpass' => (!empty($userpass) || !empty($userpass1) || empty($userid)) ? $this->check('userpass|2|'.$this->L('check/user/contrast').'|userpass1;userpass|1|'.$this->L('check/user/pwdsize').'|6-30') : null,
+            'usermail' => $this->check("usermail|0|".$this->L('check/user/mail').";usermail|validate|".$this->L('check/user/mail1')."|4"),
+        ));
+
+        $label = O('Label');
+        $label->create("SELECT * FROM `#@_passport_fields` WHERE `groupid` = ? ORDER BY `fieldorder` ASC, `fieldid` ASC;",$model['groupid']);
+        $formData  = array(); $fieldData = array();
+        while ($data = $label->result()) {
+            $fieldData[$data['fieldename']] = $data;
+            $formData[$data['fieldename']]  = isset($_POST[$data['fieldename']]) ? $_POST[$data['fieldename']] : null;
+            if (is_array($formData[$data['fieldename']])) {
+                $formData[$data['fieldename']] = implode(',',$formData[$data['fieldename']]);
+            }
+        }
+
+        if ($this->method()) {
+            if ($this->validate()) {
+                if(!empty($userpass)){
+                    $userkey   = salt();
+                    $userpass = md5($userpass.$userkey);
+                }
+                if (empty($userid)) { // insert
+                    $row = array(
+                        'groupid'  => (int)$groupid,
+                        'username' => (string)$username,
+                        'userpass' => (string)$userpass,
+                        'userkey'  => (string)$userkey,
+                        'userdate' => now(),
+                        'usermail' => (string)$usermail,
+                        'mailis'   => (int)$mailis,
+                        'question' => (string)$question,
+                        'answer'   => (string)$answer,
+                        'language' => (string)$language,
+                        'editor'   => (string)$editor,
+                        'islock'   => (int)$islock,
+                    );
+                    $db->insert('#@_passport',$row);
+                    $userid = $db->lastInsertId();
+                    $addrows = array_merge($formData,array('userid'=>$userid));
+                    $db->insert($model['grouptable'],$addrows);
+                } else { // update
+                    $set = array(
+                        'groupid'  => (int)$groupid,
+                        'username' => (string)$username,
+                        'usermail' => (string)$usermail,
+                        'mailis'   => (int)$mailis,
+                        'question' => (string)$question,
+                        'answer'   => (string)$answer,
+                        'language' => (string)$language,
+                        'editor'   => (string)$editor,
+                        'islock'   => (int)$islock,
+                    );
+                    // 更新密码
+                    if(!empty($userpass)){
+                        $row = array(
+                            'userpass' => $userpass,
+                            'userkey'  => $userkey,
+                        );
+                        $set = array_merge($set,$row);
+                    }
+                    $where = $db->quoteInto('`userid` = ?',$userid);
+                    $db->update('#@_passport',$set,$where);
+                    if (!empty($formData)) {
+                        $num = $db->count("SELECT * FROM `".$model['grouptable']."` WHERE `userid` = '{$userid}';");
+                        if ($num>0) {
+                            $where = $db->quoteInto('`userid` = ?',$userid);
+                            $db->update($model['grouptable'],$formData,$where);    
+                        } else {
+                            $addrows = array_merge($formData,array('userid'=>$userid));
+                            $db->insert($model['grouptable'],$addrows);    
+                        }
+                    }
+                }
+                redirect(url(C('CURRENT_MODULE'),'List','groupid='.$groupid));return true;
+            }
+        } else {
+            if (!empty($userid)) {
+                $res   = $db->query("SELECT * FROM `#@_passport` WHERE `userid` = ?;",$userid);
+                if ($data = $db->fetch($res)) {
+                    $groupid  = $data['groupid'];
+                    $username = $data['username'];
+                    $usermail = $data['usermail'];
+                    $mailis   = $data['mailis'];
+                    $question = $data['question'];
+                    $answer   = $data['answer'];
+                    $islock   = $data['islock'];
+                    $formData = Passport::getData($userid,$model['grouptable']);
+                } else {
+                    throwError(L('error/invalid'));
+                }
+            }
+        }
+
+        while (list($name,$data) = each($fieldData)) {
+            $label->p = '<p><label>'.$data['fieldname'].'</label>'.$label->tag($data,$formData[$name]).'</p>';
+        }
+        $this->outHTML = $label->fetch;
+
         $tpl->assign(array(
-            'userid' => $userid,
-            'groupid'=> $groupid,
-            'menu'   => $menu,
+            'userid'   => $userid,
+            'groupid'  => $groupid,
+            'username' => $username,
+            'usermail' => $usermail,
+            'mailis'   => !empty($mailis) ? ' checked="checked"' : null,
+            'question' => $question,
+            'answer'   => $answer,
+            'islock'   => $islock,
+            'menu'     => $menu,
         ));
         $tpl->display('edit.php');
     }
@@ -445,23 +565,21 @@ class LazyPassport extends LazyCMS{
         $groupid = isset($_GET['groupid']) ? (int)$_GET['groupid'] : null;
         $db = getConn();
         $model = Passport::getModel($groupid);
-        
         $dp = O('Record');
-        $dp->create("SELECT * FROM `#@_passport` AS `p` LEFT JOIN `#@_passport_group` AS `pg` ON `p`.`groupid`=`pg`.`groupid` WHERE `p`.`groupid`='{$groupid}' ORDER BY `p`.`userid` DESC");
+        $dp->create("SELECT * FROM `#@_passport` AS `p` LEFT JOIN `#@_passport_group` AS `pg` ON `p`.`groupid`=`pg`.`groupid` WHERE `p`.`groupid`='{$groupid}' AND `p`.`isdel`=0 ORDER BY `p`.`userid` DESC");
         $dp->action = url(C('CURRENT_MODULE'),'Set','groupid='.$groupid);
         $dp->url = url(C('CURRENT_MODULE'),'List','groupid='.$groupid.'&page=$');
-        $dp->but = $dp->button().$dp->plist();
+        $dp->but = $dp->button('lock:'.$this->L('label/user/islock/is1').'|unlock:'.$this->L('label/user/islock/is0')).$dp->plist();
         $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"".url(C('CURRENT_MODULE'),'Edit','groupid='.$groupid.'&userid=$',"' + K[0] + '")."\">' + K[1] + '</a> '";
-        $dp->td  = 'ison(K[2])';
-        $dp->td  = 'ison(K[3])';
-        $dp->td  = 'ison(K[4])';
+        $dp->td  = 'K[2]';
+        $dp->td  = "'<a href=\"mailto:'+K[3]+'\">'+K[3]+'</a>'";
+        $dp->td  = 'K[4]';
         $dp->td  = 'ison(K[5])';
-        $dp->td  = 'ison(K[6])';
         $dp->td  = "ico('edit','".url(C('CURRENT_MODULE'),'Edit','groupid='.$groupid.'&userid=$',"' + K[0] + '")."')";
         $dp->open();
         $dp->thead  = '<tr><th>'.$this->L('list/user/id').') '.$this->L('list/user/name').'</th><th>'.$this->L('list/user/group').'</th><th>'.$this->L('list/user/email').'</th><th>'.$this->L('list/user/date').'</th><th>'.$this->L('list/user/islock').'</th><th>'.$this->L('list/action').'</th></tr>';
         while ($data = $dp->result()) {
-            $dp->tbody = "ll(".$data['userid'].",'".t2js(htmlencode($data['username']))."','".t2js(htmlencode($data['groupname']))."','".t2js(htmlencode($data['usermail']))."','".date('Y-m-d H:i:s',$data['userdate'])."','".$data['islock']."');";
+            $dp->tbody = "ll(".$data['userid'].",'".t2js(htmlencode($data['username']))."','".t2js(htmlencode($data['groupname']))."','".t2js(htmlencode($data['usermail']))."','".date('Y-m-d H:i:s',$data['userdate'])."',".$data['islock'].");";
         }
         $dp->close();
 
@@ -472,5 +590,35 @@ class LazyPassport extends LazyCMS{
             'menu' => $model['groupname'].'|#|true;'.$this->L('common/adduser').'|'.url(C('CURRENT_MODULE'),'Edit','groupid='.$groupid),
         ));
         $tpl->display('list.php');
+    }
+    // _set *** *** www.LazyCMS.net *** ***
+    function _set(){
+        clearCache();
+        $this->checker(C('CURRENT_MODULE'),true);$db = getConn();
+        $groupid = isset($_GET['groupid']) ? (int)$_GET['groupid'] : null;
+        $submit  = isset($_POST['submit']) ? $_POST['submit'] : null;
+        $lists = isset($_POST['lists']) ? $_POST['lists'] : null;
+        if (empty($lists)) {
+            $this->poping($this->L('pop/user/select'),0);
+        }
+        switch($submit){
+            case 'delete' :
+                $model = Passport::getModel($groupid);
+                $db->exec("UPDATE `#@_passport` SET `isdel`=1 WHERE `userid` IN({$lists});");
+                $db->exec("DELETE FROM `".$model['grouptable']."` WHERE `userid` IN({$lists});");
+                $this->poping($this->L('pop/user/deleteok'),1);
+                break;
+            case 'lock' :
+                $db->update('#@_passport',array('islock'=>1),"`userid` IN({$lists})");
+                $this->poping($this->L('pop/user/lockok'),1);
+                break;
+            case 'unlock' :
+                $db->update('#@_passport',array('islock'=>0),"`userid` IN({$lists})");
+                $this->poping($this->L('pop/user/unlockok'),1);
+                break;
+            default :
+                $this->poping(L('error/invalid'),0);
+                break;
+        }
     }
 }

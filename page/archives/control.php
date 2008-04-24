@@ -400,8 +400,7 @@ class LazyArchives extends LazyCMS{
         ));
 
         $label = O('Label');
-        $where = $db->quoteInto('WHERE `modelid` = ?',$model['modelid']);
-        $label->create("SELECT * FROM `#@_archives_fields` {$where} ORDER BY `fieldorder` ASC, `fieldid` ASC;");
+        $label->create("SELECT * FROM `#@_archives_fields` WHERE `modelid` = ? ORDER BY `fieldorder` ASC, `fieldid` ASC;",$model['modelid']);
         $formData  = array(); $fieldData = array(); $vsetimg = false; $downPic = null; $isEditor = true;
         while ($data = $label->result()) {
             $fieldData[$data['fieldename']] = $data;

@@ -64,8 +64,8 @@ class Label extends Lazy{
         }
     }
     // create *** *** www.LazyCMS.net *** ***
-    public function create($l1){
-        $this->result = $this->_db->query($l1);
+    public function create($l1,$l2=''){
+        $this->result = $this->_db->query($l1,$l2);
     }
     // result *** *** www.LazyCMS.net *** ***
     public function result($type=1){

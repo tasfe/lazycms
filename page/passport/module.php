@@ -38,6 +38,20 @@ class Passport{
             return 0;
         }
     }
+    // __group *** *** www.LazyCMS.net *** ***
+    static function __group($l1,$l2,$l3=null){
+        // $l1:groupid, $l2:current groupid, $l3:selected
+        $I1 = null;
+        $db  = getConn();
+        $res = $db->query("SELECT `groupid`,`groupname` FROM `#@_passport_group` WHERE 1 ORDER BY `groupid` DESC;");
+        while ($data = $db->fetch($res,0)) {
+            if ($l2 != $data[0]) {
+                $selected = ((int)$l3 == (int)$data[0]) ? ' selected="selected"' : null;
+                $I1 .= '<option value="'.$data[0].'"'.$selected.'>'.$data[1].'</option>';
+            }
+        }
+        return $I1;
+    }
     // getModel *** *** www.LazyCMS.net *** ***
     static function getModel($l1){
         $db  = getConn();
@@ -47,6 +61,15 @@ class Passport{
         } else {
             return false;
         }
+    }
+    // getData *** *** www.LazyCMS.net *** ***
+    static function getData($l1,$l2){
+        $db  = getConn(); $I1 = array();
+        $res = $db->query("SELECT * FROM `{$l2}` WHERE `userid` = ?;",$l1);
+        if (!$data = $db->fetch($res)) {
+            return false;
+        }
+        return $data;
     }
     // tags *** *** www.LazyCMS.net *** ***
     static function tags($tags,$inValue){

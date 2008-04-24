@@ -54,7 +54,7 @@
 			<group>用户组</group>
 			<date>注册时间</date>
 			<email>Email</email>
-			<islock>状态</islock>
+			<islock>锁定</islock>
 		</user>
 	</list>
 
@@ -75,6 +75,22 @@
 			<key>索引</key>
 			<value>值 (例：name:value)</value>
 		</field>
+        <user>
+            <belongto>所属用户组</belongto>
+            <name>用户名</name>
+            <pass>密码</pass>
+            <pass1>确认密码</pass1>
+            <mail>电子邮箱</mail>
+            <mailis>显示邮箱</mailis>
+            <question>提示问题</question>
+            <answer>提示答案</answer>
+            <language>界面语言</language>
+            <editor>编辑器</editor>
+            <islock title="锁定用户">
+            	<is1>锁定</is1>
+            	<is0>解锁</is0>
+            </islock>
+        </user>
     </label>
 
     <check>
@@ -91,6 +107,14 @@
 			<length1>必须为整数，请重新输入</length1>
 			<value>值不能为空</value>
 		</field>
+		<user>
+			<name>用户名不能为空</name>
+			<name1>用户名重复，或者被屏蔽</name1>
+			<contrast>两次输入的密码不一致</contrast>
+			<pwdsize>密码长度不正确</pwdsize>
+			<mail>邮箱不能为空</mail>
+			<mail1>邮箱格式不正确</mail1>
+		</user>
     </check>
 
     <pop>
@@ -106,6 +130,12 @@
             <deletefieldok>成功删除您选择的字段</deletefieldok>
             <deletefielderr>数据库字段可能已经被删除</deletefielderr>
         </field>
+        <user>
+        	<select>请选择一个用户</select>
+            <deleteok>成功删除您选择的用户</deleteok>
+            <lockok>成功锁定您选择的用户</lockok>
+            <unlockok>成功解锁您选择的用户</unlockok>
+        </user>
     </pop>
 
     <error>

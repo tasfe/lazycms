@@ -231,17 +231,17 @@ class LazySystem extends LazyCMS{
                         'admineditor'   => $data[4],
                         'diymenu'       => $data[5],
                     );
-                    $where = $db->quoteInto('`adminid` = ?',$adminid);
-                    $db->update('#@_admin',$set,$where);
+                    
                     // 更新密码
                     if(!empty($data[1])){
-                        $set = array(
+                        $row = array(
                             'adminpass' => $data[1],
                             'adminkey'  => $newkey,
                         );
-                        $where = $db->quoteInto('`adminid` = ?',$adminid);
-                        $db->update('#@_admin',$set,$where);
+                        $set = array_merge($set,$row);
                     }
+                    $where = $db->quoteInto('`adminid` = ?',$adminid);
+                    $db->update('#@_admin',$set,$where);
                 }
                 redirect(url('System','Admin'));
             }

@@ -101,8 +101,8 @@ class Archives{
     }
     // getData *** *** www.LazyCMS.net *** ***
     static function getData($l1,$l2){
-        $db    = getConn(); $I1 = array();
-        $res   = $db->query("SELECT * FROM `{$l2}` WHERE `aid` = ?;",$l1);
+        $db  = getConn(); $I1 = array();
+        $res = $db->query("SELECT * FROM `{$l2}` WHERE `aid` = ?;",$l1);
         if (!$data = $db->fetch($res)) {
             return false;
         }
