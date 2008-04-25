@@ -29,4 +29,11 @@ defined('CORE_PATH') or die('Restricted access!');
  * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
  * @author      Lukin <mylukin@gmail.com>
  */
+
+ 
+// bbimg *** *** www.LazyCMS.net *** ***
+function bbimg($l1,$l2){
+    return replace('/(<img.+?src=".+?")(.+?)((\/|)>)/i','$1 onmousemove="this.style.cursor=\'pointer\'" onclick="window.open(this.src);" onerror="if(this.width>'.$l2.'){this.width='.$l2.'}"; onload="if(this.width>'.$l2.'){this.width='.$l2.'}" $3',$l1);
+}
+
 ?>
