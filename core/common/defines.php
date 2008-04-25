@@ -33,6 +33,7 @@ define('PHP_SAPI_NAME',php_sapi_name());
 define('IS_APACHE',strstr($_SERVER['SERVER_SOFTWARE'], 'Apache') || strstr($_SERVER['SERVER_SOFTWARE'], 'LiteSpeed') );
 define('IS_CGI',strncmp(PHP_SAPI_NAME,'cgi',3)==0 ? 1 : 0 );
 define('IS_IIS',PHP_SAPI_NAME =='isapi' ? 1 : 0);
+define('IIS_VER',IS_IIS ? substr($_SERVER["SERVER_SOFTWARE"],strrpos($_SERVER["SERVER_SOFTWARE"],'/')+1) :0);
 
 // 当前文件名
 if (!defined('PHP_FILE')) {

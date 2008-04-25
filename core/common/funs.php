@@ -581,7 +581,7 @@ function url($l1=null,$l2=null,$l3=null){
     if ($I2==URL_COMMON) {
         $I1 = $l5.'?';
     } elseif ($I2==URL_PATHINFO) {
-        if (!IS_APACHE && IS_IIS) {
+        if (!IS_APACHE && IS_IIS && version_compare(IIS_VER,'6','<')) {
             $I1 = $l5.'?'.$I3;
         } else {
             $I1 = $l5.$I3;
