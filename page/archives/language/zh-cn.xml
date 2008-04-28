@@ -130,7 +130,7 @@
             <type>
                 <input>输入框</input>
                 <textarea>文本框</textarea>
-                <select>下拉菜单</select>
+                <select>下拉列表框</select>
                 <radio>单选框</radio>
                 <checkbox>复选框</checkbox>
                 <basic>简易编辑器</basic>

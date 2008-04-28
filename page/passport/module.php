@@ -86,13 +86,37 @@ class Passport{
         $data[] = '#@_'.$xml->group->grouptable;
         $data[] = $xml->group->purview;
         $data[] = $xml->group->groupstate;
+        $salt   = salt(4);
         if (!$isDeleteTable) {
             if ($db->isTable($data[2])) {
-                $salt = salt(4);
                 $data[1].= '_'.$salt;
                 $data[2].= '_'.$salt;
             }
         }
+        // 验证表是否可以作为索引表
+        if (strtolower($data[2])!='#@_archives') {
+            // 表不存在的时候，自动拷贝 #@_archives 创建新表
+            if (!$db->isTable($data[2])) {
+                $db->copy('#@_archives',$data[2]);
+            }
+            $fields = array();
+            $res = mysql_list_fields($db->getDataBase(),str_replace('#@_',C('DSN_PREFIX'),$data[2]),$db->getConnect());
+            $col = mysql_num_fields($res);
+            for ($i = 0; $i < $col; $i++) {
+                $fields[0][] = mysql_field_name($res, $i);
+            }
+            $res = mysql_list_fields($db->getDataBase(),C('DSN_PREFIX').'archives',$db->getConnect());
+            $col = mysql_num_fields($res);
+            for ($i = 0; $i < $col; $i++) {
+                $fields[1][] = mysql_field_name($res, $i);
+            }
+            if ($fields[1]!==$fields[0]) {
+                // 不是索引表类型，自动创建一个索引表
+                $data[2].= '_'.$salt;
+                $db->copy('#@_archives',$data[2]);
+            }
+        }
+
         // Insert model
         $row = array(
             'groupname'  => $data[0],

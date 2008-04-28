@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?><lazycms><model><modelname>软件下载</modelname><modelename>soft</modelename><maintable>archives</maintable><addtable>archives_model_soft</addtable><modelstate>0</modelstate></model><fields><item id="0"><fieldname>软件来源</fieldname><fieldename>from</fieldename><fieldtype>varchar</fieldtype><fieldlength>255</fieldlength><fieldefault></fieldefault><fieldindex>0</fieldindex><inputtype>input</inputtype><fieldvalue></fieldvalue></item><item id="1"><fieldname>软件作者</fieldname><fieldename>author</fieldename><fieldtype>varchar</fieldtype><fieldlength>255</fieldlength><fieldefault></fieldefault><fieldindex>0</fieldindex><inputtype>input</inputtype><fieldvalue></fieldvalue></item><item id="2"><fieldname>文件类型</fieldname><fieldename>filetype</fieldename><fieldtype>varchar</fieldtype><fieldlength>255</fieldlength><fieldefault>.exe</fieldefault><fieldindex>0</fieldindex><inputtype>select</inputtype><fieldvalue><![CDATA[.exe:.exe
+.zip:.zip
+.rar:.rar
+.iso:.iso
+.gz:.gz
+其它:其它]]></fieldvalue></item><item id="3"><fieldname>界面语言</fieldname><fieldename>language</fieldename><fieldtype>varchar</fieldtype><fieldlength>255</fieldlength><fieldefault>简体中文</fieldefault><fieldindex>0</fieldindex><inputtype>checkbox</inputtype><fieldvalue><![CDATA[简体中文:简体中文
+英文软件:英文软件
+繁体中文:繁体中文
+其它类型:其它类型]]></fieldvalue></item><item id="4"><fieldname>软件类型</fieldname><fieldename>softtype</fieldename><fieldtype>varchar</fieldtype><fieldlength>255</fieldlength><fieldefault>国产软件</fieldefault><fieldindex>0</fieldindex><inputtype>select</inputtype><fieldvalue><![CDATA[国产软件:国产软件
+国外软件:国外软件
+汉化补丁:汉化补丁]]></fieldvalue></item><item id="5"><fieldname>授权方式</fieldname><fieldename>accredit</fieldename><fieldtype>varchar</fieldtype><fieldlength>255</fieldlength><fieldefault>共享软件</fieldefault><fieldindex>0</fieldindex><inputtype>select</inputtype><fieldvalue><![CDATA[共享软件:共享软件
+免费软件:免费软件
+开源软件:开源软件
+商业软件:商业软件
+破解软件:破解软件
+游戏外挂:游戏外挂
+]]></fieldvalue></item><item id="6"><fieldname>运行环境</fieldname><fieldename>os</fieldename><fieldtype>varchar</fieldtype><fieldlength>255</fieldlength><fieldefault>WinXP</fieldefault><fieldindex>0</fieldindex><inputtype>checkbox</inputtype><fieldvalue><![CDATA[Win9X:Win9X
+WinXP:WinXP
+Win2000:Win2000
+Win2003:Win2003
+Linux:Linux
+Ubuntu:Ubuntu
+CentOS:CentOS
+Red Hat:Red Hat
+]]></fieldvalue></item><item id="7"><fieldname>软件等级</fieldname><fieldename>softrank</fieldename><fieldtype>varchar</fieldtype><fieldlength>255</fieldlength><fieldefault>☆☆★★★</fieldefault><fieldindex>0</fieldindex><inputtype>select</inputtype><fieldvalue><![CDATA[☆☆☆☆★:☆☆☆☆★
+☆☆☆★★:☆☆☆★★
+☆☆★★★:☆☆★★★
+☆★★★★:☆★★★★
+★★★★★:★★★★★]]></fieldvalue></item><item id="8"><fieldname>官方网址</fieldname><fieldename>officialurl</fieldename><fieldtype>varchar</fieldtype><fieldlength>255</fieldlength><fieldefault>http://</fieldefault><fieldindex>0</fieldindex><inputtype>input</inputtype><fieldvalue></fieldvalue></item><item id="9"><fieldname>演示网址</fieldname><fieldename>officialdemo</fieldename><fieldtype>varchar</fieldtype><fieldlength>255</fieldlength><fieldefault>http://</fieldefault><fieldindex>0</fieldindex><inputtype>input</inputtype><fieldvalue></fieldvalue></item><item id="10"><fieldname>软件大小</fieldname><fieldename>softsize</fieldename><fieldtype>varchar</fieldtype><fieldlength>50</fieldlength><fieldefault></fieldefault><fieldindex>0</fieldindex><inputtype>input</inputtype><fieldvalue></fieldvalue></item><item id="11"><fieldname>下载地址</fieldname><fieldename>softlinks</fieldename><fieldtype>varchar</fieldtype><fieldlength>255</fieldlength><fieldefault></fieldefault><fieldindex>0</fieldindex><inputtype>upfile</inputtype><fieldvalue></fieldvalue></item><item id="12"><fieldname>详细介绍</fieldname><fieldename>content</fieldename><fieldtype>mediumtext</fieldtype><fieldlength></fieldlength><fieldefault></fieldefault><fieldindex>0</fieldindex><inputtype>editor</inputtype><fieldvalue></fieldvalue></item></fields></lazycms>

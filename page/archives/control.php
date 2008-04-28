@@ -634,12 +634,18 @@ class LazyArchives extends LazyCMS{
                 if (empty($lists)) {
                     $this->poping($this->L('models/pop/select'),0);
                 }
-                $res = $db->query("SELECT `addtable` FROM `#@_archives_model` WHERE `modelid` IN({$lists})");
+                $res = $db->query("SELECT `modelid`,`maintable`,`addtable` FROM `#@_archives_model` WHERE `modelid` IN({$lists})");
                 while ($data = $db->fetch($res,0)){
-                    $db->exec("DROP TABLE IF EXISTS `".$data[0]."`;");
+                    $db->exec("DELETE FROM `#@_archives_model` WHERE `modelid`=?;",$data[0]);
+                    if (strtolower($data[1])!='#@_archives') {
+                        $num = $db->count("SELECT * FROM `#@_archives_model` WHERE `maintable`=".$db->quote($data[1]));
+                        if ($num==0) {
+                            $db->exec("DROP TABLE IF EXISTS `".$data[1]."`;");
+                        }
+                    }
+                    $db->exec("DROP TABLE IF EXISTS `".$data[2]."`;");
                 }
                 $db->exec("DELETE FROM `#@_archives_fields` WHERE `modelid` IN({$lists});");
-                $db->exec("DELETE FROM `#@_archives_model` WHERE `modelid` IN({$lists});");
                 $this->poping($this->L('models/pop/deleteok'),1);
                 break;
             default :
