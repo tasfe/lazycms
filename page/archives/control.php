@@ -321,7 +321,7 @@ class LazyArchives extends LazyCMS{
         $dp->open();
         $dp->thead  = '<tr><th>'.$this->L('list/id').') '.$this->L('list/title').'</th><th>'.$this->L('list/show').'</th><th>'.$this->L('list/commend').'</th><th>'.$this->L('list/top').'</th><th>'.$this->L('list/path').'</th><th>'.$this->L('list/date').'</th><th>'.$this->L('list/action').'</th></tr>';
         while ($data = $dp->result()) {
-            $dp->tbody = "ll(".$data['id'].",'".t2js(htmlencode($data['title']))."',".$data['show'].",".$data['commend'].",".$data['top'].",'".htmlencode(is_file(LAZY_PATH.$data['img']) ? LAZY_PATH.$data['img'] : null)."','".Archives::showArchive($data['id'],$model)."','".date('Y-m-d H:i:s',$data['date'])."',".(file_exists(LAZY_PATH.$model['sortpath'].'/'.$data['path']) ? 1 : 0).");";
+            $dp->tbody = "ll(".$data['id'].",'".t2js(htmlencode($data['title']))."',".$data['show'].",".$data['commend'].",".$data['top'].",'".htmlencode(is_file(LAZY_PATH.$data['img']) ? C('SITE_BASE').$data['img'] : null)."','".Archives::showArchive($data['id'],$model)."','".date('Y-m-d H:i:s',$data['date'])."',".(file_exists(LAZY_PATH.$model['sortpath'].'/'.$data['path']) ? 1 : 0).");";
         }
         $dp->close();
 
@@ -416,6 +416,7 @@ class LazyArchives extends LazyCMS{
                     if ($snapimg) {
                         $formData[$data['fieldename']] = snapImg($formData[$data['fieldename']]);
                     }
+                    
                     // 抓取第一张图片，作为缩略图
                     if ($setimg) {
                         if (preg_match('/<img.[^>]*src="(.[^>]+?)".[^>]*\/>/i',$formData[$data['fieldename']],$imgInfo) && empty($downPic)) {
