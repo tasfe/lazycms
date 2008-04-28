@@ -1,4 +1,4 @@
-var FCKLang =
+﻿var FCKLang =
 {
 // Language direction : "ltr" (left to right) or "rtl" (right to left).
 Dir					: "ltr",
@@ -10,6 +10,7 @@ Copy				: "复制",
 Paste				: "粘贴",
 PasteText			: "粘贴为无格式文本",
 PasteWord			: "从 MS Word 粘贴",
+SelectAll			: "全选",
 RemoveFormat		: "清除格式",
 InsertLinkLbl		: "超链接",
 InsertLink			: "插入/编辑超链接",
@@ -31,6 +32,8 @@ Bold				: "加粗",
 Italic				: "倾斜",
 Underline			: "下划线",
 StrikeThrough		: "删除线",
+Subscript			: "下标",
+Superscript			: "上标",
 LeftJustify			: "左对齐",
 CenterJustify		: "居中对齐",
 RightJustify		: "右对齐",
@@ -44,6 +47,7 @@ NumberedListLbl		: "编号列表",
 NumberedList		: "插入/删除编号列表",
 BulletedListLbl		: "项目列表",
 BulletedList		: "插入/删除项目列表",
+ShowTableBorders	: "显示表格边框",
 ShowDetails			: "显示详细资料",
 Style				: "样式",
 FontFormat			: "格式",
@@ -52,6 +56,11 @@ FontSize			: "大小",
 TextColor			: "文本颜色",
 BGColor				: "背景颜色",
 Source				: "源代码",
+Find				: "查找",
+Replace				: "替换",
+UniversalKeyboard	: "软键盘",
+PageBreakLbl		: "分页符",
+PageBreak			: "插入分页符",
 InsertCodes			: "插入代码",
 
 FontFormats			: "普通;已编排格式;地址;标题 1;标题 2;标题 3;标题 4;标题 5;标题 6;段落(DIV)",
@@ -72,7 +81,6 @@ DialogBlocked		: "无法打开对话框窗口，请确认是否启用了禁止�
 DlgBtnOK			: "确定",
 DlgBtnCancel		: "取消",
 DlgBtnClose			: "关闭",
-DlgAdvancedTag		: "高级",
 DlgOpOther			: "<其它>",
 DlgInfoTab			: "信息",
 DlgAlertUrl			: "请插入 URL",
@@ -101,6 +109,7 @@ DlgImgAlignRight	: "右对齐",
 DlgImgAlignTextTop	: "文本上方",
 DlgImgAlignTop		: "顶端",
 DlgImgAlertUrl		: "请输入图象地址",
+DlgImgLinkTab		: "链接",
 
 // Flash Dialog
 DlgFlashTitle		: "Flash 属性",
@@ -119,20 +128,35 @@ DlgCodesContent		: "内容",
 
 // Link Dialog
 DlgLnkWindowTitle	: "超链接",
+DlgLnkInfoTab		: "超链接信息",
+DlgLnkTargetTab		: "目标",
+
+DlgLnkType			: "超链接类型",
+DlgLnkTypeURL		: "超链接",
+DlgLnkURL			: "地址",
+DlgLnkAnchorSel		: "选择一个锚点",
+DlgLnkAnchorByName	: "按锚点名称",
+DlgLnkAnchorById	: "按锚点 ID",
+DlgLnkNoAnchors		: "(此文档没有可用的锚点)",
 
 DlgLnkTarget		: "目标",
+DlgLnkTargetFrame	: "<框架>",
+DlgLnkTargetPopup	: "<弹出窗口>",
 DlgLnkTargetBlank	: "新窗口 (_blank)",
 DlgLnkTargetParent	: "父窗口 (_parent)",
 DlgLnkTargetSelf	: "本窗口 (_self)",
 DlgLnkTargetTop		: "整页 (_top)",
+DlgLnkTargetFrameName	: "目标框架名称",
 
 DlnLnkMsgNoUrl		: "请输入超链接地址",
-DlnLnkMsgNoEMail	: "请输入电子邮件地址",
 DlnLnkMsgNoAnchor	: "请选择一个锚点",
 DlnLnkMsgInvPopName	: "弹出窗口名称必须以字母开头，并且不能含有空格。",
 
 // Color Dialog
 DlgColorTitle		: "选择颜色",
+DlgColorBtnClear	: "清除",
+DlgColorHighlight	: "预览",
+DlgColorSelected	: "选择",
 
 // Smiley Dialog
 DlgSmileyTitle		: "插入表情图标",
@@ -156,6 +180,23 @@ DlgTableCellPad		: "边距",
 DlgTableCaption		: "标题",
 DlgTableSummary		: "摘要",
 
+// Find and Replace Dialog
+DlgFindAndReplaceTitle	: "查找和替换",
+
+// Find Dialog
+DlgFindTitle		: "查找",
+DlgFindFindBtn		: "查找",
+DlgFindNotFoundMsg	: "指定文本没有找到。",
+
+// Replace Dialog
+DlgReplaceTitle			: "替换",
+DlgReplaceFindLbl		: "查找:",
+DlgReplaceReplaceLbl	: "替换:",
+DlgReplaceCaseChk		: "区分大小写",
+DlgReplaceReplaceBtn	: "替换",
+DlgReplaceReplAllBtn	: "全部替换",
+DlgReplaceWordChk		: "全字匹配",
+
 // Paste Operations / Dialog
 PasteErrorCut	: "您的浏览器安全设置不允许编辑器自动执行剪切操作，请使用键盘快捷键(Ctrl+X)来完成。",
 PasteErrorCopy	: "您的浏览器安全设置不允许编辑器自动执行复制操作，请使用键盘快捷键(Ctrl+C)来完成。",
@@ -178,6 +219,6 @@ DlgAnchorErrorName	: "请输入锚点名称",
 
 // About Dialog
 DlgAboutAboutTab	: "关于",
+DlgAboutVersion		: "版本",
 DlgAboutInfo		: "要获得更多信息请访问 "
-
 };

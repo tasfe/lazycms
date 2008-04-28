@@ -405,6 +405,94 @@ var Selection =
 	}
 }
 
+// Tab related functions.
+var Tabs = function()
+{
+	// Only element ids should be stored here instead of element references since setSelectedTab and TabDiv_OnClick
+	// would build circular references with the element references inside and cause memory leaks in IE6.
+	var oTabs = new Object() ;
+
+	var setSelectedTab = function( tabCode )
+	{
+		for ( var sCode in oTabs )
+		{
+			if ( sCode == tabCode )
+				$( oTabs[sCode] ).className = 'PopupTabSelected' ;
+			else
+				$( oTabs[sCode] ).className = 'PopupTab' ;
+		}
+
+		if ( typeof( window.frames["frmMain"].OnDialogTabChange ) == 'function' )
+			window.frames["frmMain"].OnDialogTabChange( tabCode ) ;
+	}
+
+	function TabDiv_OnClick()
+	{
+		setSelectedTab( this.TabCode ) ;
+	}
+
+	window.AddTab = function( tabCode, tabText, startHidden )
+	{
+		if ( typeof( oTabs[ tabCode ] ) != 'undefined' )
+			return ;
+
+		var eTabsRow = $( 'Tabs' ) ;
+
+		var oCell = eTabsRow.insertCell(  eTabsRow.cells.length - 1 ) ;
+		oCell.noWrap = true ;
+
+		var oDiv = document.createElement( 'DIV' ) ;
+		oDiv.className = 'PopupTab' ;
+		oDiv.innerHTML = tabText ;
+		oDiv.TabCode = tabCode ;
+		oDiv.onclick = TabDiv_OnClick ;
+		oDiv.id = Math.random() ;
+
+		if ( startHidden )
+			oDiv.style.display = 'none' ;
+
+		eTabsRow = $( 'TabsRow' ) ;
+
+		oCell.appendChild( oDiv ) ;
+
+		if ( eTabsRow.style.display == 'none' )
+		{
+			var eTitleArea = $( 'TitleArea' ) ;
+			eTitleArea.className = 'PopupTitle' ;
+
+			oDiv.className = 'PopupTabSelected' ;
+			eTabsRow.style.display = '' ;
+
+			if ( window.onresize )
+				window.onresize() ;
+		}
+
+		oTabs[ tabCode ] = oDiv.id ;
+
+		FCKTools.DisableSelection( oDiv ) ;
+	} ;
+
+	window.SetSelectedTab = setSelectedTab ;
+
+	window.SetTabVisibility = function( tabCode, isVisible )
+	{
+		var oTab = $( oTabs[ tabCode ] ) ;
+		oTab.style.display = isVisible ? '' : 'none' ;
+
+		if ( ! isVisible && oTab.className == 'PopupTabSelected' )
+		{
+			for ( var sCode in oTabs )
+			{
+				if ( $( oTabs[sCode] ).style.display != 'none' )
+				{
+					setSelectedTab( sCode ) ;
+					break ;
+				}
+			}
+		}
+	} ;
+}() ;
+
 // readystatechange handler for registering drag and drop handlers in cover
 // iframes, defined out here to avoid memory leak.
 // Do NOT put this function as a private function as it will induce memory leak

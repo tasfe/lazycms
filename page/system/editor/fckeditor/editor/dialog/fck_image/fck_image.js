@@ -3,6 +3,7 @@ var oEditor		= dialog.InnerDialogLoaded() ;
 var FCK			= oEditor.FCK ;
 var FCKLang		= oEditor.FCKLang ;
 var FCKConfig	= oEditor.FCKConfig ;
+var FCKDebug	= oEditor.FCKDebug ;
 var FCKTools	= oEditor.FCKTools ;
 
 // Function called when a dialog tag is selected.

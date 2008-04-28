@@ -135,7 +135,13 @@ FCKConfig_LoadPageConfig() ;
 FCKConfig_PreProcess() ;
 
 // CSS minified by http://iceyboard.no-ip.org/projects/css_compressor
-var FCK_InternalCSS			= FCKTools.FixCssUrls( FCKConfig.FullBasePath + 'css/', 'html{min-height:100%}.FCK__Flash{border:#a9a9a9 1px solid;background-position:center center;background-image:url(images/fck_flashlogo.gif);background-repeat:no-repeat;width:80px;height:80px}.FCK__Anchor{border:1px dotted #00F;background-position:center center;background-image:url(images/fck_anchor.gif);background-repeat:no-repeat;width:16px;height:15px;vertical-align:middle}.FCK__AnchorC{border:1px dotted #00F;background-position:1px center;background-image:url(images/fck_anchor.gif);background-repeat:no-repeat;padding-left:18px}a[name]{border:1px dotted #00F;background-position:0 center;background-image:url(images/fck_anchor.gif);background-repeat:no-repeat;padding-left:18px}' ) ;
+var FCK_InternalCSS			= FCKTools.FixCssUrls( FCKConfig.FullBasePath + 'css/', 'html{min-height:100%}table.FCK__ShowTableBorders,table.FCK__ShowTableBorders td,table.FCK__ShowTableBorders th{border:#d3d3d3 1px solid}form{border:1px dotted #F00;padding:2px}.FCK__Flash{border:#a9a9a9 1px solid;background-position:center center;background-image:url(images/fck_flashlogo.gif);background-repeat:no-repeat;width:80px;height:80px}.FCK__Anchor{border:1px dotted #00F;background-position:center center;background-image:url(images/fck_anchor.gif);background-repeat:no-repeat;width:16px;height:15px;vertical-align:middle}.FCK__AnchorC{border:1px dotted #00F;background-position:1px center;background-image:url(images/fck_anchor.gif);background-repeat:no-repeat;padding-left:18px}a[name]{border:1px dotted #00F;background-position:0 center;background-image:url(images/fck_anchor.gif);background-repeat:no-repeat;padding-left:18px}.FCK__PageBreak{background-position:center center;background-image:url(images/fck_pagebreak.gif);background-repeat:no-repeat;clear:both;display:block;float:none;width:100%;border-top:#999 1px dotted;border-bottom:#999 1px dotted;border-right:0;border-left:0;height:5px}.FCK__InputHidden{width:19px;height:18px;background-image:url(images/fck_hiddenfield.gif);background-repeat:no-repeat;vertical-align:text-bottom;background-position:center center}' ) ;
+var FCK_ShowTableBordersCSS	= FCKTools.FixCssUrls( FCKConfig.FullBasePath + 'css/', 'table:not([border]),table:not([border]) > tr > td,table:not([border]) > tr > th,table:not([border]) > tbody > tr > td,table:not([border]) > tbody > tr > th,table:not([border]) > thead > tr > td,table:not([border]) > thead > tr > th,table:not([border]) > tfoot > tr > td,table:not([border]) > tfoot > tr > th,table[border=\"0\"],table[border=\"0\"] > tr > td,table[border=\"0\"] > tr > th,table[border=\"0\"] > tbody > tr > td,table[border=\"0\"] > tbody > tr > th,table[border=\"0\"] > thead > tr > td,table[border=\"0\"] > thead > tr > th,table[border=\"0\"] > tfoot > tr > td,table[border=\"0\"] > tfoot > tr > th{border:#d3d3d3 1px dotted}' ) ;
+
+// Popup the debug window if debug mode is set to true. It guarantees that the
+// first debug message will not be lost.
+if ( FCKConfig.Debug )
+	FCKDebug._GetWindow() ;
 
 // Load the active skin CSS.
 document.write( FCKTools.GetStyleHtml( FCKConfig.SkinEditorCSS ) ) ;
@@ -143,6 +149,11 @@ document.write( FCKTools.GetStyleHtml( FCKConfig.SkinEditorCSS ) ) ;
 // Load the language file.
 FCKLanguageManager.Initialize() ;
 LoadScript( 'lang/' + FCKLanguageManager.ActiveLanguage.Code + '.js' ) ;
+
+	</script>
+	<script type="text/javascript">
+
+FCKPlugins.Load() ;
 
 	</script>
 	<script type="text/javascript">
@@ -243,8 +254,9 @@ if ( FCKBrowserInfo.IsGecko && !FCKBrowserInfo.IsOpera )
 			<td id="xToolbarSpace" style="overflow: hidden">
 				<table width="100%" cellpadding="0" cellspacing="0">
 					<tr>
-						<td id="xCollapseHandle" style="display: none" valign="bottom"></td>
+						<td class="TB_SideBorder" style="width: 1px;"></td>
 						<td id="xToolbar" class="TB_ToolbarSet"></td>
+						<td class="TB_SideBorder" style="width: 1px"></td>
 					</tr>
 				</table>
 			</td>

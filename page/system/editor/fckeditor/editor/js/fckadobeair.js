@@ -168,6 +168,7 @@ if ( FCKBrowserInfo.IsAIR )
 		{
 			// Force pointing to the CSS files instead of using the inline CSS cached styles.
 			window.FCK_InternalCSS			= FCKConfig.FullBasePath + 'css/fck_internal.css' ;
+			window.FCK_ShowTableBordersCSS	= FCKConfig.FullBasePath + 'css/fck_showtableborders_gecko.css' ;
 
 			_Original_FCK_StartEditor.apply( this, arguments ) ;
 		}
