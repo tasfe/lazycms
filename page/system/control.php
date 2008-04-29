@@ -434,49 +434,38 @@ class LazySystem extends LazyCMS{
     // _module *** *** www.LazyCMS.net *** ***
     function _module(){
         $this->checker('module');
-        $dir = getArrDir(C('PAGES_PATH'),'dir');
-        $_html = '<script type="text/javascript">var lz_delete = \''.L('confirm/delete').'\';</script>';
-        $_html.= '<table class="lz_table">';
-        $_html.= '<thead><tr>';
-        $_html.= '<th>'.L('module/list/name').'</th>';
-        $_html.= '<th>'.L('module/list/version').'</th>';
-        $_html.= '<th>'.L('module/list/folder').'</th>';
-        $_html.= '<th>'.L('module/list/author').'</th>';
-        $_html.= '<th>'.L('module/list/source').'</th>';
-        $_html.= '<th>'.L('module/list/mail').'</th>';
-        $_html.= '<th>'.L('module/list/is').'</th>';
-        $_html.= '</tr></thead>';
-
-        $_html.= '<tbody>';
-        foreach ($dir as $k=>$v) {
-            if (strtolower($v) != 'system') {
-                if (instr($this->system['modules'],$v)) {
+        $dp = O('Record');
+        $dp->action = url(C('CURRENT_MODULE'),'ModuleSet');
+        $dp->result = getArrDir(C('PAGES_PATH'),'dir');
+        $dp->length = count($dp->result);
+        $dp->but = $dp->button("install:".L('common/install')."|uninstall:卸载");
+        $dp->td  = "cklist(K[1]) + (K[0]+1) + ') ' + K[2]";
+        $dp->td  = "K[3]";
+        $dp->td  = "K[1]";
+        $dp->td  = "K[4]";
+        $dp->td  = "K[5]";
+        $dp->td  = "K[6]";
+        $dp->td  = "K[7]+K[8]+K[9]+K[10]";
+        $dp->open();
+        $dp->thead  = '<tr><th>'.L('module/list/id').') '.L('module/list/name').'</th><th>'.L('module/list/version').'</th><th>'.L('module/list/folder').'</th><th>'.L('module/list/author').'</th><th>'.L('module/list/source').'</th><th>'.L('module/list/mail').'</th><th>'.L('module/list/is').'</th></tr>';
+        while (list($k,$name) = each($dp->result)) {
+            if (strtolower($name) != 'system') {
+                if (instr($this->system['modules'],$name)) {
                     $isInstall = L('module/is/true');
-                    $isAction  = 'delete';
-                    $isExists  = null;
-                    $module    = '<a href="'.eval('return '.L('manage',null,$v).';').'">'.L('title',null,$v).'</a>';
-                    $config    = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$v.'/config.php') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('config',{module:'".$v."'},{width:'600px','margin-left':'-300px',height:'300px'});\">".L('common/config')."</a>]" : null;
+                    $module    = '<a href="'.eval('return '.L('manage',null,$name).';').'">'.L('title',null,$name).'</a>';
+                    $config    = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$name.'/config.php') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('config',{lists:'".$name."'},{width:'600px','margin-left':'-300px',height:'300px'});\">".L('common/config')."</a>]" : null;
                 } else {
                     $isInstall = L('module/is/false');
-                    $isAction  = 'install';
-                    $isExists  = ' class="red"';
-                    $module    = L('title',null,$v);
+                    $module    = L('title',null,$name);
                     $config    = null;
                 }
-                $help  = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$v.'/help/help.html') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('help',{module:'".$v."'},{width:'600px','margin-left':'-300px',height:'300px'});\">".L('common/help')."</a>]" : null;
-                $about = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$v.'/help/about.html') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('about',{module:'".$v."'});\">".L('common/about')."</a>]" : null;
-                $_html.= '<tr'.$isExists.'><td>'.($k+1).') '.$module.'</td>';
-                $_html.= '<td>'.L('version',null,$v).'</td>';
-                $_html.= '<td>'.$v.'</td>';
-                $_html.= '<td>'.L('author',null,$v).'</td>';
-                $_html.= '<td>'.L('source',null,$v).'</td>';
-                $_html.= '<td>'.L('email',null,$v).'</td>';
-                $_html.= '<td>'.$isInstall.$config.' [<a href="javascript:void(0);" onclick="$(this).gm(\''.$isAction.'\',{module:\''.$v.'\'});">'.L('common/'.$isAction).'</a>]'.$about.$help.'</td></tr>';
+                $help  = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$name.'/help/help.html') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('help',{lists:'".$name."'},{width:'600px','margin-left':'-300px',height:'300px'});\">".L('common/help')."</a>]" : null;
+                $about = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$name.'/help/about.html') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('about',{lists:'".$name."'});\">".L('common/about')."</a>]" : null;
+                $dp->tbody = "ll({$k},'{$name}','{$module}','".L('version',null,$name)."','".L('author',null,$name)."','".L('source',null,$name)."','".L('email',null,$name)."','{$isInstall}','".t2js($config)."','".t2js($help)."','".t2js($about)."');";
             }
         }
-        $_html.= '</tbody></table>';
-        $this->outHTML = $_html;
-
+        $dp->close();
+        $this->outHTML = $dp->fetch;
         $tpl = getTpl($this);
         $tpl->display('module.php');
     }
@@ -486,81 +475,102 @@ class LazySystem extends LazyCMS{
         $this->checker('module',true);
         $db     = getConn();
         $submit = isset($_POST['submit']) ? $_POST['submit'] : null;
-        $module = isset($_POST['module']) ? $_POST['module'] : null;
+        $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
         $modules = $this->system['modules'];
         $path    = LAZY_PATH.C('PAGES_PATH').'/';
         $where   = $db->quoteInto('`diymenulang` = ?',$this->admin['adminlanguage']);
         switch($submit){
-            case 'delete' :
-                if (instr($modules,$module)) {
-                    $tmpModules = array();
-                    $_modules   = explode(',',$modules);
-                    foreach ($_modules as $m) {
-                        if ($m!=$module) {
-                            if (file_exists($path.$m)) {
-                                $tmpModules[] = $m;
-                            }
-                        }
-                    }
-                    $modules = implode(',',$tmpModules);
-                    //删除插件菜单
-                    $mMenu   = L('title',null,$module)."|".L('manage',null,$module)."\r\n";
-                    $replace = $db->quoteInto("REPLACE(`diymenu`,?,'')",$mMenu);
-                    $db->exec("UPDATE `#@_diymenu` SET `diymenu`={$replace} WHERE {$where};");
+            case 'delete':
+                $arrList   = array();
+                $arrLists  = explode(',',$lists);
+                $arrModule = explode(',',$modules);
+                foreach ($arrLists as $module) {
+                    if (instr($modules,$module)) {
+                        $arrList[] = $module;
+                        // 删除菜单
+                        $mMenu = L('title',null,$module)."|".L('manage',null,$module)."\r\n";
+                        $db->exec("UPDATE `#@_diymenu` SET `diymenu`=REPLACE(`diymenu`,?,'') WHERE {$where};",$mMenu);
+                        // 删除整个模块的文件夹
+                        rmdirs($path.$module);
+                    }    
                 }
+                $arrResult = array_diff($arrModule, $arrList);
+                // 重置模块安装字符串
+                $db->update('#@_system',array('modules' => implode(',',$arrResult)),$db->quoteInto('`systemname` = ?','LazyCMS'));
+                $this->poping(L('module/tip/delete'),1);
                 break;
             case 'install' :
-                if (!instr($modules,$module)) {
-                    if (file_exists($path.$module)) {       
-                        $_module = ucfirst($module);
-                        import("@.{$module}.module");
-                        $obj = new $_module();
-                        if (method_exists($obj,'instSQL')) {
-                            $instSQL = $obj->instSQL();
-                            $db->batQuery($instSQL);
-                        }
-                        unset($obj);
-                        if (empty($modules)) {
-                            $modules = $module;
-                        } else {
-                            $modules .= ','.$module;
-                        }
-                        //写入自定义菜单
-                        $mMenu  = L('title',null,$module)."|".L('manage',null,$module)."\r\n";
-                        $result = $db->query("SELECT `diymenu` FROM `#@_diymenu` WHERE {$where};");
-                        if ($data = $db->fetch($result,0)) {
-                            if (empty($data[0])) {
-                                $data[0] = defmenu();
+                $arrLists  = explode(',',$lists);
+                foreach ($arrLists as $module) {
+                    if (!instr($modules,$module)) {
+                        if (file_exists($path.$module)) {
+                            $_module = ucfirst($module);
+                            import("@.{$module}.module");
+                            $obj = new $_module();
+                            if (method_exists($obj,'instSQL')) {
+                                $instSQL = $obj->instSQL();
+                                $db->batQuery($instSQL);
+                            } unset($obj);
+                            
+                            if (empty($modules)) {
+                                $modules = $module;
+                            } else {
+                                $modules.= ','.$module;
                             }
-                            $set = array(
-                                'diymenu' => $mMenu.str_replace($mMenu,'',$data[0]),
-                            );
-                            $db->update('#@_diymenu',$set,$where);
-                        } else {
-                            $row = array(
-                                'diymenulang' => $this->admin['adminlanguage'],
-                                'diymenu'     => $mMenu.defmenu(),
-                            );
-                            $db->insert('#@_diymenu',$row);
+                            //写入自定义菜单
+                            $mMenu  = L('title',null,$module)."|".L('manage',null,$module)."\r\n";
+                            $result = $db->query("SELECT `diymenu` FROM `#@_diymenu` WHERE {$where};");
+                            if ($data = $db->fetch($result,0)) {
+                                if (empty($data[0])) {
+                                    $data[0] = defmenu();
+                                }
+                                $db->update('#@_diymenu',array('diymenu' => $mMenu.str_replace($mMenu,'',$data[0])),$where);
+                            } else {
+                                $row = array(
+                                    'diymenulang' => $this->admin['adminlanguage'],
+                                    'diymenu'     => $mMenu.defmenu(),
+                                );
+                                $db->insert('#@_diymenu',$row);
+                            }
                         }
-                    }
+                    }    
                 }
+                // 重置模块安装字符串
+                $db->update('#@_system',array('modules' => $modules),$db->quoteInto('`systemname` = ?','LazyCMS'));
+                $this->poping(L('module/tip/install'),1);
+                break;
+            case 'uninstall' :
+                $arrList   = array();
+                $arrLists  = explode(',',$lists);
+                $arrModule = explode(',',$modules);
+                foreach ($arrLists as $module) {
+                    if (instr($modules,$module)) {
+                        $arrList[] = $module;
+                        // 删除菜单
+                        $mMenu = L('title',null,$module)."|".L('manage',null,$module)."\r\n";
+                        $db->exec("UPDATE `#@_diymenu` SET `diymenu`=REPLACE(`diymenu`,?,'') WHERE {$where};",$mMenu);
+                    }    
+                }
+                $arrResult = array_diff($arrModule, $arrList);
+                // 重置模块安装字符串
+                $db->update('#@_system',array('modules' => implode(',',$arrResult)),$db->quoteInto('`systemname` = ?','LazyCMS'));
+                $this->poping(L('module/tip/uninstall'),1);
                 break;
             case 'about' :
                 $this->poping(array(
-                    'title' => L('common/about').' - '.L('title',null,$module),
-                    'main'  => ubbencode(loadFile(LAZY_PATH.C('PAGES_PATH').'/'.$module.'/help/about.html')),
+                    'title' => L('common/about').' - '.L('title',null,$lists),
+                    'main'  => ubbencode(loadFile(LAZY_PATH.C('PAGES_PATH').'/'.$lists.'/help/about.html')),
                 ),0);
                 break;
             case 'help' :
                 $this->poping(array(
-                    'title' => L('common/help').' - '.L('title',null,$module),
-                    'main'  => ubbencode(loadFile(LAZY_PATH.C('PAGES_PATH').'/'.$module.'/help/help.html')),
+                    'title' => L('common/help').' - '.L('title',null,$lists),
+                    'main'  => ubbencode(loadFile(LAZY_PATH.C('PAGES_PATH').'/'.$lists.'/help/help.html')),
                 ),0);
                 break;
             case 'config' :
-                $config = M($module);
-                $strCfg = loadFile(LAZY_PATH.C('PAGES_PATH').'/'.$module.'/config.php');
+                $config = M($lists);
+                $strCfg = loadFile(LAZY_PATH.C('PAGES_PATH').'/'.$lists.'/config.php');
                 $_html = '<style type="text/css">.lz_form .button{ margin:10px auto; text-align:center; }</style>';
                 $_html.= '<form action="'.url('System','ModuleConfig').'" class="lz_form">';
                 $_html.= '<table class="lz_table" style="width:97%;">';
@@ -591,14 +601,14 @@ class LazySystem extends LazyCMS{
                 }
                 $_html.= '</tbody></table>';
                 $_html.= '<div class="button">';
-                $_html.= '<button type="button" onclick="javascript:$(this).gm(\'submit\',inputValue({module:\''.$module.'\'},\''.rtrim($input,',').'\'));">'.L("common/submit").'</button>';
+                $_html.= '<button type="button" onclick="javascript:$(this).gm(\'submit\',inputValue({lists:\''.$lists.'\'},\''.rtrim($input,',').'\'));">'.L("common/submit").'</button>';
                 $_html.= '<button type="reset" onclick="javascript:return confirm(\''.L('confirm/reset').'\')">'.L('common/reset').'</button>';
                 $_html.= '<button type="button" class="close">'.L('common/close').'</button>';
                 $_html.= '</div>';
                 $_html.= '</form>';
                 
                 $this->poping(array(
-                    'title' => L('config/@title').' - '.L('title',null,$module),
+                    'title' => L('config/@title').' - '.L('title',null,$lists),
                     'main'  => $_html,
                 ));
                 break;
@@ -606,35 +616,16 @@ class LazySystem extends LazyCMS{
                 $this->poping(L('error/invalid'),0);
                 break;
         }
-        // 重置模块安装字符串
-        $set = array(
-            'modules' => $modules,
-        );
-        $where = $db->quoteInto('`systemname` = ?','LazyCMS');
-        $db->update('#@_system',$set,$where);
-
-        if ($submit=='install') {
-            $this->poping(array(
-                'title' => L('title',null,$module).' - '.L('common/memo'),
-                'main'  => L('module/tip/install').'<br/><a href="'.eval('return '.L('manage',null,$module).';').'">【'.L("module/tip/welcome").'】</a>',
-            ),1);
-        } else {
-            $this->poping(array(
-                'title' => L('title',null,$module).' - '.L('common/memo'),
-                'main'  => L('module/tip/delete'),
-            ),1);
-        }
     }
     // _moduleConfig *** *** www.LazyCMS.net *** ***
     function _moduleConfig(){
         clearCache();
         $this->checker('module',true); 
         $submit = isset($_POST['submit']) ? $_POST['submit'] : null; unset($_POST['submit']);
-        $module = isset($_POST['module']) ? $_POST['module'] : null; unset($_POST['module']);
-        M($module);
+        $lists  = isset($_POST['lists']) ? $_POST['lists'] : null; unset($_POST['lists']);
+        M($lists);
         switch($submit){
             case 'submit';
-                unset($_POST['lists']);
                 $array = array();
                 foreach ($_POST as $k=>$v) {
                     if (is_numeric(trim($v))) {
@@ -647,16 +638,16 @@ class LazySystem extends LazyCMS{
                         }
                     }
                     if (substr($k,-6)!='__note') {
-                        M($module,$k,$v);
+                        M($lists,$k,$v);
                     } else {
                         $array[substr($k,0,strlen($k)-6)] = $v;
                     }
                 }
-                $config = var_export(array_change_key_case(M($module),CASE_UPPER),true);
+                $config = var_export(array_change_key_case(M($lists),CASE_UPPER),true);
                 foreach ($array as $k=>$v) {
                     $config = replace("/\'".preg_quote($k,'/')."\'( *)\=\>( *)(\'?)(.+)(\'?)( *)\,/i","\${0} // ".htmldecode($v),$config);
                 }
-                saveFile(LAZY_PATH.C('PAGES_PATH').'/'.$module.'/config.php',"<?php\n".createNote(ucfirst($module).' module configuration files')."\nreturn ".$config.";\n?>");
+                saveFile(LAZY_PATH.C('PAGES_PATH').'/'.$lists.'/config.php',"<?php\n".createNote(ucfirst($lists).' module configuration files')."\nreturn ".$config.";\n?>");
                 break;
             default :
                 $this->poping(L('error/invalid'),0);

@@ -25,6 +25,6 @@
  */
 return array (
   'MYTAGS_ADD_DEF_EXT' => '.htm', // 默认后缀名
-  'MYTAGS_CREATE_FOLDER' => 'mytags',// 生成文件存放的路径
+  'MYTAGS_CREATE_FOLDER' => 'mytags', // 生成文件存放的路径
 );
 ?>

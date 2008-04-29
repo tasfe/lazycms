@@ -108,7 +108,9 @@ class Record extends Lazy{
     }
     // result *** *** www.LazyCMS.net *** ***
     public function result($type=1){
-         return $this->_db->fetch($this->result,$type);
+        if (is_resource($this->result)) {
+            return $this->_db->fetch($this->result,$type);
+        }
     }
     // button *** *** www.LazyCMS.net *** ***
     public function button($l1=null){

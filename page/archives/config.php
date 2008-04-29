@@ -19,8 +19,7 @@
  * +---------------------------------------------------------------------------+
  * | Author: Lukin <mylukin@gmail.com>                                         |
  * +---------------------------------------------------------------------------+
- */
-defined('CORE_PATH') or die('Restricted access!');
+ */defined('CORE_PATH') or die('Restricted access!');
 /**
  * Archives module configuration files
  */
