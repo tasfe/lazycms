@@ -180,6 +180,7 @@
     </login>
     
     <module title="模块管理">
+        <leadin title="导入模块">请选择模块文件 (zip格式文件)</leadin>
         <install>安装</install>
         <list>
             <id>ID</id>
@@ -202,10 +203,9 @@
         </is>
         <pop>
             <ok>模块设置，已成功提交</ok>
+            <select>请选择一个模块</select>
         </pop>
     </module>
-
-    
 
     <filemanage title="文件浏览器">
         <createfolder>新文件夹名称 (不能包含特殊字符)</createfolder>

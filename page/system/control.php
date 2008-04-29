@@ -479,6 +479,9 @@ class LazySystem extends LazyCMS{
         $modules = $this->system['modules'];
         $path    = LAZY_PATH.C('PAGES_PATH').'/';
         $where   = $db->quoteInto('`diymenulang` = ?',$this->admin['adminlanguage']);
+        if (instr('delete,install,uninstall',$submit) && empty($lists)) {
+            $this->poping($this->L('module/pop/select'),0);
+        }
         switch($submit){
             case 'delete':
                 $arrList   = array();
@@ -571,8 +574,7 @@ class LazySystem extends LazyCMS{
             case 'config' :
                 $config = M($lists);
                 $strCfg = loadFile(LAZY_PATH.C('PAGES_PATH').'/'.$lists.'/config.php');
-                $_html = '<style type="text/css">.lz_form .button{ margin:10px auto; text-align:center; }</style>';
-                $_html.= '<form action="'.url('System','ModuleConfig').'" class="lz_form">';
+                $_html = '<form action="'.url('System','ModuleConfig').'" class="lz_form">';
                 $_html.= '<table class="lz_table" style="width:97%;">';
                 $_html.= '<thead><tr>';
                 $_html.= '<th>Key</th>';
@@ -600,7 +602,7 @@ class LazySystem extends LazyCMS{
                     $input.= $k.',';
                 }
                 $_html.= '</tbody></table>';
-                $_html.= '<div class="button">';
+                $_html.= '<div class="button" style="margin:10px auto; text-align:center;">';
                 $_html.= '<button type="button" onclick="javascript:$(this).gm(\'submit\',inputValue({lists:\''.$lists.'\'},\''.rtrim($input,',').'\'));">'.L("common/submit").'</button>';
                 $_html.= '<button type="reset" onclick="javascript:return confirm(\''.L('confirm/reset').'\')">'.L('common/reset').'</button>';
                 $_html.= '<button type="button" class="close">'.L('common/close').'</button>';
@@ -655,7 +657,26 @@ class LazySystem extends LazyCMS{
         }
         $this->poping(L('module/pop/ok'),0);
     }
-    
+    // _moduleleadin *** *** www.LazyCMS.net *** ***
+    function _moduleleadin(){
+        $this->checker('module');
+        $field = 'module';
+        if ($this->method()) {
+            $upload = O('UpLoadFile');
+            $upload->allowExts = "zip";
+            $folder = LAZY_PATH.C('UPFILE_PATH');mkdirs($folder);
+            if ($file = $upload->save($field,$folder.'/'.basename($_FILES[$field]['name']))) {
+                $zip = O('zip');$zip->Extract($file['path'],LAZY_PATH.C('PAGES_PATH'));@unlink($file['path']);
+                redirect(url(C('CURRENT_MODULE'),'Module'));
+            } else {
+                $this->validate(array(
+                    $field => $upload->getError(),
+                ));
+            }
+        }
+        $tpl = getTpl($this);
+        $tpl->display('moduleleadin.php');
+    }
     // _browsefiles *** *** www.LazyCMS.net *** ***
     function _browsefiles(){
         clearCache();
