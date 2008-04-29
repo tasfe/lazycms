@@ -490,9 +490,9 @@ class LazySystem extends LazyCMS{
                         // 删除菜单
                         $mMenu = L('title',null,$module)."|".L('manage',null,$module)."\r\n";
                         $db->exec("UPDATE `#@_diymenu` SET `diymenu`=REPLACE(`diymenu`,?,'') WHERE {$where};",$mMenu);
-                        // 删除整个模块的文件夹
-                        rmdirs($path.$module);
-                    }    
+                    }
+                    // 删除整个模块的文件夹
+                    rmdirs($path.$module);
                 }
                 $arrResult = array_diff($arrModule, $arrList);
                 // 重置模块安装字符串
