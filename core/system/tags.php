@@ -160,7 +160,8 @@ class Tags extends Lazy{
                             $I1 = $tagName;
                         }
                         unset($obj);
-                        $I1 = $this->parseAtt($tags,$inValue,$I1);
+                        // 无需再次进行解析
+                        //$I1 = $this->parseAtt($tags,$inValue,$I1);
                     } else {
                         $I1 = $this->parseAtt($tags,$inValue,$tagName);
                     }

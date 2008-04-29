@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lazycms>
+    <title>自定义标签</title>
+    <version memo="版本">1.0</version>
+    <author memo="作者">Lukin</author>
+    <email memo="作者常用邮箱，以便联系">mylukin@gmail.com</email>
+    <source memo="作者来自哪里？">http://www.lazycms.net</source>
+    <manage>url('MyTags')</manage>
+
+    <common>
+        <add>添加标签</add>
+        <edit>编辑标签</edit>
+        <list>列表</list>
+    </common>
+
+    <list>
+        <id>ID</id>
+        <name>标签名称</name>
+        <tag>标签</tag>
+        <size>尺寸</size>
+        <date>添加日期</date>
+        <file>文档</file>
+        <action>操作</action>
+    </list>
+    <label>
+        <name>标签名称</name>
+        <title>标签介绍 (此项目不会显示，介绍之用)</title>
+        <text>标签内容 (支持LazyCMS标签)</text>
+        <size>
+            <title>尺寸</title>
+            <width>宽度 (用IFRAME形式调用的时候用的上)</width>
+            <height>高度 (用处同上)</height>
+        </size>
+        <ext>扩展名</ext>
+    </label>
+    <check>
+        <name>标签名称不能为空</name>
+        <name1>标签名称只能由字母、数字、下划线、中杠构成</name1>
+        <name2>标签名称不能重复</name2>
+        <title>标签介绍不能为空</title>
+        <text>标签内容不能为空</text>
+        <width>长度必须为数字</width>
+        <height>宽度必须为数字</height>
+    </check>
+    <pop>
+        <select>请选择一个标签</select>
+        <createok>成功生成指定的标签</createok>
+        <invalid>指定的标签已经删除，请不要重复删除</invalid>
+        <deleteok>成功删除指定的标签</deleteok>
+    </pop>
+</lazycms>
