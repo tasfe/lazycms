@@ -666,7 +666,24 @@ class LazySystem extends LazyCMS{
             $upload->allowExts = "zip";
             $folder = LAZY_PATH.C('UPFILE_PATH');mkdirs($folder);
             if ($file = $upload->save($field,$folder.'/'.basename($_FILES[$field]['name']))) {
-                $zip = O('zip');$zip->Extract($file['path'],LAZY_PATH.C('PAGES_PATH'));@unlink($file['path']);
+                $zip = O('zip'); $isModule = false;
+                $list = $zip->getList($file['path']);
+                foreach ($list as $info) {
+                    $pathinfo = pathinfo($info['filename']);
+                    if (!$info['folder']) {
+                        if (instr('control.php,module.php',$pathinfo['basename'])) {
+                            $isModule = true;
+                        }
+                    } else {
+                        if (instr('language,template',$pathinfo['basename'])) {
+                            $isModule = true;
+                        }
+                    }
+                }
+                if ($isModule) {
+                    $zip->Extract($file['path'],LAZY_PATH.C('PAGES_PATH'));
+                }
+                @unlink($file['path']);
                 redirect(url(C('CURRENT_MODULE'),'Module'));
             } else {
                 $this->validate(array(

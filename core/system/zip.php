@@ -48,7 +48,6 @@ class zip{
             $I4['status']    = $I3['status'];
             $I4['comment']   = $I3['comment'];
             $I4['filename']  = $I3['filename'];
-            $I4['sfilename'] = $I3['sfilename'];
             $I4['compressed_size'] = $I3['compressed_size'];
             $I1[] = $I4;
             unset($I3);
@@ -204,7 +203,6 @@ class zip{
         }else{
             $I1['mtime'] = time();
         }
-        $I1['sfilename'] = $I1['filename'];
         $I1['status'] = "ok";
         return $I1;
     }
@@ -242,7 +240,6 @@ class zip{
         } else {
             $I1['mtime'] = time();
         }
-        $I1['sfilename'] = $I1['filename'];
         $I1['status'] = 'ok';
         if (substr($I1['filename'], -1) == '/'){
             $I1['external'] = 0x41FF0010;
