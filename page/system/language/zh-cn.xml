@@ -194,8 +194,8 @@
         </list>
         <tip>
             <install>成功安装指定的模块</install>
-            <uninstall>成功卸载指定的模块</uninstall>
-            <delete>成功删除指定的模块</delete>
+            <uninstall>成功卸载指定的模块，但不删除数据表</uninstall>
+            <delete>成功删除指定的模块，且数据表一起删除</delete>
         </tip>
         <is>
             <true>已安装</true>

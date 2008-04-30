@@ -53,8 +53,8 @@ class LazyMyTags extends LazyCMS{
 
         $this->outHTML = $dp->fetch;
 
-        $tpl = getTpl($this);
-        $tpl->display('index.php');
+
+        $this->display('index.php');
     }
     // _showtags *** *** www.LazyCMS.net *** ***
     function _showtags(){
@@ -64,7 +64,7 @@ class LazyMyTags extends LazyCMS{
     // _edit *** *** www.LazyCMS.net *** ***
     function _edit(){
         $this->checker(C('CURRENT_MODULE'));
-        $tpl = getTpl($this);
+
         $db  = getConn();
         $sql = "mtname,mttitle,mttext,mtwidth,mtheight,mtext";//5
         $mtid = isset($_REQUEST['mtid']) ? (int)$_REQUEST['mtid'] : null;
@@ -126,7 +126,7 @@ class LazyMyTags extends LazyCMS{
                 }
             }
         }
-        $tpl->assign(array(
+        $this->assign(array(
             'mtid'      => $mtid,
             'mtname'    => htmlencode($data[0]),
             'mttitle'   => htmlencode($data[1]),
@@ -140,7 +140,7 @@ class LazyMyTags extends LazyCMS{
             'oldname'   => empty($oldname) ? $data[0].$data[5] : $oldname,
             'menu'      => $menu,
         ));
-        $tpl->display('edit.php');
+        $this->display('edit.php');
     }
     // _sortset *** *** www.LazyCMS.net *** ***
     function _set(){

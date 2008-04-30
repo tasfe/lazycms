@@ -31,8 +31,7 @@ defined('CORE_PATH') or die('Restricted access!');
 class LazySystem extends LazyCMS{
     // _index *** *** www.LazyCMS.net *** ***
     function _index(){
-        $tpl = getTpl($this);
-        $tpl->display('index.php');
+        $this->display('index.php');
     }
     // _default *** *** www.LazyCMS.net *** ***
     function _default(){
@@ -52,13 +51,11 @@ class LazySystem extends LazyCMS{
             $gdInfo = gd_info();
             $gdInfo = ' <span class="gray">'.$gdInfo['GD Version'].'</span>';
         }
-        // 取得模板对象
-        $tpl = getTpl($this);
-        $tpl->assign(array(
+        $this->assign(array(
             'gdInfo' => $gdInfo,
             'mysql'  => $db->version(),
         ));
-        $tpl->display('main.php');
+        $this->display('main.php');
     }
     // _log *** *** www.LazyCMS.net *** ***
     function _log(){
@@ -95,11 +92,9 @@ class LazySystem extends LazyCMS{
         // 将生成的html扔给this->record()
         $this->outHTML = $dp->fetch;
 
-        // 取得模板对象
-        $tpl = getTpl($this);
-        $tpl->assign('menu',L('admin/title').'|'.url('System','Main').';'.L('log/@title').'|#|true');
+        $this->assign('menu',L('admin/title').'|'.url('System','Main').';'.L('log/@title').'|#|true');
         // 显示模板
-        $tpl->display('__public.php');
+        $this->display('__public.php');
     }
     // _logset *** *** www.LazyCMS.net *** ***
     function _logset(){
@@ -152,9 +147,8 @@ class LazySystem extends LazyCMS{
 
         $this->outHTML = $dp->fetch;
 
-        $tpl = getTpl($this);
-        $tpl->assign('menu',L('admin/list').'|#|true;'.L('admin/add').'|'.url('System','AdminEdit'));
-        $tpl->display('__public.php');
+        $this->assign('menu',L('admin/list').'|#|true;'.L('admin/add').'|'.url('System','AdminEdit'));
+        $this->display('__public.php');
     }
     // _logset *** *** www.LazyCMS.net *** ***
     function _adminset(){
@@ -179,7 +173,6 @@ class LazySystem extends LazyCMS{
     // _adminedit *** *** www.LazyCMS.net *** ***
     function _adminedit(){
         $this->checker('admin');
-        $tpl = getTpl($this);
         $db  = getConn();
         $sql = "adminname,adminpass,adminlevel,adminlanguage,admineditor,diymenu";//5
         $adminid = isset($_REQUEST['adminid']) ? $_REQUEST['adminid']:0;
@@ -258,7 +251,7 @@ class LazySystem extends LazyCMS{
             }
         }
         $modules = empty($this->system['modules']) ? array() : explode(',',$this->system['modules']);
-        $tpl->assign(array(
+        $this->assign(array(
             'adminid'       => $adminid,
             'adminname'     => htmlencode($data[0]),
             'adminlanguage' => htmlencode($data[3]),
@@ -269,12 +262,12 @@ class LazySystem extends LazyCMS{
             'modules'       => $modules,
             'menu'          => $menu,
         ));
-        $tpl->display('adminedit.php');
+        $this->display('adminedit.php');
     }
     // _myaccount *** *** www.LazyCMS.net *** ***
     function _myaccount(){
         $this->checker();
-        $tpl = getTpl($this);
+
         $db  = getConn();
         $adminid       = $this->admin['adminid'];
         $adminpass     = isset($_POST['adminpass']) ? $_POST['adminpass'] : null;
@@ -317,18 +310,18 @@ class LazySystem extends LazyCMS{
             $admineditor   = $this->admin['admineditor'];
             $diymenu       = $this->admin['diymenu'];
         }
-        $tpl->assign(array(
+        $this->assign(array(
             'adminname'     => htmlencode($this->admin['adminname']),
             'adminlanguage' => htmlencode($adminlanguage),
             'admineditor'   => htmlencode($admineditor),
             'diymenu'       => htmlencode($diymenu),
         ));
-        $tpl->display('myaccount.php');
+        $this->display('myaccount.php');
     }
     // _config *** *** www.LazyCMS.net *** ***
     function _diymenu(){
         $this->checker('diymenu');
-        $tpl = getTpl($this);
+
         $db  = getConn();
         $where = $db->quoteInto('`diymenulang` = ?',$this->admin['adminlanguage']);
         if ($this->method()) {
@@ -357,13 +350,13 @@ class LazySystem extends LazyCMS{
             }
         }
         
-        $tpl->assign('diyMenu',htmlencode($diyMenu));
-        $tpl->display('diymenu.php');
+        $this->assign('diyMenu',htmlencode($diyMenu));
+        $this->display('diymenu.php');
     }
     // _config *** *** www.LazyCMS.net *** ***
     function _config(){
         $this->checker('config');
-        $tpl = getTpl($this);
+
         $db  = getConn();
         $sitename = isset($_POST['sitename']) ? $_POST['sitename'] : null;
         $sitemail = isset($_POST['sitemail']) ? $_POST['sitemail'] : null;
@@ -421,7 +414,7 @@ class LazySystem extends LazyCMS{
             $keywords = $this->system['sitekeywords'];
             $lockip   = $this->system['lockip'];
         }
-        $tpl->assign(array(
+        $this->assign(array(
             'sitename' => htmlencode($sitename),
             'sitemail' => htmlencode($sitemail),
             'sitemode' => $sitemode,
@@ -429,7 +422,7 @@ class LazySystem extends LazyCMS{
             'keywords' => htmlencode($keywords),
             'lockip'   => htmlencode($lockip),
         ));
-        $tpl->display('config.php');
+        $this->display('config.php');
     }
     // _module *** *** www.LazyCMS.net *** ***
     function _module(){
@@ -466,8 +459,8 @@ class LazySystem extends LazyCMS{
         }
         $dp->close();
         $this->outHTML = $dp->fetch;
-        $tpl = getTpl($this);
-        $tpl->display('module.php');
+
+        $this->display('module.php');
     }
     // _moduleset *** *** www.LazyCMS.net *** ***
     function _moduleset(){
@@ -488,14 +481,26 @@ class LazySystem extends LazyCMS{
                 $arrLists  = explode(',',$lists);
                 $arrModule = explode(',',$modules);
                 foreach ($arrLists as $module) {
+                    // 删除数据库里无用的数据表
+                    $_module = ucfirst($module);
+                    import("@.{$module}.module");
+                    if (class_exists($_module)) {
+                        $obj = new $_module();
+                        if (method_exists($obj,'uninstSQL')) {
+                            $db->batQuery($obj->uninstSQL());
+                        }
+                        unset($obj);
+                    }
                     if (instr($modules,$module)) {
                         $arrList[] = $module;
                         // 删除菜单
                         $mMenu = L('title',null,$module)."|".L('manage',null,$module)."\r\n";
                         $db->exec("UPDATE `#@_diymenu` SET `diymenu`=REPLACE(`diymenu`,?,'') WHERE {$where};",$mMenu);
                     }
-                    // 删除整个模块的文件夹
-                    rmdirs($path.$module);
+                    if (file_exists($path.$module)) {
+                        // 删除整个模块的文件夹
+                        rmdirs($path.$module);
+                    }
                 }
                 $arrResult = array_diff($arrModule, $arrList);
                 // 重置模块安装字符串
@@ -510,9 +515,11 @@ class LazySystem extends LazyCMS{
                             $_module = ucfirst($module);
                             import("@.{$module}.module");
                             $obj = new $_module();
+                            if (method_exists($obj,'uninstSQL')) {
+                                $db->batQuery($obj->uninstSQL());
+                            }
                             if (method_exists($obj,'instSQL')) {
-                                $instSQL = $obj->instSQL();
-                                $db->batQuery($instSQL);
+                                $db->batQuery($obj->instSQL());
                             } unset($obj);
                             
                             if (empty($modules)) {
@@ -691,8 +698,8 @@ class LazySystem extends LazyCMS{
                 ));
             }
         }
-        $tpl = getTpl($this);
-        $tpl->display('moduleleadin.php');
+
+        $this->display('moduleleadin.php');
     }
     // _browsefiles *** *** www.LazyCMS.net *** ***
     function _browsefiles(){
@@ -892,7 +899,7 @@ class LazySystem extends LazyCMS{
             }
         }
         // 取得模板对象
-        $tpl = getTpl($this);
+
         $adminname = isset($_POST['adminname']) ? $_POST['adminname'] : null;
         $adminpass = isset($_POST['adminpass']) ? $_POST['adminpass'] : null;
         $save      = isset($_POST['save']) ? $_POST['save'] : null;
@@ -959,12 +966,12 @@ class LazySystem extends LazyCMS{
                 ));
             }
         }
-        $tpl->assign(array(
+        $this->assign(array(
             'adminname' => htmlencode($adminname),
             'adminpass' => $adminpass,
             'save'      => $save,
         ));
-        $tpl->display('login.php');
+        $this->display('login.php');
     }
     // _logout *** *** www.LazyCMS.net *** ***
     function _logout(){
@@ -990,7 +997,7 @@ class LazySystem extends LazyCMS{
     }
     // sysinfo *** *** www.LazyCMS.net *** ***
     function _sysinfo(){
-        $tpl = getTpl($this); $Message = null;
+ $Message = null;
         $space = "&nbsp; &nbsp; &nbsp; &nbsp; ";
         $modules = $this->system['modules'];
         $modules = explode(',',$modules);
@@ -1000,10 +1007,10 @@ class LazySystem extends LazyCMS{
         $HTML = "<strong>Version:</strong><br/>".$space.$this->system['systemver']."<br/>";
         $HTML.= "<strong>Modules:</strong><br/>{$Message}";
         $HTML.= "<strong>Official Website:</strong><br/>{$space}<a href=\"http://www.LazyCMS.net\" target=\"_blank\">http://www.LazyCMS.net</a><br/>";
-        $tpl->assign(array(
+        $this->assign(array(
             'title'   => $this->system['sitename'],
             'Message' => $HTML,
         ));
-        $tpl->display('error.php');
+        $this->display('error.php');
     }
 }

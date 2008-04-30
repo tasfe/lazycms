@@ -2,7 +2,7 @@
 jQuery.extend({
     // 弹出层 *** *** www.LazyCMS.net *** ***
     poping: function(opts,pops){
-        var path  = $("script[@src*=jquery]").attr("src").replace("/js/jquery.js","");
+        var path  = $("script[@src*=jquery.js]").attr("src").replace("/js/jquery.js","");
         var _opts = {width:'500px','margin-left':'-250px','margin-top':'-160px',textAlign:'left','border-style':'solid', 'border-width':'2px', 'border-color':'#CECECE #666 #666 #CECECE',height:'auto'};
         var _pops = {title:{},main:{}};
         $.extend(_opts,opts);
@@ -156,15 +156,15 @@ jQuery.extend(jQuery.fn,{
 });
 
 // *** *** www.LazyCMS.net *** ***
-function path(){ return $("script[@src*=jquery]").attr("src").replace("/js/jquery.js",""); }
+function path(){ return $("script[@src*=jquery.js]").attr("src").replace("/system/js/jquery.js",""); }
 function insertEditor(l1){ var editor = $('iframe[@src*=fckeditor.html]'); if (editor.is('iframe')) { editor.parent().find('input:hidden').editor().insert(l1); } else { alert('Did not find editor!'); }}
-function ico(l1,l2){ var IMG  = '<img src="'+path()+'/images/os/'+l1+'.gif" alt="'+l1.toUpperCase()+'" class="os" />';  var HREF = '<a href="'+l2+'" title="'+l1.toUpperCase()+'">'+IMG+'</a>'; if (typeof l2 == "undefined") { return IMG; } else { return HREF; }}
-function ison(l1){ return l1 ? '<img src="'+path()+'/images/os/on.gif" class="os" />' : '<img src="'+path()+'/images/os/on_gray.gif" class="os" />'; }
-function browse(l1){ return '<a href="'+l1+'" title="BROWSE" target="_blank"><img src="'+path()+'/images/os/brow.gif" class="os" /></a>'; }
-function updown(l1,l2,l3){ return '<span><a href="javascript:void(0);" onclick="$(this).updown(\'' + l1 + '\',' + l2 + ',' + l3 + ');" title="'+l1.toUpperCase()+'"><img src="'+path()+'/images/os/'+l1+'.gif" class="os" /></a></span>'; }
+function ico(l1,l2){ var IMG  = '<img src="'+path()+'/system/images/os/'+l1+'.gif" alt="'+l1.toUpperCase()+'" class="os" />';  var HREF = '<a href="'+l2+'" title="'+l1.toUpperCase()+'">'+IMG+'</a>'; if (typeof l2 == "undefined") { return IMG; } else { return HREF; }}
+function ison(l1){ return l1 ? '<img src="'+path()+'/system/images/os/on.gif" class="os" />' : '<img src="'+path()+'/system/images/os/on_gray.gif" class="os" />'; }
+function browse(l1){ return '<a href="'+l1+'" title="BROWSE" target="_blank"><img src="'+path()+'/system/images/os/brow.gif" class="os" /></a>'; }
+function updown(l1,l2,l3){ return '<span><a href="javascript:void(0);" onclick="$(this).updown(\'' + l1 + '\',' + l2 + ',' + l3 + ');" title="'+l1.toUpperCase()+'"><img src="'+path()+'/system/images/os/'+l1+'.gif" class="os" /></a></span>'; }
 function labelError(l1,l2){ $('#'+l1).parent().append('<label class="error" for="'+l1+'">'+l2+'</label>'); }
 function cklist(l1){ return '<input name="list" id="list_'+l1+'" type="checkbox" value="'+l1+'"/>'; }
 function checkALL(e){$.each($(e.form).find('input:checkbox'),function(i,a){ if (checkALL.arguments[1]!=undefined) { this.checked = true; } else { this.checked = !this.checked; }});}
 function winSize(){ var e = {}; if (self.innerHeight) { e.h = self.innerHeight; e.w = self.innerWidth; }else if(document.documentElement){ e.h = document.documentElement.clientHeight; e.w = document.documentElement.clientWidth; } else { e.h = document.body.clientHeight; e.w = document.body.clientWidth;} return e; }
 function loadImage(){ var arrImage = loadImage.arguments; var objImage = new Image(); for (var i=0;i<arrImage.length;i++) { objImage.src = arrImage[i]; } }
-function loadgif(){ return '<img src=\"' + path() + '/images/loading.gif\" class=\"os\" />'; }
+function loadgif(){ return '<img src=\"' + path() + '/system/images/loading.gif\" class=\"os\" />'; }

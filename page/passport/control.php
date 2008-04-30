@@ -58,8 +58,8 @@ class LazyPassport extends LazyCMS{
 
         $this->outHTML = $dp->fetch;
 
-        $tpl = getTpl($this);
-        $tpl->display('index.php');
+
+        $this->display('index.php');
     }
     // _groupset *** *** www.LazyCMS.net *** ***
     function _groupset(){
@@ -151,15 +151,15 @@ class LazyPassport extends LazyCMS{
             }
         }
         
-        $tpl = getTpl($this);
-        $tpl->assign(array(
+
+        $this->assign(array(
             'groupid'    => $groupid,
             'groupname'  => htmlencode($data[0]),
             'groupename' => htmlencode($data[1]),
             'menu'       => $menu,
             'readonly'   => !empty($groupid) ? ' readonly="true"' : null,
         ));
-        $tpl->display('groupedit.php');
+        $this->display('groupedit.php');
     }
     // _export *** *** www.LazyCMS.net *** ***
     function _export(){
@@ -214,8 +214,8 @@ class LazyPassport extends LazyCMS{
                 ));
             }
         }
-        $tpl = getTpl($this);
-        $tpl->display('groupleadin.php');
+
+        $this->display('groupleadin.php');
     }
     // _fields *** *** www.LazyCMS.net *** ***
     function _fields(){
@@ -240,9 +240,9 @@ class LazyPassport extends LazyCMS{
         }
         $dp->close();
         $this->outHTML = $dp->fetch;
-        $tpl = getTpl($this);
-        $tpl->assign('groupid',$groupid);
-        $tpl->display('fields.php');
+
+        $this->assign('groupid',$groupid);
+        $this->display('fields.php');
     }
     // _fieldindex *** *** www.LazyCMS.net *** ***
     function _fieldindex(){
@@ -354,8 +354,8 @@ class LazyPassport extends LazyCMS{
                 }
             }
         }
-        $tpl = getTpl($this);
-        $tpl->assign(array(
+
+        $this->assign(array(
             'fieldid'     => $fieldid,
             'groupid'     => $groupid,
             'fieldname'   => htmlencode($data[0]),
@@ -369,7 +369,7 @@ class LazyPassport extends LazyCMS{
             'fieldindex'  => !empty($data[5]) ? ' checked="true"' : null,
             'readonly'    => (!empty($groupid) && !empty($data[5])) ? ' readonly="true"' : null,
         ));
-        $tpl->display('fieldsedit.php');
+        $this->display('fieldsedit.php');
     }
     // _fieldset *** *** www.LazyCMS.net *** ***
     function _fieldset(){
@@ -418,7 +418,7 @@ class LazyPassport extends LazyCMS{
     function _edit(){
         $this->checker(C('CURRENT_MODULE'));
         $db  = getConn();
-        $tpl = getTpl($this);
+
         $groupNum = $db->result("SELECT count(`groupid`) FROM `#@_passport_group` WHERE 1;"); if ((int)$groupNum==0) { throwError($this->L('error/nogroup')); }
         $groupid = isset($_REQUEST['groupid']) ? (int)$_REQUEST['groupid'] : (int)Passport::getTopGroupId();
         $userid = isset($_REQUEST['userid']) ? (int)$_REQUEST['userid'] : null;
@@ -546,7 +546,7 @@ class LazyPassport extends LazyCMS{
         }
         $this->outHTML = $label->fetch;
 
-        $tpl->assign(array(
+        $this->assign(array(
             'userid'   => $userid,
             'groupid'  => $groupid,
             'username' => $username,
@@ -557,7 +557,7 @@ class LazyPassport extends LazyCMS{
             'islock'   => $islock,
             'menu'     => $menu,
         ));
-        $tpl->display('edit.php');
+        $this->display('edit.php');
     }
     // _list *** *** www.LazyCMS.net *** ***
     function _list(){
@@ -585,11 +585,11 @@ class LazyPassport extends LazyCMS{
 
         $this->outHTML = $dp->fetch;
 
-        $tpl = getTpl($this);
-        $tpl->assign(array(
+
+        $this->assign(array(
             'menu' => $model['groupname'].'|#|true;'.$this->L('common/adduser').'|'.url(C('CURRENT_MODULE'),'Edit','groupid='.$groupid),
         ));
-        $tpl->display('list.php');
+        $this->display('list.php');
     }
     // _set *** *** www.LazyCMS.net *** ***
     function _set(){

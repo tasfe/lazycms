@@ -897,16 +897,6 @@ function getConn(){
     return $db;
 }
 
-// getTpl *** *** www.LazyCMS.net *** ***
-function getTpl(LazyCMS $this){
-    // $this: control对象
-    static $tpl = null;
-    if (is_object($tpl)) { return $tpl; }
-    $tpl = O('Template');
-    $tpl->assign('module',$this);
-    return $tpl;
-}
-
 // loadFile *** *** www.LazyCMS.net *** ***
 function loadFile($l1){
 	if (!is_file($l1)) { return ; }

@@ -163,11 +163,18 @@ class Passport{
         }
         return $I1;
     }
+    // uninstSQL *** *** www.LazyCMS.net *** ***
+    static function uninstSQL(){
+        return <<<SQL
+            DROP TABLE IF EXISTS `#@_passport`;
+            DROP TABLE IF EXISTS `#@_passport_group`;
+            DROP TABLE IF EXISTS `#@_passport_fields`;
+SQL;
+    }
     // instsql *** *** www.LazyCMS.net *** ***
     static function instSQL(){
         return <<<SQL
             // 用户表
-            DROP TABLE IF EXISTS `#@_passport`;
             CREATE TABLE IF NOT EXISTS `#@_passport` (
               `userid` int(11) NOT NULL auto_increment,     # 编号
               `groupid` int(11) default '0',                # 用户所属组
@@ -190,7 +197,6 @@ class Passport{
               KEY `islock` (`islock`)
             ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;
             // 用户组表
-            DROP TABLE IF EXISTS `#@_passport_group`;
             CREATE TABLE IF NOT EXISTS `#@_passport_group` (
               `groupid` int(11) NOT NULL auto_increment,    # 编号
               `groupname` varchar(30) NOT NULL,             # 用户组名称
@@ -202,7 +208,6 @@ class Passport{
               KEY `groupname` (`groupname`)
             ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;
             // 用户信息模型字段
-            DROP TABLE IF EXISTS `#@_passport_fields`;
             CREATE TABLE IF NOT EXISTS `#@_passport_fields` (
               `fieldid` int(11) NOT NULL auto_increment,
               `groupid` int(11) NOT NULL,                   # 所属模型

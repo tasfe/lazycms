@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php echo L('admin/title');?></title>
 <link href="../system/images/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">var module="<?php echo strtolower(C('CURRENT_MODULE'));?>";</script>
 <script type="text/javascript" src="../system/js/jquery.js"></script>
 <script type="text/javascript" src="../system/js/jquery.lazycms.js"></script>
 <script type="text/javascript">

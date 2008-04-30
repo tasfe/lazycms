@@ -741,11 +741,19 @@ class Archives{
                     PRIMARY KEY (`aid`)
                    ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");
     }
+    // uninstSQL *** *** www.LazyCMS.net *** ***
+    static function uninstSQL(){
+        return <<<SQL
+            DROP TABLE IF EXISTS `#@_archives`;
+            DROP TABLE IF EXISTS `#@_archives_model`;
+            DROP TABLE IF EXISTS `#@_archives_fields`;
+            DROP TABLE IF EXISTS `#@_archives_sort`;
+SQL;
+    }
     // instsql *** *** www.LazyCMS.net *** ***
     static function instSQL(){
         return <<<SQL
             // 公共存档
-            DROP TABLE IF EXISTS `#@_archives`;
             CREATE TABLE IF NOT EXISTS `#@_archives` (
               `id` int(11) NOT NULL auto_increment,
               `sortid` int(11) default '0',                 # 分类编号
@@ -768,7 +776,6 @@ class Archives{
               KEY `top` (`top`)
             ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;
             // 自定义模型
-            DROP TABLE IF EXISTS `#@_archives_model`;
             CREATE TABLE IF NOT EXISTS `#@_archives_model` (
               `modelid` int(11) NOT NULL auto_increment,
               `modelname` varchar(50) NOT NULL,             # 模块名称
@@ -779,7 +786,6 @@ class Archives{
               PRIMARY KEY  (`modelid`)
             ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;
             // 模型字段
-            DROP TABLE IF EXISTS `#@_archives_fields`;
             CREATE TABLE IF NOT EXISTS `#@_archives_fields` (
               `fieldid` int(11) NOT NULL auto_increment,
               `modelid` int(11) NOT NULL,                   # 所属模型
@@ -796,7 +802,6 @@ class Archives{
               KEY `modelid` (`modelid`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=#~lang~#;
             // 分类
-            DROP TABLE IF EXISTS `#@_archives_sort`;
             CREATE TABLE IF NOT EXISTS `#@_archives_sort` (
               `sortid` int(11) NOT NULL auto_increment,
               `sortid1` int(11) default '0',                # 所属分类

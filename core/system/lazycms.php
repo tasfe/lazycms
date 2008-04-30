@@ -32,7 +32,7 @@ abstract class LazyCMS extends Lazy{
     public $admin   = array();
     public $system  = array();
     public $outHTML = null;
-    
+    protected $PRIVATE_OBJECT_TEMPLATE;
     // 默认动作 *** *** www.LazyCMS.net *** ***
     abstract function _index();
     // run *** *** www.LazyCMS.net *** ***
@@ -112,9 +112,9 @@ abstract class LazyCMS extends Lazy{
         }
         unset($_ENV,$HTTP_ENV_VARS,$HTTP_POST_VARS,$HTTP_GET_VARS,$HTTP_POST_FILES,$HTTP_COOKIE_VARS);
         // 设置系统时区 PHP5支持
-        if(function_exists('date_default_timezone_set')) 
+        if(function_exists('date_default_timezone_set')) {
             date_default_timezone_set(C('TIME_ZONE'));
-        
+        }
         // URL映射到控制器对象
         Dispatcher::dispatch();
     }
@@ -205,6 +205,10 @@ abstract class LazyCMS extends Lazy{
             // 检查操作名是否存在，抛出异常
             throwError($l2.L('error/noaction'));
         }
+        // 执行模板类对象创建
+        $tpl = O('Template');
+        $tpl->assign('module',$module);
+        $module->PRIVATE_OBJECT_TEMPLATE = $tpl;unset($tpl);
         // 执行子类构造函数
         if (method_exists($module, '_initialize')) {
             $module->_initialize();
@@ -215,6 +219,18 @@ abstract class LazyCMS extends Lazy{
         if (method_exists($module, '_terminate')) {
             $module->_terminate();
         }
+    }
+    // assign *** *** www.LazyCMS.net *** ***
+    final public function assign($l1,$l2=null){
+        $this->PRIVATE_OBJECT_TEMPLATE->assign($l1,$l2);
+    }
+    // assign *** *** www.LazyCMS.net *** ***
+    final public function fetch($l1,$l2=null){
+        return $this->PRIVATE_OBJECT_TEMPLATE->fetch($l1,$l2);
+    }
+    // assign *** *** www.LazyCMS.net *** ***
+    final public function display($l1,$l2=null){
+        $this->PRIVATE_OBJECT_TEMPLATE->display($l1,$l2);
     }
     // method *** *** www.LazyCMS.net *** ***
     final public function method(){

@@ -134,11 +134,16 @@ class Onepage{
         }
         return true;
     }
+    // uninstSQL *** *** www.LazyCMS.net *** ***
+    static function uninstSQL(){
+        return <<<SQL
+            DROP TABLE IF EXISTS `#@_onepage`;
+SQL;
+    }
     // instsql *** *** www.LazyCMS.net *** ***
     static function instSQL(){
         return <<<SQL
             // 单页面表
-            DROP TABLE IF EXISTS `#@_onepage`;
             CREATE TABLE IF NOT EXISTS `#@_onepage` (
               `oneid` int(11) NOT NULL auto_increment,  # 编号
               `oneorder` int(11) default '0',           # 排序号

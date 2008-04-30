@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lazycms>
+    <title>留言反馈</title>
+    <version memo="程序版本，默认为1.0">1.0</version>
+    <author memo="插件作者">Lukin</author>
+    <email memo="作者常用邮箱，以便联系">mylukin@gmail.com</email>
+    <source memo="作者来自哪里？">http://www.lazycms.net</source>
+    <manage>url('FeedBack','Admin')</manage>
+
+    <common>
+        <tag1>加注星标</tag1>
+        <tag0>删除星标</tag0>
+        <tag>已加星标</tag>
+        <config>参数设置</config>
+        <fields>字段管理</fields>
+        <addfields>添加字段</addfields>
+        <editfields>编辑字段</editfields>
+    </common>
+
+    <list>
+        <title>主题</title>
+        <content>内容</content>
+        <ip>IP地址</ip>
+        <date>添加时间</date>
+        <action>操作</action>
+        <field>
+			<id>ID</id>
+			<name>表单文字</name>
+			<ename>字段名</ename>
+			<type>输入类型</type>
+			<length>最大长度</length>
+			<default>默认值</default>
+			<type>
+                <input>输入框</input>
+                <textarea>文本框</textarea>
+                <select>下拉菜单</select>
+                <radio>单选框</radio>
+                <checkbox>复选框</checkbox>
+                <basic>简易编辑器</basic>
+                <editor>内容编辑器</editor>
+                <date>日期选择器</date>
+                <upfile>文件上传框</upfile>
+            </type>
+		</field>
+    </list>
+
+    <label>
+        <field>
+			<name>表单文字</name>
+			<ename>字段名</ename>
+			<type>输入类型</type>
+			<length>最大长度</length>
+			<default>默认值 (日期选择器可使用 date('Y-m-d',time()) 函数)</default>
+			<value>值 (例：name:value)</value>
+		</field>
+    </label>
+
+    <check>
+		<field>
+			<name>表单文字不能为空</name>
+			<ename>字段名不能为空</ename>
+			<ename1>只允许输入：字母、数字、下划线</ename1>
+			<length>必须填写最大长度</length>
+			<length1>必须为整数，请重新输入</length1>
+			<value>值不能为空</value>
+		</field>
+    </check>
+
+    <pop>
+        <select>请选择一个留言</select>
+        <tagok>成功设置标签</tagok>
+        <deleteok>成功删除指定的反馈信息，但不会删除星标的信息。</deleteok>
+        <template>成功更新模板。</template>
+        <field>
+            <select>请选择一个模型</select>
+            <deleteok>成功删除您选择的模型</deleteok>
+            <deletefieldok>成功删除您选择的字段</deletefieldok>
+            <deletefielderr>数据库字段可能已经被删除</deletefielderr>
+        </field>
+    </pop>
+</lazycms>

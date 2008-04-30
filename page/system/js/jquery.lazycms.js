@@ -2,12 +2,14 @@ var debug = false;
 // 加载所需的JavaScript文件，必须在文档完全载入之前加载。
 LoadScript('json');LoadScript('blockUI');
 // 载入公用函数和后台专用函数 *** *** www.LazyCMS.net *** ***
-LoadScript('common');LoadScript('lazycms.funs');
+LoadScript('common');LoadScript('lazycms.funs');LoadScript('request');
 // 载入日历控制脚本 *** *** www.LazyCMS.net *** ***
 LoadScript('date');LoadScript('bgiframe');LoadScript('datePicker');
+// 实现自动加载模块JavaScript类库
+if (typeof module!='undefined') { LoadScript(module+'/images/common.js'); }
 // 实现公用方法 *** *** www.LazyCMS.net *** ***
 $(function(){
-    loadImage(path()+'/images/os/dir0.gif',path()+'/images/os/dir1.gif',path()+'/images/loading.gif');
+    loadImage(path()+'/system/images/os/dir0.gif',path()+'/system/images/os/dir1.gif',path()+'/system/images/loading.gif');
     // td变色
     $('.main tr,.lz_table tr').hover(function(){
         $(this).addClass('selected');
@@ -48,9 +50,13 @@ $(function(){
     });
 });
 // 函数加载JavaScript *** *** www.LazyCMS.net *** ***
-function LoadScript(plugin){ 
-    var url = $("script[@src*=jquery.lazycms]").attr("src").replace("jquery.lazycms.js","jquery." + plugin + ".js");
-    document.write('<scr' + 'ipt type="text/javascript" src="' + url + '" onerror="alert(\'Error loading \' + this.src);"><\/scr' + 'ipt>');
+function LoadScript(plugin){
+	if (plugin.indexOf('/')!=-1) {
+		var url = $("script[@src*=jquery.lazycms]").attr("src").replace("system/js/jquery.lazycms.js",plugin);
+	} else {
+		var url = $("script[@src*=jquery.lazycms]").attr("src").replace("jquery.lazycms.js","jquery." + plugin + ".js");
+	}
+    document.write('<scr' + 'ipt type="text/javascript" src="' + url + '"><\/scr' + 'ipt>');
 }
 
 

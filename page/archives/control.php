@@ -60,8 +60,8 @@ class LazyArchives extends LazyCMS{
 
         $this->outHTML = $dp->fetch;
 
-        $tpl = getTpl($this);
-        $tpl->display('index.php');
+
+        $this->display('index.php');
     }
     // _showsort *** *** www.LazyCMS.net *** ***
     function _showsort(){
@@ -147,8 +147,8 @@ class LazyArchives extends LazyCMS{
 
         $tplPath = C('TEMPLATE_PATH');
         $tplDef  = C('TEMPLATE_DEF');
-        $tpl = getTpl($this);
-        $tpl->assign(array(
+
+        $this->assign(array(
             'sortid'        => $sortid,
             'sortid1'       => $data[0],
             'modelid'       => $data[1],
@@ -163,7 +163,7 @@ class LazyArchives extends LazyCMS{
             'disabled'      => !empty($sortid) ? ' disabled="disabled"' : null,
             'menu'          => $menu,
         ));
-        $tpl->display('editsort.php');
+        $this->display('editsort.php');
     }
     // _sortset *** *** www.LazyCMS.net *** ***
     function _sortset(){
@@ -327,17 +327,17 @@ class LazyArchives extends LazyCMS{
 
         $this->outHTML = $dp->fetch;
 
-        $tpl = getTpl($this);
-        $tpl->assign(array(
+
+        $this->assign(array(
             'menu' => $model['sortname'].'|#|true;'.$this->L('common/addpage').'|'.url(C('CURRENT_MODULE'),'Edit','sortid='.$sortid),
         ));
-        $tpl->display('list.php');
+        $this->display('list.php');
     }
     // _edit *** *** www.LazyCMS.net *** ***
     function _edit(){
         $this->checker(C('CURRENT_MODULE'));
         $db  = getConn();
-        $tpl = getTpl($this);
+
         $aid = isset($_REQUEST['aid']) ? (int)$_REQUEST['aid'] : null;
         
         $CURRENT_MODULE = C('CURRENT_MODULE');
@@ -530,7 +530,7 @@ class LazyArchives extends LazyCMS{
         }
         $this->outHTML = $label->fetch;
 
-        $tpl->assign(array(
+        $this->assign(array(
             'aid'    => $aid,
             'sortid' => $sortid,
             'title'  => htmlencode($title),
@@ -553,7 +553,7 @@ class LazyArchives extends LazyCMS{
             'disabled' => !empty($aid) ? ' disabled="disabled"' : null,
             'menu'  => $menu,
         ));
-        $tpl->display('edit.php');
+        $this->display('edit.php');
     }
     // _sortset *** *** www.LazyCMS.net *** ***
     function _set(){
@@ -619,9 +619,9 @@ class LazyArchives extends LazyCMS{
 
         $this->outHTML = $dp->fetch;
 
-        $tpl = getTpl($this);
-        $tpl->assign('menu',$this->L('models/@title').'|#|true;'.$this->L('models/add').'|'.url(C('CURRENT_MODULE'),'ModelEdit').';'.$this->L('models/leadin').'|'.url(C('CURRENT_MODULE'),'ModelLeadIn'));
-        $tpl->display('__public.php');
+
+        $this->assign('menu',$this->L('models/@title').'|#|true;'.$this->L('models/add').'|'.url(C('CURRENT_MODULE'),'ModelEdit').';'.$this->L('models/leadin').'|'.url(C('CURRENT_MODULE'),'ModelLeadIn'));
+        $this->display('__public.php');
     }
     // _modelset *** *** www.LazyCMS.net *** ***
     function _modelset(){
@@ -721,8 +721,8 @@ class LazyArchives extends LazyCMS{
                 ));
             }
         }
-        $tpl = getTpl($this);
-        $tpl->display('modelleadin.php');
+
+        $this->display('modelleadin.php');
     }
     // _modeledit *** *** www.LazyCMS.net *** ***
     function _modeledit(){
@@ -803,8 +803,8 @@ class LazyArchives extends LazyCMS{
             }
         }
 
-        $tpl = getTpl($this);
-        $tpl->assign(array(
+
+        $this->assign(array(
             'modelid'    => $modelid,
             'modelname'  => htmlencode($data[0]),
             'modelename' => htmlencode($data[1]),
@@ -812,7 +812,7 @@ class LazyArchives extends LazyCMS{
             'menu'       => $menu,
             'readonly'   => !empty($modelid) ? ' readonly="true"' : null,
         ));
-        $tpl->display('modeledit.php');
+        $this->display('modeledit.php');
     }
     // _modelfields *** *** www.LazyCMS.net *** ***
     function _modelfields(){
@@ -837,9 +837,9 @@ class LazyArchives extends LazyCMS{
         }
         $dp->close();
         $this->outHTML = $dp->fetch;
-        $tpl = getTpl($this);
-        $tpl->assign('menu',$this->L('models/@title').'|'.url(C('CURRENT_MODULE'),'Models').';'.$this->L('models/add').'|'.url(C('CURRENT_MODULE'),'ModelEdit').';'.$this->L('models/field/@title').'|#|true;'.$this->L('models/field/add').'|'.url(C('CURRENT_MODULE'),'ModelFieldsEdit','modelid='.$modelid));
-        $tpl->display('__public.php');
+
+        $this->assign('menu',$this->L('models/@title').'|'.url(C('CURRENT_MODULE'),'Models').';'.$this->L('models/add').'|'.url(C('CURRENT_MODULE'),'ModelEdit').';'.$this->L('models/field/@title').'|#|true;'.$this->L('models/field/add').'|'.url(C('CURRENT_MODULE'),'ModelFieldsEdit','modelid='.$modelid));
+        $this->display('__public.php');
     }
     // _modelfieldindex *** *** www.LazyCMS.net *** ***
     function _modelfieldindex(){
@@ -997,8 +997,8 @@ class LazyArchives extends LazyCMS{
                 }
             }
         }
-        $tpl = getTpl($this);
-        $tpl->assign(array(
+
+        $this->assign(array(
             'fieldid'     => $fieldid,
             'modelid'     => $modelid,
             'fieldname'   => htmlencode($data[0]),
@@ -1012,7 +1012,7 @@ class LazyArchives extends LazyCMS{
             'fieldindex'  => !empty($data[5]) ? ' checked="true"' : null,
             'readonly'    => (!empty($modelid) && !empty($data[5])) ? ' readonly="true"' : null,
         ));
-        $tpl->display('modelfieldsedit.php');
+        $this->display('modelfieldsedit.php');
     }
     // _hits *** *** www.LazyCMS.net *** ***
     function _hits(){

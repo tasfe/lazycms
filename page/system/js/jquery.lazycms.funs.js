@@ -14,10 +14,10 @@ jQuery.extend(jQuery.fn,{
         var style = $(tr).attr("class") != "selected" ? " " + $(tr).attr("class") : "";
         var form  = this.parents('form');
         if ($('.sub' + l1 + ':visible',this.parents('tbody')).is("tr")==false) {
-            $('img',this).attr('src',path() + '/images/loading.gif');
+            $('img',this).attr('src',path() + '/system/images/loading.gif');
             $.post(form.attr('action'),{submit:'getsub',lists:l1,space:l2},function(data){
                 var parseData = $.parseJSON(data);
-                $('img',$this).attr('src',path() + '/images/os/dir0.gif');
+                $('img',$this).attr('src',path() + '/system/images/os/dir0.gif');
                 $.each(parseData,function(k,v){
                     var evalData = eval(v.js);
                     var thisData = $("td:first input",evalData).before(nbsp).end().show().html();
@@ -30,9 +30,9 @@ jQuery.extend(jQuery.fn,{
             });
         } else {
             var tbody = this.parents('tbody');
-            $('img',this).attr('src',path() + '/images/loading.gif');
+            $('img',this).attr('src',path() + '/system/images/loading.gif');
             $.post(form.attr('action'),{submit:'isopen',lists:l1},function(){
-                $('img',$this).attr('src',path() + '/images/os/dir1.gif');
+                $('img',$this).attr('src',path() + '/system/images/os/dir1.gif');
                 $('.sub' + l1,tbody).hide();
             });
         }
@@ -154,11 +154,11 @@ function inputValue(l1,l2){
 }
 
 // *** *** www.LazyCMS.net *** ***
-function index(l1,l2,l3,l4){ if (l1==1) { return '<img src="'+path()+'/images/os/index_gray.gif" class="os"  title="NO INDEX" />';} return l2 ? ico('index',l3) : '<a href="'+l4+'"><img src="'+path()+'/images/os/index_gray.gif" class="os"  title="NO INDEX" /></a>';}
-function home(l1,l2){ return l1 ? '<img src="'+path()+'/images/os/on.gif" class="os" />' : '<a href="'+l2+'" title="SET HOME"><img src="'+path()+'/images/os/on_gray.gif" class="os" /></a>'; }
-function image(l1){ return l1!='' ? '<a href="'+l1+'" class="___images"><img src="'+path()+'/images/os/image.gif" class="os" /></a>' : '';}
-function state(l1,l2,l3){ return l1==0 ? '<a href="'+l2+'" title="LOCKED"><img src="'+path()+'/images/os/on.gif" class="os" /></a>' : '<a href="'+l3+'" title="UNLOCKED"><img src="'+path()+'/images/os/on_gray.gif" class="os" /></a>'; }
-function isExist(l1,l2,l3){ var I2 = l3.split(':'); return l2 ? browse(I2[1]) : '<a href="javascript:;" onclick="$(this).gm(\'' + I2[0] + '\',{lists:'+l1+'});" title="' + I2[0].toUpperCase() + '"><img src="'+path()+'/images/os/tip.gif" class="os" /></a>'; }
+function index(l1,l2,l3,l4){ if (l1==1) { return '<img src="'+path()+'/system/images/os/index_gray.gif" class="os"  title="NO INDEX" />';} return l2 ? ico('index',l3) : '<a href="'+l4+'"><img src="'+path()+'/system/images/os/index_gray.gif" class="os"  title="NO INDEX" /></a>';}
+function home(l1,l2){ return l1 ? '<img src="'+path()+'/system/images/os/on.gif" class="os" />' : '<a href="'+l2+'" title="SET HOME"><img src="'+path()+'/system/images/os/on_gray.gif" class="os" /></a>'; }
+function image(l1){ return l1!='' ? '<a href="'+l1+'" class="___images"><img src="'+path()+'/system/images/os/image.gif" class="os" /></a>' : '';}
+function state(l1,l2,l3){ return l1==0 ? '<a href="'+l2+'" title="LOCKED"><img src="'+path()+'/system/images/os/on.gif" class="os" /></a>' : '<a href="'+l3+'" title="UNLOCKED"><img src="'+path()+'/system/images/os/on_gray.gif" class="os" /></a>'; }
+function isExist(l1,l2,l3){ var I2 = l3.split(':'); return l2 ? browse(I2[1]) : '<a href="javascript:;" onclick="$(this).gm(\'' + I2[0] + '\',{lists:'+l1+'});" title="' + I2[0].toUpperCase() + '"><img src="'+path()+'/system/images/os/tip.gif" class="os" /></a>'; }
 function selevel(){var a=$('span#levels');if($('input#adminlevel').attr("checked")){a.slideUp("fast")}else{a.slideDown("fast")}}
 function loading(l1,l2){
     var src = l2 || 'about:blank';

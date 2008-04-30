@@ -54,8 +54,8 @@ class LazyOnepage extends LazyCMS{
 
         $this->outHTML = $dp->fetch;
 
-        $tpl = getTpl($this);
-        $tpl->display('index.php');
+
+        $this->display('index.php');
     }
     // _show *** *** www.LazyCMS.net *** ***
     function _showpage(){
@@ -121,7 +121,7 @@ class LazyOnepage extends LazyCMS{
     // _edit *** *** www.LazyCMS.net *** ***
     function _edit(){
         $this->checker('onepage');
-        $tpl = getTpl($this);
+
         $db  = getConn();
         $sql = "onename,onetitle,onepath,onecontent,onekeyword,onedescription,onetemplate1,onetemplate2";//7
         $oneid = isset($_REQUEST['oneid']) ? (int)$_REQUEST['oneid'] : null;
@@ -202,7 +202,7 @@ class LazyOnepage extends LazyCMS{
         }
         $tplPath = C('TEMPLATE_PATH');
         $tplDef  = C('TEMPLATE_DEF');
-        $tpl->assign(array(
+        $this->assign(array(
             'oneid'          => $oneid,
             'onename'        => htmlencode($data[0]),
             'onetitle'       => htmlencode($data[1]),
@@ -214,6 +214,6 @@ class LazyOnepage extends LazyCMS{
             'onetemplate2'   => !empty($data[7]) ? $data[7] : "{$tplPath}/inside/onepage/{$tplDef}",
             'menu'           => $menu,
         ));
-        $tpl->display('edit.php');
+        $this->display('edit.php');
     }
 }

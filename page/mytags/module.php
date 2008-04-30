@@ -107,11 +107,16 @@ class MyTags{
         }
         return $I1;
     }
+    // uninstSQL *** *** www.LazyCMS.net *** ***
+    static function uninstSQL(){
+        return <<<SQL
+            DROP TABLE IF EXISTS `#@_mytags`;
+SQL;
+    }
     // instsql *** *** www.LazyCMS.net *** ***
     static function instSQL(){
         return <<<SQL
             // 自定义标签
-            DROP TABLE IF EXISTS `#@_mytags`;
             CREATE TABLE IF NOT EXISTS `#@_mytags` (
               `mtid` int(11) NOT NULL auto_increment,
               `mtorder` int(11) default '0',            # 排序
