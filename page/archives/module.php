@@ -226,6 +226,8 @@ class Archives{
                 $tag->value('image',encode($data['img']));
                 $tag->value('date',$data['date']);
                 $tag->value('hits',$data['hits']);
+                $tag->value('keywords',encode(htmlencode($data['keywords'])));
+                $tag->value('description',encode(htmlencode($data['description'])));
                 $tag->value('zebra',($i % ($zebra+1)) ? 0 : 1);
 
                 foreach ($fields as $k) {
@@ -563,7 +565,7 @@ class Archives{
                     $inSQL.= $db->quoteInto(" AND `s`.`sortname` = ?",$sortname);
                 }
             }
-            $select = "SELECT * FROM `".$model['maintable']."` AS `m`
+            $select = "SELECT `m`.*,`a`.*,`s`.`sortname` FROM `".$model['maintable']."` AS `m`
                         LEFT JOIN `".$model['addtable']."` AS `a` ON `m`.`id` = `a`.`aid`
                         LEFT JOIN `#@_archives_sort` AS `s` ON `s`.`sortid` = `m`.`sortid` WHERE `s`.`modelid`='".$model['modelid']."' AND `m`.`show` = 1 ";
 
@@ -614,6 +616,8 @@ class Archives{
                 $tag->value('path',encode(self::showArchive($data['id'],self::getModel($data['sortid']))));
                 $tag->value('image',encode($data['img']));
                 $tag->value('date',$data['date']);
+                $tag->value('keywords',encode(htmlencode($data['keywords'])));
+                $tag->value('description',encode(htmlencode($data['description'])));
                 $tag->value('zebra',($i % ($zebra+1)) ? 0 : 1);
                 $tag->value('++',$i);
                 foreach ($fields as $k) {

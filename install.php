@@ -90,7 +90,6 @@ $adminpass_err = $install ? labelError('adminpass',check('adminpass|1|管理员�
 if (empty($adminpass_err)) {
     $adminpass_err = $install ? labelError('adminpass',check('adminpass|2|两次输入的密码不一致|adminpass1')) : null;
 }
-
 // install
 if ($install && labelError()) {
     $config = array(
@@ -197,6 +196,7 @@ if ($install && labelError()) {
         $dsnConfig_err = labelError('dsn_config',$err->getMessage());
     }
 }
+clearstatcache();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -249,11 +249,6 @@ body,th,td,p{ line-height:150%; font-family:Verdana; font-size:12px; color:#3333
       <td><input class="in3" type="text" id="sitemail" name="sitemail" maxlength="100" value="<?php echo $sitemail;?>" /></td>
     </tr>
     <tr>
-      <th>关键词组<br/>
-        (关键字之间用英文逗号分开)</th>
-      <td><textarea name="keywords" id="keywords" rows="8" class="in4"><?php echo $keywords;?></textarea></td>
-    </tr>
-    <tr>
       <th>网站模式</th>
       <td><input type="radio" name="sitemode" id="sitemode_true" value="1"<?php echo $sitemode ? ' checked="checked"' : null;?>/><label for="sitemode_true">全站动态</label>
           <input name="sitemode" id="sitemode_false" type="radio" value="0"<?php echo !$sitemode ? ' checked="checked"' : null;?> /><label for="sitemode_false">全站静态</label>
@@ -291,6 +286,30 @@ body,th,td,p{ line-height:150%; font-family:Verdana; font-size:12px; color:#3333
             }
         }
         ?>
+      </td>
+    </tr>
+    <tr>
+      <th>权限检测</th>
+      <td>
+        <table class="table">
+            <tr>
+                <th>路径</th>
+                <th>可读</th>
+                <th>可写</th>
+            </tr>
+            <?php 
+                $CORE_PATH = './'.str_replace(dirname(__FILE__).'/','',CORE_PATH);
+                $paths = array('./','./'.C('PAGES_PATH'),$CORE_PATH,$CORE_PATH.'/custom','./'.C('TEMPLATE_PATH'),'./'.C('UPFILE_PATH'));
+                while (list(,$path) = each($paths)) :
+                mkdirs($path);
+            ?>
+            <tr>
+                <td><?php echo $path;?></td>
+                <td><?php echo isOK(is_readable($path));?></td>
+                <td><?php echo isOK(is_writable($path));?></td>
+            </tr>
+            <?php endwhile;?>
+        </table>
       </td>
     </tr>
   </table>
