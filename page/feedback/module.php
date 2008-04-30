@@ -29,6 +29,26 @@ defined('CORE_PATH') or die('Restricted access!');
  */
 class FeedBack{
     public static $addTable = '#@_feedback_custom';
+    // showTypes *** *** www.LazyCMS.net *** ***
+    static function showTypes($l1=null){
+        $I1 = null; $module = getObject();
+        $l2 = array(
+            'input'    => 'varchar',   // 输入框
+            'textarea' => 'text',      // 文本框
+            'radio'    => 'varchar',   // 单选框
+            'checkbox' => 'varchar',   // 复选框
+            'select'   => 'varchar',   // 下拉菜单
+            'basic'    => 'text',      // 简易编辑器
+            'editor'   => 'mediumtext',// 内容编辑器
+            'date'     => 'datetime',  // 日期选择器
+            'upfile'   => 'varchar',   // 文件上传框
+        );
+        foreach ($l2 as $k => $v){
+            $selected = ((string)$l1 == (string)$k) ? ' selected="selected"' : null;
+            $I1 .= '<option value="'.$k.'" type="'.$v.'"'.$selected.'>'.$module->L('list/field/type/'.$k).'</option>';
+        }
+        return $I1;
+    }
     // tags *** *** www.LazyCMS.net *** ***
     static function tags($tags,$inValue){
         return true;

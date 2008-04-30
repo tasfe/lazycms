@@ -51,11 +51,11 @@ $(function(){
 });
 // 函数加载JavaScript *** *** www.LazyCMS.net *** ***
 function LoadScript(plugin){
-	if (plugin.indexOf('/')!=-1) {
-		var url = $("script[@src*=jquery.lazycms]").attr("src").replace("system/js/jquery.lazycms.js",plugin);
-	} else {
-		var url = $("script[@src*=jquery.lazycms]").attr("src").replace("jquery.lazycms.js","jquery." + plugin + ".js");
-	}
+    if (plugin.indexOf('/')!=-1) {
+        var url = $("script[@src*=jquery.lazycms]").attr("src").replace("system/js/jquery.lazycms.js",plugin);
+    } else {
+        var url = $("script[@src*=jquery.lazycms]").attr("src").replace("jquery.lazycms.js","jquery." + plugin + ".js");
+    }
     document.write('<scr' + 'ipt type="text/javascript" src="' + url + '"><\/scr' + 'ipt>');
 }
 

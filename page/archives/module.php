@@ -652,15 +652,15 @@ class Archives{
     // installModel *** *** www.LazyCMS.net *** ***
     static function installModel($modelCode,$isDeleteTable=false){
         $db  = getConn();
-		$xml = simplexml_load_string($modelCode,'SimpleXMLElement',LIBXML_NOCDATA);
-		// Model Value
-		$data[] = $xml->model->modelname;
+        $xml = simplexml_load_string($modelCode,'SimpleXMLElement',LIBXML_NOCDATA);
+        // Model Value
+        $data[] = $xml->model->modelname;
         $data[] = $xml->model->modelename;
         $data[] = '#@_'.$xml->model->maintable;
         $data[] = '#@_'.$xml->model->addtable;
         $data[] = $xml->model->modelstate;
         $salt   = salt(4);
-		if (!$isDeleteTable) {
+        if (!$isDeleteTable) {
             if ($db->isTable($data[3])) {
                 $data[1].= '_'.$salt;
                 $data[3].= '_'.$salt;
@@ -700,17 +700,17 @@ class Archives{
             'modelstate' => $data[4],
         );
         $db->insert('#@_archives_model',$row);
-		
-		// Insert fields
-		$inSQL      = null;
+        
+        // Insert fields
+        $inSQL      = null;
         $indexSQL   = null;
         $modelid    = $db->lastInsertId();
-		foreach ($xml->fields->item as $item){
-			$row = array();
-			foreach ($item as $k=>$v) {
-				$row[$k] = (string)$v;
-			}
-			$row = array_merge($row,array(
+        foreach ($xml->fields->item as $item){
+            $row = array();
+            foreach ($item as $k=>$v) {
+                $row[$k] = (string)$v;
+            }
+            $row = array_merge($row,array(
                 'modelid'    => $modelid,
                 'fieldorder' => $db->max('fieldid','#@_archives_fields'),
             ));
@@ -730,7 +730,7 @@ class Archives{
                 $indexSQL.= "KEY `".$row['fieldename']."` (`".$row['fieldename']."`),";
             }
             $db->insert('#@_archives_fields',$row);
-		}
+        }
         
 
         $db->exec("DROP TABLE IF EXISTS `".$data[3]."`;");

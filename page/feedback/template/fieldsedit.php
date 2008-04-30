@@ -7,7 +7,7 @@
         <p><label><?php echo $module->L('label/field/ename');?></label><input id="fieldename" name="fieldename" type="text" maxlength="50" class="in2" value="<?php echo $fieldename;?>"/></p>
         <p><label><?php echo $module->L('label/field/type');?></label>
             <select name="inputtype" id="inputtype" onchange="$(this).selectType('#fieldtype');">
-                <?php echo Passport::showTypes($inputtype);?>
+                <?php echo FeedBack::showTypes($inputtype);?>
             </select>
         </p>
         <p class="___length"><label><?php echo $module->L('label/field/length');?></label><input id="fieldlength" name="fieldlength" type="text" maxlength="255" class="in3" value="<?php echo $fieldlength;?>"/></p>

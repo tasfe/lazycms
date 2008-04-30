@@ -75,6 +75,10 @@ class Label extends Lazy{
     public function tag($l1,$l2=null){
         $I1   = null;
         $data = array_map('htmlencode',$l1);
+        $data['fieldvalue'] = isset($data['fieldvalue']) ? $data['fieldvalue'] : null;
+        $data['fieldefault'] = isset($data['fieldefault']) ? $data['fieldefault'] : null;
+        $data['fieldename'] = isset($data['fieldename']) ? $data['fieldename'] : null;
+        $data['fieldlength'] = isset($data['fieldlength']) ? $data['fieldlength'] : null;
         $data['fieldvalue'] = str_replace("\r\n","\n",$data['fieldvalue']);
         if (empty($l2)) {
             $default = $data['fieldefault'];

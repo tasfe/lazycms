@@ -561,7 +561,7 @@ class LazyPassport extends LazyCMS{
     }
     // _list *** *** www.LazyCMS.net *** ***
     function _list(){
-    	$this->checker(C('CURRENT_MODULE'));
+        $this->checker(C('CURRENT_MODULE'));
         $groupid = isset($_GET['groupid']) ? (int)$_GET['groupid'] : null;
         $db = getConn();
         $model = Passport::getModel($groupid);

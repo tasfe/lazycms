@@ -78,10 +78,10 @@ class Passport{
     // installModel *** *** www.LazyCMS.net *** ***
     static function installModel($groupCode,$isDeleteTable=false){
         $db  = getConn();
-		$xml = simplexml_load_string($groupCode,'SimpleXMLElement',LIBXML_NOCDATA);
+        $xml = simplexml_load_string($groupCode,'SimpleXMLElement',LIBXML_NOCDATA);
         // Model Value
-		// Model Value
-		$data[] = $xml->group->groupname;
+        // Model Value
+        $data[] = $xml->group->groupname;
         $data[] = $xml->group->groupename;
         $data[] = '#@_'.$xml->group->grouptable;
         $data[] = $xml->group->purview;
@@ -108,12 +108,12 @@ class Passport{
         $inSQL      = null;
         $indexSQL   = null;
         $groupid    = $db->lastInsertId();
-		foreach ($xml->fields->item as $item){
-			$row = array();
-			foreach ($item as $k=>$v) {
-				$row[$k] = (string)$v;
-			}
-			$row = array_merge($row,array(
+        foreach ($xml->fields->item as $item){
+            $row = array();
+            foreach ($item as $k=>$v) {
+                $row[$k] = (string)$v;
+            }
+            $row = array_merge($row,array(
                 'groupid'    => $groupid,
                 'fieldorder' => $db->max('fieldid','#@_passport_fields'),
             ));
@@ -133,7 +133,7 @@ class Passport{
                 $indexSQL.= "KEY `".$row['fieldename']."` (`".$row['fieldename']."`),";
             }
             $db->insert('#@_passport_fields',$row);
-		}
+        }
 
         $db->exec("DROP TABLE IF EXISTS `".$data[2]."`;");
         // 创建新表

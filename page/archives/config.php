@@ -24,6 +24,7 @@
  * Archives module configuration files
  */
 return array (
+  // 需要改造，模块管理设置哪里也需要改造
   'ARCHIVES_ADD_SHOW' => true, // 添加文档，默认是否显示
   'ARCHIVES_ADD_COMMEND' => false, // 添加文档，默认是否推荐
   'ARCHIVES_ADD_TOP' => false, // 添加文档，默认是否置顶

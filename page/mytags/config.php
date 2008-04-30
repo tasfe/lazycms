@@ -24,7 +24,17 @@
  * Mytags module configuration files
  */
 return array (
-  'MYTAGS_ADD_DEF_EXT' => '.htm', // 默认后缀名
-  'MYTAGS_CREATE_FOLDER' => 'mytags', // 生成文件存放的路径
+  /**
+   * 默认后缀名
+   *
+   * @inputtype:upfile
+   */
+  'MYTAGS_ADD_DEF_EXT' => '.htm',
+  /**
+   * 生成文件存放的路径
+   *
+   * @inputtype:upfile
+   */
+  'MYTAGS_CREATE_FOLDER' => 'mytags',
 );
 ?>

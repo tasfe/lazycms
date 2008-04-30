@@ -899,7 +899,7 @@ function getConn(){
 
 // loadFile *** *** www.LazyCMS.net *** ***
 function loadFile($l1){
-	if (!is_file($l1)) { return ; }
+    if (!is_file($l1)) { return ; }
     $fp   = fopen($l1,'rb');
     $size = filesize($l1);
     if ((int)$size==0) { return ; }
@@ -1215,9 +1215,9 @@ function L($l1,$l2=null,$l3='system'){
         $I2 = simplexml_load_file($l6,'SimpleXMLElement',LIBXML_NOCDATA);
         $_I1["{$l3}_{$l4}"] = $I2;
     }
-	$I3 = $I2->xpath("//lazycms/{$l1}");
+    $I3 = $I2->xpath("//lazycms/{$l1}");
     if (false !== strpos($l1,'/@')) {
-		$attr = substr($l1,strrpos($l1,'/@')+2);
+        $attr = substr($l1,strrpos($l1,'/@')+2);
         $I1 = $I3[0][$attr];
     } else {
         $I1 = isset($I3[0])?$I3[0]:$I3;

@@ -61,7 +61,7 @@ $install = isset($_POST['install']) ? $_POST['install'] : null;
 // 获取安装目录
 $sitebase = dirname(getUriBase());
 $sitebase = ($sitebase=="\\" || $sitebase=="/") ?
-			'/' : substr($sitebase.'/',0,strrpos($sitebase.'/','/')+1);
+            '/' : substr($sitebase.'/',0,strrpos($sitebase.'/','/')+1);
 $sitebase  = isset($_POST['sitebase']) ? $_POST['sitebase'] : $sitebase;
 $sitename  = isset($_POST['sitename']) ? $_POST['sitename'] : null;
 $sitemail  = isset($_POST['sitemail']) ? $_POST['sitemail'] : null;
@@ -185,11 +185,11 @@ if ($install && labelError()) {
         $db->insert('#@_onepage',$onepage);
         saveFile(CORE_PATH.'/custom/config.php',"<?php\n".createNote('用户自定义配置文件')."\nreturn ".var_export($config,true).";\n?>");
         // 导入默认模型
-		import("@.archives.module");
-		$models = getArrDir('@.archives.models','xml');
-		foreach ($models as $model){
-			Archives::installModel(loadFile(LAZY_PATH.C('PAGES_PATH')."/archives/models/{$model}"),true);
-		}
+        import("@.archives.module");
+        $models = getArrDir('@.archives.models','xml');
+        foreach ($models as $model){
+            Archives::installModel(loadFile(LAZY_PATH.C('PAGES_PATH')."/archives/models/{$model}"),true);
+        }
         @unlink(LAZY_PATH.'install.php');
         redirect('admin/index.php');
     } catch (Error $err) {

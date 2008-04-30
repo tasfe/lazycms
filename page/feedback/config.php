@@ -21,10 +21,20 @@
  * +---------------------------------------------------------------------------+
  */defined('CORE_PATH') or die('Restricted access!');
 /**
- * Mytags module configuration files
+ * Feedback module configuration files
  */
 return array (
-  'FEEDBACK_TEMPLATE' => 'default.html', // 模板文件
-  'FEEDBACK_IP_SEARCH' => 'http://www.ip.cn/?q=%s',// IP地址信息查询网址 IP用 %s 代替
+  /**
+   * 模板文件
+   *
+   * @inputtype:upfile
+   */
+  'FEEDBACK_TEMPLATE' => 'template/default.html',
+  /**
+   * IP地址信息查询网址 IP用 %s 代替
+   *
+   * @inputtype:input
+   */
+  'FEEDBACK_IP_SEARCH' => 'http://www.ip.cn/?q=%s',
 );
 ?>

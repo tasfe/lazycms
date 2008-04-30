@@ -17,7 +17,7 @@
     </common>
 
     <list>
-    	<action>操作</action>
+        <action>操作</action>
         <group title="用户组列表">
             <id>ID</id>
             <name>用户组</name>
@@ -26,20 +26,20 @@
             <state>状态</state>
             <count>用户数</count>
         </group>
-		<field title="字段管理">
-			<add>添加字段</add>
-			<edit>编辑字段</edit>
-			<id>ID</id>
-			<name>表单文字</name>
-			<ename>字段名</ename>
-			<type>输入类型</type>
-			<length>最大长度</length>
-			<default>默认值</default>
-			<key>索引</key>
-			<type>
+        <field title="字段管理">
+            <add>添加字段</add>
+            <edit>编辑字段</edit>
+            <id>ID</id>
+            <name>表单文字</name>
+            <ename>字段名</ename>
+            <type>输入类型</type>
+            <length>最大长度</length>
+            <default>默认值</default>
+            <key>索引</key>
+            <type>
                 <input>输入框</input>
                 <textarea>文本框</textarea>
-                <select>下拉菜单</select>
+                <select>下拉列表框</select>
                 <radio>单选框</radio>
                 <checkbox>复选框</checkbox>
                 <basic>简易编辑器</basic>
@@ -47,16 +47,16 @@
                 <date>日期选择器</date>
                 <upfile>文件上传框</upfile>
             </type>
-		</field>
-		<user title="用户列表">
-			<id>ID</id>
-			<name>用户名</name>
-			<group>用户组</group>
-			<date>注册时间</date>
-			<email>Email</email>
-			<islock>锁定</islock>
-		</user>
-	</list>
+        </field>
+        <user title="用户列表">
+            <id>ID</id>
+            <name>用户名</name>
+            <group>用户组</group>
+            <date>注册时间</date>
+            <email>Email</email>
+            <islock>锁定</islock>
+        </user>
+    </list>
 
     <label>
         <leadin>请选择组模型文件 (xml格式文件)</leadin>
@@ -66,15 +66,15 @@
             <fieldset>字段配置</fieldset>
             <fieldtip><![CDATA[添加用户组后，点击 <img src="{$root}/system/images/os/fields.gif" class="os"/> 图标进行字段管理]]></fieldtip>
         </group>
-		<field>
-			<name>表单文字</name>
-			<ename>字段名 (索引字段，不能修改字段名)</ename>
-			<type>输入类型</type>
-			<length>最大长度</length>
-			<default>默认值 (日期选择器可使用 date('Y-m-d',time()) 函数)</default>
-			<key>索引</key>
-			<value>值 (例：name:value)</value>
-		</field>
+        <field>
+            <name>表单文字</name>
+            <ename>字段名 (索引字段，不能修改字段名)</ename>
+            <type>输入类型</type>
+            <length>最大长度</length>
+            <default>默认值 (日期选择器可使用 date('Y-m-d',time()) 函数)</default>
+            <key>索引</key>
+            <value>值 (例：name:value)</value>
+        </field>
         <user>
             <belongto>所属用户组</belongto>
             <name>用户名</name>
@@ -87,8 +87,8 @@
             <language>界面语言</language>
             <editor>编辑器</editor>
             <islock title="锁定用户">
-            	<is1>锁定</is1>
-            	<is0>解锁</is0>
+                <is1>锁定</is1>
+                <is0>解锁</is0>
             </islock>
         </user>
     </label>
@@ -99,22 +99,22 @@
             <ename>用户组标识不能为空</ename>
             <ename1>只允许输入：字母、数字、下划线</ename1>
         </group>
-		<field>
-			<name>表单文字不能为空</name>
-			<ename>字段名不能为空</ename>
-			<ename1>只允许输入：字母、数字、下划线</ename1>
-			<length>必须填写最大长度</length>
-			<length1>必须为整数，请重新输入</length1>
-			<value>值不能为空</value>
-		</field>
-		<user>
-			<name>用户名不能为空</name>
-			<name1>用户名重复，或者被屏蔽</name1>
-			<contrast>两次输入的密码不一致</contrast>
-			<pwdsize>密码长度不正确</pwdsize>
-			<mail>邮箱不能为空</mail>
-			<mail1>邮箱格式不正确</mail1>
-		</user>
+        <field>
+            <name>表单文字不能为空</name>
+            <ename>字段名不能为空</ename>
+            <ename1>只允许输入：字母、数字、下划线</ename1>
+            <length>必须填写最大长度</length>
+            <length1>必须为整数，请重新输入</length1>
+            <value>值不能为空</value>
+        </field>
+        <user>
+            <name>用户名不能为空</name>
+            <name1>用户名重复，或者被屏蔽</name1>
+            <contrast>两次输入的密码不一致</contrast>
+            <pwdsize>密码长度不正确</pwdsize>
+            <mail>邮箱不能为空</mail>
+            <mail1>邮箱格式不正确</mail1>
+        </user>
     </check>
 
     <pop>
@@ -124,14 +124,14 @@
             <deletefieldok>成功删除您选择的字段</deletefieldok>
             <deletefielderr>数据库字段可能已经被删除</deletefielderr>
         </group>
-		<field>
+        <field>
             <select>请选择一个模型</select>
             <deleteok>成功删除您选择的模型</deleteok>
             <deletefieldok>成功删除您选择的字段</deletefieldok>
             <deletefielderr>数据库字段可能已经被删除</deletefielderr>
         </field>
         <user>
-        	<select>请选择一个用户</select>
+            <select>请选择一个用户</select>
             <deleteok>成功删除您选择的用户</deleteok>
             <lockok>成功锁定您选择的用户</lockok>
             <unlockok>成功解锁您选择的用户</unlockok>
