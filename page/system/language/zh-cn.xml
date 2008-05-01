@@ -180,6 +180,7 @@
     </login>
     
     <module title="模块管理">
+        <notinstall>未安装的模块</notinstall>
         <leadin title="导入模块">请选择模块文件 (zip格式文件)</leadin>
         <install>安装</install>
         <list>

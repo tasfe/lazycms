@@ -175,7 +175,19 @@ abstract class LazyCMS extends Lazy{
             }
         } catch (Error $err) {
             if (is_file(LAZY_PATH.'install.php')) {
-                redirect(C('SITE_BASE').'install.php');exit;
+                if (strpos(LAZY_PATH,'../')!==false) {
+                    $path = substr(LAZY_PATH,strpos(LAZY_PATH,'../'));
+                    if ($path=='../../') {
+                        $path = './';
+                    } else {
+                        $UriBase = getUriBase();
+                        $UriBase = dirname(substr($UriBase,0,strrpos($UriBase,'/')));
+                        $path = ($UriBase=='\\' || $UriBase=='/') ? '/' : $UriBase;
+                    }
+                } else {
+                    $path = './';
+                }
+                redirect($path.'install.php');exit;
             }
             // 这里数据库连接出错不进行错误提示。
             $modules = null;

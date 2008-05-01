@@ -427,6 +427,12 @@ class LazySystem extends LazyCMS{
     // _module *** *** www.LazyCMS.net *** ***
     function _module(){
         $this->checker('module');
+        $View = isset($_GET['View']) ? $_GET['View'] : null;
+        if (empty($View)) {
+            $menu = $this->L('module/@title').'|#|true;'.$this->L('module/notinstall').'|'.url('System','Module','View=NotInstall').';';
+        } else {
+            $menu = $this->L('module/@title').'|'.url('System','Module').';'.$this->L('module/notinstall').'|#|true;';
+        }
         $dp = O('Record');
         $dp->action = url(C('CURRENT_MODULE'),'ModuleSet');
         $dp->result = getArrDir(C('PAGES_PATH'),'dir');
@@ -444,20 +450,27 @@ class LazySystem extends LazyCMS{
         while (list($k,$name) = each($dp->result)) {
             if (strtolower($name) != 'system') {
                 if (instr($this->system['modules'],$name)) {
+                    $Installed = true;
                     $isInstall = L('module/is/true');
                     $module    = '<a href="'.eval('return '.L('manage',null,$name).';').'">'.L('title',null,$name).'</a>';
                 } else {
+                    $Installed = false;
                     $isInstall = L('module/is/false');
                     $module    = L('title',null,$name);
                 }
                 $help  = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$name.'/help/help.html') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('help',{lists:'".$name."'},{width:'600px','margin-left':'-300px',height:'300px'});\">".L('common/help')."</a>]" : null;
                 $about = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$name.'/help/about.html') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('about',{lists:'".$name."'});\">".L('common/about')."</a>]" : null;
+                if (!empty($View)) {
+                    if ($Installed) {
+                        continue;
+                    }
+                }
                 $dp->tbody = "ll({$k},'{$name}','{$module}','".L('version',null,$name)."','".L('author',null,$name)."','".L('source',null,$name)."','".L('email',null,$name)."','{$isInstall}','".t2js($help)."','".t2js($about)."');";
             }
         }
         $dp->close();
         $this->outHTML = $dp->fetch;
-
+        $this->assign('menu',$menu);
         $this->display('module.php');
     }
     // _moduleset *** *** www.LazyCMS.net *** ***
@@ -608,7 +621,7 @@ class LazySystem extends LazyCMS{
                     $zip->Extract($file['path'],LAZY_PATH.C('PAGES_PATH'));
                 }
                 @unlink($file['path']);
-                redirect(url(C('CURRENT_MODULE'),'Module'));
+                redirect(url(C('CURRENT_MODULE'),'Module','View=NotInstall'));
             } else {
                 $this->validate(array(
                     $field => $upload->getError(),

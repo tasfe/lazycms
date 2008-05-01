@@ -31,7 +31,13 @@ defined('CORE_PATH') or die('Restricted access!');
 class LazyFeedBack extends LazyCMS{
     // _index *** *** www.LazyCMS.net *** ***
     function _index(){
-        $this->display('index.php');
+        $tag  = O('Tags');
+        $HTML = $tag->read(M(C('CURRENT_MODULE'),'FEEDBACK_TEMPLATE'));
+        $tag->clear();
+        $tag->value('title',encode($this->L('title')));
+        $tag->value('inside',encode($this->fetch('index.php')));
+        $outHTML = $tag->create($HTML,$tag->getValue());
+        echo $outHTML;
     }
     // _index *** *** www.LazyCMS.net *** ***
     function _admin(){
