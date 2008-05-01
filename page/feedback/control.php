@@ -31,6 +31,59 @@ defined('CORE_PATH') or die('Restricted access!');
 class LazyFeedBack extends LazyCMS{
     // _index *** *** www.LazyCMS.net *** ***
     function _index(){
+        $db  = getConn();
+        $fbtitle   = isset($_POST['fbtitle']) ? $_POST['fbtitle'] : null;
+        $fbcontent = isset($_POST['fbcontent']) ? $_POST['fbcontent'] : null;
+        
+        $this->validate(array(
+            'fbtitle'   => $this->check('fbtitle|1|'.$this->L('check/title').'|4-100'),
+            'fbcontent' => $this->check("fbcontent|1|".$this->L('check/content')."|6-1000"),
+        ));
+
+        $label = O('Label');
+        $label->create("SELECT * FROM `#@_feedback_fields` WHERE 1 ORDER BY `fieldorder` ASC, `fieldid` ASC;");
+        $formData  = array(); $fieldData = array();
+        while ($data = $label->result()) {
+            $fieldData[$data['fieldename']] = $data;
+            $formData[$data['fieldename']]  = isset($_POST[$data['fieldename']]) ? $_POST[$data['fieldename']] : null;
+            if (is_array($formData[$data['fieldename']])) {
+                $formData[$data['fieldename']] = implode(',',$formData[$data['fieldename']]);
+            }
+        }
+        
+        if ($this->method()) {
+            if ($this->validate()) {
+                $row = array(
+                    'fbtitle'   => (string)$fbtitle,
+                    'fbcontent' => (string)$fbcontent,
+                    'fbip'      => ip(),
+                    'fbdate'    => now(),
+                );
+                $db->insert('#@_feedback',$row);
+                $fbid = $db->lastInsertId();
+                $addrows = array_merge($formData,array('fbid'=>$fbid));
+                $db->insert(FeedBack::$addTable,$addrows);
+                redirect(url(C('CURRENT_MODULE')));return true;
+            }
+        }
+
+        while (list($name,$data) = each($fieldData)) {
+            $label->p = '<p><label>'.$data['fieldname'].'</label>'.$label->tag($data,$formData[$name]).'</p>';
+        }
+        $this->outHTML = $label->fetch;
+
+        $this->assign(array(
+            'fbtitle'   => htmlencode($fbtitle),
+            'fbcontent' => $fbcontent,
+            'editor'    => array(
+                'editor'  => 'fckeditor',
+                'toolbar' => 'Basic',
+                'width'   => 450,
+                'height'  => 200,
+                'print'   => true
+            ),
+        ));
+        
         $tag  = O('Tags');
         $HTML = $tag->read(M(C('CURRENT_MODULE'),'FEEDBACK_TEMPLATE'));
         $tag->clear();
@@ -56,14 +109,15 @@ class LazyFeedBack extends LazyCMS{
         $dp->action = url(C('CURRENT_MODULE'),'Set');
         $dp->url = url(C('CURRENT_MODULE'),'Admin',$query.'page=$');
         $dp->but = $dp->button('tag1:'.$this->L('common/tag1').'|tag0:'.$this->L('common/tag0')).$dp->plist();
-        $dp->td  = "cklist(K[0]) + feedback.tag(K[2],K[0]) + '<a href=\"#\">' + K[3] + '</a>'";
-        $dp->td  = "'<a href=\"#\">' + K[4] + '</a>'";
+        $onclick = " onclick=\"$(this).gm(\'view\',{lists:' + K[0] + '},{width:\'600px\',\'margin-left\':\'-300px\',height:\'300px\'});\"";
+        $dp->td  = "cklist(K[0]) + feedback.tag(K[2],K[0]) + '<a href=\"javascript:void(0);\"{$onclick}>' + K[3] + '</a>'";
+        $dp->td  = "'<a href=\"javascript:void(0);\"{$onclick}>' + K[4] + '</a>'";
         $dp->td  = "'<a href=\"".sprintf(M(C('CURRENT_MODULE'),'FEEDBACK_IP_SEARCH'),"' + K[5] + '")."\" target=\"_blank\">' + K[5] + '</a>'";
         $dp->td  = "K[6]";
         $dp->open();
         $dp->thead  = '<tr><th>'.$this->L('list/title').'</th><th>'.$this->L('list/content').'</th><th>'.$this->L('list/ip').'</th><th>'.$this->L('list/date').'</th></tr>';
         while ($data = $dp->result()) {
-            $dp->tbody = "ll(".$data['fbid'].",".$data['isview'].",".$data['istag'].",'".t2js(htmlencode($data['fbtitle']))."','".t2js(htmlencode($data['fbcontent']))."','".t2js(htmlencode($data['fbip']))."','".date('Y-m-d H:i:s',$data['fbdate'])."');";
+            $dp->tbody = "ll(".$data['fbid'].",".$data['isview'].",".$data['istag'].",'".t2js(htmlencode($data['fbtitle']))."','".t2js(htmlencode(FeedBack::getTitle($data['fbcontent'])))."','".t2js(htmlencode($data['fbip']))."','".date('Y-m-d H:i:s',$data['fbdate'])."');";
         }
         $dp->close();
 
@@ -91,12 +145,40 @@ class LazyFeedBack extends LazyCMS{
                 $this->poping($this->L('pop/tagok'),1);
                 break;
             case 'delete':
+                $res = $db->query("SELECT `fbid` FROM `#@_feedback` WHERE `fbid` IN ({$lists}) AND `istag` = 0;");
+                while ($data = $db->fetch($res,0)){
+                    if (empty($Delids)) {
+                        $Delids = $data[0];
+                    } else {
+                        $Delids.= ','.$data[0];
+                    }
+                }
                 $db->exec("DELETE FROM `#@_feedback` WHERE `fbid` in ({$lists}) AND `istag` = 0;");
+                $db->exec("DELETE FROM `".FeedBack::$addTable."` WHERE `fbid` in ({$Delids});");
                 $this->poping($this->L('pop/deleteok'),1);
                 break;
             case 'settag' :
                 $action  = isset($_POST['action']) ? $_POST['action'] : null;
                 $db->update('#@_feedback',array('istag'=>(int)$action),$db->quoteInto('`fbid` = ?',$lists));
+                break;
+            case 'view' :
+                $res = $db->query("SELECT * FROM `#@_feedback` AS `fb` LEFT JOIN `".FeedBack::$addTable."` AS `fbc` ON `fb`.`fbid`=`fbc`.`fbid` WHERE `fb`.`fbid`=?;",$lists);
+                if (!$data = $db->fetch($res)){}
+
+                $data['fbtitle'] = htmlencode($data['fbtitle']);
+                $main = '<style type="text/css">.lz_form .in{ padding:0 3px; }</style><div class="lz_form">';
+                $main.= '<p><label><strong>'.$this->L('list/title').'</strong></label><div class="in">'.$data['fbtitle'].'</div></p>';
+                $main.= '<p><label><strong>'.$this->L('list/content').'</strong></label><div class="in">'.$data['fbcontent'].'</div></p>';
+                // 读取自定义字段
+                $res = $db->query("SELECT * FROM `#@_feedback_fields` WHERE 1 ORDER BY `fieldorder` ASC, `fieldid` ASC;");
+                while ($info = $db->fetch($res)) {
+                    $main.= '<p><label><strong>'.$info['fieldname'].'</strong></label><div class="in">'.$data[$info['fieldename']].'</div></p>';
+                }
+                $main.= '</div>';
+                $this->poping(array(
+                    'title' => $data['fbtitle'],
+                    'main'  => $main,
+                ));
                 break;
             default :
                 $this->poping(L('error/invalid'),0);

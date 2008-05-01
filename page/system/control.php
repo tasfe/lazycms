@@ -437,7 +437,7 @@ class LazySystem extends LazyCMS{
         $dp->action = url(C('CURRENT_MODULE'),'ModuleSet');
         $dp->result = getArrDir(C('PAGES_PATH'),'dir');
         $dp->length = count($dp->result);
-        $dp->but = $dp->button("install:".L('common/install')."|uninstall:卸载");
+        $dp->but = $dp->button("install:".L('common/install')."|uninstall:".L('common/uninstall'));
         $dp->td  = "cklist(K[1]) + (K[0]+1) + ') ' + K[2]";
         $dp->td  = "K[3]";
         $dp->td  = "K[1]";

@@ -29,6 +29,20 @@ defined('CORE_PATH') or die('Restricted access!');
  */
 class FeedBack{
     public static $addTable = '#@_feedback_custom';
+    // getTitle *** *** www.LazyCMS.net *** ***
+    static function getTitle($l1,$l2=30){
+        $I1 = null;
+        $contents = str_replace("\r\n","\n",$l1);
+        $contents = explode("\n",$contents);
+        foreach ($contents as $v) {
+            if (strlen($I1)>0) {
+                break;
+            } else {
+                $I1 = cls(lefte(clearHTML($v),$l2));
+            }
+        }
+        return $I1;
+    }
     // showTypes *** *** www.LazyCMS.net *** ***
     static function showTypes($l1=null){
         $I1 = null; $module = getObject();
@@ -40,8 +54,6 @@ class FeedBack{
             'select'   => 'varchar',   // 下拉菜单
             'basic'    => 'text',      // 简易编辑器
             'editor'   => 'mediumtext',// 内容编辑器
-            'date'     => 'datetime',  // 日期选择器
-            'upfile'   => 'varchar',   // 文件上传框
         );
         foreach ($l2 as $k => $v){
             $selected = ((string)$l1 == (string)$k) ? ' selected="selected"' : null;

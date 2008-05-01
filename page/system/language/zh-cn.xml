@@ -30,6 +30,7 @@
         <browse>浏览...</browse>
         <memo>提示</memo>
         <install>安装</install>
+        <uninstall>卸载</uninstall>
         <submit>提交</submit>
         <selectall>全选</selectall>
         <reselect>反选</reselect>

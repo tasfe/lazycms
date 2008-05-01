@@ -44,6 +44,8 @@
     </list>
 
     <label>
+        <title>主题</title>
+        <content>留言内容 (不能超过1000字)</content>
         <field>
 			<name>表单文字</name>
 			<ename>字段名</ename>
@@ -55,6 +57,8 @@
     </label>
 
     <check>
+        <title>主题长度不正确(4-100)</title>
+        <content>内容长度不正确(10-1000)</content>
 		<field>
 			<name>表单文字不能为空</name>
 			<ename>字段名不能为空</ename>

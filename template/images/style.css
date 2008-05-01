@@ -1,3 +1,5 @@
+@import url("system.css");
+
 body{ width:100%; margin:0; padding:0; background:url(bg.png) repeat-x left top;}
 body,th,td,p{ line-height:130%; font-family:Verdana; font-size:12px;}
 dl,dt,dd{ margin:0; padding:0;}
@@ -69,8 +71,6 @@ a:active{ text-decoration:none; color:#333333;}
 	#footer .left{ float:left; }
 	#footer .right{ float:right; }
 
-#onepage{ clear:both;}
-
 /* 列表通用样式 */
 .list{ margin:10px 0; clear:both;}
 	.list .title{ width:100%; margin-bottom:10px; padding-left:10px; background:url(title.gif) no-repeat left center; color:#193441; font-size:14px; font-weight:bold; display:table; zoom:100%; line-height:25px; border-bottom:solid 1px #CCCCCC;}
@@ -96,11 +96,3 @@ a:active{ text-decoration:none; color:#333333;}
 
 .downurl,
 .downurl a{ color:#009900; font-weight:bold;}
-
-/* 分页样式 */
-.pagelist{ margin:5px 0; clear:both; text-align:right;}
-	.pagelist a ,
-	.pagelist strong{ margin-right:3px;}
-	.pagelist strong{ color:#993300;}
-	.pagelist em {padding:2px;border:1px solid #C6C6C6;font-size:12px;margin:0px 1px;background:#F5F9FE;color:#14316B;font-weight:bold;font-style:normal; margin-right:3px;}
-
