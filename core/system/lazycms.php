@@ -175,17 +175,19 @@ abstract class LazyCMS extends Lazy{
             }
         } catch (Error $err) {
             if (is_file(LAZY_PATH.'install.php')) {
+                $UriBase = getUriBase();
                 if (strpos(LAZY_PATH,'../')!==false) {
                     $path = substr(LAZY_PATH,strpos(LAZY_PATH,'../'));
                     if ($path=='../../') {
-                        $path = './';
+                        $UriBase = dirname($UriBase);
+                        $path = ($UriBase=='\\' || $UriBase=='/') ? '/' : $UriBase.'/';
                     } else {
-                        $UriBase = getUriBase();
                         $UriBase = dirname(substr($UriBase,0,strrpos($UriBase,'/')));
-                        $path = ($UriBase=='\\' || $UriBase=='/') ? '/' : $UriBase;
+                        $path = ($UriBase=='\\' || $UriBase=='/') ? '/' : $UriBase.'/';
                     }
                 } else {
-                    $path = './';
+                    $UriBase = dirname($UriBase);
+                    $path = ($UriBase=='\\' || $UriBase=='/') ? '/' : $UriBase.'/';
                 }
                 redirect($path.'install.php');exit;
             }
