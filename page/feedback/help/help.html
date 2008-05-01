@@ -1,0 +1,26 @@
+已经加星标的留言不能被删除，要删除留言，必须将星标删除。
+
+{lazy:feedback type="new" number="10"}           标签开始
+    (lazy:title size="24"/) (lazy:ip/)      HTML循环输出部分
+{/lazy}
+
+[b]标签参数解析[/b]
+type        调用留言的类型
+……new   最新文章
+……tag0  未加星留言
+……tag1  已加星留言
+
+number  循环调用留言的数量，必须为数字
+
+zebra 斑马线，必须为数字，如zebra="2"，当第2、4、8等整除于zebra参数值的时候，输出1，其他输出0
+
+[b]循环体内标签[/b]
+(lazy:id/)          留言id
+(lazy:istag/)       是否为加星
+(lazy:title/)       留言标题
+(lazy:content/)     留言内容
+(lazy:ip/)		    留言者IP
+(lazy:zebra/)       斑马线，同上
+(lazy:++/)          输出序号，从1开始
+(lazy:[color=red]字段名[/color]/)      可根据模型里面的字段名调出填写的内容
+(lazy:date mode="Y-m-d H:i:s"/) 只要是数字类型的都可以使用mode参数，格式化字符串和PHP的date函数参数一样
