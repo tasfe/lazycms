@@ -11,7 +11,6 @@
         <tag1>加注星标</tag1>
         <tag0>删除星标</tag0>
         <tag>已加星标</tag>
-        <config>参数设置</config>
         <fields>字段管理</fields>
         <addfields>添加字段</addfields>
         <editfields>编辑字段</editfields>

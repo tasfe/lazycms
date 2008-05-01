@@ -27,13 +27,13 @@ return array (
   /**
    * 默认后缀名
    *
-   * @inputtype:upfile
+   * @inputtype:input
    */
   'MYTAGS_ADD_DEF_EXT' => '.htm',
   /**
    * 生成文件存放的路径
    *
-   * @inputtype:upfile
+   * @inputtype:input
    */
   'MYTAGS_CREATE_FOLDER' => 'mytags',
 );

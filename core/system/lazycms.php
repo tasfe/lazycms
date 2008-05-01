@@ -500,5 +500,68 @@ abstract class LazyCMS extends Lazy{
         }
         return $I1;
     }
+    // config *** *** www.LazyCMS.net *** ***
+    final public function config($module){
+        $module = strtolower($module);
+        $config = loadFile(LAZY_PATH.C('PAGES_PATH').'/'.$module.'/config.php');
+        $config = preg_match('/return array( *)\(((.|\n)+)\)/i',$config,$info) ? $info[2] : $config;
+        $config = str_replace("\r\n","\n",$config); $config = explode("\n",$config);
+        $count  = count($config); $label = O('Label'); $data = array(); $comments = array();
+        $comment= null;
+        if ($this->method()) {
+            foreach ($_POST as $k=>$v) {
+                if (is_numeric(trim($v))) {
+                    $v = (int)$v;
+                } elseif (trim($v)=='true' || trim($v)=='false') {
+                    if (trim($v)=='false') {
+                        $v = false;
+                    } else {
+                        $v = true;
+                    }
+                }
+                M($module,$k,$v);
+            }
+        }
+        for ($i=0; $i<$count; $i++) {
+            $v = ltrim($config[$i]);
+            if (preg_match('/\,$/',$v)) {
+                preg_match("/'(.+)'( *)\=\>( *)([^']+|'(.+)')\,/i",$v,$info);
+                $data['fieldename']  = $info[1];
+                if ($this->method()) {
+                    $value = M($module,strtolower($data['fieldename']));
+                    if (is_numeric($value)) {
+                        $value = (int)$value;
+                    } elseif (is_bool($value)) {
+                        $value = $value ? 'true' : 'false';
+                    }
+                    $data['fieldefault'] = $value;
+                } else {
+                    $data['fieldefault'] = isset($info[5]) ? $info[5] : $info[4];
+                }                
+                $data['fieldtype']   = true;
+                $label->p = '<p><label>'.$info[1].' <span><label class="error" for="'.$data['fieldename'].'">('.$data['fieldname'].')</label></span></label>'.$label->tag($data).'</p>';
+                $comments[$data['fieldename']] = $comment;
+                $data = array(); $comment= null;
+            } elseif (preg_match('/^((\/\*\*)|(\*))/',$v)) {
+                $ltv = ltrim($v,' *');
+                $comment.= $config[$i].chr(10);
+                if (trim($v)=='/**') {
+                    $data['fieldname'] = ltrim($config[$i+1],' *');
+                } elseif ($ltv!='' && strncmp($ltv,'@',1)===0) {
+                    preg_replace('/@([^\:]+)\:(.+)/e','$data[\'\\1\'] = "\\2"',$ltv);
+                }
+            }
+        }
+        $this->outHTML = $label->fetch;
+        if ($this->method()) {
+            $array  = array_change_key_case(M($module),CASE_UPPER);
+            $config = var_export($array,true);
+            foreach ($array as $k=>$v) {
+                $config = preg_replace("/ {2}'".preg_quote($k,'/')."' \=\> ([^']+|'(.+)')\,/i",$comments[$k].'\\0',$config);
+            }
+            saveFile(LAZY_PATH.C('PAGES_PATH').'/'.$module.'/config.php',"<?php\n".createNote(ucfirst($module).' module configuration files')."\nreturn ".$config.";\n?>");
+            $this->succeed(L('common/upok'));
+        }
+    }
 }
 ?>

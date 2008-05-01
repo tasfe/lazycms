@@ -99,41 +99,8 @@ class LazyFeedBack extends LazyCMS{
     }
     // _config *** *** www.LazyCMS.net *** ***
     function _config(){
-        $this->checker(C('CURRENT_MODULE')); 
-        $CURRENT_MODULE = strtolower(C('CURRENT_MODULE')); //$config = M($CURRENT_MODULE);
-        $config = loadFile(LAZY_PATH.C('PAGES_PATH').'/'.$CURRENT_MODULE.'/config.php');
-        $config = preg_match('/return array( *)\(((.|\n)+)\)/i',$config,$info) ? $info[2] : $config;
-        $config = str_replace("\r\n","\n",$config); $config = explode("\n",$config);
-        $count  = count($config); $label = O('Label'); $data = array(); $comments = array();
-        $comment= null;
-        for ($i=0; $i<$count; $i++) {
-            $v = ltrim($config[$i]);
-            if (preg_match('/\,$/',$v)) {
-                preg_match("/'(.+)'( *)\=\>( *)(('(.+)')|(.+))\,/i",$v,$info);
-                $data['fieldename'] = $info[1];
-                $data['fieldefault'] = $info[6];
-                $label->p = '<p><label>'.$info[1].' <span><label class="error" for="'.$data['fieldename'].'">('.$data['fieldname'].')</label></span></label>'.$label->tag($data).'</p>';
-                $comments[$data['fieldename']] = $comment;
-                $data = array(); $comment= null;
-            } elseif (preg_match('/^((\/\*\*)|(\*))/',$v)) {
-                $ltv = ltrim($v,' *');
-                $comment.= $config[$i].chr(10);
-                if (trim($v)=='/**') {
-                    $data['fieldname'] = ltrim($config[$i+1],' *');
-                } elseif ($ltv!='' && strncmp($ltv,'@',1)===0) {
-                    preg_replace('/@(.+)\:(.+)/e','$data[\'\\1\'] = "\\2"',$ltv);
-                }
-            }
-        }
-        $this->outHTML = $label->fetch;
-        if ($this->method()) {
-            $config = var_export(array_change_key_case($_POST,CASE_UPPER),true);
-            foreach ($_POST as $k=>$v) {
-                $config = preg_replace("/ {2}'".preg_quote($k,'/')."' \=\> (('(.+)')|(.+))\,/i",$comments[$k].'\\0',$config);
-            }
-            saveFile(LAZY_PATH.C('PAGES_PATH').'/'.$CURRENT_MODULE.'/config.php',"<?php\n".createNote(ucfirst($CURRENT_MODULE).' module configuration files')."\nreturn ".$config.";\n?>");
-            $this->succeed(L('common/upok'));
-        }
+        $this->checker(C('CURRENT_MODULE'));
+        $this->config(C('CURRENT_MODULE'));
         $this->display('config.php');
     }
     // _fields *** *** www.LazyCMS.net *** ***

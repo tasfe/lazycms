@@ -438,7 +438,7 @@ class LazySystem extends LazyCMS{
         $dp->td  = "K[4]";
         $dp->td  = "K[5]";
         $dp->td  = "K[6]";
-        $dp->td  = "K[7]+K[8]+K[9]+K[10]";
+        $dp->td  = "K[7]+K[8]+K[9]";
         $dp->open();
         $dp->thead  = '<tr><th>'.L('module/list/id').') '.L('module/list/name').'</th><th>'.L('module/list/version').'</th><th>'.L('module/list/folder').'</th><th>'.L('module/list/author').'</th><th>'.L('module/list/source').'</th><th>'.L('module/list/mail').'</th><th>'.L('module/list/is').'</th></tr>';
         while (list($k,$name) = each($dp->result)) {
@@ -446,15 +446,13 @@ class LazySystem extends LazyCMS{
                 if (instr($this->system['modules'],$name)) {
                     $isInstall = L('module/is/true');
                     $module    = '<a href="'.eval('return '.L('manage',null,$name).';').'">'.L('title',null,$name).'</a>';
-                    $config    = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$name.'/config.php') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('config',{lists:'".$name."'},{width:'600px','margin-left':'-300px',height:'300px'});\">".L('common/config')."</a>]" : null;
                 } else {
                     $isInstall = L('module/is/false');
                     $module    = L('title',null,$name);
-                    $config    = null;
                 }
                 $help  = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$name.'/help/help.html') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('help',{lists:'".$name."'},{width:'600px','margin-left':'-300px',height:'300px'});\">".L('common/help')."</a>]" : null;
                 $about = is_file(LAZY_PATH.C('PAGES_PATH').'/'.$name.'/help/about.html') ? " [<a href=\"javascript:void(0);\" onclick=\"$(this).gm('about',{lists:'".$name."'});\">".L('common/about')."</a>]" : null;
-                $dp->tbody = "ll({$k},'{$name}','{$module}','".L('version',null,$name)."','".L('author',null,$name)."','".L('source',null,$name)."','".L('email',null,$name)."','{$isInstall}','".t2js($config)."','".t2js($help)."','".t2js($about)."');";
+                $dp->tbody = "ll({$k},'{$name}','{$module}','".L('version',null,$name)."','".L('author',null,$name)."','".L('source',null,$name)."','".L('email',null,$name)."','{$isInstall}','".t2js($help)."','".t2js($about)."');";
             }
         }
         $dp->close();
@@ -578,91 +576,10 @@ class LazySystem extends LazyCMS{
                     'main'  => ubbencode(loadFile(LAZY_PATH.C('PAGES_PATH').'/'.$lists.'/help/help.html')),
                 ),0);
                 break;
-            case 'config' :
-                $config = M($lists);
-                $strCfg = loadFile(LAZY_PATH.C('PAGES_PATH').'/'.$lists.'/config.php');
-                $_html = '<form action="'.url('System','ModuleConfig').'" class="lz_form">';
-                $_html.= '<table class="lz_table" style="width:97%;">';
-                $_html.= '<thead><tr>';
-                $_html.= '<th>Key</th>';
-                $_html.= '<th>Value</th>';
-                $_html.= '</tr></thead>';
-                $_html.= '<tbody>';
-                $input = null;
-                foreach ($config as $k=>$v) {
-                    if (is_numeric($v)) {
-                        $v = (int)$v;
-                    } elseif (is_bool($v)) {
-                        $v = $v ? 'true' : 'false';
-                    }
-                    preg_match("/\'".preg_quote($k,'/')."\'( *)\=\>( *)(\'?)(.+)(\'?)( *)\,( *)\/\/( *)(.+)?/i",$strCfg,$info);
-                    $noteValue = isset($info[9]) && !empty($info[9]) ? htmlencode($info[9]) : null;
-                    $noteLabel = null;
-                    if (!empty($noteValue)) {
-                        $noteLabel = '<input name="'.$k.'__note" type="hidden" value="'.$noteValue.'" /><label class="error" for="'.$k.'">'.$noteValue.'</label>';
-                        $input    .= $k.'__note,';
-                    }
-                    $_html.= '<tr>';
-                    $_html.= '<td><strong>'.strtoupper($k).'</strong></td>';
-                    $_html.= '<td><input id="'.$k.'" name="'.$k.'" type="text" class="in3" value="'.$v.'"/>'.$noteLabel.'</td>';
-                    $_html.= '</tr>';
-                    $input.= $k.',';
-                }
-                $_html.= '</tbody></table>';
-                $_html.= '<div class="button" style="margin:10px auto; text-align:center;">';
-                $_html.= '<button type="button" onclick="javascript:$(this).gm(\'submit\',inputValue({lists:\''.$lists.'\'},\''.rtrim($input,',').'\'));">'.L("common/submit").'</button>';
-                $_html.= '<button type="reset" onclick="javascript:return confirm(\''.L('confirm/reset').'\')">'.L('common/reset').'</button>';
-                $_html.= '<button type="button" class="close">'.L('common/close').'</button>';
-                $_html.= '</div>';
-                $_html.= '</form>';
-                
-                $this->poping(array(
-                    'title' => L('config/@title').' - '.L('title',null,$lists),
-                    'main'  => $_html,
-                ));
-                break;
             default :
                 $this->poping(L('error/invalid'),0);
                 break;
         }
-    }
-    // _moduleConfig *** *** www.LazyCMS.net *** ***
-    function _moduleConfig(){
-        clearCache();
-        $this->checker('module',true); 
-        $submit = isset($_POST['submit']) ? $_POST['submit'] : null; unset($_POST['submit']);
-        $lists  = isset($_POST['lists']) ? $_POST['lists'] : null; unset($_POST['lists']);
-        M($lists);
-        switch($submit){
-            case 'submit';
-                $array = array();
-                foreach ($_POST as $k=>$v) {
-                    if (is_numeric(trim($v))) {
-                        $v = (int)$v;
-                    } elseif (trim($v)=='true' || trim($v)=='false') {
-                        if (trim($v)=='false') {
-                            $v = false;
-                        } else {
-                            $v = true;
-                        }
-                    }
-                    if (substr($k,-6)!='__note') {
-                        M($lists,$k,$v);
-                    } else {
-                        $array[substr($k,0,strlen($k)-6)] = $v;
-                    }
-                }
-                $config = var_export(array_change_key_case(M($lists),CASE_UPPER),true);
-                foreach ($array as $k=>$v) {
-                    $config = replace("/\'".preg_quote($k,'/')."\'( *)\=\>( *)(\'?)(.+)(\'?)( *)\,/i","\${0} // ".htmldecode($v),$config);
-                }
-                saveFile(LAZY_PATH.C('PAGES_PATH').'/'.$lists.'/config.php',"<?php\n".createNote(ucfirst($lists).' module configuration files')."\nreturn ".$config.";\n?>");
-                break;
-            default :
-                $this->poping(L('error/invalid'),0);
-                break;
-        }
-        $this->poping(L('module/pop/ok'),0);
     }
     // _moduleleadin *** *** www.LazyCMS.net *** ***
     function _moduleleadin(){

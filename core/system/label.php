@@ -79,7 +79,11 @@ class Label extends Lazy{
         $data['fieldefault'] = isset($data['fieldefault']) ? $data['fieldefault'] : null;
         $data['fieldename'] = isset($data['fieldename']) ? $data['fieldename'] : null;
         $data['fieldlength'] = isset($data['fieldlength']) ? $data['fieldlength'] : null;
-        $data['fieldvalue'] = str_replace("\r\n","\n",$data['fieldvalue']);
+        if (isset($data['fieldtype'])) {
+            $data['fieldvalue'] = str_replace("|","\n",$data['fieldvalue']);
+        } else {
+            $data['fieldvalue'] = str_replace("\r\n","\n",$data['fieldvalue']);
+        }
         if (empty($l2)) {
             $default = $data['fieldefault'];
         } else {
@@ -101,7 +105,7 @@ class Label extends Lazy{
                         $I3 = explode(":",$v);
                         foreach ($I3 as &$l3) { $l3 = htmlencode($l3); }
                         $checked = !empty($default) ? ($default==$I3[1] ? ' checked="checked"' : null) : null;
-                        $I1.= '<input name="'.$data['fieldename'].'[]" id="'.$data['fieldename'].'_'.$I3[1].'" type="radio" value="'.$I3[1].'"'.$checked.' /><label for="'.$data['fieldename'].'_'.$I3[1].'">'.$I3[0].'</label>';    
+                        $I1.= '<input name="'.$data['fieldename'].'" id="'.$data['fieldename'].'_'.$I3[1].'" type="radio" value="'.$I3[1].'"'.$checked.' /><label for="'.$data['fieldename'].'_'.$I3[1].'">'.$I3[0].'</label>';    
                     }
                 }
                 $I1.= '</span>';

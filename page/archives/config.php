@@ -24,13 +24,54 @@
  * Archives module configuration files
  */
 return array (
-  // 需要改造，模块管理设置哪里也需要改造
-  'ARCHIVES_ADD_SHOW' => true, // 添加文档，默认是否显示
-  'ARCHIVES_ADD_COMMEND' => false, // 添加文档，默认是否推荐
-  'ARCHIVES_ADD_TOP' => false, // 添加文档，默认是否置顶
-  'ARCHIVES_ADD_SNAPIMG' => true, // 添加文档，默认是否下载远程图片
-  'ARCHIVES_ADD_UPSORT' => true, // 添加文档，默认是否更新列表
-  'ARCHIVES_ADD_UPHOME' => true, // 添加文档，默认是否更新首页
-  'ARCHIVES_ADD_CHECKTITLE' => true, // 添加文档，默认是否检查重复标题
+  /**
+   * 添加文档->文档属性->显示
+   *
+   * @inputtype:radio
+   * @fieldvalue:默认打勾:true|默认不打勾:false
+   */
+  'ARCHIVES_ADD_SHOW' => true,
+  /**
+   * 添加文档->文档属性->推荐
+   *
+   * @inputtype:radio
+   * @fieldvalue:默认打勾:true|默认不打勾:false
+   */
+  'ARCHIVES_ADD_COMMEND' => false,
+  /**
+   * 添加文档->文档属性->置顶
+   *
+   * @inputtype:radio
+   * @fieldvalue:默认打勾:true|默认不打勾:false
+   */
+  'ARCHIVES_ADD_TOP' => false,
+  /**
+   * 添加文档->文档属性->下载远程图片
+   *
+   * @inputtype:radio
+   * @fieldvalue:默认打勾:true|默认不打勾:false
+   */
+  'ARCHIVES_ADD_SNAPIMG' => true,
+  /**
+   * 添加文档->文档属性->更新列表
+   *
+   * @inputtype:radio
+   * @fieldvalue:默认打勾:true|默认不打勾:false
+   */
+  'ARCHIVES_ADD_UPSORT' => true,
+  /**
+   * 添加文档->文档属性->更新首页
+   *
+   * @inputtype:radio
+   * @fieldvalue:默认打勾:true|默认不打勾:false
+   */
+  'ARCHIVES_ADD_UPHOME' => true,
+  /**
+   * 添加文档->文档属性->检查重复标题
+   *
+   * @inputtype:radio
+   * @fieldvalue:默认打勾:true|默认不打勾:false
+   */
+  'ARCHIVES_ADD_CHECKTITLE' => true,
 );
 ?>

@@ -175,4 +175,10 @@ class LazyMyTags extends LazyCMS{
                 break;
         }
     }
+    // _config *** *** www.LazyCMS.net *** ***
+    function _config(){
+        $this->checker(C('CURRENT_MODULE')); 
+        $this->config(C('CURRENT_MODULE'));
+        $this->display('config.php');
+    }
 }

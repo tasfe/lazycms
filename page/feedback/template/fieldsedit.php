@@ -1,6 +1,6 @@
 <?php System::header();?>
 <?php $module->validate('outjs');?>
-<?php echo menu($module->L('title').'|'.url(C('CURRENT_MODULE'),'Admin').';'.$module->L('common/tag').'|'.url(C('CURRENT_MODULE'),'Admin','tag=1').';'.$module->L('common/config').'|'.url(C('CURRENT_MODULE'),'Config').';'.$module->L('common/fields').'|'.url(C('CURRENT_MODULE'),'Fields').';'.$menu);?>
+<?php echo menu($module->L('title').'|'.url(C('CURRENT_MODULE'),'Admin').';'.$module->L('common/tag').'|'.url(C('CURRENT_MODULE'),'Admin','tag=1').';'.L('config/@title').'|'.url(C('CURRENT_MODULE'),'Config').';'.$module->L('common/fields').'|'.url(C('CURRENT_MODULE'),'Fields').';'.$menu);?>
 <div class="content">
     <form action="<?php echo url(C('CURRENT_MODULE'),'FieldsEdit');?>" method="post" class="lz_form">
         <p><label><?php echo $module->L('label/field/name');?></label><input id="fieldname" name="fieldname" type="text" maxlength="50" class="in2" value="<?php echo $fieldname;?>"/></p>

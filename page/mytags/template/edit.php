@@ -1,6 +1,6 @@
 <?php System::header();?>
 <?php $module->validate('outjs');?>
-<?php echo menu($module->L('title').'|'.url(C('CURRENT_MODULE')).';'.$menu);?>
+<?php echo menu($module->L('title').'|'.url(C('CURRENT_MODULE')).';'.$menu.';'.L('config/@title').'|'.url(C('CURRENT_MODULE'),'Config'));?>
 <div class="content">
     <form action="<?php echo url(C('CURRENT_MODULE'),'Edit');?>" method="post" class="lz_form">
         <p><label><?php echo $module->L('label/name');?></label><input class="in3" type="text" id="mtname" name="mtname" maxlength="50" value="<?php echo $mtname;?>" /></p>
