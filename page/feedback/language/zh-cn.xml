@@ -41,6 +41,8 @@
                 <upfile>文件上传框</upfile>
             </type>
 		</field>
+        <home>返回到网站首页</home>
+        <ok>感谢您的反馈！</ok>
     </list>
 
     <label>

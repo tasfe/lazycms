@@ -63,7 +63,46 @@ class FeedBack{
     }
     // tags *** *** www.LazyCMS.net *** ***
     static function tags($tags,$inValue){
-        return true;
+        $tmpList = null; $db = getConn();
+        $HTMList = $tags; $tag = O('Tags');
+        $jsHTML  = $tag->getLabel($HTMList,0);
+        $jsType  = $tag->getLabel($HTMList,'type');
+        $jsNumber= floor($tag->getLabel($HTMList,'number'));
+        $zebra   = $tag->getLabel($HTMList,'zebra');
+
+        $select = "SELECT * FROM `#@_feedback` AS `fb` LEFT JOIN `".self::$addTable."` AS `fbc` ON `fb`.`fbid`=`fbc`.`fbid` ";
+        switch ($jsType) {
+            case 'tag0': // 未加星的留言
+                $strSQL = $select." WHERE `fb`.`istag`=0 ORDER BY `fb`.`fbid` DESC";
+                break;
+            case 'tag1': // 加星的留言
+                $strSQL = $select." WHERE `fb`.`istag`=1 ORDER BY `fb`.`fbid` DESC";
+                break;
+            default:
+                $strSQL = $select." ORDER BY `fb`.`fbid` DESC";
+                break;
+        }
+        $strSQL.= " LIMIT 0,{$jsNumber};";
+        $rs = $db->query($strSQL);
+        $i  = 1;
+        while ($data = $db->fetch($rs)) {
+            $tag->clear();
+            $tag->value('id',$data['fbid']);
+            $tag->value('istag',$data['istag']);
+            $tag->value('title',encode(htmlencode($data['fbtitle'])));
+            $tag->value('content',encode($data['fbcontent']));
+            $tag->value('ip',encode($data['fbip']));
+            $tag->value('date',$data['fbdate']);
+            $tag->value('zebra',($i % ($zebra+1)) ? 0 : 1);
+            $tag->value('++',$i);
+            $res = $db->query("SELECT `fieldename` FROM `#@_feedback_fields`;");
+            while ($field = $db->fetch($res)) {
+                $tag->value($field['fieldename'],encode(htmlencode($data[$field['fieldename']])));
+            }
+            $tmpList.= $tag->createhtm($jsHTML,$tag->getValue());
+            $i++;
+        }
+        return $tmpList;
     }
     // uninstSQL *** *** www.LazyCMS.net *** ***
     static function uninstSQL(){
@@ -80,7 +119,6 @@ SQL;
             // 留言反馈
             CREATE TABLE IF NOT EXISTS `#@_feedback` (
               `fbid` int(11) NOT NULL auto_increment,
-              `isview` int(11) default '0',             # 是否已读
               `istag` int(11) default '0',              # 是否加星
               `fbtitle` varchar(100),                   # 标题
               `fbcontent` text,                         # 内容

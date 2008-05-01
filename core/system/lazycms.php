@@ -334,7 +334,24 @@ abstract class LazyCMS extends Lazy{
         if (!empty($html) || empty($l1)) {
             return $html;
         } else {
-            $html = '<p class="succeed">'.$l1.'</p>';
+            if (is_array($l1)) {
+                $html = '<ol>';
+                foreach ($l1 as $v) {
+                    if (strpos($v,'|')!==false) {
+                        $a = explode('|',$v);
+                        $a = '<a href="'.$a[1].'">'.$a[0].'</a>';
+                    } else {
+                        $a = $v;
+                    }
+                    $html.= '<li>'.$a.'</li>';
+                }
+                if (isset($_SERVER['HTTP_REFERER'])) {
+                    $html.= '<li><a href="'.$_SERVER['HTTP_REFERER'].'">'.$_SERVER['HTTP_REFERER'].'</a></li>';
+                }
+                $html.= '</ol>';
+            } else {
+                $html = '<p class="succeed">'.$l1.'</p>';
+            }
         }
         return $html;
     }

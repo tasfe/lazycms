@@ -372,6 +372,8 @@ class LazySystem extends LazyCMS{
         ));
         if ($this->method()) {
             if ($this->validate()) {
+                // 删除配置缓存
+                if (!C('DEBUG_MODE')) { @unlink(RUNTIME_PATH.'/~app.php'); }
                 // 不支持rewrite 还原 URL_MODEL 设置
                 if (!$isReWrite) { $urlmode = C('URL_MODEL'); }
                 $config = include CORE_PATH.'/custom/config.php';

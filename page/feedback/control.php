@@ -63,14 +63,18 @@ class LazyFeedBack extends LazyCMS{
                 $fbid = $db->lastInsertId();
                 $addrows = array_merge($formData,array('fbid'=>$fbid));
                 $db->insert(FeedBack::$addTable,$addrows);
-                redirect(url(C('CURRENT_MODULE')));return true;
+                $this->succeed(array(
+                    $this->L('list/ok'),
+                    $this->L('list/home').'|'.C('SITE_BASE'),
+                ));
+                $innerHTML = $this->succeed();
             }
+        } else {
+            while (list($name,$data) = each($fieldData)) {
+                $label->p = '<p><label>'.$data['fieldname'].'</label>'.$label->tag($data,$formData[$name]).'</p>';
+            }
+            $this->outHTML = $label->fetch;    
         }
-
-        while (list($name,$data) = each($fieldData)) {
-            $label->p = '<p><label>'.$data['fieldname'].'</label>'.$label->tag($data,$formData[$name]).'</p>';
-        }
-        $this->outHTML = $label->fetch;
 
         $this->assign(array(
             'fbtitle'   => htmlencode($fbtitle),
@@ -83,12 +87,14 @@ class LazyFeedBack extends LazyCMS{
                 'print'   => true
             ),
         ));
-        
+        if (!isset($innerHTML)) {
+            $innerHTML = $this->fetch('index.php');
+        }
         $tag  = O('Tags');
         $HTML = $tag->read(M(C('CURRENT_MODULE'),'FEEDBACK_TEMPLATE'));
         $tag->clear();
         $tag->value('title',encode($this->L('title')));
-        $tag->value('inside',encode($this->fetch('index.php')));
+        $tag->value('inside',encode($innerHTML));
         $outHTML = $tag->create($HTML,$tag->getValue());
         echo $outHTML;
     }
@@ -166,15 +172,20 @@ class LazyFeedBack extends LazyCMS{
                 if (!$data = $db->fetch($res)){}
 
                 $data['fbtitle'] = htmlencode($data['fbtitle']);
-                $main = '<style type="text/css">.lz_form .in{ padding:0 3px; }</style><div class="lz_form">';
-                $main.= '<p><label><strong>'.$this->L('list/title').'</strong></label><div class="in">'.$data['fbtitle'].'</div></p>';
-                $main.= '<p><label><strong>'.$this->L('list/content').'</strong></label><div class="in">'.$data['fbcontent'].'</div></p>';
+                $main = '<div id="lz_form" class="lz_form">';
+                $main.= '<div><label><strong>'.$this->L('list/title').'</strong></label><blockquote class="in">'.$data['fbtitle'].'</blockquote></div>';
+                $main.= '<div><label><strong>'.$this->L('list/content').'</strong></label><blockquote class="in">'.$data['fbcontent'].'</blockquote></div>';
                 // 读取自定义字段
                 $res = $db->query("SELECT * FROM `#@_feedback_fields` WHERE 1 ORDER BY `fieldorder` ASC, `fieldid` ASC;");
                 while ($info = $db->fetch($res)) {
-                    $main.= '<p><label><strong>'.$info['fieldname'].'</strong></label><div class="in">'.$data[$info['fieldename']].'</div></p>';
+                    $main.= '<div><label><strong>'.$info['fieldname'].'</strong></label><blockquote class="in">'.$data[$info['fieldename']].'</blockquote></div>';
                 }
                 $main.= '</div>';
+                $main.= '<style type="text/css">';
+                $main.= '#lz_form{ padding-top:0px; }';
+                $main.= '#lz_form .in{ width:95%; margin:0 auto; padding:0 3px; }';
+                $main.= '#lz_form div{ margin:10px 0 1px 0; }';
+                $main.= '</style>';
                 $this->poping(array(
                     'title' => $data['fbtitle'],
                     'main'  => $main,
