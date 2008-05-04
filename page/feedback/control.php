@@ -50,7 +50,6 @@ class LazyFeedBack extends LazyCMS{
                 $formData[$data['fieldename']] = implode(',',$formData[$data['fieldename']]);
             }
         }
-        
         if ($this->method()) {
             if ($this->validate()) {
                 $row = array(
@@ -69,12 +68,11 @@ class LazyFeedBack extends LazyCMS{
                 ));
                 $innerHTML = $this->succeed();
             }
-        } else {
-            while (list($name,$data) = each($fieldData)) {
-                $label->p = '<p><label>'.$data['fieldname'].'</label>'.$label->tag($data,$formData[$name]).'</p>';
-            }
-            $this->outHTML = $label->fetch;    
         }
+        while (list($name,$data) = each($fieldData)) {
+            $label->p = '<p><label>'.$data['fieldname'].'</label>'.$label->tag($data,$formData[$name]).'</p>';
+        }
+        $this->outHTML = $label->fetch;
 
         $this->assign(array(
             'fbtitle'   => htmlencode($fbtitle),

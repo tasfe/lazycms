@@ -35,7 +35,7 @@ class FeedBack{
         $contents = str_replace("\r\n","\n",$l1);
         $contents = explode("\n",$contents);
         foreach ($contents as $v) {
-            if (strlen($I1)>0) {
+            if (strlen($I1)>0 && $I1!='&nbsp;') {
                 break;
             } else {
                 $I1 = cls(lefte(clearHTML($v),$l2));
@@ -115,6 +115,7 @@ SQL;
     }
     // instsql *** *** www.LazyCMS.net *** ***
     static function instSQL(){
+        $addTable = self::$addTable;
         return <<<SQL
             // 留言反馈
             CREATE TABLE IF NOT EXISTS `#@_feedback` (
@@ -139,6 +140,11 @@ SQL;
               `fieldvalue` varchar(255),                    # radio,checkbox,select 值
               PRIMARY KEY  (`fieldid`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=#~lang~#;
+            // 附属表
+            CREATE TABLE IF NOT EXISTS `{$addTable}` (
+                `fbid` int(11) NOT NULL,
+                PRIMARY KEY (`fbid`)
+            ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;
 SQL;
     }
 }
