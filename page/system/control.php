@@ -652,7 +652,7 @@ class LazySystem extends LazyCMS{
         switch (strtolower($action)) {
             case 'delete': 
                 $file = isset($_POST['file']) ? (string)$_POST['file'] : null;
-                @unlink($file);
+                @unlink(LAZY_PATH.$file);
                 break;
             case 'createfolder' :
                 $folder = isset($_POST['folder']) ? (string)$_POST['folder'] : null;
@@ -768,10 +768,10 @@ class LazySystem extends LazyCMS{
             $bPath  = $bPath == '/' ? $bPath : ltrim($bPath,'/');
             $editor = "<a href=\"javascript:insertEditor();\" onclick=\"insertEditor('<img src=\'{$uPath}\' />');return false;\" class=\"close\">[".L('common/inserteditor')."]</a> ";
             $insert = "<a href=\"javascript:Insert();\" onclick=\"\$('#{$from}').val('{$path}');return false;\" class=\"close\">[".L('common/insert')."]</a> ";
-            $delete = "<a href=\"javascript:Delete();\" onclick=\"if(confirm('".L('confirm/delete')."')){\$('#{$from}').browseFiles('".url('System','browseFiles')."',{action:'delete',path:'{$bPath}',file:'{$cPath}'});}return false;\">[".L('common/delete')."]</a> ";
+            $delete = "<a href=\"javascript:Delete();\" onclick=\"if(confirm('".L('confirm/delete')."')){\$('#{$from}').browseFiles('".url('System','browseFiles')."',{action:'delete',path:'{$bPath}',file:'{$path}'});}return false;\">[".L('common/delete')."]</a> ";
             $back = "<a href=\"javascript:Back();\" onclick=\"\$('#{$from}').browseFiles('".url('System','browseFiles')."','{$bPath}');return false;\">[".L('common/back')."]</a> ";
             $HTML.= '<tr><td>'.$editor.$insert.$delete.$back.' <a href="javascript:Close();" class="close">['.L('common/close').']</a></td></tr>';
-            $HTML.= '<tr><td style="text-align:center;"><a href="'.$cPath.'" target="_blank"><img src="'.$cPath.'" onload="if(this.width>558){this.width=558;}"/></a></td></tr>';
+            $HTML.= '<tr><td style="text-align:center;"><a href="'.$uPath.'" target="_blank"><img src="'.$uPath.'" onload="if(this.width>558){this.width=558;}"/></a></td></tr>';
         }
         $HTML.= '</table></form>';
 
