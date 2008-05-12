@@ -1,6 +1,6 @@
 <?php
-// Image *** *** www.LazyCMS.net *** ***
-class Image{
+// Images *** *** www.LazyCMS.net *** ***
+class Images{
     // getImageInfo *** *** www.LazyCMS.net *** ***
     static function getImageInfo($img) {
         $imageInfo = getimagesize($img);
@@ -22,7 +22,7 @@ class Image{
     // thumb *** *** www.LazyCMS.net *** ***
     static function thumb($image,$filename='',$maxWidth=100,$maxHeight=100,$suffix='_thumb') {
         // 获取原图信息
-        $info  = Image::getImageInfo($image); 
+        $info  = Images::getImageInfo($image); 
         if($info !== false) {
             $srcWidth  = $info['width'];
             $srcHeight = $info['height'];

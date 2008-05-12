@@ -150,7 +150,6 @@ class Tags extends Lazy{
                 if (class_exists('Archives')) {
                     $I1 = Archives::tags($tags,$inValue);
                 }
-                
                 if (empty($I1)) {
                     if (class_exists($tagName)) {
                         $obj = new $tagName();
@@ -160,8 +159,6 @@ class Tags extends Lazy{
                             $I1 = $tagName;
                         }
                         unset($obj);
-                        // 无需再次进行解析
-                        //$I1 = $this->parseAtt($tags,$inValue,$I1);
                     } else {
                         $I1 = $this->parseAtt($tags,$inValue,$tagName);
                     }
@@ -212,15 +209,16 @@ class Tags extends Lazy{
         
         // image
         if (strtolower($l3) == 'image') {
+            
             $imgWidth  = sect($l1,'width="','"');
             $imgHeight = sect($l1,'height="','"');
             if (is_file(LAZY_PATH.$l4)) {
                 if (is_numeric($imgWidth) && is_numeric($imgHeight) && function_exists('gd_info')) {
-                    import('system.image'); $I2 = pathinfo($l4); 
+                    import('system.images'); $I2 = pathinfo($l4); 
                     $l8 = $I2['dirname'].'/TN/'.substr($I2['basename'],0,strrpos($I2['basename'], '.'))."_{$imgWidth}x{$imgHeight}.".$I2['extension'];
                     $I1 = C('SITE_BASE').$l8;
                     if (!is_file($l8)) {
-                        Image::thumb(LAZY_PATH.$l4,LAZY_PATH.$l8,$imgWidth,$imgHeight);
+                        Images::thumb(LAZY_PATH.$l4,LAZY_PATH.$l8,$imgWidth,$imgHeight);
                     }
                 } else {
                     $I1 = C('SITE_BASE').$l4;

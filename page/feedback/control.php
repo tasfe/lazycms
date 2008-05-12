@@ -114,14 +114,14 @@ class LazyFeedBack extends LazyCMS{
         $dp->url = url(C('CURRENT_MODULE'),'Admin',$query.'page=$');
         $dp->but = $dp->button('tag1:'.$this->L('common/tag1').'|tag0:'.$this->L('common/tag0')).$dp->plist();
         $onclick = " onclick=\"$(this).gm(\'view\',{lists:' + K[0] + '},{width:\'600px\',\'margin-left\':\'-300px\',height:\'300px\'});\"";
-        $dp->td  = "cklist(K[0]) + feedback.tag(K[2],K[0]) + '<a href=\"javascript:void(0);\"{$onclick}>' + K[3] + '</a>'";
-        $dp->td  = "'<a href=\"javascript:void(0);\"{$onclick}>' + K[4] + '</a>'";
-        $dp->td  = "'<a href=\"".sprintf(M(C('CURRENT_MODULE'),'FEEDBACK_IP_SEARCH'),"' + K[5] + '")."\" target=\"_blank\">' + K[5] + '</a>'";
-        $dp->td  = "K[6]";
+        $dp->td  = "cklist(K[0]) + feedback.tag(K[1],K[0]) + '<a href=\"javascript:void(0);\"{$onclick}>' + K[2] + '</a>'";
+        $dp->td  = "'<a href=\"javascript:void(0);\"{$onclick}>' + K[3] + '</a>'";
+        $dp->td  = "'<a href=\"".sprintf(M(C('CURRENT_MODULE'),'FEEDBACK_IP_SEARCH'),"' + K[4] + '")."\" target=\"_blank\">' + K[4] + '</a>'";
+        $dp->td  = "K[5]";
         $dp->open();
         $dp->thead  = '<tr><th>'.$this->L('list/title').'</th><th>'.$this->L('list/content').'</th><th>'.$this->L('list/ip').'</th><th>'.$this->L('list/date').'</th></tr>';
         while ($data = $dp->result()) {
-            $dp->tbody = "ll(".$data['fbid'].",".$data['isview'].",".$data['istag'].",'".t2js(htmlencode($data['fbtitle']))."','".t2js(htmlencode(FeedBack::getTitle($data['fbcontent'])))."','".t2js(htmlencode($data['fbip']))."','".date('Y-m-d H:i:s',$data['fbdate'])."');";
+            $dp->tbody = "ll(".$data['fbid'].",".$data['istag'].",'".t2js(htmlencode($data['fbtitle']))."','".t2js(htmlencode(FeedBack::getTitle($data['fbcontent'])))."','".t2js(htmlencode($data['fbip']))."','".date('Y-m-d H:i:s',$data['fbdate'])."');";
         }
         $dp->close();
 

@@ -505,6 +505,7 @@ function validate($l1,$l2){
 function snapImg($l1){
     $I1 = $l1;
     if (preg_match_all('/<img.[^>]*src="(.[^>]+?)".[^>]*\/>/i',$l1,$imgs)) {
+        $imgs[1] = array_unique($imgs[1]);
         foreach ($imgs[1] as $img) {
             if ($downImg = downPic($img)) {
                 if (validate($img,7)) {
