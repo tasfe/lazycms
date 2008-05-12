@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="{lazy:keywords/}"/>
+<meta name="description" content="{lazy:description/}"/>
+<title>{lazy:title/} - {lazy:sitename/}</title>
+<link rel="shortcut icon" href="http://www.lazycms.net/favicon.ico" />
+<link href="images/style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<!-- top block -->
+<div id="top">
+	<a href="{lazy:inst/}" id="logo"><img src="images/logo.png" alt="{lazy:sitename/}" /></a>
+	<div class="tip">约有<strong><span class="lz_vernumber"><script type="text/javascript">$('.lz_vernumber').html(loadgif()).load('{lazy:inst/}mytags/number.htm');</script></span></strong>个网站正在使用LazyCMS</div>
+</div>
+<!-- menu block -->
+<div id="menu">
+	<a href="{lazy:inst/}">网站首页</a>
+	<a href="{lazy:inst/}news/">最近更新</a>
+	<a href="{lazy:inst/}license/">许可协议</a>
+	<a href="{lazy:inst/}download/">程序下载</a>
+	<a href="{lazy:inst/}help/">使用帮助</a>
+	<a href="{lazy:inst/}service/">服务项目</a>
+	<a href="http://forums.lazycms.net/" target="_blank">讨论交流</a>
+</div>
+<!-- header block -->
+<div id="header">
+	<div class="left">&nbsp;</div>
+	<div class="center"><a href="{lazy:inst/}download/"><img src="images/opensource.png" alt="&#13;  免费：保留链接，免费使用  &#13;  简洁：简洁后台，简单操作  &#13;  灵活：自由定义，灵活装配  &#13;" border="0" /></a></div>
+</div>
+<!-- what is this block? -->
+<div class="block">&nbsp;</div>
+<!-- main block -->
+<div id="main">
+	<div class="left smallbox">
+		<dl class="news">
+			<dt><strong>最近更新</strong><a href="{lazy:inst/}news/"><img src="images/more.gif" alt="more" /></a></dt>
+			{lazy:mytags name="lastupdate" type="js"/}
+		</dl>
+		<dl>
+			<dt><strong>许可协议</strong><a href="{lazy:inst/}license/"><img src="images/more.gif" alt="more" /></a></dt>
+			<dd class="license">{lazy:mytags name="license"/}</dd>
+		</dl>
+		<ul class="download">
+			{lazy:mytags name="download"/}
+		</ul>
+	</div>
+	<div class="right">
+		<div class="container ">
+			<div id="guide">
+				<a href="{lazy:inst/}" class="home">当前位置</a>
+				<span class="sub">{lazy:guide/}</span>
+			</div>
+			{lazy:inside/}
+		</div>
+	</div>
+</div>
+<!-- footer block -->
+<div id="footer">
+	<span class="left">{lazy:mytags name="bottomenu"/}</span>
+	<span class="right">{lazy:cms/}</span>
+</div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<div id="artlist" class="list">
+	<div class="title">{lazy:sortname/}</div>
+	{lazy:pagelist/}
+	{lazy:article type="list" number="10"}
+	<div class="item">
+		<a href="(lazy:path/)" target="_blank" title="(lazy:title/)">(lazy:title size="30"/)</a>
+		<div class="intro">(lazy:description size="200"/)</div>
+	</div>
+	{/lazy}
+	{lazy:pagelist/}
+</div>

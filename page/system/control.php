@@ -382,7 +382,7 @@ class LazySystem extends LazyCMS{
                 if ($sitemode) {
                     @unlink(LAZY_PATH.C('PAGES_PATH').'/index.php');
                     saveFile(LAZY_PATH.C('PAGES_PATH').'/index.html');
-                    saveFile(LAZY_PATH.'/index.php',"<?php\n".createNote()."\ndefine('CORE_PATH', dirname(__FILE__).'/core');require CORE_PATH.'/LazyCMS.php';LazyCMS::run('System','Default');\n?>");
+                    saveFile(LAZY_PATH.'/index.php',"<?php\n".createNote()."\ndefine('LAZY_PATH', dirname(__FILE__).'/'); define('CORE_PATH', dirname(__FILE__).'/core');require CORE_PATH.'/LazyCMS.php';LazyCMS::run('System','Default');\n?>");
                 } else {
                     // 全站静态模式，删除index.php 自动创建一个 page/index.php
                     @unlink(LAZY_PATH.C('PAGES_PATH').'/index.html');

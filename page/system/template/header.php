@@ -4,11 +4,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php echo L('admin/title');?></title>
 <link href="../system/images/style.css" rel="stylesheet" type="text/css" />
+<?php if (is_file(LAZY_PATH.strtolower(C('CURRENT_MODULE')).'/images/common.js')):?>
 <script type="text/javascript">var module="<?php echo strtolower(C('CURRENT_MODULE'));?>";</script>
+<?php endif;?>
 <script type="text/javascript" src="../system/js/jquery.js"></script>
 <script type="text/javascript" src="../system/js/jquery.lazycms.js"></script>
 <script type="text/javascript">
-//if (top.location == self.location) { top.location = '<?php echo url("System");?>'; }
+if (top.location == self.location) { top.location = '<?php echo url("System");?>'; }
 // 获取最新版本
 var lz_verison = "<?php echo url('System','Version');?>";
 $(function(){

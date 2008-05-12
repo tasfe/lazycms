@@ -2,7 +2,7 @@ var debug = false;
 // 加载所需的JavaScript文件，必须在文档完全载入之前加载。
 LoadScript('json');LoadScript('blockUI');
 // 载入公用函数和后台专用函数 *** *** www.LazyCMS.net *** ***
-LoadScript('common');LoadScript('lazycms.funs');LoadScript('request');
+LoadScript('common');LoadScript('lazycms.funs');
 // 载入日历控制脚本 *** *** www.LazyCMS.net *** ***
 LoadScript('date');LoadScript('bgiframe');LoadScript('datePicker');
 // 实现自动加载模块JavaScript类库

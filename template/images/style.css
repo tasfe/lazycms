@@ -1,0 +1,132 @@
+@import url("system.css");
+
+/* LazyCMS.net */
+body { width:100%; height:100%; display:table; font-size:12px; font-family:Verdana; margin:0 auto; line-height:130%; overflow-x:hidden; }
+form,dl,dt,dd{ margin:0; padding:0;}
+a img{ border:none; vertical-align:middle;}
+
+/* 连接样式 */
+a:link,
+a:active,
+a:visited { color: #333333; text-decoration: none; }
+a:hover { color: #0000FF; text-decoration: underline; }
+
+/* top 样式 */
+#top { width:99%; background:#FFFFFF; height:65px; padding-left:1%; display:table; zoom:100%; }
+	/* top 样式 */
+	#logo { width:190px; margin-top:5px; display:block; float:left; }
+	#top .tip { padding-right:20px; line-height:65px; height:65px; float:right; color:#FF0000; }
+
+/* menu 样式 */
+#menu { width:100%; height:25px; background:#666666; line-height:25px; border-bottom:solid 1px #FFF; }
+	#menu a { padding:0 15px; color: #FFF; text-decoration: none; display:block; float:left; }
+	#menu a:hover { background:#888888;}
+
+/* header 样式 */
+#header { width:100%; height:170px; background:#0099CC; }
+	#header .left { width:5%; height:170px; background:url(space.gif) repeat-y top right; float:left;}
+	#header .center { width:650px; height:170px; background:#6E7278; float:left; border-right:solid 1px #FFFFFF;}
+
+/* block 样式 */
+.block { width:100%; height:25px; line-height:25px; background:#6E7278; border-top:solid 1px #FFFFFF; }
+
+/* guide 样式 */
+#guide{ width:100%; display:table; clear:both; zoom:100%; line-height:21px; }
+	#guide .home{ width:92px; height:21px; display:block; text-align:center; letter-spacing:3px; font-weight:bold; background:url(guide.gif) no-repeat left center; float:left;}
+	#guide .sub{ padding-left:5px; float:left;}
+
+/* home 样式 */
+#home, #main { width:100%; height:auto; margin:0 auto; display:block; zoom:100%; background:#FFFFFF; overflow:hidden; }
+	#home .container, #main .container { width:98%; margin:10px 1%; }
+	
+	#main .left { width:22.5%; padding:0 1%; display:block; float:left; border-right:solid 1px #CCCCCC; padding-bottom:10000px; margin-bottom:-10000px; }
+	#main .left .news dd { padding-left:15px; line-height:19px; background:url(gray_arrow.gif) no-repeat 5px center; }
+	#main .right { width:75%; display:block; float:right; }
+
+	/* main left 样式 */
+	#home .left { width:75%; display:table; float:left; }
+	#home .left dl { float:left; margin-left:1%; }
+	#home .left dl dt { width:100%; clear:both; zoom:100%; display:table; border-bottom:solid 1px #CCCCCC; padding:8px 0 3px 0;}
+	#home .left dl dt strong { color:#193441; font-size:14px; float:left;}
+	#home .left dl dt a { float:right; display:block; padding-top:2px;}
+	/* .news dd And .help dd 的公有样式 */
+	#home .left .news dd,
+	#home .left .help dd { width:90%; padding-left:15px; line-height:19px; }
+	/* for IE 6 自动省略号 */
+	#home .left .news dd a,
+	#home .left .help dd a { width:auto; max-width:91%;  width:100% !ie; height:19px; white-space:nowrap; -o-text-overflow:ellipsis; text-overflow:ellipsis; overflow:hidden; display:block; float:left; }
+	/* for IE 7 自动省略号 */
+	*+html #home .left .news dd a,
+	*+html #home .left .help dd a { max-width:100% !important; }
+	/* for firefox 自动省略号 */
+	html>body #home .left .news dd:after,
+	html>body #home .left .help dd:after { content: "..."; } 
+	/* 最近更新 And 使用帮助 */
+	#home .left .news,
+	#home .left .help { width:28%; }
+	#home .left .news dd,
+	#home .left .help dd { background:url(gray_arrow.gif) no-repeat 5px center; }
+	/* 演示网站 */
+	#home .left .demo { width:41%; }
+	#home .left .demo dt { margin-bottom:5px;}
+	#home .left .demo dd { width:47%; margin:0 1%; float:left; text-align:center; background:#EBEBEB; border:solid 1px #C6C6C6; }
+	#home .left .demo dd a { width:100%; line-height:22px; overflow:hidden; clear:both; display:block; padding:2px 0;}
+	/* 服务项目 */
+	#home .left .service { width:98%; height:110px; }
+	#home .left .service dd { width:27%; height:50px; text-align:center; line-height:50px; margin:10px 2%; border:1px solid #DDCF8F; padding:5px; background:#FFFFED; float:left; font-weight:bold; font-size:16px; }
+	#home .left .service dd a { display:block; padding-left:20%; background:url(arrow_icon.gif) no-repeat 8% center; }
+	#home .left .service dd a:hover { padding-left:0; background:#0000FF; color:#FFFFFF; text-decoration:none;}
+	
+	/* main right 样式 */
+	#home .right { width:22.5%; padding:0 1%; display:table; float:right; border-left:solid 1px #CCCCCC; padding-bottom:10000px; margin-bottom:-10000px; }
+	.smallbox dl { width:100%; }
+	.smallbox dl dt {  width:100%; clear:both; zoom:100%; display:table; border-bottom:solid 1px #CCCCCC; padding:8px 0 3px 0;}
+	.smallbox dl dt strong { color:#193441; font-size:14px; float:left;}
+	.smallbox dl dt a { float:right; display:block; padding-top:2px;}
+	.smallbox dd.license { clear:both; padding:5px; line-height:150%;}
+	.smallbox dd.license strong { font-size:14px; color:#006600;}
+	.smallbox ul.download { width:100%; margin:0 0 5px 0; padding:5px 0 0 5px; border-top:dashed 1px #CCCCCC; list-style:none; float:right;}
+	.smallbox ul.download li { width:auto; height:25px; overflow:hidden; padding-left:20px; background:url(down.gif) no-repeat left 5px; line-height:25px;}
+	.smallbox ul.download li.important { background:url(down_important.gif) no-repeat left 5px;}
+	.smallbox dl.links dd { clear:both; background:url(arrow.gif) no-repeat 8px center; padding-left:20px; line-height:150%;}
+	.smallbox dl.links dd i { margin-left:5px; font-size:9px; font-style:normal;}
+	
+/* footer 样式 */
+#footer { width:100%; clear:both; height:25px; line-height:25px; background:#6E7278; color:#FFFFFF; }
+	#footer a { color:#FFFFFF; }
+	#footer .left { float:left; }
+		#footer .left a { margin:0 5px; }
+	#footer .right { float:right; padding-right:5px;}
+
+
+
+/* 单页样式 */
+#onepage{ clear:both; margin:10px;}
+
+/* 列表通用样式 */
+.list{ margin:10px 0; clear:both;}
+	.list .title{ width:100%; margin-bottom:10px; padding-left:10px; background:url(title.gif) no-repeat left center; color:#193441; font-size:14px; font-weight:bold; display:table; zoom:100%; line-height:25px; border-bottom:solid 1px #CCCCCC;}
+	.list .box{ width:98%; margin:0 auto; clear:both;}
+
+/* 文章列表 */
+#artlist .item{ padding:0 0 5px 0; line-height:200%; border-bottom:dashed 1px #CCCCCC; }
+	#artlist .item a{ padding-left:20px; background:url(bullet_blue.gif) no-repeat left center; font-weight:bold;}
+	#artlist .item .intro{ text-indent:26px; line-height:150%; color:#666666;}
+
+/* 文章信息 */
+#article{ width:100%; display:table; clear:both; }
+	#article h1{ margin:20px 0 10px 0; text-align:center; font-size:16px;}
+	#article .info{ text-align:center; color:#666666;}
+
+/* 模板列表 */
+#template ul{ margin:0; padding:0; list-style:none; display:block;}
+	#template ul li{ width:49%; height:120px; margin:10px 0; padding:0; float:left; display:block;}
+	#template .picture{ width:90px; height:110px; border:solid 1px #CCCCCC; padding:3px; float:left; display:block; text-align:center; overflow:hidden;}
+	#template .picture img{ width:90px;}
+	#template .info{ width:200px; height:120px; padding-left:10px; float:left; display:block;}
+	#template .info p{ width:95%; height:14px; overflow:hidden; white-space:nowrap; -o-text-overflow:ellipsis; text-overflow:ellipsis; }
+
+/* 程序下载 */
+#soft { margin:20px 0;}
+	#soft h1 { margin:0; padding:0; font-size:14px; color:#0609A0;}
+	#soft .downurl a { font-weight:bold; color:#009900;}
