@@ -365,7 +365,11 @@ class LazySystem extends LazyCMS{
         $keywords = isset($_POST['keywords']) ? $_POST['keywords'] : null;
         $lockip   = isset($_POST['lockip']) ? $_POST['lockip'] : null;
         // 判断服务器是否支持 rewrite
-        ob_start();phpinfo(); if (strpos(strtolower(ob_get_contents()),'mod_rewrite')!==false) { $isReWrite = true; } else { $isReWrite = false; } ob_end_clean();
+        if (function_exists('apache_get_modules')) {
+            $isReWrite = in_array('mod_rewrite',apache_get_modules());
+        } else {
+            $isReWrite = false;
+        }
         $this->validate(array(
             'sitename' => $this->check('sitename|1|'.L('config/check/sitename').'|1-50'),
             'sitemail' => !empty($sitemail) ? $this->check('sitemail|validate|'.L('config/check/sitemail').'|4') : null,
@@ -423,6 +427,7 @@ class LazySystem extends LazyCMS{
             'urlmode'  => $urlmode,
             'keywords' => htmlencode($keywords),
             'lockip'   => htmlencode($lockip),
+            'isReWrite'=> $isReWrite,
         ));
         $this->display('config.php');
     }

@@ -13,7 +13,7 @@
         <p><label><?php echo $module->L('config/urlmode/@title');?></label><span>
             <input type="radio" name="urlmode" id="sitemode_common" value="<?php echo URL_COMMON;?>"<?php echo $urlmode==URL_COMMON ? ' checked="checked"' : null;?>/><label for="sitemode_common"><?php echo $module->L('config/urlmode/common');?></label>
             <input type="radio" name="urlmode" id="sitemode_pathinfo" value="<?php echo URL_PATHINFO;?>"<?php echo $urlmode==URL_PATHINFO ? ' checked="checked"' : null;?> /><label for="sitemode_pathinfo"><?php echo $module->L('config/urlmode/pathinfo');?></label>
-            <?php if (!IS_IIS):?><input type="radio" name="urlmode" id="sitemode_rewrite" value="<?php echo URL_REWRITE;?>"<?php echo $urlmode==URL_REWRITE ? ' checked="checked"' : null;?> /><label for="sitemode_rewrite"><?php echo $module->L('config/urlmode/rewrite');?></label><?php endif;?>
+            <?php if ($isReWrite):?><input type="radio" name="urlmode" id="sitemode_rewrite" value="<?php echo URL_REWRITE;?>"<?php echo $urlmode==URL_REWRITE ? ' checked="checked"' : null;?> /><label for="sitemode_rewrite"><?php echo $module->L('config/urlmode/rewrite');?></label><?php endif;?>
         </span></p>
         <p><label><?php echo $module->L('config/keywords').' '.$module->L('config/tip/keywords');?></label><textarea name="keywords" id="keywords" rows="10" class="in5"><?php echo $keywords;?></textarea></p>
         <p><label><?php echo $module->L('config/lockip').' '.$module->L('config/tip/lockip');?></label><textarea name="lockip" id="lockip" rows="10" class="in5"><?php echo $lockip;?></textarea></p>

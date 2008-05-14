@@ -1268,15 +1268,17 @@ $I1 = $I2; if (!empty($l1)) { $I1.= $I3; } return $I1;
 // reWrite *** *** www.LazyCMS.net *** ***
 function reWrite($l1){
 $I2 = <<<CODESTART
+# BEGIN LazyCMS
 <IfModule mod_rewrite.c>
   RewriteEngine on
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_FILENAME} !-f
 CODESTART;
 $I3 = "\n  RewriteBase {$l1}\n";
 $I4 = <<<CODEEND
-  RewriteRule ^(.*)$ index.php?/$1 [QSA,PT,L]
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^(.*)$ index.php?$1 [L]
 </IfModule>
+# END LazyCMS
 CODEEND;
 $I1 = $I2.$I3.$I4; return $I1;
 }
