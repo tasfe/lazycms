@@ -1020,6 +1020,21 @@ class LazyArchives extends LazyCMS{
         $this->config(C('CURRENT_MODULE'));
         $this->display('config.php');
     }
+    // _search *** *** www.LazyCMS.net *** ***
+    function _search(){
+        $db  = getConn(); $strSQL = null;
+        $res = $db->query("SELECT DISTINCT `maintable` FROM `#@_archives_model` GROUP BY `maintable`;");
+        while ($data = $db->fetch($res,0)) {
+            if (empty($strSQL)) {
+                $strSQL.= "SELECT * FROM `".$data[0]."`";
+            } else {
+                $strSQL.= " UNION SELECT * FROM `".$data[0]."`";
+            }
+        }
+        $strSQL.= " ORDER BY `date` DESC;";
+
+        print_r($strSQL);
+    }
     // _hits *** *** www.LazyCMS.net *** ***
     function _hits(){
         clearCache();$db = getConn();
