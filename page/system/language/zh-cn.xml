@@ -42,6 +42,7 @@
         <config>设置</config>
         <inserteditor>插入到编辑器</inserteditor>
         <moreaction>更多操作...</moreaction>
+        <browhome>浏览网站...</browhome>
         <redirect>系统将在{$time}秒之后自动跳转到{$url}！</redirect>
     </common>
     
@@ -77,6 +78,10 @@
             <true>全站动态</true>
             <false>全站静态</false>
         </sitemode>
+        <debug title="错误设置 (为了安全，请选择不发送错误信息)">
+            <true>发送错误信息</true>
+            <false>不发送错误信息</false>
+        </debug>
         <urlmode title="URL模式">
             <common>普通模式</common>
             <pathinfo>PATHINFO</pathinfo>
@@ -167,7 +172,18 @@
     </log>
 	
 	<counter title="流量统计">
-	
+	    <config>开关设置</config>
+        <true>开启统计功能</true>
+        <false>关闭统计功能</false>
+        <getcode>统计代码标签</getcode>
+        <code><![CDATA[
+   
+   {lazy:counter style="1"/}
+
+   style 统计代码风格
+      ...0 or 空   不显示任何内容
+      ...1         显示文字
+      ...2         显示图标]]></code>
 	</counter>
 
     <login title="管理员登录">

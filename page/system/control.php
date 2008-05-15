@@ -152,14 +152,42 @@ class LazySystem extends LazyCMS{
 					$config = array();
 				}
 				$config = array_merge($config,array(
-					'WSS_SITE_ID'  => $info[0],
+                    'WSS_STATUS'   => true,	
+                    'WSS_SITE_ID'  => $info[0],
 					'WSS_PASSWORD' => $info[1],
 				));
 				C($config);saveFile(CORE_PATH.'/custom/config.php',"<?php\n".createNote('User-defined configuration files')."\nreturn ".var_export($config,true).";\n?>");
 			}
 		}
-		$burl = rawurlencode('http://wss.cnzz.com/oem/udmin.php?webid='.C("WSS_SITE_ID").'&s=main_page');
-		$HTML = '<iframe src="http://wss.cnzz.com/user/companion/lazycms_login.php?site_id='.C("WSS_SITE_ID").'&password='.C("WSS_PASSWORD").'&burl='.$burl.'" name="counter" id="counter" width="100%" marginwidth="0" height="500" marginheight="0" scrolling="auto" frameborder="0"></iframe>';
+        // 设置是否开启统计
+        if ($this->method()) {
+            $counter = isset($_POST['counter']) ? $_POST['counter'] : null;
+            $counter = $counter=='true' ? true : false;
+            $cFile = CORE_PATH.'/custom/config.php';
+            if (is_file($cFile)) {
+                $config = include $cFile;
+            } else {
+                $config = array();
+            }
+            $config = array_merge($config,array(
+                'WSS_STATUS' => (bool)$counter,
+            ));
+            C($config);saveFile(CORE_PATH.'/custom/config.php',"<?php\n".createNote('User-defined configuration files')."\nreturn ".var_export($config,true).";\n?>");
+        }
+        $counter = C('WSS_STATUS'); $HTML = null;
+        if ($counter) {
+            $burl = rawurlencode('http://wss.cnzz.com/oem/udmin.php?webid='.C("WSS_SITE_ID").'&s=main_page');
+            $HTML.= '<iframe src="http://wss.cnzz.com/user/companion/lazycms_login.php?site_id='.C("WSS_SITE_ID").'&password='.C("WSS_PASSWORD").'&burl='.$burl.'" name="counter" id="counter" width="100%" marginwidth="0" height="480" marginheight="0" scrolling="auto" frameborder="0" style="border-bottom:solid 1px #A8A8A8;"></iframe>';
+        }
+        $HTML.= '<form action="'.url('System','Counter').'" method="post" class="lz_form">';
+        $HTML.= '<p><label>'.L('counter/config').'</label><span>';
+        $HTML.= '<input type="radio" name="counter" id="counter_true" value="true"'.($counter ? ' checked="checked"' : null).'/><label for="counter_true">'.L('counter/true').'</label>';
+        $HTML.= '<input type="radio" name="counter" id="counter_false" value="false"'.(!$counter ? ' checked="checked"' : null).'/><label for="counter_false">'.L('counter/false').'</label>';
+        $HTML.= '</span></p>';
+        $HTML.= '<p><label>'.L('counter/getcode').'</label><pre>'.L('counter/code').'</pre></p>';
+        $HTML.= $this->but('save');
+        $HTML.= '</form>';
+		
 		$this->outHTML = $HTML;
 
 		$this->assign('menu',L('admin/title').'|'.url('System','Main').';'.L('log/@title').'|'.url('System','Log').';'.L('counter/@title').'|#|true');
@@ -402,6 +430,7 @@ class LazySystem extends LazyCMS{
         $sitemail = isset($_POST['sitemail']) ? $_POST['sitemail'] : null;
         $sitemode = isset($_POST['sitemode']) ? (bool)($_POST['sitemode']=='true'?true:false) : C('SITE_MODE');
         $urlmode  = isset($_POST['urlmode']) ? (int)$_POST['urlmode'] : C('URL_MODEL');
+        $debug    = isset($_POST['debug']) ? (bool)($_POST['debug']=='true'?true:false) : C('DEBUG_MODE');
         $keywords = isset($_POST['keywords']) ? $_POST['keywords'] : null;
         $lockip   = isset($_POST['lockip']) ? $_POST['lockip'] : null;
         // 判断服务器是否支持 rewrite
@@ -426,7 +455,7 @@ class LazySystem extends LazyCMS{
 				} else {
 					$config = array();
 				}
-                $config = array_merge($config,array('SITE_MODE'=>$sitemode,'URL_MODEL'=>$urlmode));
+                $config = array_merge($config,array('SITE_MODE'=>$sitemode,'URL_MODEL'=>$urlmode,'DEBUG_MODE'=>$debug));
                 // 全站动态模式，删除page/index.php 生成一个 page/index.html
                 if ($sitemode) {
                     @unlink(LAZY_PATH.C('PAGES_PATH').'/index.php');
@@ -470,6 +499,7 @@ class LazySystem extends LazyCMS{
             'sitemail' => htmlencode($sitemail),
             'sitemode' => $sitemode,
             'urlmode'  => $urlmode,
+            'debug'    => $debug,
             'keywords' => htmlencode($keywords),
             'lockip'   => htmlencode($lockip),
             'isReWrite'=> $isReWrite,

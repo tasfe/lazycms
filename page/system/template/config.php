@@ -15,6 +15,10 @@
             <input type="radio" name="urlmode" id="sitemode_pathinfo" value="<?php echo URL_PATHINFO;?>"<?php echo $urlmode==URL_PATHINFO ? ' checked="checked"' : null;?> /><label for="sitemode_pathinfo"><?php echo $module->L('config/urlmode/pathinfo');?></label>
             <?php if ($isReWrite):?><input type="radio" name="urlmode" id="sitemode_rewrite" value="<?php echo URL_REWRITE;?>"<?php echo $urlmode==URL_REWRITE ? ' checked="checked"' : null;?> /><label for="sitemode_rewrite"><?php echo $module->L('config/urlmode/rewrite');?></label><?php endif;?>
         </span></p>
+        <p><label><?php echo $module->L('config/debug/@title');?></label><span>
+            <input type="radio" name="debug" id="debug_true" value="true"<?php echo $debug ? ' checked="checked"' : null;?>/><label for="debug_true"><?php echo $module->L('config/debug/true');?></label>
+            <input type="radio" name="debug" id="debug_false" value="false"<?php echo !$debug ? ' checked="checked"' : null;?> /><label for="debug_false"><?php echo $module->L('config/debug/false');?></label>
+        </span></p>
         <p><label><?php echo $module->L('config/keywords').' '.$module->L('config/tip/keywords');?></label><textarea name="keywords" id="keywords" rows="10" class="in5"><?php echo $keywords;?></textarea></p>
         <p><label><?php echo $module->L('config/lockip').' '.$module->L('config/tip/lockip');?></label><textarea name="lockip" id="lockip" rows="10" class="in5"><?php echo $lockip;?></textarea></p>
         <?php echo $module->but('save');?>

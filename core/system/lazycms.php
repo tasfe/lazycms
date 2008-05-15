@@ -79,9 +79,9 @@ abstract class LazyCMS extends Lazy{
         // 设置错误级别
         if (C('DEBUG_MODE')) {
             ini_set('display_errors',true);
-            //error_reporting(E_ALL & ~E_NOTICE);
-            error_reporting(E_ALL);
+            error_reporting(E_ALL & ~E_NOTICE);
         } else {
+            ini_set('display_errors',false);
             error_reporting(0);
         }
 

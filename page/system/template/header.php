@@ -22,7 +22,12 @@ $(function(){
 <body>
 <div id="top">
     <div class="logo">
-        <a href="<?php echo url('System','Main');?>"><img src="../system/images/logo.png" alt="logo" /></a>
+        <a href="<?php echo url('System','Main');?>"><img src="../system/images/logo.png" alt="LazyCMS <?php echo $module->system['systemver'];?>" /></a>
+        <ul>
+            <li><a href="<?php echo C('SITE_BASE');?>" target="_blank"><?php echo L('common/browhome');?></a></li>
+            <li><a href="http://www.lazycms.net/" target="_blank"><?php echo L('parameters/osite');?></a></li>
+            <li><a href="http://forums.lazycms.net/" target="_blank"><?php echo L('parameters/forums');?></a></li>
+        </ul>
     </div>
     <div class="menu">
         <strong><?php echo Cookie::get('adminname');?></strong> -

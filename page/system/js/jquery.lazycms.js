@@ -17,7 +17,7 @@ $(function(){
         $(this).removeClass('selected');
     });
     // 在每个li上面绑定haver事件，鼠标触发下拉菜单
-    $(".diymenu li").each(function(i){
+    $(".diymenu li,.logo").each(function(i){
         $(this).hover(function(){
             $('ul',this).show();
         },function(){

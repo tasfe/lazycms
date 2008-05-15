@@ -67,6 +67,7 @@ $sitename  = isset($_POST['sitename']) ? $_POST['sitename'] : null;
 $sitemail  = isset($_POST['sitemail']) ? $_POST['sitemail'] : null;
 $keywords  = isset($_POST['keywords']) ? $_POST['keywords'] : null;
 $sitemode  = isset($_POST['sitemode']) ? $_POST['sitemode'] : C('SITE_MODE');
+$sitemode  = $sitemode=='true' ? true : false;
 $dsnPrefix = isset($_POST['dsn_prefix']) ? $_POST['dsn_prefix'] : C('DSN_PREFIX');
 $dsnConfig = isset($_POST['dsn_config']) ? $_POST['dsn_config'] : C('DSN_CONFIG');
 $modules   = isset($_POST['modules']) ? $_POST['modules'] : null;
@@ -94,10 +95,10 @@ if (empty($adminpass_err)) {
 if ($install && labelError()) {
     $config = array(
         'SITE_BASE'  => $sitebase,
-        'SITE_MODE'  => (bool)$sitemode,
+        'SITE_MODE'  => $sitemode,
         'DSN_CONFIG' => $dsnConfig,
         'DSN_PREFIX' => $dsnPrefix,
-        'DEBUG_MODE' => false,
+        'DEBUG_MODE' => true,
     );
     // 动态模式，删除page目录的index.php 生成一个空的index.html
     if ((bool)$sitemode) {

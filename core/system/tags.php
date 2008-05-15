@@ -146,6 +146,12 @@ class Tags extends Lazy{
                     $I1 = '<a href="'.C('SITE_BASE').'">'.$I2.'</a> &gt;&gt; '.$I1;
                 }
                 break;
+            case 'counter' :
+                if (!C('WSS_STATUS')) { return ; }
+                $tag   = O('Tags'); $jsStyle = $tag->getLabel($tags,'style');
+                $style = !empty($jsStyle) ? "&l={$jsStyle}" : null;
+                $I1    = '<script src="http://pw.cnzz.com/c.php?id='.C('WSS_SITE_ID').$style.'" type="text/javascript" charset="gb2312"></script>';
+                break;
             default :
                 if (class_exists('Archives')) {
                     $I1 = Archives::tags($tags,$inValue);
