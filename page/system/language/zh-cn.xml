@@ -165,6 +165,10 @@
             <clearok>已清空所有日志</clearok>
         </pop>
     </log>
+	
+	<counter title="流量统计">
+	
+	</counter>
 
     <login title="管理员登录">
         <name>用户名</name>

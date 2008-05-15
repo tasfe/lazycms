@@ -21,13 +21,16 @@
  * +---------------------------------------------------------------------------+
  */defined('CORE_PATH') or die('Restricted access!');
 /**
- * 用户自定义配置文件
+ * User-defined configuration files
  */
 return array (
-  'SITE_BASE' => '/',
+  'SITE_BASE' => '/lazy/',
   'SITE_MODE' => false,
   'DSN_CONFIG' => 'mysql://root@localhost:3306/lazycms',
   'DSN_PREFIX' => 'lazy_',
   'DEBUG_MODE' => true,
+  'URL_MODEL' => 1,
+  'WSS_SITE_ID' => '80006732',
+  'WSS_PASSWORD' => '9291054437',
 );
 ?>
