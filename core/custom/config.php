@@ -24,7 +24,7 @@
  * User-defined configuration files
  */
 return array (
-  'SITE_BASE' => '/lazy/',
+  'SITE_BASE' => '/',
   'SITE_MODE' => false,
   'DSN_CONFIG' => 'mysql://root@localhost:3306/lazycms',
   'DSN_PREFIX' => 'lazy_',

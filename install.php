@@ -131,7 +131,13 @@ if ($install && labelError()) {
         if (!empty($modules)) {
             foreach ($modules as $module) {
                 import("@.{$module}.module");
-                eval('$instSQL .= "\n".'.$module.'::instSQL();');
+                $obj = new $module();
+                if (method_exists($obj,'uninstSQL')) {
+                    $db->batQuery($obj->uninstSQL());
+                }
+                if (method_exists($obj,'instSQL')) {
+                    $db->batQuery($obj->instSQL());
+                } unset($obj);
                 $mMenu .= L('title',null,$module)."|".L('manage',null,$module)."\r\n";
             }
         }
