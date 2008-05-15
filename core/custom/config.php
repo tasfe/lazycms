@@ -30,7 +30,7 @@ return array (
   'DSN_PREFIX' => 'lazy_',
   'DEBUG_MODE' => true,
   'URL_MODEL' => 1,
-  'WSS_SITE_ID' => '80006732',
-  'WSS_PASSWORD' => '9291054437',
+  'WSS_SITE_ID' => '80006784',
+  'WSS_PASSWORD' => '9557215082',
 );
 ?>

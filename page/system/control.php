@@ -158,7 +158,10 @@ class LazySystem extends LazyCMS{
 				C($config);saveFile(CORE_PATH.'/custom/config.php',"<?php\n".createNote('User-defined configuration files')."\nreturn ".var_export($config,true).";\n?>");
 			}
 		}
-		$this->outHTML = '<iframe src="http://wss.cnzz.com/user/companion/lazycms_login.php?site_id='.C("WSS_SITE_ID").'&password='.C("WSS_PASSWORD").'" name="counter" id="counter" width="100%" marginwidth="0" height="500" marginheight="0" scrolling="auto" frameborder="0"></iframe>';
+		$burl = rawurlencode('http://wss.cnzz.com/oem/udmin.php?webid='.C("WSS_SITE_ID").'&s=main_page');
+		$HTML = '<iframe src="http://wss.cnzz.com/user/companion/lazycms_login.php?site_id='.C("WSS_SITE_ID").'&password='.C("WSS_PASSWORD").'&burl='.$burl.'" name="counter" id="counter" width="100%" marginwidth="0" height="500" marginheight="0" scrolling="auto" frameborder="0"></iframe>';
+		$this->outHTML = $HTML;
+
 		$this->assign('menu',L('admin/title').'|'.url('System','Main').';'.L('log/@title').'|'.url('System','Log').';'.L('counter/@title').'|#|true');
         $this->display('__public.php');
 	}
