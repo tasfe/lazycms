@@ -215,7 +215,7 @@ abstract class DB extends Lazy{
     public function quoteInto($sql, $bind) {
         // 替换单一占位符
         if (!is_array($bind) && strpos($sql,'?')!==false) {
-            return str_replace('?',self::quote($bind),$sql);
+			return preg_replace('/\?/',self::quote($bind),$sql,1);
         }
         // 替换占位符
         if (is_array($bind)) {

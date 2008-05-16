@@ -1022,17 +1022,36 @@ class LazyArchives extends LazyCMS{
     }
     // _search *** *** www.LazyCMS.net *** ***
     function _search(){
-        $db  = getConn(); $strSQL = null;
+		$db  = getConn(); $strSQL = null; 
+		$tag = O('Tags'); $inSQL = null;
+		$query  = isset($_REQUEST['query']) ? (string)$_REQUEST['query'] : null;
+		$tags   = isset($_REQUEST['tags']) ? (string)$_REQUEST['tags'] : null;
+		$sortid = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : 0;
+		$page   = isset($_REQUEST['page']) ? (int)$_REQUEST['page'] : null;
+		if (!empty($sortid)) { $inSQL.= " And `sortid`='{$sortid}'"; }
+		if (!empty($query)){ $inSQL.= " And (binary ucase(`title`) LIKE ucase('%{$query}%') OR binary ucase(`keywords`) LIKE ucase('%{$query}%') OR binary ucase(`description`) LIKE ucase('%{$query}%'))"; }
+		if (!empty($tags)) { $inSQL.= " And (binary ucase(`keywords`) LIKE ucase('%{$tags}%'))"; }
         $res = $db->query("SELECT DISTINCT `maintable` FROM `#@_archives_model` GROUP BY `maintable`;");
         while ($data = $db->fetch($res,0)) {
             if (empty($strSQL)) {
-                $strSQL.= "SELECT * FROM `".$data[0]."`";
+                $strSQL.= "SELECT * FROM `".$data[0]."` WHERE 1 {$inSQL}";
             } else {
                 $strSQL.= " UNION SELECT * FROM `".$data[0]."`";
             }
         }
-        $strSQL.= " ORDER BY `date` DESC;";
+        $strSQL.= " ORDER BY `date` DESC";
+		
+		$HTML = $tag->read(M(C('CURRENT_MODULE'),'ARCHIVES_TEMPLATE'));
+		$HTMList = $tag->getList($HTML,'archives',1);
+        $jsHTML  = $tag->getLabel($HTMList,0);
+		$jsNumber= floor($tag->getLabel($HTMList,'number'));
+        $zebra   = $tag->getLabel($HTMList,'zebra');
 
+		$totalRows  = $db->count($strSQL);
+        $totalPages = ceil($totalRows/$jsNumber);
+        $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
+        if ((int)$page > (int)$totalPages) { $page = $totalPages; }
+        $strSQL.= ' LIMIT '.$jsNumber.' OFFSET '.($page-1)*$jsNumber.';';
         print_r($strSQL);
     }
     // _hits *** *** www.LazyCMS.net *** ***
