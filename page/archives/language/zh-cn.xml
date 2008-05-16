@@ -168,5 +168,8 @@
             <deletefielderr>数据库字段可能已经被删除</deletefielderr>
         </pop>
     </models>
-
+    
+    <search>
+        <title>“{$keyword}”的搜索结果</title>
+    </search>
 </lazycms>

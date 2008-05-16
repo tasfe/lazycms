@@ -65,8 +65,8 @@ class LazyArchives extends LazyCMS{
     }
     // _showsort *** *** www.LazyCMS.net *** ***
     function _showsort(){
-        $sortid = isset($_GET['sortid']) ? (int)$_GET['sortid'] : null;
-        $page   = isset($_GET['page']) ? (int)$_GET['page'] : null;
+        $sortid = isset($_GET['sortid']) ? (int)$_GET['sortid'] : 0;
+        $page   = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         echo Archives::viewSort($sortid,$page);
     }
     // _showarchive *** *** www.LazyCMS.net *** ***
@@ -1024,35 +1024,76 @@ class LazyArchives extends LazyCMS{
     function _search(){
 		$db  = getConn(); $strSQL = null; 
 		$tag = O('Tags'); $inSQL = null;
-		$query  = isset($_REQUEST['query']) ? (string)$_REQUEST['query'] : null;
-		$tags   = isset($_REQUEST['tags']) ? (string)$_REQUEST['tags'] : null;
+		$query  = isset($_REQUEST['query']) ? rawurldecode($_REQUEST['query']) : null;
+		$tags   = isset($_REQUEST['tags']) ? rawurldecode($_REQUEST['tags']) : null;
 		$sortid = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : 0;
-		$page   = isset($_REQUEST['page']) ? (int)$_REQUEST['page'] : null;
-		if (!empty($sortid)) { $inSQL.= " And `sortid`='{$sortid}'"; }
-		if (!empty($query)){ $inSQL.= " And (binary ucase(`title`) LIKE ucase('%{$query}%') OR binary ucase(`keywords`) LIKE ucase('%{$query}%') OR binary ucase(`description`) LIKE ucase('%{$query}%'))"; }
-		if (!empty($tags)) { $inSQL.= " And (binary ucase(`keywords`) LIKE ucase('%{$tags}%'))"; }
+		$page   = isset($_REQUEST['page']) ? (int)$_REQUEST['page'] : 1;
+        $keyword = empty($tags) ? $query : $tags;
+		if (!empty($sortid)) { $sortids = Archives::getSubSortIds($sortid); $inSQL.= " And `a`.`sortid` IN({$sortids})"; }
+		if (!empty($query)){ $inSQL.= " And (binary ucase(`a`.`title`) LIKE ucase('%{$query}%') OR binary ucase(`a`.`keywords`) LIKE ucase('%{$query}%') OR binary ucase(`a`.`description`) LIKE ucase('%{$query}%'))"; }
+		if (!empty($tags)) { $inSQL.= " And (binary ucase(`a`.`keywords`) LIKE ucase('%{$tags}%'))"; }
         $res = $db->query("SELECT DISTINCT `maintable` FROM `#@_archives_model` GROUP BY `maintable`;");
         while ($data = $db->fetch($res,0)) {
             if (empty($strSQL)) {
-                $strSQL.= "SELECT * FROM `".$data[0]."` WHERE 1 {$inSQL}";
+                $strSQL.= "SELECT `a`.*,`b`.`sortname`,`b`.`sortpath` FROM `".$data[0]."` AS `a` LEFT JOIN `#@_archives_sort` AS `b` ON `a`.`sortid`=`b`.`sortid` WHERE 1 {$inSQL}";
             } else {
-                $strSQL.= " UNION SELECT * FROM `".$data[0]."`";
+                $strSQL.= " UNION SELECT `a`.*,`b`.`sortname`,`b`.`sortpath` FROM `".$data[0]."` AS `a` LEFT JOIN `#@_archives_sort` AS `b` ON `a`.`sortid`=`b`.`sortid` WHERE 1 {$inSQL}";
             }
         }
-        $strSQL.= " ORDER BY `date` DESC";
+        $strSQL.= " ORDER BY `a`.`date` DESC";
 		
-		$HTML = $tag->read(M(C('CURRENT_MODULE'),'ARCHIVES_TEMPLATE'));
-		$HTMList = $tag->getList($HTML,'archives',1);
+		$HTML = $tag->read(M(C('CURRENT_MODULE'),'ARCHIVES_TEMPLATE'),C('TEMPLATE_PATH').'/inside/search/'.C('TEMPLATE_DEF'));
+		$HTMList = $tag->getList($HTML,'search',1);
         $jsHTML  = $tag->getLabel($HTMList,0);
 		$jsNumber= floor($tag->getLabel($HTMList,'number'));
         $zebra   = $tag->getLabel($HTMList,'zebra');
+        $rand    = chr(3).salt(20).chr(2);//随机出来的替换参数
+        $randpl  = chr(3).salt(16).chr(2);
+        // 把 HTML 中的{lazy:...type=list/}标签替换为一个随机的标签；pagelist设置为一个随机标签
+        $HTML = str_replace($HTMList,$rand,$HTML);
+        // 替换模板中的标签
+        $tag->clear();
+        $tag->value('title',encode(htmlencode($this->L('search/title',array('keyword'=>$keyword)))));
+        $tag->value('query',encode(htmlencode($keyword)));
+        $tag->value('pagelist',encode($randpl));
+        $HTML = $tag->create($HTML,$tag->getValue());
 
 		$totalRows  = $db->count($strSQL);
         $totalPages = ceil($totalRows/$jsNumber);
         $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
         if ((int)$page > (int)$totalPages) { $page = $totalPages; }
         $strSQL.= ' LIMIT '.$jsNumber.' OFFSET '.($page-1)*$jsNumber.';';
-        print_r($strSQL);
+        // 有记录进行查询
+        if ((int)$totalRows > 0) {
+            $res = $db->query($strSQL);
+            $i = 1;
+            while ($data = $db->fetch($res)) {
+                $_model = Archives::getModel($data['sortid']);
+                $tag->clear();
+                $tag->value('id',$data['id']);
+                $tag->value('sortid',$data['sortid']);
+                $tag->value('sortname',encode(htmlencode($_model['sortname'])));
+                $tag->value('sortpath',encode(Archives::showSort($data['sortid'])));
+                $tag->value('title',encode(htmlencode($data['title'])));
+                $tag->value('path',encode(Archives::showArchive($data['id'],$_model)));
+                $tag->value('image',encode($data['img']));
+                $tag->value('date',$data['date']);
+                $tag->value('hits',$data['hits']);
+                $tag->value('keywords',encode(htmlencode($data['keywords'])));
+                $tag->value('description',encode(htmlencode($data['description'])));
+                $tag->value('zebra',($i % ($zebra+1)) ? 0 : 1);
+                $tmpList.= $tag->createhtm($jsHTML,$tag->getValue());
+                $i++;
+            }
+            if (!empty($query)) { $path = url('Archives','Search','query='.rawurlencode($query).'&page=$'); }
+            if (!empty($tags)) { $path = url('Archives','Search','tags='.rawurlencode($tags).'&page=$'); }
+            $outHTML = str_replace($rand,$tmpList,$HTML);
+            $outHTML = str_replace($randpl,Archives::pagelist($path,$page,$totalPages,$totalRows,1),$outHTML);//'&page=$'
+        } else {
+            $outHTML = str_replace($rand,L('error/rsnot'),$HTML);
+            $outHTML = str_replace($randpl,null,$outHTML);
+        }
+        echo $outHTML;
     }
     // _hits *** *** www.LazyCMS.net *** ***
     function _hits(){

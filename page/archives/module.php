@@ -266,13 +266,13 @@ class Archives{
         }
     }
     // pagelist *** *** www.LazyCMS.net *** ***
-    static function pagelist($l1,$l2,$l3,$l4){
+    static function pagelist($l1,$l2,$l3,$l4,$l5=0){
         // url,page,总页数,记录总数
         // 修要修改分页风格，直接修改此函数即可
         $I1 = null;
         if (strpos($l1,'%24')!==false) { $l1 = str_replace('%24','$',$l1); }
         if (strpos($l1,'$')==0 || $l4==0) { return ; }
-        $l7 = C('SITE_MODE') ? 1 : null;
+        $l7 = (C('SITE_MODE') || $l5) ? 1 : null;
         if ($l2 > 3) {
             $I1 = '<a href="'.str_replace('$',$l7,$l1).'">1 ...</a>';
         }
@@ -371,7 +371,8 @@ class Archives{
             // 有编辑器，动态模式，分页，只对第一个编辑器进行处理
             $result = $db->query("SELECT * FROM `#@_archives_fields` WHERE `modelid` = ? AND `inputtype`='editor' ORDER BY `fieldorder` ASC, `fieldid` ASC;",$model['modelid']);
             if ($field = $db->fetch($result)){
-                $contents = explode(C('WEB_BREAK'),$data[$field['fieldename']]);
+                $contents = preg_split(C('WEB_BREAK'),$data[$field['fieldename']],-1,PREG_SPLIT_NO_EMPTY);
+                //$contents = explode(C('WEB_BREAK'),$data[$field['fieldename']]);
                 $length   = count($contents);
                 // 动态模式，只浏览不生成
                 if (C('SITE_MODE')) {

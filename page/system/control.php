@@ -871,7 +871,7 @@ class LazySystem extends LazyCMS{
         if ($d->status() == 200) {
             $l1 = $d->body();
         } else {
-            $l1 = $d->status();
+            $l1 = "ERROR";
         }
         if (validate($l1,6)) {
             $I1 = $l1;

@@ -25,6 +25,12 @@
  */
 return array (
   /**
+   * 搜索页面模板文件
+   *
+   * @inputtype:upfile
+   */
+  'ARCHIVES_TEMPLATE' => 'template/default.html',
+  /**
    * 添加文档->文档属性->显示
    *
    * @inputtype:radio
