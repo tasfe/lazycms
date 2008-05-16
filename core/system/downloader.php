@@ -39,19 +39,19 @@ class DownLoader extends Lazy{
     private $body;
 
     // __construct *** *** www.LazyCMS.net *** ***
-    public function __construct($url=null,$method='GET',$timeout=10){
+    public function __construct($url=null,$method='GET',$timeout=30){
         set_time_limit(0);
         if (!empty($url)) {
             $this->connect($url,$method,$timeout);
         }
     }
     // connect *** *** www.LazyCMS.net *** ***
-    public function connect($url=null,$method='GET',$timeout=10){
+    public function connect($url=null,$method='GET',$timeout=30){
         $this->header  = null;
         $this->body    = null;
         $this->url     = $url;
         $this->method  = strtoupper(empty($method) ? 'GET' : $method);
-        $this->timeout = empty($timeout) ? 5 : $timeout;
+        $this->timeout = empty($timeout) ? 30 : $timeout;
         if (!empty($url)) {
             $this->parseURL($url);
         }
@@ -89,6 +89,7 @@ class DownLoader extends Lazy{
             fputs($fp,$SendStr);
             // 读取 header
             do{ $header.= fread($fp,1); } while (!preg_match("/\r\n\r\n$/",$header));
+			
             // 遇到跳转，执行跟踪跳转
             if ($this->redirect($header)) { return true; }
             // 读取内容

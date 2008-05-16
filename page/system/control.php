@@ -128,11 +128,12 @@ class LazySystem extends LazyCMS{
 	// _counter *** *** www.LazyCMS.net *** ***
 	function _counter() {
 		$this->checker();
+		$view = isset($_REQUEST['view']) ? $_REQUEST['view'] : false;
 		$siteid   = C("WSS_SITE_ID");
 		$password = C("WSS_PASSWORD");
+		$domain = $_SERVER['HTTP_HOST'];
 		// 判断站点ID和密码为空，则开通统计
 		if (empty($siteid) && empty($password)) {
-			$domain = $_SERVER['HTTP_HOST'];
 			$md5key = md5($domain."Awqe36sd");
 			import("system.downloader"); 
 			$d = new DownLoader("http://wss.cnzz.com/user/companion/lazycms.php?domain={$domain}&key={$md5key}");
@@ -176,8 +177,9 @@ class LazySystem extends LazyCMS{
         }
         $counter = C('WSS_STATUS'); $HTML = null;
         if ($counter) {
-            $burl = rawurlencode('http://wss.cnzz.com/oem/udmin.php?webid='.C("WSS_SITE_ID").'&s=main_page');
-            $HTML.= '<iframe src="http://wss.cnzz.com/user/companion/lazycms_login.php?site_id='.C("WSS_SITE_ID").'&password='.C("WSS_PASSWORD").'&burl='.$burl.'" name="counter" id="counter" width="100%" marginwidth="0" height="480" marginheight="0" scrolling="auto" frameborder="0" style="border-bottom:solid 1px #A8A8A8;"></iframe>';
+			$surl = 'http://wss.cnzz.com/user/companion/lazycms_login.php?site_id='.C("WSS_SITE_ID").'&password='.C("WSS_PASSWORD");
+			$burl = rawurlencode('http://wss.cnzz.com/oem/udmin.php?webid='.C("WSS_SITE_ID").'&s=main_page');
+			$HTML.= '<iframe src="'.$surl.'&burl='.$burl.'" name="counter" id="counter" width="100%" marginwidth="0" height="480" marginheight="0" scrolling="auto" frameborder="0" style="border-bottom:solid 1px #A8A8A8;"></iframe>';
         }
         $HTML.= '<form action="'.url('System','Counter').'" method="post" class="lz_form">';
         $HTML.= '<p><label>'.L('counter/config').'</label><span>';
