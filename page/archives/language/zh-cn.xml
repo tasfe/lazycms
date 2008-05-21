@@ -169,7 +169,7 @@
         </pop>
     </models>
     
-    <search>
+    <search title="搜索">
         <title>“{$keyword}”的搜索结果</title>
     </search>
 </lazycms>

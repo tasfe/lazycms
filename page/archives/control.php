@@ -1053,9 +1053,15 @@ class LazyArchives extends LazyCMS{
         $HTML = str_replace($HTMList,$rand,$HTML);
         // 替换模板中的标签
         $tag->clear();
-        $tag->value('title',encode(htmlencode($this->L('search/title',array('keyword'=>$keyword)))));
+        if (empty($keyword)) {
+            $tag->value('title',encode(htmlencode($this->L('search/@title'))));
+        } else {
+            $tag->value('title',encode(htmlencode($this->L('search/title',array('keyword'=>$keyword)))));
+            
+        }
         $tag->value('query',encode(htmlencode($keyword)));
         $tag->value('pagelist',encode($randpl));
+        $tag->value('sort',encode(Archives::__sort(0,0,0,$sortid)));
         $HTML = $tag->create($HTML,$tag->getValue());
 
 		$totalRows  = $db->count($strSQL);
@@ -1064,7 +1070,7 @@ class LazyArchives extends LazyCMS{
         if ((int)$page > (int)$totalPages) { $page = $totalPages; }
         $strSQL.= ' LIMIT '.$jsNumber.' OFFSET '.($page-1)*$jsNumber.';';
         // 有记录进行查询
-        if ((int)$totalRows > 0) {
+        if ((int)$totalRows > 0 && !empty($keyword)) {
             $res = $db->query($strSQL);
             $i = 1;
             while ($data = $db->fetch($res)) {
@@ -1090,7 +1096,11 @@ class LazyArchives extends LazyCMS{
             $outHTML = str_replace($rand,$tmpList,$HTML);
             $outHTML = str_replace($randpl,Archives::pagelist($path,$page,$totalPages,$totalRows,1),$outHTML);//'&page=$'
         } else {
-            $outHTML = str_replace($rand,L('error/rsnot'),$HTML);
+            if ((int)$totalRows == 0) {
+                $outHTML = str_replace($rand,'没有结果',$HTML);
+            } else {
+                $outHTML = str_replace($rand,null,$HTML);
+            }
             $outHTML = str_replace($randpl,null,$outHTML);
         }
         echo $outHTML;

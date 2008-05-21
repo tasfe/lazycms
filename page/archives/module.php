@@ -81,7 +81,7 @@ class Archives{
     }
     // __sort *** *** www.LazyCMS.net *** ***
     static function __sort($l1,$l2,$l3=0,$l4=null){
-        // $l1:sortid, $l2:current sortid, $l3:Space, $l4:selected
+        // $l1:father sortid, $l2:current sortid, $l3:Space, $l4:selected
         $nbsp = null; $I1 = null;
         for ($i=0; $i<$l3; $i++) {
             $nbsp .= "&nbsp; &nbsp;";
