@@ -28,6 +28,11 @@ defined('CORE_PATH') or die('Restricted access!');
  * @author      Lukin <mylukin@gmail.com>
  */
 class Archives{
+	// highlight *** *** www.LazyCMS.net *** ***
+	static function highlight($l1,$l2){
+		if (strlen($l1)==0 || strlen($l2)==0) { return ; }
+		return str_replace($l1,"<strong>{$l1}</strong>",$l2);
+	}
     // Count *** *** www.LazyCMS.net *** ***
     static function Count($l1){
         $db = getConn();

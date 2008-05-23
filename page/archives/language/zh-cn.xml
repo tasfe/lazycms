@@ -171,5 +171,6 @@
     
     <search title="搜索">
         <title>“{$keyword}”的搜索结果</title>
+		<noresult><![CDATA[抱歉，没有找到与“<span style="color:red;">{$keyword}</span>” 相关的结果。]]></noresult>
     </search>
 </lazycms>

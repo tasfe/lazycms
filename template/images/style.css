@@ -110,9 +110,13 @@ a:hover { color: #0000FF; text-decoration: underline; }
 	.list .box{ width:98%; margin:0 auto; clear:both;}
 
 /* 文章列表 */
-#artlist .item{ padding:0 0 5px 0; line-height:200%; border-bottom:dashed 1px #CCCCCC; }
-	#artlist .item a{ padding-left:20px; background:url(bullet_blue.gif) no-repeat left center; font-weight:bold;}
-	#artlist .item .intro{ text-indent:26px; line-height:150%; color:#666666;}
+#artlist .item{ padding:0 5px 5px 5px; line-height:200%; border-bottom:dashed 1px #CCCCCC; }
+	#artlist .item a{ font-weight:bold; margin-right:6px;}
+	#artlist .item .intro{ line-height:150%; color:#666666;}
+	#artlist .item .info { color:#009900; display:block; clear:both;}
+	#artlist .item .info a { font-weight:normal; color:#009900; }
+	#artlist .item strong { color:#FF0000; font-weight:normal;}
+	
 
 /* 文章信息 */
 #article{ width:100%; display:table; clear:both; }
