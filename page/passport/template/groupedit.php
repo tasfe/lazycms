@@ -1,6 +1,6 @@
 <?php System::header();?>
 <?php $module->validate('outjs');?>
-<?php echo menu($module->L('list/group/@title').'|'.url(C('CURRENT_MODULE')).';'.$menu.';'.$module->L('common/adduser').'|'.url(C('CURRENT_MODULE'),'Edit').';'.$module->L('common/leadin').'|'.url(C('CURRENT_MODULE'),'LeadIn'));?>
+<?php echo menu($module->L('list/group/@title').'|'.url(C('CURRENT_MODULE')).';'.$menu.';'.$module->L('common/adduser').'|'.url(C('CURRENT_MODULE'),'Edit').';'.$module->L('common/leadin').'|'.url(C('CURRENT_MODULE'),'LeadIn').';'.L('config/@title').'|'.url(C('CURRENT_MODULE'),'Config'));?>
 <div class="content">
     <form action="<?php echo url(C('CURRENT_MODULE'),'GroupEdit');?>" method="post" class="lz_form">
         <p><label><?php echo $module->L('label/group/name');?></label><input id="groupname" name="groupname" type="text" maxlength="50" class="in2" value="<?php echo $groupname;?>"/></p>

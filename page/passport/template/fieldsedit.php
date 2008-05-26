@@ -1,6 +1,6 @@
 <?php System::header();?>
 <?php $module->validate('outjs');?>
-<?php echo menu($module->L('list/group/@title').'|'.url(C('CURRENT_MODULE')).';'.$module->L('list/field/@title').'|'.url(C('CURRENT_MODULE'),'Fields','groupid='.$groupid).';'.$menu.';'.$module->L('common/addgroup').'|'.url(C('CURRENT_MODULE'),'GroupEdit').';'.$module->L('common/adduser').'|'.url(C('CURRENT_MODULE'),'Edit').';'.$module->L('common/leadin').'|'.url(C('CURRENT_MODULE'),'LeadIn'));?>
+<?php echo menu($module->L('list/group/@title').'|'.url(C('CURRENT_MODULE')).';'.$module->L('list/field/@title').'|'.url(C('CURRENT_MODULE'),'Fields','groupid='.$groupid).';'.$menu.';'.$module->L('common/addgroup').'|'.url(C('CURRENT_MODULE'),'GroupEdit').';'.$module->L('common/adduser').'|'.url(C('CURRENT_MODULE'),'Edit').';'.$module->L('common/leadin').'|'.url(C('CURRENT_MODULE'),'LeadIn').';'.L('config/@title').'|'.url(C('CURRENT_MODULE'),'Config'));?>
 <div class="content">
     <form action="<?php echo url(C('CURRENT_MODULE'),'FieldsEdit');?>" method="post" class="lz_form">
         <p><label><?php echo $module->L('label/field/name');?></label><input id="fieldname" name="fieldname" type="text" maxlength="50" class="in2" value="<?php echo $fieldname;?>"/></p>

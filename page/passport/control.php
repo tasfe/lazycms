@@ -419,8 +419,7 @@ class LazyPassport extends LazyCMS{
         $this->checker(C('CURRENT_MODULE'));
         $db  = getConn();
 
-        $groupNum = $db->result("SELECT count(`groupid`) FROM `#@_passport_group` WHERE 1;"); if ((int)$groupNum==0) { throwError($this->L('error/nogroup')); }
-        $groupid = isset($_REQUEST['groupid']) ? (int)$_REQUEST['groupid'] : (int)Passport::getTopGroupId();
+        $groupid = isset($_REQUEST['groupid']) ? (int)$_REQUEST['groupid'] : (int)Passport::getTopGroupId(); if ((int)$groupid==0) { throwError($this->L('error/nogroup')); }
         $userid = isset($_REQUEST['userid']) ? (int)$_REQUEST['userid'] : null;
         $model = Passport::getModel($groupid);
                 
@@ -466,7 +465,7 @@ class LazyPassport extends LazyCMS{
         if ($this->method()) {
             if ($this->validate()) {
                 if(!empty($userpass)){
-                    $userkey   = salt();
+                    $userkey  = salt();
                     $userpass = md5($userpass.$userkey);
                 }
                 if (empty($userid)) { // insert
@@ -533,6 +532,8 @@ class LazyPassport extends LazyCMS{
                     $mailis   = $data['mailis'];
                     $question = $data['question'];
                     $answer   = $data['answer'];
+                    $language = $data['language'];
+                    $editor   = $data['editor'];
                     $islock   = $data['islock'];
                     $formData = Passport::getData($userid,$model['grouptable']);
                 } else {
@@ -554,6 +555,8 @@ class LazyPassport extends LazyCMS{
             'mailis'   => !empty($mailis) ? ' checked="checked"' : null,
             'question' => $question,
             'answer'   => $answer,
+            'language' => $language,
+            'editor'   => $editor,
             'islock'   => $islock,
             'menu'     => $menu,
         ));
@@ -620,5 +623,86 @@ class LazyPassport extends LazyCMS{
                 $this->poping(L('error/invalid'),0);
                 break;
         }
+    }
+    // _config *** *** www.LazyCMS.net *** ***
+    function _config(){
+        $this->checker(C('CURRENT_MODULE')); 
+        $this->config(C('CURRENT_MODULE'));
+        $this->display('config.php');
+    }
+    // _register *** *** www.LazyCMS.net *** ***
+    function _register(){
+        $db = getConn();
+        $groupid = isset($_REQUEST['groupid']) ? (int)$_REQUEST['groupid'] : (int)Passport::getTopGroupId(); if ((int)$groupid==0) { throwError($this->L('error/nogroup')); }
+        $model = Passport::getModel($groupid);
+
+        $username  = isset($_POST['username']) ? $_POST['username'] : null;
+        $userpass  = isset($_POST['userpass']) ? $_POST['userpass'] : null;
+        $userpass1 = isset($_POST['userpass1']) ? $_POST['userpass1'] : null;
+        $usermail  = isset($_POST['usermail']) ? $_POST['usermail'] : null;
+        $mailis    = isset($_POST['mailis']) ? $_POST['mailis'] : null;
+        $question  = isset($_POST['question']) ? $_POST['question'] : null;
+        $answer    = isset($_POST['answer']) ? $_POST['answer'] : null;
+        $islock = M(C('CURRENT_MODULE'),'PASSPORT_REG_PASS');
+
+        $this->validate(array(
+            'username' => $this->check("username|1|".$this->L('check/user/name')."|1-30"),
+            'userpass' => $this->check('userpass|2|'.$this->L('check/user/contrast').'|userpass1;userpass|1|'.$this->L('check/user/pwdsize').'|6-30'),
+            'usermail' => $this->check("usermail|0|".$this->L('check/user/mail').";usermail|validate|".$this->L('check/user/mail1')."|4"),
+        ));
+
+        $label = O('Label');
+        $label->create("SELECT * FROM `#@_passport_fields` WHERE `groupid` = ? ORDER BY `fieldorder` ASC, `fieldid` ASC;",$model['groupid']);
+        $formData  = array(); $fieldData = array();
+        while ($data = $label->result()) {
+            $fieldData[$data['fieldename']] = $data;
+            $formData[$data['fieldename']]  = isset($_POST[$data['fieldename']]) ? $_POST[$data['fieldename']] : null;
+            if (is_array($formData[$data['fieldename']])) {
+                $formData[$data['fieldename']] = implode(',',$formData[$data['fieldename']]);
+            }
+        }
+
+        if ($this->method()) {
+            if ($this->validate()) {
+                if(!empty($userpass)){
+                    $userkey  = salt();
+                    $userpass = md5($userpass.$userkey);
+                }
+                $row = array(
+                    'groupid'  => (int)$groupid,
+                    'username' => (string)$username,
+                    'userpass' => (string)$userpass,
+                    'userkey'  => (string)$userkey,
+                    'userdate' => now(),
+                    'usermail' => (string)$usermail,
+                    'mailis'   => (int)$mailis,
+                    'question' => (string)$question,
+                    'answer'   => (string)$answer,
+                    'language' => C('LANGUAGE'),
+                    'islock'   => (int)$islock,
+                );
+                $db->insert('#@_passport',$row);
+                $userid = $db->lastInsertId();
+                $addrows = array_merge($formData,array('userid'=>$userid));
+                $db->insert($model['grouptable'],$addrows);
+                echo 'wancheng!';
+                return true;
+            }
+        }
+
+        while (list($name,$data) = each($fieldData)) {
+            $label->p = '<p><label>'.$data['fieldname'].'</label>'.$label->tag($data,$formData[$name]).'</p>';
+        }
+        $this->outHTML = $label->fetch;
+
+        $this->assign(array(
+            'groupid'  => $groupid,
+            'username' => $username,
+            'usermail' => $usermail,
+            'mailis'   => !empty($mailis) ? ' checked="checked"' : null,
+            'question' => $question,
+            'answer'   => $answer,
+        ));
+        $this->display('register.php');
     }
 }

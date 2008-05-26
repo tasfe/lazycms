@@ -1,6 +1,6 @@
 <?php System::header();?>
 <?php $module->validate('outjs');?>
-<?php echo menu($module->L('list/group/@title').'|'.url(C('CURRENT_MODULE')).';'.$module->L('common/addgroup').'|'.url(C('CURRENT_MODULE'),'GroupEdit').';'.$module->L('common/adduser').'|'.url(C('CURRENT_MODULE'),'Edit').';'.$module->L('common/leadin').'|'.url(C('CURRENT_MODULE'),'LeadIn').'|true');?>
+<?php echo menu($module->L('list/group/@title').'|'.url(C('CURRENT_MODULE')).';'.$module->L('common/addgroup').'|'.url(C('CURRENT_MODULE'),'GroupEdit').';'.$module->L('common/adduser').'|'.url(C('CURRENT_MODULE'),'Edit').';'.$module->L('common/leadin').'|'.url(C('CURRENT_MODULE'),'LeadIn').'|true;'.L('config/@title').'|'.url(C('CURRENT_MODULE'),'Config'));?>
 <div class="content">
     <form action="<?php echo url(C('CURRENT_MODULE'),'LeadIn');?>" enctype="multipart/form-data" method="post" class="lz_form">
         <p><label><?php echo $module->L('label/leadin');?></label><input id="group" name="group" type="file" class="in3"/></p>
