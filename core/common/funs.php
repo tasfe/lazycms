@@ -1213,15 +1213,15 @@ function L($l1,$l2=null,$l3='system'){
         $l6 = $l5.$l4.'.xml';
         if (!is_file($l6)) { $l6 = $l5.C('LANGUAGE').'.xml'; }
         if (!is_file($l6)) { return '['.$l1.']';}
-        $I2 = simplexml_load_file($l6,'SimpleXMLElement',LIBXML_NOCDATA);
+        $I2 = DOMDocument::load($l6);
         $_I1["{$l3}_{$l4}"] = $I2;
     }
-    $I3 = $I2->xpath("//lazycms/{$l1}");
+    $I3 = new DOMXPath($I2);
+    $I4 = $I3->evaluate("//lazycms/$l1");
     if (false !== strpos($l1,'/@')) {
-        $attr = substr($l1,strrpos($l1,'/@')+2);
-        $I1 = $I3[0][$attr];
+        $I1 = $I4->item(0)->value;
     } else {
-        $I1 = isset($I3[0])?$I3[0]:$I3;
+        $I1 = $I4->item(0)->nodeValue;
     }
     if (is_array($l2)) {
         foreach ($l2 as $k=>$v) {

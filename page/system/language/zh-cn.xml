@@ -63,7 +63,7 @@
         <upok>成功升级到最新版！</upok>
         <phpver>PHP版本</phpver>
         <gdver>GD版本</gdver>
-        <simplexml_load_file>XML解析</simplexml_load_file>
+        <xml_set_object>XML解析</xml_set_object>
         <mysql>MySQL数据库</mysql>
         <safe_mode>不运行于安全模式</safe_mode>
         <max_execution_time>程序最长运行时间</max_execution_time>

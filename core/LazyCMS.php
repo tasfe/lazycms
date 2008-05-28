@@ -79,11 +79,9 @@ if (is_file(RUNTIME_PATH.'/~runtime.php')) {
     }
     
     // 加载兼容函数
-    if (version_compare(PHP_VERSION,'5.2.0','<') ) {
-        require CORE_PATH.'/common/compat.php';
-        if ($cache) {
-            $_I1 .= php_strip_whitespace(CORE_PATH.'/common/compat.php');
-        }
+    require CORE_PATH.'/common/compat.php';
+    if ($cache) {
+        $_I1 .= php_strip_whitespace(CORE_PATH.'/common/compat.php');
     }
 
     // 生成编译文件

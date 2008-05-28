@@ -28,11 +28,6 @@ defined('CORE_PATH') or die('Restricted access!');
  * @author      Lukin <mylukin@gmail.com>
  */
 class Archives{
-	// highlight *** *** www.LazyCMS.net *** ***
-	static function highlight($l1,$l2){
-		if (strlen($l1)==0 || strlen($l2)==0) { return ; }
-		return str_replace($l1,"<strong>{$l1}</strong>",$l2);
-	}
     // Count *** *** www.LazyCMS.net *** ***
     static function Count($l1){
         $db = getConn();
@@ -377,7 +372,6 @@ class Archives{
             $result = $db->query("SELECT * FROM `#@_archives_fields` WHERE `modelid` = ? AND `inputtype`='editor' ORDER BY `fieldorder` ASC, `fieldid` ASC;",$model['modelid']);
             if ($field = $db->fetch($result)){
                 $contents = preg_split(C('WEB_BREAK'),$data[$field['fieldename']],-1,PREG_SPLIT_NO_EMPTY);
-                //$contents = explode(C('WEB_BREAK'),$data[$field['fieldename']]);
                 $length   = count($contents);
                 // 动态模式，只浏览不生成
                 if (C('SITE_MODE')) {
@@ -658,13 +652,15 @@ class Archives{
     // installModel *** *** www.LazyCMS.net *** ***
     static function installModel($modelCode,$isDeleteTable=false){
         $db  = getConn();
-        $xml = simplexml_load_string($modelCode,'SimpleXMLElement',LIBXML_NOCDATA);
+        $modelDom = DOMDocument::loadXML($modelCode);
+        $XPath    = new DOMXPath($modelDom);
+
         // Model Value
-        $data[] = $xml->model->modelname;
-        $data[] = $xml->model->modelename;
-        $data[] = '#@_'.$xml->model->maintable;
-        $data[] = '#@_'.$xml->model->addtable;
-        $data[] = $xml->model->modelstate;
+        $data[] = $XPath->evaluate("//lazycms/model/modelname")->item(0)->nodeValue;
+        $data[] = $XPath->evaluate("//lazycms/model/modelename")->item(0)->nodeValue;
+        $data[] = '#@_'.$XPath->evaluate("//lazycms/model/maintable")->item(0)->nodeValue;
+        $data[] = '#@_'.$XPath->evaluate("//lazycms/model/addtable")->item(0)->nodeValue;
+        $data[] = $XPath->evaluate("//lazycms/model/modelstate")->item(0)->nodeValue;
         $salt   = salt(4);
         if (!$isDeleteTable) {
             if ($db->isTable($data[3])) {
@@ -711,14 +707,19 @@ class Archives{
         $inSQL      = null;
         $indexSQL   = null;
         $modelid    = $db->lastInsertId();
-        foreach ($xml->fields->item as $item){
-            $row = array();
-            foreach ($item as $k=>$v) {
-                $row[$k] = (string)$v;
+        $objFields  = $modelDom->getElementsByTagName('fields')->item(0)->childNodes;
+        $fieldCount = $objFields->length;
+        for ($i=0; $i<$fieldCount; $i++) {
+            $row       = array();
+            $objItem   = $objFields->item($i)->childNodes;
+            $itemCount = $objItem->length;
+            for ($j=0; $j<$itemCount; $j++) {
+                $row[$objItem->item($j)->nodeName] = $objItem->item($j)->nodeValue;
             }
             $row = array_merge($row,array(
                 'modelid'    => $modelid,
                 'fieldorder' => $db->max('fieldid','#@_archives_fields'),
+                'fieldindex' => (string)$row['fieldindex'],
             ));
             if (instr('text,mediumtext,datetime',$row['fieldtype'])) {
                 $row['fieldlength'] = null;
@@ -737,8 +738,6 @@ class Archives{
             }
             $db->insert('#@_archives_fields',$row);
         }
-        
-
         $db->exec("DROP TABLE IF EXISTS `".$data[3]."`;");
         // 创建新表
         $db->exec("CREATE TABLE IF NOT EXISTS `".$data[3]."` (

@@ -93,7 +93,7 @@ return array(
     'TEMPLATE_DEF'  => 'default.html',
 
     /* 分页标签 */
-    'WEB_BREAK' => '<div style="page-break-after: always"><span style="display: none">&nbsp;</span></div>',
+    'WEB_BREAK' => '/\<div style="page\-break\-after(.+)\<\/div\>/i',
     /* 中文正则，请不要修改 */
     'CN_PATTERN' => "/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|\xe0[\xa0-\xbf][\x80-\xbf]|[\xe1-\xef][\x80-\xbf][\x80-\xbf]|\xf0[\x90-\xbf][\x80-\xbf][\x80-\xbf]|[\xf1-\xf7][\x80-\xbf][\x80-\xbf][\x80-\xbf]/",
 );

@@ -31,8 +31,8 @@
             <td>-&rsaquo; <?php echo PHP_VERSION;?></td>
         </tr>
         <tr>
-            <th><?php echo $module->L('parameters/simplexml_load_file');?></th>
-            <td>-&rsaquo; <?php echo isOK(function_exists('simplexml_load_file'));?> <span class="gray">(simplexml_load_file)</span></td>
+            <th><?php echo $module->L('parameters/xml_set_object');?></th>
+            <td>-&rsaquo; <?php echo isOK(function_exists('xml_set_object'));?> <span class="gray">(xml_set_object)</span></td>
         </tr>
         <tr>
             <th><?php echo $module->L('parameters/gdver');?></th>
