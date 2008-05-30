@@ -40,7 +40,7 @@ class DownLoader extends Lazy{
 
     // __construct *** *** www.LazyCMS.net *** ***
     public function __construct($url=null,$method='GET',$timeout=30){
-        set_time_limit(0);
+        @set_time_limit(0);
         if (!empty($url)) {
             $this->connect($url,$method,$timeout);
         }

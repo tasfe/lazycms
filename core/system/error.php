@@ -55,7 +55,9 @@ class Error extends Exception{
             $_function = isset($t['function']) ? $t['function'] : null;
             $traceInfo .= '['.$time.'] '.$_file.' ('.$_line.') ';
             $traceInfo .= $_class.$_type.$_function.'(';
-            $traceInfo .= implode(', ', $_args);
+			if (!empty($_args)) {
+				$traceInfo .= implode(', ', $_args);
+			}
             $traceInfo .=")\n";
         }
         $error['message']   = $this->message;
