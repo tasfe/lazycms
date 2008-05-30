@@ -97,7 +97,7 @@ class DownLoader extends Lazy{
                 $body.= fread($fp,4096);
             }
             fclose($fp);
-        } elseif (function_exists('curl_init')) {
+        } elseif (function_exists('curl_exec')) {
             $ch = curl_init($this->url);
             curl_setopt_array($ch,array(
                 CURLOPT_TIMEOUT => $this->timeout,

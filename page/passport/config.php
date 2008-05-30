@@ -31,5 +31,11 @@ return array (
    * @fieldvalue:需要审核:true|不需要审核:false
    */
   'PASSPORT_REG_PASS' => false,
+  /**
+   * 登录页面模板
+   *
+   * @inputtype:upfile
+   */
+  'PASSPORT_LOGIN_TPL' => 'template/default.html',
 );
 ?>

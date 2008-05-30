@@ -56,7 +56,7 @@
         </tr>
         <tr>
             <th><?php echo $module->L('parameters/allow_url_fopen');?></th>
-            <td>-&rsaquo; <?php echo isOK((function_exists('fsockopen') || function_exists('curl_init')));?> <span class="gray">(fsockopen or curl_init)</span></td>
+            <td>-&rsaquo; <?php echo isOK((function_exists('fsockopen') || function_exists('curl_exec')));?> <span class="gray">(fsockopen or curl_exec)</span></td>
         </tr>
     </table>
 </div>

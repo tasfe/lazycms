@@ -124,6 +124,11 @@ class Tags extends Lazy{
             case '++':
                 $I1 = $i++;
                 break;
+            case 'url':
+                $tag = O('Tags'); $module = $tag->getLabel($tags,'module');
+                $action = $tag->getLabel($tags,'action'); $query = $tag->getLabel($tags,'query');
+                $I1 = url($module,$action,$query); unset($tag);
+                break;
             case 'keywords': case 'keyword':
                 $I1 = $this->parseAtt($tags,$inValue,'keywords');
                 if (strlen($I1)==0) { 
@@ -170,6 +175,13 @@ class Tags extends Lazy{
                     }
                 }
                 break;
+        }
+        $fun = sect($tags,'fun="','"');
+        if (strlen($fun)>0) {
+            if (strpos($fun,'@me')!==false) { 
+                $fun = preg_replace("/'@me'|\"@me\"|@me/isU",'$I1',$fun);
+            }
+            eval('$I1 = '.$fun.';');
         }
         return $I1;
     }
@@ -275,15 +287,6 @@ class Tags extends Lazy{
                 $keywords = str_replace(',','|',$keywords);
                 $I1 = preg_replace_callback("/({$keywords})(?![^<]*<\/(a|b|strong|i|em)>)/i",create_function('$l1','return "<a href=\"'.$l5.'".urlencode($l1[0])."\" target=\"_blank\">".$l1[0]."</a>";'),$I1);
             }
-        }
-
-        // function
-        $l5 = sect($l1,'fun="','"');
-        if (strlen($l5)>0) {
-            if (strpos($l5,'@me')!==false) { 
-                $l5 = preg_replace("/'@me'|\"@me\"|@me/isU",'$I1',$l5);
-            }
-            eval('$I1 = '.$l5.';');
         }
         return encode($I1);
     }

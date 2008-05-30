@@ -206,6 +206,7 @@ SQL;
               `groupname` varchar(30) NOT NULL,             # 用户组名称
               `groupename` varchar(50) NOT NULL,            # 用户组标识
               `grouptable` varchar(50) NOT NULL,            # 附加表
+              `template` varchar(255),                      # 模板
               `purview` text,                               # 组权限
               `groupstate` int(11) default '0',             # 状态 0:启用 1:禁用
               PRIMARY KEY  (`groupid`),

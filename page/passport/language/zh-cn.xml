@@ -14,7 +14,28 @@
         <edituser>编辑用户</edituser>
         <editgroup>编辑用户组</editgroup>
         <leadin>导入组模型</leadin>
+        <home>返回到网站首页</home>
     </common>
+
+    <register title="用户注册">
+        <reg>注册</reg>
+        <login>点击这里登陆</login>
+        <ok>感谢您的注册！</ok>
+    </register>
+
+    <login title="用户登录">
+        <name>用户名</name>
+        <pass>密码</pass>
+        <keep>记住我的登录状态</keep>
+        <submit>登录</submit>
+        <out>退出</out>
+        <check>
+            <name>用户名不能为空或过长</name>
+            <pass>用户密码不能为空或过长</pass>
+            <error1>用户名不存在或已被停用！</error1>
+            <error2>密码有误，请重新输入！</error2>
+        </check>
+    </login>
 
     <list>
         <action>操作</action>
@@ -63,6 +84,7 @@
         <group>
             <name>用户组名称</name>
             <ename>用户组标识 (字母、数字、下划线；添加后不可修改)</ename>
+            <template>注册页面模板</template>
             <fieldset>字段配置</fieldset>
             <fieldtip><![CDATA[添加用户组后，点击 <img src="{$root}/system/images/os/fields.gif" class="os"/> 图标进行字段管理]]></fieldtip>
         </group>
@@ -109,7 +131,7 @@
         </field>
         <user>
             <name>用户名不能为空</name>
-            <name1>用户名重复，或者被屏蔽</name1>
+            <name1>用户名重复，或者被屏蔽，请更换一个</name1>
             <contrast>两次输入的密码不一致</contrast>
             <pwdsize>密码长度不正确</pwdsize>
             <mail>邮箱不能为空</mail>

@@ -5,6 +5,7 @@
     <form action="<?php echo url(C('CURRENT_MODULE'),'GroupEdit');?>" method="post" class="lz_form">
         <p><label><?php echo $module->L('label/group/name');?></label><input id="groupname" name="groupname" type="text" maxlength="50" class="in2" value="<?php echo $groupname;?>"/></p>
         <p><label><?php echo $module->L('label/group/ename');?></label><input id="groupename" name="groupename" type="text" maxlength="50" class="in3" value="<?php echo $groupename;?>"<?php echo $readonly;?>/></p>
+        <p><label><?php echo $module->L('label/group/template');?></label><input class="in3" type="text" id="template" name="template" maxlength="255" readonly="true" value="<?php echo $template;?>" />&nbsp;<button type="button" onclick="$('#template').browseFiles('<?php echo url('System','browseFiles');?>');"><?php echo L('common/browse');?></button></p>
         <?php if (empty($modelid)):?>
         <p><label><?php echo $module->L('label/group/fieldset');?></label>
         <blockquote class="red">

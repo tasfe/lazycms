@@ -1086,7 +1086,7 @@ class LazyArchives extends LazyCMS{
                 $tag->value('date',$data['date']);
                 $tag->value('hits',$data['hits']);
                 $tag->value('keywords',encode(htmlencode($data['keywords'])));
-                $tag->value('description',encode(Archives::highlight($keyword,htmlencode($data['description']))));
+                $tag->value('description',encode(htmlencode($data['description'])));
                 $tag->value('zebra',($i % ($zebra+1)) ? 0 : 1);
                 $tmpList.= $tag->createhtm($jsHTML,$tag->getValue());
                 $i++;
@@ -1097,7 +1097,7 @@ class LazyArchives extends LazyCMS{
             $outHTML = str_replace($randpl,Archives::pagelist($path,$page,$totalPages,$totalRows,1),$outHTML);//'&page=$'
         } else {
             if ((int)$totalRows == 0) {
-                $outHTML = str_replace($rand,$this->L('search/noresult',array('keyword'=>$keyword)),$HTML);
+                $outHTML = str_replace($rand,'没有结果',$HTML);
             } else {
                 $outHTML = str_replace($rand,null,$HTML);
             }
