@@ -557,7 +557,7 @@ abstract class LazyCMS extends Lazy{
         for ($i=0; $i<$count; $i++) {
             $v = ltrim($config[$i]);
             if (preg_match('/\,$/',$v)) {
-                preg_match("/'(.+)'( *)\=\>( *)([^']+|'(.+)')\,/i",$v,$info);
+                preg_match("/'(.+)'( *)\=\>( *)([^']+|'(.+)?')\,/i",$v,$info);
                 $data['fieldename']  = $info[1];
                 if ($this->method()) {
                     $value = M($module,strtolower($data['fieldename']));
@@ -569,7 +569,10 @@ abstract class LazyCMS extends Lazy{
                     $data['fieldefault'] = $value;
                 } else {
                     $data['fieldefault'] = isset($info[5]) ? $info[5] : $info[4];
-                }                
+                }
+                $data['fieldefault'] = str_replace('\r',"\r",$data['fieldefault']);
+                $data['fieldefault'] = str_replace('\n',"\n",$data['fieldefault']);
+                $data['fieldefault'] = stripslashes($data['fieldefault']);
                 $data['fieldtype']   = true;
                 $label->p = '<p><label>'.$info[1].' <span><label class="error" for="'.$data['fieldename'].'">('.$data['fieldname'].')</label></span></label>'.$label->tag($data).'</p>';
                 $comments[$data['fieldename']] = $comment;
@@ -589,7 +592,7 @@ abstract class LazyCMS extends Lazy{
             $array  = array_change_key_case(M($module),CASE_UPPER);
             $config = var_export($array,true);
             foreach ($array as $k=>$v) {
-                $config = preg_replace("/ {2}'".preg_quote($k,'/')."' \=\> ([^']+|'(.+)')\,/i",$comments[$k].'\\0',$config);
+                $config = preg_replace("/ {2}'".preg_quote($k,'/')."' \=\> ([^']+|'(.+)?')\,/i",$comments[$k].'\\0',$config);
             }
             saveFile(LAZY_PATH.C('PAGES_PATH').'/'.$module.'/config.php',"<?php\n".createNote(ucfirst($module).' module configuration files')."\nreturn ".$config.";\n?>");
             $this->succeed(L('common/upok'));

@@ -125,9 +125,10 @@ class Tags extends Lazy{
                 $I1 = $i++;
                 break;
             case 'url':
-                $tag = O('Tags'); $module = $tag->getLabel($tags,'module');
-                $action = $tag->getLabel($tags,'action'); $query = $tag->getLabel($tags,'query');
-                $I1 = url($module,$action,$query); unset($tag);
+                $module = sect($tags,'module="','"');
+                $action = sect($tags,'action="','"');
+                $query  = sect($tags,'query="','"');
+                $I1 = url($module,$action,$query);
                 break;
             case 'keywords': case 'keyword':
                 $I1 = $this->parseAtt($tags,$inValue,'keywords');
@@ -153,9 +154,8 @@ class Tags extends Lazy{
                 break;
             case 'counter' :
                 if (!C('WSS_STATUS')) { return ; }
-                $tag   = O('Tags'); $jsStyle = $tag->getLabel($tags,'style');
-                $style = !empty($jsStyle) ? "&l={$jsStyle}" : null;
-                $I1    = '<script src="http://pw.cnzz.com/c.php?id='.C('WSS_SITE_ID').$style.'" type="text/javascript" charset="gb2312"></script>';
+                $jsStyle = $this->getLabel($tags,'style'); $style = !empty($jsStyle) ? "&l={$jsStyle}" : null;
+                $I1 = '<script src="http://pw.cnzz.com/c.php?id='.C('WSS_SITE_ID').$style.'" type="text/javascript" charset="gb2312"></script>';
                 break;
             default :
                 if (class_exists('Archives')) {

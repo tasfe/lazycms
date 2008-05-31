@@ -116,7 +116,7 @@ class Mysql extends DB{
         $l1 = preg_replace('/`(#@_)(\w+)`/i','`'.$this->config('prefix').'$2`',$l1);
         $l1 = str_replace(chr(10).chr(10),chr(10),str_replace(chr(13),chr(10),$l1));
         $I2 = explode(chr(10),$l1);
-        $I3 = create_function('&$l1,$l2','$l1=trim($l1);');array_walk($I2,$I3);
+        //$I3 = create_function('&$l1,$l2','$l1=trim($l1);');array_walk($I2,$I3);
         $I4 = "";
         foreach ($I2 as $v) {
             if (preg_match('/;$/',$v)) {
@@ -135,7 +135,7 @@ class Mysql extends DB{
                         $v = substr($v,0,$l4);
                     }
                 }
-                $I4 .= trim($v)."\n";
+                $I4.= $v."\n";
             }
         }
     }

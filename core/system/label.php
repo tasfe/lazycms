@@ -92,10 +92,13 @@ class Label extends Lazy{
         $module = getObject();
         switch (strtolower($data['inputtype'])) {
             case 'input': 
-                $I1 = '<input class="in4" type="text" id="'.$data['fieldename'].'" name="'.$data['fieldename'].'" maxlength="'.$data['fieldlength'].'" value="'.$default.'" />';
+                if (!isset($data['fieldclass'])) { $data['fieldclass'] = "in4"; }
+                $I1 = '<input class="'.$data['fieldclass'].'" type="text" id="'.$data['fieldename'].'" name="'.$data['fieldename'].'" maxlength="'.$data['fieldlength'].'" value="'.$default.'" />';
                 break;
             case 'textarea': 
-                $I1 = '<textarea name="'.$data['fieldename'].'" id="'.$data['fieldename'].'" rows="5" class="in4">'.$default.'</textarea>';
+                if (!isset($data['fieldclass'])) { $data['fieldclass'] = "in4"; }
+                if (!isset($data['rows'])) { $data['rows'] = 5; }
+                $I1 = '<textarea name="'.$data['fieldename'].'" id="'.$data['fieldename'].'" rows="'.$data['rows'].'" class="'.$data['fieldclass'].'">'.$default.'</textarea>';
                 break;
             case 'radio': 
                 $I1 = '<span>';
@@ -152,10 +155,12 @@ class Label extends Lazy{
                 } catch (Error $err){
                     $default = date('Y-m-d',time());
                 }
-                $I1 = '<input class="in2 date-pick" type="text" id="'.$data['fieldename'].'" name="'.$data['fieldename'].'" value="'.$default.'" />';
+                if (!isset($data['fieldclass'])) { $data['fieldclass'] = "in2"; }
+                $I1 = '<input class="'.$data['fieldclass'].' date-pick" type="text" id="'.$data['fieldename'].'" name="'.$data['fieldename'].'" value="'.$default.'" />';
                 break;
             case 'upfile': 
-                $I1 = '<input class="in4" type="text" id="'.$data['fieldename'].'" name="'.$data['fieldename'].'" maxlength="'.$data['fieldlength'].'" value="'.$default.'" />&nbsp;<button type="button" onclick="$(\'#'.$data['fieldename'].'\').browseFiles(\''.url('System','browseFiles').'\',\''.C('UPFILE_PATH').'\',true);">'.L('common/browse').'</button>';
+                if (!isset($data['fieldclass'])) { $data['fieldclass'] = "in4"; }
+                $I1 = '<input class="'.$data['fieldclass'].'" type="text" id="'.$data['fieldename'].'" name="'.$data['fieldename'].'" maxlength="'.$data['fieldlength'].'" value="'.$default.'" />&nbsp;<button type="button" onclick="$(\'#'.$data['fieldename'].'\').browseFiles(\''.url('System','browseFiles').'\',\''.C('UPFILE_PATH').'\',true);">'.L('common/browse').'</button>';
                 break;
         }
         return $I1;

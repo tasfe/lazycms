@@ -912,8 +912,6 @@ class LazySystem extends LazyCMS{
                 }
             }
         }
-        // 取得模板对象
-
         $adminname = isset($_POST['adminname']) ? $_POST['adminname'] : null;
         $adminpass = isset($_POST['adminpass']) ? $_POST['adminpass'] : null;
         $save      = isset($_POST['save']) ? $_POST['save'] : null;

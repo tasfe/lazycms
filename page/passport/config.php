@@ -37,5 +37,11 @@ return array (
    * @inputtype:upfile
    */
   'PASSPORT_LOGIN_TPL' => 'template/default.html',
+  /**
+   * 用户中心模板
+   *
+   * @inputtype:upfile
+   */
+  'PASSPORT_USERCENTER_TPL' => 'template/default.html',
 );
 ?>

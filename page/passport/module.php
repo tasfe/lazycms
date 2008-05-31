@@ -71,9 +71,50 @@ class Passport{
         }
         return $data;
     }
+    // navLogout *** *** www.LazyCMS.net *** ***
+    static function navigation($l1=null){
+        $db = getConn(); $field = empty($l1) ? 'navlogin' : $l1;
+        $I1 = $db->result("SELECT `{$field}` FROM `#@_passport_config` WHERE `systemname` = 'LazyCMS';");
+        return self::formatLink($I1);
+    }
+    // formatLink *** *** www.LazyCMS.net *** ***
+    function formatLink($l1){
+        $I1 = ""; $result = $l1;
+        if (strlen($result)) {
+            $I2 = sect($result,"(\{language\=".language().")","(\})","");
+            $I2 = str_replace(chr(10).chr(10),chr(10),str_replace(chr(13),chr(10),$I2));
+            if (strpos($I2,'(lazy:')!==false) {
+                $tag = O('Tags');
+                $I2  = $tag->createhtm($I2);
+            }
+            $I3 = explode(chr(10),$I2);
+            foreach ($I3 as $I4) {
+                if (strlen(trim($I4))>0) {
+                    if (strpos($I4,'|')===false) { continue; }
+                    $I5 = explode('|',$I4); if (count($I5)<2) { continue; }
+                    $I5[0] = trim($I5[0]); $I5[1] = trim($I5[1]);
+                    if (instr('http:/,ftp://,https:',substr($I5[1],0,6))) {
+                        $I1.= '<a href="'.$I5[1].'" target="_blank">'.htmlencode($I5[0]).'</a>';
+                    } elseif (strtolower(substr($I5[1],6))=='logout') {
+                        $I1.= '<a href="'.$I5[1].'" onclick="javascript:return confirm(\''.t2js(L("confirm/logout")).'\');">'.htmlencode($I5[0]).'</a>';
+                    } else {
+                        $I1.= '<a href="'.$I5[1].'">'.htmlencode($I5[0]).'</a>';
+                    }
+                }
+            }
+        }
+        return $I1;
+    }
     // tags *** *** www.LazyCMS.net *** ***
     static function tags($tags,$inValue){
-        return true;
+        $db = getConn(); $tag = O('Tags');
+        $jsType = strtolower($tag->getLabel($tags,'type'));
+        switch (strtolower($jsType)) {
+            case 'usernav':
+                $I1 = '<script type="text/javascript" src="'.url('Passport','UserNav').'"></script>';
+                break;
+        }
+        return $I1;
     }
     // installModel *** *** www.LazyCMS.net *** ***
     static function installModel($groupCode,$isDeleteTable=false){
@@ -173,6 +214,7 @@ class Passport{
             DROP TABLE IF EXISTS `#@_passport`;
             DROP TABLE IF EXISTS `#@_passport_group`;
             DROP TABLE IF EXISTS `#@_passport_fields`;
+            DROP TABLE IF EXISTS `#@_passport_config`;
 SQL;
     }
     // instsql *** *** www.LazyCMS.net *** ***
@@ -228,6 +270,25 @@ SQL;
               PRIMARY KEY  (`fieldid`),
               KEY `groupid` (`groupid`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=#~lang~#;
+            // 会员系统设置
+            CREATE TABLE IF NOT EXISTS `#@_passport_config` (
+              `systemname` varchar(20),                     # 系统名称
+              `navlogout` text,                             # 用户导航 未登录
+              `navlogin` text,                              # 用户导航 已登录
+              `navuser` text,                               # 登入后的用户菜单
+              `reservename` text,                           # 限制注册的会员名
+              PRIMARY KEY  (`systemname`)
+            ) ENGINE=MyISAM  DEFAULT CHARSET=#~lang~#;
+            // 添加默认设置数据
+            INSERT INTO `#@_passport_config`(
+              `systemname`,`navlogout`,`navlogin`,`navuser`,`reservename`
+            )VALUES(
+              'LazyCMS',
+              '{language=zh-cn\n  用户中心|(lazy:url module="Passport"/)\n  退出|(lazy:url module="Passport" action="Logout"/)\n}',
+              '{language=zh-cn\n  注册|(lazy:url module="Passport" action="Register"/)\n  登录|(lazy:url module="Passport" action="Login"/)\n}',
+              '{language=zh-cn\n  用户中心|(lazy:url module="Passport" action="Main"/)\n  更新密码|(lazy:url module="Passport" action="UpdatePass"/)\n  参数设置|(lazy:url module="Passport" action="UserConfig"/)\n  退出|(lazy:url module="Passport" action="Logout"/)\n}',
+              'fuck,江泽民,系统,管理员,法轮,lazycms,lcms'
+            );
 SQL;
     }
 }

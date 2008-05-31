@@ -630,8 +630,33 @@ class LazyPassport extends LazyCMS{
     }
     // _config *** *** www.LazyCMS.net *** ***
     function _config(){
+        $db = getConn();
         $this->checker(C('CURRENT_MODULE')); 
+        $sql = "navlogout,navlogin,navuser,reservename";//3
+        foreach (explode(',',$sql) as $val) {
+            $data[]= isset($_POST[$val]) ? $_POST[$val] : null;unset($_POST[$val]);
+        }
         $this->config(C('CURRENT_MODULE'));
+        if ($this->method()) {
+            $set = array(
+                'navlogout'   => (string)$data[0],
+                'navlogin'    => (string)$data[1],
+                'navuser'     => (string)$data[2],
+                'reservename' => (string)$data[3],
+            );
+            $db->update('#@_passport_config',$set,"`systemname` = 'LazyCMS'");
+        } else {
+            $res = $db->query("SELECT {$sql} FROM `#@_passport_config` WHERE `systemname` = 'LazyCMS';");
+            if (!$data = $db->fetch($res,0)) {
+                throwError(L('error/invalid'));
+            }
+        }
+        $this->assign(array(
+            'navlogout' => htmlencode($data[0]),
+            'navlogin'  => htmlencode($data[1]),
+            'navuser'   => htmlencode($data[2]),
+            'reservename' => htmlencode($data[3]),
+        ));
         $this->display('config.php');
     }
     // _register *** *** www.LazyCMS.net *** ***
@@ -704,7 +729,7 @@ class LazyPassport extends LazyCMS{
         $this->outHTML = $label->fetch;
 
         $this->assign(array(
-            'groupid'  => $groupid,
+            'groupid'  => $model['groupid'],
             'username' => $username,
             'usermail' => $usermail,
             'mailis'   => !empty($mailis) ? ' checked="checked"' : null,
@@ -726,6 +751,17 @@ class LazyPassport extends LazyCMS{
     // _Login *** *** www.LazyCMS.net *** ***
     function _Login(){
         $db = getConn(); $tag  = O('Tags');
+        $username = Cookie::get('username');
+        $userpass = Cookie::get('userpass');
+        if (!empty($username) && !empty($userpass)) {
+            $res = $db->query("SELECT * FROM `#@_passport` WHERE `username` = ?;",$username);
+            if ($data = $db->fetch($res)) {
+                if ($userpass==$data['userpass']) {
+                    redirect(url(C('CURRENT_MODULE'),'Main'));exit();
+                }
+            }
+        }
+
         $username = isset($_POST['username']) ? $_POST['username'] : null;
         $userpass = isset($_POST['userpass']) ? $_POST['userpass'] : null;
         $keep     = isset($_POST['keep']) ? $_POST['keep'] : null;
@@ -752,7 +788,7 @@ class LazyPassport extends LazyCMS{
                     Cookie::set('username',$username,$validity);
                     Cookie::set('userpass',$newpass,$validity);
                     Cookie::set('language',$data['language'],$validity);
-                    redirect(url('System'));
+                    redirect(url(C('CURRENT_MODULE'),'Main'));
                 } else {
                     // 密码不正确，登录失败
                     $this->validate(array(
@@ -770,9 +806,32 @@ class LazyPassport extends LazyCMS{
         $this->assign('username',$username);
         $HTML = $tag->read(M(C('CURRENT_MODULE'),'PASSPORT_LOGIN_TPL'));
         $tag->clear();
-        $tag->value('title',encode($this->L('register/@title')));
+        $tag->value('title',encode($this->L('login/@title')));
         $tag->value('inside',encode($this->fetch('login.php')));
         $outHTML = $tag->create($HTML,$tag->getValue());
         echo $outHTML;
+    }
+    // _main *** *** www.LazyCMS.net *** ***
+    function _main(){
+        $db = getConn(); $tag  = O('Tags');
+
+        $HTML = $tag->read(M(C('CURRENT_MODULE'),'PASSPORT_USERCENTER_TPL'));
+        $tag->clear();
+        $tag->value('title',encode($this->L('usercenter/@title')));
+        $tag->value('inside',encode($this->fetch('usercenter.php')));
+        $outHTML = $tag->create($HTML,$tag->getValue());
+        echo $outHTML;
+    }
+    // _logout *** *** www.LazyCMS.net *** ***
+    function _logout(){
+        // 清空cookie
+        Cookie::delete('username');
+        Cookie::delete('userpass');
+        // 跳转到登录页
+        redirect(url(C('CURRENT_MODULE'),'Login'));
+    }
+    // _usernav *** *** www.LazyCMS.net *** ***
+    function _usernav(){
+        echo t2js(Passport::navigation(),true);
     }
 }
