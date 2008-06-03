@@ -29,6 +29,7 @@ defined('CORE_PATH') or die('Restricted access!');
  */
 // Control 类名称必须 以Lazy开头，且继承 LazyCMS基础类
 class LazyPassport extends LazyCMS{
+    public $passport = array();
     // _index *** *** www.LazyCMS.net *** ***
     function _index(){
         // 会员分组列表
@@ -547,19 +548,19 @@ class LazyPassport extends LazyCMS{
         }
 
         while (list($name,$data) = each($fieldData)) {
-            $label->p = '<p><label>'.$data['fieldname'].'</label>'.$label->tag($data,$formData[$name]).'</p>';
+            $label->p = '<p><label>'.$data['fieldname'].'</label>'.$label->tag($data,htmlencode($formData[$name])).'</p>';
         }
         $this->outHTML = $label->fetch;
 
         $this->assign(array(
             'userid'   => $userid,
             'groupid'  => $groupid,
-            'username' => $username,
-            'usermail' => $usermail,
+            'username' => htmlencode($username),
+            'usermail' => htmlencode($usermail),
             'mailis'   => !empty($mailis) ? ' checked="checked"' : null,
-            'question' => $question,
-            'answer'   => $answer,
-            'language' => $language,
+            'question' => htmlencode($question),
+            'answer'   => htmlencode($answer),
+            'language' => htmlencode($language),
             'editor'   => $editor,
             'islock'   => $islock,
             'menu'     => $menu,
@@ -666,7 +667,6 @@ class LazyPassport extends LazyCMS{
         $model = Passport::getModel($groupid);
         $username  = isset($_POST['username']) ? $_POST['username'] : null;
         $userpass  = isset($_POST['userpass']) ? $_POST['userpass'] : null;
-        $userpass1 = isset($_POST['userpass1']) ? $_POST['userpass1'] : null;
         $usermail  = isset($_POST['usermail']) ? $_POST['usermail'] : null;
         $mailis    = isset($_POST['mailis']) ? $_POST['mailis'] : null;
         $question  = isset($_POST['question']) ? $_POST['question'] : null;
@@ -724,17 +724,17 @@ class LazyPassport extends LazyCMS{
         }
 
         while (list($name,$data) = each($fieldData)) {
-            $label->p = '<p><label>'.$data['fieldname'].'</label>'.$label->tag($data,$formData[$name]).'</p>';
+            $label->p = '<p><label>'.$data['fieldname'].'</label>'.$label->tag($data,htmlencode($formData[$name])).'</p>';
         }
         $this->outHTML = $label->fetch;
 
         $this->assign(array(
             'groupid'  => $model['groupid'],
-            'username' => $username,
-            'usermail' => $usermail,
+            'username' => htmlencode($username),
+            'usermail' => htmlencode($usermail),
             'mailis'   => !empty($mailis) ? ' checked="checked"' : null,
-            'question' => $question,
-            'answer'   => $answer,
+            'question' => htmlencode($question),
+            'answer'   => htmlencode($answer),
         ));
         if (!isset($innerHTML)) {
             $innerHTML = $this->fetch('register.php');
@@ -803,7 +803,7 @@ class LazyPassport extends LazyCMS{
             }
         }
 
-        $this->assign('username',$username);
+        $this->assign('username',htmlencode($username));
         $HTML = $tag->read(M(C('CURRENT_MODULE'),'PASSPORT_LOGIN_TPL'));
         $tag->clear();
         $tag->value('title',encode($this->L('login/@title')));
@@ -813,12 +813,150 @@ class LazyPassport extends LazyCMS{
     }
     // _main *** *** www.LazyCMS.net *** ***
     function _main(){
+        if (!Passport::checker()) {
+            $this->_logout();exit();
+        }
         $db = getConn(); $tag  = O('Tags');
-
         $HTML = $tag->read(M(C('CURRENT_MODULE'),'PASSPORT_USERCENTER_TPL'));
         $tag->clear();
         $tag->value('title',encode($this->L('usercenter/@title')));
         $tag->value('inside',encode($this->fetch('usercenter.php')));
+        $outHTML = $tag->create($HTML,$tag->getValue());
+        echo $outHTML;
+    }
+    // _updatepass *** *** www.LazyCMS.net *** ***
+    function _updatepass(){
+        if (!Passport::checker()) {
+            $this->_logout();exit();
+        }
+        $db = getConn(); $tag  = O('Tags');
+        $oldpass = isset($_POST['oldpass']) ? trim($_POST['oldpass']) : null;
+        $newpass = isset($_POST['newpass']) ? trim($_POST['newpass']) : null;
+        $md5oldpass  = md5($oldpass.$this->passport['userkey']);
+        $isOldPassOk = ($md5oldpass == Cookie::get('userpass')) ? true : false;
+        $this->validate(array(
+            'oldpass' => $this->check("oldpass|1|".$this->L('usercenter/updatepass/check/oldpass')."|6-30;oldpass|5|".$this->L('usercenter/updatepass/check/error1')."|".$isOldPassOk),
+            'newpass' => $this->check('newpass|2|'.$this->L('check/user/contrast').'|newpass1;newpass|1|'.$this->L('check/user/pwdsize').'|6-30'),
+        ));
+        if ($this->method() && $this->validate()) {
+            $newkey  = substr($md5oldpass,0,6);
+            $newpass = md5($newpass.$newkey);
+            // 更新数据
+            $set = array(
+                'userpass' => $newpass,
+                'userkey'  => $newkey,
+            );
+            $where = $db->quoteInto('`username` = ?',$this->passport['username']);
+            $db->update('#@_passport',$set,$where);
+            Cookie::set('userpass',$newpass);
+            $this->succeed(array(
+                $this->L('usercenter/updatepass/ok'),
+                $this->L('common/usercenter').'|'.url(C('CURRENT_MODULE'),'Main'),
+                $this->L('common/home').'|'.C('SITE_BASE'),
+            ));
+            $innerHTML = $this->succeed();
+        }
+        if (!isset($innerHTML)) {
+            $innerHTML = $this->fetch('updatepass.php');
+        }
+        $HTML = $tag->read(M(C('CURRENT_MODULE'),'PASSPORT_USERCENTER_TPL'));
+        $tag->clear();
+        $tag->value('title',encode($this->L('usercenter/updatepass/@title')));
+        $tag->value('inside',encode($innerHTML));
+        $outHTML = $tag->create($HTML,$tag->getValue());
+        echo $outHTML;
+    }
+    // _userconfig *** *** www.LazyCMS.net *** ***
+    function _userconfig(){
+        if (!Passport::checker()) {
+            $this->_logout();exit();
+        }
+        $db = getConn(); $tag  = O('Tags');
+        $userid    = $this->passport['userid'];
+        $groupid   = $this->passport['groupid'];
+        $grouptable= $this->passport['grouptable'];
+        $username  = $this->passport['username'];
+        $usermail  = isset($_POST['usermail']) ? $_POST['usermail'] : null;
+        $mailis    = isset($_POST['mailis']) ? $_POST['mailis'] : null;
+        $question  = isset($_POST['question']) ? $_POST['question'] : null;
+        $answer    = isset($_POST['answer']) ? $_POST['answer'] : null;
+        $language  = isset($_POST['language']) ? $_POST['language'] : null;
+        $editor    = isset($_POST['editor']) ? $_POST['editor'] : null;
+
+        $this->validate(array(
+            'usermail' => $this->check("usermail|0|".$this->L('check/user/mail').";usermail|validate|".$this->L('check/user/mail1')."|4"),
+        ));
+
+        $label = O('Label');
+        $label->create("SELECT * FROM `#@_passport_fields` WHERE `groupid` = ? ORDER BY `fieldorder` ASC, `fieldid` ASC;",$groupid);
+        $formData  = array(); $fieldData = array();
+        while ($data = $label->result()) {
+            $fieldData[$data['fieldename']] = $data;
+            $formData[$data['fieldename']]  = isset($_POST[$data['fieldename']]) ? $_POST[$data['fieldename']] : null;
+            if (is_array($formData[$data['fieldename']])) {
+                $formData[$data['fieldename']] = implode(',',$formData[$data['fieldename']]);
+            }
+        }
+        if ($this->method()) {
+            if ($this->validate()) {
+                $set = array(
+                    'usermail' => (string)$usermail,
+                    'mailis'   => (int)$mailis,
+                    'question' => (string)$question,
+                    'answer'   => (string)$answer,
+                    'language' => (string)$language,
+                    'editor'   => (string)$editor,
+                );
+                $where = $db->quoteInto('`userid` = ?',$userid);
+                $db->update('#@_passport',$set,$where);
+                if (!empty($formData)) {
+                    $num = $db->count("SELECT * FROM `".$grouptable."` WHERE `userid` = '{$userid}';");
+                    if ($num>0) {
+                        $where = $db->quoteInto('`userid` = ?',$userid);
+                        $db->update($grouptable,$formData,$where);    
+                    } else {
+                        $addrows = array_merge($formData,array('userid'=>$userid));
+                        $db->insert($grouptable,$addrows);
+                    }
+                }
+                $this->succeed(array(
+                    $this->L('usercenter/config/ok'),
+                    $this->L('common/usercenter').'|'.url(C('CURRENT_MODULE'),'Main'),
+                    $this->L('common/home').'|'.C('SITE_BASE'),
+                ));
+                $innerHTML = $this->succeed();
+            }
+        } else {
+            $usermail = $this->passport['usermail'];
+            $mailis   = $this->passport['mailis'];
+            $question = $this->passport['question'];
+            $answer   = $this->passport['answer'];
+            $language = $this->passport['language'];
+            $editor   = $this->passport['editor'];
+            $formData = Passport::getData($userid,$grouptable);
+        }
+
+        while (list($name,$data) = each($fieldData)) {
+            $label->p = '<p><label>'.$data['fieldname'].'</label>'.$label->tag($data,htmlencode($formData[$name])).'</p>';
+        }
+        $this->outHTML = $label->fetch;
+
+        $this->assign(array(
+            'username' => htmlencode($username),
+            'usermail' => htmlencode($usermail),
+            'mailis'   => !empty($mailis) ? ' checked="checked"' : null,
+            'question' => htmlencode($question),
+            'answer'   => htmlencode($answer),
+            'language' => htmlencode($language),
+            'editor'   => htmlencode($editor),
+        ));
+        if (!isset($innerHTML)) {
+            $innerHTML = $this->fetch('userconfig.php');
+        }
+        $HTML = $tag->read(M(C('CURRENT_MODULE'),'PASSPORT_USERCENTER_TPL'));
+        $tag->clear();
+        $tag->value('title',encode($this->L('usercenter/config/@title')));
+        $tag->value('inside',encode($innerHTML));
         $outHTML = $tag->create($HTML,$tag->getValue());
         echo $outHTML;
     }
@@ -832,6 +970,10 @@ class LazyPassport extends LazyCMS{
     }
     // _usernav *** *** www.LazyCMS.net *** ***
     function _usernav(){
-        echo t2js(Passport::navigation(),true);
+        if (Passport::checker()) {
+            echo t2js(Passport::navigation('navlogout'),true);
+        } else {
+            echo t2js(Passport::navigation(),true);
+        }
     }
 }

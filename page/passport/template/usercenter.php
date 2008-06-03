@@ -1,1 +1,3 @@
-用户中心
+<?php
+echo Passport::navigation('navuser');
+?>

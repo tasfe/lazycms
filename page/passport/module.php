@@ -78,7 +78,7 @@ class Passport{
         return self::formatLink($I1);
     }
     // formatLink *** *** www.LazyCMS.net *** ***
-    function formatLink($l1){
+    static function formatLink($l1){
         $I1 = ""; $result = $l1;
         if (strlen($result)) {
             $I2 = sect($result,"(\{language\=".language().")","(\})","");
@@ -104,6 +104,32 @@ class Passport{
             }
         }
         return $I1;
+    }
+    // checker *** *** www.LazyCMS.net *** ***
+    static function checker(){
+        $db = getConn(); $module = getObject();
+        $username = Cookie::get('username');
+        $userpass = Cookie::get('userpass');
+        if (!empty($username) && !empty($userpass)) {
+            $res = $db->query("SELECT * FROM `#@_passport` WHERE `username` = ?;",$username);
+            if ($data = $db->fetch($res)) {
+                if ($userpass==$data['userpass']) {
+                    $module->passport = $data;
+                    $groupid = $data['groupid'];
+                    $res = $db->query("SELECT * FROM `#@_passport_group` WHERE `groupid` = ?;",$groupid);
+                    if ($data = $db->fetch($res)) {
+                        $module->passport = array_merge($module->passport,$data);
+                        $grouptable = $data['grouptable'];
+                        $res = $db->query("SELECT * FROM `{$grouptable}` WHERE `userid` = ?;",$module->passport['userid']);
+                        if ($data = $db->fetch($res)) {
+                            $module->passport = array_merge($module->passport,$data);
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     // tags *** *** www.LazyCMS.net *** ***
     static function tags($tags,$inValue){
@@ -284,9 +310,9 @@ SQL;
               `systemname`,`navlogout`,`navlogin`,`navuser`,`reservename`
             )VALUES(
               'LazyCMS',
-              '{language=zh-cn\n  用户中心|(lazy:url module="Passport"/)\n  退出|(lazy:url module="Passport" action="Logout"/)\n}',
+              '{language=zh-cn\n  用户中心|(lazy:url module="Passport" action="Main"/)\n  退出|(lazy:url module="Passport" action="Logout"/)\n}',
               '{language=zh-cn\n  注册|(lazy:url module="Passport" action="Register"/)\n  登录|(lazy:url module="Passport" action="Login"/)\n}',
-              '{language=zh-cn\n  用户中心|(lazy:url module="Passport" action="Main"/)\n  更新密码|(lazy:url module="Passport" action="UpdatePass"/)\n  参数设置|(lazy:url module="Passport" action="UserConfig"/)\n  退出|(lazy:url module="Passport" action="Logout"/)\n}',
+              '{language=zh-cn\n  用户中心|(lazy:url module="Passport" action="Main"/)\n  更新密码|(lazy:url module="Passport" action="UpdatePass"/)\n  更新资料|(lazy:url module="Passport" action="UserConfig"/)\n  退出|(lazy:url module="Passport" action="Logout"/)\n}',
               'fuck,江泽民,系统,管理员,法轮,lazycms,lcms'
             );
 SQL;

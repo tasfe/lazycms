@@ -337,7 +337,6 @@ class LazySystem extends LazyCMS{
     // _myaccount *** *** www.LazyCMS.net *** ***
     function _myaccount(){
         $this->checker();
-
         $db  = getConn();
         $adminid       = $this->admin['adminid'];
         $adminpass     = isset($_POST['adminpass']) ? $_POST['adminpass'] : null;
