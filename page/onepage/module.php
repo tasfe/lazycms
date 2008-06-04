@@ -119,7 +119,9 @@ class Onepage{
             if (C('SITE_MODE')) {
                 return url('Onepage','ShowPage','oneid='.$l1);
             } else {
-                return C('SITE_BASE').$data[0];
+				$I1 = C('SITE_BASE').$data[0];
+				if (!isfile($I1)) { $I1.= '/';}
+                return $I1;
             }
         } else {
             return C('SITE_BASE');

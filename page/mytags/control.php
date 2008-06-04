@@ -130,7 +130,7 @@ class LazyMyTags extends LazyCMS{
             'mtid'      => $mtid,
             'mtname'    => htmlencode($data[0]),
             'mttitle'   => htmlencode($data[1]),
-            'mttext'    => $data[2],
+            'mttext'    => htmlencode($data[2]),
             'mtwidth'   => htmlencode(isset($data[3])?$data[3]:0),
             'mtheight'  => htmlencode(isset($data[4])?$data[4]:0),
             'mtext'     => htmlencode($data[5]),

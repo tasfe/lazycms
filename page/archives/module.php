@@ -141,7 +141,7 @@ class Archives{
             if (C('SITE_MODE')) {
                 return url('Archives','ShowSort','sortid='.$sortid);
             } else {
-                return C('SITE_BASE').$data[0];
+                return C('SITE_BASE').$data[0].'/';
             }
         } else {
             return C('SITE_BASE');
@@ -338,7 +338,9 @@ class Archives{
                 } else {
                     $l4 = $data[1];
                 }
-                return C('SITE_BASE').$data[0].'/'.$l4;
+				$I1 = C('SITE_BASE').$data[0].'/'.$l4;
+				if (!isfile($I1)) { $I1.= '/';}
+                return $I1;
             }
         }
     }

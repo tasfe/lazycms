@@ -91,9 +91,10 @@ function t2js($l1,$l2=false){
 // htmlencode *** *** www.LazyCMS.net *** ***
 function htmlencode($l1){
     $l1 = htmlspecialchars($l1);
-    if (strpos($l1,'&amp;')!==false) {
-        $l1 = str_replace('&amp;','&',$l1);
-    }; return $l1;
+    //if (strpos($l1,'&amp;')!==false) {
+    //    $l1 = str_replace('&amp;','&',$l1);
+    //};
+	return $l1;
 }
 
 // htmldecode *** *** www.LazyCMS.net *** ***
