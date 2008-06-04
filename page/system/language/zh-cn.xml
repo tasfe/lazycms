@@ -231,6 +231,7 @@
 
     <filemanage title="文件浏览器">
         <createfolder>新文件夹名称 (不能包含特殊字符)</createfolder>
+		<uploadfile>上传文件 (文件类型：{$Exts})</uploadfile>
         <template>
             <filename>文件名称</filename>
             <filemtime>最后修改时间</filemtime>

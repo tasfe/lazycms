@@ -774,7 +774,7 @@ class LazySystem extends LazyCMS{
                 $I1 = '<div class="pop">';
                 $I1.= '<div class="pop-title"><span>'.$this->system['sitename'].'</span><a href="javascript:void(0);" onclick="$(\'#poping .pop\').remove();">×</a></div>';
                 $I1.= '<div class="pop-main"><form action="'.url('System','browseFiles').'" method="post" enctype="multipart/form-data" target="___UpLoadFile">';
-                $I1.= '<p><label>'.L('filemanage/createfolder').'</label><input class="in3" name="upfile" type="file" id="upfile" /></p>';
+                $I1.= '<p><label>'.L('filemanage/uploadfile',array('Exts'=>C('UPFILE_SUFFIX').',zip,rar')).'</label><input class="in3" name="upfile" type="file" id="upfile" /></p>';
                 $I1.= '<input name="action" type="hidden" value="uploadfile" />';
                 $I1.= '<input name="from" type="hidden" value="'.$from.'" />';
                 $I1.= '<input name="path" type="hidden" value="'.$path.'" />';
