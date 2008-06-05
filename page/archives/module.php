@@ -530,6 +530,53 @@ class Archives{
         }
         return t2js('<a href="javascript:;"'.$onclick.' id="dir'.$l1.'"><img src="'.C('SITE_BASE').C('PAGES_PATH').'/system/images/'.$state.'.gif" class="os" /></a>');
     }
+    // createRss *** *** www.LazyCMS.net *** ***
+    static function createRss(){
+        header('content-type: text/xml');
+        $db  = getConn(); $strSQL = null; $module = getObject();
+        // 两个用户设置的变量
+        $rss = M('Archives','ARCHIVES_RSS_FILE');
+        $num = M('Archives','ARCHIVES_RSS_NUMBER');
+        $url = 'http://'.$_SERVER['HTTP_HOST'].C('SITE_BASE');
+        $XML = '<?xml version="1.0" encoding="utf-8"?>';
+        $XML.= '<rss version="2.0"><channel>';
+        $XML.= '<title><![CDATA['.$module->system['sitename'].']]></title>';
+        $XML.= '<link>'.$url.'</link>';
+        $XML.= '<description><![CDATA[Powered by:LazyCMS v'.$module->system['systemver'].']]></description>';
+        $XML.= '<language>'.C('LANGUAGE').'</language>';
+        $XML.= '<generator><![CDATA['.$module->system['sitename'].']]></generator>';
+        $XML.= '<ttl>5</ttl>';
+        $XML.= '</channel></rss>';
+        // 创建dom对象
+        $dom = new DOMDocument();
+        $dom->loadXML($XML);
+        $xPath = new DOMXPath($dom);
+        $res = $db->query("SELECT DISTINCT `maintable` FROM `#@_archives_model` GROUP BY `maintable`;");
+        while ($data = $db->fetch($res,0)) {
+            if (empty($strSQL)) {
+                $strSQL.= "SELECT `a`.*,`b`.`sortname`,`b`.`sortpath` FROM `".$data[0]."` AS `a` LEFT JOIN `#@_archives_sort` AS `b` ON `a`.`sortid`=`b`.`sortid`";
+            } else {
+                $strSQL.= " UNION SELECT `a`.*,`b`.`sortname`,`b`.`sortpath` FROM `".$data[0]."` AS `a` LEFT JOIN `#@_archives_sort` AS `b` ON `a`.`sortid`=`b`.`sortid`";
+            }
+        }
+        $strSQL.= " ORDER BY `a`.`date` DESC LIMIT 0,{$num}";
+        $res = $db->query($strSQL);
+        $url = substr($url,-1)=='/' ? substr($url,0,strlen($url)-1) : $url;
+        while ($data = $db->fetch($res)) {
+            $model   = Archives::getModel($data['sortid']);
+            $channel = $xPath->evaluate("//rss/channel")->item(0);
+            $item    = $channel->appendChild($dom->createElement('item'));
+            $title   = $item->appendChild($dom->createElement('title')); $title->appendChild($dom->createCDATASection($data['title']));
+            $link    = $item->appendChild($dom->createElement('link')); $link->appendChild($dom->createCDATASection($url.Archives::showArchive($data['id'],$model)));
+            $pubDate     = $item->appendChild($dom->createElement('pubDate')); $pubDate->appendChild($dom->createCDATASection(date('Y-m-d',$data['date'])));
+            $category    = $item->appendChild($dom->createElement('category')); $category->appendChild($dom->createCDATASection($data['sortname']));
+            $description = $item->appendChild($dom->createElement('description')); $description->appendChild($dom->createCDATASection($data['description']));
+        }
+        if (!C('SITE_MODE')) {
+            $dom->save(LAZY_PATH.$rss);
+        }
+        return $dom->saveXML();
+    }
     // tags *** *** www.LazyCMS.net *** ***
     static function tags($tags,$inValue){ 
         $inSQL = null; $tmpList = null; $db = getConn();

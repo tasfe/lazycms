@@ -90,11 +90,7 @@ function t2js($l1,$l2=false){
 
 // htmlencode *** *** www.LazyCMS.net *** ***
 function htmlencode($l1){
-    $l1 = htmlspecialchars($l1);
-    //if (strpos($l1,'&amp;')!==false) {
-    //    $l1 = str_replace('&amp;','&',$l1);
-    //};
-	return $l1;
+	return htmlspecialchars($l1);
 }
 
 // htmldecode *** *** www.LazyCMS.net *** ***
@@ -192,6 +188,7 @@ function is_utf8($l1){
 			| \xF4[\x80-\x8F][\x80-\xBF]{2} # plane 16
 			)*$%xs',$l1);
 }
+
 // data2xml *** *** www.LazyCMS.net *** ***
 function data2xml($l1) {
     // $l1:object or array

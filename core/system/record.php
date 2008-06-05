@@ -53,7 +53,7 @@ class Record extends Lazy{
         $this->action = url();
         $this->url  = url();
         $this->page = !empty($_REQUEST['page']) ? $_REQUEST['page'] : 1;
-        $this->size = !empty($_REQUEST['size']) ? $_REQUEST['size'] : 10;
+        $this->size = !empty($_REQUEST['size']) ? $_REQUEST['size'] : 20;
         $this->_db  = getConn();
     }
     //__set *** *** www.LazyCMS.net *** ***

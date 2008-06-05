@@ -251,6 +251,7 @@ class LazyArchives extends LazyCMS{
         $db  = getConn();
         $submit  = isset($_GET['submit']) ? (string)$_GET['submit'] : null;
         $lists   = isset($_GET['lists']) ? (string)$_GET['lists'] : null;
+        Archives::createRss();
         switch($submit){
             case 'createsort' :
                 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -297,7 +298,6 @@ class LazyArchives extends LazyCMS{
                 echo loading("{$submit}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&sortid={$sortid}&page={$page}"));
                 break;
         }
-        
     }
     // _list *** *** www.LazyCMS.net *** ***
     function _list(){
@@ -466,7 +466,7 @@ class LazyArchives extends LazyCMS{
                     $db->insert($model['addtable'],$addrows);
                 } else { // update
                     $set = array(
-						'sortid'  => (int)$sortid,
+                        'sortid'  => (int)$sortid,
                         'title'   => (string)$title,
                         'show'    => (int)$show,
                         'commend' => (int)$commend,
@@ -478,7 +478,7 @@ class LazyArchives extends LazyCMS{
                         'description' => (string)$description,
                     );
                     $where = $db->quoteInto('`id` = ?',$aid);
-					$db->update($model['maintable'],$set,$where);
+                    $db->update($model['maintable'],$set,$where);
                     if (!empty($formData)) {
                         $num = $db->count("SELECT * FROM `".$model['addtable']."` WHERE `aid` = '{$aid}';");
                         if ($num>0) {
@@ -551,7 +551,7 @@ class LazyArchives extends LazyCMS{
             'pathtype_id' => $maxid.C('HTML_URL_SUFFIX'),
             'pathtype_date' => date('Y/m/d/').$maxid,
             'upath' => C('UPFILE_PATH'),
-			'isEditor'=> empty($aid)? false : true,
+            'isEditor'=> empty($aid)? false : true,
             'menu'  => $menu,
         ));
         $this->display('edit.php');
@@ -1021,7 +1021,6 @@ class LazyArchives extends LazyCMS{
         $this->config(C('CURRENT_MODULE'));
         $this->display('config.php');
     }
-	
     // _search *** *** www.LazyCMS.net *** ***
     function _search(){
 		$db  = getConn(); $strSQL = null; 
@@ -1085,13 +1084,12 @@ class LazyArchives extends LazyCMS{
         $tag->value('pagelist',encode($randpl));
         $tag->value('sort',encode(Archives::__sort(0,0,0,$sortid)));
         $HTML = $tag->create($HTML,$tag->getValue());
-		
+
 		$totalRows  = $db->count($strSQL);
         $totalPages = ceil($totalRows/$jsNumber);
         $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
         if ((int)$page > (int)$totalPages) { $page = $totalPages; }
         $strSQL.= ' LIMIT '.$jsNumber.' OFFSET '.($page-1)*$jsNumber.';';
-		
         // 有记录进行查询
         if ((int)$totalRows > 0 && !empty($keyword)) {
             $res = $db->query($strSQL);
@@ -1161,5 +1159,8 @@ class LazyArchives extends LazyCMS{
         }
         echo $I1;
     }
-    
+    // _rss *** *** www.LazyCMS.net *** ***
+    function _rss(){
+        echo Archives::createRss();
+    }
 }

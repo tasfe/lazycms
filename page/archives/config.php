@@ -31,6 +31,20 @@ return array (
    */
   'ARCHIVES_TEMPLATE' => 'template/default.html',
   /**
+   * Rss生成地址
+   *
+   * @inputtype:input
+   * @fieldclass:in2
+   */
+  'ARCHIVES_RSS_FILE' => 'rss.xml',
+  /**
+   * Rss生成记录数
+   *
+   * @inputtype:input
+   * @fieldclass:in0
+   */
+  'ARCHIVES_RSS_NUMBER' => 20,
+  /**
    * 添加文档->文档属性->显示
    *
    * @inputtype:radio
