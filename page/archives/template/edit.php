@@ -5,7 +5,7 @@
     <form action="<?php echo url(C('CURRENT_MODULE'),'Edit');?>" method="post" class="lz_form">
         <p><label><?php echo $module->L('label/archive/sort');?></label>
             <select name="sortid" id="sortid" <?php if (empty($aid)):?>onchange="$(this).jump('<?php echo url(C('CURRENT_MODULE'),'Edit','sortid=$');?>');"<?php endif;?>>
-                <?php echo Archives::__sort(0,0,0,$sortid);?>
+                <?php echo Archives::__sort(0,0,0,$sortid,$isEditor);?>
             </select>
         </p>
         <p><label><?php echo $module->L('label/archive/info');?></label><span>

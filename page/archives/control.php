@@ -551,6 +551,7 @@ class LazyArchives extends LazyCMS{
             'pathtype_id' => $maxid.C('HTML_URL_SUFFIX'),
             'pathtype_date' => date('Y/m/d/').$maxid,
             'upath' => C('UPFILE_PATH'),
+			'isEditor'=> empty($aid)? false : true,
             'menu'  => $menu,
         ));
         $this->display('edit.php');
@@ -1119,7 +1120,7 @@ class LazyArchives extends LazyCMS{
             $outHTML = str_replace($randpl,Archives::pagelist($path,$page,$totalPages,$totalRows,1),$outHTML);//'&page=$'
         } else {
             if ((int)$totalRows == 0) {
-                $outHTML = str_replace($rand,'没有结果',$HTML);
+                $outHTML = str_replace($rand,$this->L('search/noresult',array('keyword'=>$keyword)),$HTML);
             } else {
                 $outHTML = str_replace($rand,null,$HTML);
             }

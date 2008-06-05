@@ -80,18 +80,18 @@ class Archives{
         return $fields;
     }
     // __sort *** *** www.LazyCMS.net *** ***
-    static function __sort($l1,$l2,$l3=0,$l4=null){
+    static function __sort($l1,$l2,$l3=0,$l4=null,$l5=false){
         // $l1:father sortid, $l2:current sortid, $l3:Space, $l4:selected
         $nbsp = null; $I1 = null;
         for ($i=0; $i<$l3; $i++) {
             $nbsp .= "&nbsp; &nbsp;";
         }
-        $db  = getConn();
-		$modelid  = @$db->result("SELECT `modelid` FROM `#@_archives_sort` WHERE `sortid` = '{$l4}'");
-		if ($modelid!==false) {
-			$inSQL = "AND `modelid`='{$modelid}'";
-		} else {
-			$inSQL = null;
+        $db = getConn(); $inSQL = null;
+		if ($l5) {
+			$modelid  = @$db->result("SELECT `modelid` FROM `#@_archives_sort` WHERE `sortid` = '{$l4}'");
+			if ($modelid!==false) {
+				$inSQL = "AND `modelid`='{$modelid}'";
+			}
 		}
 	    $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_archives_sort` WHERE `sortid1` = ? {$inSQL} ORDER BY `sortorder` DESC,`sortid` DESC;",$l1);
         while ($data = $db->fetch($res,0)) {

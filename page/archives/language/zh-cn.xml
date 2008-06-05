@@ -171,5 +171,6 @@
     
     <search title="搜索">
         <title>“{$keyword}”的搜索结果</title>
+		<noresult>没有找到“{$keyword}”相关的搜索结果！</noresult>
     </search>
 </lazycms>
