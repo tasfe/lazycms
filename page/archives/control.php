@@ -550,7 +550,6 @@ class LazyArchives extends LazyCMS{
             'pathtype_id' => $maxid.C('HTML_URL_SUFFIX'),
             'pathtype_date' => date('Y/m/d/').$maxid,
             'upath' => C('UPFILE_PATH'),
-            'disabled' => !empty($aid) ? ' disabled="disabled"' : null,
             'menu'  => $menu,
         ));
         $this->display('edit.php');

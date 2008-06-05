@@ -4,7 +4,7 @@
 <div class="content">
     <form action="<?php echo url(C('CURRENT_MODULE'),'Edit');?>" method="post" class="lz_form">
         <p><label><?php echo $module->L('label/archive/sort');?></label>
-            <select name="sortid" id="sortid" onchange="$(this).jump('<?php echo url(C('CURRENT_MODULE'),'Edit','sortid=$');?>');"<?php echo $disabled;?>>
+            <select name="sortid" id="sortid" onchange="$(this).jump('<?php echo url(C('CURRENT_MODULE'),'Edit','sortid=$');?>');">
                 <?php echo Archives::__sort(0,0,0,$sortid);?>
             </select>
         </p>
