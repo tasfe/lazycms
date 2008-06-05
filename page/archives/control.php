@@ -466,6 +466,7 @@ class LazyArchives extends LazyCMS{
                     $db->insert($model['addtable'],$addrows);
                 } else { // update
                     $set = array(
+						'sortid'  => (int)$sortid,
                         'title'   => (string)$title,
                         'show'    => (int)$show,
                         'commend' => (int)$commend,
@@ -477,7 +478,7 @@ class LazyArchives extends LazyCMS{
                         'description' => (string)$description,
                     );
                     $where = $db->quoteInto('`id` = ?',$aid);
-                    $db->update($model['maintable'],$set,$where);
+					$db->update($model['maintable'],$set,$where);
                     if (!empty($formData)) {
                         $num = $db->count("SELECT * FROM `".$model['addtable']."` WHERE `aid` = '{$aid}';");
                         if ($num>0) {

@@ -4,7 +4,7 @@
 <div class="content">
     <form action="<?php echo url(C('CURRENT_MODULE'),'Edit');?>" method="post" class="lz_form">
         <p><label><?php echo $module->L('label/archive/sort');?></label>
-            <select name="sortid" id="sortid" onchange="$(this).jump('<?php echo url(C('CURRENT_MODULE'),'Edit','sortid=$');?>');">
+            <select name="sortid" id="sortid" <?php if (empty($aid)):?>onchange="$(this).jump('<?php echo url(C('CURRENT_MODULE'),'Edit','sortid=$');?>');"<?php endif;?>>
                 <?php echo Archives::__sort(0,0,0,$sortid);?>
             </select>
         </p>
@@ -43,9 +43,6 @@
         <p><label><?php echo $module->L('label/archive/description');?></label><textarea name="description" id="description" rows="5" class="in4"><?php echo $description;?></textarea></p>
         <p><label><?php echo $module->L('label/archive/date');?></label><input class="in2 date-pick" type="text" id="date" name="date" value="<?php echo $date;?>" /></p>
         <input name="aid" type="hidden" value="<?php echo $aid;?>" />
-        <?php if (!empty($aid)):?>
-        <input name="sortid" type="hidden" value="<?php echo $sortid;?>" />
-        <?php endif;?>
         <?php echo $module->but('submit');?>
     </form>
 </div>
