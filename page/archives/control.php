@@ -1020,6 +1020,7 @@ class LazyArchives extends LazyCMS{
         $this->config(C('CURRENT_MODULE'));
         $this->display('config.php');
     }
+	
     // _search *** *** www.LazyCMS.net *** ***
     function _search(){
 		$db  = getConn(); $strSQL = null; 
@@ -1029,18 +1030,22 @@ class LazyArchives extends LazyCMS{
 		$sortid = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : 0;
 		$page   = isset($_REQUEST['page']) ? (int)$_REQUEST['page'] : 1;
 		if (!empty($query)) {
-			if (function_exists('iconv')) {
-				$query = iconv('gb2312','utf-8',$query);
-			} elseif (function_exists('mb_convert_encoding')) {
-				$query = iconv($query,'utf-8','gb2312');
+			if (is_utf8($query)==false) {
+				if (function_exists('iconv')) {
+					$query = iconv('gb2312','utf-8',$query);
+				} elseif (function_exists('mb_convert_encoding')) {
+					$query = mb_convert_encoding($query,'utf-8','gb2312');
+				}
 			}
 			$query = rawurldecode($query);
 		}
 		if (!empty($tags)) {
-			if (function_exists('iconv')) {
-				$tags = iconv('gb2312','utf-8',$tags);
-			} elseif (function_exists('mb_convert_encoding')) {
-				$tags = iconv($tags,'utf-8','gb2312');
+			if (is_utf8($tags)==false) {
+				if (function_exists('iconv')) {
+					$tags = iconv('gb2312','utf-8',$tags);
+				} elseif (function_exists('mb_convert_encoding')) {
+					$tags = mb_convert_encoding($tags,'utf-8','gb2312');
+				}
 			}
 			$tags = rawurldecode($tags);
 		}
