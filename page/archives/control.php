@@ -1023,11 +1023,27 @@ class LazyArchives extends LazyCMS{
     // _search *** *** www.LazyCMS.net *** ***
     function _search(){
 		$db  = getConn(); $strSQL = null; 
-		$tag = O('Tags'); $inSQL = null;
-		$query  = isset($_REQUEST['query']) ? rawurldecode($_REQUEST['query']) : null;
-		$tags   = isset($_REQUEST['tags']) ? rawurldecode($_REQUEST['tags']) : null;
+		$tag = O('Tags'); $inSQL = null; $tmpList = null;
+		$query  = isset($_REQUEST['query']) ? $_REQUEST['query'] : null;
+		$tags   = isset($_REQUEST['tags']) ? $_REQUEST['tags'] : null;
 		$sortid = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : 0;
 		$page   = isset($_REQUEST['page']) ? (int)$_REQUEST['page'] : 1;
+		if (!empty($query)) {
+			if (function_exists('iconv')) {
+				$query = iconv('gb2312','utf-8',$query);
+			} elseif (function_exists('mb_convert_encoding')) {
+				$query = iconv($query,'utf-8','gb2312');
+			}
+			$query = rawurldecode($query);
+		}
+		if (!empty($tags)) {
+			if (function_exists('iconv')) {
+				$tags = iconv('gb2312','utf-8',$tags);
+			} elseif (function_exists('mb_convert_encoding')) {
+				$tags = iconv($tags,'utf-8','gb2312');
+			}
+			$tags = rawurldecode($tags);
+		}
         $keyword = empty($tags) ? $query : $tags;
 		if (!empty($sortid)) { $sortids = Archives::getSubSortIds($sortid); $inSQL.= " And `a`.`sortid` IN({$sortids})"; }
 		if (!empty($query)){ $inSQL.= " And (binary ucase(`a`.`title`) LIKE ucase('%{$query}%') OR binary ucase(`a`.`keywords`) LIKE ucase('%{$query}%') OR binary ucase(`a`.`description`) LIKE ucase('%{$query}%'))"; }
@@ -1063,12 +1079,13 @@ class LazyArchives extends LazyCMS{
         $tag->value('pagelist',encode($randpl));
         $tag->value('sort',encode(Archives::__sort(0,0,0,$sortid)));
         $HTML = $tag->create($HTML,$tag->getValue());
-
+		
 		$totalRows  = $db->count($strSQL);
         $totalPages = ceil($totalRows/$jsNumber);
         $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
         if ((int)$page > (int)$totalPages) { $page = $totalPages; }
         $strSQL.= ' LIMIT '.$jsNumber.' OFFSET '.($page-1)*$jsNumber.';';
+		
         // 有记录进行查询
         if ((int)$totalRows > 0 && !empty($keyword)) {
             $res = $db->query($strSQL);

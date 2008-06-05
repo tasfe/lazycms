@@ -272,7 +272,7 @@ class Tags extends Lazy{
             if (strlen($l7)>0) {
                 $l8 = $this->createhtm($l7); $I1 = null;
                 foreach ($I2 as $key=>$val) {
-                    $I1.= "<a href=\"{$l8}".urlencode($val)."\">{$val}</a>";
+                    $I1.= "<a href=\"{$l8}".rawurlencode($val)."\">{$val}</a>";
                 }
             }
         }

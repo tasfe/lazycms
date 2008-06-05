@@ -87,13 +87,13 @@ class Archives{
             $nbsp .= "&nbsp; &nbsp;";
         }
         $db  = getConn();
-		try {
-			$modelid  = $db->result("SELECT `modelid` FROM `#@_archives_sort` WHERE `sortid` = '{$l4}'");
+		$modelid  = @$db->result("SELECT `modelid` FROM `#@_archives_sort` WHERE `sortid` = '{$l4}'");
+		if ($modelid!==false) {
 			$inSQL = "AND `modelid`='{$modelid}'";
-		} catch (Error $err) {
+		} else {
 			$inSQL = null;
 		}
-        $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_archives_sort` WHERE `sortid1` = ? {$inSQL} ORDER BY `sortorder` DESC,`sortid` DESC;",$l1);
+	    $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_archives_sort` WHERE `sortid1` = ? {$inSQL} ORDER BY `sortorder` DESC,`sortid` DESC;",$l1);
         while ($data = $db->fetch($res,0)) {
             if ($l2 != $data[0]) {
                 $selected = ((int)$l4 == (int)$data[0]) ? ' selected="selected"' : null;
