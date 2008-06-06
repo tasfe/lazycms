@@ -446,8 +446,8 @@ class LazyArchives extends LazyCMS{
         if ($this->method()) {
             if ($this->validate()) {
                 if (!empty($downPic)) { $img = $downPic; }
-                if ($path==$create_path.'MD5') {
-                    $path = $create_path.md5(salt(10).$maxid);
+                if (substr($path,0,3)=='MD5' || substr($path,0,4)=='/MD5') {
+					$path = str_replace('MD5',md5(salt(10).$maxid),$path);
                 }
                 if (empty($keywords)) {
                     $keywords = $this->keys($title);
