@@ -35,8 +35,8 @@
             [<a href="javascript:;" onclick="$('#path').val('<?php echo $create_path.$pathtype_id;?>');"><?php echo $pathtype_id;?></a>]
             [<a href="javascript:;" onclick="$('#path').val('<?php echo $create_path.$pathtype_date;?>');"><?php echo $pathtype_date;?></a>]
             <?php endif;?>
-            [<a href="javascript:;" onclick="$('#path').val('<?php echo $create_path.$module->L('common/pinyin');?>');"><?php echo $module->L('common/pinyin');?></a>]
-            [<a href="javascript:;" onclick="$('#path').val('<?php echo $create_path;?>MD5');">MD5</a>]
+            [<a href="javascript:;" onclick="$('#path').val('<?php echo $create_path.$module->L('common/pinyin').C('HTML_URL_SUFFIX');?>');"><?php echo $module->L('common/pinyin').C('HTML_URL_SUFFIX');?></a>]
+            [<a href="javascript:;" onclick="$('#path').val('<?php echo $create_path;?>MD5<?php echo C('HTML_URL_SUFFIX');?>');">MD5<?php echo C('HTML_URL_SUFFIX');?></a>]
         </p>
         <?php echo $module->outHTML;?>
         <p><label><?php echo $module->L('label/archive/keywords');?></label><input class="in4" type="text" id="keywords" name="keywords" maxlength="255" value="<?php echo $keywords;?>" /></p>

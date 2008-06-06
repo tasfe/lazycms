@@ -545,7 +545,7 @@ class LazyArchives extends LazyCMS{
             'title'  => htmlencode($title),
             'img'    => $img,
             'setimg' => $vsetimg,
-            'path'   => empty($aid) && empty($path) ? $create_path.$this->L('common/pinyin') :$path,
+            'path'   => empty($aid) && empty($path) ? $create_path.$this->L('common/pinyin').C('HTML_URL_SUFFIX') :$path,
             'date'   => date('Y-m-d',(empty($date) ? now() : (!is_numeric($date) ? strtotime($date) : $date))),
             'show'   => !empty($show) ? ' checked="checked"' : null,
             'top'    => !empty($top) ? ' checked="checked"' : null,
