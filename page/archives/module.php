@@ -474,6 +474,10 @@ class Archives{
         if (strpos($paths[$count-1],'.')!==false){ //文件
 			if (substr($l2,0,1)=='/') {
 				$l2 = ltrim($l2,'/');
+				if (strpos($l2,'/')!==false){
+					$path = substr($l2,0,strlen($l2)-strlen($paths[$count-1]));
+					mkdirs(LAZY_PATH.$path);
+				}
 				saveFile(LAZY_PATH.$l2,$l3);
 				return true;
 			}

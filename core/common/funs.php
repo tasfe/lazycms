@@ -162,7 +162,7 @@ function pinyin($l1){
             $I1.= ucfirst(array_search_value($l2[$i],$I3));
         }
     }
-    return $I1;
+    return trim($I1,'-');
 }
 
 // array_search_value *** *** www.LazyCMS.net *** ***
