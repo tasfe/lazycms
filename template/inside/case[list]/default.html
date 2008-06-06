@@ -1,0 +1,17 @@
+<div id="case" class="list">
+	<div class="title">{lazy:sortname/}</div>
+	{lazy:pagelist/}
+	<ul>
+		{lazy:case type="list" number="10"}
+		<li>
+			<div class="picture"><a href="(lazy:path/)" title="(lazy:title/)"><img src="(lazy:image width="130" height="90"/)" alt="(lazy:title/)"/></a></div>
+			<div class="info">
+				<p>网站名称：<a href="(lazy:path/)" title="(lazy:title/)">(lazy:title/)</a></p>
+				<p>网站地址：<a href="(lazy:siteurl/)" target="_blank">(lazy:siteurl/)</a></p>
+				<p>网站简介：(lazy:intro fun="clearHTML(@me)"/)</p>
+			</div>
+		</li>
+		{/lazy}
+	</ul>
+	{lazy:pagelist/}
+</div>

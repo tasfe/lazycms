@@ -106,7 +106,7 @@ class Label extends Lazy{
                 foreach ($I2 as $v) {
                     if (trim($v)!='') {
                         $I3 = explode(":",$v);
-                        foreach ($I3 as &$l3) { $l3 = htmlencode($l3); }
+                        foreach ($I3 as &$l3) { $l3 = htmlencode(trim($l3)); }
                         $checked = !empty($default) ? ($default==$I3[1] ? ' checked="checked"' : null) : null;
                         $I1.= '<input name="'.$data['fieldename'].'" id="'.$data['fieldename'].'_'.$I3[1].'" type="radio" value="'.$I3[1].'"'.$checked.' /><label for="'.$data['fieldename'].'_'.$I3[1].'">'.$I3[0].'</label>';    
                     }
@@ -119,7 +119,7 @@ class Label extends Lazy{
                 foreach ($I2 as $v) {
                     if (trim($v)!='') {
                         $I3 = explode(":",$v);
-                        foreach ($I3 as &$l3) { $l3 = htmlencode($l3); }
+                        foreach ($I3 as &$l3) { $l3 = htmlencode(trim($l3)); }
                         $checked = !empty($default) ? (instr($default,$I3[1]) ? ' checked="checked"' : null) : null;
                         $I1.= '<input name="'.$data['fieldename'].'[]" id="'.$data['fieldename'].'_'.$I3[1].'" type="checkbox" value="'.$I3[1].'"'.$checked.' /><label for="'.$data['fieldename'].'_'.$I3[1].'">'.$I3[0].'</label> ';
                     }
@@ -132,7 +132,7 @@ class Label extends Lazy{
                 foreach ($I2 as $v) {
                     if (trim($v)!='') {
                         $I3 = explode(":",$v);
-                        foreach ($I3 as &$l3) { $l3 = htmlencode($l3); }
+                        foreach ($I3 as &$l3) { $l3 = htmlencode(trim($l3)); }
                         $selected = !empty($default) ? ((string)$default==(string)$I3[1] ? ' selected="selected"' : null) : null;
                         $I1.= '<option value="'.$I3[1].'"'.$selected.'>'.$I3[0].'</option>';
                     }

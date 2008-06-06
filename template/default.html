@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="{lazy:keywords/}"/>
+<meta name="description" content="{lazy:description/}"/>
+<title>{lazy:title/} - {lazy:sitename/}</title>
+<link href="images/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">var template = "{lazy:inst/}template";</script>
+<script type="text/javascript" src="images/common.js"></script>
+</head>
+
+<body>
+<div id="header">
+	<a href="{lazy:inst/}"><img src="images/logo.gif" alt="{lazy:sitename/}" id="logo"/></a>
+</div>
+
+<div id="menu">
+	<ul class="left">
+		<li><a href="{lazy:inst/}">首页</a></li>
+		<li><a href="{lazy:onepage id="2"/}">关于我们</a></li>
+		<li><a href="#">解决方案</a></li>
+		<li><a href="{lazy:archives type="link" sortid="1"/}">成功案例</a></li>
+		<li><a href="{lazy:archives type="link" sortid="2"/}">建站知识</a></li>
+		<li><a href="{lazy:onepage id="3"/}">联系我们</a></li>
+	</ul>
+	<div class="right">
+		<a href="{lazy:url module="Feedback"/}">在线咨询</a>
+	</div>
+</div>
+
+<div id="show">
+	<div class="left">&nbsp;</div>
+	<div class="center"><img src="images/shows/PIC_1.jpg" id="showImg"/></div>
+	<div class="right">
+		<img src="images/effective.gif" id="effective"/>
+		<div class="text">
+			{lazy:mytags name="intro" type="js"/}
+		</div>
+	</div>
+</div>
+
+<div id="main">
+	<div class="left">
+		{lazy:mytags name="news" type="js"/}
+	</div>
+	<div class="right">
+		<div class="top"><strong>{lazy:guide/}</strong></div>
+		{lazy:inside/}
+	</div>
+</div>
+
+<div id="bottom">
+	<div class="menu"><a href="{lazy:onepage id="4"/}">付款方式</a><a href="{lazy:onepage id="3"/}">联系我们</a><a href="{lazy:url module="Feedback"/}">在线咨询</a></div>
+	<div class="copy">{lazy:mytags name="copyright" type="js"/} {lazy:counter/}&nbsp;</div>
+</div>
+</body>
+</html>

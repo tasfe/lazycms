@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="{lazy:keywords/}"/>
+<meta name="description" content="{lazy:description/}"/>
+<title>{lazy:sitename/} - {lazy:title/}</title>
+<link href="images/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">var template = "{lazy:inst/}template";</script>
+<script type="text/javascript" src="images/common.js"></script>
+</head>
+
+<body>
+<div id="header">
+	<a href="{lazy:inst/}"><img src="images/logo.gif" alt="{lazy:sitename/}" id="logo"/></a>
+</div>
+
+<div id="menu">
+	<ul class="left">
+		<li><a href="{lazy:inst/}">首页</a></li>
+		<li><a href="{lazy:onepage id="2"/}">关于我们</a></li>
+		<li><a href="#">解决方案</a></li>
+		<li><a href="{lazy:archives type="link" sortid="1"/}">成功案例</a></li>
+		<li><a href="{lazy:archives type="link" sortid="2"/}">建站知识</a></li>
+		<li><a href="{lazy:onepage id="3"/}">联系我们</a></li>
+	</ul>
+	<div class="right">
+		<a href="{lazy:url module="Feedback"/}">在线咨询</a>
+	</div>
+</div>
+
+<div id="show">
+	<div class="left">&nbsp;</div>
+	<div class="center"><img src="images/shows/PIC_1.jpg" id="showImg"/></div>
+	<div class="right">
+		<img src="images/effective.gif" id="effective"/>
+		<div class="text">
+			{lazy:mytags name="intro" type="js"/}
+		</div>
+	</div>
+</div>
+
+<div id="homemain">
+	<div class="hleft">
+		<div class="top"><strong>网站解决方案与网站建设服务</strong></div>
+		<!-- 域名空间、网站建设、网站推广、常见问题 -->
+		<div class="list">
+			<dl>
+				<dt>域名空间</dt>
+				{lazy:article type="new" sortid="4" number="10"}
+				<dd><a href="(lazy:path/)" title="(lazy:title/)" target="_blank">(lazy:title/)</a></dd>
+				{/lazy}
+				<dd class="more"><a href="{lazy:archives type="link" sortid="4"/}"><img src="images/more.gif"></a></dd>
+			</dl>
+			
+			<dl>
+				<dt>网站建设</dt>
+				{lazy:article type="new" sortid="5" number="10"}
+				<dd><a href="(lazy:path/)" title="(lazy:title/)" target="_blank">(lazy:title/)</a></dd>
+				{/lazy}
+				<dd class="more"><a href="{lazy:archives type="link" sortid="5"/}"><img src="images/more.gif"></a></dd>
+			</dl>
+			
+			<dl>
+				<dt>网站推广</dt>
+				{lazy:article type="new" sortid="6" number="10"}
+				<dd><a href="(lazy:path/)" title="(lazy:title/)" target="_blank">(lazy:title/)</a></dd>
+				{/lazy}
+				<dd class="more"><a href="{lazy:archives type="link" sortid="6"/}"><img src="images/more.gif"></a></dd>
+			</dl>
+			
+			<dl>
+				<dt>常见问题</dt>
+				{lazy:article type="new" sortid="7" number="10"}
+				<dd><a href="(lazy:path/)" title="(lazy:title/)" target="_blank">(lazy:title/)</a></dd>
+				{/lazy}
+				<dd class="more"><a href="{lazy:archives type="link" sortid="7"/}"><img src="images/more.gif"></a></dd>
+			</dl>
+		</div>
+		<ul class="case">
+			{lazy:case type="new" sortid="1" number="5"}
+			<li><a href="(lazy:path/)" title="(lazy:title/)"><img src="(lazy:image width="130" height="90"/)" width="130" height="90" alt="(lazy:title/)"/>(lazy:title/)</a></li>
+			{/lazy}
+		</ul>
+	</div>
+	<div class="hright">
+		<dl>
+			<dt>网站建设新闻 <a href="{lazy:archives type="link" sortid="3"/}"><img src="images/more.gif" border="0" /></a></dt>
+			{lazy:article type="new" sortid="3" number="10"}
+			<dd>&raquo; <a href="(lazy:path/)" title="(lazy:title/)">(lazy:title/)</a></dd>
+			{/lazy}
+		</dl>
+		<dl>
+			<dt>友情链接</dt>
+			{lazy:mytags name="links"/}
+		</dl>
+	</div>
+</div>
+
+<div id="bottom">
+	<div class="menu"><a href="{lazy:onepage id="4"/}">付款方式</a><a href="{lazy:onepage id="3"/}">联系我们</a><a href="{lazy:url module="Feedback"/}">在线咨询</a></div>
+	<div class="copy">{lazy:mytags name="copyright" type="js"/} {lazy:counter/} &nbsp;</div>
+</div>
+</body>
+</html>

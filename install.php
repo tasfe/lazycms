@@ -72,6 +72,7 @@ $dsnPrefix = isset($_POST['dsn_prefix']) ? $_POST['dsn_prefix'] : C('DSN_PREFIX'
 $dsnConfig = isset($_POST['dsn_config']) ? $_POST['dsn_config'] : C('DSN_CONFIG');
 $modules   = isset($_POST['modules']) ? $_POST['modules'] : null;
 
+$leadinData    = isset($_POST['leadinData']) ? $_POST['leadinData'] : true;
 $adminname     = isset($_POST['adminname']) ? $_POST['adminname'] : null;
 $adminpass     = isset($_POST['adminpass']) ? $_POST['adminpass'] : null;
 $adminlanguage = isset($_POST['adminlanguage']) ? $_POST['adminlanguage'] : null;
@@ -178,25 +179,33 @@ if ($install && labelError()) {
             'admindate'     => now(),
         );
         $db->insert('#@_admin',$admin);
-        // 添加首页
-        $onepage = array(
-            'oneorder'     => $db->max('oneid','#@_onepage'),
-            'onetitle'     => L('common/home'),
-            'onepath'      => C('SITE_INDEX'),
-            'onename'      => L('common/home'),
-            'onecontent'   => L('common/home'),
-            'onetemplate1' => C('TEMPLATE_PATH').'/'.C('TEMPLATE_DEF'),
-            'onetemplate2' => C('TEMPLATE_PATH').'/inside/onepage/'.C('TEMPLATE_DEF'),
-            'ishome'       => '1',
-        );
-        $db->insert('#@_onepage',$onepage);
-        saveFile(CORE_PATH.'/custom/config.php',"<?php\n".createNote('用户自定义配置文件')."\nreturn ".var_export($config,true).";\n?>");
-        // 导入默认模型
-        import("@.archives.module");
-        $models = getArrDir('@.archives.models','xml');
-        foreach ($models as $model){
-            Archives::installModel(loadFile(LAZY_PATH.C('PAGES_PATH')."/archives/models/{$model}"),true);
+        // 安装示例数据
+        if ($leadinData) {
+            $instSQL = loadFile(LAZY_PATH.'install.sql');
+            $db->batQuery($instSQL);
+            @unlink(LAZY_PATH.'install.sql');
+        } else {
+            // 添加首页
+            $onepage = array(
+                'oneorder'     => $db->max('oneid','#@_onepage'),
+                'onetitle'     => L('common/home'),
+                'onepath'      => C('SITE_INDEX'),
+                'onename'      => L('common/home'),
+                'onecontent'   => L('common/home'),
+                'onetemplate1' => C('TEMPLATE_PATH').'/'.C('TEMPLATE_DEF'),
+                'onetemplate2' => C('TEMPLATE_PATH').'/inside/onepage/'.C('TEMPLATE_DEF'),
+                'ishome'       => '1',
+            );
+            $db->insert('#@_onepage',$onepage);
+            // 导入默认模型
+            import("@.archives.module");
+            $models = getArrDir('@.archives.models','xml');
+            foreach ($models as $model){
+                Archives::installModel(loadFile(LAZY_PATH.C('PAGES_PATH')."/archives/models/{$model}"),true);
+            }
         }
+        saveFile(CORE_PATH.'/custom/config.php',"<?php\n".createNote('用户自定义配置文件')."\nreturn ".var_export($config,true).";\n?>");
+        // 删除安装文件
         @unlink(LAZY_PATH.'install.php');
         redirect('admin/index.php');
     } catch (Error $err) {
@@ -278,7 +287,7 @@ body,th,td,p{ line-height:150%; font-family:Verdana; font-size:12px; color:#3333
       <td>
         <?php 
         $_modules = getArrDir(C('PAGES_PATH'),'dir');
-        $selected = 'archives,onepage';
+        $selected = 'mytags,feedback,archives,onepage';
         foreach ($_modules as $m) {
             if (strtolower($m) != 'system') {
                 $checked = instr($modules,$m) ? ' checked="checked"' : null;
@@ -293,6 +302,13 @@ body,th,td,p{ line-height:150%; font-family:Verdana; font-size:12px; color:#3333
             }
         }
         ?>
+      </td>
+    </tr>
+    <tr>
+      <th>示例数据</th>
+      <td>
+          <input type="radio" name="leadinData" id="leadinData_true" value="1"<?php echo $leadinData ? ' checked="checked"' : null;?>/><label for="leadinData_true">[推荐新手]导入数据</label>
+          <input name="leadinData" id="leadinData_false" type="radio" value="0"<?php echo !$leadinData ? ' checked="checked"' : null;?> /><label for="leadinData_false">不导入数据</label>
       </td>
     </tr>
     <tr>

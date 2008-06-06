@@ -50,7 +50,7 @@ return array (
    * @inputtype:radio
    * @fieldvalue:生成在根目录:true|生成到子目录:false
    */
-  'ARCHIVES_CREATE_ROOTFILE' => true,
+  'ARCHIVES_CREATE_ROOTFILE' => false,
   /**
    * 添加文档->文档属性->显示
    *

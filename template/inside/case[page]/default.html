@@ -1,0 +1,11 @@
+<div id="case" class="list">
+	<div class="title">{lazy:title/}</div>
+	<div class="box">
+		<p>网站名称：{lazy:title/}</p>
+		<p>网站地址：<a href="{lazy:siteurl/}" target="_blank">{lazy:siteurl/}</a></p>
+		<p>网站简介：{lazy:intro fun="clearHTML(@me)"/}</p>
+		<div class="content"><img src="{lazy:image/}" alt="{lazy:title/}" onmousemove="this.style.cursor='pointer'" onclick="window.open(this.src);" onerror="if(this.width>600){this.width=600}"; onload="if(this.width>600){this.width=600}" /></div>
+		<div class="lastpage">上一个：{lazy:lastpage/}</div>
+		<div class="nextpage">下一个：{lazy:nextpage/}</div>
+	</div>
+</div>
