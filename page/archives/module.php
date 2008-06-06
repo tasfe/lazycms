@@ -579,7 +579,7 @@ class Archives{
                 $strSQL.= " UNION SELECT `a`.*,`b`.`sortname`,`b`.`sortpath` FROM `".$data[0]."` AS `a` LEFT JOIN `#@_archives_sort` AS `b` ON `a`.`sortid`=`b`.`sortid`";
             }
         }
-        $strSQL.= " ORDER BY `a`.`date` DESC LIMIT 0,{$num}";
+        $strSQL.= " ORDER BY `a`.`id` DESC LIMIT 0,{$num}";
         $res = $db->query($strSQL);
         $url = substr($url,-1)=='/' ? substr($url,0,strlen($url)-1) : $url;
         while ($data = $db->fetch($res)) {
