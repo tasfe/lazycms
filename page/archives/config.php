@@ -45,6 +45,13 @@ return array (
    */
   'ARCHIVES_RSS_NUMBER' => 20,
   /**
+   * 是否将文章直接在根目录生成
+   *
+   * @inputtype:radio
+   * @fieldvalue:生成在根目录:true|生成到子目录:false
+   */
+  'ARCHIVES_CREATE_ROOTFILE' => true,
+  /**
    * 添加文档->文档属性->显示
    *
    * @inputtype:radio

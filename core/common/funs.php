@@ -839,6 +839,17 @@ function check($l1){
                 $I1 = $l4; break;
             }
             break;
+		case '6' :
+            $l5 = array("'","\\",":","*","?","<",">","|",";",",");
+            if (instr("/,.",substr($l2,-1)) || instr(".",substr($l2,0,1))){
+                $I1 = $l4; break;
+            }
+            foreach ($l5 as $v) {
+                if (strpos($l2,$v)!==false) {
+                    $I1 = $l4; break;
+                }
+            }
+            break;
         default :
             $l5 = isset($I2[3]) ? $I2[3] : null;
             if (!validate($l2,$l5)) { $I1 = $l4; }

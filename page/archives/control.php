@@ -303,6 +303,7 @@ class LazyArchives extends LazyCMS{
     function _list(){
         $this->checker(C('CURRENT_MODULE'));
         $sortid = isset($_GET['sortid']) ? (int)$_GET['sortid'] : null;
+		$isCreateRoot = M(C('CURRENT_MODULE'),'ARCHIVES_CREATE_ROOTFILE');
         $db = getConn();
         $model = Archives::getModel($sortid);
         $dp = O('Record');
@@ -321,7 +322,15 @@ class LazyArchives extends LazyCMS{
         $dp->open();
         $dp->thead  = '<tr><th>'.$this->L('list/id').') '.$this->L('list/title').'</th><th>'.$this->L('list/show').'</th><th>'.$this->L('list/commend').'</th><th>'.$this->L('list/top').'</th><th>'.$this->L('list/path').'</th><th>'.$this->L('list/date').'</th><th>'.$this->L('list/action').'</th></tr>';
         while ($data = $dp->result()) {
-            $dp->tbody = "ll(".$data['id'].",'".t2js(htmlencode($data['title']))."',".$data['show'].",".$data['commend'].",".$data['top'].",'".htmlencode(is_file(LAZY_PATH.$data['img']) ? C('SITE_BASE').$data['img'] : null)."','".Archives::showArchive($data['id'],$model)."','".date('Y-m-d H:i:s',$data['date'])."',".(file_exists(LAZY_PATH.$model['sortpath'].'/'.$data['path']) ? 1 : 0).");";
+			if ($isCreateRoot) {
+				if (substr($data['path'],0,1)=='/') {
+					$data['path'] = ltrim($data['path'],'/');
+				}
+				$file_exists = file_exists(LAZY_PATH.$data['path']);
+			} else {
+				$file_exists = file_exists(LAZY_PATH.$model['sortpath'].'/'.$data['path']);
+			}
+            $dp->tbody = "ll(".$data['id'].",'".t2js(htmlencode($data['title']))."',".$data['show'].",".$data['commend'].",".$data['top'].",'".htmlencode(is_file(LAZY_PATH.$data['img']) ? C('SITE_BASE').$data['img'] : null)."','".Archives::showArchive($data['id'],$model)."','".date('Y-m-d H:i:s',$data['date'])."',".($file_exists ? 1 : 0).");";
         }
         $dp->close();
 
@@ -341,6 +350,8 @@ class LazyArchives extends LazyCMS{
         $aid = isset($_REQUEST['aid']) ? (int)$_REQUEST['aid'] : null;
         
         $CURRENT_MODULE = C('CURRENT_MODULE');
+		$isCreateRoot   = M($CURRENT_MODULE,'ARCHIVES_CREATE_ROOTFILE');
+		$create_path    = $isCreateRoot==true ? '/' : null;
         $show    = isset($_POST['show'])     ? $_POST['show'] : null;
         $commend = isset($_POST['commend'])  ? $_POST['commend'] : null;
         $top     = isset($_POST['top'])      ? $_POST['top'] : null;
@@ -381,14 +392,14 @@ class LazyArchives extends LazyCMS{
         }
         // 路径检查
         if ($this->method() && !empty($title)) {
-            if ($path==$this->L('common/pinyin')) {
-                $path = pinyin($title).C('HTML_URL_SUFFIX');
+            if ($path==($create_path.$this->L('common/pinyin'))) {
+                $path = $create_path.pinyin($title);
             }
         }
         if (empty($aid)) {
-            $checkpath = $this->check("path|1|".$this->L('check/path')."|1-255;path|4|".$this->L('check/path1').";path|3|".$this->L('check/path2')."|SELECT COUNT(`id`) FROM `".$model['maintable']."` WHERE `path`='{$path}';");
+            $checkpath = $this->check("path|1|".$this->L('check/path')."|1-255;path|6|".$this->L('check/path1').";path|3|".$this->L('check/path2')."|SELECT COUNT(`id`) FROM `".$model['maintable']."` WHERE `path`='{$path}';");
         } else {
-            $checkpath = $this->check("path|1|".$this->L('check/path')."|1-255;path|4|".$this->L('check/path1').";path|3|".$this->L('check/path2')."|SELECT COUNT(`id`) FROM `".$model['maintable']."` WHERE `path`='{$path}' AND `id`<>'{$aid}';");
+            $checkpath = $this->check("path|1|".$this->L('check/path')."|1-255;path|6|".$this->L('check/path1').";path|3|".$this->L('check/path2')."|SELECT COUNT(`id`) FROM `".$model['maintable']."` WHERE `path`='{$path}' AND `id`<>'{$aid}';");
         }
 
         $this->validate(array(
@@ -438,8 +449,8 @@ class LazyArchives extends LazyCMS{
         if ($this->method()) {
             if ($this->validate()) {
                 if (!empty($downPic)) { $img = $downPic; }
-                if ($path=='MD5') {
-                    $path = md5(salt(10).$maxid).C('HTML_URL_SUFFIX');
+                if ($path==$create_path.'MD5') {
+                    $path = $create_path.md5(salt(10).$maxid);
                 }
                 if (empty($keywords)) {
                     $keywords = $this->keys($title);
@@ -530,14 +541,14 @@ class LazyArchives extends LazyCMS{
             $label->p = '<p><label>'.$data['fieldname'].'</label>'.$label->tag($data,$formData[$name]).'</p>';
         }
         $this->outHTML = $label->fetch;
-
+		
         $this->assign(array(
             'aid'    => $aid,
             'sortid' => $sortid,
             'title'  => htmlencode($title),
             'img'    => $img,
             'setimg' => $vsetimg,
-            'path'   => empty($aid) && empty($path) ? $this->L('common/pinyin') :$path,
+            'path'   => empty($aid) && empty($path) ? $create_path.$this->L('common/pinyin') :$path,
             'date'   => date('Y-m-d',(empty($date) ? now() : (!is_numeric($date) ? strtotime($date) : $date))),
             'show'   => !empty($show) ? ' checked="checked"' : null,
             'top'    => !empty($top) ? ' checked="checked"' : null,
@@ -545,14 +556,15 @@ class LazyArchives extends LazyCMS{
             'upsort'  => !empty($upsort) ? ' checked="checked"' : null,
             'uphome'  => !empty($uphome) ? ' checked="checked"' : null,
             'commend' => !empty($commend) ? ' checked="checked"' : null,
-            'keywords'=> htmlencode($keywords),
-            'description'=> htmlencode($description),
-            'checktitle' => !empty($checktitle) ? ' checked="checked"' : null,
-            'pathtype_id' => $maxid.C('HTML_URL_SUFFIX'),
-            'pathtype_date' => date('Y/m/d/').$maxid,
-            'upath' => C('UPFILE_PATH'),
+			'upath'   => C('UPFILE_PATH'),
             'isEditor'=> empty($aid)? false : true,
-            'menu'  => $menu,
+            'menu'    => $menu,
+            'keywords'=> htmlencode($keywords),
+            'description' => htmlencode($description),
+            'checktitle'  => !empty($checktitle) ? ' checked="checked"' : null,
+            'pathtype_id' => $maxid.C('HTML_URL_SUFFIX'),
+			'create_path' => $create_path,
+			'pathtype_date' => date('Y/m/d/').$maxid,
         ));
         $this->display('edit.php');
     }

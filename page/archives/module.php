@@ -344,7 +344,12 @@ class Archives{
                 } else {
                     $l4 = $data[1];
                 }
-				$I1 = C('SITE_BASE').$data[0].'/'.$l4;
+				if (substr($l4,0,1)=='/') {
+					$l4 = ltrim($l4,'/');
+					$I1 = C('SITE_BASE').$l4;
+				} else {
+					$I1 = C('SITE_BASE').$data[0].'/'.$l4;
+				}
 				if (!isfile($I1)) { $I1.= '/';}
                 return $I1;
             }
@@ -467,6 +472,11 @@ class Archives{
         $paths = explode('/',$l2);
         $count = count($paths);
         if (strpos($paths[$count-1],'.')!==false){ //文件
+			if (substr($l2,0,1)=='/') {
+				$l2 = ltrim($l2,'/');
+				saveFile(LAZY_PATH.$l2,$l3);
+				return true;
+			}
             if (strpos($l2,'/')!==false){
                 $path = substr($l2,0,strlen($l2)-strlen($paths[$count-1]));
                 mkdirs(LAZY_PATH.$l1.'/'.$path);
@@ -474,6 +484,12 @@ class Archives{
             mkdirs(LAZY_PATH.$l1);
             saveFile(LAZY_PATH.$l1.'/'.$l2,$l3);
         } else { //目录
+			if (substr($l2,0,1)=='/') {
+				$l2 = ltrim($l2,'/');
+				mkdirs(LAZY_PATH.$l2);
+				saveFile(LAZY_PATH.$l2.'/'.C('SITE_INDEX'),$l3);
+				return true;
+			}
             mkdirs(LAZY_PATH.$l1.'/'.$l2);
             saveFile(LAZY_PATH.$l1.'/'.$l2.'/'.C('SITE_INDEX'),$l3);
         }
