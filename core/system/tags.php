@@ -132,9 +132,6 @@ class Tags extends Lazy{
                 break;
             case 'keywords': case 'keyword':
                 $I1 = $this->parseAtt($tags,$inValue,'keywords');
-                if (strlen($I1)==0) { 
-                    $I1 = $this->parseAtt($tags,$inValue,'title');
-                }
                 break;
             case 'description':
                 $I1 = $this->parseAtt($tags,$inValue,'description');

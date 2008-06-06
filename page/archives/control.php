@@ -303,7 +303,6 @@ class LazyArchives extends LazyCMS{
     function _list(){
         $this->checker(C('CURRENT_MODULE'));
         $sortid = isset($_GET['sortid']) ? (int)$_GET['sortid'] : null;
-		$isCreateRoot = M(C('CURRENT_MODULE'),'ARCHIVES_CREATE_ROOTFILE');
         $db = getConn();
         $model = Archives::getModel($sortid);
         $dp = O('Record');
@@ -322,10 +321,8 @@ class LazyArchives extends LazyCMS{
         $dp->open();
         $dp->thead  = '<tr><th>'.$this->L('list/id').') '.$this->L('list/title').'</th><th>'.$this->L('list/show').'</th><th>'.$this->L('list/commend').'</th><th>'.$this->L('list/top').'</th><th>'.$this->L('list/path').'</th><th>'.$this->L('list/date').'</th><th>'.$this->L('list/action').'</th></tr>';
         while ($data = $dp->result()) {
-			if ($isCreateRoot) {
-				if (substr($data['path'],0,1)=='/') {
-					$data['path'] = ltrim($data['path'],'/');
-				}
+			if (substr($data['path'],0,1)=='/') {
+				$data['path'] = ltrim($data['path'],'/');
 				$file_exists = file_exists(LAZY_PATH.$data['path']);
 			} else {
 				$file_exists = file_exists(LAZY_PATH.$model['sortpath'].'/'.$data['path']);
@@ -392,9 +389,9 @@ class LazyArchives extends LazyCMS{
         }
         // 路径检查
         if ($this->method() && !empty($title)) {
-            if ($path==($create_path.$this->L('common/pinyin'))) {
-                $path = $create_path.pinyin($title);
-            }
+			if (strpos($path,$this->L('common/pinyin'))!==false) {
+				$path = str_replace($this->L('common/pinyin'),pinyin($title),$path);
+			}
         }
         if (empty($aid)) {
             $checkpath = $this->check("path|1|".$this->L('check/path')."|1-255;path|6|".$this->L('check/path1').";path|3|".$this->L('check/path2')."|SELECT COUNT(`id`) FROM `".$model['maintable']."` WHERE `path`='{$path}';");
@@ -1173,6 +1170,6 @@ class LazyArchives extends LazyCMS{
     }
     // _rss *** *** www.LazyCMS.net *** ***
     function _rss(){
-        echo Archives::createRss();
+        echo Archives::createRss(true);
     }
 }

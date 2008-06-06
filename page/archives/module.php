@@ -547,8 +547,8 @@ class Archives{
         return t2js('<a href="javascript:;"'.$onclick.' id="dir'.$l1.'"><img src="'.C('SITE_BASE').C('PAGES_PATH').'/system/images/'.$state.'.gif" class="os" /></a>');
     }
     // createRss *** *** www.LazyCMS.net *** ***
-    static function createRss(){
-        header('content-type: text/xml');
+    static function createRss($isHeader=false){
+        if ($isHeader) { header('content-type: text/xml'); }
         $db  = getConn(); $strSQL = null; $module = getObject();
         // 两个用户设置的变量
         $rss = M('Archives','ARCHIVES_RSS_FILE');
