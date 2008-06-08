@@ -29,6 +29,8 @@ defined('CORE_PATH') or die('Restricted access!');
  */
 return array(
     'page' => array('Onepage','ShowPage','oneid'),
+	'tags' => array('Archives','Search','tags'),
+	'search' => array('Archives','Search','query'),
     'Article@'=>array(
         array('/^\/(\d+)?$/i','Article','View','id'),
         array('/^\/(\d+)\/(\d+)/i','Article','Archive','year,month'),

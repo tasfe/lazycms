@@ -41,7 +41,7 @@ class LazyArchives extends LazyCMS{
                                     WHERE `s`.`sortid1`='0' 
                                     ORDER BY `s`.`sortorder` DESC,`s`.`sortid` DESC");
         $dp->length = $db->count($dp->result);
-        $button  = !C('SITE_MODE') ? '-|createsort:'.$this->L('common/createsort').'|createpage:'.$this->L('common/createpage').'|-|createall:'.$this->L('common/createall') : null;
+        $button  = !C('SITE_MODE') ? '-|createrss:'.$this->L('common/createrss').'|-|createsort:'.$this->L('common/createsort').'|createpage:'.$this->L('common/createpage').'|-|createall:'.$this->L('common/createall') : null;
         $dp->but = $dp->button($button);
         $dp->td  = "cklist(K[0]) + K[7] + K[0] + ') <a href=\"".url(C('CURRENT_MODULE'),'List','sortid=$',"' + K[0] + '")."\">' + K[2] + '</a>'";
         $dp->td  = "K[3]";
@@ -184,6 +184,10 @@ class LazyArchives extends LazyCMS{
                 $db->exec("DELETE FROM `#@_archives_sort` WHERE `sortid` IN({$lists});");
                 $this->poping($this->L('pop/deleteok'),1);
                 break;
+            case 'createrss':
+                Archives::createRss();
+                $this->poping($this->L('pop/createok'),0);
+                break;
             case 'createsort' :
                 $I2 = explode(',',$lists);
                 $js = '<script type="text/javascript">';
@@ -308,7 +312,7 @@ class LazyArchives extends LazyCMS{
         $dp = O('Record');
         $dp->create("SELECT * FROM `".$model['maintable']."` WHERE `sortid`='{$sortid}' ORDER BY `order` DESC,`id` DESC");
         $dp->action = url(C('CURRENT_MODULE'),'Set','sortid='.$sortid);
-        $dp->url = url(C('CURRENT_MODULE'),'List','sortid='.$sortid.'&page=$');
+        $dp->url = url(C('CURRENT_MODULE'),'List','sortid='.$sortid.'&size='.$dp->size.'&page=$');
         $button  = !C('SITE_MODE') ? 'create:'.L('common/create') : null;
         $dp->but = $dp->button($button).$dp->plist();
         $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"".url(C('CURRENT_MODULE'),'Edit','sortid='.$sortid.'&aid=$',"' + K[0] + '")."\">' + K[1] + '</a> '+image(K[5])";
@@ -498,11 +502,20 @@ class LazyArchives extends LazyCMS{
                         }
                     }
                 }
+                // 生成页面
+                Archives::viewArchive($sortid,$aid);
+                // 生成RSS
+                Archives::createRss();
                 // 更新列表，自动添加一个更新loading到toolbar
                 if ($upsort && !C('SITE_MODE')) { exeloading("createsort_{$sortid}",url(C('CURRENT_MODULE'),'loading',"submit=createsort&lists={$sortid}")); }
                 // 自动更新网站首页
                 if ($uphome && class_exists('Onepage') && !C('SITE_MODE')) { Onepage::updateIndex(); }
-                Archives::viewArchive($sortid,$aid);
+                // 进行blog ping
+                if (M($CURRENT_MODULE,'ARCHIVES_BLOG_PING')) {
+                    import("system.downloader"); $url = 'http://'.$_SERVER['HTTP_HOST'].C('SITE_BASE');
+                    $d = new DownLoader('http://blogsearch.google.com/ping?url='.rawurlencode($url.M($CURRENT_MODULE,'ARCHIVES_RSS_FILE')).'&btnG=Submit+Blog&hl=en');
+                    $d->send(); unset($d);
+                }
                 redirect(url(C('CURRENT_MODULE'),'List','sortid='.$sortid));return true;
             }
         } else {

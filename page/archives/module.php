@@ -247,8 +247,12 @@ class Archives{
                 }
             }
             $outHTML = str_replace($rand,$tmpList,$HTML);
-            $pageExt = C('SITE_MODE') ? '&page=$' : '/index$'.C('HTML_URL_SUFFIX');
-            $outHTML = str_replace($randpl,self::pagelist($path.$pageExt,$page,$totalPages,$totalRows),$outHTML);
+            if (C('SITE_MODE')) {
+                $path = url('Archives','ShowSort','sortid='.$sortid.'&page=$');;
+            } else {
+                $path.= 'index$'.C('HTML_URL_SUFFIX');
+            }
+            $outHTML = str_replace($randpl,self::pagelist($path,$page,$totalPages,$totalRows),$outHTML);
         } else {
             $outHTML = str_replace($rand,L('error/rsnot'),$HTML);
             $outHTML = str_replace($randpl,null,$outHTML);
@@ -587,9 +591,9 @@ class Archives{
             $channel = $xPath->evaluate("//rss/channel")->item(0);
             $item    = $channel->appendChild($dom->createElement('item'));
             $title   = $item->appendChild($dom->createElement('title')); $title->appendChild($dom->createCDATASection($data['title']));
-            $link    = $item->appendChild($dom->createElement('link')); $link->appendChild($dom->createCDATASection($url.Archives::showArchive($data['id'],$model)));
-            $pubDate     = $item->appendChild($dom->createElement('pubDate')); $pubDate->appendChild($dom->createCDATASection(date('Y-m-d',$data['date'])));
-            $category    = $item->appendChild($dom->createElement('category')); $category->appendChild($dom->createCDATASection($data['sortname']));
+            $link    = $item->appendChild($dom->createElement('link')); $link->nodeValue = xmlencode($url.Archives::showArchive($data['id'],$model));
+            $pubDate     = $item->appendChild($dom->createElement('pubDate')); $pubDate->nodeValue = date('Y-m-d',$data['date']);
+            $category    = $item->appendChild($dom->createElement('category')); $category->nodeValue = xmlencode($data['sortname']);
             $description = $item->appendChild($dom->createElement('description')); $description->appendChild($dom->createCDATASection($data['description']));
         }
         if (!C('SITE_MODE')) {

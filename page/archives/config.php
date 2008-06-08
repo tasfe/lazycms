@@ -52,6 +52,13 @@ return array (
    */
   'ARCHIVES_CREATE_ROOTFILE' => false,
   /**
+   * 是否进行Blog Ping
+   *
+   * @inputtype:radio
+   * @fieldvalue:是:true|否:false
+   */
+  'ARCHIVES_BLOG_PING' => false,
+  /**
    * 添加文档->文档属性->显示
    *
    * @inputtype:radio
