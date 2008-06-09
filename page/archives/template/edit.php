@@ -31,12 +31,10 @@
             &nbsp;<span><input name="setimg" type="checkbox" id="setimg" value="1"<?php echo $setimg;?> /><label for="setimg"><?php echo $module->L('label/archive/setimg');?></label></span></p>
             <?php endif;?>
         <p><label><?php echo $module->L('label/archive/path');?></label><input class="in4" type="text" id="path" name="path" maxlength="255" value="<?php echo $path;?>" />
-            <?php if (empty($aid)):?>
             [<a href="javascript:;" onclick="$('#path').val('<?php echo $create_path.$pathtype_id;?>');"><?php echo $pathtype_id;?></a>]
             [<a href="javascript:;" onclick="$('#path').val('<?php echo $create_path.$pathtype_date;?>');"><?php echo $pathtype_date;?></a>]
-            <?php endif;?>
             [<a href="javascript:;" onclick="$('#path').val('<?php echo $create_path.$module->L('common/pinyin').C('HTML_URL_SUFFIX');?>');"><?php echo $module->L('common/pinyin').C('HTML_URL_SUFFIX');?></a>]
-            [<a href="javascript:;" onclick="$('#path').val('<?php echo $create_path;?>MD5<?php echo C('HTML_URL_SUFFIX');?>');">MD5<?php echo C('HTML_URL_SUFFIX');?></a>]
+            [<a href="javascript:;" onclick="$('#path').val('<?php echo $create_path;?>[MD5]<?php echo C('HTML_URL_SUFFIX');?>');">MD5<?php echo C('HTML_URL_SUFFIX');?></a>]
         </p>
         <?php echo $module->outHTML;?>
         <p><label><?php echo $module->L('label/archive/keywords');?></label><input class="in4" type="text" id="keywords" name="keywords" maxlength="255" value="<?php echo $keywords;?>" /></p>

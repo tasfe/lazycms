@@ -71,7 +71,7 @@ textarea{ font-size:13px;}
 	.lz_form p{ margin:10px 0 1px 0; }
 	.lz_form p.succeed{ color:#993300; background:url(os/on.gif) no-repeat left center; padding-left:20px; font-weight:bold;}
 	.lz_form label{ display:block; color:#006600; line-height:12px;font-size:12px; margin-bottom:3px;}
-	.lz_form label.error{ color:#993300; clear:both; cursor:pointer; padding-top:2px;}
+	.lz_form label.error{ color:#993300; clear:both; cursor:pointer; padding-top:2px; line-height:130%;}
 	.lz_form span label{ display:inline; color:#000;}
 	.lz_form button{ margin-right:6px; letter-spacing:3px; padding:1px 2px; border:1px solid; border-color:#EEE #777 #777 #EEE; background:#D4D0C8; font-size:12px; line-height:100%; vertical-align:middle;}
 	.lz_form .button{ margin:5px 0;}

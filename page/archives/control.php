@@ -364,7 +364,7 @@ class LazyArchives extends LazyCMS{
         $title = isset($_POST['title']) ? $_POST['title'] : null;
         $img   = isset($_POST['img'])   ? $_POST['img'] : null;
         $path  = isset($_POST['path'])  ? $_POST['path'] : null;
-        $date  = isset($_POST['date'])  ? $_POST['date'] : null;
+        $date  = isset($_POST['date'])  ? $_POST['date'] : time();
         $setimg = isset($_POST['setimg'])  ? $_POST['setimg'] : null;
         $pathtype = isset($_POST['pathtype']) ? $_POST['pathtype'] : null;
         $keywords = isset($_POST['keywords'])  ? $_POST['keywords'] : null;
@@ -374,8 +374,6 @@ class LazyArchives extends LazyCMS{
         $sortid   = isset($_REQUEST['sortid']) ? (int)$_REQUEST['sortid'] : (int)Archives::getTopSortId();
         $model    = Archives::getModel($sortid);
         
-        $maxid = $db->max('id',$model['maintable']);
-
         if (empty($aid)) {
             $menu  = $model['sortname'].'|'.url(C('CURRENT_MODULE'),'List','sortid='.$sortid).';'.$this->L('common/addpage').'|#|true';
         } else {
@@ -410,6 +408,8 @@ class LazyArchives extends LazyCMS{
             'keywords' => !empty($keywords) ? $this->check("keywords|1|".$this->L('check/keywords')."|1-250") : null,
             'description' => !empty($description) ? $this->check("description|1|".$this->L('check/description')."|1-250") : null,
         ));
+        
+        $maxid = $db->max('id',$model['maintable']);
 
         $label = O('Label');
         $label->create("SELECT * FROM `#@_archives_fields` WHERE `modelid` = ? ORDER BY `fieldorder` ASC, `fieldid` ASC;",$model['modelid']);
@@ -450,8 +450,8 @@ class LazyArchives extends LazyCMS{
         if ($this->method()) {
             if ($this->validate()) {
                 if (!empty($downPic)) { $img = $downPic; }
-                if (substr($path,0,3)=='MD5' || substr($path,0,4)=='/MD5') {
-					$path = str_replace('MD5',md5(salt(10).$maxid),$path);
+                if (strpos($path,'[MD5]')!==false) {
+                    $path = str_replace('[MD5]',md5(salt(10).$maxid),$path);
                 }
                 if (empty($keywords)) {
                     $keywords = $this->keys($title);
@@ -536,6 +536,7 @@ class LazyArchives extends LazyCMS{
                 } else {
                     throwError(L('error/invalid'));
                 }
+                $maxid = $aid;
             } else {
                 $show    = M($CURRENT_MODULE,'ARCHIVES_ADD_SHOW');
                 $commend = M($CURRENT_MODULE,'ARCHIVES_ADD_COMMEND');
@@ -551,14 +552,40 @@ class LazyArchives extends LazyCMS{
             $label->p = '<p><label>'.$data['fieldname'].'</label>'.$label->tag($data,$formData[$name]).'</p>';
         }
         $this->outHTML = $label->fetch;
-		
+        
+        $defaultPath = $create_path;
+
+        switch (M($CURRENT_MODULE,'ARCHIVES_CREATE_FILEMODE')) {
+            case 'ID': 
+                $defaultPath.= $maxid.C('HTML_URL_SUFFIX');
+                break;
+            case 'DateID': 
+                $defaultPath.= date('Y/m/d/',$date).$maxid;
+                break;
+            case 'PinYin': 
+                $defaultPath.= $this->L('common/pinyin').C('HTML_URL_SUFFIX');
+                break;
+            case 'MD5': 
+                $defaultPath.= '[MD5]'.C('HTML_URL_SUFFIX');
+                break;
+            default:
+                $defaultPath.= M($CURRENT_MODULE,'ARCHIVES_CREATE_FILE_CUSTOM');
+                $defaultPath = str_replace('{id}',$maxid,strtolower($defaultPath));
+                $defaultPath = str_replace('{y}',date('Y',$date),$defaultPath);
+                $defaultPath = str_replace('{m}',date('m',$date),$defaultPath);
+                $defaultPath = str_replace('{d}',date('d',$date),$defaultPath);
+                $defaultPath = str_replace('{pinyin}',$this->L('common/pinyin'),$defaultPath);
+                $defaultPath = str_replace('{md5}','[MD5]',$defaultPath);
+                break;
+        }
+
         $this->assign(array(
             'aid'    => $aid,
             'sortid' => $sortid,
             'title'  => htmlencode($title),
             'img'    => $img,
             'setimg' => $vsetimg,
-            'path'   => empty($aid) && empty($path) ? $create_path.$this->L('common/pinyin').C('HTML_URL_SUFFIX') :$path,
+            'path'   => empty($aid) && empty($path) ? $defaultPath :$path,
             'date'   => date('Y-m-d',(empty($date) ? now() : (!is_numeric($date) ? strtotime($date) : $date))),
             'show'   => !empty($show) ? ' checked="checked"' : null,
             'top'    => !empty($top) ? ' checked="checked"' : null,
@@ -574,7 +601,7 @@ class LazyArchives extends LazyCMS{
             'checktitle'  => !empty($checktitle) ? ' checked="checked"' : null,
             'pathtype_id' => $maxid.C('HTML_URL_SUFFIX'),
 			'create_path' => $create_path,
-			'pathtype_date' => date('Y/m/d/').$maxid,
+			'pathtype_date' => date('Y/m/d/',$date).$maxid,
         ));
         $this->display('edit.php');
     }
