@@ -135,7 +135,6 @@ abstract class LazyCMS extends Lazy{
             $I1 = "<?php\nreturn ".var_export(C(),true).";\n?>";
             saveFile(RUNTIME_PATH.'/~app.php',$I1);
         }
-        return $I1;
     }
 
     // exec *** *** www.LazyCMS.net *** ***
