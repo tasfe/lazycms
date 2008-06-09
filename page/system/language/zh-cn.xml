@@ -60,6 +60,7 @@
         <downnew>去下载最新版</downnew>
         <update>在线升级</update>
         <notup>没有找到升级文件，请稍后再试！</notup>
+        <notserver>服务器暂时无法连接，请稍后重试！</notserver>
         <upok>成功升级到最新版！</upok>
         <phpver>PHP版本</phpver>
         <gdver>GD版本</gdver>
@@ -170,9 +171,9 @@
             <clearok>已清空所有日志</clearok>
         </pop>
     </log>
-	
-	<counter title="流量统计">
-	    <config>开关设置</config>
+    
+    <counter title="流量统计">
+        <config>开关设置</config>
         <true>开启统计功能</true>
         <false>关闭统计功能</false>
         <getcode>统计代码标签</getcode>
@@ -184,7 +185,7 @@
       ...0 or 空   不显示任何内容
       ...1         显示文字
       ...2         显示图标]]></code>
-	</counter>
+    </counter>
 
     <login title="管理员登录">
         <name>用户名</name>
@@ -231,7 +232,7 @@
 
     <filemanage title="文件浏览器">
         <createfolder>新文件夹名称 (不能包含特殊字符)</createfolder>
-		<uploadfile>上传文件 (文件类型：{$Exts})</uploadfile>
+        <uploadfile>上传文件 (文件类型：{$Exts})</uploadfile>
         <template>
             <filename>文件名称</filename>
             <filemtime>最后修改时间</filemtime>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<lazycms> 
+     <title>文檔管理</title> 
+     <version memo="版本">1.0</version> 
+     <author memo="作者">Lukin</author> 
+     <email memo="作者常用郵箱，以便聯繫">mylukin@gmail.com</email> 
+     <source memo="作者來自哪裡？">http://www.lazycms.net</source> 
+     <manage>url('Archives')</manage> 
+
+     <common> 
+         <root>根目錄</root> 
+         <addtable>新建索引表</addtable> 
+         <addpage>添加文檔</addpage> 
+         <editpage>編輯文檔</editpage> 
+         <addsort>添加分類</addsort> 
+         <editsort>編輯分類</editsort> 
+         <createrss>生成RSS</createrss> 
+         <createsort>只生成列表</createsort> 
+         <createpage>只生成文檔</createpage> 
+         <createall>生成列表及文檔</createall> 
+         <pinyin>拼音</pinyin> 
+     </common> 
+     
+     <sort> 
+         <id>ID</id> 
+         <name>分類名稱</name> 
+         <model>模型</model> 
+         <count>文檔數</count> 
+         <path>路徑</path> 
+         <action>操作</action> 
+     </sort> 
+     
+     <list> 
+         <id>ID</id> 
+         <title>標題</title> 
+         <top>置頂</top> 
+         <show>顯示</show> 
+         <commend>推薦</commend> 
+         <path>路徑</path> 
+         <date>發布日期</date> 
+         <action>操作</action> 
+     </list> 
+
+     <label> 
+         <supsort>上級分類</supsort> 
+         <sortname>分類名稱</sortname> 
+         <sortpath>路徑 (不支持特殊符號；不能以/開始或結束)</sortpath> 
+         <model>內容模型 (添加後不可修改)</model> 
+         <keywords>Meta關鍵詞 (Max=250)</keywords> 
+         <description>Meta簡述 (Max=250)</description> 
+         <sorttemplate1>列表頁外部模板</sorttemplate1> 
+         <sorttemplate2>列表頁內部模板</sorttemplate2> 
+         <pagetemplate1>內容頁外部模板</pagetemplate1> 
+         <pagetemplate2>內容頁內部模板</pagetemplate2> 
+
+         <archive> 
+             <info>文檔屬性</info> 
+             <sort>所屬分類</sort> 
+             <top>置頂</top> 
+             <show>顯示</show> 
+             <commend>推薦</commend> 
+             <snapimg>遠程抓圖</snapimg> 
+             <upsort>更新列表</upsort> 
+             <uphome>更新首頁</uphome> 
+             <checktitle>檢查標題是否重複</checktitle> 
+             <title>標題</title> 
+             <img>縮略圖 (若寫遠程路徑，自動抓取圖片保存到本地)</img> 
+             <setimg>設第一幅圖為縮略圖</setimg> 
+             <path>路徑 (不支持特殊符號；不建議輸入純數字，以免覆蓋列表)</path> 
+             <keywords>Meta關鍵詞 (不填寫自動補充，Max=250)</keywords> 
+             <description>Meta簡述 (不填寫自動補充，Max=250)</description> 
+             <date>發布日期</date> 
+         </archive> 
+         
+     </label> 
+
+     <check> 
+         <path>路徑不能為空</path> 
+         <path1>路徑格式錯誤</path1> 
+         <path2>路徑重複，請另取名</path2> 
+         <sortname>分類名不能為空</sortname> 
+         <title>標題不能為空</title> 
+         <title1>標題不能重複</title1> 
+         <date>發布日期不能為空</date> 
+         <date1>日期格式錯誤</date1> 
+         <keywords>Meta關鍵詞不能大於250個字符</keywords> 
+         <description>Meta簡述不能大於250個字符</description> 
+     </check> 
+     
+     <pop> 
+         <select>請選擇一個欄目</select> 
+         <deleteok>刪除成功</deleteok> 
+         <createok>成功生成</createok> 
+         <loading>正在左下角生成，你可以進行其他操作。 </loading> 
+     </pop> 
+
+     <models title="模型管理"> 
+         <add>添加模型</add> 
+         <edit>編輯模型</edit> 
+         <leadin>導入模型</leadin> 
+         <field title="字段管理"> 
+             <add>添加字段</add> 
+             <edit>編輯字段</edit> 
+             <list> 
+                 <id>ID</id> 
+                 <name>表單文字</name> 
+                 <ename>字段名</ename> 
+                 <type>輸入類型</type> 
+                 <length>最大長度</length> 
+                 <default>默認值</default> 
+                 <key>索引</key> 
+                 <action>操作</action> 
+             </list> 
+             <label> 
+                 <name>表單文字</name> 
+                 <ename>字段名 (索引字段，不能修改字段名)</ename> 
+                 <type>輸入類型</type> 
+                 <length>最大長度</length> 
+                 <default>默認值 (日期選擇器可使用 date('Ym-d',time()) 函數)</default> 
+                 <key>索引</key> 
+                 <value>值 (例：name:value)</value> 
+             </label> 
+             <check> 
+                 <name>表單文字不能為空</name> 
+                 <ename>字段名不能為空</ename> 
+                 <ename1>只允許輸入：字母、數字、下劃線</ename1> 
+                 <length>必須填寫最大長度</length> 
+                 <length1>必須為整數，請重新輸入</length1> 
+                 <value>值不能為空</value> 
+             </check> 
+             <type> 
+                 <input>輸入框</input> 
+                 <textarea>文本框</textarea> 
+                 <select>下拉列錶框</select> 
+                 <radio>單選框</radio> 
+                 <checkbox>複選框</checkbox> 
+                 <basic>簡易編輯器</basic> 
+                 <editor>內容編輯器</editor> 
+                 <date>日期選擇器</date> 
+                 <upfile>文件上傳框</upfile> 
+             </type> 
+         </field> 
+         <list> 
+             <id>ID</id> 
+             <name>模型名稱</name> 
+             <ename>模型標識</ename> 
+             <addtable>附加表</addtable> 
+             <state>狀態</state> 
+             <action>操作</action> 
+         </list> 
+         <label> 
+             <name>模型名稱</name> 
+             <maintable>主索引表 (索引表不存在時，自動創建)</maintable> 
+             <ename>模型標識 (字母、數字、下劃線；添加後不可修改)</ename> 
+             <fieldset>字段配置</fieldset> 
+             <fieldtip><![CDATA[添加模型後，點擊<img src="{$root}/system/images/os/fields.gif" class="os"/>圖標進行字段管理]]></fieldtip> 
+             <leadin>請選擇模型文件 (xml格式文件)</leadin> 
+         </label> 
+         <check> 
+             <name>模型名稱不能為空</name> 
+             <ename>模型標識不能為空</ename> 
+             <ename1>只允許輸入：字母、數字、下劃線</ename1> 
+             <table>{$table}表不能作為主索引表</table> 
+         </check> 
+         <pop> 
+             <select>請選擇一個模型</select> 
+             <deleteok>成功刪除您選擇的模型</deleteok> 
+             <deletefieldok>成功刪除您選擇的字段</deletefieldok> 
+             <deletefielderr>數據庫字段可能已經被刪除</deletefielderr> 
+         </pop> 
+     </models> 
+     
+     <search title="搜索"> 
+         <title>“{$keyword}”的搜索結果</title> 
+         <noresult>沒有找到“{$keyword}”相關的搜索結果！ </noresult> 
+     </search> 
+</lazycms>

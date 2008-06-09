@@ -152,7 +152,7 @@ class zip{
     function Extract($l1,$l2,$l3=Array(-1)) {
         // $l1:zn,$l2:to,$l3:index
         if(!is_dir($l2)) { @mkdir($l2,0777); }
-        $l4  = 0;
+        $l4  = 0; $I1 = array();
         $I2 = @fopen($l1,'rb');if(!$I2){ return(-1); }
         $I3 = $this->ReadCentralDir($I2,$l1);
         $l5 = $I3['offset'];

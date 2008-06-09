@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<lazycms> 
+     <title>會員管理</title> 
+     <version memo="版本">1.0</version> 
+     <author memo="作者">Lukin</author> 
+     <email memo="作者常用郵箱，以便聯繫">mylukin@gmail.com</email> 
+     <source memo="作者來自哪裡？">http://www.lazycms.net</source> 
+     <manage>url('Passport')</manage> 
+     
+
+     <common> 
+         <addgroup>添加用戶組</addgroup> 
+         <adduser>添加用戶</adduser> 
+         <edituser>編輯用戶</edituser> 
+         <editgroup>編輯用戶組</editgroup> 
+         <leadin>導入組模型</leadin> 
+         <home>返回到網站首頁</home> 
+         <usercenter>返回到用戶中心</usercenter> 
+     </common> 
+
+     <register title="用戶註冊"> 
+         <reg>註冊</reg> 
+         <login>點擊這裡登陸</login> 
+         <ok>感謝您的註冊！ </ok> 
+     </register> 
+
+     <login title="用戶登錄"> 
+         <name>用戶名</name> 
+         <pass>密碼</pass> 
+         <keep>記住我的登錄狀態</keep> 
+         <submit>登錄</submit> 
+         <out>退出</out> 
+         <check> 
+             <name>用戶名不能為空或過長</name> 
+             <pass>用戶密碼不能為空或過長</pass> 
+             <error1>用戶名不存在或已被停用！ </error1> 
+             <error2>密碼有誤，請重新輸入！ </error2> 
+         </check> 
+     </login> 
+
+     <usercenter title="用戶中心"> 
+         <config title="更新資料"> 
+             <ok>資料更新成功</ok> 
+         </config> 
+         <updatepass title="更新密碼"> 
+             <ok>密碼更新成功</ok> 
+             <name>用戶名</name> 
+             <oldpass>舊密碼</oldpass> 
+             <newpass>新密碼</newpass> 
+             <newpass1>確認密碼</newpass1> 
+             <check> 
+                 <oldpass>舊密碼不能為空或過長</oldpass> 
+                 <error1>密碼有誤，請重新輸入！ </error1> 
+             </check> 
+         </updatepass> 
+     </usercenter> 
+     
+     <config> 
+         <label> 
+             <reservename>保留用戶名 (用戶名之間用逗號分開)</reservename> 
+             <navlogout>用戶導航，登陸後</navlogout> 
+             <navlogin>用戶導航，登陸前</navlogin> 
+             <navuser>登錄後的用戶菜單</navuser> 
+         </label> 
+     </config> 
+
+     <list> 
+         <action>操作</action> 
+         <group title="用戶組列表"> 
+             <id>ID</id> 
+             <name>用戶組</name> 
+             <ename>組標識</ename> 
+             <addtable>附加表</addtable> 
+             <state>狀態</state> 
+             <count>用戶數</count> 
+         </group> 
+         <field title="字段管理"> 
+             <add>添加字段</add> 
+             <edit>編輯字段</edit> 
+             <id>ID</id> 
+             <name>表單文字</name> 
+             <ename>字段名</ename> 
+             <type>輸入類型</type> 
+             <length>最大長度</length> 
+             <default>默認值</default> 
+             <key>索引</key> 
+             <type> 
+                 <input>輸入框</input> 
+                 <textarea>文本框</textarea> 
+                 <select>下拉列錶框</select> 
+                 <radio>單選框</radio> 
+                 <checkbox>複選框</checkbox> 
+                 <basic>簡易編輯器</basic> 
+                 <editor>內容編輯器</editor> 
+                 <date>日期選擇器</date> 
+                 <upfile>文件上傳框</upfile> 
+             </type> 
+         </field> 
+         <user title="用戶列表"> 
+             <id>ID</id> 
+             <name>用戶名</name> 
+             <group>用戶組</group> 
+             <date>註冊時間</date> 
+             <email>Email</email> 
+             <islock>鎖定</islock> 
+         </user> 
+     </list> 
+
+     <label> 
+         <leadin>請選擇組模型文件 (xml格式文件)</leadin> 
+         <group> 
+             <name>用戶組名稱</name> 
+             <ename>用戶組標識 (字母、數字、下劃線；添加後不可修改)</ename> 
+             <template>註冊頁面模板</template> 
+             <fieldset>字段配置</fieldset> 
+             <fieldtip><![CDATA[添加用戶組後，點擊<img src="{$root}/system/images/os/fields.gif" class="os"/>圖標進行字段管理]]> </fieldtip> 
+         </group> 
+         <field> 
+             <name>表單文字</name> 
+             <ename>字段名 (索引字段，不能修改字段名)</ename> 
+             <type>輸入類型</type> 
+             <length>最大長度</length> 
+             <default>默認值 (日期選擇器可使用 date('Ym-d',time()) 函數)</default> 
+             <key>索引</key> 
+             <value>值 (例：name:value)</value> 
+         </field> 
+         <user> 
+             <belongto>所屬用戶組</belongto> 
+             <name>用戶名</name> 
+             <pass>密碼</pass> 
+             <pass1>確認密碼</pass1> 
+             <mail>電子郵箱</mail> 
+             <mailis>顯示郵箱</mailis> 
+             <question>提示問題</question> 
+             <answer>提示答案</answer> 
+             <language>界面語言</language> 
+             <editor>編輯器</editor> 
+             <islock title="鎖定用戶"> 
+                 <is1>鎖定</is1> 
+                 <is0>解鎖</is0> 
+             </islock> 
+         </user> 
+     </label> 
+
+     <check> 
+         <group> 
+             <name>用戶組名稱不能為空</name> 
+             <ename>用戶組標識不能為空</ename> 
+             <ename1>只允許輸入：字母、數字、下劃線</ename1> 
+         </group> 
+         <field> 
+             <name>表單文字不能為空</name> 
+             <ename>字段名不能為空</ename> 
+             <ename1>只允許輸入：字母、數字、下劃線</ename1> 
+             <length>必須填寫最大長度</length> 
+             <length1>必須為整數，請重新輸入</length1> 
+             <value>值不能為空</value> 
+         </field> 
+         <user> 
+             <name>用戶名不能為空</name> 
+             <name1>用戶名重複，或者被屏蔽，請更換一個</name1> 
+             <contrast>兩次輸入的密碼不一致</contrast> 
+             <pwdsize>密碼長度不正確</pwdsize> 
+             <mail>郵箱不能為空</mail> 
+             <mail1>郵箱格式不正確</mail1> 
+         </user> 
+     </check> 
+
+     <pop> 
+         <group> 
+             <select>請選擇一個用戶組</select> 
+             <deleteok>成功刪除您選擇的用戶組</deleteok> 
+             <deletefieldok>成功刪除您選擇的字段</deletefieldok> 
+             <deletefielderr>數據庫字段可能已經被刪除</deletefielderr> 
+         </group> 
+         <field> 
+             <select>請選擇一個模型</select> 
+             <deleteok>成功刪除您選擇的模型</deleteok> 
+             <deletefieldok>成功刪除您選擇的字段</deletefieldok> 
+             <deletefielderr>數據庫字段可能已經被刪除</deletefielderr> 
+         </field> 
+         <user> 
+             <select>請選擇一個用戶</select> 
+             <deleteok>成功刪除您選擇的用戶</deleteok> 
+             <lockok>成功鎖定您選擇的用戶</lockok> 
+             <unlockok>成功解鎖您選擇的用戶</unlockok> 
+         </user> 
+     </pop> 
+
+     <error> 
+         <nogroup>沒有用戶組，請先創建一個用戶組。 </nogroup> 
+     </error> 
+</lazycms>

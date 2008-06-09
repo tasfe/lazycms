@@ -181,9 +181,9 @@ if ($install && labelError()) {
         $db->insert('#@_admin',$admin);
         // 安装示例数据
         if ($leadinData) {
-            $instSQL = loadFile(LAZY_PATH.'install.sql');
+            $instSQL = loadFile(LAZY_PATH.C('TEMPLATE_PATH').'/install.sql');
             $db->batQuery($instSQL);
-            @unlink(LAZY_PATH.'install.sql');
+            @unlink(LAZY_PATH.C('TEMPLATE_PATH').'/install.sql');
         } else {
             // 添加首页
             $onepage = array(

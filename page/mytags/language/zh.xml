@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<lazycms> 
+     <title>自定義標籤</title> 
+     <version memo="版本">1.0</version> 
+     <author memo="作者">Lukin</author> 
+     <email memo="作者常用郵箱，以便聯繫">mylukin@gmail.com</email> 
+     <source memo="作者來自哪裡？">http://www.lazycms.net</source> 
+     <manage>url('MyTags')</manage> 
+
+     <common> 
+         <add>添加標籤</add> 
+         <edit>編輯標籤</edit> 
+         <list>列表</list> 
+     </common> 
+
+     <list> 
+         <id>ID</id> 
+         <name>標籤名稱</name> 
+         <tag>標籤</tag> 
+         <size>尺寸</size> 
+         <date>添加日期</date> 
+         <file>文檔</file> 
+         <action>操作</action> 
+     </list> 
+     <label> 
+         <name>標籤名稱</name> 
+         <title>標籤介紹 (此項目不會顯示，介紹之用)</title> 
+         <text>標籤內容 (支持LazyCMS標籤)</text> 
+         <size> 
+             <title>尺寸</title> 
+             <width>寬度 (用IFRAME形式調用的時候用的上)</width> 
+             <height>高度 (用處同上)</height> 
+         </size> 
+         <ext>擴展名</ext> 
+     </label> 
+     <check> 
+         <name>標籤名稱不能為空</name> 
+         <name1>標籤名稱只能由字母、數字、下劃線、中槓構成</name1> 
+         <name2>標籤名稱不能重複</name2> 
+         <title>標籤介紹不能為空</title> 
+         <text>標籤內容不能為空</text> 
+         <width>長度必須為數字</width> 
+         <height>寬度必須為數字</height> 
+     </check> 
+     <pop> 
+         <select>請選擇一個標籤</select> 
+         <createok>成功生成指定的標籤</createok> 
+         <invalid>指定的標籤已經刪除，請不要重複刪除</invalid> 
+         <deleteok>成功刪除指定的標籤</deleteok> 
+     </pop> 
+</lazycms>

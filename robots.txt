@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+Disallow: /core
+Disallow: /admin
+Disallow: /template

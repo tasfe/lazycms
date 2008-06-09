@@ -125,41 +125,41 @@ class LazySystem extends LazyCMS{
                 break;
         }
     }
-	// _counter *** *** www.LazyCMS.net *** ***
-	function _counter() {
-		$this->checker();
-		$view = isset($_REQUEST['view']) ? $_REQUEST['view'] : false;
-		$siteid   = C("WSS_SITE_ID");
-		$password = C("WSS_PASSWORD");
-		$domain = $_SERVER['HTTP_HOST'];
-		// 判断站点ID和密码为空，则开通统计
-		if (empty($siteid) && empty($password)) {
-			$md5key = md5($domain."Awqe36sd");
-			import("system.downloader"); 
-			$d = new DownLoader("http://wss.cnzz.com/user/companion/lazycms.php?domain={$domain}&key={$md5key}");
-			$d->send();
-			if ($d->status() == 200) {
-				$l1 = $d->body();
-			} else {
-				$l1 = $d->status();
-			}
-			// 返回正确的字符串
-			if (validate($l1,'(\d+)@(\d+)')) {
-				$info  = explode('@',$l1);
-				$cFile = CORE_PATH.'/custom/config.php';
-				if (is_file($cFile)) {
-					$config = include $cFile;
-				} else {
-					$config = array();
-				}
-				$config = array_merge($config,array(
-                    'WSS_STATUS'   => true,	
+    // _counter *** *** www.LazyCMS.net *** ***
+    function _counter() {
+        $this->checker();
+        $view = isset($_REQUEST['view']) ? $_REQUEST['view'] : false;
+        $siteid   = C("WSS_SITE_ID");
+        $password = C("WSS_PASSWORD");
+        $domain = $_SERVER['HTTP_HOST'];
+        // 判断站点ID和密码为空，则开通统计
+        if (empty($siteid) && empty($password)) {
+            $md5key = md5($domain."Awqe36sd");
+            import("system.downloader"); 
+            $d = new DownLoader("http://wss.cnzz.com/user/companion/lazycms.php?domain={$domain}&key={$md5key}");
+            $d->send();
+            if ($d->status() == 200) {
+                $l1 = $d->body();
+            } else {
+                $l1 = $d->status();
+            }
+            // 返回正确的字符串
+            if (validate($l1,'(\d+)@(\d+)')) {
+                $info  = explode('@',$l1);
+                $cFile = CORE_PATH.'/custom/config.php';
+                if (is_file($cFile)) {
+                    $config = include $cFile;
+                } else {
+                    $config = array();
+                }
+                $config = array_merge($config,array(
+                    'WSS_STATUS'   => true, 
                     'WSS_SITE_ID'  => $info[0],
-					'WSS_PASSWORD' => $info[1],
-				));
-				C($config);saveFile(CORE_PATH.'/custom/config.php',"<?php\n".createNote('User-defined configuration files')."\nreturn ".var_export($config,true).";\n?>");
-			}
-		}
+                    'WSS_PASSWORD' => $info[1],
+                ));
+                C($config);saveFile(CORE_PATH.'/custom/config.php',"<?php\n".createNote('User-defined configuration files')."\nreturn ".var_export($config,true).";\n?>");
+            }
+        }
         // 设置是否开启统计
         if ($this->method()) {
             $counter = isset($_POST['counter']) ? $_POST['counter'] : null;
@@ -177,9 +177,9 @@ class LazySystem extends LazyCMS{
         }
         $counter = C('WSS_STATUS'); $HTML = null;
         if ($counter) {
-			$surl = 'http://wss.cnzz.com/user/companion/lazycms_login.php?site_id='.C("WSS_SITE_ID").'&password='.C("WSS_PASSWORD");
-			$burl = rawurlencode('http://wss.cnzz.com/oem/udmin.php?webid='.C("WSS_SITE_ID").'&s=main_page');
-			$HTML.= '<iframe src="'.$surl.'&burl='.$burl.'" name="counter" id="counter" width="100%" marginwidth="0" height="480" marginheight="0" scrolling="auto" frameborder="0" style="border-bottom:solid 1px #A8A8A8;"></iframe>';
+            $surl = 'http://wss.cnzz.com/user/companion/lazycms_login.php?site_id='.C("WSS_SITE_ID").'&password='.C("WSS_PASSWORD");
+            $burl = rawurlencode('http://wss.cnzz.com/oem/udmin.php?webid='.C("WSS_SITE_ID").'&s=main_page');
+            $HTML.= '<iframe src="'.$surl.'&burl='.$burl.'" name="counter" id="counter" width="100%" marginwidth="0" height="480" marginheight="0" scrolling="auto" frameborder="0" style="border-bottom:solid 1px #A8A8A8;"></iframe>';
         }
         $HTML.= '<form action="'.url('System','Counter').'" method="post" class="lz_form">';
         $HTML.= '<p><label>'.L('counter/config').'</label><span>';
@@ -189,12 +189,12 @@ class LazySystem extends LazyCMS{
         $HTML.= '<p><label>'.L('counter/getcode').'</label><pre>'.L('counter/code').'</pre></p>';
         $HTML.= $this->but('save');
         $HTML.= '</form>';
-		
-		$this->outHTML = $HTML;
+        
+        $this->outHTML = $HTML;
 
-		$this->assign('menu',L('admin/title').'|'.url('System','Main').';'.L('log/@title').'|'.url('System','Log').';'.L('counter/@title').'|#|true');
+        $this->assign('menu',L('admin/title').'|'.url('System','Main').';'.L('log/@title').'|'.url('System','Log').';'.L('counter/@title').'|#|true');
         $this->display('__public.php');
-	}
+    }
     // _admin *** *** www.LazyCMS.net *** ***
     function _admin(){
         $this->checker('admin');
@@ -450,12 +450,12 @@ class LazySystem extends LazyCMS{
                 if (!C('DEBUG_MODE')) { @unlink(RUNTIME_PATH.'/~app.php'); }
                 // 不支持rewrite 还原 URL_MODEL 设置
                 if (!$isReWrite) { $urlmode = C('URL_MODEL'); }
-				$cFile = CORE_PATH.'/custom/config.php';
-				if (is_file($cFile)) {
-					$config = include $cFile;
-				} else {
-					$config = array();
-				}
+                $cFile = CORE_PATH.'/custom/config.php';
+                if (is_file($cFile)) {
+                    $config = include $cFile;
+                } else {
+                    $config = array();
+                }
                 $config = array_merge($config,array('SITE_MODE'=>$sitemode,'URL_MODEL'=>$urlmode,'DEBUG_MODE'=>$debug));
                 // 全站动态模式，删除page/index.php 生成一个 page/index.html
                 if ($sitemode) {
@@ -885,10 +885,30 @@ class LazySystem extends LazyCMS{
     }
     // _update *** *** www.LazyCMS.net *** ***
     function _update(){
-        clearCache();
+        clearCache(); @set_time_limit(0);
         $this->checker('admin',true);
-        $version = isset($_POST['version']) ? $_POST['version'] : null;
-        $this->poping(L('parameters/notup'),1);
+        import("system.downloader");
+        $version  = isset($_POST['version']) ? $_POST['version'] : null;
+        $fileName = "LazyCMS_Update_{$version}.zip";
+        $d = new DownLoader("http://www.lazycms.net/LastUpdate/{$fileName}");
+        $d->send();
+        if ($d->status() == 200) {
+            $I1 = $d->body(); $folder = LAZY_PATH.C('UPFILE_PATH'); mkdirs($folder);
+            $filePath = "{$folder}/{$fileName}"; saveFile($filePath,$I1);
+            $zip = O('zip'); $zip->Extract($filePath,LAZY_PATH); unset($zip);
+            $update = LAZY_PATH.'update.sql';
+            if (is_file($update)) {
+                $instSQL = loadFile($update); $db = getConn(); $db->batQuery($instSQL); unset($db); @unlink($update); 
+            }
+            @unlink($filePath);
+            $this->poping(L('parameters/upok'),1);
+        } else {
+            if ($d->status() == 404) {
+                $this->poping(L('parameters/notup'),0);
+            } else {
+                $this->poping(L('parameters/notserver'),0);
+            }
+        }
     }
     // _login *** *** www.LazyCMS.net *** ***
     function _login(){
@@ -1008,7 +1028,7 @@ class LazySystem extends LazyCMS{
     }
     // sysinfo *** *** www.LazyCMS.net *** ***
     function _sysinfo(){
-		$Message = null;
+        $Message = null;
         $space = "&nbsp; &nbsp; &nbsp; &nbsp; ";
         $modules = $this->system['modules'];
         $modules = explode(',',$modules);

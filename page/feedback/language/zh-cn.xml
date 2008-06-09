@@ -23,13 +23,13 @@
         <date>添加时间</date>
         <action>操作</action>
         <field>
-			<id>ID</id>
-			<name>表单文字</name>
-			<ename>字段名</ename>
-			<type>输入类型</type>
-			<length>最大长度</length>
-			<default>默认值</default>
-			<type>
+            <id>ID</id>
+            <name>表单文字</name>
+            <ename>字段名</ename>
+            <type>输入类型</type>
+            <length>最大长度</length>
+            <default>默认值</default>
+            <type>
                 <input>输入框</input>
                 <textarea>文本框</textarea>
                 <select>下拉列表框</select>
@@ -40,7 +40,7 @@
                 <date>日期选择器</date>
                 <upfile>文件上传框</upfile>
             </type>
-		</field>
+        </field>
         <home>返回到网站首页</home>
         <ok>感谢您的反馈！</ok>
     </list>
@@ -49,26 +49,26 @@
         <title>主题</title>
         <content>留言内容 (不能超过1000字)</content>
         <field>
-			<name>表单文字</name>
-			<ename>字段名</ename>
-			<type>输入类型</type>
-			<length>最大长度</length>
-			<default>默认值 (日期选择器可使用 date('Y-m-d',time()) 函数)</default>
-			<value>值 (例：name:value)</value>
-		</field>
+            <name>表单文字</name>
+            <ename>字段名</ename>
+            <type>输入类型</type>
+            <length>最大长度</length>
+            <default>默认值 (日期选择器可使用 date('Y-m-d',time()) 函数)</default>
+            <value>值 (例：name:value)</value>
+        </field>
     </label>
 
     <check>
         <title>主题长度不正确(4-100)</title>
         <content>内容长度不正确(10-1000)</content>
-		<field>
-			<name>表单文字不能为空</name>
-			<ename>字段名不能为空</ename>
-			<ename1>只允许输入：字母、数字、下划线</ename1>
-			<length>必须填写最大长度</length>
-			<length1>必须为整数，请重新输入</length1>
-			<value>值不能为空</value>
-		</field>
+        <field>
+            <name>表单文字不能为空</name>
+            <ename>字段名不能为空</ename>
+            <ename1>只允许输入：字母、数字、下划线</ename1>
+            <length>必须填写最大长度</length>
+            <length1>必须为整数，请重新输入</length1>
+            <value>值不能为空</value>
+        </field>
     </check>
 
     <pop>

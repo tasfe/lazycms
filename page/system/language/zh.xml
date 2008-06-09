@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<lazycms> 
+     <title>系統管理</title> 
+     <version memo="版本">1.0</version> 
+     <author memo="作者">Lukin</author> 
+     <email memo="作者常用郵箱，以便聯繫">mylukin@gmail.com</email> 
+     <source memo="作者來自哪裡？">http://www.lazycms.net</source> 
+
+     <menu> 
+         <admin>管理員</admin> 
+         <config>設置</config> 
+         <module>模塊</module> 
+         <model>模型</model> 
+         <diymenu>菜單</diymenu> 
+         <account>帳戶</account> 
+     </menu> 
+
+     <common> 
+         <home>首頁</home> 
+         <upok>更新成功!</upok> 
+         <module>模塊</module> 
+         <action>操作</action> 
+         <tautology>重試</tautology> 
+         <back>返回</back> 
+         <close>關閉</close> 
+         <save>保存</save> 
+         <insert>插入</insert> 
+         <reset>重置</reset> 
+         <up>更新</up> 
+         <browse>瀏覽...</browse> 
+         <memo>提示</memo> 
+         <install>安裝</install> 
+         <uninstall>卸載</uninstall> 
+         <submit>提交</submit> 
+         <selectall>全選</selectall> 
+         <reselect>反選</reselect> 
+         <delete>刪除</delete> 
+         <redraw>刷新屏幕</redraw> 
+         <create>生成</create> 
+         <about>關於</about> 
+         <help>幫助</help> 
+         <config>設置</config> 
+         <inserteditor>插入到編輯器</inserteditor> 
+         <moreaction>更多操作...</moreaction> 
+         <browhome>瀏覽網站...</browhome> 
+         <redirect>系統將在{$time}秒之後自動跳轉到{$url}！ </redirect> 
+     </common> 
+     
+     <parameters> 
+         <systemname>系統名稱</systemname> 
+         <systemver>當前版本</systemver> 
+         <newversion>最新版本</newversion> 
+         <dbver>數據庫版本</dbver> 
+         <instdate>安裝日期</instdate> 
+         <support>技術支持</support> 
+         <osite>官方網站</osite> 
+         <forums>論壇支持</forums> 
+         <newversion>最新版本</newversion> 
+         <newversionerr>讀取失敗</newversionerr> 
+         <downnew>去下載最新版</downnew> 
+         <update>在線升級</update> 
+         <notup>沒有找到升級文件，請稍後再試！ </notup> 
+         <notserver>服務器暫時無法連接，請稍後重試！ </notserver> 
+         <upok>成功升級到最新版！ </upok> 
+         <phpver>PHP版本</phpver> 
+         <gdver>GD版本</gdver> 
+         <xml_set_object>XML解析</xml_set_object> 
+         <mysql>MySQL數據庫</mysql> 
+         <safe_mode>不運行於安全模式</safe_mode> 
+         <max_execution_time>程序最長運行時間</max_execution_time> 
+         <upload_max_filesize>允許最大上傳文件</upload_max_filesize> 
+         <allow_url_fopen>允許使用URL打開文件</allow_url_fopen> 
+     </parameters> 
+
+     <config title="參數設置"> 
+         <sitename>網站名稱</sitename> 
+         <sitemail>管理員信箱</sitemail> 
+         <sitemode title="網站模式"> 
+             <true>全站動態</true> 
+             <false>全站靜態</false> 
+         </sitemode> 
+         <debug title="錯誤設置(為了安全，請選擇不發送錯誤信息)"> 
+             <true>發送錯誤信息</true> 
+             <false>不發送錯誤信息</false> 
+         </debug> 
+         <urlmode title="URL模式"> 
+             <common>普通模式</common> 
+             <pathinfo>PATHINFO</pathinfo> 
+             <rewrite>REWRITE模式</rewrite> 
+         </urlmode> 
+         <keywords>關鍵詞組</keywords> 
+         <lockip>限制訪問的IP地址</lockip> 
+         <check> 
+             <sitename>網站名稱不能為空,字節長度≤50</sitename> 
+             <sitemail>管理員信箱格式不正確</sitemail> 
+         </check> 
+         <tip> 
+             <keywords>(關鍵字之間用英文逗號分開)</keywords> 
+             <lockip>(IP之間用英文逗號分開，可以封鎖IP段)</lockip> 
+         </tip> 
+     </config> 
+
+     <admin title="管理員"> 
+         <title>管理中心</title> 
+         <list>管理員列表</list> 
+         <add>新增管理員</add> 
+         <edit>編輯管理員</edit> 
+         <level> 
+             <super>系統管理員</super> 
+             <editor>普通管理員</editor> 
+         </level> 
+         <label> 
+             <name>管理員名稱</name> 
+             <pass>管理員密碼</pass> 
+             <pass1>確認密碼</pass1> 
+             <language>界面語言</language> 
+             <editor>編輯器</editor> 
+             <level>級別設置</level> 
+         </label> 
+         <list> 
+             <name>管理員名稱</name> 
+             <level>級別</level> 
+             <language>界面語言</language> 
+             <editor>編輯器</editor> 
+             <regdate>註冊時間</regdate> 
+         </list> 
+         <check> 
+             <name>管理員名稱長度為2-12個字符</name> 
+             <name1>您輸入的管理員名稱已經存在</name1> 
+             <pass1size>管理員密碼長度為6-30個字符</pass1size> 
+             <contrast>兩次輸入的密碼不一致</contrast> 
+         </check> 
+         <pop> 
+             <select>請選擇一個管理員</select> 
+             <deleteok>成功刪除您選擇的管理員</deleteok> 
+         </pop> 
+     </admin> 
+     
+     <account title="我的帳戶"> 
+         <my>帳戶</my> 
+         <oldpass>原密碼</oldpass> 
+         <newpass>新密碼若不修改密碼,請留空</newpass> 
+         <confirmedpass>確認新密碼</confirmedpass> 
+         <diymenu>定制菜單 (若留空，則調用默認自定義菜單)</diymenu> 
+         <check> 
+             <pwdsize>管理員密碼長度不正確</pwdsize> 
+             <pwderror>您的原密碼不正確</pwderror> 
+             <contrast>兩次輸入的新密碼不正確</contrast> 
+         </check> 
+     </account> 
+
+     <log title="訪問日誌"> 
+         <l1>成功登錄</l1> 
+         <l2>登錄失敗</l2> 
+         <l3>退出登錄</l3> 
+         <l4>成功註冊帳號</l4> 
+         <l5>發送短信息</l5> 
+         <delete>刪除過期日誌</delete> 
+         <clear>清空日誌</clear> 
+         <list> 
+             <id>ID</id> 
+             <name>輸入的帳號</name> 
+             <num>動作</num> 
+             <ip>IP地址</ip> 
+             <date>日期時間</date> 
+         </list> 
+         <pop> 
+             <select>請選擇日誌後再操作</select> 
+             <logdeleteok>成功刪除過期日誌</logdeleteok> 
+             <deleteok>已刪除指定的日誌</deleteok> 
+             <clearok>已清空所有日誌</clearok> 
+         </pop> 
+     </log> 
+     
+     <counter title="流量統計"> 
+         <config>開關設置</config> 
+         <true>開啟統計功能</true> 
+         <false>關閉統計功能</false> 
+         <getcode>統計代碼標籤</getcode> 
+         <code><![CDATA[ 
+    
+    {lazy:counter style="1"/} 
+
+    style統計代碼風格
+       ...0 or空不顯示任何內容
+       ...1顯示文字
+       ...2顯示圖標]]></code> 
+     </counter> 
+
+     <login title="管理員登錄"> 
+         <name>用戶名</name> 
+         <pass><![CDATA[密&nbsp; &nbsp;碼]]></pass> 
+         <save>保存信息</save> 
+         <submit>登錄</submit> 
+         <out>退出</out> 
+         <check> 
+             <name>管理員名稱不能為空或過長</name> 
+             <pass>管理員密碼不能為空或過長</pass> 
+             <error1>會員名不存在或已被停用！ </error1> 
+             <error2>密碼有誤，請重新輸入！ </error2> 
+         </check> 
+     </login> 
+     
+     <module title="模塊管理"> 
+         <notinstall>未安裝的模塊</notinstall> 
+         <leadin title="導入模塊">請選擇模塊文件 (zip格式文件)</leadin> 
+         <install>安裝</install> 
+         <list> 
+             <id>ID</id> 
+             <name>模塊名稱</name> 
+             <author>作者</author> 
+             <source>來源</source> 
+             <mail>郵箱</mail> 
+             <version>版本</version> 
+             <is>狀態</is> 
+             <folder>模塊目錄</folder> 
+         </list> 
+         <tip> 
+             <install>成功安裝指定的模塊</install> 
+             <uninstall>成功卸載指定的模塊，但不刪除數據表</uninstall> 
+             <delete>成功刪除指定的模塊，且數據表一起刪除</delete> 
+         </tip> 
+         <is> 
+             <true>已安裝</true> 
+             <false>待安裝</false> 
+         </is> 
+         <pop> 
+             <ok>模塊設置，已成功提交</ok> 
+             <select>請選擇一個模塊</select> 
+         </pop> 
+     </module> 
+
+     <filemanage title="文件瀏覽器"> 
+         <createfolder>新文件夾名稱 (不能包含特殊字符)</createfolder> 
+         <uploadfile>上傳文件 (文件類型：{$Exts})</uploadfile> 
+         <template> 
+             <filename>文件名稱</filename> 
+             <filemtime>最後修改時間</filemtime> 
+         </template> 
+     </filemanage> 
+
+     <diymenu title="自定義菜單"> 
+         <memo> 
+<![CDATA[一級欄目名稱1|鏈接地址1 
+    二級欄目名稱1|鏈接地址2 
+    二級欄目名稱2|鏈接地址3 
+一級欄目名稱2|鏈接地址4 
+    二級欄目名稱3|鏈接地址5 
+    二級欄目名稱4|鏈接地址6 
+    二級欄目名稱5|鏈接地址6 
+
+注意：二級欄目前面需要寫空格即可
+      鏈接地址支持url()函數
+]]></memo> 
+     </diymenu> 
+
+     <confirm> 
+         <logout>確定要退出嗎？ </logout> 
+         <reset>確定要重置嗎？ </reset> 
+         <back>確定要返回嗎？ </back> 
+         <clear>確定要清空嗎？ </clear> 
+         <delete>確定要刪除嗎？ </delete> 
+     </confirm> 
+
+     <error title="錯誤"> 
+         <invalid>您輸入的參數有誤！ </invalid> 
+         <nocontrol>模塊沒有定義！ </nocontrol> 
+         <noaction>操作沒有定義！ </noaction> 
+         <system>系統發生錯誤</system> 
+         <position>錯誤位置</position> 
+         <errinfo>錯誤信息</errinfo> 
+         <jurisdiction>您無權訪問該頁</jurisdiction> 
+         <selectdb>沒有找到指定的數據庫！ </selectdb> 
+         <dblink>數據庫鏈接出錯，請檢查數據庫設置！ </dblink> 
+         <nodbver>MySQL數據庫版本低於4.1，請升級你的MySQL數據庫！ </nodbver> 
+         <dbconfig>數據庫連接字符串，設置錯誤。 </dbconfig> 
+         <nologin>您的登錄已經超時，請重新登錄！ </nologin> 
+         <nomodule>還沒有安裝此模塊，請先安裝！ </nomodule> 
+         <nodefault>你還沒有創建首頁，請先創建首頁。 </nodefault> 
+         <onepage>請先安裝單頁面模塊。 </onepage> 
+         <rsnot>頁面正在製作中，給您帶來的不便敬請諒解！ </rsnot> 
+         <getdown>您的服務器不支持獲取遠程文件。 </getdown> 
+         <nomodels>請先創建模型</nomodels> 
+         <nosort>請先創建分類</nosort> 
+         <upload> 
+             <err0>POST值超過了 post_max_size({$max}) </err0> 
+             <err1>上傳的文件超過了 php.ini 中 upload_max_filesize 選項限制的值</err1> 
+             <err2>上傳文件的大小超過了 HTML 表單中 MAX_FILE_SIZE 選項指定的值</err2> 
+             <err3>文件只有部分被上傳</err3> 
+             <err4>沒有文件被上傳</err4> 
+             <err5>上傳的文件太大</err5> 
+             <err6>找不到臨時文件夾</err6> 
+             <err7>文件寫入失敗</err7> 
+             <err8>上傳的文件類型不允許</err8> 
+             <err9>非法提交</err9> 
+         </upload> 
+     </error> 
+     
+     <other> 
+         <select>您可以選擇</select> 
+         <or>或者</or> 
+         <gohome>回到首頁</gohome> 
+     </other> 
+</lazycms>

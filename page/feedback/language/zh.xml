@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<lazycms> 
+     <title>留言反饋</title> 
+     <version memo="程序版本，默認為1.0">1.0</version> 
+     <author memo="插件作者">Lukin</author> 
+     <email memo="作者常用郵箱，以便聯繫">mylukin@gmail.com</email> 
+     <source memo="作者來自哪裡？">http://www.lazycms.net</source> 
+     <manage>url('FeedBack','Admin')</manage> 
+
+     <common> 
+         <tag1>加註星標</tag1> 
+         <tag0>刪除星標</tag0> 
+         <tag>已加星標</tag> 
+         <fields>字段管理</fields> 
+         <addfields>添加字段</addfields> 
+         <editfields>編輯字段</editfields> 
+     </common> 
+
+     <list> 
+         <title>主題</title> 
+         <content>內容</content> 
+         <ip>IP地址</ip> 
+         <date>添加時間</date> 
+         <action>操作</action> 
+         <field> 
+             <id>ID</id> 
+             <name>表單文字</name> 
+             <ename>字段名</ename> 
+             <type>輸入類型</type> 
+             <length>最大長度</length> 
+             <default>默認值</default> 
+             <type> 
+                 <input>輸入框</input> 
+                 <textarea>文本框</textarea> 
+                 <select>下拉列錶框</select> 
+                 <radio>單選框</radio> 
+                 <checkbox>複選框</checkbox> 
+                 <basic>簡易編輯器</basic> 
+                 <editor>內容編輯器</editor> 
+                 <date>日期選擇器</date> 
+                 <upfile>文件上傳框</upfile> 
+             </type> 
+         </field> 
+         <home>返回到網站首頁</home> 
+         <ok>感謝您的反饋！ </ok> 
+     </list> 
+
+     <label> 
+         <title>主題</title> 
+         <content>留言內容 (不能超過1000字)</content> 
+         <field> 
+             <name>表單文字</name> 
+             <ename>字段名</ename> 
+             <type>輸入類型</type> 
+             <length>最大長度</length> 
+             <default>默認值 (日期選擇器可使用 date('Ym-d',time()) 函數)</default> 
+             <value>值 (例：name:value)</value> 
+         </field> 
+     </label> 
+
+     <check> 
+         <title>主題長度不正確(4-100)</title> 
+         <content>內容長度不正確(10-1000)</content> 
+         <field> 
+             <name>表單文字不能為空</name> 
+             <ename>字段名不能為空</ename> 
+             <ename1>只允許輸入：字母、數字、下劃線</ename1> 
+             <length>必須填寫最大長度</length> 
+             <length1>必須為整數，請重新輸入</length1> 
+             <value>值不能為空</value> 
+         </field> 
+     </check> 
+
+     <pop> 
+         <select>請選擇一個留言</select> 
+         <tagok>成功設置標籤</tagok> 
+         <deleteok>成功刪除指定的反饋信息，但不會刪除星標的信息。 </deleteok> 
+         <template>成功更新模板。 </template> 
+         <field> 
+             <select>請選擇一個模型</select> 
+             <deleteok>成功刪除您選擇的模型</deleteok> 
+             <deletefieldok>成功刪除您選擇的字段</deletefieldok> 
+             <deletefielderr>數據庫字段可能已經被刪除</deletefielderr> 
+         </field> 
+     </pop> 
+</lazycms>
