@@ -126,8 +126,12 @@ class Mysql extends DB{
                 // 置空
                 $I4 = '';
             } elseif (!preg_match('/^\-\-/',$v) && !preg_match('/^\/\//',$v) && !preg_match('/^\/\*/',$v) && !preg_match('/^#/',$v)) {
-                if (preg_match('/(.+,)([ \t]+#(.+))*/',$v,$res)) {
-                    $v = $res[1];
+                $l2 = strrpos($v,'# ');
+                if ($l2!==false) {
+                    $l3 = trim(substr($v,0,$l2));
+                    if (substr($l3,-1)==',') {
+                        $v = $l3;
+                    }
                 }
                 $I4.= $v."\n";
             }

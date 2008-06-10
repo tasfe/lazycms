@@ -72,7 +72,7 @@ $dsnPrefix = isset($_POST['dsn_prefix']) ? $_POST['dsn_prefix'] : C('DSN_PREFIX'
 $dsnConfig = isset($_POST['dsn_config']) ? $_POST['dsn_config'] : C('DSN_CONFIG');
 $modules   = isset($_POST['modules']) ? $_POST['modules'] : null;
 
-$leadinData    = isset($_POST['leadinData']) ? $_POST['leadinData'] : true;
+$leadinData    = isset($_POST['leadinData']) ? $_POST['leadinData'] : false;
 $adminname     = isset($_POST['adminname']) ? $_POST['adminname'] : null;
 $adminpass     = isset($_POST['adminpass']) ? $_POST['adminpass'] : null;
 $adminlanguage = isset($_POST['adminlanguage']) ? $_POST['adminlanguage'] : null;
@@ -221,6 +221,28 @@ clearstatcache();
 <title>LazyCMS 系统安装程序</title>
 <script type="text/javascript" src="./page/system/js/jquery.js"></script>
 <script type="text/javascript" src="./page/system/js/jquery.lazycms.js"></script>
+<script type="text/javascript">
+$(function(){
+    $('#leadinData_true').click(function(){
+        $('input[@type=checkbox][@name^=modules]').each(function(){
+            var v = this.value;
+            if (v=='archives'||v=='feedback'||v=='mytags'||v=='onepage') {
+                this.checked  = true;
+                this.disabled = true;
+                $(this).after('<input name="modules[]" class="___modules" type="hidden" value="' + v + '" />');
+            }
+        });
+    });
+    $('#leadinData_false').click(function(){
+        $('input[@type=checkbox][@name^=modules]').each(function(){
+            this.checked  = false;
+            this.disabled = false;
+        });  
+        $('.___modules').remove();
+    });
+});
+</script>
+
 <style type="text/css">
 body{ width:750px; margin:5px auto 10px auto; background:#FBFBFB;}
 body,th,td,p{ line-height:150%; font-family:Verdana; font-size:12px; color:#333333;}
@@ -279,37 +301,29 @@ body,th,td,p{ line-height:150%; font-family:Verdana; font-size:12px; color:#3333
       <td><input class="in2" type="text" id="sitebase" name="sitebase" value="<?php echo $sitebase;?>" /> 一般安装时无需修改。</td>
     </tr>
     <tr>
-      <th>数据库连接字符串</th>
-      <td>注解：数据库类型://用户名:密码[可选]@主机名:端口[可选]/数据库名称<br/><input class="in4" type="text" id="dsn_config" name="dsn_config" value="<?php echo $dsnConfig;?>" /><?php echo $dsnConfig_err;?></td>
+      <th>示例数据</th>
+      <td>
+          <input type="radio" name="leadinData" id="leadinData_true" value="1"<?php echo $leadinData ? ' checked="checked"' : null;?>/><label for="leadinData_true">[推荐新手]导入数据</label>
+          <input name="leadinData" id="leadinData_false" type="radio" value="0"<?php echo !$leadinData ? ' checked="checked"' : null;?>/><label for="leadinData_false">不导入数据</label>
+      </td>
     </tr>
     <tr>
       <th>模块安装</th>
       <td>
         <?php 
         $_modules = getArrDir(C('PAGES_PATH'),'dir');
-        $selected = 'mytags,feedback,archives,onepage';
         foreach ($_modules as $m) {
             if (strtolower($m) != 'system') {
                 $checked = instr($modules,$m) ? ' checked="checked"' : null;
-                if (instr($selected,$m)) { 
-                    $checked = instr($selected,$m) ? ' checked="checked"' : null;
-                    $disabled = ' disabled="disabled"';
-                    echo '<input name="modules[]" type="hidden" value="'.$m.'" />';
-                } else {
-                    $disabled = null;
-                }
-                echo '<input type="checkbox" name="modules[]" id="m_'.$m.'" value="'.$m.'"'.$checked.$disabled.'/><label for="m_'.$m.'">'.L('title',null,$m).'</label>'.chr(10);
+                echo '<input type="checkbox" name="modules[]" id="m_'.$m.'" value="'.$m.'"'.$checked.'/><label for="m_'.$m.'">'.L('title',null,$m).'</label>'.chr(10);
             }
         }
         ?>
       </td>
     </tr>
     <tr>
-      <th>示例数据</th>
-      <td>
-          <input type="radio" name="leadinData" id="leadinData_true" value="1"<?php echo $leadinData ? ' checked="checked"' : null;?>/><label for="leadinData_true">[推荐新手]导入数据</label>
-          <input name="leadinData" id="leadinData_false" type="radio" value="0"<?php echo !$leadinData ? ' checked="checked"' : null;?> /><label for="leadinData_false">不导入数据</label>
-      </td>
+      <th>数据库连接字符串</th>
+      <td>注解：数据库类型://用户名:密码[可选]@主机名:端口[可选]/数据库名称<br/><input class="in4" type="text" id="dsn_config" name="dsn_config" value="<?php echo $dsnConfig;?>" /><?php echo $dsnConfig_err;?></td>
     </tr>
     <tr>
       <th>权限检测</th>
