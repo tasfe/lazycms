@@ -45,7 +45,11 @@ class Mysql extends DB{
     public function connect(){
         if ($this->_conn) { return $this->_conn; }
         // 连接数据库
-        $this->_conn = @mysql_connect($this->config('host'),$this->config('user'),$this->config('pwd'),1);
+        if (function_exists('mysql_connect')) {
+            $this->_conn = mysql_connect($this->config('host'),$this->config('user'),$this->config('pwd'),1);
+        } else {
+            throwError(L('error/nodbext'));
+        }
         // 验证连接是否正确
         if (!$this->_conn) {
             throwError(L('error/dblink'));

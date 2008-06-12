@@ -266,6 +266,7 @@
         <invalid>您输入的参数有误！</invalid>
         <nocontrol>模块没有定义！</nocontrol>
         <noaction>操作没有定义！</noaction>
+        <nodbext>-_-!!竟然没有MySQL扩展支持，请先开启MySQL扩展支持！</nodbext>
         <system>系统发生错误</system>
         <position>错误位置</position>
         <errinfo>错误信息</errinfo>

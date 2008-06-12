@@ -266,6 +266,7 @@
          <invalid>您輸入的參數有誤！ </invalid> 
          <nocontrol>模塊沒有定義！ </nocontrol> 
          <noaction>操作沒有定義！ </noaction> 
+         <nodbext>-_-!!竟然沒有MySQL擴展支持，請先開啟MySQL擴展支持！ </nodbext>
          <system>系統發生錯誤</system> 
          <position>錯誤位置</position> 
          <errinfo>錯誤信息</errinfo> 
