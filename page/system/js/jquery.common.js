@@ -157,7 +157,37 @@ jQuery.extend(jQuery.fn,{
 
 // *** *** www.LazyCMS.net *** ***
 function path(){ return $("script[@src*=jquery.js]").attr("src").replace("/system/js/jquery.js",""); }
-function insertEditor(l1){ var editor = $('iframe[@src*=fckeditor.html]'); if (editor.is('iframe')) { editor.parent().find('input:hidden').editor().insert(l1); } else { alert('Did not find editor!'); }}
+function insertEditor(l1,l2,l3){
+	var editor = $('iframe[@src*=fckeditor.html]');
+	if (editor.size()>1) {
+		var obj = new Array();
+		editor.each(function(i){
+			obj[i] = new Object();
+			obj[i].name = $(this).parent().find('input:hidden').attr('name');
+			obj[i].label = $(this).parent().find('label').text();
+		});
+		$('.toolbar').next('.pop').remove();
+		$.post(l2,{action:'selectEditor',lists:$.toJSON(obj),content:$.toJSON(l1)},function(data){
+			$('.toolbar').after(data);
+		});
+		$(l3).unbind();
+	} else {
+		if (editor.is('iframe')) { 
+			editor.parent().find('input:hidden').editor().insert(l1);
+		} else {
+			alert('Did not find editor!');
+		}
+	}
+}
+function insert2Editor(obj,content){
+	var editor = $('iframe[@src*=fckeditor.html]');
+	$(obj).parents('.pop-main').find('input:checkbox').each(function(i){
+		if (this.checked) {
+			$('#'+this.value).editor().insert(content);
+		}
+	});
+	$.unblockUI();return false;
+}
 function ico(l1,l2){ var IMG  = '<img src="'+path()+'/system/images/os/'+l1+'.gif" alt="'+l1.toUpperCase()+'" class="os" />';  var HREF = '<a href="'+l2+'" title="'+l1.toUpperCase()+'">'+IMG+'</a>'; if (typeof l2 == "undefined") { return IMG; } else { return HREF; }}
 function ison(l1){ return l1 ? '<img src="'+path()+'/system/images/os/on.gif" class="os" />' : '<img src="'+path()+'/system/images/os/on_gray.gif" class="os" />'; }
 function browse(l1){ return '<a href="'+l1+'" title="BROWSE" target="_blank"><img src="'+path()+'/system/images/os/brow.gif" class="os" /></a>'; }

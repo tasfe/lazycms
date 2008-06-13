@@ -233,6 +233,7 @@
      <filemanage title="文件瀏覽器"> 
          <createfolder>新文件夾名稱 (不能包含特殊字符)</createfolder> 
          <uploadfile>上傳文件 (文件類型：{$Exts})</uploadfile> 
+		 <selecteditor>請選擇將圖片插入到哪個編輯器</selecteditor>
          <template> 
              <filename>文件名稱</filename> 
              <filemtime>最後修改時間</filemtime> 

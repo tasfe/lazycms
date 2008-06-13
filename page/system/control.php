@@ -788,6 +788,20 @@ class LazySystem extends LazyCMS{
                     rmdirs(LAZY_PATH.$folder,true);
                 }
                 break;
+			case 'selecteditor':
+				$lists = isset($_POST['lists']) ? json_decode($_POST['lists']) : null;
+				$content = isset($_POST['content']) ? json_decode($_POST['content']) : null;
+				$I1 = '<div class="pop">';
+                $I1.= '<div class="pop-title"><span>'.$this->system['sitename'].'</span><a href="javascript:void(0);" onclick="$(\'#poping .pop\').remove();">×</a></div>';
+                $I1.= '<div class="pop-main">';
+				$I1.= '<p><label>'.L('filemanage/selecteditor').'</label></p>';
+				foreach ($lists as $obj) {
+					$I1.= '<p><span><input type="checkbox" value="'.$obj->name.'" id="editor_'.$obj->name.'" /><label for="editor_'.$obj->name.'">'.$obj->label.'</label></span></p>';
+				}
+                $I1.= '<p><button type="button" onclick="insert2Editor(this,\''.t2js($content).'\');">'.L('common/inserteditor').'</button></p>';
+                $I1.= '</div></div>';
+                echo $I1; return ;
+				break;
         }
         mkdirs($cPath);
         $DelFolder    = null;
@@ -847,7 +861,7 @@ class LazySystem extends LazyCMS{
         } else {
             $bPath  = str_replace('\\','/',dirname('/'.$path));
             $bPath  = $bPath == '/' ? $bPath : ltrim($bPath,'/');
-            $editor = "<a href=\"javascript:insertEditor();\" onclick=\"insertEditor('<img src=\'{$uPath}\' />');return false;\" class=\"close\">[".L('common/inserteditor')."]</a> ";
+            $editor = "<a href=\"javascript:insertEditor();\" onclick=\"insertEditor('<img src=\'{$uPath}\' />','".url('System','browseFiles')."',this);return false;\" class=\"close\">[".L('common/inserteditor')."]</a> ";
             $insert = "<a href=\"javascript:Insert();\" onclick=\"\$('#{$from}').val('{$path}');return false;\" class=\"close\">[".L('common/insert')."]</a> ";
             $delete = "<a href=\"javascript:Delete();\" onclick=\"if(confirm('".L('confirm/delete')."')){\$('#{$from}').browseFiles('".url('System','browseFiles')."',{action:'delete',path:'{$bPath}',file:'{$path}'});}return false;\">[".L('common/delete')."]</a> ";
             $back = "<a href=\"javascript:Back();\" onclick=\"\$('#{$from}').browseFiles('".url('System','browseFiles')."','{$bPath}');return false;\">[".L('common/back')."]</a> ";
