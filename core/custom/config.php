@@ -21,7 +21,7 @@
  * +---------------------------------------------------------------------------+
  */defined('CORE_PATH') or die('Restricted access!');
 /**
- * 用户自定义配置文件
+ * User-defined configuration files
  */
 return array (
   'SITE_BASE' => '/',
@@ -29,5 +29,6 @@ return array (
   'DSN_CONFIG' => 'mysql://root@localhost:3306/lazycms',
   'DSN_PREFIX' => 'lazy_',
   'DEBUG_MODE' => true,
+  'URL_MODEL' => 1,
 );
 ?>

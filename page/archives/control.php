@@ -41,8 +41,8 @@ class LazyArchives extends LazyCMS{
                                     WHERE `s`.`sortid1`='0' 
                                     ORDER BY `s`.`sortorder` DESC,`s`.`sortid` DESC");
         $dp->length = $db->count($dp->result);
-        $button  = !C('SITE_MODE') ? '-|createrss:'.$this->L('common/createrss').'|-|createsort:'.$this->L('common/createsort').'|createpage:'.$this->L('common/createpage').'|-|createall:'.$this->L('common/createall') : null;
-        $dp->but = $dp->button($button);
+        $button  = !C('SITE_MODE') ? '|-|createsort:'.$this->L('common/createsort').'|createpage:'.$this->L('common/createpage').'|-|createall:'.$this->L('common/createall') : null;
+        $dp->but = $dp->button('-|createrss:'.$this->L('common/createrss').'|createsitemaps:'.$this->L('common/createsitemaps').$button);
         $dp->td  = "cklist(K[0]) + K[7] + K[0] + ') <a href=\"".url(C('CURRENT_MODULE'),'List','sortid=$',"' + K[0] + '")."\">' + K[2] + '</a>'";
         $dp->td  = "K[3]";
         $dp->td  = "K[4]";
@@ -172,7 +172,7 @@ class LazyArchives extends LazyCMS{
         $db     = getConn();
         $submit = isset($_POST['submit']) ? $_POST['submit'] : null;
         $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
-        if (instr('delete,createsort,createpage,createall',$submit) && empty($lists)) {
+        if (instr('delete,createsort,createpage,createall,createsitemaps',$submit) && empty($lists)) {
             $this->poping($this->L('pop/select'),0);
         }
         switch($submit){
@@ -187,6 +187,11 @@ class LazyArchives extends LazyCMS{
             case 'createrss':
                 Archives::createRss();
                 $this->poping($this->L('pop/createok'),0);
+                break;
+            case 'createsitemaps':
+                Archives::createSortSiteMaps($lists);
+                Archives::createSiteMaps();
+                $this->poping($this->L('pop/createok'),1);
                 break;
             case 'createsort' :
                 $I2 = explode(',',$lists);
@@ -260,7 +265,7 @@ class LazyArchives extends LazyCMS{
             case 'createsort' :
                 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
                 $percent = Archives::viewSort($lists,$page,true);
-                if ($percent<100) { $page++; }
+                if ($percent<100) { $page++; } else { Archives::createSortSiteMaps($lists); }
                 echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
                 break;
             case 'createpage' :
@@ -280,13 +285,13 @@ class LazyArchives extends LazyCMS{
                 while ($data = $db->fetch($res)) {
                     Archives::viewArchive($lists,$data['id']);
                 }
-                if ($percent<100) { $page++; }
+                if ($percent<100) { $page++; } else { Archives::createSortSiteMaps($lists); }
                 echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
                 break;
             case 'createall' :
                 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
                 $percent = Archives::viewSort($lists,$page,true,true);
-                if ($percent<100) { $page++; }
+                if ($percent<100) { $page++; } else { Archives::createSortSiteMaps($lists); }
                 echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
                 break;
             case 'create' :

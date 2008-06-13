@@ -15,6 +15,7 @@
          <addsort>添加分類</addsort> 
          <editsort>編輯分類</editsort> 
          <createrss>生成RSS</createrss> 
+         <createsitemaps>生成SiteMaps</createsitemaps>
          <createsort>只生成列表</createsort> 
          <createpage>只生成文檔</createpage> 
          <createall>生成列表及文檔</createall> 

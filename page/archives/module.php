@@ -87,13 +87,13 @@ class Archives{
             $nbsp .= "&nbsp; &nbsp;";
         }
         $db = getConn(); $inSQL = null;
-		if ($l5) {
-			$modelid  = @$db->result("SELECT `modelid` FROM `#@_archives_sort` WHERE `sortid` = '{$l4}'");
-			if ($modelid!==false) {
-				$inSQL = "AND `modelid`='{$modelid}'";
-			}
-		}
-	    $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_archives_sort` WHERE `sortid1` = ? {$inSQL} ORDER BY `sortorder` DESC,`sortid` DESC;",$l1);
+        if ($l5) {
+            $modelid  = @$db->result("SELECT `modelid` FROM `#@_archives_sort` WHERE `sortid` = '{$l4}'");
+            if ($modelid!==false) {
+                $inSQL = "AND `modelid`='{$modelid}'";
+            }
+        }
+        $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_archives_sort` WHERE `sortid1` = ? {$inSQL} ORDER BY `sortorder` DESC,`sortid` DESC;",$l1);
         while ($data = $db->fetch($res,0)) {
             if ($l2 != $data[0]) {
                 $selected = ((int)$l4 == (int)$data[0]) ? ' selected="selected"' : null;
@@ -348,13 +348,13 @@ class Archives{
                 } else {
                     $l4 = $data[1];
                 }
-				if (substr($l4,0,1)=='/') {
-					$l4 = ltrim($l4,'/');
-					$I1 = C('SITE_BASE').$l4;
-				} else {
-					$I1 = C('SITE_BASE').$data[0].'/'.$l4;
-				}
-				if (!isfile($I1)) { $I1.= '/';}
+                if (substr($l4,0,1)=='/') {
+                    $l4 = ltrim($l4,'/');
+                    $I1 = C('SITE_BASE').$l4;
+                } else {
+                    $I1 = C('SITE_BASE').$data[0].'/'.$l4;
+                }
+                if (!isfile($I1)) { $I1.= '/';}
                 return $I1;
             }
         }
@@ -476,15 +476,15 @@ class Archives{
         $paths = explode('/',$l2);
         $count = count($paths);
         if (strpos($paths[$count-1],'.')!==false){ //文件
-			if (substr($l2,0,1)=='/') {
-				$l2 = ltrim($l2,'/');
-				if (strpos($l2,'/')!==false){
-					$path = substr($l2,0,strlen($l2)-strlen($paths[$count-1]));
-					mkdirs(LAZY_PATH.$path);
-				}
-				saveFile(LAZY_PATH.$l2,$l3);
-				return true;
-			}
+            if (substr($l2,0,1)=='/') {
+                $l2 = ltrim($l2,'/');
+                if (strpos($l2,'/')!==false){
+                    $path = substr($l2,0,strlen($l2)-strlen($paths[$count-1]));
+                    mkdirs(LAZY_PATH.$path);
+                }
+                saveFile(LAZY_PATH.$l2,$l3);
+                return true;
+            }
             if (strpos($l2,'/')!==false){
                 $path = substr($l2,0,strlen($l2)-strlen($paths[$count-1]));
                 mkdirs(LAZY_PATH.$l1.'/'.$path);
@@ -492,12 +492,12 @@ class Archives{
             mkdirs(LAZY_PATH.$l1);
             saveFile(LAZY_PATH.$l1.'/'.$l2,$l3);
         } else { //目录
-			if (substr($l2,0,1)=='/') {
-				$l2 = ltrim($l2,'/');
-				mkdirs(LAZY_PATH.$l2);
-				saveFile(LAZY_PATH.$l2.'/'.C('SITE_INDEX'),$l3);
-				return true;
-			}
+            if (substr($l2,0,1)=='/') {
+                $l2 = ltrim($l2,'/');
+                mkdirs(LAZY_PATH.$l2);
+                saveFile(LAZY_PATH.$l2.'/'.C('SITE_INDEX'),$l3);
+                return true;
+            }
             mkdirs(LAZY_PATH.$l1.'/'.$l2);
             saveFile(LAZY_PATH.$l1.'/'.$l2.'/'.C('SITE_INDEX'),$l3);
         }
@@ -561,7 +561,7 @@ class Archives{
         // 两个用户设置的变量
         $rss = M('Archives','ARCHIVES_RSS_FILE');
         $num = M('Archives','ARCHIVES_RSS_NUMBER');
-        $url = 'http://'.$_SERVER['HTTP_HOST'].C('SITE_BASE');
+        $url = 'http://'.$_SERVER['HTTP_HOST'].(C('SITE_BASE')!='/'?C('SITE_BASE'):null);
         $XML = '<?xml version="1.0" encoding="utf-8"?>';
         $XML.= '<rss version="2.0"><channel>';
         $XML.= '<title><![CDATA['.$module->system['sitename'].']]></title>';
@@ -585,13 +585,12 @@ class Archives{
         }
         $strSQL.= " ORDER BY `a`.`id` DESC LIMIT 0,{$num}";
         $res = $db->query($strSQL);
-        $url = substr($url,-1)=='/' ? substr($url,0,strlen($url)-1) : $url;
         while ($data = $db->fetch($res)) {
             $model   = Archives::getModel($data['sortid']);
             $channel = $xPath->evaluate("//rss/channel")->item(0);
             $item    = $channel->appendChild($dom->createElement('item'));
             $title   = $item->appendChild($dom->createElement('title')); $title->appendChild($dom->createCDATASection($data['title']));
-            $link    = $item->appendChild($dom->createElement('link')); $link->nodeValue = xmlencode($url.Archives::showArchive($data['id'],$model));
+            $link    = $item->appendChild($dom->createElement('link')); $link->nodeValue = xmlencode($url.self::showArchive($data['id'],$model));
             $pubDate     = $item->appendChild($dom->createElement('pubDate')); $pubDate->nodeValue = date('Y-m-d',$data['date']);
             $category    = $item->appendChild($dom->createElement('category')); $category->nodeValue = xmlencode($data['sortname']);
             $description = $item->appendChild($dom->createElement('description')); $description->appendChild($dom->createCDATASection($data['description']));
@@ -600,6 +599,131 @@ class Archives{
             $dom->save(LAZY_PATH.$rss);
         }
         return $dom->saveXML();
+    }
+    // createSiteMaps *** *** www.LazyCMS.net *** ***
+    function createSortSiteMaps($l1){
+        $sortids = $l1; $db = getConn();
+        $arrSortids = explode(',',$sortids);
+        $siteUrl = 'http://'.$_SERVER['HTTP_HOST'].(C('SITE_BASE')!='/'?C('SITE_BASE'):null);
+        foreach ($arrSortids as $sortid) {
+            $model  = self::getModel($sortid); $I1 = null;
+            $path = self::showSort($sortid);
+            $tag  = O('Tags');
+            $HTML = $tag->read($model['sorttemplate1'],$model['sorttemplate2']);
+            $HTMList = $tag->getList($HTML,$model['modelename'],1);
+            $jsNumber= floor($tag->getLabel($HTMList,'number'));
+
+            $strSQL = "SELECT * FROM `".$model['maintable']."` WHERE `show` = 1 AND `sortid`='{$sortid}' ORDER BY `id` DESC";
+            $totalRows = $db->count($strSQL);
+            $totalPages = ceil($totalRows/$jsNumber);
+            $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
+            // 列表页面地址
+            for ($page=1; $page<=$totalPages; $page++) {
+                if (C('SITE_MODE')) {
+                    if ($page==1) { $query = null; } else { $query = '&page='.$page; }
+                    $path = url('Archives','ShowSort','sortid='.$sortid.$query);;
+                } else {
+                    if ($page==1) { $num = null; } else { $num = $page; }
+                    $path.= 'index'.$num.C('HTML_URL_SUFFIX');
+                }
+                $url = '<loc>'.xmlencode($siteUrl.$path).'</loc>';
+                $url.= '<changefreq>always</changefreq>';
+                $url.= '<priority>0.5</priority>';
+                $I1.= '<url>'.$url.'</url>';
+            }
+            // 文章页面地址
+            if ($totalRows>0) { 
+                $maxRows = 50000 - $page;
+                if ($totalRows>$maxRows) {
+                    $strSQL.= " LIMIT 0,{$maxRows};";
+                }
+                $res = $db->query($strSQL);
+                while ($data = $db->fetch($res)) {
+                    if (!C('SITE_MODE')) { if (strncmp($data['path'],'/',1)===0) { continue; } }
+                    $url = '<loc>'.xmlencode($siteUrl.self::showArchive($data['id'],$model)).'</loc>';
+                    $url.= '<lastmod>'.date('Y-m-d',$data['date']).'</lastmod>';
+                    $url.= '<changefreq>weekly</changefreq>';
+                    $url.= '<priority>0.8</priority>';
+                    $I1.= '<url>'.$url.'</url>';
+                }
+            }
+            $XML = '<?xml version="1.0" encoding="UTF-8"?>';
+            $XML.= '<urlset xmlns="http://www.google.com/schemas/sitemap/0.84">';
+            $XML.= $I1;
+            $XML.= '</urlset>';
+            mkdirs(LAZY_PATH.$model['sortpath']);
+            saveFile(LAZY_PATH.$model['sortpath'].'/sitemap.xml',$XML);
+        }
+    }
+    // createSiteMaps *** *** www.LazyCMS.net *** ***
+    function createSiteMaps(){
+        // 生成总SiteMaps索引，包括单页面，根目录生成的文件
+        $db = getConn(); $strSQL = null; $I1 = null; $i = 0; $Index = null;
+        $siteUrl = 'http://'.$_SERVER['HTTP_HOST'].(C('SITE_BASE')!='/'?C('SITE_BASE'):null);
+        // 生成单页面地址
+        if (class_exists('Onepage')) {
+            $res = $db->query("SELECT * FROM `#@_onepage` WHERE `ishome` = '0';");
+            while ($data = $db->fetch($res)) {
+                $i++;
+                $url = '<loc>'.xmlencode($siteUrl.Onepage::show($data['oneid'])).'</loc>';
+                $url.= '<changefreq>always</changefreq>';
+                $url.= '<priority>0.9</priority>';
+                $I1.= '<url>'.$url.'</url>';
+            }
+        }
+        // 静态模式生成根目录生成的文件地址
+        if (!C('SITE_MODE')) {
+            $res = $db->query("SELECT DISTINCT `maintable` FROM `#@_archives_model` GROUP BY `maintable`;");
+            while ($data = $db->fetch($res,0)) {
+                if (empty($strSQL)) {
+                    $strSQL.= "SELECT * FROM `".$data[0]."` WHERE LEFT(`path`,1)='/'";
+                } else {
+                    $strSQL.= " UNION SELECT * FROM `".$data[0]."` WHERE LEFT(`path`,1)='/'";
+                }
+            }
+            $strSQL.= " ORDER BY `id` DESC";
+            $totalRows = $db->count($strSQL);
+            $maxRows = 50000 - $i;
+            if ($totalRows>$maxRows) {
+                $strSQL.= " LIMIT 0,{$maxRows};";
+            }
+            $res = $db->query($strSQL);
+            while ($data = $db->fetch($res)) {
+                $url = '<loc>'.xmlencode($siteUrl.$data['path']).'</loc>';
+                $url.= '<lastmod>'.date('Y-m-d',$data['date']).'</lastmod>';
+                $url.= '<changefreq>weekly</changefreq>';
+                $url.= '<priority>0.8</priority>';
+                $I1.= '<url>'.$url.'</url>';
+            }
+        }
+        // 生成所有在根目录下载地址sitemaps文件
+        $XML = '<?xml version="1.0" encoding="UTF-8"?>';
+        $XML.= '<urlset xmlns="http://www.google.com/schemas/sitemap/0.84">';
+        $XML.= '<url>';
+        $XML.= '<loc>'.xmlencode('http://'.$_SERVER['HTTP_HOST'].C('SITE_BASE')).'</loc>';
+        $XML.= '<changefreq>always</changefreq>';
+        $XML.= '<priority>1</priority>';
+        $XML.= '</url>';
+        $XML.= $I1;
+        $XML.= '</urlset>';
+        saveFile(LAZY_PATH.'/sitemap.xml',$XML);
+        // 生成总索引
+        $siteUrl = 'http://'.$_SERVER['HTTP_HOST'].C('SITE_BASE');
+        $res = $db->query("SELECT * FROM `#@_archives_sort` WHERE 1=1 ORDER BY `sortid` DESC;");
+        while ($data = $db->fetch($res)) {
+            $sitemap = LAZY_PATH.$data['sortpath'].'/sitemap.xml';
+            if (is_file($sitemap)) {
+                $Index.= '<sitemap><loc>'.xmlencode($siteUrl.$data['sortpath'].'/sitemap.xml').'</loc></sitemap>';
+            }
+        }
+        $XML = '<?xml version="1.0" encoding="UTF-8"?>';
+        $XML.= '<sitemapindex xmlns="http://www.google.com/schemas/sitemap/0.84">';
+        $XML.= '<sitemap>';
+        $XML.= '<loc>'.xmlencode($siteUrl.'sitemap.xml').'</loc>';
+        $XML.= '</sitemap>';
+        $XML.= $Index;
+        $XML.= '</sitemapindex>';
+        saveFile(LAZY_PATH.'/sitemaps.xml',$XML);
     }
     // tags *** *** www.LazyCMS.net *** ***
     static function tags($tags,$inValue){ 
