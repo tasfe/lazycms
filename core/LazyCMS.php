@@ -32,7 +32,7 @@ defined('CORE_PATH') or die('Restricted access!');
 $GLOBALS['_beginTime'] = microtime(true);
 
 // 判断PHP版本不能低于5.0
-!version_compare(PHP_VERSION, '5', '<' ) or die('PHP version must not be lower than 5.0, please upgrade your PHP version!<br/>&lt;<a href="http://www.php.net/downloads.php" target="_blank">http://www.php.net/downloads.php</a>&gt;');
+!version_compare(PHP_VERSION, '5', '<' ) or die('PHP version lower than 5.0, upgrade PHP!<br/>&lt;<a href="http://php.net/downloads.php" target="_blank">http://php.net/downloads.php</a>&gt;');
 
 
 // 开发模式请将此常量值设置为 false 防止缓存
