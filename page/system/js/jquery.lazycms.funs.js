@@ -166,20 +166,24 @@ function loading(l1,l2,l3){
     var loading = $('#' + l1,toolbar);
         if (loading.is('div')==false) {
 			var html = '<div id="' + l1 + '" class="loading" name="' + l3 + '" title="' + l3 + ':0%"><div>0%</div><span style="width:0px;">&nbsp;</span></div>';
-				html+= '<script type="text/javascript">';
-				html+= "getLoading('" + url + "')";
-				html+= '</script>';	toolbar.append(html);
+				html+= '<script type="text/javascript">getLoading(\'' + url + '\');</script>'; toolbar.append(html);
         }
 }
 
 function getLoading(url){
-	$.get(url,function(data){
-		if ((typeof data) == 'string'){ data = $.parseJSON(data); }
-		$('#'+data.id).attr('title',$('#'+data.id).attr('name') + ':' + data.percent + '%');
-		$('#'+data.id+' div').text(data.percent + '%');
-		$('#'+data.id+' span').css('width',data.percent + 'px');
-		if (data.percent<100) {
-			window.setTimeout("getLoading('" + data.url + "')",data.sleep*1000);
+	$.ajax({
+		url:url,
+		dataType:'json',
+		error : function(){	getLoading(url); },
+		success : function(data){
+			$('#'+data.id).attr('title',$('#'+data.id).attr('name') + ':' + data.percent + '%');
+			$('#'+data.id+' div').text(data.percent + '%');
+			$('#'+data.id+' span').css('width',data.percent + 'px');
+			if (data.percent<100) {
+				window.setTimeout("getLoading('" + data.url + "')",data.sleep*1000);
+			} else {
+				window.setTimeout("$('#"+data.id+"',window.parent.$('#toolbar')).fadeOut('slow',function(){$('#"+data.id+"',window.parent.$('#toolbar')).remove()});",3000);
+			}
 		}
 	});
 }
