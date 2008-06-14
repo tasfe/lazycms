@@ -259,25 +259,46 @@ class LazyArchives extends LazyCMS{
         $db  = getConn();
         $submit  = isset($_GET['submit']) ? (string)$_GET['submit'] : null;
         $lists   = isset($_GET['lists']) ? (string)$_GET['lists'] : null;
+        $page    = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $cacheDir = LAZY_PATH.C('HTML_CACHE_PATH').'/'; mkdirs($cacheDir);
+        $sortFile = $cacheDir."Archive_CREATE_SORT_{$lists}.php";
+        $pageFile = $cacheDir."Archive_CREATE_PAGE_{$lists}.php";
         Archives::createRss();
         switch($submit){
             case 'createsort' :
-                $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                // 清除缓存
+                if (is_file($sortFile) && $page==1) { unlink($sortFile); }
                 $percent = Archives::viewSort($lists,$page,true);
                 if ($percent<100) { $page++; } else { Archives::createSortSiteMaps($lists); }
                 echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
                 break;
             case 'createpage' :
-                $model = Archives::getModel($lists);
-                $page  = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-                $strSQL = "SELECT * FROM `".$model['maintable']."` WHERE `sortid`='{$lists}'";
-                $pageSize   = 100;
-                $totalRows  = $db->count($strSQL);
-                $totalPages = ceil($totalRows/$pageSize);
-                $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
-                if ((int)$page > (int)$totalPages) {
-                    $page = $totalPages;
+                @set_time_limit(0);
+                $pageSize = 100;
+                // 缓存公用不变内容
+                $cachePath = $cacheDir."Archive_CREATEPAGE_{$lists}.php";
+                // 清除缓存
+                if (is_file($cachePath) && $page==1) { unlink($cachePath); }
+
+                if (is_file($cachePath)) {
+                    extract(include($cachePath));
+                } else {
+                    $model = Archives::getModel($lists);
+                    $strSQL = "SELECT * FROM `".$model['maintable']."` WHERE `sortid`='{$lists}'";
+                    $totalRows  = $db->count($strSQL);
+                    $totalPages = ceil($totalRows/$pageSize);
+                    $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
+                    // 有记录，生成缓存文件
+                    if ((int)$totalRows > 0) {
+                        saveFile($cachePath,"<?php \nreturn ".var_export(array(
+                            'model'  => $model,
+                            'strSQL' => $strSQL,
+                            'totalRows'  => $totalRows,
+                            'totalPages' => $totalPages,
+                        ),true)."; \n?>");
+                    }
                 }
+                if ((int)$page > (int)$totalPages) { $page = $totalPages; }
                 $percent = round($page/$totalPages*100,2);
                 $strSQL .= ' LIMIT '.$pageSize.' OFFSET '.($page-1)*$pageSize.';';
                 $res = $db->query($strSQL);
@@ -288,22 +309,24 @@ class LazyArchives extends LazyCMS{
                 echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
                 break;
             case 'createall' :
-                $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                // 清除缓存
+                if (is_file($sortFile) && $page==1) { unlink($sortFile); }
+                if (is_file($pageFile) && $page==1) { unlink($pageFile); }
                 $percent = Archives::viewSort($lists,$page,true,true);
                 if ($percent<100) { $page++; } else { Archives::createSortSiteMaps($lists); }
                 echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
                 break;
             case 'create' :
-                $I2 = explode(',',$lists);
-                $count = count($I2);
-                $page = isset($_GET['page']) ? (int)$_GET['page'] : 0;
+                $I2 = explode(',',$lists); $count = count($I2);
+                $ln = isset($_GET['ln']) ? (int)$_GET['ln'] : 0;
                 $sortid = isset($_GET['sortid']) ? (int)$_GET['sortid'] : 0;
+                if (is_file($pageFile) && $ln==0) { unlink($pageFile); }
                 if ((int)$page < (int)$count) {
                     Archives::viewArchive($sortid,$I2[$page]);
                 }
                 $percent = round($page/$count*100,2);
                 if ($percent<100) { $page++; }
-                echo loading("{$submit}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&sortid={$sortid}&page={$page}"));
+                echo loading("{$submit}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&sortid={$sortid}&ln={$ln}"));
                 break;
         }
     }
@@ -1148,44 +1171,77 @@ class LazyArchives extends LazyCMS{
 			$tags = rawurldecode($tags);
 		}
         $keyword = empty($tags) ? $query : $tags;
-		if (!empty($sortid)) { $sortids = Archives::getSubSortIds($sortid); $inSQL.= " And `a`.`sortid` IN({$sortids})"; }
-		if (!empty($query)){ $inSQL.= " And (binary ucase(`a`.`title`) LIKE ucase('%{$query}%') OR binary ucase(`a`.`keywords`) LIKE ucase('%{$query}%') OR binary ucase(`a`.`description`) LIKE ucase('%{$query}%'))"; }
-		if (!empty($tags)) { $inSQL.= " And (binary ucase(`a`.`keywords`) LIKE ucase('%{$tags}%'))"; }
-        $res = $db->query("SELECT DISTINCT `maintable` FROM `#@_archives_model` GROUP BY `maintable`;");
-        while ($data = $db->fetch($res,0)) {
-            if (empty($strSQL)) {
-                $strSQL.= "SELECT `a`.*,`b`.`sortname`,`b`.`sortpath` FROM `".$data[0]."` AS `a` LEFT JOIN `#@_archives_sort` AS `b` ON `a`.`sortid`=`b`.`sortid` WHERE 1 {$inSQL}";
+        // 缓存公用不变内容
+        $cachePath = LAZY_PATH.C('HTML_CACHE_PATH').'/Archive_Search/'; mkdirs($cachePath);
+        $cachePath.= md5($keyword.$sortid).".php";
+        if (is_file($cachePath)) {
+            extract(include($cachePath));
+        } else {
+            if (!empty($sortid)) { $sortids = Archives::getSubSortIds($sortid); $inSQL.= " And `a`.`sortid` IN({$sortids})"; }
+            if (!empty($query)){ $inSQL.= " And (binary ucase(`a`.`title`) LIKE ucase('%{$query}%') OR binary ucase(`a`.`keywords`) LIKE ucase('%{$query}%') OR binary ucase(`a`.`description`) LIKE ucase('%{$query}%'))"; }
+            if (!empty($tags)) { $inSQL.= " And (binary ucase(`a`.`keywords`) LIKE ucase('%{$tags}%'))"; }
+            $res = $db->query("SELECT DISTINCT `maintable` FROM `#@_archives_model` GROUP BY `maintable`;");
+            while ($data = $db->fetch($res,0)) {
+                if (empty($strSQL)) {
+                    $strSQL.= "SELECT `a`.*,`b`.`sortname`,`b`.`sortpath` FROM `".$data[0]."` AS `a` LEFT JOIN `#@_archives_sort` AS `b` ON `a`.`sortid`=`b`.`sortid` WHERE 1 {$inSQL}";
+                } else {
+                    $strSQL.= " UNION SELECT `a`.*,`b`.`sortname`,`b`.`sortpath` FROM `".$data[0]."` AS `a` LEFT JOIN `#@_archives_sort` AS `b` ON `a`.`sortid`=`b`.`sortid` WHERE 1 {$inSQL}";
+                }
+            }
+            $strSQL.= " ORDER BY `a`.`date` DESC";
+            $sotemplate1 = M(C('CURRENT_MODULE'),'ARCHIVES_TEMPLATE');
+            $sotemplate2 = C('TEMPLATE_PATH').'/inside/search/'.C('TEMPLATE_DEF');
+            $HTML = $tag->read($sotemplate1,$sotemplate2);
+            $HTMList = $tag->getList($HTML,'search',1);
+            $jsHTML  = $tag->getLabel($HTMList,0);
+            $jsNumber= floor($tag->getLabel($HTMList,'number'));
+            $zebra   = $tag->getLabel($HTMList,'zebra');
+            $rand    = chr(3).salt(20).chr(2);//随机出来的替换参数
+            $randpl  = chr(3).salt(16).chr(2);
+            // 把 HTML 中的{lazy:...type=list/}标签替换为一个随机的标签；pagelist设置为一个随机标签
+            $HTML = str_replace($HTMList,$rand,$HTML);
+            // 替换模板中的标签
+            $tag->clear();
+            if (empty($keyword)) {
+                $tag->value('title',encode(htmlencode($this->L('search/@title'))));
             } else {
-                $strSQL.= " UNION SELECT `a`.*,`b`.`sortname`,`b`.`sortpath` FROM `".$data[0]."` AS `a` LEFT JOIN `#@_archives_sort` AS `b` ON `a`.`sortid`=`b`.`sortid` WHERE 1 {$inSQL}";
+                $tag->value('title',encode(htmlencode($this->L('search/title',array('keyword'=>$keyword)))));
+                
+            }
+            $tag->value('query',encode(htmlencode($keyword)));
+            $tag->value('pagelist',encode($randpl));
+            $tag->value('sort',encode(Archives::__sort(0,0,0,$sortid)));
+            $HTML = $tag->create($HTML,$tag->getValue());
+
+            $totalRows  = $db->count($strSQL);
+            $totalPages = ceil($totalRows/$jsNumber);
+            $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
+            // 有记录，生成缓存文件
+            if ((int)$totalRows > 0) {
+                saveFile($cachePath,"<?php \nreturn ".var_export(array(
+                    'strSQL'   => $strSQL,
+                    'HTML'     => $HTML,
+                    'HTMList'  => $HTMList,
+                    'jsHTML'   => $jsHTML,
+                    'jsNumber' => $jsNumber,
+                    'zebra'    => $zebra,
+                    'rand'     => $rand,
+                    'randpl'     => $randpl,
+                    'totalRows'  => $totalRows,
+                    'totalPages' => $totalPages,
+                    'sotemplate1'=> $sotemplate1,
+                    'sotemplate2'=> $sotemplate2,
+                ),true)."; \n?>");
             }
         }
-        $strSQL.= " ORDER BY `a`.`date` DESC";
-		
-		$HTML = $tag->read(M(C('CURRENT_MODULE'),'ARCHIVES_TEMPLATE'),C('TEMPLATE_PATH').'/inside/search/'.C('TEMPLATE_DEF'));
-		$HTMList = $tag->getList($HTML,'search',1);
-        $jsHTML  = $tag->getLabel($HTMList,0);
-		$jsNumber= floor($tag->getLabel($HTMList,'number'));
-        $zebra   = $tag->getLabel($HTMList,'zebra');
-        $rand    = chr(3).salt(20).chr(2);//随机出来的替换参数
-        $randpl  = chr(3).salt(16).chr(2);
-        // 把 HTML 中的{lazy:...type=list/}标签替换为一个随机的标签；pagelist设置为一个随机标签
-        $HTML = str_replace($HTMList,$rand,$HTML);
-        // 替换模板中的标签
-        $tag->clear();
-        if (empty($keyword)) {
-            $tag->value('title',encode(htmlencode($this->L('search/@title'))));
-        } else {
-            $tag->value('title',encode(htmlencode($this->L('search/title',array('keyword'=>$keyword)))));
-            
+        // 判断模板文件改变，就删除缓存
+        if (is_file($cachePath)) {
+            $template1 = filemtime(LAZY_PATH.$sotemplate1);
+            $template2 = filemtime(LAZY_PATH.$sotemplate2);
+            if ((int)filemtime($cachePath)<(int)$template1 || (int)filemtime($cachePath)<(int)$template2) {
+                unlink($cachePath);
+            }
         }
-        $tag->value('query',encode(htmlencode($keyword)));
-        $tag->value('pagelist',encode($randpl));
-        $tag->value('sort',encode(Archives::__sort(0,0,0,$sortid)));
-        $HTML = $tag->create($HTML,$tag->getValue());
-
-		$totalRows  = $db->count($strSQL);
-        $totalPages = ceil($totalRows/$jsNumber);
-        $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
         if ((int)$page > (int)$totalPages) { $page = $totalPages; }
         $strSQL.= ' LIMIT '.$jsNumber.' OFFSET '.($page-1)*$jsNumber.';';
         // 有记录进行查询

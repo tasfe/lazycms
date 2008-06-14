@@ -173,8 +173,8 @@ class Archives{
         $page   = !empty($page) ? (int)$page : 1;
         $db     = getConn(); $tag = O('Tags');
         // 缓存公用不变内容
-        $cachePath = LAZY_PATH.C('HTML_CACHE_PATH').'/'; mkdirs($cachePath);
-        $cachePath.= "Archive_CREATE_SORT_{$sortid}.php";
+        $cacheDir = LAZY_PATH.C('HTML_CACHE_PATH').'/'; mkdirs($cacheDir);
+        $cachePath = $cacheDir."Archive_CREATE_SORT_{$sortid}.php";
         if (is_file($cachePath)) {
             extract(include($cachePath));
         } else {
@@ -219,7 +219,7 @@ class Archives{
             $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
             // 有记录，生成缓存文件
             if ((int)$totalRows > 0) {
-                saveFile($cachePath,"<?php".chr(10)."return ".var_export(array(
+                saveFile($cachePath,"<?php \nreturn ".var_export(array(
                     'model'  => $model,
                     'fields' => $fields,
                     'path'   => $path,
@@ -236,7 +236,7 @@ class Archives{
                     'strSQL'   => $strSQL,
                     'totalRows'  => $totalRows,
                     'totalPages' => $totalPages,
-                ),true).";".chr(10)."?>");
+                ),true)."; \n?>");
             }
         }
         // 判断模板文件改变，就删除缓存
@@ -305,6 +305,9 @@ class Archives{
             }
         }
         if ($type) {
+            if (!((int)$percent<100)) {
+                @unlink($cachePath);@unlink($cacheDir."Archive_CREATE_PAGE_{$sortid}.php");
+            }
             return $percent;
         } else {
             return $outHTML;
@@ -409,12 +412,12 @@ class Archives{
             $HTML   = $tag->read($model['pagetemplate1'],$model['pagetemplate2']);
             $sortpath = self::showSort($sortid);
             // 生成缓存文件
-            saveFile($cachePath,"<?php".chr(10)."return ".var_export(array(
+            saveFile($cachePath,"<?php \nreturn ".var_export(array(
                 'model'  => $model,
                 'fields' => $fields,
                 'HTML'   => $HTML,
                 'sortpath' => $sortpath,
-            ),true).";".chr(10)."?>");
+            ),true)."; \n?>");
         }
         // 判断模板文件改变，就删除缓存
         if (is_file($cachePath)) {

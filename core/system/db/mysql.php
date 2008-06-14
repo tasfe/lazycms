@@ -46,7 +46,7 @@ class Mysql extends DB{
         if ($this->_conn) { return $this->_conn; }
         // 连接数据库
         if (function_exists('mysql_connect')) {
-            $this->_conn = mysql_connect($this->config('host'),$this->config('user'),$this->config('pwd'),1);
+            $this->_conn = @mysql_connect($this->config('host'),$this->config('user'),$this->config('pwd'),1);
         } else {
             throwError(L('error/nodbext'));
         }
