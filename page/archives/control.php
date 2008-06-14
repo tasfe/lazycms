@@ -60,7 +60,6 @@ class LazyArchives extends LazyCMS{
 
         $this->outHTML = $dp->fetch;
 
-
         $this->display('index.php');
     }
     // _showsort *** *** www.LazyCMS.net *** ***
@@ -339,13 +338,12 @@ class LazyArchives extends LazyCMS{
             $dp->tbody = "ll(".$data['id'].",'".t2js(htmlencode($data['title']))."',".$data['show'].",".$data['commend'].",".$data['top'].",'".htmlencode(is_file(LAZY_PATH.$data['img']) ? C('SITE_BASE').$data['img'] : null)."','".Archives::showArchive($data['id'],$model)."','".date('Y-m-d H:i:s',$data['date'])."',".($file_exists ? 1 : 0).");";
         }
         $dp->close();
-
         $this->outHTML = $dp->fetch;
-
 
         $this->assign(array(
             'menu' => $model['sortname'].'|#|true;'.$this->L('common/addpage').'|'.url(C('CURRENT_MODULE'),'Edit','sortid='.$sortid),
         ));
+
         $this->display('list.php');
     }
     // _edit *** *** www.LazyCMS.net *** ***
@@ -609,6 +607,51 @@ class LazyArchives extends LazyCMS{
 			'pathtype_date' => date('Y/m/d/',$date).$maxid,
         ));
         $this->display('edit.php');
+    }
+    // _insert *** *** www.LazyCMS.net *** ***
+    function _insert(){
+        // 插入10W篇文章进行测试
+        set_time_limit(0);
+        $db = getConn();
+        $sortid = 7;
+        $keywords = "分析师,微软,收购";
+        $description = '北京时间6月14日消息，据国外媒体报道，随着雅虎宣布同谷歌在搜索广告领域建立合作伙伴关系，微软为收购雅虎而付出的长达数月的努力彻底以失败告终。分析师预计，微软可能会转而收购时代华纳旗下互联网部门AOL。';
+        $content = '<p>北京时间6月14日消息，据国外媒体报道，随着雅虎宣布同谷歌在搜索广告领域建立合作伙伴关系，微软为收购雅虎而付出的长达数月的努力彻底以失败告终。分析师预计，微软可能会转而收购时代华纳旗下互联网部门AOL。<br />
+<br />
+&nbsp;</p>
+<p>雅虎周四宣布终止与微软之间的所有谈判，并同谷歌签署了一份非排他性搜索广告合作协议。根据协议，雅虎将在主站及美国和加拿大合作网站的搜索结果中投放谷歌广告，雅虎有权决定谷歌广告的投放位置和方式。从一定程度上讲，雅虎选择同谷歌合作，意味着微软为收购雅虎所付出的努力彻底以失败告终。<br />
+<br />
+　　微软现在陷入了进退两难的境地。一方面，正是因为微软的推动，雅虎投向了谷歌一方；另一方面，微软斥巨资收购雅虎，从一个侧面承认了自己的互联网战略失败，只能通过收购保持竞争力。那么，在失去雅虎之后，微软又应当采取何种策略呢？TechTraderDaily分析师科里斯托弗&middot;马拉吉(Christopher Marangi)认为，微软应当转而收购AOL。<br />
+<br />
+　　马拉吉在投资者报告中预计，微软可能会转而收购AOL，因为只有AOL具有与雅虎相当的规模和价值。随着时代华纳CEO杰夫&middot;比克斯(Jeff Bewkes)宣布可能出售AOL，这家老牌互联网巨头再度成为了业界关注的焦点。马拉吉表示：&ldquo;AOL也面临着挑战，但再也没有其它互联网资产可以达到AOL的规模。通过收购AOL，微软可以提升搜索份额，增加页面访问量，以及获得平台 A的第三方广告网络。&rdquo;不计入互联网接入业务，他预计AOL价值120亿美元。<br />
+<br />
+　　放弃收购雅虎之后，微软拥有500亿美元的可处置资金，一笔大规模收购呼之欲出。此前有消息称，微软可能会收购美国第二大社交网站Facebook，但考虑到这家公司还没有可支撑的商业模式，微软斥巨资全面收购的可能性并不大。综合各方面因素考虑，微软更有可能将AOL作为潜在收购目标。<br />
+&nbsp;</p>';
+        for ($i=0; $i<100000; $i++) {
+            $title = "第{$i}条新闻，分析师预计微软将转而收购AOL";
+            $maxid = $db->max('id','#@_archives');
+            $path = md5(salt(10).$maxid);
+            $row = array(
+                'order'   => (int)$maxid,
+                'sortid'  => (int)$sortid,
+                'title'   => (string)$title,
+                'show'    => 1,
+                'path'    => (string)$path,
+                'date'    => (int)time(),
+                'keywords'=> (string)$keywords,
+                'description' => (string)$description,
+            );
+            $db->insert('#@_archives',$row);
+            $aid = $db->lastInsertId();
+            $formData = array(
+                'aid'=>$aid,
+                'from'=>'互联网',
+                'author'=>'未知',
+                'content'=>$content,
+            );
+            $db->insert('#@_archives_model_article',$formData);
+        }
+        echo 'ok!!!';
     }
     // _sortset *** *** www.LazyCMS.net *** ***
     function _set(){
