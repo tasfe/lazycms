@@ -192,29 +192,11 @@ class LazyArchives extends LazyCMS{
                 Archives::createSiteMaps();
                 $this->poping($this->L('pop/createok'),1);
                 break;
-            case 'createsort' :
-                $I2 = explode(',',$lists);
+            case 'createsort': case 'createpage': case 'createall':
                 $js = '<script type="text/javascript">';
-                foreach ($I2 as $sortid){
-                    $js.= "loading('{$submit}_{$sortid}','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$sortid}")."');";
-                }
-                $js.= '</script>';
-                $this->poping($this->L('pop/loading').$js,1);
-                break;
-            case 'createpage' :
-                $I2 = explode(',',$lists);
-                $js = '<script type="text/javascript">';
-                foreach ($I2 as $sortid){
-                    $js.= "loading('{$submit}_{$sortid}','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$sortid}")."');";
-                }
-                $js.= '</script>';
-                $this->poping($this->L('pop/loading').$js,1);
-                break;
-            case 'createall' :
-                $I2 = explode(',',$lists);
-                $js = '<script type="text/javascript">';
-                foreach ($I2 as $sortid){
-                    $js.= "loading('{$submit}_{$sortid}','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$sortid}")."');";
+                $res = $db->query("SELECT * FROM `#@_archives_sort` WHERE `sortid` IN({$lists});");
+                while ($data = $db->fetch($res)) {
+                    $js.= "loading('{$submit}_".$data['sortid']."','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists=".$data['sortid']."")."','".$data['sortname']."');";
                 }
                 $js.= '</script>';
                 $this->poping($this->L('pop/loading').$js,1);
@@ -270,7 +252,12 @@ class LazyArchives extends LazyCMS{
                 if (is_file($sortFile) && $page==1) { unlink($sortFile); }
                 $percent = Archives::viewSort($lists,$page,true);
                 if ($percent<100) { $page++; } else { Archives::createSortSiteMaps($lists); }
-                echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
+                echo json_encode(array(
+                    'id'      => "{$submit}_{$lists}",
+                    'percent' => $percent,
+                    'url'     => url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"),
+                    'sleep'   => C('HTML_CREATE_SLEEP'),
+                ));
                 break;
             case 'createpage' :
                 @set_time_limit(0);
@@ -306,7 +293,12 @@ class LazyArchives extends LazyCMS{
                     Archives::viewArchive($lists,$data['id']);
                 }
                 if ($percent<100) { $page++; } else { Archives::createSortSiteMaps($lists); }
-                echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
+                echo json_encode(array(
+                    'id'      => "{$submit}_{$lists}",
+                    'percent' => $percent,
+                    'url'     => url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"),
+                    'sleep'   => C('HTML_CREATE_SLEEP'),
+                ));
                 break;
             case 'createall' :
                 // 清除缓存
@@ -314,7 +306,12 @@ class LazyArchives extends LazyCMS{
                 if (is_file($pageFile) && $page==1) { unlink($pageFile); }
                 $percent = Archives::viewSort($lists,$page,true,true);
                 if ($percent<100) { $page++; } else { Archives::createSortSiteMaps($lists); }
-                echo loading("{$submit}_{$lists}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"));
+                echo json_encode(array(
+                    'id'      => "{$submit}_{$lists}",
+                    'percent' => $percent,
+                    'url'     => url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&page={$page}"),
+                    'sleep'   => C('HTML_CREATE_SLEEP'),
+                ));
                 break;
             case 'create' :
                 $I2 = explode(',',$lists); $count = count($I2);
@@ -326,7 +323,12 @@ class LazyArchives extends LazyCMS{
                 }
                 $percent = round($page/$count*100,2);
                 if ($percent<100) { $page++; }
-                echo loading("{$submit}",$percent,url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&sortid={$sortid}&ln={$ln}"));
+                echo json_encode(array(
+                    'id'      => "{$submit}_{$lists}",
+                    'percent' => $percent,
+                    'url'     => url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&sortid={$sortid}&ln={$ln}"),
+                    'sleep'   => C('HTML_CREATE_SLEEP'),
+                ));
                 break;
         }
     }
@@ -533,7 +535,7 @@ class LazyArchives extends LazyCMS{
                 // 生成RSS
                 Archives::createRss();
                 // 更新列表，自动添加一个更新loading到toolbar
-                if ($upsort && !C('SITE_MODE')) { exeloading("createsort_{$sortid}",url(C('CURRENT_MODULE'),'loading',"submit=createsort&lists={$sortid}")); }
+                if ($upsort && !C('SITE_MODE')) { exeloading("createsort_{$sortid}",url(C('CURRENT_MODULE'),'loading',"submit=createsort&lists={$sortid}"),$model['sortname']); }
                 // 自动更新网站首页
                 if ($uphome && class_exists('Onepage') && !C('SITE_MODE')) { Onepage::updateIndex(); }
                 // 进行blog ping
@@ -649,7 +651,7 @@ class LazyArchives extends LazyCMS{
 <br />
 　　放弃收购雅虎之后，微软拥有500亿美元的可处置资金，一笔大规模收购呼之欲出。此前有消息称，微软可能会收购美国第二大社交网站Facebook，但考虑到这家公司还没有可支撑的商业模式，微软斥巨资全面收购的可能性并不大。综合各方面因素考虑，微软更有可能将AOL作为潜在收购目标。<br />
 &nbsp;</p>';
-        for ($i=0; $i<50000; $i++) {
+        for ($i=0; $i<10000; $i++) {
             $sortid = mt_rand(3,7);
             $title = "第{$i}条新闻，分析师预计微软将转而收购AOL";
             $maxid = $db->max('id','#@_archives');

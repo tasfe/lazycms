@@ -84,7 +84,7 @@ return array(
     /* 静态缓存设置 */
     'HTML_URL_SUFFIX' => '.html',  // 伪静态后缀设置 or 生成文件的后缀
     'HTML_CACHE_PATH' => '_cache', // 缓存目录
-    'HTML_CREATE_SLEEP' => 0, // 生成文件时停顿时间，单位：秒
+    'HTML_CREATE_SLEEP' => 1, // 生成文件时停顿时间，单位：秒
 
     /* Cookie设置 */
     'COOKIE_DOMAIN' => '',      // Cookie有效域名

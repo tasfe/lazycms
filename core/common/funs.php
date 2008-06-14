@@ -272,32 +272,14 @@ function xmlencode($l1){
     return $I1;
 }
 
-// loading *** *** www.LazyCMS.net *** ***
-function loading($l1,$l2,$l3){
-    $l4 = C('HTML_CREATE_SLEEP');
-    $HTML = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
-    $HTML.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-    $HTML.= '<title>loading...</title><style type="text/css"><!--'.chr(10).'body { margin:0px; }'.chr(10);
-    $HTML.= '.loading{ width:102px; height:15px; background:#F9F9F9; display:block; float:left; overflow:hidden;}'.chr(10);
-    $HTML.= '.loading div{ width:100px; position:absolute; color:#FF0000; text-align:center; font-size:12px; line-height:14px;}'.chr(10);
-    $HTML.= '.loading span{ height:13px; border:solid 1px #FFFFFF; background:#0000CC; display:block; overflow:hidden;}'.chr(10).'--></style>';
-    $HTML.= '<script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.js"></script>';
-    $HTML.= '<script language="javascript" type="text/javascript">';
-    if ((int)$l2==100) {
-        $HTML.= "window.setTimeout(\"\$('#{$l1}',window.parent.\$('#toolbar')).fadeOut('slow',function(){\$('#{$l1}',window.parent.\$('#toolbar')).remove()});\",3000);";
-    } else {
-        $HTML.= "\$(function(){ window.setTimeout(\"self.location.href='{$l3}'\",".($l4*1000).");});";
-    }
-    $HTML.= '</script>';
-    $HTML.= '<noscript><meta http-equiv="refresh" content="'.$l4.';url='.$l3.'" /></noscript>';
-    $HTML.= '</head><body><div class="loading"><div>'.$l2.'%</div><span style="width:'.$l2.'px;">&nbsp;</span></div></body></html>';
-    return $HTML;
-}
 // exeloading *** *** www.LazyCMS.net *** ***
-function exeloading($l1,$l2){
-    $js = '<script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.js"></script><script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.lazycms.js"></script>';
-    $js.= "<script type=\"text/javascript\">loading('{$l1}','{$l2}');</script>";
-    echo $js;
+function exeloading($l1,$l2,$l3){
+    $HTML = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
+    $HTML.= '<script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.js" charset="utf-8"></script>';
+    $HTML.= '<script type="text/javascript" src="'.C('SITE_BASE').C('PAGES_PATH').'/system/js/jquery.lazycms.js" charset="utf-8"></script>';
+    $HTML.= "<script type=\"text/javascript\" charset=\"utf-8\">loading('{$l1}','{$l2}','{$l3}');</script>";
+    $HTML.= '</head><body></body></html>';
+    echo $HTML;
 }
 // ubbencode *** *** www.LazyCMS.net *** ***
 function ubbencode($l1){

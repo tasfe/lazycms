@@ -160,11 +160,26 @@ function image(l1){ return l1!='' ? '<a href="'+l1+'" class="___images"><img src
 function state(l1,l2,l3){ return l1==0 ? '<a href="'+l2+'" title="LOCKED"><img src="'+path()+'/system/images/os/on.gif" class="os" /></a>' : '<a href="'+l3+'" title="UNLOCKED"><img src="'+path()+'/system/images/os/on_gray.gif" class="os" /></a>'; }
 function isExist(l1,l2,l3){ var I2 = l3.split(':'); return l2 ? browse(I2[1]) : '<a href="javascript:;" onclick="$(this).gm(\'' + I2[0] + '\',{lists:'+l1+'});" title="' + I2[0].toUpperCase() + '"><img src="'+path()+'/system/images/os/tip.gif" class="os" /></a>'; }
 function selevel(){var a=$('span#levels');if($('input#adminlevel').attr("checked")){a.slideUp("fast")}else{a.slideDown("fast")}}
-function loading(l1,l2){
-    var src = l2 || 'about:blank';
+function loading(l1,l2,l3){
+    var url = l2 || {};
     var toolbar = window.parent.$('#toolbar');
     var loading = $('#' + l1,toolbar);
-        if (loading.is('iframe')==false) {
-            toolbar.append('<iframe class="loading" src="' + src + '" name="' + l1 + '" id="' + l1 + '" marginwidth="0" marginheight="0" scrolling="no" frameborder="0"></iframe>');
+        if (loading.is('div')==false) {
+			var html = '<div id="' + l1 + '" class="loading" name="' + l3 + '" title="' + l3 + ':0%"><div>0%</div><span style="width:0px;">&nbsp;</span></div>';
+				html+= '<script type="text/javascript">';
+				html+= "getLoading('" + url + "')";
+				html+= '</script>';	toolbar.append(html);
         }
+}
+
+function getLoading(url){
+	$.get(url,function(data){
+		if ((typeof data) == 'string'){ data = $.parseJSON(data); }
+		$('#'+data.id).attr('title',$('#'+data.id).attr('name') + ':' + data.percent + '%');
+		$('#'+data.id+' div').text(data.percent + '%');
+		$('#'+data.id+' span').css('width',data.percent + 'px');
+		if (data.percent<100) {
+			window.setTimeout("getLoading('" + data.url + "')",data.sleep*1000);
+		}
+	});
 }
