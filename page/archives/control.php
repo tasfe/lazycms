@@ -254,6 +254,7 @@ class LazyArchives extends LazyCMS{
     }
     // _loading *** *** www.LazyCMS.net *** ***
     function _loading(){
+        @set_time_limit(0);
         clearCache();
         $this->checker(C('CURRENT_MODULE'));
         $db  = getConn();
@@ -589,7 +590,7 @@ class LazyArchives extends LazyCMS{
             'img'    => $img,
             'setimg' => $vsetimg,
             'path'   => empty($aid) && empty($path) ? $defaultPath :$path,
-            'date'   => date('Y-m-d',(empty($date) ? now() : (!is_numeric($date) ? strtotime($date) : $date))),
+            'date'   => date('Y-m-d H:i:s',(empty($date) ? now() : (!is_numeric($date) ? strtotime($date) : $date))),
             'show'   => !empty($show) ? ' checked="checked"' : null,
             'top'    => !empty($top) ? ' checked="checked"' : null,
             'snapimg' => !empty($snapimg) ? ' checked="checked"' : null,
@@ -627,10 +628,10 @@ class LazyArchives extends LazyCMS{
 <br />
 　　放弃收购雅虎之后，微软拥有500亿美元的可处置资金，一笔大规模收购呼之欲出。此前有消息称，微软可能会收购美国第二大社交网站Facebook，但考虑到这家公司还没有可支撑的商业模式，微软斥巨资全面收购的可能性并不大。综合各方面因素考虑，微软更有可能将AOL作为潜在收购目标。<br />
 &nbsp;</p>';
-        for ($i=0; $i<100000; $i++) {
+        for ($i=0; $i<50000; $i++) {
             $title = "第{$i}条新闻，分析师预计微软将转而收购AOL";
             $maxid = $db->max('id','#@_archives');
-            $path = md5(salt(10).$maxid);
+            $path = md5(salt(10).$maxid).C('HTML_URL_SUFFIX');
             $row = array(
                 'order'   => (int)$maxid,
                 'sortid'  => (int)$sortid,

@@ -591,7 +591,7 @@ class Archives{
             $item    = $channel->appendChild($dom->createElement('item'));
             $title   = $item->appendChild($dom->createElement('title')); $title->appendChild($dom->createCDATASection($data['title']));
             $link    = $item->appendChild($dom->createElement('link')); $link->nodeValue = xmlencode($url.self::showArchive($data['id'],$model));
-            $pubDate     = $item->appendChild($dom->createElement('pubDate')); $pubDate->nodeValue = date('Y-m-d',$data['date']);
+            $pubDate     = $item->appendChild($dom->createElement('pubDate')); $pubDate->nodeValue = date('Y-m-d H:i:s',$data['date']);
             $category    = $item->appendChild($dom->createElement('category')); $category->nodeValue = xmlencode($data['sortname']);
             $description = $item->appendChild($dom->createElement('description')); $description->appendChild($dom->createCDATASection($data['description']));
         }
@@ -641,7 +641,7 @@ class Archives{
                 while ($data = $db->fetch($res)) {
                     if (!C('SITE_MODE')) { if (strncmp($data['path'],'/',1)===0) { continue; } }
                     $url = '<loc>'.xmlencode($siteUrl.self::showArchive($data['id'],$model)).'</loc>';
-                    $url.= '<lastmod>'.date('Y-m-d',$data['date']).'</lastmod>';
+                    $url.= '<lastmod>'.date('Y-m-d H:i:s',$data['date']).'</lastmod>';
                     $url.= '<changefreq>weekly</changefreq>';
                     $url.= '<priority>0.8</priority>';
                     $I1.= '<url>'.$url.'</url>';
@@ -690,7 +690,7 @@ class Archives{
             $res = $db->query($strSQL);
             while ($data = $db->fetch($res)) {
                 $url = '<loc>'.xmlencode($siteUrl.$data['path']).'</loc>';
-                $url.= '<lastmod>'.date('Y-m-d',$data['date']).'</lastmod>';
+                $url.= '<lastmod>'.date('Y-m-d H:i:s',$data['date']).'</lastmod>';
                 $url.= '<changefreq>weekly</changefreq>';
                 $url.= '<priority>0.8</priority>';
                 $I1.= '<url>'.$url.'</url>';

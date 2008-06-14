@@ -26,7 +26,7 @@ $(function(){
     });
     // *** *** www.LazyCMS.net *** ***  日期选择器设置 开始  *** *** www.LazyCMS.net *** ***
     Date.firstDayOfWeek = 7;
-    Date.format = 'yyyy-mm-dd';
+    Date.format = 'yyyy-mm-dd h:i:s';
     Date.dayNames = ['日', '一', '二', '三', '四', '五', '六'];
     Date.monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
     $.dpText = {
@@ -37,7 +37,7 @@ $(function(){
         TEXT_CLOSE          :   '关闭',
         TEXT_CHOOSE_DATE    :   '选择日期'
     };
-    $(".date-pick").datePicker({startDate:'1996-01-01'}).dpSetPosition($.dpConst.POS_BOTTOM, $.dpConst.POS_LEFT);
+    $(".date-pick").datePicker({startDate:'1996-01-01 00:00:00'}).dpSetPosition($.dpConst.POS_BOTTOM, $.dpConst.POS_LEFT);
         
     // *** *** www.LazyCMS.net *** ***  日期选择器设置 结束  *** *** www.LazyCMS.net *** ***
     $('.___images').each(function(i){

@@ -3,9 +3,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php echo $module->L('admin/title');?> | LazyCMS <?php echo $module->system['systemver'];?></title>
-<link href="../system/images/iframe.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="../system/js/jquery.js"></script>
-<script type="text/javascript" src="../system/js/jquery.lazycms.js"></script>
+<link href="<?php echo C('SITE_BASE').C('PAGES_PATH');?>/system/images/iframe.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="<?php echo C('SITE_BASE').C('PAGES_PATH');?>/system/js/jquery.js"></script>
+<script type="text/javascript" src="<?php echo C('SITE_BASE').C('PAGES_PATH');?>/system/js/jquery.lazycms.js"></script>
 <script type="text/javascript">
 //控制窗体大小 *** *** www.LazyCMS.net *** ***
 $(document).ready(function(){
@@ -29,7 +29,7 @@ function resizeWeb(xx){
 <body scroll="no">
 <iframe src="<?php echo url('System','Main');?>" name="main" id="main" width="100%" marginwidth="0" height="95%" marginheight="0" scrolling="yes" frameborder="0" onload="resizeWeb($('#toolbar').height());"></iframe>
 <div id="toolbar">
-    <div class="logo"><a href="<?php echo url('System');?>"><img src="../system/images/toolbar_logo.png" /></a></div>
+    <div class="logo"><a href="<?php echo url('System');?>"><img src="<?php echo C('SITE_BASE').C('PAGES_PATH');?>/system/images/toolbar_logo.png" /></a></div>
 
 </div>
 </body>

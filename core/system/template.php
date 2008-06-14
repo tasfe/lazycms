@@ -51,7 +51,6 @@ class Template extends Lazy{
         ob_start();
         include $this->path.DIRECTORY_SEPARATOR.$l1;
         $I1 = ob_get_contents();
-        $I1 = formatTemplet($I1);
         ob_end_clean();
         return $I1;
     }

@@ -3,8 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php echo $module->L('login/@title');?> | LazyCMS v1.1</title>
-<script type="text/javascript" src="../system/js/jquery.js"></script>
-<script type="text/javascript" src="../system/js/jquery.lazycms.js"></script>
+<script type="text/javascript" src="<?php echo C('SITE_BASE').C('PAGES_PATH');?>/system/js/jquery.js"></script>
+<script type="text/javascript" src="<?php echo C('SITE_BASE').C('PAGES_PATH');?>/system/js/jquery.lazycms.js"></script>
 <style type="text/css">
 body{ width:100%; height:100%; margin:0; padding:0; background:#FBFBFB; text-align:center;}
 body,th,td,p{ line-height:130%; font-family:Verdana; font-size:12px;}
