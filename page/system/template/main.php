@@ -12,7 +12,7 @@
         </tr>
         <tr>
             <th><?php echo $module->L('parameters/newversion');?></th>
-            <td>-&rsaquo; <span id="verison"><img src="../system/images/loading.gif" border="0" /></span></td>
+            <td>-&rsaquo; <span id="verison"><img src="<?php echo C('SITE_BASE').C('PAGES_PATH');?>/system/images/loading.gif" border="0" /></span></td>
         </tr>
         <tr>
             <th><?php echo $module->L('parameters/dbver');?></th>

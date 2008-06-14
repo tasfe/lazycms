@@ -168,50 +168,85 @@ class Archives{
     }
     // viewSort *** *** www.LazyCMS.net *** ***
     static function viewSort($l1,$page=1,$type=false,$isCreatePage=false){
+        @set_time_limit(0);
         $sortid = $l1; $tmpList = null;
         $page   = !empty($page) ? (int)$page : 1;
-        $db     = getConn();
-        $model  = self::getModel($sortid);
-        $fields = self::getFields($model['modelid']);
-        
-        $path = self::showSort($sortid);
-        $tag  = O('Tags');
-        $HTML = $tag->read($model['sorttemplate1'],$model['sorttemplate2']);
-        $HTMList = $tag->getList($HTML,$model['modelename'],1);
-        $jsHTML  = $tag->getLabel($HTMList,0);
-        $jsType  = strtolower($tag->getLabel($HTMList,'type'));
-        $jsOrder = $tag->getLabel($HTMList,'order');
-        $jsOrder = strtoupper($jsOrder)=='ASC' ? 'ASC' : 'DESC';
-        $jsNumber= floor($tag->getLabel($HTMList,'number'));
-        $zebra   = $tag->getLabel($HTMList,'zebra');
-        $rand    = chr(3).salt(20).chr(2);//随机出来的替换参数
-        $randpl  = chr(3).salt(16).chr(2);
-        if ($jsType=='sub') {
-            $sortids = self::getSubSortIds($sortid);
+        $db     = getConn(); $tag = O('Tags');
+        // 缓存公用不变内容
+        $cachePath = LAZY_PATH.C('HTML_CACHE_PATH').'/'; mkdirs($cachePath);
+        $cachePath.= "Archive_CREATE_SORT_{$sortid}.php";
+        if (is_file($cachePath)) {
+            extract(include($cachePath));
         } else {
-            $sortids = $sortid;
+            $model  = self::getModel($sortid);
+            $fields = self::getFields($model['modelid']);
+            $path   = self::showSort($sortid);
+            $HTML   = $tag->read($model['sorttemplate1'],$model['sorttemplate2']);
+            $HTMList = $tag->getList($HTML,$model['modelename'],1);
+            $jsHTML  = $tag->getLabel($HTMList,0);
+            $jsType  = strtolower($tag->getLabel($HTMList,'type'));
+            $jsOrder = $tag->getLabel($HTMList,'order');
+            $jsOrder = strtoupper($jsOrder)=='ASC' ? 'ASC' : 'DESC';
+            $jsNumber= floor($tag->getLabel($HTMList,'number'));
+            $zebra   = $tag->getLabel($HTMList,'zebra');
+            $rand    = chr(3).salt(20).chr(2);//随机出来的替换参数
+            $randpl  = chr(3).salt(16).chr(2);
+            if ($jsType=='sub') {
+                $sortids = self::getSubSortIds($sortid);
+            } else {
+                $sortids = $sortid;
+            }
+            // 把 HTML 中的{lazy:...type=list/}标签替换为一个随机的标签；pagelist设置为一个随机标签
+            $HTML = str_replace($HTMList,$rand,$HTML);
+
+            // 替换模板中的标签
+            $tag->clear();
+            $tag->value('title',encode(htmlencode($model['sortname'])));
+            $tag->value('sortid',$model['sortid']);
+            $tag->value('sortname',encode(htmlencode($model['sortname'])));
+            $tag->value('sortpath',encode($path));
+            $tag->value('path',encode($path));
+            $tag->value('keywords',encode(htmlencode($model['keywords'])));
+            $tag->value('description',encode(htmlencode($model['description'])));
+            $tag->value('pagelist',encode($randpl));
+            $tag->value('guide',encode(self::guide($model['sortid'])));
+            
+            $HTML = $tag->create($HTML,$tag->getValue());
+
+            $strSQL = "SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` WHERE `a`.`sortid` IN({$sortids}) AND `a`.`show` = 1 ORDER BY `a`.`top` DESC,`a`.`order` {$jsOrder},`a`.`sortid` {$jsOrder}";
+            $totalRows  = $db->count($strSQL);
+            $totalPages = ceil($totalRows/$jsNumber);
+            $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
+            // 有记录，生成缓存文件
+            if ((int)$totalRows > 0) {
+                saveFile($cachePath,"<?php".chr(10)."return ".var_export(array(
+                    'model'  => $model,
+                    'fields' => $fields,
+                    'path'   => $path,
+                    'HTML'   => $HTML,
+                    'HTMList' => $HTMList,
+                    'jsHTML'  => $jsHTML,
+                    'jsType'  => $jsType,
+                    'jsOrder' => $jsOrder,
+                    'jsNumber' => $jsNumber,
+                    'zebra'    => $zebra,
+                    'rand'     => $rand,
+                    'randpl'   => $randpl,
+                    'sortids'  => $sortids,
+                    'strSQL'   => $strSQL,
+                    'totalRows'  => $totalRows,
+                    'totalPages' => $totalPages,
+                ),true).";".chr(10)."?>");
+            }
         }
-        // 把 HTML 中的{lazy:...type=list/}标签替换为一个随机的标签；pagelist设置为一个随机标签
-        $HTML = str_replace($HTMList,$rand,$HTML);
-
-        // 替换模板中的标签
-        $tag->clear();
-        $tag->value('title',encode(htmlencode($model['sortname'])));
-        $tag->value('sortid',$model['sortid']);
-        $tag->value('sortname',encode(htmlencode($model['sortname'])));
-        $tag->value('sortpath',encode($path));
-        $tag->value('path',encode($path));
-        $tag->value('keywords',encode(htmlencode($model['keywords'])));
-        $tag->value('description',encode(htmlencode($model['description'])));
-        $tag->value('pagelist',encode($randpl));
-        $tag->value('guide',encode(self::guide($model['sortid'])));
-        
-        $HTML = $tag->create($HTML,$tag->getValue());
-
-        $strSQL = "SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` WHERE `a`.`sortid` IN({$sortids}) AND `a`.`show` = 1 ORDER BY `a`.`top` DESC,`a`.`order` {$jsOrder},`a`.`sortid` {$jsOrder}";
-        $totalRows  = $db->count($strSQL);
-        $totalPages = ceil($totalRows/$jsNumber);
-        $totalPages = ((int)$totalPages == 0) ? 1 : $totalPages;
+        // 判断模板文件改变，就删除缓存
+        if (is_file($cachePath)) {
+            $template1 = filemtime(LAZY_PATH.$model['sorttemplate1']);
+            $template2 = filemtime(LAZY_PATH.$model['sorttemplate2']);
+            if ((int)filemtime($cachePath)<(int)$template1 || (int)filemtime($cachePath)<(int)$template2) {
+                unlink($cachePath);
+            }
+        }
         if ((int)$page > (int)$totalPages) {
             $page = $totalPages;
         }
@@ -361,19 +396,43 @@ class Archives{
     }
     // viewArchive *** *** www.LazyCMS.net *** ***
     static function viewArchive($l1,$l2,$l3=1){
-        $sortid = $l1; $aid = $l2; $page = $l3; $db = getConn();
-        $model  = self::getModel($sortid);
+        @set_time_limit(0);
+        $sortid = $l1; $aid = $l2; $page = $l3; $db = getConn(); $tag = O('Tags');
+        // 缓存公用不变内容
+        $cachePath = LAZY_PATH.C('HTML_CACHE_PATH').'/'; mkdirs($cachePath);
+        $cachePath.= "Archive_CREATE_PAGE_{$sortid}.php";
+        if (is_file($cachePath)) {
+            extract(include($cachePath));
+        } else {
+            $model  = self::getModel($sortid);
+            $fields = self::getFields($model['modelid']);
+            $HTML   = $tag->read($model['pagetemplate1'],$model['pagetemplate2']);
+            $sortpath = self::showSort($sortid);
+            // 生成缓存文件
+            saveFile($cachePath,"<?php".chr(10)."return ".var_export(array(
+                'model'  => $model,
+                'fields' => $fields,
+                'HTML'   => $HTML,
+                'sortpath' => $sortpath,
+            ),true).";".chr(10)."?>");
+        }
+        // 判断模板文件改变，就删除缓存
+        if (is_file($cachePath)) {
+            $template1 = filemtime(LAZY_PATH.$model['pagetemplate1']);
+            $template2 = filemtime(LAZY_PATH.$model['pagetemplate2']);
+            if ((int)filemtime($cachePath)<(int)$template1 || (int)filemtime($cachePath)<(int)$template2) {
+                unlink($cachePath);
+            }
+        }
         $res   = $db->query("SELECT * FROM `".$model['maintable']."` AS `a` LEFT JOIN `".$model['addtable']."` AS `b` ON `a`.`id` = `b`.`aid` WHERE `id` = ?;",$aid);
         if ($data = $db->fetch($res)) {
-            $tag  = O('Tags');
-            $HTML = $tag->read($model['pagetemplate1'],$model['pagetemplate2']);
             // 替换模板中的标签
             $tag->clear();
             $tag->value('id',$data['id']);
             $tag->value('sortid',$data['sortid']);
             $tag->value('title',encode(htmlencode($data['title'])));
             $tag->value('sortname',encode(htmlencode($model['sortname'])));
-            $tag->value('sortpath',encode(self::showSort($sortid)));
+            $tag->value('sortpath',encode($sortpath));
             $tag->value('image',encode($data['img']));
             $tag->value('date',$data['date']);
             $tag->value('keywords',encode(htmlencode($data['keywords'])));
@@ -382,9 +441,7 @@ class Archives{
             $tag->value('hits',encode("<span class=\"lz_hits\"><script type=\"text/javascript\">\$('.lz_hits').html(loadgif()).load('".url('Archives','hits','sortid='.$sortid.'&id='.$data['id'])."');</script></span>"));
             $tag->value('lastpage',encode(self::lastPage($data,$model,$HTML)));
             $tag->value('nextpage',encode(self::nextPage($data,$model,$HTML)));
-            
-            $fields = self::getFields($model['modelid']);
-            
+
             // 有编辑器，动态模式，分页，只对第一个编辑器进行处理
             $result = $db->query("SELECT * FROM `#@_archives_fields` WHERE `modelid` = ? AND `inputtype`='editor' ORDER BY `fieldorder` ASC, `fieldid` ASC;",$model['modelid']);
             if ($field = $db->fetch($result)){
@@ -602,12 +659,13 @@ class Archives{
     }
     // createSiteMaps *** *** www.LazyCMS.net *** ***
     function createSortSiteMaps($l1){
+        @set_time_limit(0);
         $sortids = $l1; $db = getConn();
         $arrSortids = explode(',',$sortids);
         $siteUrl = 'http://'.$_SERVER['HTTP_HOST'].(C('SITE_BASE')!='/'?C('SITE_BASE'):null);
         foreach ($arrSortids as $sortid) {
             $model  = self::getModel($sortid); $I1 = null;
-            $path = self::showSort($sortid);
+            
             $tag  = O('Tags');
             $HTML = $tag->read($model['sorttemplate1'],$model['sorttemplate2']);
             $HTMList = $tag->getList($HTML,$model['modelename'],1);
@@ -624,7 +682,7 @@ class Archives{
                     $path = url('Archives','ShowSort','sortid='.$sortid.$query);;
                 } else {
                     if ($page==1) { $num = null; } else { $num = $page; }
-                    $path.= 'index'.$num.C('HTML_URL_SUFFIX');
+                    $path = self::showSort($sortid).'index'.$num.C('HTML_URL_SUFFIX');
                 }
                 $url = '<loc>'.xmlencode($siteUrl.$path).'</loc>';
                 $url.= '<changefreq>always</changefreq>';
@@ -649,7 +707,7 @@ class Archives{
             }
             $XML = '<?xml version="1.0" encoding="UTF-8"?>';
             $XML.= '<urlset xmlns="http://www.google.com/schemas/sitemap/0.84">';
-            $XML.= $I1;
+            $XML.= $I1;unset($I1);
             $XML.= '</urlset>';
             mkdirs(LAZY_PATH.$model['sortpath']);
             saveFile(LAZY_PATH.$model['sortpath'].'/sitemap.xml',$XML);
@@ -657,6 +715,7 @@ class Archives{
     }
     // createSiteMaps *** *** www.LazyCMS.net *** ***
     function createSiteMaps(){
+        @set_time_limit(0);
         // 生成总SiteMaps索引，包括单页面，根目录生成的文件
         $db = getConn(); $strSQL = null; $I1 = null; $i = 0; $Index = null;
         $siteUrl = 'http://'.$_SERVER['HTTP_HOST'].(C('SITE_BASE')!='/'?C('SITE_BASE'):null);
@@ -726,7 +785,8 @@ class Archives{
         saveFile(LAZY_PATH.'/sitemaps.xml',$XML);
     }
     // tags *** *** www.LazyCMS.net *** ***
-    static function tags($tags,$inValue){ 
+    static function tags($tags,$inValue){
+        @set_time_limit(0);
         $inSQL = null; $tmpList = null; $db = getConn();
         $tagName = sect($tags,"(lazy\:)","( |\/|\}|\))");
         $HTMList = $tags; $tag = O('Tags');
