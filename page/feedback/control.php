@@ -60,7 +60,7 @@ class LazyFeedBack extends LazyCMS{
                 );
                 $db->insert('#@_feedback',$row);
                 $fbid = $db->lastInsertId();
-                $addrows = array_merge($formData,array('fbid'=>$fbid));
+                $addrows = $formData; $addrows['fbid'] = $fbid;
                 $db->insert(FeedBack::$addTable,$addrows);
                 $this->succeed(array(
                     $this->L('list/ok'),

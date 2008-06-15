@@ -502,7 +502,7 @@ class LazyArchives extends LazyCMS{
                     );
                     $db->insert($model['maintable'],$row);
                     $aid = $db->lastInsertId();
-                    $addrows = array_merge($formData,array('aid'=>$aid));
+                    $addrows = $formData; $addrows['aid'] = $aid;
                     $db->insert($model['addtable'],$addrows);
                 } else { // update
                     $set = array(
@@ -525,7 +525,7 @@ class LazyArchives extends LazyCMS{
                             $where = $db->quoteInto('`aid` = ?',$aid);
                             $db->update($model['addtable'],$formData,$where);    
                         } else {
-                            $addrows = array_merge($formData,array('aid'=>$aid));
+                            $addrows = $formData; $addrows['aid'] = $aid;
                             $db->insert($model['addtable'],$addrows);    
                         }
                     }

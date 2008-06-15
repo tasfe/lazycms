@@ -490,7 +490,7 @@ class LazyPassport extends LazyCMS{
                     );
                     $db->insert('#@_passport',$row);
                     $userid = $db->lastInsertId();
-                    $addrows = array_merge($formData,array('userid'=>$userid));
+                    $addrows = $formData; $addrows['userid'] = $userid;
                     $db->insert($model['grouptable'],$addrows);
                 } else { // update
                     $set = array(
@@ -520,7 +520,7 @@ class LazyPassport extends LazyCMS{
                             $where = $db->quoteInto('`userid` = ?',$userid);
                             $db->update($model['grouptable'],$formData,$where);    
                         } else {
-                            $addrows = array_merge($formData,array('userid'=>$userid));
+                            $addrows = $formData; $addrows['userid'] = $userid;
                             $db->insert($model['grouptable'],$addrows);    
                         }
                     }
@@ -711,7 +711,7 @@ class LazyPassport extends LazyCMS{
                 );
                 $db->insert('#@_passport',$row);
                 $userid = $db->lastInsertId();
-                $addrows = array_merge($formData,array('userid'=>$userid));
+                $addrows = $formData; $addrows['userid'] = $userid;
                 $db->insert($model['grouptable'],$addrows);
 
                 $this->succeed(array(
@@ -915,7 +915,7 @@ class LazyPassport extends LazyCMS{
                         $where = $db->quoteInto('`userid` = ?',$userid);
                         $db->update($grouptable,$formData,$where);    
                     } else {
-                        $addrows = array_merge($formData,array('userid'=>$userid));
+                        $addrows = $formData; $addrows['userid'] = $userid;
                         $db->insert($grouptable,$addrows);
                     }
                 }
