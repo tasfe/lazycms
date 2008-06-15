@@ -33,7 +33,7 @@ class Dispatcher extends Lazy{
     // dispatch *** *** www.LazyCMS.net *** ***
     static function dispatch(){
         $url = getURL();
-        if (!empty($_SERVER['PATH_INFO'])) {
+        if (!empty($_SERVER['PATH_INFO']) && $_SERVER["SCRIPT_NAME"]!=$_SERVER['PATH_INFO']) {
             // 执行url解析
             $I2 = substr($url,strlen(getUriBase()));
             self::parseUrl($I2);
