@@ -79,8 +79,7 @@ abstract class LazyCMS extends Lazy{
         // 设置错误级别
         if (C('DEBUG_MODE')) {
             ini_set('display_errors',true);
-            //error_reporting(E_ALL & ~E_NOTICE);
-            error_reporting(E_ALL);
+            error_reporting(E_ALL & ~E_NOTICE);
         } else {
             ini_set('display_errors',false);
             error_reporting(0);
@@ -161,6 +160,10 @@ abstract class LazyCMS extends Lazy{
             $res = $db->query("SELECT * FROM `#@_system` WHERE `systemname`='LazyCMS';");
             if ($system = $db->fetch($res)) {
                 $modules = $system['modules'];
+                if ($system['systemver']!=LAZY_VERSION) {
+                    $db->update('#@_system',array('systemver'=>LAZY_VERSION),"`systemname` ='LazyCMS'");
+                    @unlink(RUNTIME_PATH.'/~app.php');@unlink(RUNTIME_PATH.'/~runtime.php');
+                }
             } else {
                 $modules = null;
             }
