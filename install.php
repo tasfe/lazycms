@@ -153,7 +153,9 @@ if ($install && labelError()) {
             'diymenu'     => $mMenu.defmenu(),
         );
         $db->insert('#@_diymenu',$diyMenu);
-
+        if (is_array($modules)) {
+            $modules = implode(',',$modules);
+        }
         // 添加站点设置
         $system = array(
             'systemname'    => 'LazyCMS',
@@ -162,7 +164,7 @@ if ($install && labelError()) {
             'sitename'      => $sitename,
             'sitemail'      => $sitemail,
             'sitekeywords'  => $keywords,
-            'modules'       => implode(',',$modules),
+            'modules'       => $modules,
             'instdate'      => now(),
         );
         $db->insert('#@_system',$system);
@@ -185,23 +187,27 @@ if ($install && labelError()) {
             $db->batQuery($instSQL);
             @unlink(LAZY_PATH.C('TEMPLATE_PATH').'/install.sql');
         } else {
-            // 添加首页
-            $onepage = array(
-                'oneorder'     => $db->max('oneid','#@_onepage'),
-                'onetitle'     => L('common/home'),
-                'onepath'      => C('SITE_INDEX'),
-                'onename'      => L('common/home'),
-                'onecontent'   => L('common/home'),
-                'onetemplate1' => C('TEMPLATE_PATH').'/'.C('TEMPLATE_DEF'),
-                'onetemplate2' => C('TEMPLATE_PATH').'/inside/onepage/'.C('TEMPLATE_DEF'),
-                'ishome'       => '1',
-            );
-            $db->insert('#@_onepage',$onepage);
-            // 导入默认模型
-            import("@.archives.module");
-            $models = getArrDir('@.archives.models','xml');
-            foreach ($models as $model){
-                Archives::installModel(loadFile(LAZY_PATH.C('PAGES_PATH')."/archives/models/{$model}"),true);
+            if (instr($modules,'onepage')) {
+                // 添加首页
+                $onepage = array(
+                    'oneorder'     => $db->max('oneid','#@_onepage'),
+                    'onetitle'     => L('common/home'),
+                    'onepath'      => C('SITE_INDEX'),
+                    'onename'      => L('common/home'),
+                    'onecontent'   => L('common/home'),
+                    'onetemplate1' => C('TEMPLATE_PATH').'/'.C('TEMPLATE_DEF'),
+                    'onetemplate2' => C('TEMPLATE_PATH').'/inside/onepage/'.C('TEMPLATE_DEF'),
+                    'ishome'       => '1',
+                );
+                $db->insert('#@_onepage',$onepage);
+            }
+            if (instr($modules,'archives')) {
+                // 导入默认模型
+                import("@.archives.module");
+                $models = getArrDir('@.archives.models','xml');
+                foreach ($models as $model){
+                    Archives::installModel(loadFile(LAZY_PATH.C('PAGES_PATH')."/archives/models/{$model}"),true);
+                }
             }
         }
         saveFile(CORE_PATH.'/custom/config.php',"<?php\n".createNote('用户自定义配置文件')."\nreturn ".var_export($config,true).";\n?>");
