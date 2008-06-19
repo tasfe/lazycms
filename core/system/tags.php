@@ -122,7 +122,8 @@ class Tags extends Lazy{
                 $I1 = $module->system['systemver'];
                 break;
             case '++':
-                $I1 = $i++;
+                $I1 = $this->parseAtt($tags,$inValue,'++');
+                if (strlen($I1)==0) { $I1 = $i++; }
                 break;
             case 'url':
                 $module = sect($tags,'module="','"');
