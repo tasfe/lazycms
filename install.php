@@ -342,7 +342,7 @@ body,th,td,p{ line-height:150%; font-family:Verdana; font-size:12px; color:#3333
             </tr>
             <?php 
                 $CORE_PATH = './'.str_replace(dirname(__FILE__).'/','',CORE_PATH);
-                $paths = array('./','./'.C('PAGES_PATH'),$CORE_PATH,$CORE_PATH.'/custom','./'.C('TEMPLATE_PATH'),'./'.C('UPFILE_PATH'));
+                $paths = array('./','./'.C('PAGES_PATH'),$CORE_PATH,$CORE_PATH.'/custom','./'.C('TEMPLATE_PATH'),'./'.C('UPFILE_PATH'),'./'.C('HTML_CACHE_PATH'));
                 while (list(,$path) = each($paths)) :
                 mkdirs($path);
             ?>
