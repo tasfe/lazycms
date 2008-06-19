@@ -155,6 +155,9 @@ class Tags extends Lazy{
                 $jsStyle = $this->getLabel($tags,'style'); $style = !empty($jsStyle) ? "&l={$jsStyle}" : null;
                 $I1 = '<script src="http://pw.cnzz.com/c.php?id='.C('WSS_SITE_ID').$style.'" type="text/javascript" charset="gb2312"></script>';
                 break;
+            case 'sql':
+                $I1 = $module->ensql($tags);
+                break;
             default :
                 if (class_exists('Archives')) {
                     $I1 = Archives::tags($tags,$inValue);

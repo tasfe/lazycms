@@ -600,5 +600,37 @@ abstract class LazyCMS extends Lazy{
             $this->succeed(L('common/upok'));
         }
     }
+    // ensql *** *** www.LazyCMS.net *** ***
+    final public function ensql($tags){
+        $db = getConn(); $I1 = null;
+        import("system.tags"); $tag = new Tags();
+        $jsCmd  = $tag->getLabel($tags,'cmd');
+        $jsHTML = $tag->getLabel($tags,0);
+        $zebra  = $tag->getLabel($tags,'zebra');
+
+        if (strlen($jsHTML)==0) {
+            $jsHTML = "(lazy:#0/)";
+            $isJsHTML = false;
+        } else {
+            $isJsHTML = true;
+        }
+        
+        $res = $db->query($jsCmd); $i = 1;
+        while ($data = $db->fetch($res,2)) {
+            $tag->clear();
+            foreach ($data as $k=>$v) {
+                if (is_numeric($k)) {
+                    $tag->value('#'.$k,encode(htmlencode($v)));
+                } else {
+                    $tag->value($k,encode(htmlencode($v)));
+                }
+            }
+            $tag->value('zebra',($i % ($zebra+1)) ? 0 : 1);
+            $tag->value('++',$i);
+            $I1.= $tag->createhtm($jsHTML,$tag->getValue());
+            $i++; if (!$isJsHTML || $i>999) { break; }
+        }
+        return $I1;
+    }
 }
 ?>
