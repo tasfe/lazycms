@@ -318,13 +318,13 @@ class LazyArchives extends LazyCMS{
                 $ln = isset($_GET['ln']) ? (int)$_GET['ln'] : 0;
                 $sortid = isset($_GET['sortid']) ? (int)$_GET['sortid'] : 0;
                 if (is_file($pageFile) && $ln==0) { unlink($pageFile); }
-                if ((int)$page < (int)$count) {
-                    Archives::viewArchive($sortid,$I2[$page]);
+                if ((int)$ln < (int)$count) {
+                    Archives::viewArchive($sortid,$I2[$ln]);
                 }
-                $percent = round($page/$count*100,2);
-                if ($percent<100) { $page++; }
+                $percent = round($ln/$count*100,2);
+                if ($percent<100) { $ln++; }
                 echo json_encode(array(
-                    'id'      => "{$submit}_{$lists}",
+                    'id'      => "{$submit}_{$sortid}",
                     'percent' => $percent,
                     'url'     => url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&sortid={$sortid}&ln={$ln}"),
                     'sleep'   => C('HTML_CREATE_SLEEP'),
@@ -701,8 +701,9 @@ class LazyArchives extends LazyCMS{
                 $this->poping($this->L('pop/deleteok'),1);
                 break;
             case 'create' :
+                $sortname = $db->result("SELECT `sortname` FROM `#@_archives_sort` WHERE `sortid`='{$sortid}'");
                 $js = '<script type="text/javascript">';
-                $js.= "loading('{$submit}','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&sortid={$sortid}")."');";
+                $js.= "loading('{$submit}_{$sortid}','".url(C('CURRENT_MODULE'),'loading',"submit={$submit}&lists={$lists}&sortid={$sortid}")."','{$sortname}');";
                 $js.= '</script>';
                 $this->poping($this->L('pop/loading').$js,0);
                 break;
