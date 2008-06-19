@@ -169,9 +169,10 @@ class Archives{
     // viewSort *** *** www.LazyCMS.net *** ***
     static function viewSort($l1,$page=1,$type=false,$isCreatePage=false){
         @set_time_limit(0);
+        import("system.tags"); $tag = new Tags();
         $sortid = $l1; $tmpList = null;
         $page   = !empty($page) ? (int)$page : 1;
-        $db     = getConn(); $tag = O('Tags');
+        $db     = getConn();
         // 缓存公用不变内容
         $cacheDir = LAZY_PATH.C('HTML_CACHE_PATH').'/'; mkdirs($cacheDir);
         $cachePath = $cacheDir."Archive_CREATE_SORT_{$sortid}.php";
@@ -400,7 +401,8 @@ class Archives{
     // viewArchive *** *** www.LazyCMS.net *** ***
     static function viewArchive($l1,$l2,$l3=1){
         @set_time_limit(0);
-        $sortid = $l1; $aid = $l2; $page = $l3; $db = getConn(); $tag = O('Tags');
+        import("system.tags"); $tag = new Tags();
+        $sortid = $l1; $aid = $l2; $page = $l3; $db = getConn();
         // 缓存公用不变内容
         $cachePath = LAZY_PATH.C('HTML_CACHE_PATH').'/'; mkdirs($cachePath);
         $cachePath.= "Archive_CREATE_PAGE_{$sortid}.php";
@@ -788,7 +790,7 @@ class Archives{
         @set_time_limit(0);
         $inSQL = null; $tmpList = null; $db = getConn();
         $tagName = sect($tags,"(lazy\:)","( |\/|\}|\))");
-        $HTMList = $tags; $tag = O('Tags');
+        $HTMList = $tags; import("system.tags"); $tag = new Tags();
         $jsHTML  = $tag->getLabel($HTMList,0);
         $sortid  = $tag->getLabel($HTMList,'sortid');
         $jsType  = strtolower($tag->getLabel($HTMList,'type'));

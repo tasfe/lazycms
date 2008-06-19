@@ -55,7 +55,7 @@ class Onepage{
         $sql   = "onename,onetitle,onepath,onekeyword,onedescription,onecontent,onetemplate1,onetemplate2";//7
         $res   = $db->query("SELECT {$sql} FROM `#@_onepage` WHERE `oneid` = ?",$oneid);
         if ($data = $db->fetch($res,0)) {
-            $tag  = O('Tags');
+            import("system.tags"); $tag = new Tags();
             $HTML = $tag->read($data[6],$data[7]);
             $tag->clear();
             $tag->value('name',encode(htmlencode($data[0])));

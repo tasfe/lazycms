@@ -64,7 +64,7 @@ class FeedBack{
     // tags *** *** www.LazyCMS.net *** ***
     static function tags($tags,$inValue){
         $tmpList = null; $db = getConn();
-        $HTMList = $tags; $tag = O('Tags');
+        $HTMList = $tags; import("system.tags"); $tag = new Tags();
         $jsHTML  = $tag->getLabel($HTMList,0);
         $jsType  = $tag->getLabel($HTMList,'type');
         $jsNumber= floor($tag->getLabel($HTMList,'number'));
