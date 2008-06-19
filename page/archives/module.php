@@ -464,17 +464,13 @@ class Archives{
                 $length   = -1;
             }
 
-            // 静态模式，且有编辑器，分页生成
+            // 静态模式，且有编辑器，分页生成 
             if (!C('SITE_MODE') && (int)$length > 0) { 
                 for ($i=0;$i<$length;$i++) {
                     foreach ($fields as $k) { $tag->value($k,encode($data[$k])); }
                     $tag->value('path',encode(self::showArchive($data['id'],$model,($i+1))));
                     $tag->value('pagelist',encode(self::pagelists(self::showArchive($data['id'],$model,'$'),$length,($i+1))));
-                    if ((int)$page > 1) {
-                        $tag->value($field['fieldename'],encode($contents[$page-1]));
-                    } else {
-                        $tag->value($field['fieldename'],encode($contents[$i]));
-                    }
+                    $tag->value($field['fieldename'],encode($contents[$i]));
                     $outHTML = $tag->create($HTML,$tag->getValue());
                     // 生成每一页
                     $path = $data['path'];

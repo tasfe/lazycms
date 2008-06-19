@@ -174,7 +174,7 @@ function getLoading(url){
 	$.ajax({
 		url:url,
 		dataType:'json',
-		error : function(){	getLoading(url); },
+		error : function(){ getLoading(url); },
 		success : function(data){
 			$('#'+data.id).attr('title',$('#'+data.id).attr('name') + ':' + data.percent + '%');
 			$('#'+data.id+' div').text(data.percent + '%');

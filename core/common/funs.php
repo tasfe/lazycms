@@ -1183,15 +1183,11 @@ function M($l1=null,$l2=null,$l3=null) {
 // O *** *** www.LazyCMS.net *** ***
 function O($l1,$l2='system'){
     // $l1:className, $l2:path
-    static $_I1 = array();
-    $l1 = strtolower($l1);
-    if(isset($_I1[$l1])) { return $_I1[$l1]; }
     // 导入类文件
     import("{$l2}.{$l1}");
     // 创建对象，并返回
     if(class_exists(ucfirst($l1))) {
         $I1 = new $l1();
-        $_I1[$l1] = $I1;
         return $I1;     
     }else {
         return false;

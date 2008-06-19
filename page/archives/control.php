@@ -261,12 +261,11 @@ class LazyArchives extends LazyCMS{
                 break;
             case 'createpage' :
                 @set_time_limit(0);
-                $pageSize = 100;
+                $pageSize = 10;
                 // 缓存公用不变内容
                 $cachePath = $cacheDir."Archive_CREATEPAGE_{$lists}.php";
                 // 清除缓存
                 if (is_file($cachePath) && $page==1) { unlink($cachePath); }
-
                 if (is_file($cachePath)) {
                     extract(include($cachePath));
                 } else {
