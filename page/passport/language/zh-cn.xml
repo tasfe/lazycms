@@ -53,6 +53,11 @@
                 <error1>密码有误，请重新输入！</error1>
             </check>
         </updatepass>
+        <message>
+            <msgtitle>主题</msgtitle>
+            <letuser>来自</letuser>
+            <date>日期</date>
+        </message>
     </usercenter>
     
     <config>
@@ -185,6 +190,10 @@
             <lockok>成功锁定您选择的用户</lockok>
             <unlockok>成功解锁您选择的用户</unlockok>
         </user>
+        <message>
+            <select>请选择一条信息</select>
+            <deleteok>成功删除您选择的信息</deleteok>
+        </message>
     </pop>
 
     <error>

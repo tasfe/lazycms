@@ -700,7 +700,7 @@ class Archives{
                 while ($data = $db->fetch($res)) {
                     if (!C('SITE_MODE')) { if (strncmp($data['path'],'/',1)===0) { continue; } }
                     $url = '<loc>'.xmlencode($siteUrl.self::showArchive($data['id'],$model)).'</loc>';
-                    $url.= '<lastmod>'.date('Y-m-d H:i:s',$data['date']).'</lastmod>';
+                    $url.= '<lastmod>'.date('c',$data['date']).'</lastmod>';
                     $url.= '<changefreq>weekly</changefreq>';
                     $url.= '<priority>0.8</priority>';
                     $I1.= '<url>'.$url.'</url>';

@@ -1,3 +1,6 @@
+var debug = false;
+// 加载所需的JavaScript文件，必须在文档完全载入之前加载。
+LoadScript('json');LoadScript('blockUI');
 
 //图片循环
 var ImgName = Array();
@@ -23,3 +26,13 @@ window.onload=function(){ playImg('showImg'); }
 
 //不允许被放入框架中
 if(top.location !== self.location){ top.location=self.location; }
+
+// 函数加载JavaScript *** *** www.LazyCMS.net *** ***
+function LoadScript(plugin){
+    if (plugin.indexOf('/')!=-1) {
+        var url = $("script[@src*=jquery.common]").attr("src").replace("system/js/jquery.common.js",plugin);
+    } else {
+        var url = $("script[@src*=jquery.common]").attr("src").replace("jquery.common.js","jquery." + plugin + ".js");
+    }
+    document.write('<scr' + 'ipt type="text/javascript" src="' + url + '"><\/scr' + 'ipt>');
+}

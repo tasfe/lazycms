@@ -313,8 +313,21 @@ SQL;
               '{language=zh-cn\n  用户中心|(lazy:url module="Passport" action="Main"/)\n  退出|(lazy:url module="Passport" action="Logout"/)\n}',
               '{language=zh-cn\n  注册|(lazy:url module="Passport" action="Register"/)\n  登录|(lazy:url module="Passport" action="Login"/)\n}',
               '{language=zh-cn\n  用户中心|(lazy:url module="Passport" action="Main"/)\n  更新密码|(lazy:url module="Passport" action="UpdatePass"/)\n  更新资料|(lazy:url module="Passport" action="UserConfig"/)\n  退出|(lazy:url module="Passport" action="Logout"/)\n}',
-              'fuck,江泽民,系统,管理员,法轮,lazycms,lcms'
+              'fuck,江泽民,系统,管理员,法轮,admin'
             );
+            // 短消息
+            CREATE TABLE IF NOT EXISTS `#@_passport_message` (
+              `msgid` int(11) NOT NULL auto_increment,
+              `isview` int(11) default '0',                 # 是否阅读 1:已读
+              `letuser` varchar(30),                        # 发送人
+              `username` varchar(30),                       # 接收人
+              `msgtitle` varchar(100),                      # 短信标题
+              `msgcontent` text,                            # 短信内容
+              `msgdate` int(11) default '0',                # 发送时间
+              PRIMARY KEY  (`msgid`),
+              KEY `letuser` (`letuser`),
+              KEY `username` (`username`)
+            ) ENGINE=MyISAM  DEFAULT CHARSET=#~lang~#;
 SQL;
     }
 }

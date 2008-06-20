@@ -739,7 +739,7 @@ class LazyPassport extends LazyCMS{
         if (!isset($innerHTML)) {
             $innerHTML = $this->fetch('register.php');
         }
-        $tag  = O('Tags');
+        import("system.tags"); $tag = new Tags();
         $HTML = $tag->read($model['template']);
         $tag->clear();
         $tag->value('title',encode($this->L('register/@title')));
@@ -750,7 +750,7 @@ class LazyPassport extends LazyCMS{
     }
     // _Login *** *** www.LazyCMS.net *** ***
     function _Login(){
-        $db = getConn(); $tag  = O('Tags');
+        $db = getConn(); import("system.tags"); $tag = new Tags();
         $username = Cookie::get('username');
         $userpass = Cookie::get('userpass');
         if (!empty($username) && !empty($userpass)) {
@@ -816,7 +816,23 @@ class LazyPassport extends LazyCMS{
         if (!Passport::checker()) {
             $this->_logout();exit();
         }
-        $db = getConn(); $tag  = O('Tags');
+        $db = getConn(); import("system.tags"); $tag = new Tags(); $dp = O('Record');
+        $dp->create("SELECT * FROM `#@_passport_message` WHERE `username`='".$this->passport['username']."' ORDER BY `msgid` DESC");
+        $dp->action = url(C('CURRENT_MODULE'),'UserSet');
+        $dp->url = url(C('CURRENT_MODULE'),'Main','page=$');
+        $dp->but = $dp->button().$dp->plist();
+        $dp->td  = "cklist(K[0]) + K[0] + ') <a href=\"javascript:;\" onclick=\"$(this).gm(\'view\',{lists:' + K[0] + '},{width:\'600px\',\'margin-left\':\'-300px\',height:\'300px\'});\">' + K[1] + '</a> '";
+        $dp->td  = 'K[2]';
+        $dp->td  = 'K[3]';
+        $dp->open();
+        $dp->thead  = '<tr><th>ID) '.$this->L('usercenter/message/msgtitle').'</th><th>'.$this->L('usercenter/message/letuser').'</th><th>'.$this->L('usercenter/message/date').'</th></tr>';
+        while ($data = $dp->result()) {
+            $dp->tbody = "ll(".$data['msgid'].",'".t2js(htmlencode($data['msgtitle']))."','".t2js(htmlencode($data['letuser']))."','".date('Y-m-d H:i:s',$data['msgdate'])."');";
+        }
+        $dp->close();
+
+        $this->outHTML = $dp->fetch;
+
         $HTML = $tag->read(M(C('CURRENT_MODULE'),'PASSPORT_USERCENTER_TPL'));
         $tag->clear();
         $tag->value('title',encode($this->L('usercenter/@title')));
@@ -824,12 +840,44 @@ class LazyPassport extends LazyCMS{
         $outHTML = $tag->create($HTML,$tag->getValue());
         echo $outHTML;
     }
+    // _userset *** *** www.LazyCMS.net *** ***
+    function _userset(){
+        clearCache();
+        if (!Passport::checker()) { $this->poping(L('error/nologin'),0); exit(); }
+        $db = getConn();
+        $submit  = isset($_POST['submit']) ? $_POST['submit'] : null;
+        $lists = isset($_POST['lists']) ? $_POST['lists'] : null;
+        
+        switch($submit){
+            case 'delete' :
+                if (empty($lists)) {
+                    $this->poping($this->L('pop/message/select'),0);
+                }
+                $db->exec("DELETE FROM `#@_passport_message` WHERE `username`=? AND `msgid` IN({$lists});",$this->passport['username']);
+                $this->poping($this->L('pop/message/deleteok'),1);
+                break;
+            case 'view' :
+                $res = $db->query("SELECT * FROM `#@_passport_message` WHERE `username`=:name AND `msgid`=:id",array('name'=>$this->passport['username'],'id'=>$lists));
+                if ($data = $db->fetch($res)) {
+                    $this->poping(array(
+                        'title' => htmlencode($data['msgtitle']),
+                        'main'  => htmlencode($data['msgcontent']),
+                    ),0);
+                } else {
+                    $this->poping(L('error/invalid'),0);
+                }
+                break;
+            default :
+                $this->poping(L('error/invalid'),0);
+                break;
+        }
+    }
     // _updatepass *** *** www.LazyCMS.net *** ***
     function _updatepass(){
         if (!Passport::checker()) {
             $this->_logout();exit();
         }
-        $db = getConn(); $tag  = O('Tags');
+        $db = getConn(); import("system.tags"); $tag = new Tags();
         $oldpass = isset($_POST['oldpass']) ? trim($_POST['oldpass']) : null;
         $newpass = isset($_POST['newpass']) ? trim($_POST['newpass']) : null;
         $md5oldpass  = md5($oldpass.$this->passport['userkey']);
@@ -871,7 +919,7 @@ class LazyPassport extends LazyCMS{
         if (!Passport::checker()) {
             $this->_logout();exit();
         }
-        $db = getConn(); $tag  = O('Tags');
+        $db = getConn(); import("system.tags"); $tag = new Tags();
         $userid    = $this->passport['userid'];
         $groupid   = $this->passport['groupid'];
         $grouptable= $this->passport['grouptable'];
