@@ -686,7 +686,7 @@ class Archives{
                     $path = self::showSort($sortid).'index'.$num.C('HTML_URL_SUFFIX');
                 }
                 $url = '<loc>'.xmlencode($siteUrl.$path).'</loc>';
-                $url.= '<changefreq>always</changefreq>';
+                $url.= '<changefreq>daily</changefreq>';
                 $url.= '<priority>0.5</priority>';
                 $I1.= '<url>'.$url.'</url>';
             }
@@ -726,7 +726,7 @@ class Archives{
             while ($data = $db->fetch($res)) {
                 $i++;
                 $url = '<loc>'.xmlencode($siteUrl.Onepage::show($data['oneid'])).'</loc>';
-                $url.= '<changefreq>always</changefreq>';
+                $url.= '<changefreq>daily</changefreq>';
                 $url.= '<priority>0.9</priority>';
                 $I1.= '<url>'.$url.'</url>';
             }

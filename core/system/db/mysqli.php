@@ -20,17 +20,17 @@
  */
 defined('CORE_PATH') or die('Restricted access!');
 /**
- * mysql操作类
+ * mysqli 操作类
  *
  * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
  * @author      Lukin <mylukin@gmail.com>
  * @date        2008-6-24
  */
-class lazy_mysql extends DB{
+class lazy_mysqli extends DB{
     
     // Defautl port
     protected $_port = 3306;
-    
+
     // __construct *** *** www.LazyCMS.net *** ***
     public function __construct(){
         // 添加额外的参数，不能添加 host,port,user,pwd,name,prefix
@@ -43,18 +43,17 @@ class lazy_mysql extends DB{
     public function connect(){
         if ($this->_conn) { return $this->_conn; }
         // 连接数据库
-        if (function_exists('mysql_connect')) {
-            $this->_conn = @mysql_connect($this->config('host').':'.$this->config('port'),$this->config('user'),$this->config('pwd'),true);
+        if (function_exists('mysqli_connect')) {
+            $this->_conn = @mysqli_connect($this->config('host'),$this->config('user'),$this->config('pwd'),$this->config('name'),$this->config('port'));
         } else {
             throwError(L('error/nodbext',array('name'=>$this->config('scheme'))));
         }
         // 验证连接是否正确
         if (!$this->_conn) {
-            throwError(L('error/dblink'));
+            throwError(mysqli_connect_error());
         }
         return $this->_conn;
     }
-    
     // select *** *** www.LazyCMS.net *** ***
     public function select($db=null){
         // 验证连接是否正确
@@ -62,20 +61,20 @@ class lazy_mysql extends DB{
             $this->connect();
         }
         if (empty($db)) {
-            $select = mysql_select_db($this->config('name'),$this->_conn);
+            $select = mysqli_select_db($this->_conn,$this->config('name'));
         } else {
-            $select = mysql_select_db($db,$this->_conn);
+            $select = mysqli_select_db($this->_conn,$db);
         }
         // 选择数据库
         if (!$select) {
             throwError(L('error/selectdb'));
         }
-        mysql_query("SET character_set_connection=".$this->config('lang').", character_set_results=".$this->config('lang').", character_set_client=binary;");
+        mysqli_query($this->_conn,"SET character_set_connection=".$this->config('lang').", character_set_results=".$this->config('lang').", character_set_client=binary;");
         if (version_compare($this->version(), '4.1', '<' )) {
             throwError(L('error/nodbver'));
         }
         if(version_compare($this->version(), '5.0.1', '>' )) {
-            mysql_query("SET sql_mode='';");
+            mysqli_query($this->_conn,"SET sql_mode='';");
         }
         return $this->_conn;
     }
@@ -86,7 +85,7 @@ class lazy_mysql extends DB{
         $sql = preg_replace('/`(#@_)(\w+)`/i','`'.$this->config('prefix').'$2`',$sql);
         $this->_sql = $sql;
         
-        if(!($I1= $func($sql,$this->_conn))){
+        if(!($I1= $func($this->_conn,$sql))){
             if(in_array($this->errno(),array(2006,2013)) && substr($type,0,5) != 'RETRY') {
                 $this->close();$this->connect();
                 $this->execute($sql,$func,'RETRY'.$type);
@@ -99,7 +98,7 @@ class lazy_mysql extends DB{
     // isTable *** *** www.LazyCMS.net *** ***
     public function isTable($l1){
         $l1 = str_replace('#@_',$this->config('prefix'),$l1);
-        $res = mysql_list_tables($this->config('name'),$this->_conn);
+        $res = $this->query("SHOW TABLES");
         while ($data = $this->fetch($res,0)) {
             if (strtolower($l1)==strtolower($data[0])) {
                 $this->free($res);
@@ -137,41 +136,41 @@ class lazy_mysql extends DB{
             }
         }
     }
-    // affected_rows *** *** www.LazyCMS.net *** ***
-    public function affected_rows(){
-        return mysql_affected_rows($this->_conn);
-    }
     // query *** *** www.LazyCMS.net *** ***
-    public function query($sql,$bind=''){
+    public function query($sql,$bind=null){
         if ((string)$bind!='') { $sql = $this->quoteInto($sql,$bind); }
-        return $this->execute($sql,'mysql_query');
+        return $this->execute($sql,'mysqli_query');
     }
     // exec *** *** www.LazyCMS.net *** ***
-    public function exec($sql,$bind=''){
+    public function exec($sql,$bind=null){
         if ((string)$bind!='') { $sql = $this->quoteInto($sql,$bind); }
-        return $this->execute($sql,'mysql_unbuffered_query');
+        return $this->execute($sql,'mysqli_real_query');
     }
     // fetch *** *** www.LazyCMS.net *** ***
     public function fetch($rs=null,$type=1){
         switch ($type) {
-            case '0': $I1 = MYSQL_NUM;break;
-            case '1': $I1 = MYSQL_ASSOC;break;
-            case '2': $I1 = MYSQL_BOTH;break;
+            case '0': $I1 = MYSQLI_NUM;break;
+            case '1': $I1 = MYSQLI_ASSOC;break;
+            case '2': $I1 = MYSQLI_BOTH;break;
         }
-        return mysql_fetch_array($rs,$I1);
+        return mysqli_fetch_array($rs,$I1);
     }
     // count *** *** www.LazyCMS.net *** ***
     public function count($rs=null){
-        if (is_resource($rs)) {
+        if (is_object($rs)) {
             $I1 = $rs;
         } else {
             $I1 = $this->query($rs);
         }
-        return mysql_num_rows($I1);
+        return mysqli_num_rows($I1);
+    }
+    // affected_rows *** *** www.LazyCMS.net *** ***
+    public function affected_rows(){
+        return mysqli_affected_rows($this->_conn);
     }
     // result *** *** www.LazyCMS.net *** ***
     public function result($l1,$l2=0) {
-        if (is_resource($l1)) {
+        if (is_object($l1)) {
             $I2 = $l1;
         } else {
             $I2 = $this->query($l1);
@@ -182,30 +181,30 @@ class lazy_mysql extends DB{
     }
     // error *** *** www.LazyCMS.net *** ***
     public function error() {
-        return (($this->_conn) ? mysql_error($this->_conn) : mysql_error());
+        return (($this->_conn) ? mysqli_error($this->_conn) : 'Unknown Error!');
     }
     // errno *** *** www.LazyCMS.net *** ***
     public function errno() {
-        return intval(($this->_conn) ? mysql_errno($this->_conn) : mysql_errno());
+        return intval(mysqli_errno($this->_conn));
     }
     // version *** *** www.LazyCMS.net *** ***
     public function version(){
-        return mysql_get_server_info($this->_conn);
+        return mysqli_get_server_info($this->_conn);
     }
     // lastId *** *** www.LazyCMS.net *** ***
     public function lastInsertId() {
-        return ($I1 = mysql_insert_id($this->_conn)) >= 0 ? $I1 : $this->result("SELECT last_insert_id();");
+        return ($I1 = mysqli_insert_id($this->_conn)) >= 0 ? $I1 : $this->result("SELECT last_insert_id();");
     }
     // free *** *** www.LazyCMS.net *** ***
     public function free($l1){
-        if (is_resource($l1)) {
-            return mysql_free_result($l1);
+        if (is_object($l1)) {
+            return mysqli_free_result($l1);
         }
     }
     // close *** *** www.LazyCMS.net *** ***
     public function close(){
-        if (is_resource($this->_conn)) {
-            return mysql_close($this->_conn);
+        if (is_object($this->_conn)) {
+            return mysqli_close($this->_conn);
         }
     }
 }

@@ -17,42 +17,76 @@
  * | 许可协议，请查看源代码中附带的 LICENSE.txt 文件，                         |
  * | 或者访问 http://www.lazycms.net/ 获得详细信息。                           |
  * +---------------------------------------------------------------------------+
- * | Author: Lukin <mylukin@gmail.com>                                         |
- * +---------------------------------------------------------------------------+
  */
 defined('CORE_PATH') or die('Restricted access!');
 /**
- * 数据库简单封装类
+ * 数据操作抽象类
  *
  * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
  * @author      Lukin <mylukin@gmail.com>
+ * @date        2008-6-24
+ * 
+ * 统一处理引号
+ * DB::quote(mixed value)
+ * 
+ * 统一处理数据库字段
+ * DB::quoteInto(mixed value)
+ * @example:
+ *   // 单一占位符
+ *   quoteInto('field = ?','value');
+ *   // 多个占位符
+ *   quoteInto('field = :field and field1 = :field1',array('field'=>'value','field1'=>'value1'));
+ * 
+ * 统一处理字段冲突
+ * DB::quoteIdentifier(mixed value)
+ * @example:
+ *   // 单一字段
+ *   quoteIdentifier('field');
+ *   // 逗号分割字段
+ *   quoteIdentifier('field,field1,field2');
+ *   // 数组
+ *   quoteIdentifier(array('field','field1','field2'));
+ *   // 前缀表 和 AS 字段
+ *   quoteIdentifier('table.field AS field1');
  */
-// DB *** *** www.LazyCMS.net *** ***
-abstract class DB extends Lazy{
+abstract class DB {
+    
     // Default config
     protected $_config = array();
+
     // Query sql
     protected $_sql  = null;
+    
     // Database connection
     protected $_conn = null;
+    
     // Defautl port
     protected $_port = null;
 
     // connect *** *** www.LazyCMS.net *** ***
     abstract public function connect();
 
+    // select *** *** www.LazyCMS.net *** ***
+    abstract public function select();
+
     // query *** *** www.LazyCMS.net *** ***
-    abstract public function query($sql,$bind=null);
+    abstract public function query($sql);
 
     // exec *** *** www.LazyCMS.net *** ***
-    abstract public function exec($sql,$bind=null);
+    abstract public function exec($sql);
 
     // fetch *** *** www.LazyCMS.net *** ***
-    abstract public function fetch($l1,$l2=1); // $l1:resource, $l2:type
+    abstract public function fetch();
 
     // count *** *** www.LazyCMS.net *** ***
-    abstract public function count($l1); // $l1:sql or resource
+    abstract public function count();
     
+    // affected_rows *** *** www.LazyCMS.net *** ***
+    abstract public function affected_rows();
+
+    // close *** *** www.LazyCMS.net *** ***
+    abstract public function close();
+
     // config *** *** www.LazyCMS.net *** ***
     public function config($config){
         if (is_array($config)) {
@@ -63,41 +97,60 @@ abstract class DB extends Lazy{
     }
 
     // factory *** *** www.LazyCMS.net *** ***
-    public function factory($config){
-        // mysql://root:123456@localhost:3306/lazycms
-        if (is_array($config)) {
-            $config   = array_change_key_case($config);
+    static function factory($DSN){
+        if (is_array($DSN)) {
+            $config = array_change_key_case($DSN);
         } else {
-            $config = self::parseDSN($config);
+            $config = self::parseDSN($DSN);
         }
         // 载入对应的数据库封装类
-        $db = O($config['scheme'],'system.db');
+        import('system.db.'.$config['scheme']);
+        $className = 'lazy_'.$config['scheme'];
+        $db = new $className();
         // 设置默认端口
-        if (empty($config['port']) || !isset($config['port'])) { $config['port'] = $db->_port; }
+        if (array_key_exists('port',$config)) {
+            if (empty($config['port']) || !isset($config['port'])) {
+                $config['port'] = $db->_port;
+            }
+        }
         // 设置表前缀
         if (empty($config['prefix']) || !isset($config['prefix'])) { $config['prefix'] = C('DSN_PREFIX'); }
         // 数据库设置
         $db->config($config);
         // 初始化连接
-        $db->connect();
-        
-        return $db;
+        $db->connect(); return $db;
     }
+
     // parseDSN *** *** www.LazyCMS.net *** ***
-    public function parseDSN($config){
-        $info = parse_url($config);
-        if ($info['scheme']) {
-            $config = array(
-                'host'  => !empty($info['host']) ? $info['host'] : '',
-                'port'  => !empty($info['port']) ? $info['port'] : '',
-                'user'  => !empty($info['user']) ? $info['user'] : '',
-                'pwd'   => !empty($info['pass']) ? $info['pass'] : '',
-                'name'  => !empty($info['path']) ? substr($info['path'],1) : '',
-                'scheme'=> !empty($info['scheme']) ? $info['scheme'] : '',
-            );
+    static function parseDSN($DSN){
+        $scheme = strtolower(substr($DSN,0,strpos($DSN,':')));
+        if ($scheme=='sqlite') {
+            // DSN format: sqlite://db=LazyCMS.db
+            if (preg_match('/^(.+):\/\/path\=(.+)/i',trim($DSN),$info)){
+                $info[2] = trim($info[2]);
+                if (strncmp($info[2],'/',1)!==0 && substr($info[2],1,2)!==':/'){
+                    if ($pos = strrpos($info[2],'/')) {
+                        $dbpath = substr($info[2],0,$pos);
+                        $dbfile = substr($info[2],$pos+1);
+                        $folder = LAZY_PATH.'/'.$dbpath;
+                        mkdirs($folder); save_file($folder.'/index.html',' ');
+                    } else {
+                        $dbfile = $info[2];
+                        $folder = LAZY_PATH;
+                    }
+                    $info[2] = $folder.'/'.$dbfile;
+                }
+                return array(
+                    'scheme'=> $info[1],
+                    'db'    => $info[2],
+                );
+            } else {
+                throwError(L('error/dbconfig'));
+            }
         } else {
-            if (preg_match('/^(.+):\/\/(.[^:]+)(:(.[^@]+)?)?@([a-z0-9\-\.]+)(:(\d+))?\/(\w+)/i',trim($config),$info)) {
-                $config = array(
+            // DSN format: mysql://root:123456@localhost:3306/lazy/lazycms
+            if (preg_match('/^(.+):\/\/(.[^:]+)(:(.[^@]+)?)?@([a-z0-9\-\.]+)(:(\d+))?\/(\w+)/i',trim($DSN),$info)) {
+                return array(
                     'host'  => $info[5],
                     'port'  => $info[7],
                     'user'  => $info[2],
@@ -109,22 +162,53 @@ abstract class DB extends Lazy{
                 throwError(L('error/dbconfig'));
             }
         }
-        return $config;
     }
-
+    
     // getDataBase *** *** www.LazyCMS.net *** ***
     public function getDataBase(){
         return $this->config('name');
     }
+
     // getSQL *** *** www.LazyCMS.net *** ***
     public function getSQL(){
         return $this->_sql;
     }
 
+    // getConnect *** *** www.LazyCMS.net *** ***
+    public function getConnect(){
+        return $this->_conn;
+    }
+
+    // max *** *** www.LazyCMS.net *** ***
+    public function max($l1,$l2){
+        // $l1:field, $l2:table
+        return $this->result(sprintf("SELECT max( `%s` ) FROM `%s` WHERE 1=1;",$l1,$l2)) + 1;
+    }
+    // __destruct *** *** www.LazyCMS.net *** ***
+    public function __destruct(){
+        $this->close();
+    }
+    
+    /* Copy */
+    
+    // copy *** *** www.LazyCMS.net *** ***
+    public function copy($l1,$l2){
+        $res = $this->query("SHOW CREATE TABLE `{$l1}`");
+        if ($data = $this->fetch($res,0)) {
+            $sql = $data[1];
+            $sql = preg_replace('/^(CREATE TABLE) `'.preg_quote($data[0],'/').'` (\()/i', '$1 IF NOT EXISTS `'.$l2.'` $2', $sql);
+            $this->exec($sql);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /* Insert */
     
     // insert *** *** www.LazyCMS.net *** ***
-    public function insert($l1,$l2){ // $l1:table, $l2:array
+    public function insert($l1,$l2){
+        // $l1:table, $l2:array
         $cols = array();
         $vals = array();
         foreach ($l2 as $col => $val) {
@@ -138,13 +222,14 @@ abstract class DB extends Lazy{
              . 'VALUES (' . implode(', ', $vals) . ')';
 
         $this->exec($sql);
-        return mysql_affected_rows($this->_conn);
+        return $this->affected_rows();
     }
 
     /* Update */
 
     // update *** *** www.LazyCMS.net *** ***
-    public function update($l1,$l2,$l3=null){ // $l1:table, $l2:set, $l3:where
+    public function update($l1,$l2,$l3=null){
+        // $l1:table, $l2:set, $l3:where
         // extract and quote col names from the array keys
         $set = array();
         foreach ($l2 as $col => $val) {
@@ -157,33 +242,25 @@ abstract class DB extends Lazy{
              . ' SET ' . implode(', ', $set)
              . (($l3) ? " WHERE {$l3}" : '');
         $this->exec($sql);
-        return mysql_affected_rows($this->_conn);
+        return $this->affected_rows();
     }
-
+    
     /* Delete */
 
     // delete *** *** www.LazyCMS.net *** ***
-    public function delete($l1,$l2=null){ // $l1:table, $l2:where
+    public function delete($l1,$l2=null){
+        // $l1:table, $l2:where
         $l2 = $this->whereExpr($l2);
         // build the statement
         $sql = "DELETE FROM "
              . $this->quoteIdentifier($l1)
              . (($l2) ? " WHERE {$l2}" : '');
         $this->exec($sql);
-        return mysql_affected_rows($this->_conn);
+        return $this->affected_rows();
     }
-    //copy *** *** www.LazyCMS.net *** ***
-    public function copy($l1,$l2){
-        $res = $this->query("SHOW CREATE TABLE `{$l1}`");
-        if ($data = $this->fetch($res,0)) {
-            $sql = $data[1];
-            $sql = preg_replace('/^(CREATE TABLE) `'.preg_quote($data[0],'/').'` (\()/i', '$1 IF NOT EXISTS `'.$l2.'` $2', $sql);
-            $this->exec($sql);
-            return true;
-        } else {
-            return false;
-        }
-    }
+
+    /* Format SQL */
+
     // whereExpr *** *** www.LazyCMS.net *** ***
     public function whereExpr($l1) {
         if (empty($l1)) {
@@ -198,8 +275,9 @@ abstract class DB extends Lazy{
         $l1 = implode(' AND ', $l1);
         return $l1;
     }
+    
     // quote *** *** www.LazyCMS.net *** ***
-    public function quote($l1){
+    static function quote($l1){
         if (is_array($l1)) {
             foreach ($l1 as &$val) {
                 $val = self::quote($val);
@@ -211,8 +289,9 @@ abstract class DB extends Lazy{
         }
         return "'".addcslashes($l1, "\000\n\r\\'\"\032")."'";
     }
+    
     // quoteInto *** *** www.LazyCMS.net *** ***
-    public function quoteInto($sql, $bind) {
+    static function quoteInto($sql, $bind) {
         // 替换单一占位符
         if (!is_array($bind) && strpos($sql,'?')!==false) {
 			return preg_replace('/\?/',self::quote($bind),$sql,1);
@@ -225,8 +304,9 @@ abstract class DB extends Lazy{
         }
         return $sql;
     }
+    
     // quoteIdentifier *** *** www.LazyCMS.net *** ***
-    public function quoteIdentifier($l1){
+    static function quoteIdentifier($l1){
         $I1 = null;
         $l2 = $l1;
         if (is_array($l2)) {
@@ -254,15 +334,12 @@ abstract class DB extends Lazy{
                 if (stripos($l4,$l5) !== false) {
                     $l6 = trim(substr($l4,0,stripos($l4,$l5)));
                     $l7 = trim(substr($l4,stripos($l4,$l5)+4));
-                    $l4 = "`{$l6}`{$l5}`{$l7}`";
+                    $l4 = sprintf("`%s`%s`%s`",$l6,$l5,$l7);
                 }
-                return "`{$l3}`.{$l4}";
+                return sprintf("`%s`.%s",$l3,$l4);
             } else {
-                return "`{$l2}`";
+                return sprintf("`%s`",$l2);
             }
         }
     }
-    
 }
-
-?>
