@@ -36,7 +36,7 @@ $GLOBALS['_beginTime'] = microtime(true);
 
 
 // 开发模式请将此常量值设置为 false 防止缓存
-if (!defined('CACHE_RUNTIME')) { define('CACHE_RUNTIME',false); }
+if (!defined('CACHE_RUNTIME')) { define('CACHE_RUNTIME',true); }
 
 // LazyCMS系统目录定义
 if (!defined('RUNTIME_PATH')) { define('RUNTIME_PATH',CORE_PATH); }
@@ -89,4 +89,4 @@ if (is_file(RUNTIME_PATH.'/~runtime.php')) {
         saveFile(RUNTIME_PATH.'/~runtime.php',$_I1);
         unset($_I1);
     }
-}
+}?>

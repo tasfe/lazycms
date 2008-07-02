@@ -459,7 +459,7 @@ function redirect($l1,$l2=0,$l3=''){
 // validate *** *** www.LazyCMS.net *** ***
 function validate($l1,$l2){
     // $l1:str, $l2:类型
-    switch($l2){
+    switch((string)$l2){
         case '0' : // 数字，字母，逗号，杠，下划线，[，]
             $l3 = '^[a-zA-Z0-9\,\/\-\_\[\]]+$';
             break;
