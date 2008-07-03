@@ -750,7 +750,7 @@ class Archives{
             $res = $db->query($strSQL);
             while ($data = $db->fetch($res)) {
                 $url = '<loc>'.xmlencode($siteUrl.$data['path']).'</loc>';
-                $url.= '<lastmod>'.date('Y-m-d H:i:s',$data['date']).'</lastmod>';
+                $url.= '<lastmod>'.date('c',$data['date']).'</lastmod>';
                 $url.= '<changefreq>weekly</changefreq>';
                 $url.= '<priority>0.8</priority>';
                 $I1.= '<url>'.$url.'</url>';
