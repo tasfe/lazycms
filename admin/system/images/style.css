@@ -1,0 +1,109 @@
+/**
+ * +---------------------------------------------------------------------------+
+ * | LL                             LLLL   LL     L   LLLL                 LL  |
+ * | LL                            LL   L  LLL   LL  LL   L               LLL  |
+ * | LL      LLLL   LLLLL  LL  LL  LL      LLLL LLL  LL          LL  LL    LL  |
+ * | LL         LL     LL  LL  LL  LL      L LLL LL  LLLLL       LL  LL    LL  |
+ * | LL      LLLLL    LL    LLLL   LL      L  L  LL   LLLLL      LL  LL    LL  |
+ * | LL     LL  LL   LL     LLLL   LL      L     LL      LL       LLLL     LL  |
+ * | LL     LL  LL  LL       LL    LL   L  L     LL  L   LL       LLLL     LL  |
+ * | LLLLLL  LLLLL  LLLLL    LL     LLLL   L     LL   LLLL         LL     LLLL |
+ * |                        LL                                                 |
+ * |                        LL                                                 |
+ * +---------------------------------------------------------------------------+
+ * | Copyright (c) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * +---------------------------------------------------------------------------+
+ * | 许可协议，请查看源代码中附带的 LICENSE.txt 文件，                         |
+ * | 或者访问 http://www.lazycms.net/ 获得详细信息。                           |
+ * +---------------------------------------------------------------------------+
+ *
+ * 后台公用样式表
+ *
+ * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
+ * @author      Lukin <mylukin@gmail.com>
+ * @date        2008-6-17
+ * 
+ */
+@charset "utf-8";
+/* 导入公用样式 */
+@import url("global.css");
+@import url("../../../common/images/style.css");
+@import url("../../../common/images/icons.css");
+
+body { margin:0; background: #FFF; text-align:center;}
+
+/* 登陆界面 */
+#login { width: 600px; height: 300px; margin: 10% auto 0 auto; background: url(bg-line.gif) no-repeat 35% top; text-align:left; }
+    #login .col1 { width:35%; padding-top:70px; margin:70px auto; float:left; background:url(login-logo.png) no-repeat left top; }
+   	#login .col1 p { color:#999999; margin:8px 0; padding:0; }
+    #login .col2 { width:40%; margin:50px 0 0 50px; padding:15px 20px;; float:left; }
+	#login .col2 dt { font-weight:bold; color:#666666; font-size:14px; }
+	#login .col2 dd { margin:10px 0; padding:0; }
+	#login .col2 select { width:150px; }
+	#login .col2 label{ float:left; width:40px; line-height:2; text-align:right; margin-right:10px; }
+	* html #login .col2 label{ margin-right:7px;/* IE 3px bug */}
+	#login .col2 input { width:144px; padding:1px 2px; border:1px solid; border-color:#b4b4b4 #e8e8e8 #e8e8e8 #b4b4b4;}
+    #login button{ margin-left:35px; }
+
+/* 提示样式 */
+#tip{ display:none; position:absolute; top:56px; left:35%; width:30%; line-height:180%; color:#FFFFFF; text-align:center; z-index:99;}
+#tip a{ color:#FFFFFF; }
+
+/* 顶部样式 */
+#top {width:100%; margin:0; display:table; clear:both; background:#eff8ff url(lazyadmin-bgs.png) repeat-x 0 -5px;border-bottom:1px solid #c6d9e7; color:#333333; text-align:left;}
+    #top a{ color:#333333;}
+    #top .logo{ width:170px; padding:4px 10px 5px 5px; float:left; text-align:left;}
+    #top .logo a { display:block; text-align:center;}
+    
+	/* 顶部右上角菜单 */
+    #version{ position:absolute; right:0px; display:table; float:right; text-align:right; margin-right:10px; padding-top:3px;}
+	
+	/* 展示快捷方式的按钮 */
+	#top div.shortcut{ width:55px; float:left; margin-top:26px; padding:2px 0;}
+	#top div.shortcut a{ width:18px; margin:1px 3px 1px 1px;  padding:1px; float:left; display:block; cursor:default;}
+	#top div.shortcut a.active,
+	#top div.shortcut a:hover{ border:solid 1px #c6d9e7; background:#f6f6f6; margin:0 2px 0 0;}
+    
+	/* 系统菜单 */
+	#menu, #menu ul, #menu li { list-style: none; margin: 0; padding: 0; }
+	#menu { display:table; zoom:1; float:left; margin:24px 0 0 5px; }
+	#menu li { position:relative; z-index:100; float:left; line-height:25px; white-space: nowrap; margin-right:5px; }
+	#menu li span { border:solid 1px #c6d9e7; border-bottom:none; display:block; background:url(../../../common/images/buttons-bg.png) repeat-x 0 -1px; padding:0 20px 0 10px; cursor:default;}
+	#menu li span.active { background:#f6f6f6; }
+	#menu li span.gray{ color:#999999; }
+	#menu li span a{ text-decoration:none; }
+	#menu li b.down-arrow{ position:absolute; top:0px; right:5px; display:block; background:url(../../../common/images/icon/down-arrow.png) no-repeat center 3px; height:25px; width:16px;}
+	#menu ul { display:none; position:absolute; border:solid 1px #c6d9e7; background: #f6f6f6 url(bg-menu.gif) repeat-y left; padding-top:1px; }
+	#menu li li { clear:both; margin:0 1px; }
+	#menu li li.hr { background: #DDE1E6 url(bg-menu.gif);  height:1px; width:auto; overflow:hidden; margin:1px 0; }
+	#menu ul a { background:url(../../../common/images/icon/menu-icons.png) no-repeat 3px -285px; display:block; line-height:20px; white-space: nowrap; text-decoration:none; padding:0 20px 0 25px; cursor: default; color: #333333; }
+	
+	/* TopMenu */
+	#top .menu{ position:absolute; top:24px; right:0px; list-style: none; margin: 0; padding: 0; }
+	#top .menu li { position:relative; float:left; line-height:25px; white-space: nowrap; }
+	#top .menu li a { margin-right:5px; border:solid 1px #c6d9e7; border-bottom:none; display:block; padding:0 10px; background:url(../../../common/images/buttons-bg.png) repeat-x; text-decoration:none; }
+	#top .menu li a:hover { background:#f6f6f6; }
+
+#main{ width:99%; margin:5px auto; text-align:center; border:solid 1px #c6d9e7;}
+
+/* footer */
+#footer{ padding:10px; text-align:center;}
+
+/* shortcut */
+#shortcut{ display:none; width:500px; position:absolute; left:1px; top:50px; border:solid 1px #c6d9e7; background:#FFF; text-align:left; }
+	#shortcut div.head{ width:495px; display:table; zoom:1; height:25px; line-height:25px; border-bottom:solid 1px #c6d9e7; background:url(../../../common/images/buttons-bg.png) repeat-x 0 center; padding-left:5px; }
+	#shortcut div.head strong{ padding-left:20px; background:url(../../../common/images/icon/fav.png) no-repeat 0 center; display:block; float:left; cursor:default;}
+	#shortcut div.head a{ display:block; float:right; padding:0 5px; margin-right:5px; text-decoration:none; font-weight:bold;}
+	#shortcut div.body{ background:#FFF url(../../../common/images/icon/loading.gif) no-repeat center 40%; height:480px; padding:5px;}
+	#shortcut dl{ margin-bottom:15px; clear:both; display:table; zoom:1;  }
+	#shortcut dt{ padding-left:10px; line-height:150%; font-weight:bold; background:url(shortcut-line.png) no-repeat left bottom; }
+	#shortcut dd{ float:left; margin:8px 8px 0 8px; }
+	#shortcut dd a{ margin:1px; background-image:url(../../../common/images/icon/weblink.png); background-repeat:no-repeat; background-position:center 3px; display:block; width:50px; padding:40px 5px 3px 5px; text-align:center; text-decoration:none; color:#333333;}
+	#shortcut dd a:hover{ margin:0; border:solid 1px #A5D11F; background-color:#F4FBE1;}
+
+/* toolbar */
+#toolbar{ display:none; position:absolute; left:0; bottom:0; width:100%; height:30px; line-height:30px; background:url(toolbar-bg.png) repeat-x left center; border-top:solid 1px #CCCCCC; text-align:left;}
+	#toolbar .logo{ width:110px; margin-left:10px; display:block; float:left;}
+	#toolbar .loading{ width:102px; height:15px; margin:6px 0; margin-left:20px; background:#F9F9F9; border:solid 1px #000000; display:block; float:left; overflow:hidden;}
+	#toolbar .loading div{ width:100px; position:absolute; color:#FF0000; text-align:center; font-size:12px; line-height:14px;}
+	#toolbar .loading span{ height:13px; border:solid 1px #FFFFFF; background:#0000CC; display:block; overflow:hidden;}

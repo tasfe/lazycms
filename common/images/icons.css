@@ -1,0 +1,50 @@
+/**
+ * +---------------------------------------------------------------------------+
+ * | LL                             LLLL   LL     L   LLLL                 LL  |
+ * | LL                            LL   L  LLL   LL  LL   L               LLL  |
+ * | LL      LLLL   LLLLL  LL  LL  LL      LLLL LLL  LL          LL  LL    LL  |
+ * | LL         LL     LL  LL  LL  LL      L LLL LL  LLLLL       LL  LL    LL  |
+ * | LL      LLLLL    LL    LLLL   LL      L  L  LL   LLLLL      LL  LL    LL  |
+ * | LL     LL  LL   LL     LLLL   LL      L     LL      LL       LLLL     LL  |
+ * | LL     LL  LL  LL       LL    LL   L  L     LL  L   LL       LLLL     LL  |
+ * | LLLLLL  LLLLL  LLLLL    LL     LLLL   L     LL   LLLL         LL     LLLL |
+ * |                        LL                                                 |
+ * |                        LL                                                 |
+ * +---------------------------------------------------------------------------+
+ * | Copyright (c) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * +---------------------------------------------------------------------------+
+ * | 许可协议，请查看源代码中附带的 LICENSE.txt 文件，                         |
+ * | 或者访问 http://www.lazycms.net/ 获得详细信息。                           |
+ * +---------------------------------------------------------------------------+
+ *
+ * 系统图标样式
+ *
+ * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
+ * @author      Lukin <mylukin@gmail.com>
+ * @date        2008-6-20
+ */
+@charset "utf-8";
+/* 16x16 ICONS */
+.icon-16-cpanel		{ background: url(icon/menu-icons.png) no-repeat 2px 0px !important; }
+.icon-16-user		{ background: url(icon/menu-icons.png) no-repeat 2px -37px !important; }
+.icon-16-media		{ background: url(icon/menu-icons.png) no-repeat 2px -73px !important; }
+.icon-16-config		{ background: url(icon/menu-icons.png) no-repeat 2px -107px !important; }
+.icon-16-logout		{ background: url(icon/menu-icons.png) no-repeat 2px -143px !important; }
+.icon-16-info		{ background: url(icon/menu-icons.png) no-repeat 2px -178px !important; }
+.icon-16-home		{ background: url(icon/menu-icons.png) no-repeat 2px -215px !important; }
+.icon-16-help		{ background: url(icon/menu-icons.png) no-repeat 2px -249px !important; }
+.icon-16-category	{ background: url(icon/menu-icons.png) no-repeat 2px -319px !important; }
+.icon-16-trash		{ background: url(icon/menu-icons.png) no-repeat 2px -354px !important; }
+.icon-16-page		{ background: url(icon/menu-icons.png) no-repeat 2px -390px !important; }
+.icon-16-article	{ background: url(icon/menu-icons.png) no-repeat 2px -427px !important; }
+.icon-16-model		{ background: url(icon/menu-icons.png) no-repeat 2px -461px !important; }
+.icon-16-install	{ background: url(icon/menu-icons.png) no-repeat 2px -496px !important; }
+/* 32x32 ICONS */
+.icon-32-user		{ background-image:url(icon-32/user.png) !important; }
+.icon-32-media		{ background-image:url(icon-32/media.png) !important; }
+.icon-32-config		{ background-image:url(icon-32/config.png) !important; }
+.icon-32-install	{ background-image:url(icon-32/install.png) !important; }
+.icon-32-article	{ background-image:url(icon-32/article.png) !important; }
+.icon-32-category	{ background-image:url(icon-32/category.png) !important; }
+.icon-32-model		{ background-image:url(icon-32/model.png) !important; }
+.icon-32-page		{ background-image:url(icon-32/page.png) !important; }

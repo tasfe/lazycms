@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lazycms>
+    <title>内容管理</title>
+    <version>1.0</version>
+    <author>Lukin</author>
+    <email>mylukin@gmail.com</email>
+    <source>http://www.lazycms.net</source>
+
+    
+    <onepage title="单页管理"></onepage>
+    <article title="文章管理"></article>
+    <trash title="回收站管理"></trash>
+    <sort title="分类管理"></sort>
+    <model title="模型管理"></model>
+</lazycms>

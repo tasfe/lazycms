@@ -1,0 +1,58 @@
+/**
+ * +---------------------------------------------------------------------------+
+ * | LL                             LLLL   LL     L   LLLL                 LL  |
+ * | LL                            LL   L  LLL   LL  LL   L               LLL  |
+ * | LL      LLLL   LLLLL  LL  LL  LL      LLLL LLL  LL          LL  LL    LL  |
+ * | LL         LL     LL  LL  LL  LL      L LLL LL  LLLLL       LL  LL    LL  |
+ * | LL      LLLLL    LL    LLLL   LL      L  L  LL   LLLLL      LL  LL    LL  |
+ * | LL     LL  LL   LL     LLLL   LL      L     LL      LL       LLLL     LL  |
+ * | LL     LL  LL  LL       LL    LL   L  L     LL  L   LL       LLLL     LL  |
+ * | LLLLLL  LLLLL  LLLLL    LL     LLLL   L     LL   LLLL         LL     LLLL |
+ * |                        LL                                                 |
+ * |                        LL                                                 |
+ * +---------------------------------------------------------------------------+
+ * | Copyright (c) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * +---------------------------------------------------------------------------+
+ * | 许可协议，请查看源代码中附带的 LICENSE.txt 文件，                         |
+ * | 或者访问 http://www.lazycms.net/ 获得详细信息。                           |
+ * +---------------------------------------------------------------------------+
+ *
+ * 系统公用CSS样式表
+ *
+ * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
+ * @author      Lukin <mylukin@gmail.com>
+ * @date        2008-6-20
+ */
+@charset "utf-8";
+
+/* 按钮样式 */
+button{ letter-spacing:1px; padding:2px 4px; border:1px solid #c6d9e7; height:23px; color:#333333; background:url(buttons-bg.png) repeat-x;line-height:100%; vertical-align:middle; margin-right:6px; }
+
+/* 错误信息 */
+input.error { border:solid 1px #FF0000 !important; background:url(invalid-line.gif) repeat-x left bottom !important;}
+a.tip { padding:0 3px; cursor:help; text-decoration:none; }
+div.jTip { display:none; position:absolute; z-index:100; color:#000; text-align:left; }
+div.jTip-body { border:solid 1px #D4D5AA; padding:5px 5px 2px 5px; background:#FFFFCC; }
+div.jTip-foot { width:10px; height:10px; position:relative; top:-1px; float:left; margin-left:10px; background:url(tip-foot.gif) no-repeat left top; }
+
+/* 浮动层 */
+#poping{ clear:both; display:block; zoom:100%;}
+	#poping .head{ width:98%; padding:6px 1%; height:1.4em; line-height:1.4; clear:both; margin:0 auto; font-weight:bold; background:#f0f0f0 url(panel-gray.gif) repeat-x;border-bottom:1px solid #d7dce2; display:table; zoom:100%;}
+	#poping .head span{ float:left;}
+	#poping .head a{ width:13px; display:block; float:right; text-decoration:none; line-height:1; height:15px; padding:0 1px 0 2px; font-size:14px; border:solid 1px #999999; overflow:hidden; }
+	* html #poping .head a{ width:14px; height:14px !important; padding:2px 1px 0 1px !important; }
+	#poping .head a:hover{ color:#FF6600; border-color:#FF6600;}
+	#poping .body{ width:98%; height:88%; padding:10px 1% 5px 1%; margin:0 auto; display:block; clear:both; line-height:150%; overflow:auto;}
+	#poping .icon { width:70px; height:55px; overflow:hidden; float:left; }
+	#poping .loading { background:url(icon/loading.gif) no-repeat center center;}
+	#poping .success { background:url(icon/info-icons.png) no-repeat 0px -1px;}
+	#poping .error { background:url(icon/info-icons.png) no-repeat 0px -65px; }
+	#poping .tips { background:url(icon/info-icons.png) no-repeat 0 -130px; }
+	
+/* 分页样式 */
+.pages { display:table; }
+.pages a, .pages span { display:block; float:left; background:#fff; border:solid 1px #DEDEDE; padding:1px 3px; margin-right:2px; text-align:center; text-decoration:none;}
+.pages a:hover{ position:relative; line-height:130%; padding:0 5px; font-size:24px; z-index:100; margin:-8px 0 0 -8px; text-decoration:none;}
+.pages a:hover + a{ position:relative; line-height:130%; padding:0 5px; font-size:18px; z-index:90; margin:-4px 0 0 -4px; text-decoration:none;}
+.pages span.active{ color:#990000 !important; font-weight:bold; }
+/*.pages .prev, .pages .next { border:none;}*/
