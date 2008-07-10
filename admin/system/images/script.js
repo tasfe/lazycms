@@ -54,10 +54,10 @@ function toggleShortcut(){
 	if ($.browser.msie && $.browser.version=='6.0') {
 		if (shortcut.height() == 1) {
 			$('body').append('<iframe id="iframeCover" style="height:' + ($(document).height()-10) + 'px;"></iframe>');
-			$('#main').css('z-index',-2);
+			$('#main').css({'z-index':-2,'position':'relative','left':0});
 		} else {
 			$('#iframeCover').remove();
-			$('#main').css('z-index',0);
+			$('#main').css({'z-index':0,'position':'static','left':'auto'});
 		}
 	}
 	// AJAX get xml data

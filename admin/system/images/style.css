@@ -84,7 +84,7 @@ body { height:100%; margin:0; background: #FFF; text-align:center; }
 	#top .menu li a { margin-right:5px; border:solid 1px #c6d9e7; border-bottom:none; display:block; padding:0 10px; background:url(../../../common/images/buttons-bg.png) repeat-x; text-decoration:none; }
 	#top .menu li a:hover { background:#f6f6f6; }
 
-#main{ position:relative; left:0; width:99%; margin:5px auto; text-align:center; border:solid 1px #c6d9e7; }
+#main{ width:99%; margin:5px auto; text-align:center; border:solid 1px #c6d9e7; }
 
 #iframeCover{ width:99%; display:block; position:absolute; top:0; left:0; z-index:-1; filter:mask(); }
 

@@ -222,7 +222,13 @@ function autoTitle(){
 		return this;
 	}
 	$.fn.floatdiv = function(position){
-		var isIE6  = false; if ($.browser.msie && $.browser.version=='6.0') { isIE6=true; }
+		var isIE6  = false;
+		if ($.browser.msie && $.browser.version=='6.0') {
+			//$("html").css("overflow-x","auto").css("overflow-y","hidden");
+			isIE6=true;
+		}
+		// 如果一个页面有多个层带有position:absolute; 的style，则全部都受到影响，和被控制层一起移动。
+		/* $("body").css({height:"100%",overflow:"auto"}); */
 		var width  = $(document).width();
 		var height = $(document).height();
 		return this.each(function(){
