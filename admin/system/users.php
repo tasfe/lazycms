@@ -249,6 +249,7 @@ function lazy_user_edit(){
         }
     }
     $hl = '<form id="form1" name="form1" method="post" action="">';
+    
     $hl.= '<fieldset><legend rel="tab">'.$title.'</legend>';
 
     $hl.= '<p><label>'.L('users/user/add/group').'：</label>';
@@ -274,6 +275,7 @@ function lazy_user_edit(){
     $hl.= '</select></p>';
 
     $hl.= '</fieldset>';
+    
     $hl.= but('save').'<input name="userid" type="hidden" value="'.$userid.'" /></form>';
     print_x($title,$hl);
 }

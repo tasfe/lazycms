@@ -33,7 +33,7 @@
 body { width:99%; display:table; margin:3px; background: #F9FDFF; }
 
 /* tabs */
-#tabs{ display:table; zoom:1; position:relative; bottom:-1px; margin:0 0 0 5px; padding:0; list-style:none; clear:both;}
+#tabs{ width:99%; display:table; zoom:1; position:relative; bottom:-1px; margin:0 0 0 5px; padding:0; list-style:none; clear:both;}
 	#tabs li{ line-height:23px; float:left; margin-right:5px; border:1px solid #c6d9e7; background:url(../../../common/images/buttons-bg.png) repeat-x 0 -2px;}
 	#tabs li a{ padding:0px 10px; display:block; color:#333333;}
 	#tabs li a:hover{ text-decoration:none;}
@@ -41,8 +41,8 @@ body { width:99%; display:table; margin:3px; background: #F9FDFF; }
 	#tabs li.active a{ color:#666666; background:url(menu_selected.png) repeat-x left top;}
 
 #box{ width:100%; display:table; zoom:1; background:#FFFFFF; border:solid 1px #c6d9e7; margin:0 auto; clear:both;}
-	#box fieldset{ border: 1px solid #ccc; margin:0 5px 0px 5px; padding:5px; }
-	#box legend{ font-weight:bold; color:#0B55C4}
+	#box fieldset{ border:1px solid #ccc; margin:0 5px; padding:5px; }
+	#box legend{ font-weight:bold; color:#0B55C4;}
 	#box .table{ width:99.5%; border-collapse:collapse; margin:3px auto; text-align:left;}
 	#box .table th ,
 	#box .table td{ padding:3px; padding-bottom:2px;}
@@ -54,7 +54,7 @@ body { width:99%; display:table; margin:3px; background: #F9FDFF; }
 	#box span label{ width:auto; margin:0px; text-align:left; float:none; display:inline; color:#666666;}
 	#box div.purview{ float:left; }
 	#box p.button{ margin-left:5px;}
-	#box div.but{ width:99.5%; margin:3px auto; }
+	#box div.but{ width:99.5%; margin:0 auto 3px auto; display:table; }
 	#box div.button{ float:left;}
 	#box div.pages{float:right;}
 
