@@ -30,20 +30,30 @@ defined('COM_PATH') or die('Restricted access!');
  * @date        2008-6-18
  */
 return array(
+    /* 需要手动或者安装时设置 */
+    'SITE_BASE'  => '/',
+
     /* 网站设置 */
     'SITE_NAME'  => 'LazyCMS v2.0 演示站',
     'LANGUAGE'   => 'zh-cn',
-    'TIME_ZONE'  => 8,
-    'SITE_BASE'  => '/',
+    'RSS_NUMBER' => 10,
 
     /* 会员设置 */
-    'USER_PARAMS'=> array(
-        'allowReg' => true
-    ),
+    'USER_ALLOW_REG'  => true,
+    'USER_GROUP_REG'  => 3,
+    'USER_ACTIVE_REG' => true,
 
-    /* 数据库设置 */
-    'DSN_CONFIG' => 'sqlite://path=db/LazyCMS.db',//mysqli://root@localhost/lazy/lazy2
-    
+    /* 上传设置 */
+    'UPLOAD_ALLOW_EXT' => 'bmp,png,gif,jpg,jpeg,zip,rar,doc,xls',
+    'UPLOAD_MAX_SIZE'  => 10000000,
+    'UPLOAD_FILE_PATH' => 'images',
+    'UPLOAD_IMAGE_PATH'=> 'images/stories',
+    'UPLOAD_IMAGE_EXT' => 'bmp,png,gif,jpg,jpeg',
+
+    /* 服务器设置 */
+    'TIME_ZONE'  => 8,
+    'DSN_CONFIG' => 'sqlite://path=db/LazyCMS.db',
+
     /* Cookie设置 */
     'COOKIE_DOMAIN' => '',
     'COOKIE_PREFIX' => 'LAZY_',

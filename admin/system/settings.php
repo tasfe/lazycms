@@ -52,13 +52,14 @@ function lazy_default(){
 
     $hl.= '<p><label>'.L('settings/site/language').'：</label>';
     $hl.= '<select name="LANGUAGE" id="LANGUAGE" tip="'.L('settings/site/language').'::'.L('settings/site/language/@tip').'">';
-    $hl.= form_opts('@.language','xml','<option value="#value#"#selected#>#name#</option>');
+    $hl.= form_opts('@.language','xml','<option value="#value#"#selected#>#name#</option>',C('LANGUAGE'));
     $hl.= '</select></p>';
 
-    $hl.= '<p><label>'.L('settings/site/rssfeed').'：</label>';
-    $hl.= '<select name="RSSFEED_NUMBER" id="RSSFEED_NUMBER" tip="'.L('settings/site/rssfeed').'::'.L('settings/site/rssfeed/@tip').'">';
+    $hl.= '<p><label>'.L('settings/site/rssnumber').'：</label>';
+    $hl.= '<select name="RSS_NUMBER" id="RSS_NUMBER" tip="'.L('settings/site/rssnumber').'::'.L('settings/site/rssnumber/@tip').'">';
     foreach (array(5,10,15,20,25,30,35,50,100) as $number) {
-        $hl.= '<option value="'.$number.'">'.$number.L('common/unit/item').'</option>';
+        $selected = C('RSS_NUMBER') == $number ? ' selected="selected"' : null;
+        $hl.= '<option value="'.$number.'"'.$selected.'>'.$number.L('common/unit/item').'</option>';
     }
     $hl.= '</select></p>';
     $hl.= '</fieldset>';
@@ -66,28 +67,28 @@ function lazy_default(){
     $hl.= '<fieldset><legend>'.L('settings/user/@title').'</legend>';
 
     $hl.= '<p><label>'.L('settings/user/allowreg/@title').'：</label><span tip="'.L('settings/user/allowreg/@title').'::'.L('settings/user/allowreg/@tip').'">';
-    $hl.= '<input type="radio" name="USER_PARAMS[allowReg]" id="USER_PARAMS[allowReg][1]" value="true" checked="checked"/><label for="USER_PARAMS[allowReg][1]">'.L('settings/user/allowreg/true').'</label> ';
-    $hl.= '<input type="radio" name="USER_PARAMS[allowReg]" id="USER_PARAMS[allowReg][0]" value="false" /><label for="USER_PARAMS[allowReg][0]">'.L('settings/user/allowreg/false').'</label>';
+    $hl.= '<input type="radio" name="USER_ALLOW_REG" id="USER_ALLOW_REG[1]" value="true"'.((C('USER_ALLOW_REG') == 1) ? ' checked="checked"':null).'/><label for="USER_ALLOW_REG[1]">'.L('settings/user/allowreg/true').'</label> ';
+    $hl.= '<input type="radio" name="USER_ALLOW_REG" id="USER_ALLOW_REG[0]" value="false"'.((C('USER_ALLOW_REG') == 0) ? ' checked="checked"':null).'/><label for="USER_ALLOW_REG[0]">'.L('settings/user/allowreg/false').'</label>';
     $hl.= '</span></p>';
 
     $hl.= '<p><label>'.L('settings/user/group').'：</label>';
-    $hl.= '<select name="USER_PARAMS[groupid]" id="USER_PARAMS[groupid]" tip="'.L('settings/user/group').'::'.L('settings/user/group/@tip').'">';
-    $hl.= System::__group(0,0);
+    $hl.= '<select name="USER_GROUP_REG" id="USER_GROUP_REG" tip="'.L('settings/user/group').'::'.L('settings/user/group/@tip').'">';
+    $hl.= System::__group(0,0,C('USER_GROUP_REG'));
     $hl.= '</select></p>';
 
     $hl.= '<p><label>'.L('settings/user/active/@title').'：</label><span tip="'.L('settings/user/active/@title').'::350::'.L('settings/user/active/@tip').'">';
-    $hl.= '<input type="radio" name="USER_PARAMS[active]" id="USER_PARAMS[active][1]" value="true" checked="checked"/><label for="USER_PARAMS[active][1]">'.L('settings/user/active/true').'</label> ';
-    $hl.= '<input type="radio" name="USER_PARAMS[active]" id="USER_PARAMS[active][0]" value="false" /><label for="USER_PARAMS[active][0]">'.L('settings/user/active/false').'</label>';
+    $hl.= '<input type="radio" name="USER_ACTIVE_REG" id="USER_ACTIVE_REG[1]" value="true"'.((C('USER_ALLOW_REG') == 1) ? ' checked="checked"':null).'/><label for="USER_ACTIVE_REG[1]">'.L('settings/user/active/true').'</label> ';
+    $hl.= '<input type="radio" name="USER_ACTIVE_REG" id="USER_ACTIVE_REG[0]" value="false"'.((C('USER_ALLOW_REG') == 0) ? ' checked="checked"':null).'/><label for="USER_ACTIVE_REG[0]">'.L('settings/user/active/false').'</label>';
     $hl.= '</span></p>';
 
     $hl.= '</fieldset>';
 
     $hl.= '<fieldset><legend>'.L('settings/upload/@title').'</legend>';
-    $hl.= '<p><label>'.L('settings/upload/allowext').'：</label><input tip="'.L('settings/upload/allowext').'::'.L('settings/upload/allowext/@tip').'" class="in3" type="text" name="UPLOAD_PARAMS[allowExt]" id="UPLOAD_PARAMS[allowExt]" value="bmp,png,gif,jpg,jpeg,zip,rar,doc,xls"></p>';
-    $hl.= '<p><label>'.L('settings/upload/maxsize').'：</label><input tip="'.L('settings/upload/maxsize').'::'.L('settings/upload/maxsize/@tip').'" class="in1" type="text" name="UPLOAD_PARAMS[maxSize]" id="UPLOAD_PARAMS[maxSize]" value="10000000"></p>';
-    $hl.= '<p><label>'.L('settings/upload/filepath').'：</label><input tip="'.L('settings/upload/filepath').'::'.L('settings/upload/filepath/@tip').'" class="in2" type="text" name="UPLOAD_PARAMS[filePath]" id="UPLOAD_PARAMS[filePath]" value="images"></p>';
-    $hl.= '<p><label>'.L('settings/upload/imagepath').'：</label><input tip="'.L('settings/upload/imagepath').'::'.L('settings/upload/imagepath/@tip').'" class="in2" type="text" name="UPLOAD_PARAMS[imagePath]" id="UPLOAD_PARAMS[imagePath]" value="images/stories"></p>';
-    $hl.= '<p><label>'.L('settings/upload/imageext').'：</label><input tip="'.L('settings/upload/imageext').'::300::'.L('settings/upload/imageext/@tip').'" class="in2" type="text" name="UPLOAD_PARAMS[imageExt]" id="UPLOAD_PARAMS[imageExt]" value="bmp,png,gif,jpg,jpeg"></p>';
+    $hl.= '<p><label>'.L('settings/upload/allowext').'：</label><input tip="'.L('settings/upload/allowext').'::'.L('settings/upload/allowext/@tip').'" class="in3" type="text" name="UPLOAD_ALLOW_EXT" id="UPLOAD_ALLOW_EXT" value="'.C('UPLOAD_ALLOW_EXT').'"></p>';
+    $hl.= '<p><label>'.L('settings/upload/maxsize').'：</label><input tip="'.L('settings/upload/maxsize').'::'.L('settings/upload/maxsize/@tip').'" class="in1" type="text" name="UPLOAD_MAX_SIZE" id="UPLOAD_MAX_SIZE" value="'.C('UPLOAD_MAX_SIZE').'"></p>';
+    $hl.= '<p><label>'.L('settings/upload/filepath').'：</label><input tip="'.L('settings/upload/filepath').'::'.L('settings/upload/filepath/@tip').'" class="in2" type="text" name="UPLOAD_FILE_PATH" id="UPLOAD_FILE_PATH" value="'.C('UPLOAD_FILE_PATH').'"></p>';
+    $hl.= '<p><label>'.L('settings/upload/imagepath').'：</label><input tip="'.L('settings/upload/imagepath').'::'.L('settings/upload/imagepath/@tip').'" class="in2" type="text" name="UPLOAD_IMAGE_PATH" id="UPLOAD_IMAGE_PATH" value="'.C('UPLOAD_IMAGE_PATH').'"></p>';
+    $hl.= '<p><label>'.L('settings/upload/imageext').'：</label><input tip="'.L('settings/upload/imageext').'::300::'.L('settings/upload/imageext/@tip').'" class="in2" type="text" name="UPLOAD_IMAGE_EXT" id="UPLOAD_IMAGE_EXT" value="'.C('UPLOAD_IMAGE_EXT').'"></p>';
     $hl.= '</fieldset>';
     
     $TIME_ZONE = include_file(COM_PATH.'/data/timezone.php');

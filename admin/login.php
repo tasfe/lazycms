@@ -78,7 +78,7 @@ function lazy_default(){
     $hl.= '<script type="text/javascript"> $(document).ready(function(){ $("#username").focus(); }); </script>';
     $hl.= '</head><body>';
     $hl.= '<form id="login" name="login" method="post" action="login.php?action=check">';
-    $hl.= '<div class="col1">'.L('login/description',array('root'=>C('SITE_BASE'))).'</div>';
+    $hl.= '<div class="col1">'.L('login/description',array('root'=>'../')).'</div>';
     $hl.= '<dl class="col2">';
     $hl.= '<dt>'.L('login/@title').'</dt>';
     $hl.= '<dd><label>'.L('login/name').'</label><input type="text" name="username" id="username" tabindex="1" /></dd>';

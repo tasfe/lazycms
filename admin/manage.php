@@ -81,7 +81,7 @@ function lazy_default(){
         </li>
     </ul>
     <ul class="menu">
-        <li><a href="<?php echo C('SITE_BASE');?>" target="_blank">预览网站</a></li>
+        <li><a href="../" target="_blank">预览网站</a></li>
         <li><a href="logout.php" target="_top" onclick="return confirm('<?php echo L('confirm/logout');?>')">退出登录</a></li>
     </ul>
 </div>

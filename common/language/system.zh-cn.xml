@@ -71,7 +71,7 @@
 	<settings title="全局设置">
 		<site title="网站设置">
 			<sitename tip="输入该网站的名称。">网站名称</sitename>
-			<rssfeed tip="RSS Feed 显示最新的多少条。">RSS Feed</rssfeed>
+			<rssnumber tip="RSS Feed 显示最新的多少条。">RSS Feed</rssnumber>
 			<language tip="网站默认使用的语言包。">界面语言</language>
 		</site>
         <user title="会员设置">
