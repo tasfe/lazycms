@@ -61,10 +61,16 @@ function toggleShortcut(){
 		}
 	}
 	// AJAX get xml data
+	var XML = 'system/data/' + $.cookie('LAZY_[username]') + '/shortcut.xml';
 	$.ajax({
 		dataType : 'xml',
 		ifModified : true,
-		url : 'system/data/admin/shortcut.xml',
+		url : XML,
+		error: function(){
+			alert('XML Not Found!'); 
+			$('#top div.shortcut a:first').toggleClass('active');
+			shortcut.slideToggle('fast');
+		},
 		success : function(xml){
 			$('div.body',shortcut).empty();
 			// Parser XML DATA
