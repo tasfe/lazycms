@@ -66,8 +66,8 @@ function toggleShortcut(){
 		dataType : 'xml',
 		ifModified : true,
 		url : XML,
-		error: function(){
-			alert('XML Not Found!'); 
+		error: function(data,msg){
+			if (msg!='error') {return ;} alert('XML Not Found!'); 
 			$('#top div.shortcut a:first').toggleClass('active');
 			shortcut.slideToggle('fast');
 		},
