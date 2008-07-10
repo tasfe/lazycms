@@ -86,6 +86,7 @@ function lazy_default(){
     </ul>
 </div>
 
+
 <iframe src="about:blank" id="main" name="main" width="99%" marginwidth="0" height="510" marginheight="0" scrolling="no" frameborder="0"></iframe>
 
 <div id="footer"><a href="http://www.lazycms.net" target="_blank">Copyright &copy; LazyCMS.net All Rights Reserved.</a></div>
