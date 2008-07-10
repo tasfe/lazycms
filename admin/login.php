@@ -56,7 +56,7 @@ function lazy_check(){
             Cookie::set('language',$_USER['language'],$cookie);
             // 输出登录成功的信息
             echo_json(array(
-                'text'	=> L('login/success'),
+                'text'  => L('login/success'),
                 'sleep' => 3,
                 'url'   => 'manage.php',
             ),1);
@@ -77,7 +77,7 @@ function lazy_default(){
     $hl.= '<script type="text/javascript" src="../common/js/jquery.lazycms.js?ver=1.0"></script>';
     $hl.= '<script type="text/javascript"> $(document).ready(function(){ $("#username").focus(); }); </script>';
     $hl.= '</head><body>';
-    $hl.= '<form id="login" name="login" method="post" action="login.php?action=check" onsubmit="return $(this).ajaxSubmit();">';
+    $hl.= '<form id="login" name="login" method="post" action="login.php?action=check">';
     $hl.= '<div class="col1">'.L('login/description',array('root'=>C('SITE_BASE'))).'</div>';
     $hl.= '<dl class="col2">';
     $hl.= '<dt>'.L('login/@title').'</dt>';
@@ -98,7 +98,7 @@ function lazy_default(){
     $hl.= '<option value="default">'.L('common/default').'</option>';
     $hl.= form_opts('@.language','xml','<option value="#value#"#selected#>#name#</option>');
     $hl.= '</select>';
-    $hl.= '<dd><button type="submit" tabindex="3">'.L('login/submit').'</button> <button type="reset">'.L('common/reset').'</button></dd>';
+    $hl.= '<dd><button type="submit" onclick="return $(this.form).ajaxSubmit();" tabindex="3">'.L('login/submit').'</button> <button type="reset">'.L('common/reset').'</button></dd>';
     $hl.= '</dl>';
     $hl.= '</form></body></html>';
     echo($hl);

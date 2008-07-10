@@ -18,10 +18,10 @@
   </p></form>
   <?php
 if (isset($_POST['title'])) {
-	$title = rawurlencode($_POST['title']);
-	$content = rawurlencode($_POST['content']);
-	$out = file_get_contents("http://keyword.discuz.com/related_kw.html?ics=utf-8&ocs=utf-8&title={$title}&content={content}");
-	echo htmlspecialchars($out);
+    $title = rawurlencode($_POST['title']);
+    $content = rawurlencode($_POST['content']);
+    $out = file_get_contents("http://keyword.discuz.com/related_kw.html?ics=utf-8&ocs=utf-8&title={$title}&content={content}");
+    echo htmlspecialchars($out);
 }
 ?>
 

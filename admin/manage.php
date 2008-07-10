@@ -47,7 +47,7 @@ function lazy_default(){
     <div id="version">Version: <span><?php echo LAZY_VERSION;?></span></div>
     <div class="shortcut"><a href="javascript:;" onclick="toggleShortcut();"><img src="../common/images/icon/fav.png" /></a><a href="javascript:;" onclick="addShortcut()"><img src="../common/images/icon/fav-add.png" /></a></div>
     <ul id="menu">
-		<li><span>系统管理<b class="down-arrow"></b></span>
+        <li><span>系统管理<b class="down-arrow"></b></span>
             <ul>
                 <li><a href="manage.php" class="icon-16-cpanel" target="_top">控制面板</a></li>
                 <li class="hr"></li>
@@ -79,7 +79,7 @@ function lazy_default(){
                 <li><a href="system/sysinfo.php" class="icon-16-info">系统信息</a></li>
             </ul>
         </li>
-	</ul>
+    </ul>
     <ul class="menu">
         <li><a href="<?php echo C('SITE_BASE');?>" target="_blank">预览网站</a></li>
         <li><a href="logout.php" target="_top" onclick="return confirm('<?php echo L('confirm/logout');?>')">退出登录</a></li>

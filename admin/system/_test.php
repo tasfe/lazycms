@@ -18,7 +18,7 @@
  * | 或者访问 http://www.lazycms.net/ 获得详细信息。                           |
  * +---------------------------------------------------------------------------+
  */
-require '../global.php';
+require '../../global.php';
 /**
  * 退出登陆
  *
@@ -27,11 +27,19 @@ require '../global.php';
  * @date        2008-6-25
  */
 // lazy_default *** *** www.LazyCMS.net *** ***
-function lazy_default(){ 
-    // 清空cookie
-    Cookie::delete('username');
-    Cookie::delete('userpass');
-    Cookie::delete('language');
-    // 跳转到登录页
-    redirect('login.php');
+function lazy_default(){
+    $username = isset($_POST['username']) ? $_POST['username'] : null;
+    
+    $val = new Validate();
+    if ($val->method()) {
+        $val->check('username|1|'.L('users/user/check/name').'|1-30');
+        if ($val->isVal()) {
+            var_dump($val->fetch());exit;
+        }
+    }
+
+    $hl = '<form id="form1" name="form1" method="post" action="">';
+    $hl.= '<p><label>'.L('users/user/add/name').'：</label><input tip="'.L('users/user/add/name').'::'.L('users/user/add/name/@tip').'" class="in2" type="text" name="username" id="username" value="'.$username.'" /></p>';
+    $hl.= but('save').'</form>';
+    print_x('test',$hl);
 }

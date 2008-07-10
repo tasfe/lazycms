@@ -101,18 +101,18 @@ function autoTitle(){
 	}
 	$.fn.apply = function(){
 		if ($('input[@name=___method]').is('input')==false) {
-			$(this).append('<input name="___method" type="hidden" value="apply" />');
+			this.append('<input name="___method" type="hidden" value="apply" />');
 		}
-		$(document).data('___method','apply'); $(this).ajaxSubmit();
+		return this.data('___method','apply').ajaxSubmit();
 	}
 	$.fn.save = function(){
 		$('input[@name=___method]').remove();
-		$(document).data('___method','submit'); $(this).ajaxSubmit();
+		return this.data('___method','submit').ajaxSubmit();
 	}
     // 封装 ajaxSubmit
 	$.fn.ajaxSubmit = function(){
-		var form = $(this);
-		var method = $(document).data('___method');
+		var form = this;
+		var method = this.data('___method');
 		var submit = $('button.' + method,form);
 		// 先释放绑定的所有事件，清除错误样式
 		$('input.error').unbind().toggleClass('error');
@@ -129,7 +129,7 @@ function autoTitle(){
 			url: url,
 			type: form.attr('method').toUpperCase(),
 			data: form.serializeArray(),
-			error: function(){
+			error: function(data,msg){
 				// 输出错误
 				$.ajax({
 					cache: false,
@@ -143,9 +143,9 @@ function autoTitle(){
 			},
 			success: function(data){
 				if (data.length>0) {
-					$(form).error(data);
+					form.error(data);
 				} else {
-					$(form).ajaxTip(data);
+					form.ajaxTip(data);
 					if (typeof data.url != 'undefined' && method != 'apply') {
 						if (typeof data.sleep == 'undefined') { data.sleep = 0; }
 						window.setTimeout("self.location.href = '" + data.url + "';",data.sleep*1000);
@@ -185,11 +185,11 @@ function autoTitle(){
 		for (var i=0;i<error.length;i++) {
 			$('#'+error[i].id).unbind().attr('error',error[i].text).addClass('error');
 		}
-		$(this).tips('error','input.error');
+		this.tips('error','input.error');
 		return this;
 	};
 	$.fn.tips = function(attr,selector){
-		var $this = $(this);
+		var $this = this;
 		$(selector,this).mouseover(function(){
 			if (this.type=='text' || this.type=='password') {
 				$(this).focus();

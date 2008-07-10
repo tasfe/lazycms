@@ -283,7 +283,7 @@ abstract class DB {
     static function quoteInto($sql, $bind) {
         // 替换单一占位符
         if (!is_array($bind) && strpos($sql,'?')!==false) {
-			return preg_replace('/\?/',self::quote($bind),$sql,1);
+            return preg_replace('/\?/',self::quote($bind),$sql,1);
         }
         // 替换占位符
         if (is_array($bind)) {
