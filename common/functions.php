@@ -667,8 +667,16 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
         $function  = isset($t['function']) ? $t['function'] : null;
         $traceInfo.= '['.$time.'] '.$file.' ('.$line.') ';
         $traceInfo.= $class.$type.$function.'(';
-        if (!empty($args)) {
-            $traceInfo.= implode(', ', $args);
+        if (is_array($args)) {
+            $arrs = array();
+            foreach ($args as $v) {
+                if (is_object($v)) {
+                    $arrs[] = implode(' ',get_object_vars($v));
+                } else {
+                    $arrs[] = $v;
+                }
+            }
+            $traceInfo.= implode(', ',$arrs);
         }
         $traceInfo.=")\n";
     }

@@ -30,21 +30,24 @@ class lazy_sqlite extends DB{
     // connect *** *** www.LazyCMS.net *** ***
     public function connect(){
         if ($this->_conn) { return $this->_conn; }
-        // 连接数据库
-        if (function_exists('sqlite_open')) {
-            $this->_conn = @sqlite_open($this->config('db'),0666,$error);
-        } else {
-            trigger_error(L('error/db/nodbext',array('name'=>$this->config('scheme'))));
-        }
-        // 验证连接是否正确
-        if (!$this->_conn) {
-            trigger_error(L('error/db/nolink'));
+        if (file_exists($this->config('db'))) {
+            // 连接数据库
+            if (function_exists('sqlite_open')) {
+                $this->_conn = sqlite_open($this->config('db'),0666,$error);
+            } else {
+                trigger_error(L('error/db/nodbext',array('name'=>$this->config('scheme'))));
+            }
         }
         return $this->_conn;
     }
     // select_db *** *** www.LazyCMS.net *** ***
     public function select_db(){
-        return true;
+        // 验证连接是否正确
+        if (!file_exists($this->config('db'))) {
+            trigger_error(L('error/db/nolink'));
+        } else {
+            return true;
+        }
     }
 
     // execute *** *** www.LazyCMS.net *** ***

@@ -28,7 +28,10 @@ require 'global.php';
  */
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){ 
-    $db = get_conn();
-    $db->batQuery(load_file(LAZY_PATH.'/lazy2_sqlite.sql'));
+    $db = DB::factory(C('DSN_CONFIG'));
+    if (sqlite_open($db->getName())) {
+
+        $db->batQuery(load_file(LAZY_PATH.'/lazy2_sqlite.sql'));
+    }
     echo 'OK!';
 }

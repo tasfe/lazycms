@@ -168,6 +168,11 @@ abstract class DB {
         return $this->_conn;
     }
 
+    // getName *** *** www.LazyCMS.net *** ***
+    public function getName(){
+        return $this->config('db');
+    }
+
     // max *** *** www.LazyCMS.net *** ***
     public function max($l1,$l2){
         // $l1:field, $l2:table
