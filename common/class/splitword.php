@@ -73,30 +73,32 @@ class SplitWord{
 
         for($i=0;$i<$len;$i++) {
             $char = cnsubstr($string,$i,1);
-            if (in_array($char,$this->sign)) {
+            $cnTmpStr = trim($cnTmpStr);
+            $enTmpStr = trim($enTmpStr);
+            if (isset($this->sign[$char])) {
                 // 一连串的中文放入待分词的词组
                 if ($cnTmpStr != "") {
                     // 遇到标点了,根据设置的标点断句最短的词组长度判断是否直接分词
-                    if (len(trim($cnTmpStr)) <= $this->minLen) {
-                        $substring[] = array(trim($cnTmpStr),'1');
+                    if (len($cnTmpStr) <= $this->minLen) {
+                        $substring[] = array($cnTmpStr,'1');
                     } else {
-                        $substring[] = array(trim($cnTmpStr),'0');
+                        $substring[] = array($cnTmpStr,'0');
                     }
                     $cnTmpStr = "";
                 }
                 // 一连串的英语字母或数字可以直接返回分词结果
                 if ($enTmpStr != "") {
-                    $substring[] = array(trim($enTmpStr),'1');
+                    $substring[] = array($enTmpStr,'1');
                     $enTmpStr = "";
                 }
-            } else if(in_array($char,$this->enChar)) {
+            } else if(isset($this->enChar[$char])) {
                 // 遇到英文或数字了,可以给中文句子断句了
                 if ($cnTmpStr != "") {
                     // 遇到标点了,根据设置的标点断句最短的词组长度判断是否直接分词
-                    if(len(trim($cnTmpStr)) <= $this->minLen) {
-                        $substring[] = array(trim($cnTmpStr),'1');
+                    if(len($cnTmpStr) <= $this->minLen) {
+                        $substring[] = array($cnTmpStr,'1');
                     } else {
-                        $substring[] = array(trim($cnTmpStr),'0');
+                        $substring[] = array($cnTmpStr,'0');
                     }
                     $cnTmpStr = "";
                 }
@@ -104,22 +106,23 @@ class SplitWord{
             } else {
                 // 遇到中文了,可以给英文句子或数字断句了
                 if ($enTmpStr != "") { 
-                    $substring[] = array(trim($enTmpStr),'1');
+                    $substring[] = array($enTmpStr,'1');
                     $enTmpStr = "";
                 }
                 $cnTmpStr.= $char;
             }
         }
+        $cnTmpStr = trim($cnTmpStr); $enTmpStr = trim($enTmpStr);
         // 追加没有添加到子句中的中英文句子
         if ($cnTmpStr != "") {
             // 要判断一下后面没有英文词组,这样句子是在没有标点符号的情况下结束了
-            if ($enTmpStr == "" && len(trim($cnTmpStr)) <= $this->minLen) {
-                $substring[] = array(trim($cnTmpStr),'1');
+            if ($enTmpStr == "" && len($cnTmpStr) <= $this->minLen) {
+                $substring[] = array($cnTmpStr,'1');
             } else {
-                $substring[] = array(trim($cnTmpStr),'0');
+                $substring[] = array($cnTmpStr,'0');
             }
         }
-        if ($enTmpStr != "") { $substring[] = array(trim($enTmpStr),'1'); }
+        if ($enTmpStr != "") { $substring[] = array($enTmpStr,'1'); }
         return $substring;
     }
     // getWord *** *** www.LazyCMS.net *** ***
@@ -177,7 +180,7 @@ class SplitWord{
                 
                 if(!$bFind) {
                     // 当前单个字无法匹配,而且它是高频词
-                    if (in_array($sub_str,$this->highFreq)) {
+                    if (isset($this->highFreq[$sub_str])) {
                         // 临时字符串中只有一个字,遇到高频词可以进行断句,所以要判断一下临时队列
                         if (len($tmpStr) ==1 && !$saveSingle) {
                             $tmpStr = ""; //清空它
