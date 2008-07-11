@@ -37,13 +37,46 @@ function lazy_default(){
     check_login('settings'); require_file('common.php');
     $val = new Validate();
     if ($val->method()) {
-        $val->check('SITE_NAME|0|'.L('settings/check/sitename'));
+        $DSN_CONFIG = isset($_POST['DSN_CONFIG']) ? $_POST['DSN_CONFIG'] : null;
+        $val->check('SITE_NAME|0|'.L('settings/check/sitename'))
+            ->check('UPLOAD_ALLOW_EXT|0|'.L('settings/check/allowext').';UPLOAD_ALLOW_EXT|validate|'.L('settings/check/errorext').'|^[\w\,]+$')
+            ->check('UPLOAD_MAX_SIZE|0|'.L('settings/check/maxsize').';UPLOAD_MAX_SIZE|validate|'.L('settings/check/maxsize1').'|2')
+            ->check('UPLOAD_FILE_PATH|0|'.L('settings/check/filepath').';UPLOAD_FILE_PATH|5|'.L('settings/check/errorpath'))
+            ->check('UPLOAD_IMAGE_PATH|0|'.L('settings/check/imagepath').';UPLOAD_IMAGE_PATH|5|'.L('settings/check/errorpath'))
+            ->check('UPLOAD_IMAGE_EXT|0|'.L('settings/check/imageext').';UPLOAD_IMAGE_EXT|validate|'.L('settings/check/errorext').'|^[\w\,]+$')
+            ->check('DSN_CONFIG|0|'.L('settings/check/dsnconfig').';DSN_CONFIG|3|'.L('settings/check/dsnconfig1').'|'.validate($DSN_CONFIG,'^((\w+):\/\/path\=(.+)$)|(^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@(\w+)(:(\d+))?(\/(\w+)\/(\w+)|\/(\w+))$)'))
+            ;
         if ($val->isVal()) {
             $val->out();
         } else {
-            echo_json(array(
-                'text' => '保存成功',
-            ),1);
+            // 读取 config.php
+            $config = load_file(COM_PATH.'/config.php');
+            $rs     = array();
+            // 定义要获取的 input name
+            $fields = array(
+                'SITE_NAME',
+                'LANGUAGE',
+                'RSS_NUMBER',
+                'USER_ALLOW_REG',
+                'USER_GROUP_REG',
+                'USER_ACTIVE_REG',
+                'UPLOAD_ALLOW_EXT',
+                'UPLOAD_MAX_SIZE',
+                'UPLOAD_FILE_PATH',
+                'UPLOAD_IMAGE_PATH',
+                'UPLOAD_IMAGE_EXT',
+                'TIME_ZONE',
+                'DSN_CONFIG'
+            );
+            foreach ($fields as $field) {
+                $data = isset($_POST[$field]) ? $_POST[$field] : C($field);
+                if ($data!='true' && $data!='false' && !is_numeric($data)) {
+                    $data = "'{$data}'";
+                }
+                $config = preg_replace('/(\''.$field.'\'( |\t)*\=\>( |\t)*)((true|false|null|[-\d]+)|\'.+\'),/ie','\'\\1\'.$data.\',\'',$config);
+            }
+            save_file(COM_PATH.'/config.php',$config);
+            echo_json(L('settings/success'),1);
         }
     }
     $hl = '<form id="form1" name="form1" method="post" action="">';
@@ -102,7 +135,7 @@ function lazy_default(){
     }
     $hl.= '</select></p>';
 
-    $hl.= '<p><label>'.L('settings/server/dsnconfig').'：</label><input tip="'.L('settings/server/dsnconfig').'::300::'.h2encode(ubbencode(L('settings/server/dsnconfig/@tip'))).'" class="in4" type="text" name="DSN_CONFIG" id="DSN_CONFIG" value="'.C('DSN_CONFIG').'">&nbsp;<img src="../../common/images/icon/help.png" tip="'.L('settings/server/dsnformat').'::400::'.h2encode(ubbencode(L('settings/server/dsnformat/@tip'))).'"/></p>';
+    $hl.= '<p><label>'.L('settings/server/dsnconfig').'：</label><input tip="'.L('settings/server/dsnconfig').'::300::'.h2encode(ubbencode(L('settings/server/dsnconfig/@tip'))).'" class="in4" type="text" name="DSN_CONFIG" id="DSN_CONFIG" value="'.C('DSN_CONFIG').'">&nbsp;<img src="../../common/images/icon/help.png" tip="'.L('settings/server/dsnformat').'::400::'.h2encode(ubbencode(L('settings/server/dsnformat/@tip'))).'" class="os"/></p>';
 
     $hl.= '</fieldset>';
 

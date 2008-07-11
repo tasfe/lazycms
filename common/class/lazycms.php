@@ -35,14 +35,10 @@ abstract class LazyCMS{
         if (!defined('E_STRICT')) { define('E_STRICT', 2048); }
         // 加载惯例配置文件
         C(include_file(COM_PATH.'/config.php'));
-        // 加载用户自定义配置
-        if (is_file(COM_PATH.'/../config.php')) {
-            C(include_file(COM_PATH.'/../config.php'));
-        }
         // 设置错误级别
         ini_set('display_errors',true);
-        error_reporting(E_ALL & ~E_NOTICE);
-        //error_reporting(E_ALL);
+        //error_reporting(E_ALL & ~E_NOTICE);
+        error_reporting(E_ALL);
         // 解析魔术引号
         set_magic_quotes_runtime(0);
         if (get_magic_quotes_gpc()) {

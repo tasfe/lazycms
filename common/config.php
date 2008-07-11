@@ -58,4 +58,3 @@ return array(
     'COOKIE_DOMAIN' => '',
     'COOKIE_PREFIX' => 'LAZY_',
 );
-?>

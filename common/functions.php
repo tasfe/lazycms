@@ -434,7 +434,7 @@ function validate($l1,$l2){
     // $l1:str, $l2:类型
     switch((string)$l2){
         case '0' : // 数字，字母，逗号，杠，下划线，[，]
-            $l3 = '^[a-zA-Z0-9\,\/\-\_\[\]]+$';
+            $l3 = '^[\w\,\/\-\[\]]+$';
             break;
         case '1' : // 字母
             $l3 = '^[A-Za-z]+$';
@@ -443,7 +443,7 @@ function validate($l1,$l2){
             $l3 = '^\d+$';
             break;
         case '3' : // 字母，数字，下划线，杠
-            $l3 = '^[A-Za-z0-9\_\-]+$';
+            $l3 = '^[\w\-]+$';
             break;
         case '4' : // Email
             $l3 = '^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$';
@@ -452,7 +452,7 @@ function validate($l1,$l2){
             $l3 = '^(http|https|ftp):(\/\/|\\\\)(([\w\/\\\+\-~`@:%])+\.)+([\w\/\\\.\=\?\+\-~`@\':!%#]|(&amp;)|&)+';
             break;
         case '6' : // 
-            $l3 = '^[0-9\,\.]+$';
+            $l3 = '^[\d\,\.]+$';
             break;
         case '7' : // 图片连接 http://www.example.com/xxx.jpg
             $l4 = str_replace(',','|',C('UPFILE_SUFFIX'));
@@ -565,9 +565,9 @@ function check_user($l1=null,$l2=null){
 
 // check_login *** *** www.LazyCMS.net *** ***
 function check_login($l1=null,$l2='../logout.php'){
-    if ($_USER = get_user($l1)) { 
-        return $_USER;
-    } else {
+    $_USER = get_user($l1);
+    if ($_USER === -1) {
+        // 没有权限，执行相应的提示，而不是进行跳转
         if ($_SERVER['REQUEST_METHOD']=='POST'){
             // ajax方式输出错误
             echo_json(array(
@@ -579,6 +579,7 @@ function check_login($l1=null,$l2='../logout.php'){
             redirect($l2);
         }
     }
+    return $_USER;
 }
 
 // get_user *** *** www.LazyCMS.net *** ***
@@ -632,10 +633,12 @@ function get_user($l1=null,$l2=null){
             }
         } else {
             if ((string)$userpass == (string)$rs['userpass']) {
-                // 需要验证
                 if (!empty($purview)) {
                     if (instr($rs['purview'],$purview)) {
                         return $rs;
+                    } else {
+                        // 没有权限返回 -1
+                        return -1;
                     }
                 } else {
                     return $rs;
@@ -705,26 +708,49 @@ function ubbencode($l1){
     if (strlen($l1)==0) {return ;}
     $I1 = h2encode($l1);
     if (strpos($I1,' ')!==false) { $I1 = str_replace(' ','&nbsp;',$I1); }
-    $I1 = preg_replace('/\r\n|\n|\r/','<br/>',$I1);
-    $I1 = preg_replace('/\[url\](.+?)\[\/url]/i','<a href="$1">$1</a>',$I1);
-    $I1 = preg_replace('/\[url\=([^\]]+)](.+?)\[\/url]/i','<a href="$1">$2</a>',$I1);
-    $I1 = preg_replace('/\[img\](.+?)\[\/img]/i','<img src="$1" />',$I1);
-    $I1 = preg_replace('/\[b\](.+?)\[\/b]/i','<b>$1</b>',$I1);
-    $I1 = preg_replace('/\[strong\](.+?)\[\/strong]/i','<strong>$1</strong>',$I1);
-    $I1 = preg_replace('/\[i\](.+?)\[\/i]/i','<i>$1</i>',$I1);
-    $I1 = preg_replace('/\[u\](.+?)\[\/u]/i','<u>$1</u>',$I1);
-    $I1 = preg_replace('/\[s\](.+?)\[\/s]/i','<strike>$1</strike>',$I1);
-    $I1 = preg_replace('/\[sub\](.+?)\[\/sub]/i','<sub>$1</sub>',$I1);
-    $I1 = preg_replace('/\[sup\](.+?)\[\/sup]/i','<sup>$1</sup>',$I1);
-    $I1 = preg_replace('/\[color\=([^\]]+)](.+?)\[\/color]/i','<span style="color: $1">$2</span>',$I1);
-    $I1 = preg_replace('/\[bgcolor\=([^\]]+)](.+?)\[\/bgcolor]/i','<span style="background-color: $1">$2</span>',$I1);
-    $I1 = preg_replace('/\[font\=([^\]]+)](.+?)\[\/font]/i','<span style="font-family: $1">$2</span>',$I1);
-    $I1 = preg_replace('/\[size\=([^\]]+)](.+?)\[\/size]/i','<span style="font-size: $1">$2</span>',$I1);
-    $I1 = preg_replace('/\[align\=([^\]]+)](.+?)\[\/align]/i','<div style="text-align: $1">$2</div>',$I1);
-    $I1 = preg_replace('/\[p\](.+?)\[\/p]/i','<p>$1</p>',$I1);
-    $I1 = preg_replace('/\[div\](.+?)\[\/div]/i','<div>$1</div>',$I1);
-    $I1 = preg_replace('/\[pre\](.+?)\[\/pre]/i','<pre>$1</pre>',$I1);
-    $I1 = preg_replace('/\[address\](.+?)\[\/address]/i','<address>$1</address>',$I1);
+    $I1 = preg_replace(array(
+        '/\r\n|\n|\r/s',
+        '/\[url\](.+?)\[\/url]/i',
+        '/\[url\=([^\]]+)](.+?)\[\/url]/i',
+        '/\[img\](.+?)\[\/img]/i',
+        '/\[b\](.+?)\[\/b]/i',
+        '/\[strong\](.+?)\[\/strong]/i',
+        '/\[i\](.+?)\[\/i]/i',
+        '/\[u\](.+?)\[\/u]/i',
+        '/\[s\](.+?)\[\/s]/i',
+        '/\[sub\](.+?)\[\/sub]/i',
+        '/\[sup\](.+?)\[\/sup]/i',
+        '/\[color\=([^\]]+)](.+?)\[\/color]/i',
+        '/\[bgcolor\=([^\]]+)](.+?)\[\/bgcolor]/i',
+        '/\[font\=([^\]]+)](.+?)\[\/font]/i',
+        '/\[size\=([^\]]+)](.+?)\[\/size]/i',
+        '/\[align\=([^\]]+)](.+?)\[\/align]/i',
+        '/\[p\](.+?)\[\/p]/i',
+        '/\[div\](.+?)\[\/div]/i',
+        '/\[pre\](.+?)\[\/pre]/i',
+        '/\[address\](.+?)\[\/address]/i',
+    ),array(
+        '<br/>',
+        '<a href="$1">$1</a>',
+        '<a href="$1">$2</a>',
+        '<img src="$1" />',
+        '<b>$1</b>',
+        '<strong>$1</strong>',
+        '<i>$1</i>',
+        '<u>$1</u>',
+        '<strike>$1</strike>',
+        '<sub>$1</sub>',
+        '<sup>$1</sup>',
+        '<span style="color: $1">$2</span>',
+        '<span style="background-color: $1">$2</span>',
+        '<span style="font-family: $1">$2</span>',
+        '<span style="font-size: $1">$2</span>',
+        '<div style="text-align: $1">$2</div>',
+        '<p>$1</p>',
+        '<div>$1</div>',
+        '<pre>$1</pre>',
+        '<address>$1</address>',
+    ),$I1);
     for ($i=1; $i<7; $i++) {
         $I1 = preg_replace('/\[h'.$i.'\](.+?)\[\/h'.$i.']/i','<h'.$i.'>$1</h'.$i.'>',$I1);
     }

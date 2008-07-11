@@ -124,7 +124,7 @@ abstract class DB {
         $scheme = strtolower(substr($DSN,0,strpos($DSN,':')));
         if ($scheme=='sqlite') {
             // DSN format: sqlite://db=LazyCMS.db
-            if (preg_match('/^(.+):\/\/path\=(.+)/i',trim($DSN),$info)){
+            if (preg_match('/^(\w+):\/\/path\=(.+)$/i',trim($DSN),$info)){
                 $info[2] = trim($info[2]);
                 if (strncmp($info[2],'/',1)!==0 && substr($info[2],1,2)!==':/'){
                     if ($pos = strrpos($info[2],'/')) {
@@ -147,7 +147,7 @@ abstract class DB {
             }
         } else {
             // DSN format: mysql://root:123456@localhost:3306/lazy/lazycms
-            if (preg_match('/^(.+):\/\/(.[^:]+)(:(.[^@]+)?)?@([a-z0-9\-\.]+)(:(\d+))?(\/(\w+)\/(\w+)|\/(\w+))/i',trim($DSN),$info)) {
+            if (preg_match('/^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@(\w+)(:(\d+))?(\/(\w+)\/(\w+)|\/(\w+))$/i',trim($DSN),$info)) {
                 return array(
                     'host'  => $info[5],
                     'port'  => $info[7],

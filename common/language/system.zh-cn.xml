@@ -99,7 +99,18 @@
 		</server>
         <check>
             <sitename>网站名称不能为空</sitename>
+            <allowext>必须填写允许上传的文件类型</allowext>
+            <errorext>格式错误，以英文“,”逗号分隔。</errorext>
+            <maxsize>不能为空，如不限制，则填“0”。</maxsize>
+            <maxsize1>格式错误，必须是数字。</maxsize1>
+            <filepath>上传的文件路径不能为空</filepath>
+            <imagepath>上传的图片路径不能为空</imagepath>
+            <errorpath>路径格式错误，不支持特殊符号，不能以/开始或结束</errorpath>
+            <imageext>必须填写允许上传的图片类型</imageext>
+            <dsnconfig>数据库连接字符串不能为空</dsnconfig>
+            <dsnconfig1>数据库连接字符串格式不正确</dsnconfig1>
         </check>
+        <success>设置保存成功。</success>
 	</settings>
     
     <users title="用户管理">

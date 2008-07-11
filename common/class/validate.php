@@ -79,6 +79,17 @@ class Validate {
                 if ($db->result($l6) > 0) { $I1 = $l4; }
                 unset($db);
                 break;
+            case '5' :
+                $l6 = array("'","\\",":","*","?","<",">","|",";",",");
+                if (instr("/,.",substr($l2,-1)) || instr("/,.",substr($l2,0,1))){
+                    $I1 = $l4; break;
+                }
+                foreach ($l6 as $v) {
+                    if (strpos($l2,$v)!==false) {
+                        $I1 = $l4; break;
+                    }
+                }
+                break;
             default :
                 if (!validate($l2,$l5)) { $I1 = $l4; }
                 break;
