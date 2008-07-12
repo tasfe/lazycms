@@ -97,11 +97,12 @@ function lazy_default(){
             $hl.= '<option value="'.$val.'">'.$val.'</option>';
         }
     } else {
-        $hl.= '<option value="">-- '.L('shortcut/add/create1').' --</option>';
+        $hl.= '<option value="">-- '.L('shortcut/add/create').' --</option>';
     }
-    $hl.= '</select>&nbsp;<button type="button" onclick="toggleShortcutSort()">'.L('shortcut/add/create').'</button></p>';
+    $hl.= '</select>&nbsp;<button type="button" onclick="return confirm(\''.L('confirm/delete').'\') ? deleteShortcutSort():false;">'.L('shortcut/button/delete').'</button><button type="button" onclick="toggleShortcutSort()">'.L('shortcut/button/create').'</button></p>';
     $hl.= '<p class="tr"><button type="button">'.L('shortcut/button/add').'</button>&nbsp;<button type="button" onclick="toggleAddShortcut()">'.L('shortcut/button/cancel').'</button></p>';
-    $hl.= '<dl><dt><strong>'.L('shortcut/add/create').'</strong><a href="javascript:;" onclick="toggleShortcutSort();">×</a></dt><dd>';
+
+    $hl.= '<dl><dt><strong>'.L('shortcut/add/create').'</strong><a href="javascript:;" onclick="toggleShortcutSort()">×</a></dt><dd>';
     $hl.= '<p><label>'.L('shortcut/add/sortname').'：</label><input class="in2" type="text" name="ShortcutSortName" id="ShortcutSortName" error="'.L('shortcut/check/sortname').'"></p>';
     $hl.= '<p class="tr"><button type="button" onclick="submitShortcutSort()">'.L('shortcut/button/add').'</button>&nbsp;<button type="button" onclick="toggleShortcutSort()">'.L('shortcut/button/cancel').'</button></p>';
     $hl.= '</dd></dl>';

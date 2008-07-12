@@ -49,8 +49,12 @@ function toggleAddShortcut(){
 }
 // toggleShortcutSort *** *** www.LazyCMS.net *** ***
 function toggleShortcutSort(){
-	$('#ShortcutSortName').val('');
-	$('#addShortcut dl').toggle('fast');
+	$('#ShortcutSortName').val('').unbind().removeClass('error');
+	$('.jTip').remove(); $('#addShortcut dl').toggle('fast');
+}
+// deleteShortcutSort *** *** www.LazyCMS.net *** ***
+function deleteShortcutSort(){
+	$('#ShortcutSort option[@selected]').remove();
 }
 // submitShortcutSort *** *** www.LazyCMS.net *** ***
 function submitShortcutSort(){
@@ -60,8 +64,13 @@ function submitShortcutSort(){
 			$('#addShortcut dl').tips('error','input.error');
 		} else {
 			$('#ShortcutSortName').removeClass('error');
-			$('#ShortcutSort option:last').clone().val(SortName).html(SortName).attr('selected',true).appendTo('#ShortcutSort');
-			toggleShortcutSort();
+			var option = $('#ShortcutSort option:last');
+				if (option.val()=='') {
+					$('#ShortcutSort option:last').remove();
+				}
+				option.clone().val(SortName).html(SortName).attr('selected',true).appendTo('#ShortcutSort');
+				$('#ShortcutSort').width($('#ShortcutSort').width());
+				toggleShortcutSort();
 		}
 }
 // toggleShortcut *** *** www.LazyCMS.net *** ***

@@ -117,7 +117,7 @@ function autoTitle(){
 		// 先释放绑定的所有事件，清除错误样式
 		$('input.error').unbind().toggleClass('error');
 		// 移除所有 Tips 信息
-		$('.jTip',this).remove();
+		$('.jTip').remove();
 		// 取得 action 地址
 		var url = form.attr('action'); if (url==''||typeof url=='undefined') { url = self.location.href; }
 		// 设置登录按钮

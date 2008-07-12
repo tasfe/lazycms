@@ -72,11 +72,12 @@
             <name>名称</name>
             <url>网址</url>
             <sort>分类</sort>
-            <create>新建分类</create>
-            <create1>请先创建分类</create1>
+            <create>请先创建分类</create>
             <sortname>分类名称</sortname>
         </add>
         <button>
+            <delete>删除</delete>
+            <create>新建分类</create>
             <add>添加</add>
             <edit>修改</edit>
             <cancel>取消</cancel>
