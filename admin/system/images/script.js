@@ -73,6 +73,22 @@ function submitShortcutSort(){
 				toggleShortcutSort();
 		}
 }
+// submitShortcut *** *** www.LazyCMS.net *** ***
+function submitShortcut(){
+	var form = $('#formShortcut');
+	var url  = form.attr('action')
+		$.ajax({
+			cache: false,
+			dataType: 'json',
+			url: url,
+			type: form.attr('method').toUpperCase(),
+			data: form.serializeArray(),
+			success: function(data){
+				alert($.toJSON(data));
+			}
+		});
+		toggleAddShortcut();
+}
 // toggleShortcut *** *** www.LazyCMS.net *** ***
 function toggleShortcut(){
 	var shortcut = $('#shortcut').slideToggle('fast'); toggleShortcutActive();

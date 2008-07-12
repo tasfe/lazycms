@@ -83,8 +83,9 @@ function lazy_default(){
     $hl.= '<div id="toolbar"><div class="logo"><a href="manage.php"><img src="system/images/toolbar-logo.png" /></a></div></div>';
 
     $hl.= '<div id="addShortcut"><div class="head"><strong>'.L('shortcut/add/@title').'</strong><a href="javascript:;" onclick="toggleAddShortcut();">×</a></div><div class="body">';
-    $hl.= '<p><label>'.L('shortcut/add/name').'：</label><input class="in2" type="text" name="ShortcutName" id="ShortcutName" value=""></p>';
-    $hl.= '<p><label>'.L('shortcut/add/url').'：</label><input class="in3" type="text" name="ShortcutUrl" id="ShortcutUrl" value=""></p>';
+    $hl.= '<form id="formShortcut" name="formShortcut" method="post" action="manage.php?action=addShortcut">';
+    $hl.= '<p><label>'.L('shortcut/add/name').'：</label><input class="in2" type="text" name="ShortcutName" id="ShortcutName"></p>';
+    $hl.= '<p><label>'.L('shortcut/add/url').'：</label><input class="in3" type="text" name="ShortcutUrl" id="ShortcutUrl"></p>';
     $hl.= '<p><label>'.L('shortcut/add/sort').'：</label>';
     $hl.= '<select name="ShortcutSort" id="ShortcutSort">';
     $XML = 'system/data/'.$_USER['username'].'/shortcut.xml';
@@ -100,8 +101,8 @@ function lazy_default(){
         $hl.= '<option value="">-- '.L('shortcut/add/create').' --</option>';
     }
     $hl.= '</select>&nbsp;<button type="button" onclick="return confirm(\''.L('confirm/delete').'\') ? deleteShortcutSort():false;">'.L('shortcut/button/delete').'</button><button type="button" onclick="toggleShortcutSort()">'.L('shortcut/button/create').'</button></p>';
-    $hl.= '<p class="tr"><button type="button">'.L('shortcut/button/add').'</button>&nbsp;<button type="button" onclick="toggleAddShortcut()">'.L('shortcut/button/cancel').'</button></p>';
-
+    $hl.= '<p class="tr"><button type="button" onclick="submitShortcut();">'.L('shortcut/button/add').'</button>&nbsp;<button type="button" onclick="toggleAddShortcut()">'.L('shortcut/button/cancel').'</button></p></form>';
+    
     $hl.= '<dl><dt><strong>'.L('shortcut/add/create').'</strong><a href="javascript:;" onclick="toggleShortcutSort()">×</a></dt><dd>';
     $hl.= '<p><label>'.L('shortcut/add/sortname').'：</label><input class="in2" type="text" name="ShortcutSortName" id="ShortcutSortName" error="'.L('shortcut/check/sortname').'"></p>';
     $hl.= '<p class="tr"><button type="button" onclick="submitShortcutSort()">'.L('shortcut/button/add').'</button>&nbsp;<button type="button" onclick="toggleShortcutSort()">'.L('shortcut/button/cancel').'</button></p>';
@@ -109,4 +110,9 @@ function lazy_default(){
     $hl.= '</div></div>';
 
     $hl.= '</body></html>'; echo $hl;
+}
+// lazy_addShortcut *** *** www.LazyCMS.net *** ***
+function lazy_addShortcut(){
+    $_USER = check_login('manage','logout.php');
+    echo_json($_POST,1);
 }
