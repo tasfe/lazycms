@@ -55,5 +55,3 @@ import('class.recordset');
 
 // 执行程序
 LazyCMS::run();
-
-?>

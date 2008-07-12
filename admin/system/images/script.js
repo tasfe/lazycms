@@ -26,30 +26,47 @@ $(document).ready(function(){
 	
 	// 点击顶部菜单隐藏快捷方式
 	$('#menu li a').click(function(){
-		$('#shortcut').slideUp('fast');
+		$('#top div.shortcut a:first').removeClass('active');
+		$('#shortcut').slideUp(); $('#addShortcut').hide();
 	});
 	// 框架自使用高度调整
 	$('#main').load(function(){
 		$(this).height($(this).contents().find('body').height()+7);
 	});
 	// 默认显示快捷方式
-	toggleShortcut();
+	//toggleShortcut();
 });
 
-
-// addShortcut *** *** www.LazyCMS.net *** ***
-function addShortcut(){
-	alert(main.location.href);
-}
-// toggleFavorite *** *** www.LazyCMS.net *** ***
-function toggleShortcut(){
-	var shortcut = $('#shortcut');
+// toggleShortcutActive *** *** www.LazyCMS.net *** ***
+function toggleShortcutActive(){
 	$('#top div.shortcut a:first').toggleClass('active');
-	if (shortcut.is('div')==false) {
-		$('body').append('<div id="shortcut"><div class="head"><strong>Shortcut</strong><a href="javascript:;" onclick="toggleShortcut();">×</a></div><div class="body"></div></div>');
-		shortcut = $('#shortcut');
-	}
-	shortcut.slideToggle('fast');
+}
+// toggleAddShortcut *** *** www.LazyCMS.net *** ***
+function toggleAddShortcut(){
+	var addShortcut = $('#addShortcut').toggle('fast');
+		$('input[@name=ShortcutName]',addShortcut).val($('#main').contents().find('title').html());
+		$('input[@name=ShortcutUrl]',addShortcut).val(main.location.href);
+}
+// toggleShortcutSort *** *** www.LazyCMS.net *** ***
+function toggleShortcutSort(){
+	$('#ShortcutSortName').val('');
+	$('#addShortcut dl').toggle('fast');
+}
+// submitShortcutSort *** *** www.LazyCMS.net *** ***
+function submitShortcutSort(){
+	var SortName = $('#ShortcutSortName').val();
+		if (SortName=='') {
+			$('#ShortcutSortName').addClass('error');
+			$('#addShortcut dl').tips('error','input.error');
+		} else {
+			$('#ShortcutSortName').removeClass('error');
+			$('#ShortcutSort option:last').clone().val(SortName).html(SortName).attr('selected',true).appendTo('#ShortcutSort');
+			toggleShortcutSort();
+		}
+}
+// toggleShortcut *** *** www.LazyCMS.net *** ***
+function toggleShortcut(){
+	var shortcut = $('#shortcut').slideToggle('fast'); toggleShortcutActive();
 	// IE6 版本需要搞定 Select QJ Div 层的问题 -_-!!
 	if ($.browser.msie && $.browser.version=='6.0') {
 		if (shortcut.height() == 1) {
@@ -68,8 +85,7 @@ function toggleShortcut(){
 		url : XML,
 		error: function(data,msg){
 			if (msg!='error') {return ;} alert('XML Not Found!'); 
-			$('#top div.shortcut a:first').toggleClass('active');
-			shortcut.slideToggle('fast');
+			toggleShortcutActive(); shortcut.slideToggle('fast');
 		},
 		success : function(xml){
 			$('div.body',shortcut).empty();
@@ -85,7 +101,7 @@ function toggleShortcut(){
 			});
 			// 点击隐藏层
 			$('dd a',shortcut).click(function(){
-				toggleShortcut();
+				toggleShortcut(); $('#addShortcut').hide();
 			});
 		}
 	});

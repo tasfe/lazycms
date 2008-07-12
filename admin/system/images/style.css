@@ -94,7 +94,7 @@ body { height:100%; margin:0; background: #FFF; text-align:center; }
 /* shortcut */
 #shortcut{ display:none; width:500px; position:absolute; left:1px; top:50px; border:solid 1px #c6d9e7; background:#FFF; text-align:left; }
 	#shortcut div.head{ width:495px; display:table; zoom:1; height:25px; line-height:25px; border-bottom:solid 1px #c6d9e7; background:url(../../../common/images/buttons-bg.png) repeat-x 0 center; padding-left:5px; }
-	#shortcut div.head strong{ padding-left:20px; background:url(../../../common/images/icon/fav.png) no-repeat 0 center; display:block; float:left; cursor:default;}
+	#shortcut div.head strong{ padding:3px 0 0 20px; background:url(../../../common/images/icon/fav.png) no-repeat 0 center; display:block; float:left; cursor:default;}
 	#shortcut div.head a{ display:block; float:right; padding:0 5px; margin-right:5px; text-decoration:none; font-weight:bold;}
 	#shortcut div.body{ background:#FFF url(../../../common/images/icon/loading.gif) no-repeat center 40%; height:480px; padding:5px;}
 	#shortcut dl{ margin-bottom:15px; clear:both; display:table; zoom:1;  }
@@ -103,6 +103,21 @@ body { height:100%; margin:0; background: #FFF; text-align:center; }
 	#shortcut dd a{ margin:1px; background-image:url(../../../common/images/icon/weblink.png); background-repeat:no-repeat; background-position:center 3px; display:block; width:50px; padding:40px 5px 3px 5px; text-align:center; text-decoration:none; color:#333333;}
 	#shortcut dd a:hover{ margin:0; border:solid 1px #A5D11F; background-color:#F4FBE1;}
 
+/* addShortcut */
+#addShortcut{ display:none; width:400px; position:absolute; left:35%; top:100px; border:solid 1px #c6d9e7; background:#FFF; text-align:left;}
+	#addShortcut div.head{ width:395px; display:table; zoom:1; height:25px; line-height:25px; border-bottom:solid 1px #c6d9e7; background:url(../../../common/images/buttons-bg.png) repeat-x 0 center; padding-left:5px; }
+	#addShortcut div.head strong{ padding:3px 0 0 20px; background:url(../../../common/images/icon/fav.png) no-repeat 0 center; display:block; float:left; cursor:default;}
+	#addShortcut div.head a{ display:block; float:right; padding:0 5px; margin-right:5px; text-decoration:none; font-weight:bold;}
+	#addShortcut div.body p{ margin:5px 0 5px 0; clear:both; }
+	#addShortcut div.body p label{ width:60px; text-align:right; display:block; float:left; color:#0000FF; line-height:200%; font-size:12px; margin:0 5px 3px 0;}
+	#addShortcut dl{ display:none; width:300px; position:absolute; left:50px; top:30px; border:solid 1px #c6d9e7; background:#FFF; text-align:left; }
+	#addShortcut dt{ width:295px; display:table; zoom:1; height:25px; line-height:25px; border-bottom:solid 1px #c6d9e7; background:url(../../../common/images/buttons-bg.png) repeat-x 0 center; padding-left:5px;}
+	#addShortcut dt strong{ padding:3px 0 0 20px; background:url(../../../common/images/icon/fav.png) no-repeat 0 center; display:block; float:left; cursor:default;}
+	#addShortcut dt a{ display:block; float:right; padding:0 5px; margin-right:5px; text-decoration:none; font-weight:bold;}
+	#addShortcut dd{ padding-left:13px;}
+	#addShortcut dd p{ margin:5px 0 5px 0; clear:both; }
+	#addShortcut dd p label{ display:block; float:left; color:#0000FF; line-height:200%; font-size:12px; margin:0 5px 3px 0;}
+	
 /* toolbar */
 #toolbar{ display:none; position:absolute; left:0; bottom:0; width:100%; height:30px; line-height:30px; background:url(toolbar-bg.png) repeat-x left center; border-top:solid 1px #CCCCCC; text-align:left;}
 	#toolbar .logo{ width:110px; margin-left:10px; display:block; float:left;}

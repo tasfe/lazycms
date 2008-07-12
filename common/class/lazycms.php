@@ -100,4 +100,3 @@ abstract class LazyCMS{
         LazyCMS::exec();
     }
 }
-?>

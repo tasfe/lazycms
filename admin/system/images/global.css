@@ -47,3 +47,20 @@ a:hover   { text-decoration: underline; }
 .width-50 { width: 50%; }
 .width-60 { width: 60%; }
 .width-70 { width: 70%; }
+
+/* 表单长度设置 */
+.in{ border:solid 1px #7F9DB9; display:table; cursor:text; }
+.in a:hover{ text-decoration:underline; background:#0A246A; color:#FFFFFF;}
+.in0{ width:50px;border:solid 1px #7F9DB9;}
+.in1{ width:100px;border:solid 1px #7F9DB9;}
+.in2{ width:200px;border:solid 1px #7F9DB9;}
+.in3{ width:300px;border:solid 1px #7F9DB9;}
+.in4{ width:400px;border:solid 1px #7F9DB9;}
+.in5{ width:500px;border:solid 1px #7F9DB9;}
+.in6{ width:600px;border:solid 1px #7F9DB9;}
+
+/* 对齐样式 */
+.tl{ text-align:left; }
+.tr{ text-align:right; }
+.tc{ text-align:center; }
+

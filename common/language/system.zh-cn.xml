@@ -67,7 +67,25 @@
     <manage title="管理后台"></manage>
     <webftp title="文件管理"></webftp>
     <module title="安装卸载"></module>
-	
+	<shortcut title="快捷方式">
+        <add title="添加快捷方式">
+            <name>名称</name>
+            <url>网址</url>
+            <sort>分类</sort>
+            <create>新建分类</create>
+            <create1>请先创建分类</create1>
+            <sortname>分类名称</sortname>
+        </add>
+        <button>
+            <add>添加</add>
+            <edit>修改</edit>
+            <cancel>取消</cancel>
+        </button>
+        <check>
+            <sortname>分类名称不能为空</sortname>
+        </check>
+    </shortcut>
+
 	<settings title="全局设置">
 		<site title="网站设置">
 			<sitename tip="输入该网站的名称。">网站名称</sitename>

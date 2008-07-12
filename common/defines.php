@@ -51,4 +51,3 @@ define('URL_PATHINFO', 1);   //PATHINFO模式
 define('URL_REWRITE',  2);   //REWRITE模式
 
 define('LAZY_VERSION','2.0.0.0705');
-?>

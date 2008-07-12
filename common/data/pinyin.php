@@ -429,4 +429,3 @@ return array (
   'fou' => '缶',
   'bia' => '髟',
 );
-?>

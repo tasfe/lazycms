@@ -50,4 +50,3 @@ class Cookie{
         self::set($name,'',now() - 3600,$path,$domain);
     }
 }
-?>

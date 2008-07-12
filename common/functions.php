@@ -566,7 +566,7 @@ function check_user($l1=null,$l2=null){
 // check_login *** *** www.LazyCMS.net *** ***
 function check_login($l1=null,$l2='../logout.php'){
     $_USER = get_user($l1);
-    if ($_USER === -1) {
+    if ($_USER === -2 || $_USER === false) {
         // 没有权限，执行相应的提示，而不是进行跳转
         if ($_SERVER['REQUEST_METHOD']=='POST'){
             // ajax方式输出错误
@@ -638,7 +638,7 @@ function get_user($l1=null,$l2=null){
                         return $rs;
                     } else {
                         // 没有权限返回 -1
-                        return -1;
+                        return -2;
                     }
                 } else {
                     return $rs;
@@ -921,4 +921,3 @@ if (!function_exists('json_decode')) {
 
 // 中文正则，请不要修改 *** *** www.LazyCMS.net *** ***
 C('CN_PATTERN',"/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|\xe0[\xa0-\xbf][\x80-\xbf]|[\xe1-\xef][\x80-\xbf][\x80-\xbf]|\xf0[\x90-\xbf][\x80-\xbf][\x80-\xbf]|[\xf1-\xf7][\x80-\xbf][\x80-\xbf][\x80-\xbf]/");
-?>

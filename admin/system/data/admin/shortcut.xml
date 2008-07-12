@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<bookmark>
-	<title>Shortcut</title>
+<root>
     <dl>
 		<dt>内容管理</dt>
 		<a href="#" class="page">单页管理</a>
@@ -15,4 +14,4 @@
 		<a href="#" class="install">安装卸载</a>
 		<a href="system/settings.php" class="config">全局设置</a>
 	</dl>
-</bookmark>
+</root>

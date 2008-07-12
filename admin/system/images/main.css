@@ -58,15 +58,3 @@ body { width:99%; display:table; margin:3px; background: #F9FDFF; }
 	#box div.but{ width:99.5%; margin:0 auto 3px auto; display:table; }
 	#box div.button{ float:left;}
 	#box div.pages{float:right;}
-
-/* 表单长度设置 */
-.in{ border:solid 1px #7F9DB9; display:table; cursor:text; }
-.in a:hover{ text-decoration:underline; background:#0A246A; color:#FFFFFF;}
-.in0{ width:50px;border:solid 1px #7F9DB9;}
-.in1{ width:100px;border:solid 1px #7F9DB9;}
-.in2{ width:200px;border:solid 1px #7F9DB9;}
-.in3{ width:300px;border:solid 1px #7F9DB9;}
-.in4{ width:400px;border:solid 1px #7F9DB9;}
-.in5{ width:500px;border:solid 1px #7F9DB9;}
-.in6{ width:600px;border:solid 1px #7F9DB9;}
-

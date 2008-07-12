@@ -197,7 +197,7 @@ function autoTitle(){
 		});
 		$(selector,this).hover(function(e){
 			var width = 200; // 默认宽度
-			$this.next('.jTip').remove();
+			$('.jTip').remove();
 			var text  = $(this).attr(attr);
 			
 			if (text.indexOf('::')>-1) {
@@ -209,15 +209,15 @@ function autoTitle(){
 					}
 					text = title + text;
 			}
-			$this.after('<div class="jTip"><div class="jTip-body">' + text + '</div><div class="jTip-foot"></div></div>');
-			var jTip    = $this.next('.jTip'); jTip.width(width);
+			$('body').append('<div class="jTip"><div class="jTip-body">' + text + '</div><div class="jTip-foot"></div></div>');
+			var jTip    = $('.jTip'); jTip.width(width);
 			var jHeight = jTip.height();
 				jTip.css({'top':(e.pageY - jHeight ) + 'px','left':(e.pageX + 2) + 'px'}).fadeIn('fast');
 				$(selector,$this).mousemove(function(e){
 					jTip.css({'top':(e.pageY - jHeight ) + 'px','left':(e.pageX + 2) + 'px'});
 				});
 		},function(){
-			$this.next('.jTip').remove();
+			$('.jTip').remove();
 		});
 		return this;
 	}
