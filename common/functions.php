@@ -237,6 +237,17 @@ function len($l1){
     }
 }
 
+// xmlencode *** *** www.LazyCMS.net *** ***
+function xmlencode($l1){
+    if (strlen($l1)==0) { return ; } $I1 = $l1;
+    if (strpos($I1,'&')!==false) { $I1 = str_replace('&','&amp;',$I1); }
+    if (strpos($I1,"'")!==false) { $I1 = str_replace("'",'&apos;',$I1); }
+    if (strpos($I1,'"')!==false) { $I1 = str_replace('"','&quot;',$I1); }
+    if (strpos($I1,'>')!==false) { $I1 = str_replace('>','&gt;',$I1); }
+    if (strpos($I1,'<')!==false) { $I1 = str_replace('<','&lt;',$I1); }
+    return $I1;
+}
+
 // cnsubstr *** *** www.LazyCMS.net *** ***
 function cnsubstr($l1,$l2){
     $l3 = 0;

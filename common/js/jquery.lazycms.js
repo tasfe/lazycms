@@ -89,7 +89,7 @@ function autoTitle(){
 					});
 				},
 				success: function(data){
-					$(form).ajaxTip(data);
+					$.ajaxTip(data);
 					if (typeof data.url != 'undefined') {
 						if (typeof data.sleep == 'undefined') { data.sleep = 0; }
 						window.setTimeout("self.location.href = '" + data.url + "';",data.sleep*1000);
@@ -145,7 +145,7 @@ function autoTitle(){
 				if (data.length>0) {
 					form.error(data);
 				} else {
-					form.ajaxTip(data);
+					$.ajaxTip(data);
 					if (typeof data.url != 'undefined' && method != 'apply') {
 						if (typeof data.sleep == 'undefined') { data.sleep = 0; }
 						window.setTimeout("self.location.href = '" + data.url + "';",data.sleep*1000);
@@ -159,7 +159,7 @@ function autoTitle(){
 		return false;
 	}
 	// 封装 ajaxTip
-	$.fn.ajaxTip = function(params){
+	$.ajaxTip = function(params){
 		// 解析传入的参数，并更新对话框的内容
 		var data = params||{}; if (typeof data == 'string'){ data = parent.$.parseJSON(data); }
 		var color = '#30A9F3';

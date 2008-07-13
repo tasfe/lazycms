@@ -84,6 +84,7 @@
         </button>
         <check>
             <sortname>分类名称不能为空</sortname>
+            <sortname1>分类名称已经存在</sortname1>
         </check>
     </shortcut>
 
