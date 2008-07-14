@@ -47,7 +47,7 @@ function toggleAddShortcut(){
 	$('input.error').unbind().toggleClass('error'); $('.jTip').remove();
 	var addShortcut = $('#addShortcut').toggle('fast');
 		$('input[@name=ShortcutName]',addShortcut).val($('#main').contents().find('title').html());
-		$('input[@name=ShortcutUrl]',addShortcut).val(main.location.href);
+		$('input[@name=ShortcutUrl]',addShortcut).val(main.location.href.replace(main.location.protocol + '//' + main.location.hostname,''));
 }
 // toggleShortcutSort *** *** www.LazyCMS.net *** ***
 function toggleShortcutSort(){
@@ -137,7 +137,12 @@ function toggleShortcut(){
 				var I1 = '<dl>';
 				I1+= '<dt>' + $('dt',this).text() + '</dt>';
 				$('a',this).each(function(){
-					I1+= '<dd><a href="' + $(this).attr('href') + '" class="icon-32-' + $(this).attr('class') + '">' + $(this).text() + '</a></dd>';
+					var target = "main";
+					var scheme = $(this).attr('href').substr(0,7);
+					if (scheme=='http://'||scheme=='https://') {
+						target = "_blank";
+					}
+					I1+= '<dd><a href="' + $(this).attr('href') + '" class="icon-32-' + $(this).attr('class') + '" target="' + target + '">' + $(this).text() + '</a></dd>';
 				});
 				I1+= '</dl>';
 				$('div.body',shortcut).append(I1).css('background-image','none');

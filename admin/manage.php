@@ -150,7 +150,7 @@ function lazy_addShortcut(){
             for ($i=0; $i<$dt->length; $i++) {
                 $v = $dt->item($i)->nodeValue;
                 if ($sortName==$v) {
-                    $a = $xPath->evaluate("//root/dl")->item(0)->appendChild($DOM->createElement('a'));
+                    $a = $xPath->evaluate("//root/dl")->item($i)->appendChild($DOM->createElement('a'));
                     $a->setAttribute('href',xmlencode($sUrl));
                     if (!empty($sClass)) {
                         $a->setAttribute('class',xmlencode($sClass));
