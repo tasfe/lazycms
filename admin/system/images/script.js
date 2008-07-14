@@ -168,5 +168,5 @@ function selectIcon(obj){
 	$this = $(obj);
 	$this.parent().find('a').removeClass('active'); 
 	$this.addClass('active');
-	$('#ShortcutIcon').val($this.attr('name'));
+	$('#ShortcutIcon').val($this.attr('title'));
 }

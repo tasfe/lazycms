@@ -111,7 +111,7 @@ function lazy_default(){
             $hl.= '<p><label>'.L('shortcut/add/icon').'：</label>';
             $hl.= '<div class="icons">';
             foreach ($ios[1] as $io) {
-                $hl.= '<a href="javascript:;" onclick="selectIcon(this)" name="'.$io.'" class="icon-32-'.$io.'">&nbsp;</a>';
+                $hl.= '<a href="javascript:;" onclick="selectIcon(this)" title="'.$io.'" class="icon-32-'.$io.'">&nbsp;</a>';
             }
             $hl.= '</div><input name="ShortcutIcon" id="ShortcutIcon" type="hidden" /></p>';
         }
