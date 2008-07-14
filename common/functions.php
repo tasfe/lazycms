@@ -569,8 +569,10 @@ function check_user($l1=null,$l2=null){
 // check_login *** *** www.LazyCMS.net *** ***
 function check_login($l1=null,$l2='../logout.php'){
     $_USER = get_user($l1);
-    if ($_USER === -2 || $_USER === false) {
-        // 没有权限，执行相应的提示，而不是进行跳转
+    if ($_USER === -2) {
+        // 没有权限，进行错误提示
+    } elseif ($_USER === false) {
+        // 登录超时，跳转
         if ($_SERVER['REQUEST_METHOD']=='POST'){
             // ajax方式输出错误
             echo_json(array(
