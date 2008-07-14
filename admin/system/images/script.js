@@ -163,3 +163,10 @@ function iframeCover(){
 		}
 	}
 }
+// iframeCover *** *** www.LazyCMS.net *** ***
+function selectIcon(obj){
+	$this = $(obj);
+	$this.parent().find('a').removeClass('active'); 
+	$this.addClass('active');
+	$('#ShortcutIcon').val($this.attr('name'));
+}

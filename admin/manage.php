@@ -104,6 +104,19 @@ function lazy_default(){
         $hl.= '<option value="">-- No Category --</option>';
     }
     $hl.= '</select>&nbsp;<button type="button" onclick="return confirm(\''.L('confirm/delete').'\') ? deleteShortcutSort():false;">'.L('shortcut/button/delete').'</button><button type="button" onclick="toggleShortcutSort()">'.L('shortcut/button/create').'</button></p>';
+
+    $ICONS = COM_PATH.'/images/icons.css';
+    if (is_file($ICONS)) {
+        if (preg_match_all('/\.icon\-32\-(\w+)/i',load_file($ICONS),$ios)) {
+            $hl.= '<p><label>'.L('shortcut/add/icon').'：</label>';
+            $hl.= '<div class="icons">';
+            foreach ($ios[1] as $io) {
+                $hl.= '<a href="javascript:;" onclick="selectIcon(this)" name="'.$io.'" class="icon-32-'.$io.'">&nbsp;</a>';
+            }
+            $hl.= '</div><input name="ShortcutIcon" id="ShortcutIcon" type="hidden" /></p>';
+        }
+    }
+
     $hl.= '<p class="tr"><button type="button" onclick="submitShortcut();">'.L('shortcut/button/add').'</button>&nbsp;<button type="button" onclick="toggleAddShortcut()">'.L('shortcut/button/cancel').'</button></p></form>';
     
     $hl.= '<dl><dt><strong>'.L('shortcut/button/create').'</strong><a href="javascript:;" onclick="toggleShortcutSort()">×</a></dt><dd>';
@@ -120,6 +133,7 @@ function lazy_addShortcut(){
     $sName    = isset($_POST['ShortcutName']) ? $_POST['ShortcutName'] : null;
     $sUrl     = isset($_POST['ShortcutUrl']) ? $_POST['ShortcutUrl'] : null;
     $sortName = isset($_POST['ShortcutSort']) ? $_POST['ShortcutSort'] : null;
+    $sClass   = isset($_POST['ShortcutIcon']) ? $_POST['ShortcutIcon'] : null;
     if (empty($sortName)) { echo_json(L('shortcut/check/selectsort'),0); }
     $val = new Validate();
     $val->check('ShortcutName|0|'.L('shortcut/check/name'));
@@ -138,6 +152,9 @@ function lazy_addShortcut(){
                 if ($sortName==$v) {
                     $a = $xPath->evaluate("//root/dl")->item(0)->appendChild($DOM->createElement('a'));
                     $a->setAttribute('href',xmlencode($sUrl));
+                    if (!empty($sClass)) {
+                        $a->setAttribute('class',xmlencode($sClass));
+                    }
                     $a->nodeValue = xmlencode($sName);
                 }
             }

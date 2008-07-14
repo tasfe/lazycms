@@ -73,6 +73,7 @@
             <url>网址</url>
             <sort>分类</sort>
             <sortname>分类名称</sortname>
+			<icon>图标</icon>
         </add>
         <button>
             <delete>删除</delete>
