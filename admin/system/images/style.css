@@ -99,8 +99,8 @@ body { height:100%; margin:0; background: #FFF; text-align:center; }
 	#shortcut div.body{ background:#FFF url(../../../common/images/icon/loading.gif) no-repeat center 40%; height:480px; padding:5px;}
 	#shortcut dl{ margin-bottom:15px; clear:both; display:table; zoom:1;  }
 	#shortcut dt{ padding-left:10px; line-height:150%; font-weight:bold; background:url(shortcut-line.png) no-repeat left bottom; }
-	#shortcut dd{ float:left; margin:8px 8px 0 8px; }
-	#shortcut dd a{ margin:1px; background-image:url(../../../common/images/icon/weblink.png); background-repeat:no-repeat; background-position:center 3px; display:block; width:50px; padding:40px 5px 3px 5px; text-align:center; text-decoration:none; color:#333333;}
+	#shortcut dd{ float:left; margin:8px 8px 0 5px; }
+	#shortcut dd a{ margin:1px; background-image:url(../../../common/images/icon/weblink.png); background-repeat:no-repeat; background-position:center 3px; display:block; width:60px; padding:40px 5px 3px 5px; text-align:center; text-decoration:none; color:#333333;}
 	#shortcut dd a:hover{ margin:0; border:solid 1px #A5D11F; background-color:#F4FBE1;}
 
 /* addShortcut */
@@ -119,8 +119,8 @@ body { height:100%; margin:0; background: #FFF; text-align:center; }
 	#addShortcut dd p label{ display:block; float:left; color:#0000FF; line-height:200%; font-size:12px; margin:0 5px 3px 0;}
 	#addShortcut div.icons {float:left;}
 	#addShortcut div.icons a{ width:32px; height:32px; display:block; float:left; margin-right:5px; text-decoration: none; border:solid 2px #fff; }
-	#addShortcut div.icons a.active,
-	#addShortcut div.icons a:hover{ border:solid 2px #FF6600;}
+	#addShortcut div.icons a.active { border:solid 2px #FF6600;}
+
 /* toolbar */
 #toolbar{ display:none; position:absolute; left:0; bottom:0; width:100%; height:30px; line-height:30px; background:url(toolbar-bg.png) repeat-x left center; border-top:solid 1px #CCCCCC; text-align:left;}
 	#toolbar .logo{ width:110px; margin-left:10px; display:block; float:left;}

@@ -36,6 +36,8 @@ $(document).ready(function(){
 	});
 	// 默认显示快捷方式
 	toggleShortcut();
+	// 批量去除连接虚线
+	$('a').focus(function(){ this.blur(); });
 });
 
 // toggleShortcutActive *** *** www.LazyCMS.net *** ***
@@ -53,7 +55,7 @@ function toggleAddShortcut(){
 function toggleShortcutSort(){
 	$('#ShortcutSortName').unbind().removeClass('error').val('');
 	$('.jTip').remove(); $('#addShortcut dl').toggle('fast');
-	$('#addShortcut select').toggle();
+	if ($.browser.msie && $.browser.version=='6.0') { $('#addShortcut select').toggle(); }
 }
 // deleteShortcutSort *** *** www.LazyCMS.net *** ***
 function deleteShortcutSort(){
@@ -170,8 +172,15 @@ function iframeCover(){
 }
 // iframeCover *** *** www.LazyCMS.net *** ***
 function selectIcon(obj){
-	$this = $(obj);
-	$this.parent().find('a').removeClass('active'); 
-	$this.addClass('active');
-	$('#ShortcutIcon').val($this.attr('title'));
+	var $this = $(obj);
+	var title = $this.attr('title');
+	$this.parent().find('a').each(function(){
+		if (title==$(this).attr('title')) {
+			$(this).toggleClass('active');
+			if ($(this).hasClass('active')==false) { title = ''; }
+		} else {
+			$(this).removeClass('active');
+		}
+	}); 
+	$('#ShortcutIcon').val(title);
 }
