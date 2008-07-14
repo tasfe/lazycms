@@ -30,7 +30,7 @@ defined('COM_PATH') or die('Restricted access!');
 // now *** *** www.LazyCMS.net *** ***
 function now(){
     $time = isset($_SERVER['REQUEST_TIME'])?$_SERVER['REQUEST_TIME']:time();
-    return $time+(C('TIME_ZONE')*3600);
+    return $time + (C('TIME_ZONE')*3600);
 }
 
 // stripslashes_deep *** *** www.LazyCMS.net *** ***
@@ -214,10 +214,7 @@ function print_x($l1,$l2=null,$l3=null){
 // get_dir_array *** *** www.LazyCMS.net *** ***
 function get_dir_array($l1,$l2){
     //$l1:路径 $l2:读取类型
-    if (strpos($l1,'.')!==false) { $l1 = str_replace('.','/',$l1); }
-    if (strpos($l1,'@')!==false) { $l1 = str_replace('@',COM_PATH,$l1); }
-    if (strpos($l1,'[')!==false) { $l1 = str_replace('[','*',$l1); }
-    if (strpos($l1,']')!==false) { $l1 = str_replace('[','*',$l1); }
+    $l1 = str_replace(array('.','[',']','@'),array('/','*','*',COM_PATH),$l1);
     $l3 = create_function('&$l1,$l2','$I2=strrpos($l1,"/"); $I1=substr($l1,$I2+1); $l1=$I1;');
     if (substr($l1,-1)!='/') { $l1 .= '/'; }
     $I1 = ($l2=='dir') ? glob("{$l1}*",GLOB_ONLYDIR) : glob("{$l1}*.{$l2}",GLOB_BRACE);
@@ -239,13 +236,8 @@ function len($l1){
 
 // xmlencode *** *** www.LazyCMS.net *** ***
 function xmlencode($l1){
-    if (strlen($l1)==0) { return ; } $I1 = $l1;
-    if (strpos($I1,'&')!==false) { $I1 = str_replace('&','&amp;',$I1); }
-    if (strpos($I1,"'")!==false) { $I1 = str_replace("'",'&apos;',$I1); }
-    if (strpos($I1,'"')!==false) { $I1 = str_replace('"','&quot;',$I1); }
-    if (strpos($I1,'>')!==false) { $I1 = str_replace('>','&gt;',$I1); }
-    if (strpos($I1,'<')!==false) { $I1 = str_replace('<','&lt;',$I1); }
-    return $I1;
+    if (strlen($l1)==0) { return ; }
+    return str_replace(array('&',"'",'"','>','<'),array('&amp;','&apos;','&quot;','&gt;','&lt;'),$l1);
 }
 
 // cnsubstr *** *** www.LazyCMS.net *** ***
@@ -466,7 +458,7 @@ function validate($l1,$l2){
             $l3 = '^[\d\,\.]+$';
             break;
         case '7' : // 图片连接 http://www.example.com/xxx.jpg
-            $l4 = str_replace(',','|',C('UPFILE_SUFFIX'));
+            $l4 = str_replace(',','|',C('UPLOAD_IMAGE_EXT'));
             $l3 = '^(http|https|ftp):(\/\/|\\\\)(([\w\/\\\+\-~`@:%])+\.)+([\w\/\\\.\=\?\+\-~`@\':!%#]|(&amp;)|&)+\.('.$l4.')$';
             break;
         case '8' : // 日期格式

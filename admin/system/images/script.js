@@ -26,8 +26,9 @@ $(document).ready(function(){
 	
 	// 点击顶部菜单隐藏快捷方式
 	$('#menu li a').click(function(){
-		$('#top div.shortcut a:first').removeClass('active');
-		$('#shortcut').slideUp(); $('#addShortcut').hide();
+		var active = $('#top div.shortcut a:first');
+		if (active.hasClass('active')) { iframeCover(); }
+		active.removeClass('active'); $('#shortcut').slideUp(); $('#addShortcut').hide();
 	});
 	// 框架自使用高度调整
 	$('#main').load(function(){
@@ -43,6 +44,7 @@ function toggleShortcutActive(){
 }
 // toggleAddShortcut *** *** www.LazyCMS.net *** ***
 function toggleAddShortcut(){
+	$('input.error').unbind().toggleClass('error'); $('.jTip').remove();
 	var addShortcut = $('#addShortcut').toggle('fast');
 		$('input[@name=ShortcutName]',addShortcut).val($('#main').contents().find('title').html());
 		$('input[@name=ShortcutUrl]',addShortcut).val(main.location.href);
@@ -51,13 +53,19 @@ function toggleAddShortcut(){
 function toggleShortcutSort(){
 	$('#ShortcutSortName').unbind().removeClass('error').val('');
 	$('.jTip').remove(); $('#addShortcut dl').toggle('fast');
+	$('#addShortcut select').toggle();
 }
 // deleteShortcutSort *** *** www.LazyCMS.net *** ***
 function deleteShortcutSort(){
-	var SortName = $('#ShortcutSort option[@selected]').text();
-	$.post('manage.php?action=deleteSort',{'ShortcutSortName':SortName},function(){
-		$('#ShortcutSort option[@selected]').remove();
-	});
+	var SortName = $('#ShortcutSort option[@selected]').val();
+		if (SortName!='') {
+			$.post('manage.php?action=deleteSort',{'ShortcutSortName':SortName},function(){
+				if ($('#ShortcutSort option').size()==1) {
+					$('#ShortcutSort').append('<option value="">-- No Category --</option>');
+				}
+				$('#ShortcutSort option[@selected]').remove();
+			});
+		}
 }
 // submitShortcutSort *** *** www.LazyCMS.net *** ***
 function submitShortcutSort(){
@@ -81,6 +89,7 @@ function submitShortcutSort(){
 }
 // submitShortcut *** *** www.LazyCMS.net *** ***
 function submitShortcut(){
+	$('input.error').unbind().toggleClass('error'); $('.jTip').remove();
 	var form = $('#formShortcut');
 	var url  = form.attr('action')
 		$.ajax({
@@ -89,25 +98,26 @@ function submitShortcut(){
 			url: url,
 			type: form.attr('method').toUpperCase(),
 			data: form.serializeArray(),
+			error: function(){
+				$.post(url,form.serializeArray(),function(data){
+					alert(data);
+				});
+			},
 			success: function(data){
-				alert($.toJSON(data));
+				if (typeof data.status != 'undefined') {
+					$.ajaxTip(data);
+				} else if (data.length>0) {
+					$('#addShortcut').error(data);
+				} else {
+					toggleAddShortcut();
+				}
 			}
 		});
-		toggleAddShortcut();
 }
 // toggleShortcut *** *** www.LazyCMS.net *** ***
 function toggleShortcut(){
-	var shortcut = $('#shortcut').slideToggle('fast'); toggleShortcutActive();
-	// IE6 版本需要搞定 Select QJ Div 层的问题 -_-!!
-	if ($.browser.msie && $.browser.version=='6.0') {
-		if (shortcut.height() == 1) {
-			$('body').append('<iframe id="iframeCover" style="height:' + ($(document).height()-10) + 'px;"></iframe>');
-			$('#main').css({'z-index':-2,'position':'relative','left':0});
-		} else {
-			$('#iframeCover').remove();
-			$('#main').css({'z-index':0,'position':'static','left':'auto'});
-		}
-	}
+	iframeCover(); toggleShortcutActive();
+	var shortcut = $('#shortcut').slideToggle('fast');
 	var username = $.cookie('LAZY_[username]');
 	if (username==null) { return false; }
 	// AJAX get xml data
@@ -117,8 +127,8 @@ function toggleShortcut(){
 		ifModified : true,
 		url : XML,
 		error: function(data,msg){
-			if (msg!='error') {return ;} alert('XML Not Found!'); 
-			toggleShortcutActive(); shortcut.slideToggle('fast');
+			if (msg!='error') {return ;} alert('XML Not Found!');
+			shortcut.slideUp(); iframeCover(); toggleShortcutActive(); 
 		},
 		success : function(xml){
 			$('div.body',shortcut).empty();
@@ -139,4 +149,17 @@ function toggleShortcut(){
 		}
 	});
 	return false;
+}
+// iframeCover *** *** www.LazyCMS.net *** ***
+function iframeCover(){
+	// IE6 版本需要搞定 Select QJ Div 层的问题 -_-!!
+	if ($.browser.msie && $.browser.version=='6.0') {
+		if ($('#iframeCover').is('iframe') == false) {
+			$('body').append('<iframe id="iframeCover" style="height:' + ($(document).height()-10) + 'px;"></iframe>');
+			$('#main').css({'z-index':-2,'position':'relative','left':0});
+		} else {
+			$('#iframeCover').remove();
+			$('#main').css({'z-index':0,'position':'static','left':'auto'});
+		}
+	}
 }

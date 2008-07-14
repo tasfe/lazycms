@@ -93,17 +93,20 @@ function lazy_default(){
         $DOM   = new DOMDocument; $DOM->load($XML);
         $xPath = new DOMXPath($DOM);
         $dt    = $xPath->evaluate("//root/dl/dt");
+        if ($dt->length==0) {
+            $hl.= '<option value="">-- No Category --</option>';
+        }
         for ($i=0; $i<$dt->length; $i++) {
             $val = $dt->item($i)->nodeValue;
             $hl.= '<option value="'.$val.'">'.$val.'</option>';
         }
     } else {
-        $hl.= '<option value="">-- '.L('shortcut/add/create').' --</option>';
+        $hl.= '<option value="">-- No Category --</option>';
     }
     $hl.= '</select>&nbsp;<button type="button" onclick="return confirm(\''.L('confirm/delete').'\') ? deleteShortcutSort():false;">'.L('shortcut/button/delete').'</button><button type="button" onclick="toggleShortcutSort()">'.L('shortcut/button/create').'</button></p>';
     $hl.= '<p class="tr"><button type="button" onclick="submitShortcut();">'.L('shortcut/button/add').'</button>&nbsp;<button type="button" onclick="toggleAddShortcut()">'.L('shortcut/button/cancel').'</button></p></form>';
     
-    $hl.= '<dl><dt><strong>'.L('shortcut/add/create').'</strong><a href="javascript:;" onclick="toggleShortcutSort()">×</a></dt><dd>';
+    $hl.= '<dl><dt><strong>'.L('shortcut/button/create').'</strong><a href="javascript:;" onclick="toggleShortcutSort()">×</a></dt><dd>';
     $hl.= '<p><label>'.L('shortcut/add/sortname').'：</label><input class="in2" type="text" name="ShortcutSortName" id="ShortcutSortName"></p>';
     $hl.= '<p class="tr"><button type="button" onclick="submitShortcutSort()">'.L('shortcut/button/add').'</button>&nbsp;<button type="button" onclick="toggleShortcutSort()">'.L('shortcut/button/cancel').'</button></p>';
     $hl.= '</dd></dl>';
@@ -114,8 +117,33 @@ function lazy_default(){
 // lazy_addShortcut *** *** www.LazyCMS.net *** ***
 function lazy_addShortcut(){
     $_USER    = check_login('manage','logout.php');
-    $UserData = 'system/data/'.strtolower($_USER['username']);
-    $XMLFile  = $UserData.'/shortcut.xml';
+    $sName    = isset($_POST['ShortcutName']) ? $_POST['ShortcutName'] : null;
+    $sUrl     = isset($_POST['ShortcutUrl']) ? $_POST['ShortcutUrl'] : null;
+    $sortName = isset($_POST['ShortcutSort']) ? $_POST['ShortcutSort'] : null;
+    if (empty($sortName)) { echo_json(L('shortcut/check/selectsort'),0); }
+    $val = new Validate();
+    $val->check('ShortcutName|0|'.L('shortcut/check/name'));
+    $val->check('ShortcutUrl|0|'.L('shortcut/check/url'));
+    if ($val->isVal()) {
+        $val->out();
+    } else {
+        $UserData = 'system/data/'.strtolower($_USER['username']);
+        $XMLFile  = $UserData.'/shortcut.xml';
+        if (is_file($XMLFile)) {
+            $DOM   = new DOMDocument; $DOM->load($XMLFile);
+            $xPath = new DOMXPath($DOM);
+            $dt    = $xPath->evaluate("//root/dl/dt");
+            for ($i=0; $i<$dt->length; $i++) {
+                $v = $dt->item($i)->nodeValue;
+                if ($sortName==$v) {
+                    $a = $dt->item($i)->appendChild($DOM->createElement('a'));
+                    $a->setAttribute('href',xmlencode($sUrl));
+                    $a->nodeValue = xmlencode($sName);
+                }
+            }
+            $DOM->save($XMLFile); echo('true');
+        }
+    }
 }
 // lazy_createSort *** *** www.LazyCMS.net *** ***
 function lazy_createSort(){

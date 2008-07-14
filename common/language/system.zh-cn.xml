@@ -72,7 +72,6 @@
             <name>名称</name>
             <url>网址</url>
             <sort>分类</sort>
-            <create>请先创建分类</create>
             <sortname>分类名称</sortname>
         </add>
         <button>
@@ -83,8 +82,11 @@
             <cancel>取消</cancel>
         </button>
         <check>
+			<name>名称不能为空</name>
+			<url>网址不能为空</url>
             <sortname>分类名称不能为空</sortname>
             <sortname1>分类名称已经存在</sortname1>
+			<selectsort>请先创建一个分类</selectsort>
         </check>
     </shortcut>
 
