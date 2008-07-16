@@ -33,7 +33,7 @@ return array(
         'import' => array(),
         /* 权限列表 */
         'purview' => array(
-            'manage',
+            'system',
             'users',
             'webftp',
             'module',

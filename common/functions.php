@@ -309,7 +309,7 @@ function print_v($l1=null){
     $hl.= '<link href="../system/images/main.css" rel="stylesheet" type="text/css" />';
     $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.2.6"></script>';
     $hl.= '<script type="text/javascript" src="../../common/js/jquery.lazycms.js?ver=1.0"></script>';
-    $hl.= '<script type="text/javascript">parent.document.title = "'.G('TITLE').' - '.L('manage/@title').'";';
+    $hl.= '<script type="text/javascript">parent.document.title = "'.G('TITLE').' - '.L('system/@title').'";';
     $hl.= '$(document).ready(function(){ ';
     $hl.= 'autoTitle();';
     // 用户打开操作提示
@@ -603,7 +603,7 @@ function get_user($l1=null,$l2=null){
     } else {
         $username = Cookie::get('username');
         $userpass = Cookie::get('userpass');
-        $purview  = ($l1=='manage') ? 'system/'.$l1 : MODULE.'/'.$l1;
+        $purview  = ($l1=='system') ? 'system/'.$l1 : MODULE.'/'.$l1;
     }
     if (empty($username) || empty($userpass)) { return false; }
     // 开始验证

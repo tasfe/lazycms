@@ -1,3 +1,14 @@
+/**
+ * jQuery plugin list
+ *
+ * jquery.floatdiv.js
+ * jquery.color.js
+ * jquery.json.js
+ * jquery.cookie.js
+ * jquery.jqDnR.js
+ * jquery.ContextMenu.js
+ */
+
 // 函数加载 JavaScript *** *** www.LazyCMS.net *** ***
 function LoadScript(plugin){
     var url = $("script[@src*=jquery.lazycms]").attr("src").replace("jquery.lazycms.js","jquery." + plugin + ".js");
@@ -35,7 +46,6 @@ function autoTitle(){
 	if (title!=='') {
 		$('#tabs li.active a').text(title);
 	}
-	
 }
 
 
@@ -52,6 +62,15 @@ function autoTitle(){
  * $("#element").tips(JSON String or Object);
  */
  (function($) {
+	$.fn.menuDrag = function(l1){
+		/**
+		这里暂停一下，制作起来很麻烦
+		$(l1,this).css({cursor:'move',position:'relative'}).mousedown(function(){
+			$('a',this).unbind().click(function(){return false});
+
+		}).find('a').css({cursor:'move'});
+		*/
+	}
 	$.fn.gp = function(l1,url){
 		var form = this.parents('form');
 		var url  = url||form.attr('action');
@@ -332,57 +351,6 @@ function autoTitle(){
         return getRGB(color);
     };
 
-    // Some named colors to work with
-    // From Interface by Stefan Petre
-    // http://interface.eyecon.ro/
-
-    var colors = {
-        aqua:[0,255,255],
-        azure:[240,255,255],
-        beige:[245,245,220],
-        black:[0,0,0],
-        blue:[0,0,255],
-        brown:[165,42,42],
-        cyan:[0,255,255],
-        darkblue:[0,0,139],
-        darkcyan:[0,139,139],
-        darkgrey:[169,169,169],
-        darkgreen:[0,100,0],
-        darkkhaki:[189,183,107],
-        darkmagenta:[139,0,139],
-        darkolivegreen:[85,107,47],
-        darkorange:[255,140,0],
-        darkorchid:[153,50,204],
-        darkred:[139,0,0],
-        darksalmon:[233,150,122],
-        darkviolet:[148,0,211],
-        fuchsia:[255,0,255],
-        gold:[255,215,0],
-        green:[0,128,0],
-        indigo:[75,0,130],
-        khaki:[240,230,140],
-        lightblue:[173,216,230],
-        lightcyan:[224,255,255],
-        lightgreen:[144,238,144],
-        lightgrey:[211,211,211],
-        lightpink:[255,182,193],
-        lightyellow:[255,255,224],
-        lime:[0,255,0],
-        magenta:[255,0,255],
-        maroon:[128,0,0],
-        navy:[0,0,128],
-        olive:[128,128,0],
-        orange:[255,165,0],
-        pink:[255,192,203],
-        purple:[128,0,128],
-        violet:[128,0,128],
-        red:[255,0,0],
-        silver:[192,192,192],
-        white:[255,255,255],
-        yellow:[255,255,0],
-        transparent: [255,255,255]
-    };
-
 })(jQuery);
 
 /*
@@ -492,119 +460,6 @@ function autoTitle(){
 
 })(jQuery);
 
-/*
- * ppDrag 0.1 - Extremely Fast Drag&Drop for jQuery
- * http://ppdrag.ppetrov.com/
- *
- * Copyright (c) 2008 Peter Petrov (ppetrov AT ppetrov DOT com)
- * Licensed under the LGPL (LGPL-LICENSE.txt) license.
- *
- * FILE:jquery.ppdrag.js
- * 
- * Note: at the moment ppDrag doesn't support elements with static positioning. Please use either relative, absolute, or fixed positioning. 
- *
- * Example:
- * 
- * $(document).ready(function() {
- *   // Activate ppDrag
- *   $("#element1").ppdrag();
- *   // (optional) Specify options
- *   $("#element2").ppdrag({ zIndex: 1000 });
- * });
- * // (optional) When no longer needed, you can deactivate ppDrag.
- * $("#element2").ppdrag("destroy");
- */
-(function($) {
-	
-	$.fn.ppdrag = function(options) {
-		if (typeof options == 'string') {
-			if (options == 'destroy') return this.each(function() {
-				$.ppdrag.removeEvent(this, 'mousedown', $.ppdrag.start, false);
-				$.data(this, 'pp-ppdrag', null);
-			});
-		}
-		return this.each(function() {
-			$.data(this, 'pp-ppdrag', { options: $.extend({}, options) });
-			$.ppdrag.addEvent(this, 'mousedown', $.ppdrag.start, false);
-		});
-	};
-	
-	$.ppdrag = {
-		start: function(event) {
-			if (!$.ppdrag.current) {
-				$.ppdrag.current = { 
-					el: this,
-					oleft: parseInt(this.style.left) || 0,
-					otop: parseInt(this.style.top) || 0,
-					ox: event.pageX || event.screenX,
-					oy: event.pageY || event.screenY
-				};
-				var current = $.ppdrag.current;
-				var data = $.data(current.el, 'pp-ppdrag');
-				if (data.options.zIndex) {
-					current.zIndex = current.el.style.zIndex;
-					current.el.style.zIndex = data.options.zIndex;
-				}
-				$.ppdrag.addEvent(document, 'mouseup', $.ppdrag.stop, true);
-				$.ppdrag.addEvent(document, 'mousemove', $.ppdrag.drag, true);
-			}
-			if (event.stopPropagation) event.stopPropagation();
-			if (event.preventDefault) event.preventDefault();
-			return false;
-		},
-		
-		drag: function(event) {
-			if (!event) var event = window.event;
-			var current = $.ppdrag.current;
-			current.el.style.left = (current.oleft + (event.pageX || event.screenX) - current.ox) + 'px';
-			current.el.style.top = (current.otop + (event.pageY || event.screenY) - current.oy) + 'px';
-			if (event.stopPropagation) event.stopPropagation();
-			if (event.preventDefault) event.preventDefault();
-			return false;
-		},
-		
-		stop: function(event) {
-			var current = $.ppdrag.current;
-			var data = $.data(current.el, 'pp-ppdrag');
-			$.ppdrag.removeEvent(document, 'mousemove', $.ppdrag.drag, true);
-			$.ppdrag.removeEvent(document, 'mouseup', $.ppdrag.stop, true);
-			if (data.options.zIndex) {
-				current.el.style.zIndex = current.zIndex;
-			}
-			if (data.options.stop) {
-				data.options.stop.apply(current.el);
-			}
-			$.ppdrag.current = null;
-			if (event.stopPropagation) event.stopPropagation();
-			if (event.preventDefault) event.preventDefault();
-			return false;
-		},
-		
-		addEvent: function(obj, type, fn, mode) {
-			if (obj.addEventListener)
-				obj.addEventListener(type, fn, mode);
-			else if (obj.attachEvent) {
-				obj["e"+type+fn] = fn;
-				obj[type+fn] = function() { obj["e"+type+fn](window.event); }
-				obj.attachEvent("on"+type, obj[type+fn]);
-			}
-		},
-		
-		removeEvent: function(obj, type, fn, mode) {
-			if (obj.removeEventListener)
-				obj.removeEventListener(type, fn, mode);
-			else if (obj.detachEvent) {
-				obj.detachEvent("on"+type, obj[type+fn]);
-				obj[type+fn] = null;
-				obj["e"+type+fn] = null;
-			}
-		}
-		
-	};
-
-})(jQuery);
-
-
 /**
  * Cookie plugin
  *
@@ -713,24 +568,198 @@ jQuery.cookie = function(name, value, options) {
  */
 
 (function($){
-$.fn.jqDrag=function(h){return i(this,h,'d');};
-$.fn.jqResize=function(h){return i(this,h,'r');};
-$.jqDnR={dnr:{},e:0,
-drag:function(v){
- if(M.k == 'd')E.css({left:M.X+v.pageX-M.pX,top:M.Y+v.pageY-M.pY});
- else E.css({width:Math.max(v.pageX-M.pX+M.W,0),height:Math.max(v.pageY-M.pY+M.H,0)});
-  return false;},
-stop:function(){E.css('opacity',M.o);$().unbind('mousemove',J.drag).unbind('mouseup',J.stop);}
-};
-var J=$.jqDnR,M=J.dnr,E=J.e,
-i=function(e,h,k){return e.each(function(){h=(h)?$(h,e):e;
- h.bind('mousedown',{e:e,k:k},function(v){var d=v.data,p={};E=d.e;
- // attempt utilization of dimensions plugin to fix IE issues
- if(E.css('position') != 'relative'){try{E.position(p);}catch(e){}}
- M={X:p.left||f('left')||0,Y:p.top||f('top')||0,W:f('width')||E[0].scrollWidth||0,H:f('height')||E[0].scrollHeight||0,pX:v.pageX,pY:v.pageY,k:d.k,o:E.css('opacity')};
- E.css({opacity:0.8});$().mousemove($.jqDnR.drag).mouseup($.jqDnR.stop);
- return false;
- });
-});},
-f=function(k){return parseInt(E.css(k))||false;};
+	$.fn.jqDrag   = function(h){return i(this,h,'d');};
+	$.fn.jqResize = function(h){return i(this,h,'r');};
+	$.jqDnR = {
+		dnr:{},e:0,
+		drag:function(v){
+			if(M.k == 'd') {
+				E.css({left:M.X+v.pageX-M.pX,top:M.Y+v.pageY-M.pY});
+			} else {
+				E.css({width:Math.max(v.pageX-M.pX+M.W,0),height:Math.max(v.pageY-M.pY+M.H,0)});
+			}
+			return false;
+		},
+		stop:function(){
+			E.css('opacity',M.o);
+			$().unbind('mousemove',J.drag).unbind('mouseup',J.stop);
+		}
+	};
+	var J = $.jqDnR,
+		M = J.dnr,
+		E = J.e,
+		f = function(k){ return parseInt(E.css(k))||false; },
+		i = function(e,h,k){
+			return e.each(function(){
+				h = (h) ? $(h,e) : e;
+				h.bind('mousedown',{e:e,k:k},function(v){
+					var d = v.data,p = {}; E = d.e;
+					// attempt utilization of dimensions plugin to fix IE issues
+					if (E.css('position') != 'relative'){
+						try{
+							E.position(p);
+						} catch(e){}
+					}
+					M = {
+						X:p.left||f('left')||0,
+						Y:p.top||f('top')||0,
+						W:f('width')||E[0].scrollWidth||0,
+						H:f('height')||E[0].scrollHeight||0,
+						pX:v.pageX,
+						pY:v.pageY,
+						k:d.k,
+						o:E.css('opacity')
+					};
+					E.css({opacity:0.8});
+					$().mousemove($.jqDnR.drag).mouseup($.jqDnR.stop);
+					return false;
+				});
+			});
+		};
 })(jQuery);
+
+
+/*
+ * ContextMenu - jQuery plugin for right-click context menus
+ *
+ * Author: Chris Domigan
+ * Contributors: Dan G. Switzer, II
+ * Parts of this plugin are inspired by Joern Zaefferer's Tooltip plugin
+ *
+ * Dual licensed under the MIT and GPL licenses:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *   http://www.gnu.org/licenses/gpl.html
+ *
+ * Version: r2
+ * Date: 16 July 2007
+ *
+ * For documentation visit http://www.trendskitchens.co.nz/jquery/contextmenu/
+ *
+ */
+
+(function($) {
+
+ 	var menu, shadow, trigger, content, hash, currentTarget;
+  var defaults = {
+    menuStyle: {
+      listStyle: 'none',
+      padding: '1px',
+      margin: '0px',
+      backgroundColor: '#fff',
+      border: '1px solid #999',
+      width: '100px'
+    },
+    itemStyle: {
+      margin: '0px',
+      color: '#000',
+      display: 'block',
+      cursor: 'default',
+      padding: '3px',
+      border: '1px solid #fff',
+      backgroundColor: 'transparent'
+    },
+    itemHoverStyle: {
+      border: '1px solid #0a246a',
+      backgroundColor: '#b6bdd2'
+    },
+    eventPosX: 'pageX',
+    eventPosY: 'pageY',
+    shadow : true,
+    onContextMenu: null,
+    onShowMenu: null
+ 	};
+
+  $.fn.contextMenu = function(id, options) {
+    if (!menu) {                                      // Create singleton menu
+      menu = $('<div id="jqContextMenu"></div>')
+               .hide()
+               .css({position:'absolute', zIndex:'500'})
+               .appendTo('body')
+               .bind('click', function(e) {
+                 e.stopPropagation();
+               });
+    }
+    if (!shadow) {
+      shadow = $('<div></div>')
+                 .css({backgroundColor:'#000',position:'absolute',opacity:0.2,zIndex:499})
+                 .appendTo('body')
+                 .hide();
+    }
+    hash = hash || [];
+    hash.push({
+      id : id,
+      menuStyle: $.extend({}, defaults.menuStyle, options.menuStyle || {}),
+      itemStyle: $.extend({}, defaults.itemStyle, options.itemStyle || {}),
+      itemHoverStyle: $.extend({}, defaults.itemHoverStyle, options.itemHoverStyle || {}),
+      bindings: options.bindings || {},
+      shadow: options.shadow || options.shadow === false ? options.shadow : defaults.shadow,
+      onContextMenu: options.onContextMenu || defaults.onContextMenu,
+      onShowMenu: options.onShowMenu || defaults.onShowMenu,
+      eventPosX: options.eventPosX || defaults.eventPosX,
+      eventPosY: options.eventPosY || defaults.eventPosY
+    });
+
+    var index = hash.length - 1;
+    $(this).bind('contextmenu', function(e) {
+      // Check if onContextMenu() defined
+      var bShowContext = (!!hash[index].onContextMenu) ? hash[index].onContextMenu(e) : true;
+      if (bShowContext) display(index, this, e, options);
+      return false;
+    });
+    return this;
+  };
+
+  function display(index, trigger, e, options) {
+    var cur = hash[index];
+    content = $('#'+cur.id).find('ul:first').clone(true);
+    content.css(cur.menuStyle).find('li').css(cur.itemStyle).hover(
+      function() {
+        $(this).css(cur.itemHoverStyle);
+      },
+      function(){
+        $(this).css(cur.itemStyle);
+      }
+    ).find('img').css({verticalAlign:'middle',paddingRight:'2px'});
+
+    // Send the content to the menu
+    menu.html(content);
+
+    // if there's an onShowMenu, run it now -- must run after content has been added
+		// if you try to alter the content variable before the menu.html(), IE6 has issues
+		// updating the content
+    if (!!cur.onShowMenu) menu = cur.onShowMenu(e, menu);
+
+    $.each(cur.bindings, function(id, func) {
+      $('#'+id, menu).bind('click', function(e) {
+        hide();
+        func(trigger, currentTarget);
+      });
+    });
+
+    menu.css({'left':e[cur.eventPosX],'top':e[cur.eventPosY]}).show();
+    if (cur.shadow) shadow.css({width:menu.width(),height:menu.height(),left:e.pageX+2,top:e.pageY+2}).show();
+    $(document).one('click', hide);
+  }
+
+  function hide() {
+    menu.hide();
+    shadow.hide();
+  }
+
+  // Apply defaults
+  $.contextMenu = {
+    defaults : function(userDefaults) {
+      $.each(userDefaults, function(i, val) {
+        if (typeof val == 'object' && defaults[i]) {
+          $.extend(defaults[i], val);
+        }
+        else defaults[i] = val;
+      });
+    }
+  };
+
+})(jQuery);
+
+$(function() {
+  $('div.contextMenu').hide();
+});

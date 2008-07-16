@@ -28,10 +28,10 @@ require '../global.php';
  */
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){ 
-    $_USER = check_login('manage','logout.php');
+    $_USER = check_login('system','logout.php');
     $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
     $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><base target="main" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-    $hl.= '<title>'.L('manage/@title').'</title>';
+    $hl.= '<title>'.L('system/@title').'</title>';
     $hl.= '<link href="system/images/style.css" rel="stylesheet" type="text/css" />';
     $hl.= '<script type="text/javascript" src="../common/js/jquery.js?ver=1.2.6"></script>';
     $hl.= '<script type="text/javascript" src="../common/js/jquery.lazycms.js?ver=1.0"></script>';
@@ -41,20 +41,38 @@ function lazy_default(){
     $hl.= '<div class="logo"><a href="manage.php" target="_top"><img src="system/images/logo.png" alt="LazyCMS '.LAZY_VERSION.'" /></a></div>';
     $hl.= '<div id="version">Version: <span>'.LAZY_VERSION.'</span></div>';
     $hl.= '<div class="shortcut"><a href="javascript:;" onclick="toggleShortcut();"><img src="../common/images/icon/fav.png" /></a><a href="javascript:;" onclick="toggleAddShortcut()"><img src="../common/images/icon/fav-add.png" /></a></div>';
-    $hl.= '<ul id="menu">
-        <li><span>系统管理<b class="down-arrow"></b></span>
-            <ul>
-                <li><a href="manage.php" class="icon-16-cpanel" target="_top">控制面板</a></li>
-                <li class="hr"></li>
-                <li><a href="system/users.php" class="icon-16-user">用户管理</a></li>
-                <li><a href="#" class="icon-16-media">文件管理</a></li>
-                <li class="hr"></li>
-                <li><a href="#" class="icon-16-install">安装卸载</a></li>
-                <li><a href="system/settings.php" class="icon-16-config">全局设置</a></li>
-                <li class="hr"></li>
-                <li><a href="logout.php" class="icon-16-logout" target="_top">退出登录</a></li>
-            </ul>
-        </li>
+    $hl.= '<ul id="menu">';
+    $hl.= '<li><span>'.L('system/manage').'<b class="down-arrow"></b></span><ul>';
+    $hl.= '    <li><a href="manage.php" class="icon-16-cpanel" target="_top">'.L('system/cpanel').'</a></li>';
+    $hl.= '    <li class="hr"></li>';
+    $hr = false;
+    if (instr($_USER['purview'],'system/users')) {
+        $hr = true;
+        $hl.= '<li><a href="system/users.php" class="icon-16-user">'.L('users/@title').'</a></li>';    
+    }
+    if (instr($_USER['purview'],'system/webftp')) {
+        $hr = true;
+        $hl.= '<li><a href="#" class="icon-16-media">'.L('webftp/@title').'</a></li>';
+    }
+    if ($hr) {
+        $hl.= '<li class="hr"></li>';
+    }
+    $hr = false;
+    if (instr($_USER['purview'],'system/module')) {
+        $hr = true;
+        $hl.= '<li><a href="#" class="icon-16-install">'.L('module/@title').'</a></li>';
+    }
+    if (instr($_USER['purview'],'system/settings')) {
+        $hr = true;
+        $hl.= '<li><a href="system/settings.php" class="icon-16-config">'.L('settings/@title').'</a></li>';
+    }
+    if ($hr) {
+        $hl.= '<li class="hr"></li>';
+    }
+    $hl.= '    <li><a href="logout.php" class="icon-16-logout" target="_top" onclick="return confirm(\''.L('confirm/logout').'\')">'.L('common/logout').'</a></li>';
+    $hl.= '</ul></li>';
+
+    $hl.= '    
         <li><span>内容管理<b class="down-arrow"></b></span>
             <ul>
                 <li><a href="#" class="icon-16-page">单页管理</a></li>
@@ -65,17 +83,17 @@ function lazy_default(){
                 <li><a href="#" class="icon-16-category">分类管理</a></li>
                 <li><a href="#" class="icon-16-model">模型管理</a></li>
             </ul>
-        </li>
-        <li><span>帮助<b class="down-arrow"></b></span>
-            <ul>
-                <li><a href="http://www.lazycms.net/" class="icon-16-home" target="_blank">官方网站</a></li>
-                <li><a href="http://forums.lazycms.net/" class="icon-16-help" target="_blank">支持论坛</a></li>
-                <li class="hr"></li>
-                <li><a href="system/sysinfo.php" class="icon-16-info">系统信息</a></li>
-            </ul>
-        </li>
-    </ul>';
-    $hl.= '<ul class="menu"><li><a href="../" target="_blank">预览网站</a></li><li><a href="logout.php" target="_top" onclick="return confirm(\''.L('confirm/logout').'\')">退出登录</a></li></ul>';
+        </li>';
+
+    $hl.= '<li><span>帮助<b class="down-arrow"></b></span><ul>';
+    $hl.= '    <li><a href="http://www.lazycms.net/" class="icon-16-home" target="_blank">官方网站</a></li>';
+    $hl.= '    <li><a href="http://forums.lazycms.net/" class="icon-16-help" target="_blank">支持论坛</a></li>';
+    $hl.= '    <li class="hr"></li>';
+    $hl.= '    <li><a href="system/sysinfo.php" class="icon-16-info">'.L('sysinfo/@title').'</a></li>';
+    $hl.= '    </ul>';
+    $hl.= '</li></ul>';
+
+    $hl.= '<ul class="menu"><li><a href="../" target="_blank">'.L('common/preview').'</a></li><li><a href="logout.php" target="_top" onclick="return confirm(\''.L('confirm/logout').'\')">'.L('common/logout').'</a></li></ul>';
     $hl.= '</div>';
     $hl.= '<iframe src="about:blank" id="main" name="main" width="99%" marginwidth="0" height="510" marginheight="0" scrolling="no" frameborder="0"></iframe>';
     $hl.= '<div id="footer"><a href="http://www.lazycms.net" target="_blank">Copyright &copy; LazyCMS.net All Rights Reserved.</a></div>';
@@ -129,7 +147,7 @@ function lazy_default(){
 }
 // lazy_addShortcut *** *** www.LazyCMS.net *** ***
 function lazy_addShortcut(){
-    $_USER    = check_login('manage','logout.php');
+    $_USER    = check_login('system','logout.php');
     $sName    = isset($_POST['ShortcutName']) ? $_POST['ShortcutName'] : null;
     $sUrl     = isset($_POST['ShortcutUrl']) ? $_POST['ShortcutUrl'] : null;
     $sortName = isset($_POST['ShortcutSort']) ? $_POST['ShortcutSort'] : null;
@@ -164,7 +182,7 @@ function lazy_addShortcut(){
 }
 // lazy_createSort *** *** www.LazyCMS.net *** ***
 function lazy_createSort(){
-    $_USER    = check_login('manage','logout.php');
+    $_USER    = check_login('system','logout.php');
     $UserData = 'system/data/'.strtolower($_USER['username']);
     $XMLFile  = $UserData.'/shortcut.xml';
     $sortName = isset($_POST['ShortcutSortName']) ? $_POST['ShortcutSortName'] : null;
@@ -198,7 +216,7 @@ function lazy_createSort(){
 }
 // lazy_deleteSort *** *** www.LazyCMS.net *** ***
 function lazy_deleteSort(){
-    $_USER    = check_login('manage','logout.php');
+    $_USER    = check_login('system','logout.php');
     $UserData = 'system/data/'.strtolower($_USER['username']);
     $XMLFile  = $UserData.'/shortcut.xml';
     $sortName = isset($_POST['ShortcutSortName']) ? $_POST['ShortcutSortName'] : null;
