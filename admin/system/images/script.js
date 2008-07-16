@@ -38,6 +38,7 @@ $(document).ready(function(){
 	toggleShortcut();
 	// 批量去除连接虚线
 	$('a').focus(function(){ this.blur(); });
+	$('#addShortcut').jqDrag('.head');
 });
 
 // toggleShortcutActive *** *** www.LazyCMS.net *** ***
@@ -148,6 +149,19 @@ function toggleShortcut(){
 				});
 				I1+= '</dl>';
 				$('div.body',shortcut).append(I1).css('background-image','none');
+				/*
+				$('#shortcut .body a').mousedown(function(){
+					$(this)
+						.css({cursor:'move'})
+						.unbind().click(function(){return false;})
+						.after($(this).clone().css({opacity:0.5}))
+						.css({position:'absolute'});
+				});
+				*/
+				$('#shortcut .body dd').css({cursor:'move',position:'relative'}).mousedown(function(){
+					$('a',this).unbind().click(function(){return false});
+					$(this).jqDrag();
+				}).find('a').css({cursor:'move'});
 			});
 			// 点击隐藏层
 			$('dd a',shortcut).click(function(){
@@ -170,7 +184,7 @@ function iframeCover(){
 		}
 	}
 }
-// iframeCover *** *** www.LazyCMS.net *** ***
+// selectIcon *** *** www.LazyCMS.net *** ***
 function selectIcon(obj){
 	var $this = $(obj);
 	var title = $this.attr('title');

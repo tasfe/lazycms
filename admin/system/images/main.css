@@ -56,5 +56,5 @@ body { width:99%; display:table; margin:3px; background: #F9FDFF; }
 	#box div.purview{ float:left; }
 	#box p.button{ margin-left:5px;}
 	#box div.but{ width:99.5%; margin:0 auto 3px auto; display:table; }
-	#box div.button{ float:left;}
+	#box div.button{ float:left; display:block; padding-bottom:1px;}
 	#box div.pages{float:right;}
