@@ -53,9 +53,7 @@ class lazy_sqlite extends DB{
     // execute *** *** www.LazyCMS.net *** ***
     private function execute($sql,$func,$type=''){
         $this->connect();
-        $sql = preg_replace('/\#\~(.+)\~\#/e','$this->config(\'\\1\')',$sql);
-        $sql = preg_replace('/`(#@_)(\w+)`/i','$2',$sql);
-        $sql = str_replace('`','',$sql);
+        $sql = preg_replace(array('/\#\~(.+)\~\#/e','/`(#@_)(\w+)`/i','/`([^`]+)`/'),array('$this->config(\'\\1\')','`$2`','[$1]'),$sql);
         $this->_sql = $sql;
         
         if(!($I1= $func($this->_conn,$sql))){

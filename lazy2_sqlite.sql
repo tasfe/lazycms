@@ -20,8 +20,8 @@ CREATE TABLE system_fields (
   fieldvalue text,
   widgetype varchar(20)
 );
-CREATE INDEX fieldename ON system_fields(fieldename);
-CREATE INDEX module ON system_fields(module);
+CREATE INDEX IDX_system_fields__fieldename ON system_fields(fieldename);
+CREATE INDEX IDX_system_fields__module ON system_fields(module);
 
 -- 
 -- 导出表中的数据 system_fields
@@ -42,7 +42,7 @@ CREATE TABLE system_group (
   system tinyint(1) default '0',
   UNIQUE (groupename)
 );
-CREATE INDEX system ON system_group(system);
+CREATE INDEX IDX_system_group__system ON system_group(system);
 
 -- 
 -- 导出表中的数据 system_group
@@ -66,8 +66,8 @@ CREATE TABLE system_model (
   addtable varchar(50),
   modelstate tinyint(1) default '1'
 );
-CREATE INDEX modelename ON system_model(modelename);
-CREATE INDEX modelstate ON system_model(modelstate);
+CREATE INDEX IDX_system_model__modelename ON system_model(modelename);
+CREATE INDEX IDX_system_model__modelstate ON system_model(modelstate);
 
 -- 
 -- 导出表中的数据 system_model
@@ -96,10 +96,10 @@ CREATE TABLE system_users (
   islock tinyint(1) default '0',
   UNIQUE (username)
 );
-CREATE INDEX groupid ON system_users(groupid);
-CREATE INDEX usermail ON system_users(usermail);
-CREATE INDEX isdel ON system_users(isdel);
-CREATE INDEX islock ON system_users(islock);
+CREATE INDEX IDX_system_users__groupid ON system_users(groupid);
+CREATE INDEX IDX_system_users__usermail ON system_users(usermail);
+CREATE INDEX IDX_system_users__isdel ON system_users(isdel);
+CREATE INDEX IDX_system_users__islock ON system_users(islock);
 
 -- 
 -- 导出表中的数据 system_users
@@ -134,9 +134,9 @@ CREATE TABLE article_sort (
   UNIQUE (sortname),
   UNIQUE (sortpath)
 );
-CREATE INDEX sortid1 ON article_sort(sortid1);
-CREATE INDEX sortname ON article_sort(sortname);
-CREATE INDEX modelid ON article_sort(modelid);
+CREATE INDEX IDX_article_sort__sortid1 ON article_sort(sortid1);
+CREATE INDEX IDX_article_sort__sortname ON article_sort(sortname);
+CREATE INDEX IDX_article_sort__modelid ON article_sort(modelid);
 
 
 -- --------------------------------------------------------
@@ -158,8 +158,8 @@ CREATE TABLE article_index (
   isdel tinyint(1) default '0',
   UNIQUE (artpath)
 );
-CREATE INDEX sortid ON article_index(sortid);
-CREATE INDEX modelid ON article_index(modelid);
+CREATE INDEX IDX_article_index__sortid ON article_index(sortid);
+CREATE INDEX IDX_article_index__modelid ON article_index(modelid);
 
 
 -- --------------------------------------------------------
@@ -176,6 +176,6 @@ CREATE TABLE article_keywords (
   keysum int(11),
   UNIQUE (keyword)
 );
-CREATE INDEX artid ON article_keywords(artid);
-CREATE INDEX sortid ON article_keywords(sortid);
-CREATE INDEX keyword ON article_keywords(keyword);
+CREATE INDEX IDX_article_keywords__artid ON article_keywords(artid);
+CREATE INDEX IDX_article_keywords__sortid ON article_keywords(sortid);
+CREATE INDEX IDX_article_keywords__keyword ON article_keywords(keyword);
