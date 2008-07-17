@@ -1,3 +1,4 @@
+var topUrl = top.location.href.replace(/#(.+)?/,'');
 $(document).ready(function(){
     // Reset separator width
     $('#menu li.hr').width($('#menu li.hr').parent().width());
@@ -32,15 +33,25 @@ $(document).ready(function(){
 	});
 	// 框架自使用高度调整
 	$('#main').load(function(){
+		top.location.href = topUrl + '#' + getUrl();
 		$(this).height($(this).contents().find('body').height()+7);
 	});
-	// 默认显示快捷方式
-	toggleShortcut();
 	// 批量去除连接虚线
 	$('a').focus(function(){ this.blur(); });
 	$('#addShortcut').jqDrag('.head');
+	// 根据锚点连接识别路径
+	var srcUrl = top.location.href.replace(/^[^#]+#?/,'');
+		if (srcUrl!=='') {
+			$('#main').attr('src',srcUrl);
+		} else {
+			// 默认显示快捷方式
+			toggleShortcut();
+		}
 });
-
+// getUrl *** *** www.LazyCMS.net *** ***
+function getUrl(){
+	return main.location.href.replace(topUrl.replace(topUrl.split('/').pop(),''),'');
+}
 // toggleShortcutActive *** *** www.LazyCMS.net *** ***
 function toggleShortcutActive(){
 	$('#top div.shortcut a:first').toggleClass('active');
@@ -50,7 +61,7 @@ function toggleAddShortcut(){
 	$('input.error').unbind().toggleClass('error'); $('.jTip').remove();
 	var addShortcut = $('#addShortcut').toggle('fast');
 		$('input[@name=ShortcutName]',addShortcut).val($('#main').contents().find('title').html());
-		$('input[@name=ShortcutUrl]',addShortcut).val(main.location.href.replace(main.location.protocol + '//' + main.location.hostname,''));
+		$('input[@name=ShortcutUrl]',addShortcut).val(getUrl());
 }
 // toggleShortcutSort *** *** www.LazyCMS.net *** ***
 function toggleShortcutSort(){
