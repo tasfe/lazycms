@@ -17,6 +17,23 @@ common 共享文件目录
 themes 主题目录
 
 
+
+目录权限设置
+
+/			  -- 0777
+/lazy2.sql		  -- 0777
+/lazy2_sqlite.sql	  -- 0777
+/install.php		  -- 0777
+/common/config.php	  -- 0777
+/common/data/module.php   -- 0777
+/common/data/dict/	  -- 0777
+/common/images/icons.css  -- 0644
+
+
+
+
+
+
 自动载入语言包文件。
 文章智能提取
 模板扔掉内部模板，外部模板的概念，直接用{include:header.htm/}

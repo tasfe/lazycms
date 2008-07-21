@@ -33,7 +33,7 @@ function lazy_before(){
     G('TABS',
         L('sysinfo/@title').':sysinfo.php;'
         .L('sysinfo/settings').':sysinfo.php?action=settings;'
-        .L('sysinfo/directory').':sysinfo.php?action=directory;'
+        .L('sysinfo/directory/@title').':sysinfo.php?action=directory;'
         .L('sysinfo/phpinfo').':sysinfo.php?action=phpinfo'
     );
 }
@@ -116,11 +116,21 @@ function lazy_Settings(){
 
 // lazy_Directory *** *** www.LazyCMS.net *** ***
 function lazy_Directory(){
+    $paths = array(
+        '/',
+        '/common/config.php',
+        '/common/data/dict/',
+        '/common/data/module.php',
+        '/common/images/icons.css',
+    );
     $hl = '<table class="table">';
     $hl.= '<tbody>';
-    $hl.= '<tr><td>开发中...</td></tr>';
+    $hl.= '<tr><th>'.L('sysinfo/directory/path').'</th><th>'.L('sysinfo/directory/read').'</th><th>'.L('sysinfo/directory/write').'</th></tr>';
+    foreach ($paths as $path) {
+        $hl.= '<tr><td>'.$path.'</td><td>'.isok(is_readable(LAZY_PATH.$path)).'</td><td>'.isok(is_writable(LAZY_PATH.$path)).'</td></tr>';
+    }
     $hl.= '</tbody></table>';
-    print_x(L('sysinfo/directory'),fieldset(L('sysinfo/directory'),$hl));
+    print_x(L('sysinfo/directory/@title'),fieldset(L('sysinfo/directory/@title'),$hl));
 }
 
 // lazy_phpinfo *** *** www.LazyCMS.net *** ***

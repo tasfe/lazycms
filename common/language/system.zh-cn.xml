@@ -230,7 +230,11 @@
             <post_max_size>最大POST数据</post_max_size>
 		</phpsettings>
         <settings>配置信息</settings>
-        <directory>目录属性</directory>
+        <directory title="目录属性">
+			<path>路径</path>
+			<read>可读</read>
+			<write>可写</write>
+		</directory>
         <phpinfo>PHP信息</phpinfo>
 	</sysinfo>
     
