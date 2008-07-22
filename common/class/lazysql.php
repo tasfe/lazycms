@@ -148,9 +148,9 @@ class LazySQL{
                 return $this->truncate($table);
                 break;
             case 'insert':
-                $table  = $sQuery[2];
-                $fields = preg_replace('/(.+?)\((.+?)\) *values *\((.+?)\);*/is',"\\2",$query);
-                $values = preg_replace('/(.+?)\((.+?)\) *values *\((.+?)\);*/is',"\\3",$query);
+                $table  = preg_replace('/insert into (.+?) *\((.+?)\) *values *\((.+?)\);*/ie',"trim('\$1','`')",$query);
+                $fields = preg_replace('/insert into (.+?) *\((.+?)\) *values *\((.+?)\);*/is','$2',$query);
+                $values = preg_replace('/insert into (.+?) *\((.+?)\) *values *\((.+?)\);*/is','$3',$query);
                 return $this->insert($table,$fields,$values);
                 break;
             case 'select': case 'delete':
@@ -181,7 +181,7 @@ class LazySQL{
     }
     // create_table *** *** www.LazyCMS.net *** ***
     private function create_table($table,$fields,$exists=false){
-        $tFloder = $this->path.$table;
+        $tFloder = $this->path.$table.SEPARATOR;
         $eFields = explode(',', $fields);
         $length  = count($eFields);
         for($i=0,$j=0; $i<$length; $i++) {
@@ -209,21 +209,21 @@ class LazySQL{
         // 创建数据表文件夹
         if (mkdirs($tFloder)) {
             // 创建数据文件夹
-            mkdirs($tFloder.SEPARATOR.'data');
+            mkdirs($tFloder.'data');
             // 创建索引文件夹
-            mkdirs($tFloder.SEPARATOR.'index');
+            mkdirs($tFloder.'index');
             $sI1 = null;
             for($i=0;$i<$length;$i++) {
                 $eSub = explode(' ',$eFields[$i]);
                 $eSub[2] = isset($eSub[2]) ? $eSub[2] : null;
                 $sI1 .= $eSub[0].",".$eSub[1].",(".$eSub[2].")\n";
                 if ($eSub[2] == 'index') {
-                    $this->write($tFloder.SEPARATOR.'index'.SEPARATOR.trim($eSub[0],'`').'.php');
+                    $this->write($tFloder.'index'.SEPARATOR.trim($eSub[0],'`').'.php');
                 }
             }
-            $this->write($tFloder.SEPARATOR.'structure.php',$sI1);
-            $this->write($tFloder.SEPARATOR.'primary.php');
-            $this->write($tFloder.SEPARATOR.'rows_count.php','0');
+            $this->write($tFloder.'structure.php',$sI1);
+            $this->write($tFloder.'primary.php');
+            $this->write($tFloder.'rows_count.php','0');
             return true;
         }
     }
@@ -233,16 +233,17 @@ class LazySQL{
     }
     // truncate *** *** www.LazyCMS.net *** ***
     private function truncate($table){
-        $tFloder = $this->path.$table;
+        $tFloder = $this->path.$table.SEPARATOR;
+        if (!file_exists($tFloder)) { return false; }
         $index   = $this->get_index($table);
         $length  = count($index);
         for($i=0;$i<$length;$i++) {
-            $this->write($tFloder.SEPARATOR.'index'.SEPARATOR.$index[$i]['field'].'.php','',true);
+            $this->write($tFloder.'index'.SEPARATOR.$index[$i]['field'].'.php','',true);
         }
         // 先删除，再创建，达到清空数据表的目的
-        rmdirs($tFloder.SEPARATOR.'data'); mkdirs($tFloder.SEPARATOR.'data');
-        $this->write($tFloder.SEPARATOR.'primary.php','',true);
-        $this->write($tFloder.SEPARATOR.'rows_count.php','0',true);
+        $dFloder = $tFloder.'data'; rmdirs($dFloder); mkdirs($dFloder);
+        $this->write($tFloder.'primary.php','',true);
+        $this->write($tFloder.'rows_count.php','0',true);
         return true;
     }
     // get_index *** *** www.LazyCMS.net *** ***
@@ -252,12 +253,13 @@ class LazySQL{
         $count = count($eCont); $I1 = array();
         for ($i=0,$j=0;$i<$count;$i++) {
             $eSub = explode(',', $eCont[$i]);
+            $eSub[2] = isset($eSub[2]) ? $eSub[2] : null;
             if($eSub[2] == '(index)') {
                 $I1[$j]['field'] = trim($eSub[0],'`');
-                if (empty($field) && empty($value)) {
-                    $length = sizeof($field);
+                if (!empty($field) && !empty($value)) {
+                    $length = count($field);
                     for($k=0;$k<$length;$k++) {
-                        if ($field[$k] == $I1[$j]['field']) {
+                        if ($field[$k] == trim($eSub[0],'`')) {
                             $I1[$j]['value'] = $value[$k]; break;
                         }
                     }
@@ -289,9 +291,77 @@ class LazySQL{
             }
         }
     }
+    // insert *** *** www.LazyCMS.net *** ***
+    private function insert($table,$fields,$values){
+        $tFloder = $this->path.$table.SEPARATOR;
+        $table   = trim($table,'`');
+        $eFields = explode(',',$fields);
+        $eValues = explode(',',$values);
+        $fcount  = count($eFields); 
+        $vcount  = count($eValues); 
+        if ($vcount != $fcount) {
+            trigger_error('Fields and Value can\'t match.');
+        }
+        // 更新maxID
+        $ID = (int)$this->read($tFloder.'rows_count.php'); $ID++;
+        $this->write($tFloder.'rows_count.php',$ID,true);
+        // 插入主键值
+        $this->write($tFloder.'primary.php',$ID."\n");
+
+        $aFields = $this->get_fields($fields);
+        $aValues = $this->get_values($values);
+        $index   = $this->get_index($table,$aFields,$aValues);
+        $content = $this->get_content($aFields,$aValues,$ID);
+        $this->write_index($table,$index,$ID);
+        $dFloder = $tFloder.'data'.SEPARATOR.$this->get_serial($ID);
+        mkdirs($dFloder); $TG = $dFloder.$ID.'.php';
+        return $this->write($TG,$content,true);
+    }
     // alter_table *** *** www.LazyCMS.net *** ***
     private function alter_table($table,$field,$nField,$default){
         $file = $this->path.$table;
+    }
+    // get_fields *** *** www.LazyCMS.net *** ***
+    private function get_fields($fields){
+        $I1 = array();
+        $eFields = explode(',',$fields);
+        $length  = count($eFields);
+        if (!$length) { return $I1; }
+        foreach ($eFields as $field) {
+            $I1[] = trim($field,'`');
+        }
+        return $I1;
+    }
+    // get_values *** *** www.LazyCMS.net *** ***
+    private function get_values($values){
+        $I1 = array();
+        $eValues = explode(',',$values);
+        $length  = count($eValues);
+        if (!$length) { return $I1; }
+        foreach ($eValues as $value) {
+            $I1[] = trim($value,"'");
+        }
+        return $I1;
+    }
+    // get_content *** *** www.LazyCMS.net *** ***
+    private function get_content($fields,$values,$ID=0){
+        $length = count($fields); $I1 = null;
+        for ($i=0; $i<$length; $i++) {
+            if (strtolower($values[$i])=='null') {
+                $values[$i] = $ID;
+            }
+            $I1.= "`".$fields[$i]."`'".$values[$i]."'".($i==($length-1) ? '':"\n");
+        }
+        return $I1;
+    }
+    // write_index *** *** www.LazyCMS.net *** ***
+    private function write_index($table,$index,$ID){
+        $tFloder = $this->path.$table.SEPARATOR;
+        foreach ((array)$index as $v) {
+            $TG = $tFloder.'index'.SEPARATOR.$v['field'].'.php';
+            $this->write($TG,"'".$v['value']."','".$ID."'\n");
+        }
+        return true;
     }
     // write *** *** www.LazyCMS.net *** ***
     private function write($path,$content='',$mode=false){
@@ -312,6 +382,7 @@ class LazySQL{
         flock($fp,LOCK_EX + LOCK_NB);
         fwrite($fp,$content);
         fclose($fp);
+        return true;
     }
     // read *** *** www.LazyCMS.net *** ***
     private function read($path){
@@ -327,6 +398,14 @@ class LazySQL{
             $i++;
         }
         fclose($fp);
+        return $I1;
+    }
+    // get_serial *** *** www.LazyCMS.net *** ***
+    private function get_serial($ID=0){
+        $md5 = md5($ID); $I1 = null;
+        for ($i=1; $i<4; $i++) {
+            $I1.= substr($md5,0,$i).SEPARATOR;
+        }
         return $I1;
     }
 }

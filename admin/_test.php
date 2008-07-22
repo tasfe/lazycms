@@ -42,5 +42,9 @@ function lazy_default(){
     */
     //$db->exec("drop table `article1`;");
     $db->exec("truncate table `article`;");
-    echo 'ok';
+    
+    $GLOBALS['_beginTime'] = microtime(true);
+    for ($i=0; $i<100; $i++) { $db->exec("INSERT INTO `article`(`arttitle`,`artcontent`)values('{$i}.测试标题','{$i}.测试内容');"); }
+    $GLOBALS['_endTime'] = microtime(true);
+    echo number_format($GLOBALS['_endTime']-$GLOBALS['_beginTime'],6);
 }
