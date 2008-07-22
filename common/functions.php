@@ -40,7 +40,7 @@ function stripslashes_deep($l1) {
 
 // replace_root *** *** www.LazyCMS.net *** ***
 function replace_root($l1){
-    return str_replace(DIRECTORY_SEPARATOR,'/',str_replace(LAZY_PATH.DIRECTORY_SEPARATOR,C('SITE_BASE'),$l1));
+    return str_replace(SEPARATOR,'/',str_replace(LAZY_PATH.SEPARATOR,C('SITE_BASE'),$l1));
 }
 
 // t2js *** *** www.LazyCMS.net *** ***
@@ -187,19 +187,20 @@ function mkdirs($l1, $l2 = 0777){
 }
 
 // save_file *** *** www.LazyCMS.net *** ***
-function save_file($l1,$l2=''){
+function save_file($l1,$l2='',$mode=false){
     if (file_exists($l1)) {
         if (!is_writable($l1)) {
             // 设置ftp信息，则修改权限，反之则输出错误
             echo_json('没有可写权限<br/>文件：'.replace_root($l1),0);
         }
     }
-    if (!$fp = fopen($l1,'wb')) {
+    if (!$fp = fopen($l1,($mode?'wb':'ab'))) {
         trigger_error(L('error/createfile',array('file'=>$l1)));
     }
+    flock($fp,LOCK_EX + LOCK_NB);
     if (!fwrite($fp,$l2)) {
         trigger_error(L('error/writefile',array('file'=>$l1)));
-    };
+    }
     fclose($fp);
 }
 
@@ -262,8 +263,8 @@ function cnsubstr($l1,$l2){
     }
 }
 
-// load_file *** *** www.LazyCMS.net *** ***
-function load_file($l1){
+// read_file *** *** www.LazyCMS.net *** ***
+function read_file($l1){
     if (!is_file($l1)) { return ; }
     $fp   = fopen($l1,'rb');
     $size = filesize($l1);

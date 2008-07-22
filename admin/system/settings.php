@@ -50,7 +50,7 @@ function lazy_default(){
             $val->out();
         } else {
             // 读取 config.php
-            $config = load_file(COM_PATH.'/config.php');
+            $config = read_file(COM_PATH.'/config.php');
             $rs     = array();
             // 定义要获取的 input name
             $fields = array(

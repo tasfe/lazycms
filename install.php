@@ -31,7 +31,7 @@ function lazy_default(){
     $db = DB::factory(C('DSN_CONFIG'));
     if (sqlite_open($db->getName())) {
 
-        $db->batQuery(load_file(LAZY_PATH.'/lazy2_sqlite.sql'));
+        $db->batQuery(read_file(LAZY_PATH.'/lazy2_sqlite.sql'));
     }
     echo 'OK!';
 }

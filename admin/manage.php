@@ -125,7 +125,7 @@ function lazy_default(){
 
     $ICONS = COM_PATH.'/images/icons.css';
     if (is_file($ICONS)) {
-        if (preg_match_all('/\.icon\-32\-(\w+)/i',load_file($ICONS),$ios)) {
+        if (preg_match_all('/\.icon\-32\-(\w+)/i',read_file($ICONS),$ios)) {
             $hl.= '<p><label>'.L('shortcut/add/icon').'：</label>';
             $hl.= '<div class="icons">';
             foreach ($ios[1] as $io) {
@@ -221,7 +221,7 @@ function lazy_deleteSort(){
     $XMLFile  = $UserData.'/shortcut.xml';
     $sortName = isset($_POST['ShortcutSortName']) ? $_POST['ShortcutSortName'] : null;
     if (is_file($XMLFile)) {
-        $XML = load_file($XMLFile);
+        $XML = read_file($XMLFile);
         $XML = str_replace(array("\r","\n","\t","<dl>"),array('','','',"\n<dl>"),$XML);
         $XML = preg_replace('/\<dl\><dt\>'.xmlencode($sortName).'\<\/dt\>.*\<\/dl\>/i','',$XML);
         $XML = str_replace("\n",'',$XML);

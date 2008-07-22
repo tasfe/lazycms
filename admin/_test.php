@@ -18,39 +18,29 @@
  * | 或者访问 http://www.lazycms.net/ 获得详细信息。                           |
  * +---------------------------------------------------------------------------+
  */
-defined('COM_PATH') or die('Restricted access!');
+require '../global.php';
 /**
- * LazyCMS 系统定义文件
+ * 退出登陆
  *
  * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
  * @author      Lukin <mylukin@gmail.com>
- * @date        2008-6-17
+ * @date        2008-6-25
  */
-
-// 系统信息
-define('PHP_SAPI_NAME',php_sapi_name());
-define('IS_APACHE',strstr($_SERVER['SERVER_SOFTWARE'], 'Apache') || strstr($_SERVER['SERVER_SOFTWARE'], 'LiteSpeed') );
-define('IS_CGI',strncmp(PHP_SAPI_NAME,'cgi',3)==0 ? 1 : 0 );
-define('IS_IIS',PHP_SAPI_NAME =='isapi' ? 1 : 0);
-define('IIS_VER',IS_IIS ? substr($_SERVER["SERVER_SOFTWARE"],strrpos($_SERVER["SERVER_SOFTWARE"],'/')+1) :0);
-
-// 当前文件名
-if (!defined('PHP_FILE')) {
-    // CGI or FASTCGI模式下
-    if (IS_CGI) {
-        $I1 = explode('.php',$_SERVER['PHP_SELF']);
-        define('PHP_FILE',rtrim(str_replace($_SERVER['HTTP_HOST'],'',$I1[0].'.php'),'/'));
-    } else {
-        define('PHP_FILE',rtrim($_SERVER['SCRIPT_NAME'],'/'));
-    } unset($I1);
+// lazy_default *** *** www.LazyCMS.net *** ***
+function lazy_default(){ 
+    lazysql_open(LAZY_PATH.'/LazyCMS#DataBase');
+    $db = DB::factory('lazysql://path=LazyCMS#DataBase');
+    $db->select_db();
+    /*
+    $db->exec("
+        create table `article`(
+          `artid` '0' primary,
+          `arttitle` '' index,
+          `artcontent` ''
+        );
+    ");
+    */
+    //$db->exec("drop table `article1`;");
+    $db->exec("truncate table `article`;");
+    echo 'ok';
 }
-
-// 支持的URL模式
-define('URL_COMMON',   0);   //普通模式
-define('URL_PATHINFO', 1);   //PATHINFO模式
-define('URL_REWRITE',  2);   //REWRITE模式
-
-// 目录路径之间的分隔符
-define('SEPARATOR',DIRECTORY_SEPARATOR);
-
-define('LAZY_VERSION','2.0.0.0705');

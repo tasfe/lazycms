@@ -19,6 +19,8 @@
  * +---------------------------------------------------------------------------+
  */
 defined('COM_PATH') or die('Restricted access!');
+// 加载 LazySQL 支持类
+import('class.lazysql');
 /**
  * 数据操作抽象类
  *
@@ -122,44 +124,49 @@ abstract class DB {
     // parseDSN *** *** www.LazyCMS.net *** ***
     static function parseDSN($DSN){
         $scheme = strtolower(substr($DSN,0,strpos($DSN,':')));
-        if ($scheme=='sqlite') {
-            // DSN format: sqlite://db=LazyCMS.db
-            if (preg_match('/^(\w+):\/\/path\=(.+)$/i',trim($DSN),$info)){
-                $info[2] = trim($info[2]);
-                if (strncmp($info[2],'/',1)!==0 && substr($info[2],1,2)!==':/'){
-                    if ($pos = strrpos($info[2],'/')) {
-                        $dbpath = substr($info[2],0,$pos);
-                        $dbfile = substr($info[2],$pos+1);
-                        $folder = LAZY_PATH.'/'.$dbpath;
-                        mkdirs($folder); save_file($folder.'/index.html',' ');
-                    } else {
-                        $dbfile = $info[2];
-                        $folder = LAZY_PATH;
+        switch ($scheme) {
+            // DSN format: lazysql://path=LazyCMS#DataBase
+            case 'lazysql':
+            // DSN format: sqlite://path=LazyCMS.db
+            case 'sqlite': 
+                if (preg_match('/^(\w+):\/\/path\=(.+)$/i',trim($DSN),$info)){
+                    $info[2] = str_replace(array('\\','/'),SEPARATOR,trim($info[2]));
+                    if (strncmp($info[2],SEPARATOR,1)!==0 && strpos($info[2],':/')===false && strpos($info[2],':\\')===false){
+                        if ($pos = strrpos($info[2],SEPARATOR)) {
+                            $dbpath = substr($info[2],0,$pos);
+                            $dbfile = substr($info[2],$pos+1);
+                            $folder = LAZY_PATH.SEPARATOR.$dbpath;
+                            mkdirs($folder); save_file($folder.'/index.html',' ');
+                        } else {
+                            $dbfile = $info[2];
+                            $folder = LAZY_PATH;
+                        }
+                        $info[2] = $folder.SEPARATOR.$dbfile;
                     }
-                    $info[2] = $folder.'/'.$dbfile;
+                    return array(
+                        'scheme'=> $info[1],
+                        'db'    => $info[2],
+                    );
+                } else {
+                    trigger_error(L('error/db/config'));
                 }
-                return array(
-                    'scheme'=> $info[1],
-                    'db'    => $info[2],
-                );
-            } else {
-                trigger_error(L('error/db/config'));
-            }
-        } else {
+                break;
             // DSN format: mysql://root:123456@localhost:3306/lazy/lazycms
-            if (preg_match('/^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@(\w+)(:(\d+))?(\/(\w+)\/(\w+)|\/(\w+))$/i',trim($DSN),$info)) {
-                return array(
-                    'host'  => $info[5],
-                    'port'  => $info[7],
-                    'user'  => $info[2],
-                    'pwd'   => $info[4],
-                    'name'  => isset($info[11]) ? $info[11] : $info[10],
-                    'scheme'=> $info[1],
-                    'prefix'=> (!empty($info[9]) ? $info[9].'_' : null),
-                );
-            } else {
-                trigger_error(L('error/db/config'));
-            }
+            default: 
+                if (preg_match('/^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@(\w+)(:(\d+))?(\/(\w+)\/(\w+)|\/(\w+))$/i',trim($DSN),$info)) {
+                    return array(
+                        'host'  => $info[5],
+                        'port'  => $info[7],
+                        'user'  => $info[2],
+                        'pwd'   => $info[4],
+                        'name'  => isset($info[11]) ? $info[11] : $info[10],
+                        'scheme'=> $info[1],
+                        'prefix'=> (!empty($info[9]) ? $info[9].'_' : null),
+                    );
+                } else {
+                    trigger_error(L('error/db/config'));
+                }
+                break;
         }
     }
 
