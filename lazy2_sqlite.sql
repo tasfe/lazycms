@@ -108,6 +108,23 @@ CREATE INDEX IDX_system_users__islock ON system_users(islock);
 INSERT INTO system_users (userid, groupid, username, userpass, userkey, usermail, question, answer, language, editor, regdate, isdel, islock) VALUES 
 (1, 1, 'admin', '8f93109624289e13e9a0742c2f4bcf0b', '0b3122', 'mylukin@gmail.com', '888', '8888', 'zh-cn', 'editor', 1215399176, 0, 0);
 
+-- --------------------------------------------------------
+
+-- 
+-- 表的结构 onepage
+-- 
+CREATE TABLE onepage (
+  oneid integer PRIMARY KEY,
+  oneid1 int(11),
+  oneorder int(11),
+  onetitle varchar(100),
+  onepath varchar(255),
+  onename varchar(50),
+  onecontent text,
+  onetemplate varchar(50),
+  keyword varchar(50),
+  description varchar(250)
+);
 
 
 -- --------------------------------------------------------
