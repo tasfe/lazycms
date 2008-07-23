@@ -28,7 +28,8 @@ require '../global.php';
  */
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){ 
-    lazysql_open(LAZY_PATH.'/LazyCMS#DataBase');
+    set_time_limit(0);
+    //lazysql_open(LAZY_PATH.'/LazyCMS#DataBase');
     $db = DB::factory('lazysql://path=LazyCMS#DataBase');
     $db->select_db();
     /*
@@ -40,11 +41,15 @@ function lazy_default(){
         );
     ");
     */
-    //$db->exec("drop table `article1`;");
+    //$db->exec("drop table `article`;");
     $db->exec("truncate table `article`;");
     
     $GLOBALS['_beginTime'] = microtime(true);
-    for ($i=0; $i<100; $i++) { $db->exec("INSERT INTO `article`(`arttitle`,`artcontent`)values('{$i}.测试标题','{$i}.测试内容');"); }
+    $i = 0;
+    for ($i=0; $i<10; $i++) { 
+        $db->exec("INSERT INTO `article`(`arttitle`,`artcontent`)values('','{$i}.测试内容');"); 
+    }
+    //$db->exec("alter table `article` drop `title`;");
     $GLOBALS['_endTime'] = microtime(true);
     echo number_format($GLOBALS['_endTime']-$GLOBALS['_beginTime'],6);
 }

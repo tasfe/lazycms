@@ -27,6 +27,8 @@ defined('COM_PATH') or die('Restricted access!');
  * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
  * @author      Lukin <mylukin@gmail.com>
  * @date        2008-7-22
+ * TODO:
+ *      SELECT,DELETE,ADD INDEX
  */
 class LazySQL{
     private $null = "<?php die('LazySQL');?>";
@@ -86,47 +88,49 @@ class LazySQL{
         $will   = isset($eSet[1]) ? $eSet[1] : null;
         switch($first = $sQuery[0]) {
             case 'alter':
-                if (strstr($query,'change')) {
+                if (strpos($query,'change')!==false) {
+                    // 不支持多个 change 需要改进
                     $eChange = explode(' change ',$query);
-                    $table   = preg_replace('/alter table `(.+?)`\;*/is','$1',$eChange[0]);
+                    $table   = preg_replace('/alter table `(.+?)`/is','$1',$eChange[0]);
                     $default = $field = $nField = null;
                     if (isset($eChange[1])) {
                         $eDef  = explode(' default ',$eChange[1]);
-                        $e9696 = explode('``', $eDef[0]);
-                        $field = str_replace('`', '',$e9696[0]);
+                        $e9696 = explode(' ', $eDef[0]);
+                        $field = trim($e9696[0],'`');
                         if (isset($e9696[1])) {
-                            $nField = str_replace('`', '',$e9696[1]);
+                            $nField = trim($e9696[1],'`');
                             if (isset($eDef[1])) {
-                                $default = str_replace("'", '',$eDef[1]);
+                                $default = trim(rtrim($eDef[1],";"),"'");
                             }
                         }
                     }
+                    // 无法修改数据前的字段名，需要修改
                     return $this->alter_table($table,$field,$nField,$default);
-                } elseif (strstr($query,'add index')) {
+                } elseif (strpos($query,'add index')!==false) {
                     $table = preg_replace('/alter table `(.+?)` add index `(.+?)`\;*/is','$1',$query);
                     $index = preg_replace('/alter table `(.+?)` add index `(.+?)`\;*/is','$2',$query);
                     return $this->add_index($table,$index);
-                } elseif (strstr($query,'add')) {
+                } elseif (strpos($query,'add')!==false) {
                     $eAdd  = explode(' add ',$query);
-                    $table = preg_replace('/alter table `(.+?)`\;*/is','$1',$eAdd[0]);
+                    $table = preg_replace('/alter table `(.+?)`/is','$1',$eAdd[0]);
                     $field = $default = $add = null;
                     if (isset($eAdd[1])) {
                         $eDef  = explode(' default ',$eAdd[1]);
-                        $field = str_replace('`','',$eDef[0]);
+                        $field = trim($eDef[0],'`');
                         if (isset($eDef[1])) {
                             $eSub    = explode(' ', $eDef[1]);
-                            $default = str_replace("'",'',$eSub[0]);
+                            $default = trim(rtrim($eSub[0],";"),"'");
                             if (isset($eSub[1])) {
-                                $add = $eSub[1];
+                                $add = rtrim($eSub[1],";");
                             }
                         }
                     }
                     return $this->add_field($table,$field,$default,$add);
-                } elseif (strstr($query,'drop index')) {
+                } elseif (strpos($query,'drop index')!==false) {
                     $table = preg_replace('/alter table `(.+?)` drop index `(.+?)`\;*/is','$1',$query);
                     $index = preg_replace('/alter table `(.+?)` drop index `(.+?)`\;*/is','$2',$query);
                     return $this->drop_index($table,$index);
-                } elseif (strstr($query,'drop')) {
+                } elseif (strpos($query,'drop')!==false) {
                     $table = preg_replace('/alter table `(.+?)` drop `(.+?)`\;*/is','$1',$query);
                     $field = preg_replace('/alter table `(.+?)` drop `(.+?)`\;*/is','$2',$query);
                     return $this->drop_field($table,$field);
@@ -236,9 +240,8 @@ class LazySQL{
         $tFloder = $this->path.$table.SEPARATOR;
         if (!file_exists($tFloder)) { return false; }
         $index   = $this->get_index($table);
-        $length  = count($index);
-        for($i=0;$i<$length;$i++) {
-            $this->write($tFloder.'index'.SEPARATOR.$index[$i]['field'].'.php','',true);
+        foreach ($index as $v) {
+            $this->write($tFloder.'index'.SEPARATOR.$v['field'].'.php','',true);
         }
         // 先删除，再创建，达到清空数据表的目的
         $dFloder = $tFloder.'data'; rmdirs($dFloder); mkdirs($dFloder);
@@ -257,16 +260,15 @@ class LazySQL{
             if($eSub[2] == '(index)') {
                 $I1[$j]['field'] = trim($eSub[0],'`');
                 if (!empty($field) && !empty($value)) {
-                    $length = count($field);
-                    for($k=0;$k<$length;$k++) {
-                        if ($field[$k] == trim($eSub[0],'`')) {
+                    foreach ($field as $k=>$v) {
+                        if ($v == $I1[$j]['field']) {
                             $I1[$j]['value'] = $value[$k]; break;
                         }
                     }
                 }
                 if (!isset($I1[$j]['value'])) {
-                    $p = $this->get_structure($table,$I1[$j]['field']);
-                    $I1[$j]['value'] = $p['default'];
+                    $s = $this->get_structure($table,$I1[$j]['field']);
+                    $I1[$j]['value'] = $s['default'];
                 }
                 $j++;
             }
@@ -275,20 +277,13 @@ class LazySQL{
     }
     // get_structure *** *** www.LazyCMS.net *** ***
     private function get_structure($table,$field){
-        $cont  = $this->read($this->path.$table.SEPARATOR.'structure.php');
-        $eCont = explode("\n",rtrim($cont));
-        $count = count($eCont); $I1 = array();
-        for ($i=0;$i<$count;$i++) {
-            $eSub    = explode(',', $eCont[$i]);
-            $tField   = trim($eSub[0],'`');
-            $tDefault = trim($eSub[1],"'");
-            $tAttr    = trim($eSub[2],'()');
-            if ($field == $tField) {
-                $I1['field']   = $tField;
-                $I1['default'] = $tDefault;
-                $I1['attr']    = $tAttr;
-                return $I1; break;
-            }
+        $cont = $this->read($this->path.$table.SEPARATOR.'structure.php');
+        if (preg_match("/`(".preg_quote($field,"/").")`,'(.*)',\((.*)\)/i",$cont,$v)) {
+            return array(
+                'field'  => $v[1],
+                'default'=> $v[2],
+                'attr'   => $v[3],
+            );
         }
     }
     // insert *** *** www.LazyCMS.net *** ***
@@ -311,15 +306,58 @@ class LazySQL{
         $aFields = $this->get_fields($fields);
         $aValues = $this->get_values($values);
         $index   = $this->get_index($table,$aFields,$aValues);
-        $content = $this->get_content($aFields,$aValues,$ID);
+        $content = $this->get_content($table,$aFields,$aValues,$ID);
         $this->write_index($table,$index,$ID);
         $dFloder = $tFloder.'data'.SEPARATOR.$this->get_serial($ID);
         mkdirs($dFloder); $TG = $dFloder.$ID.'.php';
-        return $this->write($TG,$content,true);
+        return $this->write($TG,$content);
     }
     // alter_table *** *** www.LazyCMS.net *** ***
     private function alter_table($table,$field,$nField,$default){
-        $file = $this->path.$table;
+        $tFloder = $this->path.$table.SEPARATOR;
+        $file = $tFloder.'structure.php';
+        $cont = $this->read($file);
+        $cont = preg_replace("/`".preg_quote($field,"/")."`,'(.*)',(.+)/i","`{$nField}`,'{$default}',\\2",$cont);
+        if ($this->write($file,$cont,true)) {
+            $iFile = $tFloder.'index'.SEPARATOR.$field.'.php';
+            return is_file($iFile) ? rename($iFile,$tFloder.'index'.SEPARATOR.$nField.'.php') : true;
+        }
+        return false;
+    }
+    // add_field *** *** www.LazyCMS.net *** ***
+    private function add_field($table,$field,$default,$add){
+        $file = $this->path.$table.SEPARATOR.'structure.php';
+        if ($this->write($file,"`{$field}`,'{$default}',({$add})\n")) {
+            if ($add=='index') {
+                $this->add_index($table,$field);
+            }
+            return true;
+        }
+        return false;
+    }
+    // drop_index *** *** www.LazyCMS.net *** ***
+    private function drop_index($table,$index){
+        $tFloder = $this->path.$table.SEPARATOR;
+        $file = $tFloder.'structure.php';
+        $cont = $this->read($file);
+        $cont = preg_replace("/(`".preg_quote($index,"/")."`),'(.*)',\(index\)/i","\\1,'\\2',()",$cont);
+        if ($this->write($file,$cont,true)) {
+            $iFile = $tFloder.'index'.SEPARATOR.$index.'.php';
+            return is_file($iFile) ? unlink($iFile) : true;
+        }
+        return false;
+    }
+    // drop_field *** *** www.LazyCMS.net *** ***
+    private function drop_field($table,$field){
+        $tFloder = $this->path.$table.SEPARATOR;
+        $file = $tFloder.'structure.php';
+        $cont = $this->read($file);
+        $cont = preg_replace("/(`".preg_quote($field,"/")."`),'(.*)',(.+)\n/i","",$cont);
+        if ($this->write($file,$cont,true)) {
+            $iFile = $tFloder.'index'.SEPARATOR.$field.'.php';
+            return is_file($iFile) ? unlink($iFile) : true;
+        }
+        return false;
     }
     // get_fields *** *** www.LazyCMS.net *** ***
     private function get_fields($fields){
@@ -344,15 +382,18 @@ class LazySQL{
         return $I1;
     }
     // get_content *** *** www.LazyCMS.net *** ***
-    private function get_content($fields,$values,$ID=0){
-        $length = count($fields); $I1 = null;
-        for ($i=0; $i<$length; $i++) {
+    private function get_content($table,$fields,$values,$ID=0){
+        $I1 = null;
+        foreach ($fields as $i=>$field) {
             if (strtolower($values[$i])=='null') {
                 $values[$i] = $ID;
+            } elseif (strlen($values[$i])==0) {
+                $s = $this->get_structure($table,$field);
+                $values[$i] = $s['default'];
             }
-            $I1.= "`".$fields[$i]."`'".$values[$i]."'".($i==($length-1) ? '':"\n");
+            $I1.= "`".$field."`'".$values[$i]."'\n";
         }
-        return $I1;
+        return rtrim($I1);
     }
     // write_index *** *** www.LazyCMS.net *** ***
     private function write_index($table,$index,$ID){
@@ -402,9 +443,12 @@ class LazySQL{
     }
     // get_serial *** *** www.LazyCMS.net *** ***
     private function get_serial($ID=0){
-        $md5 = md5($ID); $I1 = null;
+        $I1 = null;
         for ($i=1; $i<4; $i++) {
-            $I1.= substr($md5,0,$i).SEPARATOR;
+            $n = substr($ID,0,$i);
+            if (strlen($n)==$i) {
+                $I1.= $n.SEPARATOR;
+            }
         }
         return $I1;
     }
