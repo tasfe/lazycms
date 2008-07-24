@@ -29,14 +29,14 @@ require '../../global.php';
 
 // lazy_before *** *** www.LazyCMS.net *** ***
 function lazy_before(){
+    // 权限验证
+    check_login('users');
     // 设置公共菜单
     G('TABS',
         L('users/group/@title').':users.php;'.
         L('users/group/add/@title').':users.php?action=group_edit;'.
         L('users/user/add/@title').':users.php?action=user_edit'
     );
-    // 权限验证
-    check_login('users');
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){

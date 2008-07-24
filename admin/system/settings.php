@@ -98,7 +98,6 @@ function lazy_default(){
     $hl.= '</fieldset>';
 
     $hl.= '<fieldset><legend>'.L('settings/user/@title').'</legend>';
-
     $hl.= '<p><label>'.L('settings/user/allowreg/@title').'：</label><span tip="'.L('settings/user/allowreg/@title').'::'.L('settings/user/allowreg/@tip').'">';
     $hl.= '<input type="radio" name="USER_ALLOW_REG" id="USER_ALLOW_REG[1]" value="true"'.((C('USER_ALLOW_REG') == 1) ? ' checked="checked"':null).'/><label for="USER_ALLOW_REG[1]">'.L('settings/user/allowreg/true').'</label> ';
     $hl.= '<input type="radio" name="USER_ALLOW_REG" id="USER_ALLOW_REG[0]" value="false"'.((C('USER_ALLOW_REG') == 0) ? ' checked="checked"':null).'/><label for="USER_ALLOW_REG[0]">'.L('settings/user/allowreg/false').'</label>';

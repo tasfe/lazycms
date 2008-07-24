@@ -40,7 +40,7 @@ function stripslashes_deep($p1) {
 
 // replace_root *** *** www.LazyCMS.net *** ***
 function replace_root($p1){
-    return str_replace(SEPARATOR,'/',str_replace(LAZY_PATH.SEPARATOR,C('SITE_BASE'),$p1));
+    return str_replace(SEPARATOR,'/',str_replace(LAZY_PATH.SEPARATOR,SITE_BASE,$p1));
 }
 
 // t2js *** *** www.LazyCMS.net *** ***
@@ -62,11 +62,6 @@ function h2decode($p1){
 // get_php_setting *** *** www.LazyCMS.net *** ***
 function get_php_setting($p1){
     $R = (ini_get($p1) == '1' ? 1 : 0);return isok($R);
-}
-
-// fieldset *** *** www.LazyCMS.net *** ***
-function fieldset($p1,$p2){
-    return '<fieldset><legend>'.$p1.'</legend>'.$p2.'</fieldset>';
 }
 
 // instr *** *** www.LazyCMS.net *** ***
@@ -703,7 +698,7 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
     $hl.= '#footer span{color:silver;}';
     $hl.= '</style></head><body>';
     $hl.= '<div class="notice"><h2>'.L('error/title').'</h2>';
-    $hl.= '<div>You can choose to [ <a href="javascript:self.location.reload();">'.L('common/tryagain').'</a> ] [ <a href="javascript:history.back();">'.L('common/back').'</a> ] or [ <a href="'.C('SITE_BASE').'">'.L('common/backhome').'</a> ]</div>';
+    $hl.= '<div>You can choose to [ <a href="javascript:self.location.reload();">'.L('common/tryagain').'</a> ] [ <a href="javascript:history.back();">'.L('common/back').'</a> ] or [ <a href="'.SITE_BASE.'">'.L('common/backhome').'</a> ]</div>';
     $hl.= '<p><strong>'.L('error/position').':</strong>　FILE: <strong class="red">'.$error['file'].'</strong>　LINE: <strong class="red">'.$error['line'].'</strong></p>';
     $hl.= '<p class="title">[ '.L('error/errinfo').' ]</p>';
     $hl.= '<p class="message">'.$error['message'].'</p>';

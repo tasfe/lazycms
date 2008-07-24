@@ -33,7 +33,8 @@ define('IS_APACHE',strstr($_SERVER['SERVER_SOFTWARE'], 'Apache') || strstr($_SER
 define('IS_CGI',strncmp(PHP_SAPI_NAME,'cgi',3)==0 ? 1 : 0 );
 define('IS_IIS',PHP_SAPI_NAME =='isapi' ? 1 : 0);
 define('IIS_VER',IS_IIS ? substr($_SERVER["SERVER_SOFTWARE"],strrpos($_SERVER["SERVER_SOFTWARE"],'/')+1) :0);
-
+// 目录路径之间的分隔符
+define('SEPARATOR',DIRECTORY_SEPARATOR);
 // 当前文件名
 if (!defined('PHP_FILE')) {
     // CGI or FASTCGI模式下
@@ -50,7 +51,7 @@ define('URL_COMMON',   0);   //普通模式
 define('URL_PATHINFO', 1);   //PATHINFO模式
 define('URL_REWRITE',  2);   //REWRITE模式
 
-// 目录路径之间的分隔符
-define('SEPARATOR',DIRECTORY_SEPARATOR);
+// 取得网站根目录
+define('SITE_BASE',str_replace(str_replace(str_replace(SEPARATOR,'/',LAZY_PATH.SEPARATOR),'/',str_replace(SEPARATOR,'/',$_SERVER["SCRIPT_FILENAME"])),'/',PHP_FILE));
 
 define('LAZY_VERSION','2.0.0.0705');

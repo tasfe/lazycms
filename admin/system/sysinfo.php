@@ -29,6 +29,7 @@ require '../../global.php';
 
 // lazy_before *** *** www.LazyCMS.net *** ***
 function lazy_before(){
+    check_login('system');
     // 设置公共菜单
     G('TABS',
         L('sysinfo/@title').':sysinfo.php;'
@@ -44,7 +45,8 @@ function lazy_Default(){
     $gdInfo = function_exists('gd_info') ? gd_info() : array('GD Version'=>'none');
 
     /* System settings */
-    $hl = '<table class="table">';
+    $hl = '<fieldset><legend>'.L('sysinfo/@title').'</legend>';
+    $hl.= '<table class="table">';
     $hl.= '<tbody>';
     $hl.= '<tr><td class="width-30">'.L('sysinfo/server_os').'</td><td>'.php_uname().'</td></tr>';
     $hl.= '<tr><td>'.L('sysinfo/gdversion').'</td><td>'.$gdInfo['GD Version'].'</td></tr>';
@@ -54,12 +56,11 @@ function lazy_Default(){
     $hl.= '<tr><td>'.L('sysinfo/system_version').'</td><td>'.LAZY_VERSION.'</td></tr>';
     $hl.= '<tr><td>'.L('sysinfo/software').'</td><td>'.$_SERVER['SERVER_SOFTWARE'].'</td></tr>';
     $hl.= '<tr><td>'.L('sysinfo/useragent').'</td><td>'.$_SERVER['HTTP_USER_AGENT'].'</td></tr>';
-    $hl.= '</tbody></table>';
-    $op = fieldset(L('sysinfo/@title'),$hl);
+    $hl.= '</tbody></table></fieldset>';
     
     /* PHP settings */
-    $hl = '<table class="table">';
-    $hl.= '<tbody>';
+    $hl.= '<fieldset><legend>'.L('sysinfo/phpsettings/@title').'</legend>';
+    $hl.= '<table class="table"><tbody>';
     $hl.= '<tr><td class="width-30">'.L('sysinfo/phpsettings/safe_mode').'</td><td>'.get_php_setting('safe_mode').'</td></tr>';
     $hl.= '<tr><td>'.L('sysinfo/phpsettings/display_errors').'</td><td>'.get_php_setting('display_errors').'</td></tr>';
     $hl.= '<tr><td>'.L('sysinfo/phpsettings/file_uploads').'</td><td>'.get_php_setting('file_uploads').'</td></tr>';
@@ -73,17 +74,16 @@ function lazy_Default(){
     $hl.= '<tr><td>'.L('sysinfo/phpsettings/disable_functions').'</td><td>'.(($df = ini_get('disable_functions')) ? $df : 'none').'</td></tr>';
     $hl.= '<tr><td>'.L('sysinfo/phpsettings/upload_max_filesize').'</td><td>'.get_cfg_var('upload_max_filesize').'</td></tr>';
     $hl.= '<tr><td>'.L('sysinfo/phpsettings/post_max_size').'</td><td>'.get_cfg_var('post_max_size').'</td></tr>';
-    $hl.= '</tbody></table>';
-    $op.= fieldset(L('sysinfo/phpsettings/@title'),$hl);
+    $hl.= '</tbody></table></fieldset>';
 
     /* Output html */
-    print_x(L('sysinfo/@title'),$op);
+    print_x(L('sysinfo/@title'),$hl);
 }
 
 // lazy_Settings *** *** www.LazyCMS.net *** ***
 function lazy_Settings(){
-    $hl = '<table class="table">';
-    $hl.= '<tbody>';
+    $hl = '<fieldset><legend>'.L('sysinfo/settings').'</legend>';
+    $hl.= '<table class="table"><tbody>';
     $fp = file(COM_PATH.'/config.php');
     $config = null;
     $isFlag = false;
@@ -110,8 +110,8 @@ function lazy_Settings(){
         }
     }
     $hl.= $config;
-    $hl.= '</tbody></table>';
-    print_x(L('sysinfo/settings'),fieldset(L('sysinfo/settings'),$hl));
+    $hl.= '</tbody></table></fieldset>';
+    print_x(L('sysinfo/settings'),$hl);
 }
 
 // lazy_Directory *** *** www.LazyCMS.net *** ***
@@ -123,14 +123,14 @@ function lazy_Directory(){
         '/common/data/module.php',
         '/common/images/icons.css',
     );
-    $hl = '<table class="table">';
-    $hl.= '<tbody>';
+    $hl = '<fieldset><legend>'.L('sysinfo/directory/@title').'</legend>';
+    $hl.= '<table class="table"><tbody>';
     $hl.= '<tr><th>'.L('sysinfo/directory/path').'</th><th>'.L('sysinfo/directory/read').'</th><th>'.L('sysinfo/directory/write').'</th></tr>';
     foreach ($paths as $path) {
         $hl.= '<tr><td>'.$path.'</td><td>'.isok(is_readable(LAZY_PATH.$path)).'</td><td>'.isok(is_writable(LAZY_PATH.$path)).'</td></tr>';
     }
-    $hl.= '</tbody></table>';
-    print_x(L('sysinfo/directory/@title'),fieldset(L('sysinfo/directory/@title'),$hl));
+    $hl.= '</tbody></table></fieldset>';
+    print_x(L('sysinfo/directory/@title'),$hl);
 }
 
 // lazy_phpinfo *** *** www.LazyCMS.net *** ***

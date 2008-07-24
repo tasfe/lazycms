@@ -42,10 +42,6 @@ function lazy_default(){
     $hl.= '<div id="version">Version: <span>'.LAZY_VERSION.'</span></div>';
     $hl.= '<div class="shortcut"><a href="javascript:;" onclick="toggleShortcut();"><img src="../common/images/icon/fav.png" /></a><a href="javascript:;" onclick="toggleAddShortcut()"><img src="../common/images/icon/fav-add.png" /></a></div>';
     $hl.= '<ul id="menu">';
-    $hl.= '<li><span>首页管理<b class="down-arrow"></b></span><ul>';
-    $hl.= '    <li><a href="#" class="icon-16-cpanel">首页设置</a></li>';
-    $hl.= '    <li><a href="#" class="icon-16-cpanel">生成首页</a></li>';
-    $hl.= '</ul></li>';
     $hl.= '<li><span>'.L('system/manage').'<b class="down-arrow"></b></span><ul>';
     $hl.= '    <li><a href="manage.php" class="icon-16-cpanel" target="_top">'.L('system/cpanel').'</a></li>';
     $hl.= '    <li class="hr"></li>';
@@ -79,7 +75,8 @@ function lazy_default(){
     $hl.= '    
         <li><span>内容管理<b class="down-arrow"></b></span>
             <ul>
-                <li><a href="#" class="icon-16-page">单页管理</a></li>
+                <li><a href="#">首页设置</a></li>
+                <li><a href="onepage/index.php" class="icon-16-page">单页管理</a></li>
                 <li class="hr"></li>
                 <li><a href="#" class="icon-16-article">文章管理</a></li>
                 <li><a href="#" class="icon-16-trash">回收站</a></li>
