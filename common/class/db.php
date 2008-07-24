@@ -20,7 +20,7 @@
  */
 defined('COM_PATH') or die('Restricted access!');
 // 加载 LazySQL 支持类
-import('class.lazysql');
+// import('class.lazysql');
 /**
  * 数据操作抽象类
  *

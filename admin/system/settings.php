@@ -106,7 +106,7 @@ function lazy_default(){
 
     $hl.= '<p><label>'.L('settings/user/group').'：</label>';
     $hl.= '<select name="USER_GROUP_REG" id="USER_GROUP_REG" tip="'.L('settings/user/group').'::'.L('settings/user/group/@tip').'">';
-    $hl.= System::__group(0,0,C('USER_GROUP_REG'));
+    $hl.= System::__group(0,C('USER_GROUP_REG'));
     $hl.= '</select></p>';
 
     $hl.= '<p><label>'.L('settings/user/active/@title').'：</label><span tip="'.L('settings/user/active/@title').'::350::'.L('settings/user/active/@tip').'">';

@@ -254,7 +254,7 @@ function lazy_user_edit(){
 
     $hl.= '<p><label>'.L('users/user/add/group').'：</label>';
     $hl.= '<select name="groupid" id="groupid" tip="'.L('users/user/add/group').'::'.L('users/user/add/group/@tip').'">';
-    $hl.= System::__group(0,0,$groupid);
+    $hl.= System::__group(0,$groupid);
     $hl.= '</select></p>';
 
     $hl.= '<p><label>'.L('users/user/add/name').'：</label><input tip="'.L('users/user/add/name').'::'.L('users/user/add/name/@tip').'" class="in2" type="text" name="username" id="username" value="'.$username.'" /></p>';
