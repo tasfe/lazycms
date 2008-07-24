@@ -85,9 +85,9 @@ function lazy_default(){
             </ul>
         </li>';
 
-    $hl.= '<li><span>帮助<b class="down-arrow"></b></span><ul>';
-    $hl.= '    <li><a href="http://www.lazycms.net/" class="icon-16-home" target="_blank">官方网站</a></li>';
-    $hl.= '    <li><a href="http://forums.lazycms.net/" class="icon-16-help" target="_blank">支持论坛</a></li>';
+    $hl.= '<li><span>'.L('common/help').'<b class="down-arrow"></b></span><ul>';
+    $hl.= '    <li><a href="http://www.lazycms.net/" class="icon-16-home" target="_blank">'.L('common/osite').'</a></li>';
+    $hl.= '    <li><a href="http://forums.lazycms.net/" class="icon-16-help" target="_blank">'.L('common/forums').'</a></li>';
     $hl.= '    <li class="hr"></li>';
     $hl.= '    <li><a href="system/sysinfo.php" class="icon-16-info">'.L('sysinfo/@title').'</a></li>';
     $hl.= '    </ul>';

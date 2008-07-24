@@ -33,6 +33,8 @@
 		</unit>
         <preview>预览网站</preview>
         <logout>退出登录</logout>
+		<osite>官方网站</osite>
+		<forums>支持论坛</forums>
     </common>
 
 	<confirm>

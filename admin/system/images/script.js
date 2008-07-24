@@ -5,7 +5,7 @@ $(document).ready(function(){
     // Bind the mouse event
     $('#menu li span').mouseover(function(){ $(this).addClass('active'); });
     // Drop-down menu
-    $('#menu li').hover(function(){ $('ul',this).fadeIn('fast'); },function(){ $('ul',this).hide(); $('span',this).removeClass('active'); });
+    $('#menu li').hover(function(){ $('ul',this).fadeIn(); },function(){ $('ul',this).hide(); $('span',this).removeClass('active'); });
     // Config Mouse over effect
     $('#menu li li').not('li.hr').hover(function(){
         $(this).width($(this).parent().width()-4)
@@ -59,14 +59,14 @@ function toggleShortcutActive(){
 // toggleAddShortcut *** *** www.LazyCMS.net *** ***
 function toggleAddShortcut(){
 	$('input.error').unbind().toggleClass('error'); $('.jTip').remove();
-	var addShortcut = $('#addShortcut').toggle('fast');
+	var addShortcut = $('#addShortcut').toggle();
 		$('input[@name=ShortcutName]',addShortcut).val($('#main').contents().find('title').html());
 		$('input[@name=ShortcutUrl]',addShortcut).val(getUrl());
 }
 // toggleShortcutSort *** *** www.LazyCMS.net *** ***
 function toggleShortcutSort(){
 	$('#ShortcutSortName').unbind().removeClass('error').val('');
-	$('.jTip').remove(); $('#addShortcut dl').toggle('fast');
+	$('.jTip').remove(); $('#addShortcut dl').toggle();
 	if ($.browser.msie && $.browser.version=='6.0') { $('#addShortcut select').toggle(); }
 }
 // deleteShortcutSort *** *** www.LazyCMS.net *** ***
@@ -131,7 +131,7 @@ function submitShortcut(){
 // toggleShortcut *** *** www.LazyCMS.net *** ***
 function toggleShortcut(){
 	iframeCover(); toggleShortcutActive();
-	var shortcut = $('#shortcut').slideToggle('fast');
+	var shortcut = $('#shortcut').slideToggle();
 	var username = $.cookie('LAZY_[username]');
 	if (username==null) { return false; }
 	// AJAX get xml data

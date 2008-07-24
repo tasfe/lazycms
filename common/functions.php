@@ -60,8 +60,8 @@ function h2decode($p1){
 }
 
 // get_php_setting *** *** www.LazyCMS.net *** ***
-function get_php_setting($val){
-    $r = (ini_get($val) == '1' ? 1 : 0);return isok($r);
+function get_php_setting($p1){
+    $R = (ini_get($p1) == '1' ? 1 : 0);return isok($R);
 }
 
 // fieldset *** *** www.LazyCMS.net *** ***
@@ -77,8 +77,8 @@ function instr($p1,$p2){
 }
 
 // isok *** *** www.LazyCMS.net *** ***
-function isok($r){
-    return $r ? '<strong style="color:#009900;">'.L('common/on').'</strong>' :
+function isok($p1){
+    return $p1 ? '<strong style="color:#009900;">'.L('common/on').'</strong>' :
                     '<strong style="color:#FF0000;">'.L('common/off').'</strong>';
 }
 
@@ -117,25 +117,25 @@ function language(){
 }
 
 // utf2ansi *** *** www.LazyCMS.net *** ***
-function utf2ansi($str,$charset='GB2312'){
+function utf2ansi($p1,$p2='GB2312'){
     if (function_exists('iconv')) {
-        return iconv('UTF-8',"{$charset}//IGNORE",$str);
+        return iconv('UTF-8',"{$charset}//IGNORE",$p1);
     } elseif (function_exists('mb_convert_encoding')){
-        return mb_convert_encoding($str,$charset,'UTF-8');
+        return mb_convert_encoding($p1,$p2,'UTF-8');
     } else {
-        return $str;
+        return $p1;
     }
 }
 
 // ansi2utf *** *** www.LazyCMS.net *** ***
-function ansi2utf($str){
-    if (is_utf8($str)) { return $str; }
+function ansi2utf($p1){
+    if (is_utf8($p1)) { return $p1; }
     if (function_exists('iconv')) {
-        return iconv('',"UTF-8//IGNORE",$str);
+        return iconv('',"UTF-8//IGNORE",$p1);
     } elseif (function_exists('mb_convert_encoding')){
-        return mb_convert_encoding($str,'UTF-8','auto');
+        return mb_convert_encoding($p1,'UTF-8','auto');
     } else {
-        return $str;
+        return $p1;
     }
 }
 
@@ -187,14 +187,14 @@ function mkdirs($p1, $p2 = 0777){
 }
 
 // save_file *** *** www.LazyCMS.net *** ***
-function save_file($p1,$p2='',$mode=true){
+function save_file($p1,$p2='',$p3=true){
     if (file_exists($p1)) {
         if (!is_writable($p1)) {
             // 设置ftp信息，则修改权限，反之则输出错误
             echo_json('没有可写权限<br/>文件：'.replace_root($p1),0);
         }
     }
-    if (!$fp = fopen($p1,($mode?'wb':'ab'))) {
+    if (!$fp = fopen($p1,($p3?'wb':'ab'))) {
         trigger_error(L('error/createfile',array('file'=>$p1)));
     }
     flock($fp,LOCK_EX + LOCK_NB);
