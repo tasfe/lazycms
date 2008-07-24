@@ -85,7 +85,7 @@ class lazy_mysqli extends DB{
         $sql = preg_replace('/`(#@_)(\w+)`/i','`'.$this->config('prefix').'$2`',$sql);
         $this->_sql = $sql;
         
-        if(!($I1= $func($this->_conn,$sql))){
+        if(!($R= $func($this->_conn,$sql))){
             if(in_array($this->errno(),array(2006,2013)) && substr($type,0,5) != 'RETRY') {
                 $this->close();$this->connect();
                 $this->execute($sql,$func,'RETRY'.$type);
@@ -93,14 +93,14 @@ class lazy_mysqli extends DB{
                 trigger_error('MySQL Query Error:<br/>SQL:'.$sql."<br>".$this->error(),$this->errno());
             }
         }
-        return $I1;
+        return $R;
     }
     // isTable *** *** www.LazyCMS.net *** ***
-    public function isTable($l1){
-        $l1 = str_replace('#@_',$this->config('prefix'),$l1);
+    public function isTable($p1){
+        $p1 = str_replace('#@_',$this->config('prefix'),$p1);
         $res = $this->query("SHOW TABLES");
         while ($data = $this->fetch($res,0)) {
-            if (strtolower($l1)==strtolower($data[0])) {
+            if (strtolower($p1)==strtolower($data[0])) {
                 $this->free($res);
                 return true;
             }
@@ -109,30 +109,30 @@ class lazy_mysqli extends DB{
         return false;
     }
     // batQuery *** *** www.LazyCMS.net *** ***
-    public function batQuery($l1){ // $l1:sql
-        if (empty($l1)) { return ; }
-        $l1 = preg_replace('/\#\~(.+)\~\#/e','$this->config(\'\\1\')',$l1);
-        $l1 = preg_replace('/`(#@_)(\w+)`/i','`'.$this->config('prefix').'$2`',$l1);
-        $l1 = str_replace(chr(10).chr(10),chr(10),str_replace(chr(13),chr(10),$l1));
-        $I2 = explode(chr(10),$l1);
-        $I3 = create_function('&$l1,$l2','$l1=trim($l1);');array_walk($I2,$I3);
-        $I4 = "";
-        foreach ($I2 as $v) {
+    public function batQuery($p1){ // $p1:sql
+        if (empty($p1)) { return ; }
+        $p1 = preg_replace('/\#\~(.+)\~\#/e','$this->config(\'\\1\')',$p1);
+        $p1 = preg_replace('/`(#@_)(\w+)`/i','`'.$this->config('prefix').'$2`',$p1);
+        $p1 = str_replace(chr(10).chr(10),chr(10),str_replace(chr(13),chr(10),$p1));
+        $R1 = explode(chr(10),$p1);
+        $R2 = create_function('&$p1,$p2','$p1=trim($p1);');array_walk($R1,$R2);
+        $R3 = "";
+        foreach ($R1 as $v) {
             if (preg_match('/;$/',$v)) {
-                $I4 .= $v;
+                $R3 .= $v;
                 // 执行sql
-                $this->exec($I4);
+                $this->exec($R3);
                 // 置空
-                $I4 = '';
+                $R3 = '';
             } elseif (!preg_match('/^\-\-/',$v) && !preg_match('/^\/\//',$v) && !preg_match('/^\/\*/',$v) && !preg_match('/^#/',$v)) {
-                $l2 = strrpos($v,'# ');
-                if ($l2!==false) {
-                    $l3 = trim(substr($v,0,$l2));
-                    if (substr($l3,-1)==',') {
-                        $v = $l3;
+                $p2 = strrpos($v,'# ');
+                if ($p2!==false) {
+                    $p3 = trim(substr($v,0,$p2));
+                    if (substr($p3,-1)==',') {
+                        $v = $p3;
                     }
                 }
-                $I4.= $v."\n";
+                $R3.= $v."\n";
             }
         }
     }
@@ -149,34 +149,34 @@ class lazy_mysqli extends DB{
     // fetch *** *** www.LazyCMS.net *** ***
     public function fetch($rs=null,$type=1){
         switch ($type) {
-            case '0': $I1 = MYSQLI_NUM;break;
-            case '1': $I1 = MYSQLI_ASSOC;break;
-            case '2': $I1 = MYSQLI_BOTH;break;
+            case '0': $R = MYSQLI_NUM;break;
+            case '1': $R = MYSQLI_ASSOC;break;
+            case '2': $R = MYSQLI_BOTH;break;
         }
-        return mysqli_fetch_array($rs,$I1);
+        return mysqli_fetch_array($rs,$R);
     }
     // count *** *** www.LazyCMS.net *** ***
     public function count($rs=null){
         if (is_object($rs)) {
-            $I1 = $rs;
+            $R = $rs;
         } else {
-            $I1 = $this->query($rs);
+            $R = $this->query($rs);
         }
-        return mysqli_num_rows($I1);
+        return mysqli_num_rows($R);
     }
     // affected_rows *** *** www.LazyCMS.net *** ***
     public function affected_rows(){
         return mysqli_affected_rows($this->_conn);
     }
     // result *** *** www.LazyCMS.net *** ***
-    public function result($l1,$l2=0) {
-        if (is_object($l1)) {
-            $I2 = $l1;
+    public function result($p1,$p2=0) {
+        if (is_object($p1)) {
+            $R1 = $p1;
         } else {
-            $I2 = $this->query($l1);
+            $R1 = $this->query($p1);
         }
-        if ($data = $this->fetch($I2,0)) {
-            return $data[$l2];
+        if ($data = $this->fetch($R1,0)) {
+            return $data[$p2];
         }
     }
     // error *** *** www.LazyCMS.net *** ***
@@ -193,12 +193,12 @@ class lazy_mysqli extends DB{
     }
     // lastId *** *** www.LazyCMS.net *** ***
     public function lastId() {
-        return ($I1 = mysqli_insert_id($this->_conn)) >= 0 ? $I1 : $this->result("SELECT last_insert_id();");
+        return ($R = mysqli_insert_id($this->_conn)) >= 0 ? $R : $this->result("SELECT last_insert_id();");
     }
     // free *** *** www.LazyCMS.net *** ***
-    public function free($l1){
-        if (is_object($l1)) {
-            return mysqli_free_result($l1);
+    public function free($p1){
+        if (is_object($p1)) {
+            return mysqli_free_result($p1);
         }
     }
     // close *** *** www.LazyCMS.net *** ***

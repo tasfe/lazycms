@@ -30,8 +30,8 @@ defined('COM_PATH') or die('Restricted access!');
 abstract class LazyCMS{
     // init *** *** www.LazyCMS.net *** ***
     private function init(){
-        static $I1 = true; ob_start();
-        if (!$I1) { return ; } $I1 = false;
+        static $R = true; ob_start();
+        if (!$R) { return ; } $R = false;
         if (!defined('E_STRICT')) { define('E_STRICT', 2048); }
         // 加载惯例配置文件
         C(include_file(COM_PATH.'/config.php'));
@@ -42,11 +42,11 @@ abstract class LazyCMS{
         // 解析魔术引号
         set_magic_quotes_runtime(0);
         if (get_magic_quotes_gpc()) {
-            $I2 = array(& $_GET, & $_POST, & $_COOKIE, & $_REQUEST);
-            while (list($k,$v) = each($I2)) {
-                $I2[$k] = stripslashes_deep($I2[$k]);
+            $R1 = array(& $_GET, & $_POST, & $_COOKIE, & $_REQUEST);
+            while (list($k,$v) = each($R1)) {
+                $R1[$k] = stripslashes_deep($R1[$k]);
             }
-            unset($I2,$k,$v);
+            unset($R1,$k,$v);
         }
         unset($_ENV,$HTTP_ENV_VARS,$HTTP_POST_VARS,$HTTP_GET_VARS,$HTTP_POST_FILES,$HTTP_COOKIE_VARS);
         // 设置系统时区 PHP5支持

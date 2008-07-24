@@ -35,9 +35,9 @@ class Validate {
         return $_SERVER['REQUEST_METHOD']=='POST' ? true : false;
     }
     // check *** *** www.LazyCMS.net *** ***
-    public function check($l1){
-        $I2 = explode(";",$l1);
-        foreach ($I2 as $v) {
+    public function check($p1){
+        $R1 = explode(";",$p1);
+        foreach ($R1 as $v) {
             if ($this->__check($v)) {
                 break;
             }
@@ -45,59 +45,59 @@ class Validate {
         return $this;
     }
     // __check *** *** www.LazyCMS.net *** ***
-    private function __check($l1){
+    private function __check($p1){
         // username|1|L('login/check/name')|2-30
-        $I1 = null; $I2 = explode("|",$l1);
-        $l2 = rawurldecode(isset($_POST[$I2[0]]) ? $_POST[$I2[0]] : null); // POST值
-        $l3 = isset($I2[1]) ? (string)$I2[1] : null; // 类型
-        $l4 = isset($I2[2]) ? (string)$I2[2] : null; // 提示错误
-        $l5 = isset($I2[3]) ? (string)$I2[3] : null;
-        switch ((string)$l3) {
+        $R = null; $R1 = explode("|",$p1);
+        $p2 = rawurldecode(isset($_POST[$R1[0]]) ? $_POST[$R1[0]] : null); // POST值
+        $p3 = isset($R1[1]) ? (string)$R1[1] : null; // 类型
+        $p4 = isset($R1[2]) ? (string)$R1[2] : null; // 提示错误
+        $p5 = isset($R1[3]) ? (string)$R1[3] : null;
+        switch ((string)$p3) {
             case '0': // 值为空，返回错误
-                if (empty($l2)) { $I1 = $l4; }
+                if (empty($p2)) { $R = $p4; }
                 break;
             case '1': // 验证长度
-                $l6 = explode("-",$l5);
-                if (len($l2) < (int)$l6[0] || len($l2) > (int)$l6[1]) { $I1 = $l4; }
+                $p6 = explode("-",$p5);
+                if (len($p2) < (int)$p6[0] || len($p2) > (int)$p6[1]) { $R = $p4; }
                 break;
             case '2' : // 验证两个值是否相等
-                $l6 = isset($_POST[$l5]) ? $_POST[$l5] : null;
-                if ($l2 != $l6) { $I1 = $l4; }
+                $p6 = isset($_POST[$p5]) ? $_POST[$p5] : null;
+                if ($p2 != $p6) { $R = $p4; }
                 break;
             case '3' :
-                if ($l5=='false' || $l5==false) {
-                    $I1 = $l4;
+                if ($p5=='false' || $p5==false) {
+                    $R = $p4;
                 }
                 break;
             case '4' :
                 $db = get_conn();
-                if (strpos($l5,'#pro#')!==false) {
-                    $l6 = str_replace('#pro#',$l2,$l5);
+                if (strpos($p5,'#pro#')!==false) {
+                    $p6 = str_replace('#pro#',$p2,$p5);
                 } else {
-                    $l6 = $l5;
+                    $p6 = $p5;
                 }
-                if ($db->result($l6) > 0) { $I1 = $l4; }
+                if ($db->result($p6) > 0) { $R = $p4; }
                 unset($db);
                 break;
             case '5' :
-                $l6 = array("'","\\",":","*","?","<",">","|",";",",");
-                if (instr("/,.",substr($l2,-1)) || instr("/,.",substr($l2,0,1))){
-                    $I1 = $l4; break;
+                $p6 = array("'","\\",":","*","?","<",">","|",";",",");
+                if (instr("/,.",substr($p2,-1)) || instr("/,.",substr($p2,0,1))){
+                    $R = $p4; break;
                 }
-                foreach ($l6 as $v) {
-                    if (strpos($l2,$v)!==false) {
-                        $I1 = $l4; break;
+                foreach ($p6 as $v) {
+                    if (strpos($p2,$v)!==false) {
+                        $R = $p4; break;
                     }
                 }
                 break;
             default :
-                if (!validate($l2,$l5)) { $I1 = $l4; }
+                if (!validate($p2,$p5)) { $R = $p4; }
                 break;
         }
-        if (empty($I1)) {
+        if (empty($R)) {
             return false;
         }
-        $this->setError($I2[0],$I1);
+        $this->setError($R1[0],$R);
         return true;
     }
     // setError *** *** www.LazyCMS.net *** ***
@@ -113,13 +113,13 @@ class Validate {
         $type = strtolower($type);
         switch ($type) {
             case 'json': 
-                $I1 = json_encode($this->error);
+                $R = json_encode($this->error);
                 break;
             default :
-                $I1 = var_export($this->erro,true);
+                $R = var_export($this->erro,true);
                 break;
         }
-        return $I1;
+        return $R;
     }
     // out *** *** www.LazyCMS.net *** ***
     public function out($type='json'){

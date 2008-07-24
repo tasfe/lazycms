@@ -15,9 +15,9 @@ function LoadScript(plugin){
     document.write('<scr' + 'ipt type="text/javascript" src="' + url + '"><\/scr' + 'ipt>');
 }
 
-function icon(l1,l2){ var IMG  = '<img src="../../common/images/icon/'+l1+'.png" alt="'+l1.toUpperCase()+'" class="os" />';  var HREF = '<a href="'+l2+'" title="'+l1.toUpperCase()+'">'+IMG+'</a>'; if (typeof l2 == "undefined") { return IMG; } else { return HREF; }}
-function cklist(l1){ return '<input name="list" id="list_'+l1+'" type="checkbox" value="'+l1+'"/>'; }
-function lock(l1){ return l1 ? icon('lock') : icon('lock-open'); }
+function icon(p1,p2){ var IMG  = '<img src="../../common/images/icon/'+p1+'.png" alt="'+p1.toUpperCase()+'" class="os" />';  var HREF = '<a href="'+p2+'" title="'+p1.toUpperCase()+'">'+IMG+'</a>'; if (typeof p2 == "undefined") { return IMG; } else { return HREF; }}
+function cklist(p1){ return '<input name="list" id="list_'+p1+'" type="checkbox" value="'+p1+'"/>'; }
+function lock(p1){ return p1 ? icon('lock') : icon('lock-open'); }
 // checkALL *** *** www.LazyCMS.net *** ***
 function checkALL(e){
 	$.each($(e.form).find('input:checkbox'),function(i,a){
@@ -62,30 +62,30 @@ function autoTitle(){
  * $("#element").tips(JSON String or Object);
  */
  (function($) {
-	$.fn.menuDrag = function(l1){
+	$.fn.menuDrag = function(p1){
 		/**
 		这里暂停一下，制作起来很麻烦
-		$(l1,this).css({cursor:'move',position:'relative'}).mousedown(function(){
+		$(p1,this).css({cursor:'move',position:'relative'}).mousedown(function(){
 			$('a',this).unbind().click(function(){return false});
 
 		}).find('a').css({cursor:'move'});
 		*/
 	}
-	$.fn.gp = function(l1,url){
+	$.fn.gp = function(p1,url){
 		var form = this.parents('form');
 		var url  = url||form.attr('action');
-		if (l1!="" || l1!="-") {
-            var I1 = escape(l1);
+		if (p1!="" || p1!="-") {
+            var R = escape(p1);
         }
 		var isconfirm;
-        if (I1=='delete') {
+        if (R=='delete') {
             isconfirm = confirm(lazy_delete);
-        } else if (I1=='clear') {
+        } else if (R=='clear') {
             isconfirm = confirm(lazy_clear);
         } else {
             isconfirm = true;
         }
-		if (I1!='-' && isconfirm) {
+		if (R!='-' && isconfirm) {
 			var lists = "";
             $('input:checkbox',form).each(function(){
                 if(this.checked){
@@ -101,9 +101,9 @@ function autoTitle(){
 				dataType: 'json',
 				url: url,
 				type: 'POST',
-				data: {'submit':I1,'lists':lists},
+				data: {'submit':R,'lists':lists},
 				error: function(){
-					$.post(url,{'submit':I1,'lists':lists},function(data){
+					$.post(url,{'submit':R,'lists':lists},function(data){
 						alert(data);
 					});
 				},

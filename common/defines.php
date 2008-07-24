@@ -38,11 +38,11 @@ define('IIS_VER',IS_IIS ? substr($_SERVER["SERVER_SOFTWARE"],strrpos($_SERVER["S
 if (!defined('PHP_FILE')) {
     // CGI or FASTCGI模式下
     if (IS_CGI) {
-        $I1 = explode('.php',$_SERVER['PHP_SELF']);
-        define('PHP_FILE',rtrim(str_replace($_SERVER['HTTP_HOST'],'',$I1[0].'.php'),'/'));
+        $R = explode('.php',$_SERVER['PHP_SELF']);
+        define('PHP_FILE',rtrim(str_replace($_SERVER['HTTP_HOST'],'',$R[0].'.php'),'/'));
     } else {
         define('PHP_FILE',rtrim($_SERVER['SCRIPT_NAME'],'/'));
-    } unset($I1);
+    } unset($R);
 }
 
 // 支持的URL模式

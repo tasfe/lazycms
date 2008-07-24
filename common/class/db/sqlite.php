@@ -56,35 +56,35 @@ class lazy_sqlite extends DB{
         $sql = preg_replace(array('/\#\~(.+)\~\#/e','/`(#@_)(\w+)`/i','/`([^`]+)`/'),array('$this->config(\'\\1\')','`$2`','[$1]'),$sql);
         $this->_sql = $sql;
         
-        if(!($I1= $func($this->_conn,$sql))){
+        if(!($R= $func($this->_conn,$sql))){
             trigger_error('SQLite Query Error:<br/>SQL:'.$sql."<br>".$this->error(),$this->errno());
         }
-        return $I1;
+        return $R;
     }
     // batQuery *** *** www.LazyCMS.net *** ***
-    public function batQuery($l1){ // $l1:sql
-        if (empty($l1)) { return ; }
-        $l1 = preg_replace('/\#\~(.+)\~\#/e','$this->config(\'\\1\')',$l1);
-        $l1 = str_replace(chr(10).chr(10),chr(10),str_replace(chr(13),chr(10),$l1));
-        $I2 = explode(chr(10),$l1);
-        $I3 = create_function('&$l1,$l2','$l1=trim($l1);');array_walk($I2,$I3);
-        $I4 = "";
-        foreach ($I2 as $v) {
+    public function batQuery($p1){ // $p1:sql
+        if (empty($p1)) { return ; }
+        $p1 = preg_replace('/\#\~(.+)\~\#/e','$this->config(\'\\1\')',$p1);
+        $p1 = str_replace(chr(10).chr(10),chr(10),str_replace(chr(13),chr(10),$p1));
+        $R1 = explode(chr(10),$p1);
+        $R2 = create_function('&$p1,$p2','$p1=trim($p1);');array_walk($R1,$R2);
+        $R3 = "";
+        foreach ($R1 as $v) {
             if (preg_match('/;$/',$v)) {
-                $I4 .= $v;
+                $R3 .= $v;
                 // 执行sql
-                $this->exec($I4);
+                $this->exec($R3);
                 // 置空
-                $I4 = '';
+                $R3 = '';
             } elseif (!preg_match('/^\-\-/',$v) && !preg_match('/^\/\//',$v) && !preg_match('/^\/\*/',$v) && !preg_match('/^#/',$v)) {
-                $l2 = strrpos($v,'# ');
-                if ($l2!==false) {
-                    $l3 = trim(substr($v,0,$l2));
-                    if (substr($l3,-1)==',') {
-                        $v = $l3;
+                $p2 = strrpos($v,'# ');
+                if ($p2!==false) {
+                    $p3 = trim(substr($v,0,$p2));
+                    if (substr($p3,-1)==',') {
+                        $v = $p3;
                     }
                 }
-                $I4.= $v."\n";
+                $R3.= $v."\n";
             }
         }
     }
@@ -101,42 +101,42 @@ class lazy_sqlite extends DB{
     // fetch *** *** www.LazyCMS.net *** ***
     public function fetch($rs=null,$type=1){
         switch ((int)$type) {
-            case 0: $I2 = SQLITE_NUM;break;
-            case 1: $I2 = SQLITE_ASSOC;break;
-            case 2: $I2 = SQLITE_BOTH;break;
+            case 0: $R1 = SQLITE_NUM;break;
+            case 1: $R1 = SQLITE_ASSOC;break;
+            case 2: $R1 = SQLITE_BOTH;break;
         }
-        $I1 = sqlite_fetch_array($rs,$I2);
+        $R = sqlite_fetch_array($rs,$R1);
         if ((int)$type!==0) {
-            foreach ((array)$I1 as $k=>$v) {
+            foreach ((array)$R as $k=>$v) {
                 if (($n = strpos($k,'.'))!==false){
                     $ck = substr($k,$n+1);
-                    $I1[$ck] = $v;
-                    unset($I1[$k]);
+                    $R[$ck] = $v;
+                    unset($R[$k]);
                 }
             }
         }
-        return $I1;
+        return $R;
     }
     
     // count *** *** www.LazyCMS.net *** ***
     public function count($rs=null){
         if (is_object($rs)) {
-            $I1 = $rs;
+            $R = $rs;
         } else {
-            $I1 = $this->query($rs);
+            $R = $this->query($rs);
         }
-        return sqlite_num_rows($I1);
+        return sqlite_num_rows($R);
     }
 
     // result *** *** www.LazyCMS.net *** ***
-    public function result($l1,$l2=0) {
-        if (is_object($l1)) {
-            $I2 = $l1;
+    public function result($p1,$p2=0) {
+        if (is_object($p1)) {
+            $R1 = $p1;
         } else {
-            $I2 = $this->query($l1);
+            $R1 = $this->query($p1);
         }
-        if ($data = $this->fetch($I2,0)) {
-            return $data[$l2];
+        if ($data = $this->fetch($R1,0)) {
+            return $data[$p2];
         }
     }
 

@@ -34,29 +34,29 @@ function now(){
 }
 
 // stripslashes_deep *** *** www.LazyCMS.net *** ***
-function stripslashes_deep($l1) {
-    return is_array($l1) ? array_map('stripslashes_deep', $l1) : stripslashes($l1);
+function stripslashes_deep($p1) {
+    return is_array($p1) ? array_map('stripslashes_deep', $p1) : stripslashes($p1);
 }
 
 // replace_root *** *** www.LazyCMS.net *** ***
-function replace_root($l1){
-    return str_replace(SEPARATOR,'/',str_replace(LAZY_PATH.SEPARATOR,C('SITE_BASE'),$l1));
+function replace_root($p1){
+    return str_replace(SEPARATOR,'/',str_replace(LAZY_PATH.SEPARATOR,C('SITE_BASE'),$p1));
 }
 
 // t2js *** *** www.LazyCMS.net *** ***
-function t2js($l1,$l2=false){
-    $I1 = str_replace(array("\r", "\n"), array('', '\n'), addslashes($l1));
-    return $l2 ? "document.writeln(\"$I1\");" : $I1;
+function t2js($p1,$p2=false){
+    $R = str_replace(array("\r", "\n"), array('', '\n'), addslashes($p1));
+    return $p2 ? "document.writeln(\"$R\");" : $R;
 }
 
 // h2encode *** *** www.LazyCMS.net *** ***
-function h2encode($l1){
-    return htmlspecialchars($l1);
+function h2encode($p1){
+    return htmlspecialchars($p1);
 }
 
 // h2decode *** *** www.LazyCMS.net *** ***
-function h2decode($l1){
-    return empty($l1) ? $l1 : htmlspecialchars_decode($l1);
+function h2decode($p1){
+    return empty($p1) ? $p1 : htmlspecialchars_decode($p1);
 }
 
 // get_php_setting *** *** www.LazyCMS.net *** ***
@@ -65,15 +65,15 @@ function get_php_setting($val){
 }
 
 // fieldset *** *** www.LazyCMS.net *** ***
-function fieldset($l1,$l2){
-    return '<fieldset><legend>'.$l1.'</legend>'.$l2.'</fieldset>';
+function fieldset($p1,$p2){
+    return '<fieldset><legend>'.$p1.'</legend>'.$p2.'</fieldset>';
 }
 
 // instr *** *** www.LazyCMS.net *** ***
-function instr($l1,$l2){
-    if (strlen($l1)==0) { return false; }
-    if (!is_array($l1)) { $l1 = explode(",",$l1); }
-    return in_array($l2,$l1) ? true : false;
+function instr($p1,$p2){
+    if (strlen($p1)==0) { return false; }
+    if (!is_array($p1)) { $p1 = explode(",",$p1); }
+    return in_array($p2,$p1) ? true : false;
 }
 
 // isok *** *** www.LazyCMS.net *** ***
@@ -92,9 +92,9 @@ function get_conn(){
 }
 
 // array_search_value *** *** www.LazyCMS.net *** ***
-function array_search_value($l1,$l2){
-    while (list($k,$v)=each($l2)) {
-        if (strpos($v,$l1)!==false) {
+function array_search_value($p1,$p2){
+    while (list($k,$v)=each($p2)) {
+        if (strpos($v,$p1)!==false) {
             return $k;
         }
     }
@@ -111,9 +111,9 @@ function clear_cache(){
 
 // language *** *** www.LazyCMS.net *** ***
 function language(){
-    $I1 = isset($_GET['language'])?$_GET['language']:null;
-    if (!$I1) { $I1 = Cookie::get('language'); }
-    return $I1 ? $I1 : C('LANGUAGE');
+    $R = isset($_GET['language'])?$_GET['language']:null;
+    if (!$R) { $R = Cookie::get('language'); }
+    return $R ? $R : C('LANGUAGE');
 }
 
 // utf2ansi *** *** www.LazyCMS.net *** ***
@@ -140,7 +140,7 @@ function ansi2utf($str){
 }
 
 // is_utf8 *** *** www.LazyCMS.net *** ***
-function is_utf8($l1){
+function is_utf8($p1){
     return preg_match('%^(?:
             [\x09\x0A\x0D\x20-\x7E] # ASCII
             | [\xC2-\xDF][\x80-\xBF] # non-overlong 2-byte
@@ -150,138 +150,138 @@ function is_utf8($l1){
             | \xF0[\x90-\xBF][\x80-\xBF]{2} # planes 1-3
             | [\xF1-\xF3][\x80-\xBF]{3} # planes 4-15
             | \xF4[\x80-\x8F][\x80-\xBF]{2} # plane 16
-            )*$%xs',$l1);
+            )*$%xs',$p1);
 }
 
 // but *** *** www.LazyCMS.net *** ***
-function but($l1){
-    $I1 = '<p class="button"><button type="submit" class="submit" onclick="return $(this.form).save();">'.L("common/{$l1}").'</button>';
-    $I1.= '<button type="button" class="apply" onclick="return $(this.form).apply();">'.L("common/apply").'</button>';
-    $I1.= '<button type="reset" onclick="javascript:return confirm(\''.L('confirm/reset').'\')">'.L('common/reset').'</button>';
-    $I1.= '<button type="button" onclick="javascript:history.back();">'.L('common/back').'</button></p>';
-    return $I1;
+function but($p1){
+    $R = '<p class="button"><button type="submit" class="submit" onClick="return $(this.form).save();">'.L("common/{$p1}").'</button>';
+    $R.= '<button type="button" class="apply" onClick="return $(this.form).apply();">'.L("common/apply").'</button>';
+    $R.= '<button type="reset" onClick="javascript:return confirm(\''.L('confirm/reset').'\')">'.L('common/reset').'</button>';
+    $R.= '<button type="button" onClick="javascript:history.back();">'.L('common/back').'</button></p>';
+    return $R;
 }
 
 // rmdirs *** *** www.LazyCMS.net *** ***
-function rmdirs($l1,$l2=true){
-    if ($I2=@opendir($l1)) {
-        while (false !== ($I3=readdir($I2))) {
-            if ($I3 != "." && $I3 != "..") {
-                $l3 = $l1.'/'.$I3;
-                is_dir($l3) ? rmdirs($l3,$l2) : ($l2 ? @unlink($l3) : null);
+function rmdirs($p1,$p2=true){
+    if ($R1=@opendir($p1)) {
+        while (false !== ($R2=readdir($R1))) {
+            if ($R2 != "." && $R2 != "..") {
+                $p3 = $p1.'/'.$R2;
+                is_dir($p3) ? rmdirs($p3,$p2) : ($p2 ? @unlink($p3) : null);
             }
         }
-        closedir($I2);
+        closedir($R1);
     }
-    return @rmdir($l1);
+    return @rmdir($p1);
 }
 
 // mkdirs *** *** www.LazyCMS.net *** ***
-function mkdirs($l1, $l2 = 0777){
-    // $l1:dir $l2:mode
-    if (!is_dir($l1)) {
-        mkdirs(dirname($l1), $l2);
-        return @mkdir($l1, $l2);
+function mkdirs($p1, $p2 = 0777){
+    // $p1:dir $p2:mode
+    if (!is_dir($p1)) {
+        mkdirs(dirname($p1), $p2);
+        return @mkdir($p1, $p2);
     }
     return true;
 }
 
 // save_file *** *** www.LazyCMS.net *** ***
-function save_file($l1,$l2='',$mode=false){
-    if (file_exists($l1)) {
-        if (!is_writable($l1)) {
+function save_file($p1,$p2='',$mode=true){
+    if (file_exists($p1)) {
+        if (!is_writable($p1)) {
             // 设置ftp信息，则修改权限，反之则输出错误
-            echo_json('没有可写权限<br/>文件：'.replace_root($l1),0);
+            echo_json('没有可写权限<br/>文件：'.replace_root($p1),0);
         }
     }
-    if (!$fp = fopen($l1,($mode?'wb':'ab'))) {
-        trigger_error(L('error/createfile',array('file'=>$l1)));
+    if (!$fp = fopen($p1,($mode?'wb':'ab'))) {
+        trigger_error(L('error/createfile',array('file'=>$p1)));
     }
     flock($fp,LOCK_EX + LOCK_NB);
-    if (!fwrite($fp,$l2)) {
-        trigger_error(L('error/writefile',array('file'=>$l1)));
+    if (!fwrite($fp,$p2)) {
+        trigger_error(L('error/writefile',array('file'=>$p1)));
     }
     fclose($fp);
 }
 
 // print_x *** *** www.LazyCMS.net *** ***
-function print_x($l1,$l2=null,$l3=null){
-    // $l1:title
-    // $l2:content
-    // $l3:select tab   0 null 自动识别
-    G('TITLE',$l1); $l3 = !empty($l3) ? $l3.'|' : null;
-    print_v(menu($l3.G('TABS')).'<div id="box">'.$l2.'</div>');
+function print_x($p1,$p2=null,$p3=null){
+    // $p1:title
+    // $p2:content
+    // $p3:select tab   0 null 自动识别
+    G('TITLE',$p1); $p3 = !empty($p3) ? $p3.'|' : null;
+    print_v(menu($p3.G('TABS')).'<div id="box">'.$p2.'</div>');
 }
 
 // get_dir_array *** *** www.LazyCMS.net *** ***
-function get_dir_array($l1,$l2){
-    //$l1:路径 $l2:读取类型
-    $l1 = str_replace(array('.','[',']','@'),array('/','*','*',COM_PATH),$l1);
-    $l3 = create_function('&$l1,$l2','$I2=strrpos($l1,"/"); $I1=substr($l1,$I2+1); $l1=$I1;');
-    if (substr($l1,-1)!='/') { $l1 .= '/'; }
-    $I1 = ($l2=='dir') ? glob("{$l1}*",GLOB_ONLYDIR) : glob("{$l1}*.{$l2}",GLOB_BRACE);
-    array_walk($I1,$l3);
-    return $I1;
+function get_dir_array($p1,$p2){
+    //$p1:路径 $p2:读取类型
+    $p1 = str_replace(array('.','[',']','@'),array('/','*','*',COM_PATH),$p1);
+    $p3 = create_function('&$p1,$p2','$R1=strrpos($p1,"/"); $R=substr($p1,$R1+1); $p1=$R;');
+    if (substr($p1,-1)!='/') { $p1 .= '/'; }
+    $R = ($p2=='dir') ? glob("{$p1}*",GLOB_ONLYDIR) : glob("{$p1}*.{$p2}",GLOB_BRACE);
+    array_walk($R,$p3);
+    return $R;
 }
 
 // len *** *** www.LazyCMS.net *** ***
-function len($l1){
+function len($p1){
     if (function_exists('mb_strlen')) {
-        return mb_strlen($l1,'utf-8');
+        return mb_strlen($p1,'utf-8');
     } elseif (function_exists('iconv_strlen')){
-        return iconv_strlen($l1,'utf-8');
+        return iconv_strlen($p1,'utf-8');
     } else {
-        preg_match_all(C('CN_PATTERN'),$l1,$I2);
-        return count($I2[0]);
+        preg_match_all(C('CN_PATTERN'),$p1,$R1);
+        return count($R1[0]);
     }
 }
 
 // xmlencode *** *** www.LazyCMS.net *** ***
-function xmlencode($l1){
-    if (strlen($l1)==0) { return ; }
-    return str_replace(array('&',"'",'"','>','<'),array('&amp;','&apos;','&quot;','&gt;','&lt;'),$l1);
+function xmlencode($p1){
+    if (strlen($p1)==0) { return ; }
+    return str_replace(array('&',"'",'"','>','<'),array('&amp;','&apos;','&quot;','&gt;','&lt;'),$p1);
 }
 
 // cnsubstr *** *** www.LazyCMS.net *** ***
-function cnsubstr($l1,$l2){
-    $l3 = 0;
-    $l4 = $l2;
+function cnsubstr($p1,$p2){
+    $p3 = 0;
+    $p4 = $p2;
     if (func_num_args() >= 3) {
-        $l3 = $l2;
-        $l4 = func_get_arg(2);
+        $p3 = $p2;
+        $p4 = func_get_arg(2);
     }
     if (function_exists('mb_substr')) {
-        return mb_substr($l1,$l3,$l4,'utf-8');
+        return mb_substr($p1,$p3,$p4,'utf-8');
     } elseif (function_exists('iconv_substr')){
-        return iconv_substr($l1,$l3,$l4,'utf-8');
+        return iconv_substr($p1,$p3,$p4,'utf-8');
     } else {
-        preg_match_all(C('CN_PATTERN'),$l1,$I2);
-        if (count($I2[0]) - $l3 > $l4) {
-            return implode('',array_slice($I2[0],$l3,$l4));
+        preg_match_all(C('CN_PATTERN'),$p1,$R1);
+        if (count($R1[0]) - $p3 > $p4) {
+            return implode('',array_slice($R1[0],$p3,$p4));
         }
-        return implode('',array_slice($I2[0],$l3,$l4));
+        return implode('',array_slice($R1[0],$p3,$p4));
     }
 }
 
 // read_file *** *** www.LazyCMS.net *** ***
-function read_file($l1){
-    if (!is_file($l1)) { return ; }
-    $fp   = fopen($l1,'rb');
-    $size = filesize($l1);
+function read_file($p1){
+    if (!is_file($p1)) { return ; }
+    $fp   = fopen($p1,'rb');
+    $size = filesize($p1);
     if ((int)$size==0) { return ; }
-    $I1 = fread($fp,$size);
+    $R = fread($fp,$size);
     fclose($fp);
-    return $I1;
+    return $R;
 }
 
 // require_file *** *** www.LazyCMS.net *** ***
-function require_file($l1){
-    // $l1:filePath
-    static $I1 = array();
-    if (is_file($l1)) {
-        if (!isset($I1[$l1])) {
-            require $l1;
-            $I1[$l1] = true;
+function require_file($p1){
+    // $p1:filePath
+    static $R = array();
+    if (is_file($p1)) {
+        if (!isset($R[$p1])) {
+            require $p1;
+            $R[$p1] = true;
             return true;
         }
         return false;
@@ -290,20 +290,20 @@ function require_file($l1){
 }
 
 // include_file *** *** www.LazyCMS.net *** ***
-function include_file($l1){
-    // $l1:filePath
-    static $I1 = array();
-    if (is_file($l1)) {
-        if (!isset($I1[$l1])) {
-            $I1[$l1] = include $l1;
+function include_file($p1){
+    // $p1:filePath
+    static $R = array();
+    if (is_file($p1)) {
+        if (!isset($R[$p1])) {
+            $R[$p1] = include $p1;
         }
-        return $I1[$l1];
+        return $R[$p1];
     }
     return false;
 }
 
 // print_v *** *** www.LazyCMS.net *** ***
-function print_v($l1=null){
+function print_v($p1=null){
     $title = G('TITLE');
     $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
     $hl.= $title ? '<title>'.G('TITLE').'</title>': null;
@@ -318,256 +318,256 @@ function print_v($l1=null){
     $hl.= '$("#box").tips("tip","[@tip]");';
     $hl.= ' });'.G('SCRIPT').'</script>';
     $hl.= G('HEAD');
-    $hl.= '</head><body>'.$l1.'</body></html>'; echo $hl;
+    $hl.= '</head><body>'.$p1.'</body></html>'; echo $hl;
 }
 
 // redirect *** *** www.LazyCMS.net *** ***
-function redirect($l1){
+function redirect($p1){
     header("Content-Type:text/html; charset=utf-8");
-    $l1 = str_replace(array("\n", "\r"), '', $l1);
-    $js = '<script type="text/javascript" charset="utf-8">parent.location.href="'.$l1.'";</script>';
-    exit('<meta http-equiv="refresh" content="0;url='.$l1.'" />'.$js);
+    $p1 = str_replace(array("\n", "\r"), '', $p1);
+    $js = '<script type="text/javascript" charset="utf-8">parent.location.href="'.$p1.'";</script>';
+    exit('<meta http-equiv="refresh" content="0;url='.$p1.'" />'.$js);
 }
 
 // pinyin *** *** www.LazyCMS.net *** ***
-function pinyin($l1){
-    static $I3 = null; $I1 = null;
-    preg_match_all(G('CN_PATTERN'),trim($l1),$I2);
-    $l2 = $I2[0]; $l3 = count($l2);
-    if (empty($I3)) {
-        $I3 = include_file(COM_PATH.'/data/pinyin.php');
+function pinyin($p1){
+    static $R2 = null; $R = null;
+    preg_match_all(G('CN_PATTERN'),trim($p1),$R1);
+    $p2 = $R1[0]; $p3 = count($p2);
+    if (empty($R2)) {
+        $R2 = include_file(COM_PATH.'/data/pinyin.php');
     }
-    for ($i=0;$i<$l3;$i++) {
-        if (validate($l2[$i],'^\w+$')){
-            $I1.= $l2[$i];
-        } elseif (!array_search_value($l2[$i],$I3)) {
-            $I1.= '-';
+    for ($i=0;$i<$p3;$i++) {
+        if (validate($p2[$i],'^\w+$')){
+            $R.= $p2[$i];
+        } elseif (!array_search_value($p2[$i],$R2)) {
+            $R.= '-';
         } else {
-            $I1.= ucfirst(array_search_value($l2[$i],$I3));
+            $R.= ucfirst(array_search_value($p2[$i],$R2));
         }
     }
-    return trim($I1,'-');
+    return trim($R,'-');
 }
 
 // echo_json *** *** www.LazyCMS.net *** ***
-function echo_json($l1,$l2=1){
-    if (!is_array($l1)) { 
-        $I1['text'] = $l1;
+function echo_json($p1,$p2=1){
+    if (!is_array($p1)) { 
+        $R['text'] = $p1;
     } else {
-        $I1 = $l1;
+        $R = $p1;
     }
-    switch ((int)$l2){
-        case 0 : $I1['status'] = 'error'; break;
-        case 1 : $I1['status'] = 'success'; break;
-        case 2 : $I1['status'] = 'tips'; break;
+    switch ((int)$p2){
+        case 0 : $R['status'] = 'error'; break;
+        case 1 : $R['status'] = 'success'; break;
+        case 2 : $R['status'] = 'tips'; break;
     }
-    exit(json_encode($I1));
+    exit(json_encode($R));
 }
 
 // form_opts *** *** www.LazyCMS.net *** ***
-function form_opts($l1,$l2,$l3,$l4=null){
-    $I1 = null;
-    $I2 = get_dir_array($l1,$l2);
-    if ($l2=='xml') {
-        foreach ($I2 as &$v) {
+function form_opts($p1,$p2,$p3,$p4=null){
+    $R = null;
+    $R1 = get_dir_array($p1,$p2);
+    if ($p2=='xml') {
+        foreach ($R1 as &$v) {
             if ($n = strpos($v,'.')) { $v = substr($v,$n+1); }
         }
-        $I2 = array_unique($I2);
+        $R1 = array_unique($R1);
     }
-    if (strpos($l3,'%23')!==false) { $l3 = str_replace('%23','#',$l3); }
-    foreach ($I2 as $l5) {
-        if ($l2=='xml') {
-            $l5 = basename($l5,".xml");
-            if ($n = strpos($l5,'.')) {
-                $l5 = substr($l5,$n+1);
+    if (strpos($p3,'%23')!==false) { $p3 = str_replace('%23','#',$p3); }
+    foreach ($R1 as $p5) {
+        if ($p2=='xml') {
+            $p5 = basename($p5,".xml");
+            if ($n = strpos($p5,'.')) {
+                $p5 = substr($p5,$n+1);
             }
-            $l6 = langbox($l5);
+            $p6 = langbox($p5);
         } else{
-            $l6 = $l5;
+            $p6 = $p5;
         }
-        $I3 = $l3;
-        if (strpos($I3,'#value#')!==false) { $I3 = str_replace('#value#',$l5,$I3); }
-        if (strpos($I3,'#name#')!==false)  { $I3 = str_replace('#name#',$l6,$I3); }
-        if ($l4==$l5) {
-            $I3 = str_replace('#selected#',' selected="selected"',$I3);
+        $R2 = $p3;
+        if (strpos($R2,'#value#')!==false) { $R2 = str_replace('#value#',$p5,$R2); }
+        if (strpos($R2,'#name#')!==false)  { $R2 = str_replace('#name#',$p6,$R2); }
+        if ($p4==$p5) {
+            $R2 = str_replace('#selected#',' selected="selected"',$R2);
         } else{
-            $I3 = str_replace('#selected#','',$I3);
+            $R2 = str_replace('#selected#','',$R2);
         }
-        $I1.= $I3;
+        $R.= $R2;
     }
-    return $I1;
+    return $R;
 }
 
 // menu *** *** www.LazyCMS.net *** ***
-function menu($l1){
-    if (($l2 = strpos($l1,'|'))!==false) {
-        $l2 = substr($l1,0,$l2);
-        $l1 = substr($l1,$l2+1);
+function menu($p1){
+    if (($p2 = strpos($p1,'|'))!==false) {
+        $p2 = substr($p1,0,$p2);
+        $p1 = substr($p1,$p2+1);
     }
-    $l3 = basename(PHP_FILE);
-    $l4 = isset($_REQUEST['action']) ? strtolower($_REQUEST['action']) : null;
-    $l5 = ' class="active"'; $l6 = 'javascript:self.location.reload();';
-    $I1 = '<ul id="tabs">';
-    $I2 = explode(';',$l1);
-    foreach ($I2 as $k=>$v) {
+    $p3 = basename(PHP_FILE);
+    $p4 = isset($_REQUEST['action']) ? strtolower($_REQUEST['action']) : null;
+    $p5 = ' class="active"'; $p6 = 'javascript:self.location.reload();';
+    $R = '<ul id="tabs">';
+    $R1 = explode(';',$p1);
+    foreach ($R1 as $k=>$v) {
         if (strpos($v,':')!==false) {
-            $I3 = explode(':',$v); $active = null;
-            if (!empty($l2)) {
-                if (($k+1)==$l2) {
-                    $active = $l5; $I3[1] = $l6;
+            $R2 = explode(':',$v); $active = null;
+            if (!empty($p2)) {
+                if (($k+1)==$p2) {
+                    $active = $p5; $R2[1] = $p6;
                 }
-            } elseif (!empty($l4)){
-                if ((string)$I3[1]==(string)$l3.'?action='.$l4) {
-                    $active = $l5; $I3[1] = $l6;
+            } elseif (!empty($p4)){
+                if ((string)$R2[1]==(string)$p3.'?action='.$p4) {
+                    $active = $p5; $R2[1] = $p6;
                 }
             } else {
-                if ((string)$I3[1]==(string)$l3) {
-                    $active = $l5; $I3[1] = $l6;
+                if ((string)$R2[1]==(string)$p3) {
+                    $active = $p5; $R2[1] = $p6;
                 }
             }
-            $I1.= '<li'.$active.'><a href="'.$I3[1].'">'.$I3[0].'</a></li>';
+            $R.= '<li'.$active.'><a href="'.$R2[1].'">'.$R2[0].'</a></li>';
         } else {
-            $I1.= '<li class="active"><a href="javascript:self.location.reload();">'.$v.'</a></li>';
+            $R.= '<li class="active"><a href="javascript:self.location.reload();">'.$v.'</a></li>';
         }
     }
-    $I1.= '</ul>';
-    return $I1;
+    $R.= '</ul>';
+    return $R;
 }
 
 // validate *** *** www.LazyCMS.net *** ***
-function validate($l1,$l2){
-    // $l1:str, $l2:类型
-    switch((string)$l2){
+function validate($p1,$p2){
+    // $p1:str, $p2:类型
+    switch((string)$p2){
         case '0' : // 数字，字母，逗号，杠，下划线，[，]
-            $l3 = '^[\w\,\/\-\[\]]+$';
+            $p3 = '^[\w\,\/\-\[\]]+$';
             break;
         case '1' : // 字母
-            $l3 = '^[A-Za-z]+$';
+            $p3 = '^[A-Za-z]+$';
             break;
         case '2' : // 匹配数字
-            $l3 = '^\d+$';
+            $p3 = '^\d+$';
             break;
         case '3' : // 字母，数字，下划线，杠
-            $l3 = '^[\w\-]+$';
+            $p3 = '^[\w\-]+$';
             break;
         case '4' : // Email
-            $l3 = '^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$';
+            $p3 = '^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$';
             break;
         case '5' : // url
-            $l3 = '^(http|https|ftp):(\/\/|\\\\)(([\w\/\\\+\-~`@:%])+\.)+([\w\/\\\.\=\?\+\-~`@\':!%#]|(&amp;)|&)+';
+            $p3 = '^(http|https|ftp):(\/\/|\\\\)(([\w\/\\\+\-~`@:%])+\.)+([\w\/\\\.\=\?\+\-~`@\':!%#]|(&amp;)|&)+';
             break;
         case '6' : // 
-            $l3 = '^[\d\,\.]+$';
+            $p3 = '^[\d\,\.]+$';
             break;
         case '7' : // 图片连接 http://www.example.com/xxx.jpg
-            $l4 = str_replace(',','|',C('UPLOAD_IMAGE_EXT'));
-            $l3 = '^(http|https|ftp):(\/\/|\\\\)(([\w\/\\\+\-~`@:%])+\.)+([\w\/\\\.\=\?\+\-~`@\':!%#]|(&amp;)|&)+\.('.$l4.')$';
+            $p4 = str_replace(',','|',C('UPLOAD_IMAGE_EXT'));
+            $p3 = '^(http|https|ftp):(\/\/|\\\\)(([\w\/\\\+\-~`@:%])+\.)+([\w\/\\\.\=\?\+\-~`@\':!%#]|(&amp;)|&)+\.('.$p4.')$';
             break;
         default  : // 自定义正则
-            $l3 = $l2;
+            $p3 = $p2;
             break;
     }
-    return preg_match("/{$l3}/i",$l1);
+    return preg_match("/{$p3}/i",$p1);
 }
 
 // pagelist *** *** www.LazyCMS.net *** ***
-function pagelist($l1,$l2,$l3,$l4){
+function pagelist($p1,$p2,$p3,$p4){
     //url,page,总页数,记录总数
-    $I1 = null;
-    if (strpos($l1,'%24')!==false) { $l1 = str_replace('%24','$',$l1); }
-    if (strpos($l1,'$')==0 || $l4==0) { return ; }
-    if ($l2 > 2) {
-        $I1.= '<a href="'.str_replace('$',$l2-1,$l1).'">&laquo;</a>';
-    } elseif ($l2==2) {
-        $I1.= '<a href="'.str_replace('$',1,$l1).'">&laquo;</a>';
+    $R = null;
+    if (strpos($p1,'%24')!==false) { $p1 = str_replace('%24','$',$p1); }
+    if (strpos($p1,'$')==0 || $p4==0) { return ; }
+    if ($p2 > 2) {
+        $R.= '<a href="'.str_replace('$',$p2-1,$p1).'">&laquo;</a>';
+    } elseif ($p2==2) {
+        $R.= '<a href="'.str_replace('$',1,$p1).'">&laquo;</a>';
     }
-    if ($l2 > 3) {
-        $I1.= '<a href="'.str_replace('$',1,$l1).'">1</a><span>&#8230;</span>';
+    if ($p2 > 3) {
+        $R.= '<a href="'.str_replace('$',1,$p1).'">1</a><span>&#8230;</span>';
     }
-    $l5 = $l2-2;
-    $l6 = $l2+7;
-    for ($i=$l5; $i<=$l6; $i++) {
-        if ($i>=1 && $i<=$l3) {
-            if ((int)$i==(int)$l2) {
-                $I1.= '<span class="active">'.$i.'</span>';
+    $p5 = $p2-2;
+    $p6 = $p2+7;
+    for ($i=$p5; $i<=$p6; $i++) {
+        if ($i>=1 && $i<=$p3) {
+            if ((int)$i==(int)$p2) {
+                $R.= '<span class="active">'.$i.'</span>';
             } else {
                 if ($i==1) {
-                    $I1.= '<a href="'.str_replace('$',1,$l1).'">'.$i.'</a>';
+                    $R.= '<a href="'.str_replace('$',1,$p1).'">'.$i.'</a>';
                 } else {
-                    $I1.= '<a href="'.str_replace('$',$i,$l1).'">'.$i.'</a>';
+                    $R.= '<a href="'.str_replace('$',$i,$p1).'">'.$i.'</a>';
                 }
             }
         }
     }
-    if ($l2 < ($l3-7)) {
-        $I1.= '<span>&#8230;</span><a href="'.str_replace('$',$l3,$l1).'">'.$l3.'</a>';
+    if ($p2 < ($p3-7)) {
+        $R.= '<span>&#8230;</span><a href="'.str_replace('$',$p3,$p1).'">'.$p3.'</a>';
     }
-    if ($l2 < $l3) {
-        $I1.= '<a href="'.str_replace('$',$l2+1,$l1).'">&raquo;</a>';
+    if ($p2 < $p3) {
+        $R.= '<a href="'.str_replace('$',$p2+1,$p1).'">&raquo;</a>';
     }
-    return '<div class="pages">'.$I1.'</div>';
+    return '<div class="pages">'.$R.'</div>';
 }
 
 // import *** *** www.LazyCMS.net *** ***
-function import($l1,$l2='',$l3='.php',$l4=false){
-    // $l1:path, $l2:baseUrl, $l3:ext, $l4:subDir
+function import($p1,$p2='',$p3='.php',$p4=false){
+    // $p1:path, $p2:baseUrl, $p3:ext, $p4:subDir
     static $_I1 = array();
     // 已经加载的文件不再加载
-    if (isset($_I1[strtolower($l1.$l2)])) {
+    if (isset($_I1[strtolower($p1.$p2)])) {
         return true;
     } else {
-        $_I1[strtolower($l1.$l2)] = true;
+        $_I1[strtolower($p1.$p2)] = true;
     }
-    if (empty($l2)) {
+    if (empty($p2)) {
         // 默认方式调用应用类库
-        $l2 = COM_PATH;
+        $p2 = COM_PATH;
     } else {
         // 相对路径调用
-        $l5 = true;
+        $p5 = true;
     }
-    $I2 = explode('.',$l1);
-    if ('*' == $I2[0] || isset($l5)) {
+    $R1 = explode('.',$p1);
+    if ('*' == $R1[0] || isset($p5)) {
         /**
          * 多级目录加载支持
          * 用于子目录递归调用
          */
-    } elseif('@' == $I2[0]) {
+    } elseif('@' == $R1[0]) {
         // 加载page目录的文件
-        $l1 = str_replace('@.','',$l1);
-        $l2 = LAZY_PATH;
+        $p1 = str_replace('@.','',$p1);
+        $p2 = LAZY_PATH;
     }
-    if (substr($l2, -1) != '/') { $l2 .= '/'; }
-    $l6 = $l2.str_replace('.', '/', $l1).$l3;
-    if (false !== strpos($l6,'*') || false !== strpos($l6,'?')) {
+    if (substr($p2, -1) != '/') { $p2 .= '/'; }
+    $p6 = $p2.str_replace('.', '/', $p1).$p3;
+    if (false !== strpos($p6,'*') || false !== strpos($p6,'?')) {
         // 导入匹配的文件
-        $l7 = glob($l6);
-        if ($l7) {
-            foreach($l7 as $k=>$v) {
+        $p7 = glob($p6);
+        if ($p7) {
+            foreach($p7 as $k=>$v) {
                 if(is_dir($v)) {
-                    if($l4) { import('*',$v.'/',$l3,$l4); }
+                    if($p4) { import('*',$v.'/',$p3,$p4); }
                 } else {
                     // 导入类库文件
-                    $I1 = require_file($v);
+                    $R = require_file($v);
                 }
             }
-            return $I1;
+            return $R;
         } else {
             return false;
         }
     } else {
         // 导入目录下的指定类库文件
-        return require_file($l6);
+        return require_file($p6);
     }
 }
 
 // check_user *** *** www.LazyCMS.net *** ***
-function check_user($l1=null,$l2=null){
-    return get_user($l1,$l2);
+function check_user($p1=null,$p2=null){
+    return get_user($p1,$p2);
 }
 
 // check_login *** *** www.LazyCMS.net *** ***
-function check_login($l1=null,$l2='../logout.php'){
-    $_USER = get_user($l1);
+function check_login($p1=null,$p2='../logout.php'){
+    $_USER = get_user($p1);
     if ($_USER === -2) {
         // 没有权限，进行错误提示
     } elseif ($_USER === false) {
@@ -577,17 +577,17 @@ function check_login($l1=null,$l2='../logout.php'){
             echo_json(array(
                 'text'  => L('error/overtime'),
                 'sleep' => 3,
-                'url'   => $l2,
+                'url'   => $p2,
             ),0);
         } else {
-            redirect($l2);
+            redirect($p2);
         }
     }
     return $_USER;
 }
 
 // get_user *** *** www.LazyCMS.net *** ***
-function get_user($l1=null,$l2=null){
+function get_user($p1=null,$p2=null){
     /**
      * 验证登录或权限验证
      *
@@ -598,14 +598,14 @@ function get_user($l1=null,$l2=null){
     $db = get_conn(); 
     $funcNum = func_num_args();
     // check_user('username','userpass')
-    if ((int)$funcNum > 1 && !empty($l2)) {
-        $username = $l1;
-        $userpass = $l2;
+    if ((int)$funcNum > 1 && !empty($p2)) {
+        $username = $p1;
+        $userpass = $p2;
         $purview  = null;
     } else {
         $username = Cookie::get('username');
         $userpass = Cookie::get('userpass');
-        $purview  = ($l1=='system') ? 'system/'.$l1 : MODULE.'/'.$l1;
+        $purview  = ($p1=='system') ? 'system/'.$p1 : MODULE.'/'.$p1;
     }
     if (empty($username) || empty($userpass)) { return false; }
     // 开始验证
@@ -615,7 +615,7 @@ function get_user($l1=null,$l2=null){
                         WHERE `su`.`username`=? AND `su`.`isdel`=0 AND `su`.`islock`=0
                         LIMIT 0,1;",$username);
     if ($rs = $db->fetch($res)) {
-        if ((int)$funcNum > 1 && !empty($l2)) {
+        if ((int)$funcNum > 1 && !empty($p2)) {
             $md5pass = md5($userpass.$rs['userkey']);
             if ($md5pass == $rs['userpass']) {
                 $newkey  = substr($md5pass,0,6);
@@ -716,11 +716,11 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
 }
 
 // ubbencode *** *** www.LazyCMS.net *** ***
-function ubbencode($l1){
-    if (strlen($l1)==0) {return ;}
-    $I1 = h2encode($l1);
-    if (strpos($I1,' ')!==false) { $I1 = str_replace(' ','&nbsp;',$I1); }
-    $I1 = preg_replace(array(
+function ubbencode($p1){
+    if (strlen($p1)==0) {return ;}
+    $R = h2encode($p1);
+    if (strpos($R,' ')!==false) { $R = str_replace(' ','&nbsp;',$R); }
+    $R = preg_replace(array(
         '/\r\n|\n|\r/s',
         '/\[url\](.+?)\[\/url]/i',
         '/\[url\=([^\]]+)](.+?)\[\/url]/i',
@@ -762,15 +762,15 @@ function ubbencode($l1){
         '<div>$1</div>',
         '<pre>$1</pre>',
         '<address>$1</address>',
-    ),$I1);
+    ),$R);
     for ($i=1; $i<7; $i++) {
-        $I1 = preg_replace('/\[h'.$i.'\](.+?)\[\/h'.$i.']/i','<h'.$i.'>$1</h'.$i.'>',$I1);
+        $R = preg_replace('/\[h'.$i.'\](.+?)\[\/h'.$i.']/i','<h'.$i.'>$1</h'.$i.'>',$R);
     }
-    return $I1;
+    return $R;
 }
 
 // langbox *** *** www.LazyCMS.net *** ***
-function langbox($l1){
+function langbox($p1){
     $lang = array(
         'ar' => 'Arabic',
         'bg' => 'Bulgarian',
@@ -816,110 +816,110 @@ function langbox($l1){
         'zh-cn' => '简体中文',
         'ja' => 'Japanese',
     );
-    return isset($lang[$l1]) ? $lang[$l1] : $l1;
+    return isset($lang[$p1]) ? $lang[$p1] : $p1;
 }
 
 // C *** *** www.LazyCMS.net *** ***
-function C($l1=null,$l2=null) {
-    // $l1:name, $l2:value
-    static $I1 = array();
-    if(!is_null($l2)) {
-        $I1[strtolower($l1)] = $l2;
+function C($p1=null,$p2=null) {
+    // $p1:name, $p2:value
+    static $R = array();
+    if(!is_null($p2)) {
+        $R[strtolower($p1)] = $p2;
         return ;
     }
-    if(empty($l1)) {
-        return $I1;
+    if(empty($p1)) {
+        return $R;
     }
-    if(is_array($l1)) {
-        $I1 = array_merge($I1,array_change_key_case($l1));
-        return $I1;
+    if(is_array($p1)) {
+        $R = array_merge($R,array_change_key_case($p1));
+        return $R;
     }
-    if(isset($I1[strtolower($l1)])) {
-        return $I1[strtolower($l1)];
+    if(isset($R[strtolower($p1)])) {
+        return $R[strtolower($p1)];
     }else{
         return false;
     }
 }
 
 // G *** *** www.LazyCMS.net *** ***
-function G($l1=null,$l2=null){
-    static $I1 = array();
-    if(!is_null($l2)) {
-        $I1[strtolower($l1)] = $l2;
+function G($p1=null,$p2=null){
+    static $R = array();
+    if(!is_null($p2)) {
+        $R[strtolower($p1)] = $p2;
         return ;
     }
-    if(empty($l1)) {
-        return $I1;
+    if(empty($p1)) {
+        return $R;
     }
-    if(is_array($l1)) {
-        $I1 = array_merge($I1,array_change_key_case($l1));
-        return $I1;
+    if(is_array($p1)) {
+        $R = array_merge($R,array_change_key_case($p1));
+        return $R;
     }
-    if(isset($I1[strtolower($l1)])) {
-        return $I1[strtolower($l1)];
+    if(isset($R[strtolower($p1)])) {
+        return $R[strtolower($p1)];
     }else{
         return false;
     }
 }
 
 // L *** *** www.LazyCMS.net *** ***
-function L($l1,$l2=null,$l3='system'){
-    static $I2 = array();
-    if ($l1=='') { return $l1; }
-    $l4 = language();
-    $I3 = isset($I2["{$l3}.{$l4}"]) ? $I2["{$l3}.{$l4}"] : null;
-    if (!is_object($I3)) {
-        $l5 = COM_PATH."/language/{$l3}."; $l6 = $l5.$l4.'.xml';
-        if (!is_file($l6)) { $l6 = $l5.C('LANGUAGE').'.xml'; }
-        if (!is_file($l6)) { return '['.$l1.']'; }
-        $I3 = new DOMDocument;
-        $I3->load($l6);
-        $I2[$l4] = $I3;
+function L($p1,$p2=null,$p3='system'){
+    static $R1 = array();
+    if ($p1=='') { return $p1; }
+    $p4 = language();
+    $R2 = isset($R1["{$p3}.{$p4}"]) ? $R1["{$p3}.{$p4}"] : null;
+    if (!is_object($R2)) {
+        $p5 = COM_PATH."/language/{$p3}."; $p6 = $p5.$p4.'.xml';
+        if (!is_file($p6)) { $p6 = $p5.C('LANGUAGE').'.xml'; }
+        if (!is_file($p6)) { return '['.$p1.']'; }
+        $R2 = new DOMDocument;
+        $R2->load($p6);
+        $R1[$p4] = $R2;
     }
-    $I4 = new DOMXPath($I3);
-    $I5 = $I4->evaluate("//lazycms/$l1");
-    if (false !== strpos($l1,'/@')) {
-        $I1 = $I5->item(0)->value;
+    $R3 = new DOMXPath($R2);
+    $R4 = $R3->evaluate("//lazycms/$p1");
+    if (false !== strpos($p1,'/@')) {
+        $R = $R4->item(0)->value;
     } else {
-        $I1 = $I5->item(0)->nodeValue;
+        $R = $R4->item(0)->nodeValue;
     }
-    if (!empty($l2) && is_array($l2)) {
-        foreach ($l2 as $k=>$v) {
-           $I1 = str_replace('{$'.$k.'}',$v,$I1); 
+    if (!empty($p2) && is_array($p2)) {
+        foreach ($p2 as $k=>$v) {
+           $R = str_replace('{$'.$k.'}',$v,$R); 
         }
     }
-    return $I1 ? $I1 : '['.$l1.']';
+    return $R ? $R : '['.$p1.']';
 }
 
 // property_exists *** *** www.LazyCMS.net *** ***
 if (!function_exists('property_exists')) {
-    function property_exists($l1, $l2) { // $l1:class, $l2:property
-        if (is_object($l1)) { $l1 = get_class($l1); }
-        return array_key_exists($l2,get_class_vars($l1));
+    function property_exists($p1, $p2) { // $p1:class, $p2:property
+        if (is_object($p1)) { $p1 = get_class($p1); }
+        return array_key_exists($p2,get_class_vars($p1));
     }
 }
 
 // json_encode *** *** www.LazyCMS.net *** ***
 if (!function_exists('json_encode')) {
-    function json_encode($l1){
-        static $I1 = array();
-        if (!isset($I1[0])) {
+    function json_encode($p1){
+        static $R = array();
+        if (!isset($R[0])) {
             import('class.json');
-            $I1[0] = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
+            $R[0] = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
         }
-        return $I1[0]->encode($l1);
+        return $R[0]->encode($p1);
     }
 }
 
 // json_decode *** *** www.LazyCMS.net *** ***
 if (!function_exists('json_decode')) {
-    function json_decode($l1){
-        static $I1 = array();
-        if (!isset($I1[0])) {
+    function json_decode($p1){
+        static $R = array();
+        if (!isset($R[0])) {
             import('class.json');
-            $I1[0] = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
+            $R[0] = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
         }
-        return $I1[0]->decode($l1);
+        return $R[0]->decode($p1);
     }
 }
 

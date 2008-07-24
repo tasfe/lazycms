@@ -81,26 +81,26 @@ class Recordset {
         }
     }
     // button *** *** www.LazyCMS.net *** ***
-    public function button($l1=null){
+    public function button($p1=null){
         if ((int)$this->length > 0) {
             $disabled = null;
         } else {
             $disabled = ' disabled="disabled"';
         }
-        $I1 = '<div class="button"><button onclick="checkALL(this,\'all\');" type="button"'.$disabled.'>'.L('common/selectall').'</button><button onclick="checkALL(this);" type="button"'.$disabled.'>'.L('common/reselect').'</button>';
-        $l2 = '<button onclick="$(this).gp(\'delete\');" type="button"'.$disabled.'>'.L('common/delete').'</button>';
-        if (!empty($l1)) {
-            $I2 = explode('|',$l1);
-            foreach ($I2 as $v) {
+        $R = '<div class="button"><button onclick="checkALL(this,\'all\');" type="button"'.$disabled.'>'.L('common/selectall').'</button><button onclick="checkALL(this);" type="button"'.$disabled.'>'.L('common/reselect').'</button>';
+        $p2 = '<button onclick="$(this).gp(\'delete\');" type="button"'.$disabled.'>'.L('common/delete').'</button>';
+        if (!empty($p1)) {
+            $R1 = explode('|',$p1);
+            foreach ($R1 as $v) {
                 if ($v!='-') {
-                    $I3 = explode(':',$v);
-                    $I1.= '<button onclick="" type="button"'.$disabled.'>'.$I3[1].'</button>';
+                    $R2 = explode(':',$v);
+                    $R.= '<button onclick="" type="button"'.$disabled.'>'.$R2[1].'</button>';
                 }
             }
         }
-        $I1.= $l2;
-        $I1.= '</div>';
-        return $I1;
+        $R.= $p2;
+        $R.= '</div>';
+        return $R;
     }
     // plist *** *** www.LazyCMS.net *** ***
     public function plist(){

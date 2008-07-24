@@ -181,9 +181,9 @@ abstract class DB {
     }
 
     // max *** *** www.LazyCMS.net *** ***
-    public function max($l1,$l2){
-        // $l1:field, $l2:table
-        return $this->result(sprintf("SELECT max( `%s` ) FROM `%s` WHERE 1=1;",$l1,$l2)) + 1;
+    public function max($p1,$p2){
+        // $p1:field, $p2:table
+        return $this->result(sprintf("SELECT max( `%s` ) FROM `%s` WHERE 1=1;",$p1,$p2)) + 1;
     }
     // __destruct *** *** www.LazyCMS.net *** ***
     public function __destruct(){
@@ -193,11 +193,11 @@ abstract class DB {
     /* Copy */
     
     // copy *** *** www.LazyCMS.net *** ***
-    public function copy($l1,$l2){
-        $res = $this->query("SHOW CREATE TABLE `{$l1}`");
+    public function copy($p1,$p2){
+        $res = $this->query("SHOW CREATE TABLE `{$p1}`");
         if ($data = $this->fetch($res,0)) {
             $sql = $data[1];
-            $sql = preg_replace('/^(CREATE TABLE) `'.preg_quote($data[0],'/').'` (\()/i', '$1 IF NOT EXISTS `'.$l2.'` $2', $sql);
+            $sql = preg_replace('/^(CREATE TABLE) `'.preg_quote($data[0],'/').'` (\()/i', '$1 IF NOT EXISTS `'.$p2.'` $2', $sql);
             $this->exec($sql);
             return true;
         } else {
@@ -208,17 +208,17 @@ abstract class DB {
     /* Insert */
     
     // insert *** *** www.LazyCMS.net *** ***
-    public function insert($l1,$l2){
-        // $l1:table, $l2:array
+    public function insert($p1,$p2){
+        // $p1:table, $p2:array
         $cols = array();
         $vals = array();
-        foreach ($l2 as $col => $val) {
+        foreach ($p2 as $col => $val) {
             $cols[] = $this->quoteIdentifier($col);
             $vals[] = $this->quote($val);
         }
 
         $sql = "INSERT INTO "
-             . $this->quoteIdentifier($l1)
+             . $this->quoteIdentifier($p1)
              . ' (' . implode(', ', $cols) . ') '
              . 'VALUES (' . implode(', ', $vals) . ')';
 
@@ -229,19 +229,19 @@ abstract class DB {
     /* Update */
 
     // update *** *** www.LazyCMS.net *** ***
-    public function update($l1,$l2,$l3=null){
-        // $l1:table, $l2:set, $l3:where
+    public function update($p1,$p2,$p3=null){
+        // $p1:table, $p2:set, $p3:where
         // extract and quote col names from the array keys
         $set = array();
-        foreach ($l2 as $col => $val) {
+        foreach ($p2 as $col => $val) {
             $set[] = $this->quoteIdentifier($col).' = '.$this->quote($val);
         }
-        $l3 = $this->whereExpr($l3);
+        $p3 = $this->whereExpr($p3);
         // build the statement
         $sql = "UPDATE "
-             . $this->quoteIdentifier($l1)
+             . $this->quoteIdentifier($p1)
              . ' SET ' . implode(', ', $set)
-             . (($l3) ? " WHERE {$l3}" : '');
+             . (($p3) ? " WHERE {$p3}" : '');
         $this->exec($sql);
         return $this->affected_rows();
     }
@@ -249,13 +249,13 @@ abstract class DB {
     /* Delete */
 
     // delete *** *** www.LazyCMS.net *** ***
-    public function delete($l1,$l2=null){
-        // $l1:table, $l2:where
-        $l2 = $this->whereExpr($l2);
+    public function delete($p1,$p2=null){
+        // $p1:table, $p2:where
+        $p2 = $this->whereExpr($p2);
         // build the statement
         $sql = "DELETE FROM "
-             . $this->quoteIdentifier($l1)
-             . (($l2) ? " WHERE {$l2}" : '');
+             . $this->quoteIdentifier($p1)
+             . (($p2) ? " WHERE {$p2}" : '');
         $this->exec($sql);
         return $this->affected_rows();
     }
@@ -263,32 +263,32 @@ abstract class DB {
     /* Format SQL */
 
     // whereExpr *** *** www.LazyCMS.net *** ***
-    public function whereExpr($l1) {
-        if (empty($l1)) {
-            return $l1;
+    public function whereExpr($p1) {
+        if (empty($p1)) {
+            return $p1;
         }
-        if (!is_array($l1)) {
-            $l1 = array($l1);
+        if (!is_array($p1)) {
+            $p1 = array($p1);
         }
-        foreach ($l1 as &$term) {
+        foreach ($p1 as &$term) {
             $term = '(' . $term . ')';
         }
-        $l1 = implode(' AND ', $l1);
-        return $l1;
+        $p1 = implode(' AND ', $p1);
+        return $p1;
     }
     
     // quote *** *** www.LazyCMS.net *** ***
-    static function quote($l1){
-        if (is_array($l1)) {
-            foreach ($l1 as &$val) {
+    static function quote($p1){
+        if (is_array($p1)) {
+            foreach ($p1 as &$val) {
                 $val = self::quote($val);
             }
-            return implode(', ', $l1);
+            return implode(', ', $p1);
         }
-        if (is_int($l1) || is_float($l1)) {
-            return $l1;
+        if (is_int($p1) || is_float($p1)) {
+            return $p1;
         }
-        return "'".addcslashes($l1, "\000\n\r\\'\"\032")."'";
+        return "'".addcslashes($p1, "\000\n\r\\'\"\032")."'";
     }
     
     // quoteInto *** *** www.LazyCMS.net *** ***
@@ -307,39 +307,39 @@ abstract class DB {
     }
     
     // quoteIdentifier *** *** www.LazyCMS.net *** ***
-    static function quoteIdentifier($l1){
-        $I1 = null;
-        $l2 = $l1;
-        if (is_array($l2)) {
-            $l2 = implode(',',$l2);
+    static function quoteIdentifier($p1){
+        $R = null;
+        $p2 = $p1;
+        if (is_array($p2)) {
+            $p2 = implode(',',$p2);
         }
         // 检测是否是多个字段
-        if (strpos($l2,',') !== false) {
+        if (strpos($p2,',') !== false) {
             // 多个字段，递归执行
-            $I2 = explode(',',$l2);
-            foreach ($I2 as $k=>$v) {
-                if (empty($I1)) {
-                    $I1 = self::quoteIdentifier($v);
+            $R1 = explode(',',$p2);
+            foreach ($R1 as $k=>$v) {
+                if (empty($R)) {
+                    $R = self::quoteIdentifier($v);
                 } else {
-                    $I1 .= ','.self::quoteIdentifier($v);
+                    $R .= ','.self::quoteIdentifier($v);
                 }
             }
-            return $I1;
+            return $R;
         } else {
             // 解析各个字段
-            if (strpos($l2,'.') !== false) {
-                $I2 = explode('.',$l2);
-                $l3 = trim($I2[0]);
-                $l4 = trim($I2[1]);
-                $l5 = chr(32).'AS'.chr(32);
-                if (stripos($l4,$l5) !== false) {
-                    $l6 = trim(substr($l4,0,stripos($l4,$l5)));
-                    $l7 = trim(substr($l4,stripos($l4,$l5)+4));
-                    $l4 = sprintf("`%s`%s`%s`",$l6,$l5,$l7);
+            if (strpos($p2,'.') !== false) {
+                $R1 = explode('.',$p2);
+                $p3 = trim($R1[0]);
+                $p4 = trim($R1[1]);
+                $p5 = chr(32).'AS'.chr(32);
+                if (stripos($p4,$p5) !== false) {
+                    $p6 = trim(substr($p4,0,stripos($p4,$p5)));
+                    $p7 = trim(substr($p4,stripos($p4,$p5)+4));
+                    $p4 = sprintf("`%s`%s`%s`",$p6,$p5,$p7);
                 }
-                return sprintf("`%s`.%s",$l3,$l4);
+                return sprintf("`%s`.%s",$p3,$p4);
             } else {
-                return sprintf("`%s`",$l2);
+                return sprintf("`%s`",$p2);
             }
         }
     }

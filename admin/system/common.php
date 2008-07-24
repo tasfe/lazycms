@@ -29,16 +29,16 @@ defined('COM_PATH') or die('Restricted access!');
 // System *** *** www.LazyCMS.net *** ***
 class System{
     // __group *** *** www.LazyCMS.net *** ***
-    static function __group($l1,$l2,$l3=null){
-        // $l1:groupid, $l2:current groupid, $l3:selected
-        $I1 = null; $db = get_conn();
+    static function __group($p1,$p2=null){
+        // $p1:groupid, $p2:selected
+        $R = null; $db = get_conn();
         $res = $db->query("SELECT `groupid`,`groupname` FROM `#@_system_group` WHERE 1=1 ORDER BY `groupid` DESC;");
         while ($rs = $db->fetch($res,0)) {
-            if ($l2 != $rs[0]) {
-                $selected = ((int)$l3 == (int)$rs[0]) ? ' selected="selected"' : null;
-                $I1.= '<option value="'.$rs[0].'"'.$selected.'>'.$rs[1].'</option>';
+            if ($p1 != $rs[0]) {
+                $selected = ((int)$p2 == (int)$rs[0]) ? ' selected="selected"' : null;
+                $R.= '<option value="'.$rs[0].'"'.$selected.'>'.$rs[1].'</option>';
             }
         }
-        return $I1;
+        return $R;
     }
 }
