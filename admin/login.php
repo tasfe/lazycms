@@ -27,41 +27,10 @@ require '../global.php';
  * @date        2008-6-18
  */
 
-// lazy_check *** *** www.LazyCMS.net *** ***
-function lazy_check(){
-    $val = new Validate(); if (!$val->method()) { return ;}
-    $val->check('username|1|'.L('login/check/name').'|2-30');
-    $val->check('userpass|1|'.L('login/check/pass').'|6-30');
-    if ($val->isVal()) {
-        $val->out();
-    } else {
-        $db = get_conn();
-        $username = isset($_POST['username']) ? $_POST['username'] : null;
-        $userpass = isset($_POST['userpass']) ? $_POST['userpass'] : null;
-        $language = isset($_POST['language']) ? $_POST['language'] : null;
-        $language = ($language == 'default')  ? C('LANGUAGE')      : $language;
-        $cookie   = isset($_POST['cookie'])   ? $_POST['cookie']   : null;
-        $cookie   = empty($cookie) ? $cookie : (now() + $cookie);
-        $_USER    = check_user($username,$userpass);
-        if ($_USER===false) {
-            // 没有此管理员
-            echo_json(array('text' => L('login/check/error1')),0);
-        } elseif ($_USER === -1) {
-            // 密码错误
-            echo_json(array('text' => L('login/check/error2')),0);
-        } else {
-            // 设置登陆信息
-            Cookie::set('username',$_USER['username'],$cookie);
-            Cookie::set('userpass',$_USER['userpass'],$cookie);
-            Cookie::set('language',$_USER['language'],$cookie);
-            // 输出登录成功的信息
-            echo_json(array(
-                'text'  => L('login/success'),
-                'sleep' => 3,
-                'url'   => 'manage.php',
-            ),1);
-        }
-    }
+// lazy_before *** *** www.LazyCMS.net *** ***
+function lazy_before(){
+    // 定义当前模块，用来设置语言包
+    G('MODULE','system');
 }
 
 // lazy_default *** *** www.LazyCMS.net *** ***
@@ -102,4 +71,41 @@ function lazy_default(){
     $hl.= '</dl>';
     $hl.= '</form></body></html>';
     echo($hl);
+}
+
+// lazy_check *** *** www.LazyCMS.net *** ***
+function lazy_check(){
+    $val = new Validate(); if (!$val->method()) { return ;}
+    $val->check('username|1|'.L('login/check/name').'|2-30');
+    $val->check('userpass|1|'.L('login/check/pass').'|6-30');
+    if ($val->isVal()) {
+        $val->out();
+    } else {
+        $db = get_conn();
+        $username = isset($_POST['username']) ? $_POST['username'] : null;
+        $userpass = isset($_POST['userpass']) ? $_POST['userpass'] : null;
+        $language = isset($_POST['language']) ? $_POST['language'] : null;
+        $language = ($language == 'default')  ? C('LANGUAGE')      : $language;
+        $cookie   = isset($_POST['cookie'])   ? $_POST['cookie']   : null;
+        $cookie   = empty($cookie) ? $cookie : (now() + $cookie);
+        $_USER    = check_user($username,$userpass);
+        if ($_USER===false) {
+            // 没有此管理员
+            echo_json(array('text' => L('login/check/error1')),0);
+        } elseif ($_USER === -1) {
+            // 密码错误
+            echo_json(array('text' => L('login/check/error2')),0);
+        } else {
+            // 设置登陆信息
+            Cookie::set('username',$_USER['username'],$cookie);
+            Cookie::set('userpass',$_USER['userpass'],$cookie);
+            Cookie::set('language',$_USER['language'],$cookie);
+            // 输出登录成功的信息
+            echo_json(array(
+                'text'  => L('login/success'),
+                'sleep' => 3,
+                'url'   => 'manage.php',
+            ),1);
+        }
+    }
 }

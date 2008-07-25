@@ -1,0 +1,85 @@
+
+/[网站根目录]
+    |-- global.php          # 系统公用文件
+    |-- install.php         # 系统安装文件
+    |-- LICENSE.txt         # 授权协议
+    |-- readme.txt          # 说明
+
+/admin                      # 后台管理目录，详见[1]
+    |-- system              # 后台模块目录
+        |-- data            # 管理员信息目录，详见[2]
+        |-- images          # 后台图片和CSS文件夹
+    |-- index.php           # 转向登录页
+    |-- login.php           # 后台登录
+    |-- logout.php          # 退出登录
+    |-- manage.php          # 后台管理首页
+
+/common                     # 系统公用目录
+    |-- class               # 公用类库目录
+        |-- db              # 数据库支持类，详见[3]
+            |-- mysql.php   # mysql 操作类
+            |-- mysqli.php  # mysqli操作类
+            |-- sqlite.php  # sqlite操作类
+        |-- cookie.php      # cookie操作类
+        |-- db.php          # 数据库抽象类
+        |-- fckeditor.php   # fckeditor调用类
+        |-- json.php        # json支持库
+        |-- lazycms.php     # LazyCMS调度中心
+        |-- recordset.php   # 记录集解析
+        |-- splitword.php   # 中文分词
+        |-- validate.php    # 表单验证
+    |-- data                # 系统公用数据
+        |-- dict            # 网站词库，详见[4]
+        |-- module.php      # 模块和权限列表
+        |-- pinyin.php      # 拼音对照表
+        |-- timezone.php    # 时区表
+    |-- editor              # 在线编辑器
+        |-- fckeditor       # fckeditor编辑器
+        |-- html            # 没有编辑器
+    |-- images              # 系统公用图片
+        |-- icon            # 公用16x16图标
+        |-- icon-32         # 公用32x32图标
+        |-- icons.css       # 公用图标CSS，详见[5]
+        |-- style.css       # 公用CSS
+    |-- js                  # 系统公用js
+        |-- jquery.js       # jquery支持库
+        |-- jquery.lazycms.js   # 以jquery为基础的js函数库，以及插件库
+    |-- language                # 语言包，详见[6]
+        |-- system.zh-cn.xml    # 系统中文简体语言包
+        |-- article.zh-cn.xml   # 内容管理中文简体语言包
+    |-- config.php          # 系统配置
+    |-- defines.php         # 公共常量
+    |-- functions.php       # 公用函数库
+
+/themes                     # 主题，相当于模板啦！
+    |-- default             # 默认主题
+        |-- images          # 主题的私有图片
+        |-- js              # 主题的私有js
+
+
+1.后台管理目录 [/admin]
+    后台管理目录可以任意改名，来确保系统的安全
+    模块的后台管理文件都放在这个目录内，需要创建单独的文件夹来存放每个模块
+    例：如果要创建一个单页面模块，那么就创建一个 /admin/onepage 目录来存放单页面的后台管理文件
+
+2.管理员信息目录 [/admin/system/data]
+    此目录存放管理员的定制信息，或者上传的一些私有文件
+    以管理员的用户名来建立目录，中文管理员名称，自动转换为拼音
+
+3.数据库支持类 [/common/class/db]
+    数据库支持多种，可以自由扩展，具体写法参考mysql.php
+
+4.网站词库 [/common/data/dict]
+    网站私有词库，词库文件不限制扩展名，只要是文本格式存放即可
+    词库文件名中英文即可，只要符合操作系统的规定即可
+    词库可以直接使用搜狗的细胞词库，不过要下载txt格式的，不能使用加密的格式
+
+5.公用图标CSS [/common/images/icons.css]
+    系统自动加载这个css文件，模块如果需要加入图标，需要在此文件追加css样式
+    class命名规则：
+        以 icon-32- 开头说明是32x32的图标
+        以 icon-16- 开头说明是32x32的图标
+
+6.语言包 [/common/language]
+    语言包以标准的xml格式构建
+    语言包的文件命名规则：模块名.语言（参考 langbox 函数）.xml

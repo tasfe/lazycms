@@ -858,9 +858,11 @@ function G($p1=null,$p2=null){
 }
 
 // L *** *** www.LazyCMS.net *** ***
-function L($p1,$p2=null,$p3='system'){
+function L($p1,$p2=null,$p3=null){
     static $R1 = array();
     if ($p1=='') { return $p1; }
+    $R2 = G('MODULE');
+    $p3 = empty($p3) ? ($R2 ? $R2 : MODULE) :$p3;
     $p4 = language();
     $R2 = isset($R1["{$p3}.{$p4}"]) ? $R1["{$p3}.{$p4}"] : null;
     if (!is_object($R2)) {

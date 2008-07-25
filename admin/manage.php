@@ -26,6 +26,11 @@ require '../global.php';
  * @author      Lukin <mylukin@gmail.com>
  * @date        2008-6-18
  */
+// lazy_before *** *** www.LazyCMS.net *** ***
+function lazy_before(){
+    // 定义当前模块，用来设置语言包
+    G('MODULE','system');
+}
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){ 
     $_USER = check_login('system','logout.php');

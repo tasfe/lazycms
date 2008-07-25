@@ -30,9 +30,6 @@ defined('COM_PATH') or die('Restricted access!');
  * @date        2008-6-18
  */
 return array(
-    /* 需要手动或者安装时设置 */
-    'SITE_BASE'  => '/',
-
     /* 网站设置 */
     'SITE_NAME'  => 'LazyCMS v2.0 演示站',
     'LANGUAGE'   => 'zh-cn',
