@@ -35,7 +35,7 @@ class lazy_sqlite extends DB{
             if (function_exists('sqlite_open')) {
                 $this->_conn = sqlite_open($this->config('db'),0666);
             } else {
-                trigger_error(L('error/db/nodbext',array('name'=>$this->config('scheme'))));
+                trigger_error(L('error/db/nodbext',array('name'=>$this->config('scheme')),'system'));
             }
         }
         return $this->_conn;
@@ -44,7 +44,7 @@ class lazy_sqlite extends DB{
     public function select_db(){
         // 验证连接是否正确
         if (!file_exists($this->config('db'))) {
-            trigger_error(L('error/db/nolink'));
+            trigger_error(L('error/db/nolink'),'system');
         } else {
             return true;
         }

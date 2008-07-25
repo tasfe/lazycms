@@ -81,14 +81,14 @@ abstract class LazyCMS{
                 $function();
             } else {
                 // 输出错误信息
-                trigger_error(L('error/function',array('fun'=>$function,'file'=>PHP_FILE)));
+                trigger_error(L('error/function',array('fun'=>$function,'file'=>PHP_FILE),'system'));
             }
         } else {
             if (function_exists('lazy_default')) {
                 lazy_default();
             } else {
                 // 输出错误信息，提示用户定义lazy_def()函数
-                trigger_error(L('error/lazydefault',array('file'=>PHP_FILE)));
+                trigger_error(L('error/lazydefault',array('file'=>PHP_FILE),'system'));
             }
         }
         // 在动作之后执行的函数

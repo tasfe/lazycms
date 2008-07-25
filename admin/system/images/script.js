@@ -131,7 +131,7 @@ function submitShortcut(){
 // toggleShortcut *** *** www.LazyCMS.net *** ***
 function toggleShortcut(){
 	iframeCover(); toggleShortcutActive();
-	var shortcut = $('#shortcut').slideToggle();
+	var shortcut = $('#shortcut').slideToggle('fast');
 	var username = $.cookie('LAZY_[username]');
 	if (username==null) { return false; }
 	// AJAX get xml data

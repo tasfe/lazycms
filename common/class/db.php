@@ -148,7 +148,7 @@ abstract class DB {
                         'db'    => $info[2],
                     );
                 } else {
-                    trigger_error(L('error/db/config'));
+                    trigger_error(L('error/db/config'),'system');
                 }
                 break;
             // DSN format: mysql://root:123456@localhost:3306/lazy/lazycms
@@ -164,7 +164,7 @@ abstract class DB {
                         'prefix'=> (!empty($info[9]) ? $info[9].'_' : null),
                     );
                 } else {
-                    trigger_error(L('error/db/config'));
+                    trigger_error(L('error/db/config'),'system');
                 }
                 break;
         }

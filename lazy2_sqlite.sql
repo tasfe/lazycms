@@ -121,8 +121,7 @@ CREATE TABLE onepage (
   onepath varchar(255),
   onename varchar(50),
   onecontent text,
-  onetemplate varchar(50),
-  keyword varchar(50),
+  onetemplate varchar(255),
   description varchar(250)
 );
 
@@ -142,7 +141,6 @@ CREATE TABLE article_sort (
   sortorder int(11),
   sortname varchar(50),
   sortpath varchar(255),
-  keywords varchar(255),
   description varchar(255),
   sortopen tinyint(1) default '0',
   sorttemplate varchar(255),
@@ -182,17 +180,30 @@ CREATE INDEX IDX_article_index__modelid ON article_index(modelid);
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 article_keywords
+-- 表的结构 keywords
 -- 
 
-CREATE TABLE article_keywords (
+CREATE TABLE keywords (
   keyid integer PRIMARY KEY,
-  artid int(11),
-  sortid int(11),
   keyword varchar(50),
   keysum int(11),
   UNIQUE (keyword)
 );
-CREATE INDEX IDX_article_keywords__artid ON article_keywords(artid);
-CREATE INDEX IDX_article_keywords__sortid ON article_keywords(sortid);
-CREATE INDEX IDX_article_keywords__keyword ON article_keywords(keyword);
+CREATE INDEX IDX_keywords__keyword ON keywords(keyword);
+
+-- --------------------------------------------------------
+
+-- 
+-- 表的结构 keyword_join 
+-- 
+
+CREATE TABLE keyword_join (
+  kjid integer PRIMARY KEY,
+  typeid int(11),
+  targetid int(11),
+  keyid int(11)
+);
+CREATE INDEX IDX_keyword_join__typeid ON keyword_join(typeid);
+CREATE INDEX IDX_keyword_join__targetid ON keyword_join(targetid);
+CREATE INDEX IDX_keyword_join__keyid ON keyword_join(keyid);
+

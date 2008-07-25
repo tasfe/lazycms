@@ -63,10 +63,7 @@ class Recordset {
         if ((int)$this->page < (int)$this->totalPages) {
             $this->length = $this->size;
         } elseif ((int)$this->page >= (int)$this->totalPages) {
-            $this->length = fmod($this->totalRows,$this->size);
-            if ($this->length==0) {
-                $this->length = $this->size;
-            }
+            $this->length = $this->totalRows - (($this->totalPages-1) * $this->size);
         }
         if ((int)$this->page > (int)$this->totalPages) {
             $this->page = $this->totalPages;
@@ -87,8 +84,8 @@ class Recordset {
         } else {
             $disabled = ' disabled="disabled"';
         }
-        $R = '<div class="button"><button onclick="checkALL(this,\'all\');" type="button"'.$disabled.'>'.L('common/selectall').'</button><button onclick="checkALL(this);" type="button"'.$disabled.'>'.L('common/reselect').'</button>';
-        $p2 = '<button onclick="$(this).gp(\'delete\');" type="button"'.$disabled.'>'.L('common/delete').'</button>';
+        $R = '<div class="button"><button onclick="checkALL(this,\'all\');" type="button"'.$disabled.'>'.L('common/selectall','system').'</button><button onclick="checkALL(this);" type="button"'.$disabled.'>'.L('common/reselect','system').'</button>';
+        $p2 = '<button onclick="$(this).gp(\'delete\');" type="button"'.$disabled.'>'.L('common/delete','system').'</button>';
         if (!empty($p1)) {
             $R1 = explode('|',$p1);
             foreach ($R1 as $v) {
@@ -109,13 +106,21 @@ class Recordset {
     // open *** *** www.LazyCMS.net *** ***
     public function open(){
         $this->hl = '<form name="form1" id="form1"  action="'.$this->action.'" class="form">';
-        $this->hl.= "<script type=\"text/javascript\">var lazy_delete = '".L('confirm/delete')."';var lazy_clear = '".L('confirm/clear')."';function ll(){var K = ll.arguments;document.writeln('<tr>'+".$this->td."'</tr>');};function lll(){ var K = lll.arguments; return '<tr>'+".$this->td."'</tr>';}</script>";
+        if ((int)$this->length > 0) {
+            $this->hl.= "<script type=\"text/javascript\">var lazy_delete = '".L('confirm/delete','system')."';var lazy_clear = '".L('confirm/clear','system')."';function ll(){var K = ll.arguments;document.writeln('<tr>'+".$this->td."'</tr>');};function lll(){ var K = lll.arguments; return '<tr>'+".$this->td."'</tr>';}</script>";    
+        }
         $this->hl.= '<table class="table">';
     }
     // close *** *** www.LazyCMS.net *** ***
     public function close(){
-        $this->hl.= "<thead>".$this->thead."</thead>";
-        $this->hl.= '<tbody><script type="text/javascript">'.$this->tbody.'</script></tbody></table>';
+        $this->hl.= "<thead>".$this->thead."</thead><tbody>";
+        if ((int)$this->length > 0) {
+            $this->hl.= '<script type="text/javascript">'.$this->tbody.'</script>';
+        } else {
+            preg_match_all('/<th>[^>]+<\/th>/',$this->thead,$R);
+            $this->hl.= '<tr><td colspan="'.count($R[0]).'">&nbsp;</td></tr>';
+        }
+        $this->hl.= '</tbody></table>';
         $this->hl.= '<div class="but">'.$this->but.'</div>';
         $this->hl.= '</form>';
     }

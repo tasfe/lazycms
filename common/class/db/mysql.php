@@ -46,11 +46,11 @@ class lazy_mysql extends DB{
         if (function_exists('mysql_connect')) {
             $this->_conn = @mysql_connect($this->config('host').':'.$this->config('port'),$this->config('user'),$this->config('pwd'),true);
         } else {
-            trigger_error(L('error/db/nodbext',array('name'=>$this->config('scheme'))));
+            trigger_error(L('error/db/nodbext',array('name'=>$this->config('scheme')),'system'));
         }
         // 验证连接是否正确
         if (!$this->_conn) {
-            trigger_error(L('error/db/nolink'));
+            trigger_error(L('error/db/nolink','system'));
         }
         return $this->_conn;
     }
@@ -68,11 +68,11 @@ class lazy_mysql extends DB{
         }
         // 选择数据库
         if (!$select) {
-            trigger_error(L('error/db/noselect'));
+            trigger_error(L('error/db/noselect','system'));
         }
         mysql_query("SET character_set_connection=".$this->config('lang').", character_set_results=".$this->config('lang').", character_set_client=binary;");
         if (version_compare($this->version(), '4.1', '<' )) {
-            trigger_error(L('error/db/nodbver'));
+            trigger_error(L('error/db/nodbver','system'));
         }
         if(version_compare($this->version(), '5.0.1', '>' )) {
             mysql_query("SET sql_mode='';");

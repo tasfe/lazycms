@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- 主机: localhost
--- 生成日期: 2008 年 07 月 03 日 12:28
+-- 生成日期: 2008 年 07 月 25 日 16:14
 -- 服务器版本: 5.0.45
 -- PHP 版本: 5.2.3
 
@@ -12,6 +12,127 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- 
 -- 数据库: `lazy2`
 -- 
+
+-- --------------------------------------------------------
+
+-- 
+-- 表的结构 `lazy_article_index`
+-- 
+
+CREATE TABLE IF NOT EXISTS `lazy_article_index` (
+  `artid` int(11) NOT NULL auto_increment COMMENT '编号',
+  `sortid` int(11) default NULL COMMENT '分类编号',
+  `modelid` int(11) default NULL COMMENT '模型编号',
+  `artorder` int(11) default '0' COMMENT '排序编号',
+  `artpath` varchar(255) NOT NULL COMMENT '路径',
+  `artdate` int(11) default NULL COMMENT '文章添加时间',
+  `arthits` int(11) default '0' COMMENT '浏览量',
+  `artdigg` int(11) default '0' COMMENT 'digg',
+  `description` varchar(250) default NULL COMMENT '描述',
+  `isdel` tinyint(1) default '0' COMMENT '是否删除',
+  PRIMARY KEY  (`artid`),
+  UNIQUE KEY `artpath` (`artpath`),
+  KEY `isdel` (`isdel`),
+  KEY `sortid` (`sortid`),
+  KEY `modelid` (`modelid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 
+-- 导出表中的数据 `lazy_article_index`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
+-- 表的结构 `lazy_article_sort`
+-- 
+
+CREATE TABLE IF NOT EXISTS `lazy_article_sort` (
+  `sortid` int(11) NOT NULL auto_increment COMMENT '编号',
+  `modelid` int(11) default NULL COMMENT '模块id',
+  `sortid1` int(11) default '0' COMMENT '所属id',
+  `sortorder` int(11) default '0' COMMENT '排序编号',
+  `sortname` varchar(50) NOT NULL COMMENT '分类名称',
+  `sortpath` varchar(255) NOT NULL COMMENT '路径',
+  `description` varchar(250) default NULL COMMENT '描述',
+  `sortopen` tinyint(1) default '0' COMMENT '是否展开',
+  `sorttemplate` varchar(255) NOT NULL COMMENT '列表模板',
+  `pagetemplate` varchar(255) NOT NULL COMMENT '内页模板',
+  `subdomain` varchar(255) default NULL COMMENT '绑定域名',
+  PRIMARY KEY  (`sortid`),
+  KEY `modelid` (`modelid`),
+  KEY `sortid1` (`sortid1`),
+  KEY `sortname` (`sortname`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 
+-- 导出表中的数据 `lazy_article_sort`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
+-- 表的结构 `lazy_keywords`
+-- 
+
+CREATE TABLE IF NOT EXISTS `lazy_keywords` (
+  `keyid` int(11) NOT NULL auto_increment COMMENT '编号',
+  `keyword` varchar(50) NOT NULL COMMENT '关键词',
+  `keysum` int(11) default '0' COMMENT '使用次数',
+  PRIMARY KEY  (`keyid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 
+-- 导出表中的数据 `lazy_keywords`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
+-- 表的结构 `lazy_keyword_join`
+-- 
+
+CREATE TABLE IF NOT EXISTS `lazy_keyword_join` (
+  `kjid` int(11) NOT NULL auto_increment COMMENT '编号',
+  `typeid` int(11) NOT NULL COMMENT '分类编号',
+  `targetid` int(11) NOT NULL COMMENT '文档编号',
+  `keyid` int(11) NOT NULL,
+  PRIMARY KEY  (`kjid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 
+-- 导出表中的数据 `lazy_keyword_join`
+-- 
+
+
+-- --------------------------------------------------------
+
+-- 
+-- 表的结构 `lazy_onepage`
+-- 
+
+CREATE TABLE IF NOT EXISTS `lazy_onepage` (
+  `oneid` int(11) NOT NULL auto_increment COMMENT '编号',
+  `oneid1` int(11) default '0' COMMENT '所属id',
+  `oneorder` int(11) default '0' COMMENT '排序',
+  `onetitle` varchar(100) NOT NULL COMMENT '标题',
+  `onepath` varchar(255) NOT NULL COMMENT '路径',
+  `onename` varchar(50) NOT NULL COMMENT '名称',
+  `onecontent` text COMMENT '内容',
+  `onetemplate` varchar(255) NOT NULL COMMENT '模板',
+  `description` varchar(250) default NULL COMMENT '描述',
+  PRIMARY KEY  (`oneid`),
+  UNIQUE KEY `onepath` (`onepath`),
+  KEY `oneid1` (`oneid1`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 
+-- 导出表中的数据 `lazy_onepage`
+-- 
+
 
 -- --------------------------------------------------------
 

@@ -46,7 +46,7 @@ class lazy_mysqli extends DB{
         if (function_exists('mysqli_connect')) {
             $this->_conn = @mysqli_connect($this->config('host'),$this->config('user'),$this->config('pwd'),$this->config('name'),$this->config('port'));
         } else {
-            trigger_error(L('error/db/nodbext',array('name'=>$this->config('scheme'))));
+            trigger_error(L('error/db/nodbext',array('name'=>$this->config('scheme')),'system'));
         }
         // 验证连接是否正确
         if (!$this->_conn) {
@@ -67,11 +67,11 @@ class lazy_mysqli extends DB{
         }
         // 选择数据库
         if (!$select) {
-            trigger_error(L('error/db/noselect'));
+            trigger_error(L('error/db/noselect','system'));
         }
         mysqli_query($this->_conn,"SET character_set_connection=".$this->config('lang').", character_set_results=".$this->config('lang').", character_set_client=binary;");
         if (version_compare($this->version(), '4.1', '<' )) {
-            trigger_error(L('error/db/nodbver'));
+            trigger_error(L('error/db/nodbver','system'));
         }
         if(version_compare($this->version(), '5.0.1', '>' )) {
             mysqli_query($this->_conn,"SET sql_mode='';");

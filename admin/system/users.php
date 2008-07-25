@@ -134,10 +134,10 @@ function lazy_group_edit(){
     $hl.= '<p><label>'.L('users/group/add/purview').'：</label><div class="purview">';
     foreach ($module as $k=>$v) {
         if (isset($v['purview'])) {
-            $hl.= '<input type="checkbox" name="'.$k.'" id="'.$k.'" class="__bigP" onclick="var checked = this.checked;$.each($(\'input.__'.$k.'\'),function(){ this.checked = checked; });" /><label for="'.$k.'"><strong>'.L('title',null,$k).'</strong></label><br/>';
+            $hl.= '<input type="checkbox" name="'.$k.'" id="'.$k.'" class="__bigP" onclick="var checked = this.checked;$.each($(\'input.__'.$k.'\'),function(){ this.checked = checked; });" /><label for="'.$k.'"><strong>'.L('title',$k).'</strong></label><br/>';
             foreach ($v['purview'] as $i=>$p) {
                 $checked = instr($purview,"{$k}/{$p}") ? ' checked="checked"' : null;
-                $hl.= '<input type="checkbox" name="purview[]" id="'.$k.'_'.$i.'" class="__'.$k.'" onclick="Purview();" value="'.$k.'/'.$p.'"'.$checked.' /><label for="'.$k.'_'.$i.'">'.L("{$p}/@title",null,$k).'</label>';    
+                $hl.= '<input type="checkbox" name="purview[]" id="'.$k.'_'.$i.'" class="__'.$k.'" onclick="Purview();" value="'.$k.'/'.$p.'"'.$checked.' /><label for="'.$k.'_'.$i.'">'.L("{$p}/@title",$k).'</label>';    
             }
             $hl.= '<br/>';
         }

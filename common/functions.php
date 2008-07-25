@@ -862,7 +862,7 @@ function L($p1,$p2=null,$p3=null){
     static $R1 = array();
     if ($p1=='') { return $p1; }
     $R2 = G('MODULE');
-    if (!is_array($p2)) { $p3 = $p2; }
+    if (!is_array($p2) && !empty($p2)) { $p3 = $p2; }
     $p3 = empty($p3) ? ($R2 ? $R2 : MODULE) :$p3;
     $p4 = language();
     $R2 = isset($R1["{$p3}.{$p4}"]) ? $R1["{$p3}.{$p4}"] : null;
