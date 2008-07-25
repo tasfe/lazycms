@@ -31,8 +31,8 @@ require '../../global.php';
 function lazy_before(){
     // 设置公共菜单
     G('TABS',
-        L('title').':index.php'.
-        '添加单页:index.php'
+        L('title').':index.php;'.
+        '添加单页:index.php?action=add'
     );
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
@@ -40,5 +40,5 @@ function lazy_default(){
     check_login('onepage');
 
     /* Output html */
-    print_x(L('sysinfo/@title'),'开发中。。。');
+    print_x(L('title'),'开发中。。。');
 }

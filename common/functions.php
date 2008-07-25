@@ -73,8 +73,8 @@ function instr($p1,$p2){
 
 // isok *** *** www.LazyCMS.net *** ***
 function isok($p1){
-    return $p1 ? '<strong style="color:#009900;">'.L('common/on').'</strong>' :
-                    '<strong style="color:#FF0000;">'.L('common/off').'</strong>';
+    return $p1 ? '<strong style="color:#009900;">'.L('common/on','system').'</strong>' :
+                    '<strong style="color:#FF0000;">'.L('common/off','system').'</strong>';
 }
 
 // get_conn *** *** www.LazyCMS.net *** ***
@@ -150,10 +150,10 @@ function is_utf8($p1){
 
 // but *** *** www.LazyCMS.net *** ***
 function but($p1){
-    $R = '<p class="button"><button type="submit" class="submit" onClick="return $(this.form).save();">'.L("common/{$p1}").'</button>';
-    $R.= '<button type="button" class="apply" onClick="return $(this.form).apply();">'.L("common/apply").'</button>';
-    $R.= '<button type="reset" onClick="javascript:return confirm(\''.L('confirm/reset').'\')">'.L('common/reset').'</button>';
-    $R.= '<button type="button" onClick="javascript:history.back();">'.L('common/back').'</button></p>';
+    $R = '<p class="button"><button type="submit" class="submit" onClick="return $(this.form).save();">'.L("common/{$p1}",'system').'</button>';
+    $R.= '<button type="button" class="apply" onClick="return $(this.form).apply();">'.L("common/apply",'system').'</button>';
+    $R.= '<button type="reset" onClick="javascript:return confirm(\''.L('confirm/reset','system').'\')">'.L('common/reset','system').'</button>';
+    $R.= '<button type="button" onClick="javascript:history.back();">'.L('common/back','system').'</button></p>';
     return $R;
 }
 
@@ -190,11 +190,11 @@ function save_file($p1,$p2='',$p3=true){
         }
     }
     if (!$fp = fopen($p1,($p3?'wb':'ab'))) {
-        trigger_error(L('error/createfile',array('file'=>$p1)));
+        trigger_error(L('error/createfile',array('file'=>$p1),'system'));
     }
     flock($fp,LOCK_EX + LOCK_NB);
     if (!fwrite($fp,$p2)) {
-        trigger_error(L('error/writefile',array('file'=>$p1)));
+        trigger_error(L('error/writefile',array('file'=>$p1),'system'));
     }
     fclose($fp);
 }
@@ -306,7 +306,7 @@ function print_v($p1=null){
     $hl.= '<link href="../system/images/main.css" rel="stylesheet" type="text/css" />';
     $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.2.6"></script>';
     $hl.= '<script type="text/javascript" src="../../common/js/jquery.lazycms.js?ver=1.0"></script>';
-    $hl.= '<script type="text/javascript">parent.document.title = "'.G('TITLE').' - '.L('system/@title').'";';
+    $hl.= '<script type="text/javascript">parent.document.title = "'.G('TITLE').' - '.L('system/@title','system').'";';
     $hl.= '$(document).ready(function(){ ';
     $hl.= 'autoTitle();';
     // 用户打开操作提示
@@ -570,7 +570,7 @@ function check_login($p1=null,$p2='../logout.php'){
         if ($_SERVER['REQUEST_METHOD']=='POST'){
             // ajax方式输出错误
             echo_json(array(
-                'text'  => L('error/overtime'),
+                'text'  => L('error/overtime','system'),
                 'sleep' => 3,
                 'url'   => $p2,
             ),0);
@@ -682,7 +682,7 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
     $error['trace'] = replace_root($traceInfo);
     $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
     $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-    $hl.= '<title>'.L('error/title').'</title><style type="text/css">';
+    $hl.= '<title>'.L('error/title','system').'</title><style type="text/css">';
     $hl.= 'body{ font-family: Verdana; font-size:14px; }';
     $hl.= 'a{text-decoration:none;color:#174B73;}';
     $hl.= 'a:hover{ text-decoration:none;color:#FF6600;}';
@@ -697,10 +697,10 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
     $hl.= '#footer sup{color:gray;font-size:9pt;}';
     $hl.= '#footer span{color:silver;}';
     $hl.= '</style></head><body>';
-    $hl.= '<div class="notice"><h2>'.L('error/title').'</h2>';
-    $hl.= '<div>You can choose to [ <a href="javascript:self.location.reload();">'.L('common/tryagain').'</a> ] [ <a href="javascript:history.back();">'.L('common/back').'</a> ] or [ <a href="'.SITE_BASE.'">'.L('common/backhome').'</a> ]</div>';
-    $hl.= '<p><strong>'.L('error/position').':</strong>　FILE: <strong class="red">'.$error['file'].'</strong>　LINE: <strong class="red">'.$error['line'].'</strong></p>';
-    $hl.= '<p class="title">[ '.L('error/errinfo').' ]</p>';
+    $hl.= '<div class="notice"><h2>'.L('error/title','system').'</h2>';
+    $hl.= '<div>You can choose to [ <a href="javascript:self.location.reload();">'.L('common/tryagain','system').'</a> ] [ <a href="javascript:history.back();">'.L('common/back','system').'</a> ] or [ <a href="'.SITE_BASE.'">'.L('common/backhome','system').'</a> ]</div>';
+    $hl.= '<p><strong>'.L('error/position','system').':</strong>　FILE: <strong class="red">'.$error['file'].'</strong>　LINE: <strong class="red">'.$error['line'].'</strong></p>';
+    $hl.= '<p class="title">[ '.L('error/errinfo','system').' ]</p>';
     $hl.= '<p class="message">'.$error['message'].'</p>';
     $hl.= '<p class="title">[ TRACE ]</p>';
     $hl.= '<p class="trace">'.nl2br($error['trace']).'</p></div>';
@@ -862,6 +862,7 @@ function L($p1,$p2=null,$p3=null){
     static $R1 = array();
     if ($p1=='') { return $p1; }
     $R2 = G('MODULE');
+    if (!is_array($p2)) { $p3 = $p2; }
     $p3 = empty($p3) ? ($R2 ? $R2 : MODULE) :$p3;
     $p4 = language();
     $R2 = isset($R1["{$p3}.{$p4}"]) ? $R1["{$p3}.{$p4}"] : null;
