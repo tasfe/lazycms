@@ -554,7 +554,46 @@ function import($p1,$p2='',$p3='.php',$p4=false){
         return require_file($p6);
     }
 }
-
+// editor *** *** www.LazyCMS.net *** ***
+function editor($p1,$p2=array()){
+    //$_USER = get_user();
+    $A1 = array(); $p3 = null;
+    if (is_array($p2) && !empty($p2)) {
+        $A1 = $p2;
+        $p2 = isset($A1['value']) ? $A1['value'] : null;
+        if (isset($A1['editor'])) {
+            $p3 = $A1['editor'];
+        }
+    }
+    switch (strtolower((string)$p3)) {
+        case 'fckeditor': 
+            import('class.fckeditor');
+            $FCK = new FCKeditor($p1);
+            $FCK->BasePath = SITE_BASE.'common/editor/fckeditor/';
+            if (isset($A1['toolbar'])) {
+                $FCK->ToolbarSet = $A1['toolbar'];
+            }
+            if (isset($A1['width'])) {
+                $FCK->Width = $A1['width'];
+            }
+            if (isset($A1['height'])) {
+                $FCK->Height = $A1['height'];
+            }
+            if (isset($A1['config'])) {
+                $FCK->Config = $A1['config'];
+            }
+            $FCK->Value = $p2;
+            if (empty($A1['print'])) {
+                return $FCK->CreateHtml();
+            } else {
+                $FCK->Create();
+            }
+            unset($FCK);
+            break;
+        default:
+            break;
+    }
+}
 // check_user *** *** www.LazyCMS.net *** ***
 function check_user($p1=null,$p2=null){
     return get_user($p1,$p2);
@@ -672,7 +711,7 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
                 if (is_object($v)) {
                     $arrs[] = implode(' ',get_object_vars($v));
                 } else {
-                    $arrs[] = $v;
+                    $arrs[] = h2encode($v);
                 }
             }
             $traceInfo.= implode(', ',$arrs);

@@ -39,8 +39,8 @@ class FCKeditor
     {
         $this->InstanceName = $instanceName ;
         $this->BasePath     = '' ;
-        $this->Width        = '99%' ;
-        $this->Height       = '400' ;
+        $this->Width        = '100%' ;
+        $this->Height       = '300' ;
         $this->ToolbarSet   = 'Default' ;
         $this->Value        = '' ;
 

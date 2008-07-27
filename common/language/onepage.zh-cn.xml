@@ -6,4 +6,21 @@
     <email>mylukin@gmail.com</email>
     <source>http://www.lazycms.net</source>
 
+    <common>
+    </common>
+
+    <list>
+        <name>页面名称</name>
+        <path>路径</path>
+    </list>
+    <edit title="编辑单页"/>
+    <add title="添加单页">
+        <name tip="后台管理里显示的名称">页面名称</name>
+        <title tip="title 中的内容">页面标题</title>
+        <path tip="不支持 &lt;\:*?&quot;|,;&gt; 字符，不能以/开始或结束">页面路径</path>
+        <content>页面内容</content>
+        <keywords tip="关键字之间用“英文逗号”或“空格”分开">关键词</keywords>
+        <description tip="Meta描述">Meta简述</description>
+        <template>选择模板</template>
+    </add>
 </lazycms>

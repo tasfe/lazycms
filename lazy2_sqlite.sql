@@ -121,6 +121,7 @@ CREATE TABLE onepage (
   onepath varchar(255),
   onename varchar(50),
   onecontent text,
+  oneopen tinyint(1) default '0',
   onetemplate varchar(255),
   description varchar(250)
 );
