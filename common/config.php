@@ -34,6 +34,7 @@ return array(
     'SITE_NAME'  => 'LazyCMS v2.0 演示站',
     'LANGUAGE'   => 'zh-cn',
     'RSS_NUMBER' => 10,
+    'TEMPLATE'   => 'default',
 
     /* 会员设置 */
     'USER_ALLOW_REG'  => true,

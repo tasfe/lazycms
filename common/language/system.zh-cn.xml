@@ -105,6 +105,7 @@
 			<sitename tip="输入该网站的名称。">网站名称</sitename>
 			<rssnumber tip="RSS Feed 显示最新的多少条。">RSS Feed</rssnumber>
 			<language tip="网站默认使用的语言包。">界面语言</language>
+            <template tip="更改模板，静态页面需要重新生成页面。">系统模板</template>
 		</site>
         <user title="会员设置">
             <allowreg title="允许注册" tip="若设为是，则允许用户注册。">

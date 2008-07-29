@@ -211,10 +211,15 @@ function print_x($p1,$p2=null,$p3=null){
 // get_dir_array *** *** www.LazyCMS.net *** ***
 function get_dir_array($p1,$p2){
     //$p1:路径 $p2:读取类型
-    $p1 = str_replace(array('.','[',']','@'),array('/','*','*',COM_PATH),$p1);
-    $p3 = create_function('&$p1,$p2','$R1=strrpos($p1,"/"); $R=substr($p1,$R1+1); $p1=$R;');
+    $p1 = str_replace(array('.','[',']'),array(SEPARATOR,'*','*'),$p1);
+    if (substr($p1,0,1)=='@') {
+        $p1 = str_replace('@',COM_PATH,$p1);
+    } else {
+        $p1 = LAZY_PATH.SEPARATOR.$p1;
+    }
+    $p3 = create_function('&$p1,$p2','$p1=substr($p1,strrpos($p1,"/")+1);');
     if (substr($p1,-1)!='/') { $p1 .= '/'; }
-    $R = ($p2=='dir') ? glob("{$p1}*",GLOB_ONLYDIR) : glob("{$p1}*.{$p2}",GLOB_BRACE);
+    $R = ($p2=='dir') ? glob("{$p1}*",GLOB_ONLYDIR) : glob("{$p1}*.{{$p2}}",GLOB_BRACE);
     array_walk($R,$p3);
     return $R;
 }

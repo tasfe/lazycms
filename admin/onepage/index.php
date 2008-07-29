@@ -114,9 +114,12 @@ function lazy_edit(){
     $hl.= '</div></fieldset>';
     $hl.= '<fieldset><legend><a href="#" onclick="toggleFieldset(this,\'.more-attr\')" class="collapse">'.L('common/attr').'</a></legend>';
     $hl.= '<div class="more-attr">';
-    $hl.= '<p><label>'.L('add/keywords').'：</label><input tip="'.L('add/keywords').'::250::'.L('add/keywords/@tip').'" class="in4" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" tip="'.L('common/get/@tip','system').'">'.L('common/get','system').'</button></p>';
+    $hl.= '<p><label>'.L('add/keywords').'：</label><input tip="'.L('add/keywords').'::250::'.L('add/keywords/@tip').'" class="in4" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" onclick="$(\'#keywords\').getKeywords(\'#onetitle\',\'#onecontent\')" tip="'.L('common/get/@tip','system').'">'.L('common/get','system').'</button></p>';
     $hl.= '<p><label>'.L('add/description').'：</label><textarea name="description" id="description" rows="5" class="in4">'.$description.'</textarea></p>';
-    $hl.= '<p><label>'.L('add/template').'：</label><input class="in4" type="text" name="onetemplate" id="onetemplate" value="'.$onetemplate.'" />&nbsp;<button type="button">'.L('common/browse','system').'</button></p>';
+    $hl.= '<p><label>'.L('add/template').'：</label>';
+    $hl.= '<select name="onetemplate" id="onetemplate">';
+    $hl.= form_opts('themes/'.C('TEMPLATE'),'htm,html,xml,php','<option value="#value#"#selected#>#name#</option>','default.html');
+    $hl.= '</select></p>';
     $hl.= '</div></fieldset>';
     $hl.= but('save').'<input name="oneid" type="hidden" value="'.$oneid.'" /></form>';
     print_x($title,$hl);

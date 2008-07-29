@@ -56,6 +56,7 @@ function lazy_default(){
             $fields = array(
                 'SITE_NAME',
                 'LANGUAGE',
+                'TEMPLATE',
                 'RSS_NUMBER',
                 'USER_ALLOW_REG',
                 'USER_GROUP_REG',
@@ -87,6 +88,11 @@ function lazy_default(){
     $hl.= '<p><label>'.L('settings/site/language').'：</label>';
     $hl.= '<select name="LANGUAGE" id="LANGUAGE" tip="'.L('settings/site/language').'::'.L('settings/site/language/@tip').'">';
     $hl.= form_opts('@.language','xml','<option value="#value#"#selected#>#name#</option>',C('LANGUAGE'));
+    $hl.= '</select></p>';
+
+    $hl.= '<p><label>'.L('settings/site/template').'：</label>';
+    $hl.= '<select name="TEMPLATE" id="TEMPLATE" tip="'.L('settings/site/template').'::'.L('settings/site/template/@tip').'">';
+    $hl.= form_opts('themes','dir','<option value="#value#"#selected#>#name#</option>',C('TEMPLATE'));
     $hl.= '</select></p>';
 
     $hl.= '<p><label>'.L('settings/site/rssnumber').'：</label>';

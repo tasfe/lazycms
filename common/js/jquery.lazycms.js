@@ -69,6 +69,54 @@ function toggleFieldset(p1,p2){
  * $("#element").tips(JSON String or Object);
  */
  (function($) {
+	$.fn.getKeywords = function(){
+		var args = arguments;
+		for (var i=0;i<args.length;i++) {
+			alert($(args[i]).editor().val());
+		}
+	}
+	// 获取编辑器对象 *** *** www.LazyCMS.net *** ***
+    $.fn.editor = function (){
+        var editor = FCKeditorAPI.GetInstance(this.attr('name'));
+		if (typeof editor !== 'undefined') {
+			$.extend(editor,{
+				// 计算编辑器内文字长度 *** *** www.LazyCMS.net *** ***
+				length: function (){
+					var oDOM = this.EditorDocument;
+					var iLength;
+					if(document.all){
+						iLength = oDOM.body.innerText.length;
+					} else {
+						var r = oDOM.createRange();
+							r.selectNodeContents( oDOM.body );
+						iLength = r.toString().length ;
+					}
+					return iLength;
+				},
+				// 读取和设置内容 *** *** www.LazyCMS.net *** ***
+				val:function(string){
+					if (typeof string=='undefined'){
+						return this.GetXHTML(true);
+					} else {
+						this.SetHTML(string);
+						return this;
+					}
+				},
+				// 追加内容 *** *** www.LazyCMS.net *** ***
+				insert:function(string){
+					if (this.EditMode == FCK_EDITMODE_WYSIWYG){
+						this.InsertHtml(string);
+					} else {
+						 alert('You must be on WYSIWYG mode!');
+					}
+					return this;
+				}
+			});
+			return editor;
+		} else {
+			return this;
+		}
+    }
 	$.fn.menuDrag = function(p1){
 		/**
 		这里暂停一下，制作起来很麻烦
