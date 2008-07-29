@@ -42,7 +42,7 @@ body { width:99%; display:table; margin:3px; background: #F9FDFF; }
 	#tabs li.active a{ color:#666666; background:url(menu_selected.png) repeat-x left top;}
 
 #box{ width:100%; display:table; zoom:1; background:#FFFFFF; border:solid 1px #c6d9e7; margin:0 auto; clear:both;}
-	#box fieldset{ border:1px solid #ccc; margin:0 5px; padding:5px; }
+	#box fieldset{ border:1px solid #ccc; margin:0 5px 5px 5px; padding:5px; }
 	#box legend{ font-weight:bold; color:#0B55C4;}
 	#box .table{ width:99.5%; border-collapse:collapse; margin:3px auto; text-align:left;}
 	#box .table th ,
@@ -58,3 +58,8 @@ body { width:99%; display:table; margin:3px; background: #F9FDFF; }
 	#box div.but{ width:99.5%; margin:0 auto 3px auto; display:table; }
 	#box div.button{ float:left; display:block; padding-bottom:1px;}
 	#box div.pages{float:right;}
+
+#box .hide,#box .more-attr{display:none;}
+#box a.collapse{padding-left:18px; background:url(../../../common/images/icon/h-arrow.png) no-repeat left center;}
+#box a.collapsed{padding-left:18px; background:url(../../../common/images/icon/down-arrow.png) no-repeat left -3px;}
+#box .show{display:block;}

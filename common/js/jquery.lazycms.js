@@ -47,7 +47,14 @@ function autoTitle(){
 		$('#tabs li.active a').text(title);
 	}
 }
-
+// autoTitle *** *** www.LazyCMS.net *** ***
+function toggleFieldset(p1,p2){
+	// 展开事件
+	$(p1).toggleClass('collapse').toggleClass('collapsed');
+	$(p2,$(p1).parents('fieldset')).toggle();
+	parent.$('#main').height($(document).find('body').height()+7);
+	return false;
+}
 
 /*
  * LazyCMS JS library for jQuery

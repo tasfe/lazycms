@@ -7,6 +7,7 @@
     <source>http://www.lazycms.net</source>
 
     <common>
+		<attr>更多属性</attr>
     </common>
 
     <list>
@@ -15,6 +16,8 @@
     </list>
     <edit title="编辑单页"/>
     <add title="添加单页">
+		<sort>所属分类</sort>
+		<topsort>顶级分类</topsort>
         <name tip="后台管理里显示的名称">页面名称</name>
         <title tip="title 中的内容">页面标题</title>
         <path tip="不支持 &lt;\:*?&quot;|,;&gt; 字符，不能以/开始或结束">页面路径</path>
@@ -22,5 +25,8 @@
         <keywords tip="关键字之间用“英文逗号”或“空格”分开">关键词</keywords>
         <description tip="Meta描述">Meta简述</description>
         <template>选择模板</template>
+		<pop>
+			<addok>添加成功</addok>
+		</pop>
     </add>
 </lazycms>

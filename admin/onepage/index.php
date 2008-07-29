@@ -49,7 +49,7 @@ function lazy_default(){
     $ds->open();
     $ds->thead = '<tr><th>ID) '.L('list/name').'</th><th>'.L('list/path').'</th><th>'.L('common/action','system').'</th></tr>';
     while ($rs = $ds->result()) {
-        $ds->tbody = "ll(".$rs['oneid'].",'".t2js(h2encode($rs['onename']))."','".t2js(h2encode($rs['onepath']))."',".$rs['oneid1'].",".$rs['oneiopen'].");";
+        $ds->tbody = "ll(".$rs['oneid'].",'".t2js(h2encode($rs['onename']))."','".t2js(h2encode($rs['onepath']))."',".$rs['oneid1'].",".$rs['oneopen'].");";
     }
     $ds->close();
 
@@ -57,21 +57,67 @@ function lazy_default(){
 }
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){
-    $db = get_conn();
-    $oneid  = isset($_REQUEST['oneid']) ? $_REQUEST['oneid'] : 0;
-    $title  = empty($oneid) ? L('add/@title') : L('edit/@title');
+    $db = get_conn(); require_file('common.php');
+    $oneid    = isset($_REQUEST['oneid']) ? $_REQUEST['oneid'] : 0;
+    $title    = empty($oneid) ? L('add/@title') : L('edit/@title');
+    $oneid1   = isset($_REQUEST['oneid1']) ? $_REQUEST['oneid1'] : 0;
+    $onename  = isset($_POST['onename']) ? $_POST['onename'] : null;
+    $onetitle = isset($_POST['onetitle']) ? $_POST['onetitle'] : null;
+    $onepath  = isset($_POST['onepath']) ? $_POST['onepath'] : null;
+    $onecontent  = isset($_POST['onecontent']) ? $_POST['onecontent'] : null;
+    $keywords    = isset($_POST['keywords']) ? $_POST['keywords'] : null;
+    $description = isset($_POST['description']) ? $_POST['description'] : null;
+    $onetemplate = isset($_POST['onetemplate']) ? $_POST['onetemplate'] : null;
+    
+    $val = new Validate();
+    if ($val->method()) {
+        $val->check('onename|0|页面名称不能为空');
+        $val->check('onetitle|0|页面标题不能为空');
+        $val->check('onepath|0|路径不能为空;onepath|5|路径错误');
+        if ($val->isVal()) {
+            $val->out();
+        } else {
+            if (empty($oneid)) {
+                $db->insert('#@_onepage',array(
+                    'oneid1'  => $oneid1,
+                    'oneorder'=> $db->max('oneid','#@_onepage'),
+                    'onetitle'=> $onetitle,
+                    'onepath' => $onepath,
+                    'onename' => $onename,
+                    'onecontent'  => $onecontent,
+                    'onetemplate' => $onetemplate,
+                    'description' => $description,
+                ));
+                $text = L('add/pop/addok');
+            }
+            echo_json(array(
+                'text' => $text,
+                'url'  => 'index.php',
+            ),1);
+        }
+    } else {
+    
+    }
+
     $hl = '<form id="form1" name="form1" method="post" action="">';
-    $hl.= '<fieldset><legend rel="tab">'.$title.'</legend>';
-    $hl.= '<p><label>'.L('add/name').'：</label><input tip="'.L('add/name').'::'.L('add/name/@tip').'" class="in3" type="text" name="onename" id="onename" value="" /></p>';
-    $hl.= '<p><label>'.L('add/title').'：</label><input tip="'.L('add/title').'::'.h2encode(L('add/title/@tip')).'" class="in4" type="text" name="onetitle" id="onetitle" value="" /></p>';
-    $hl.= '<p><label>'.L('add/path').'：</label><input tip="'.L('add/path').'::300::'.h2encode(L('add/path/@tip')).'" class="in5" type="text" name="onepath" id="onepath" value="" /></p>';
-    $hl.= '<p><label>'.L('add/content').'：</label><div class="box">'.editor('onecontent',array('editor'=>'fckeditor')).'</div></p>';
-    $hl.= '</fieldset>';
-    $hl.= '<fieldset><legend>更多属性</legend>';
-    $hl.= '<p><label>'.L('add/keywords').'：</label><input tip="'.L('add/keywords').'::'.L('add/keywords/@tip').'" class="in4" type="text" name="keywords" id="keywords" value="" />&nbsp;<button type="button" tip="点击获取推荐的关键词">获取</button></p>';
-    $hl.= '<p><label>'.L('add/description').'：</label><textarea name="description" id="description" rows="5" class="in4"></textarea></p>';
-    $hl.= '<p><label>'.L('add/template').'：</label><input class="in4" type="text" name="onetemplate" id="onetemplate" value="" />&nbsp;<button type="button">浏览...</button></p>';
-    $hl.= '</fieldset>';
+    $hl.= '<fieldset><legend rel="tab"><a href="#" onclick="toggleFieldset(this,\'.more-attrd\')" class="collapsed">'.$title.'</a></legend>';
+    $hl.= '<div class="more-attrd">';
+    $hl.= '<p><label>'.L('add/sort').'：</label>';
+    $hl.= '<select name="oneid1" id="oneid1">';
+    $hl.= '<option value="0">--- '.L('add/topsort').' ---</option>';
+    $hl.= Onepage::__sort(0,0,$oneid,$oneid1);
+    $hl.= '</select></p>';
+    $hl.= '<p><label>'.L('add/name').'：</label><input tip="'.L('add/name').'::'.L('add/name/@tip').'" class="in3" type="text" name="onename" id="onename" value="'.$onename.'" /></p>';
+    $hl.= '<p><label>'.L('add/title').'：</label><input tip="'.L('add/title').'::'.h2encode(L('add/title/@tip')).'" class="in4" type="text" name="onetitle" id="onetitle" value="'.$onetitle.'" /></p>';
+    $hl.= '<p><label>'.L('add/path').'：</label><input tip="'.L('add/path').'::300::'.h2encode(L('add/path/@tip')).'" class="in5" type="text" name="onepath" id="onepath" value="'.$onepath.'" /></p>';
+    $hl.= '<p><label>'.L('add/content').'：</label><div class="box">'.editor('onecontent',array('value'=>$onecontent,'editor'=>'fckeditor')).'</div></p>';
+    $hl.= '</div></fieldset>';
+    $hl.= '<fieldset><legend><a href="#" onclick="toggleFieldset(this,\'.more-attr\')" class="collapse">'.L('common/attr').'</a></legend>';
+    $hl.= '<div class="more-attr">';
+    $hl.= '<p><label>'.L('add/keywords').'：</label><input tip="'.L('add/keywords').'::250::'.L('add/keywords/@tip').'" class="in4" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" tip="'.L('common/get/@tip','system').'">'.L('common/get','system').'</button></p>';
+    $hl.= '<p><label>'.L('add/description').'：</label><textarea name="description" id="description" rows="5" class="in4">'.$description.'</textarea></p>';
+    $hl.= '<p><label>'.L('add/template').'：</label><input class="in4" type="text" name="onetemplate" id="onetemplate" value="'.$onetemplate.'" />&nbsp;<button type="button">'.L('common/browse','system').'</button></p>';
+    $hl.= '</div></fieldset>';
     $hl.= but('save').'<input name="oneid" type="hidden" value="'.$oneid.'" /></form>';
     print_x($title,$hl);
 }
