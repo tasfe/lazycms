@@ -34,5 +34,8 @@ function lazy_before(){
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){
-    
+    require_file('common.php');
+    $title    = isset($_POST['onetitle']) ? $_POST['onetitle'] : null;
+    $keywords = System::getKeywords($title);
+    echo implode(',',$keywords);
 }

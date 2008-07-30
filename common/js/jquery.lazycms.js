@@ -69,14 +69,19 @@ function toggleFieldset(p1,p2){
  * $("#element").tips(JSON String or Object);
  */
  (function($) {
+	// 获取分词 *** *** www.LazyCMS.net *** ***
 	$.fn.getKeywords = function(){
+		var $this = this;
 		var args = arguments;
-		var R1 = new Array();
+		var R1 = new Object();
 		for (var i=0;i<args.length;i++) {
-			R1[i][0] = $(args[i]).attr('name');
-			R1[i][1] = $(args[i]).editor().val();
+			eval('R1.' + $(args[i]).attr('name') + ' = "' + $(args[i]).editor().val() + '";');
 		}
-		alert($.toJSON(R1));
+		$this.val('Loading...');
+		$.post('../system/keywords.php',R1,function(data){
+			$this.val(data);
+		});
+		return this;
 	}
 	// 获取编辑器对象 *** *** www.LazyCMS.net *** ***
     $.fn.editor = function (){
@@ -105,9 +110,9 @@ function toggleFieldset(p1,p2){
 						return this;
 					}
 				},
-				// 读取和设置内容 *** *** www.LazyCMS.net *** ***
+				// 读取编辑器内的文字 *** *** www.LazyCMS.net *** ***
 				val:function(){
-					return this.GetXHTML(true);
+					return $(this.GetXHTML(true)).text();
 				},
 				// 追加内容 *** *** www.LazyCMS.net *** ***
 				insert:function(string){

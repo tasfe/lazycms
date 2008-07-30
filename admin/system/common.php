@@ -41,4 +41,30 @@ class System{
         }
         return $R;
     }
+    // getKeywords *** *** www.LazyCMS.net *** ***
+    static function getKeywords($p1){
+        $keywords = array();
+        import('class.downloader');
+        import('class.splitword');
+        // 先从远程获取分词
+        $d = new DownLoader("http://keyword.discuz.com/related_kw.html?ics=utf-8&ocs=utf-8&title=".rawurlencode($p1));
+        $d->send();
+        // 请求成功
+        if ($d->status() == 200) {
+            $XML = $d->body();
+            // 取出关键词为数组
+            if (preg_match_all('/\<kw\>\<\!\[CDATA\[(.+)\]\]\>\<\/kw\>/i',$XML,$Regs)) {
+                $keywords = $Regs[1];
+            }
+        }
+        // 使用本地词库分词
+        $sw = new SplitWord();
+        $splitWord = $sw->getWord($p1);
+        foreach ($splitWord as $keyword) {
+            if (!in_array($keyword,$keywords)) {
+                $keywords[] = $keyword;
+            }
+        }
+        return $keywords;
+    }
 }

@@ -37,22 +37,29 @@ class SplitWord{
     // 存放结果的数组
     private $result = array();
     private $dicts  = array();
-    // 高频词列表，考虑多语言的分词，需要独立
-    private $highFreq = array('我','是','为','了','的','你','他','她','它','们','这','那','在','和','一','不','有','对','中','这','要','上','也','人','等','说','而');
+    // 高频词列表
+    private $highFreq = array();
     // 英文
     private $enChar = array("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","1","2","3","4","5","6","7","8","9","0","ａ","ｂ","ｃ","ｄ","ｅ","ｆ","ｇ","ｈ","ｉ","ｊ","ｋ","ｌ","ｍ","ｎ","ｏ","ｐ","ｑ","ｒ","ｓ","ｔ","ｕ","ｖ","ｗ","ｘ","ｙ","ｚ","Ａ","Ｂ","Ｃ","Ｄ","Ｅ","Ｆ","Ｇ","Ｈ","Ｉ","Ｊ","Ｋ","Ｌ","Ｍ","Ｎ","Ｏ","Ｐ","Ｑ","Ｒ","Ｓ","Ｔ","Ｕ","Ｖ","Ｗ","Ｘ","Ｙ","Ｚ","０","１","２","３","４","５","６","７","８","９");
     // 标点符号列表
     private $sign = array('\r','\n','\t','`','~','!','@','#','$','%','^','&','*','(',')','-','_','+','=','|','\\','\'','"',';',':','/','?','.','>',',','<','[','{',']','}','·','～','！','＠','＃','￥','％','……','＆','×','（','）','－','——','＝','＋','＼','｜','【','｛','】','｝','‘','“','”','；','：','、','？','。','》','，','《',' ','　');
     // __construct *** *** www.LazyCMS.net *** ***
     function __construct(){
-        set_time_limit(0);
+        @set_time_limit(0);
+        // 加载高频词
         // 预先加载词库
         $files = glob(COM_PATH.'/data/dict/*',GLOB_BRACE); asort($files,SORT_REGULAR);
         foreach ($files as $file){
+            $isHFW = (substr($file,-4)=='.hfw')?true:false;
             $fp = fopen($file,'r');
             while($ws = trim(fgets($fp))){
                 if (empty($ws)){ continue; }
-                $this->dicts[strlen($ws)][$ws] = 1;
+                if ($isHFW) {
+                    // 高频词表
+                    $this->highFreq[] = $ws;
+                } else {
+                    $this->dicts[strlen($ws)][$ws] = 1;
+                }
             }
             fclose($fp);
         }
@@ -128,7 +135,7 @@ class SplitWord{
         return $substring;
     }
     // getWord *** *** www.LazyCMS.net *** ***
-    function getWord($string, $maxLen=8, $saveSingle=false){
+    function getWord($string, $maxLen=8, $saveSingle=false, $saveOther=false){
         $this->result = array();
         // 使用标点将长句分成短句
         $subSens = $this->cnSplit($string);
@@ -197,13 +204,15 @@ class SplitWord{
                         }
                     } else {
                         // 不是标点,是一个没有匹配的单个的字
-                        $tmpStr.= $sub_str;
+                        if ($saveOther) {
+                            $tmpStr.= $sub_str;
+                        }
                     }
                     $i++;
                 }
             }
             // 扫描结束,临时队列还有词,那应该是最后面无法进行分词的一些字
-            if ($tmpStr !="" ) { $this->result[] = $tmpStr; }
+            if ($tmpStr !="" && $saveOther) { $this->result[] = $tmpStr; }
         }
         return $this->result;
     }
