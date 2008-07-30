@@ -71,9 +71,12 @@ function toggleFieldset(p1,p2){
  (function($) {
 	$.fn.getKeywords = function(){
 		var args = arguments;
+		var R1 = new Array();
 		for (var i=0;i<args.length;i++) {
-			alert($(args[i]).editor().val());
+			R1[i][0] = $(args[i]).attr('name');
+			R1[i][1] = $(args[i]).editor().val();
 		}
+		alert($.toJSON(R1));
 	}
 	// 获取编辑器对象 *** *** www.LazyCMS.net *** ***
     $.fn.editor = function (){
@@ -94,13 +97,17 @@ function toggleFieldset(p1,p2){
 					return iLength;
 				},
 				// 读取和设置内容 *** *** www.LazyCMS.net *** ***
-				val:function(string){
+				html:function(string){
 					if (typeof string=='undefined'){
 						return this.GetXHTML(true);
 					} else {
 						this.SetHTML(string);
 						return this;
 					}
+				},
+				// 读取和设置内容 *** *** www.LazyCMS.net *** ***
+				val:function(){
+					return this.GetXHTML(true);
 				},
 				// 追加内容 *** *** www.LazyCMS.net *** ***
 				insert:function(string){
@@ -264,11 +271,13 @@ function toggleFieldset(p1,p2){
 	};
 	$.fn.tips = function(attr,selector){
 		var $this = this;
+		/*
 		$(selector,this).mouseover(function(){
 			if (this.type=='text' || this.type=='password') {
 				$(this).focus();
 			}
 		});
+		*/
 		$(selector,this).hover(function(e){
 			var width = 200; // 默认宽度
 			$('.jTip').remove();

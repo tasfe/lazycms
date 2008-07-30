@@ -54,4 +54,4 @@ define('URL_REWRITE',  2);   //REWRITE模式
 // 取得网站根目录
 define('SITE_BASE',str_replace(str_replace(str_replace(SEPARATOR,'/',LAZY_PATH.SEPARATOR),'/',str_replace(SEPARATOR,'/',$_SERVER["SCRIPT_FILENAME"])),'/',PHP_FILE));
 
-define('LAZY_VERSION','2.0.0.0705');
+define('LAZY_VERSION','2.0.0.0730');
