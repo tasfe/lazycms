@@ -160,7 +160,6 @@ function toggleShortcut(){
 				});
 				I1+= '</dl>';
 				$('div.body',shortcut).append(I1).css('background-image','none');
-				$('#shortcut .body dl').menuDrag('dd');
 			});
 			// 点击隐藏层
 			$('dd a',shortcut).click(function(){

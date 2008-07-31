@@ -100,8 +100,8 @@ function lazy_edit(){
     }
 
     $hl = '<form id="form1" name="form1" method="post" action="">';
-    $hl.= '<fieldset><legend rel="tab"><a href="#" onclick="toggleFieldset(this,\'.more-attrd\')" class="collapsed">'.$title.'</a></legend>';
-    $hl.= '<div class="more-attrd">';
+    $hl.= '<fieldset><legend rel="tab"><a class="collapsed" rel=".more-attr">'.$title.'</a></legend>';
+    $hl.= '<div class="more-attr">';
     $hl.= '<p><label>'.L('add/sort').'：</label>';
     $hl.= '<select name="oneid1" id="oneid1">';
     $hl.= '<option value="0">--- '.L('add/topsort').' ---</option>';
@@ -112,7 +112,7 @@ function lazy_edit(){
     $hl.= '<p><label>'.L('add/path').'：</label><input tip="'.L('add/path').'::300::'.h2encode(L('add/path/@tip')).'" class="in5" type="text" name="onepath" id="onepath" value="'.$onepath.'" /></p>';
     $hl.= '<p><label>'.L('add/content').'：</label><div class="box">'.editor('onecontent',array('value'=>$onecontent,'editor'=>'fckeditor')).'</div></p>';
     $hl.= '</div></fieldset>';
-    $hl.= '<fieldset><legend><a href="#" onclick="toggleFieldset(this,\'.more-attr\')" class="collapse">'.L('common/attr').'</a></legend>';
+    $hl.= '<fieldset><legend><a class="collapse" rel=".more-attr">'.L('common/attr').'</a></legend>';
     $hl.= '<div class="more-attr">';
     $hl.= '<p><label>'.L('add/keywords').'：</label><input tip="'.L('add/keywords').'::250::'.L('add/keywords/@tip').'" class="in4" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" onclick="$(\'#keywords\').getKeywords(\'#onetitle\')" tip="'.L('common/get/@tip','system').'">'.L('common/get','system').'</button></p>';
     $hl.= '<p><label>'.L('add/description').'：</label><textarea name="description" id="description" rows="5" class="in4">'.$description.'</textarea></p>';

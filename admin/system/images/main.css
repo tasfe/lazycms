@@ -59,7 +59,5 @@ body { width:99%; display:table; margin:3px; background: #F9FDFF; }
 	#box div.button{ float:left; display:block; padding-bottom:1px;}
 	#box div.pages{float:right;}
 
-#box .hide,#box .more-attr{display:none;}
 #box a.collapse{padding-left:18px; background:url(../../../common/images/icon/h-arrow.png) no-repeat left center;}
 #box a.collapsed{padding-left:18px; background:url(../../../common/images/icon/down-arrow.png) no-repeat left -3px;}
-#box .show{display:block;}

@@ -81,7 +81,7 @@ function lazy_default(){
         }
     }
     $hl = '<form id="form1" name="form1" method="post" action="">';
-    $hl.= '<fieldset><legend><a href="#" onclick="toggleFieldset(this,\'.show\')" class="collapsed">'.L('settings/site/@title').'</a></legend>';
+    $hl.= '<fieldset><legend><a class="collapsed" rel=".show">'.L('settings/site/@title').'</a></legend>';
     $hl.= '<div class="show">';
     $hl.= '<p><label>'.L('settings/site/sitename').'：</label><input tip="'.L('settings/site/sitename').'::'.L('settings/site/sitename/@tip').'" class="in2" type="text" name="SITE_NAME" id="SITE_NAME" value="'.C('SITE_NAME').'"></p>';
 
@@ -104,7 +104,7 @@ function lazy_default(){
     $hl.= '</select></p>';
     $hl.= '</div></fieldset>';
 
-    $hl.= '<fieldset><legend><a href="#" onclick="toggleFieldset(this,\'.show\')" class="collapsed">'.L('settings/user/@title').'</a></legend>';
+    $hl.= '<fieldset><legend><a class="collapsed" rel=".show">'.L('settings/user/@title').'</a></legend>';
     $hl.= '<div class="show">';
     $hl.= '<p><label>'.L('settings/user/allowreg/@title').'：</label><span tip="'.L('settings/user/allowreg/@title').'::'.L('settings/user/allowreg/@tip').'">';
     $hl.= '<input type="radio" name="USER_ALLOW_REG" id="USER_ALLOW_REG[1]" value="true"'.((C('USER_ALLOW_REG') == 1) ? ' checked="checked"':null).'/><label for="USER_ALLOW_REG[1]">'.L('settings/user/allowreg/true').'</label> ';
@@ -123,7 +123,7 @@ function lazy_default(){
 
     $hl.= '</div></fieldset>';
 
-    $hl.= '<fieldset><legend><a href="#" onclick="toggleFieldset(this,\'.show\')" class="collapsed">'.L('settings/upload/@title').'</a></legend>';
+    $hl.= '<fieldset><legend><a class="collapsed" rel=".show">'.L('settings/upload/@title').'</a></legend>';
     $hl.= '<div class="show">';
     $hl.= '<p><label>'.L('settings/upload/allowext').'：</label><input tip="'.L('settings/upload/allowext').'::'.L('settings/upload/allowext/@tip').'" class="in3" type="text" name="UPLOAD_ALLOW_EXT" id="UPLOAD_ALLOW_EXT" value="'.C('UPLOAD_ALLOW_EXT').'"></p>';
     $hl.= '<p><label>'.L('settings/upload/maxsize').'：</label><input tip="'.L('settings/upload/maxsize').'::'.L('settings/upload/maxsize/@tip').'" class="in1" type="text" name="UPLOAD_MAX_SIZE" id="UPLOAD_MAX_SIZE" value="'.C('UPLOAD_MAX_SIZE').'"></p>';
@@ -134,8 +134,8 @@ function lazy_default(){
     
     $TIME_ZONE = include_file(COM_PATH.'/data/timezone.php');
     $TIME_ZONE = isset($TIME_ZONE[C('LANGUAGE')]) ? $TIME_ZONE[C('LANGUAGE')] : $TIME_ZONE['en'];
-    $hl.= '<fieldset><legend><a href="#" onclick="toggleFieldset(this,\'.hide\')" class="collapse">'.L('settings/server/@title').'</a></legend>';
-    $hl.= '<div class="hide">';
+    $hl.= '<fieldset><legend><a class="collapse" rel=".show">'.L('settings/server/@title').'</a></legend>';
+    $hl.= '<div class="show">';
     $hl.= '<p><label>'.L('settings/server/timezone').'：</label>';
     $hl.= '<select name="TIME_ZONE" id="TIME_ZONE" tip="'.L('settings/server/timezone').'::350::'.h2encode(ubbencode(L('settings/server/timezone/@tip',array('zone'=>$TIME_ZONE[C('TIME_ZONE')])))).'">';
     foreach ($TIME_ZONE as $hour => $zone) {

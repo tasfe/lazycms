@@ -45,7 +45,7 @@ function lazy_Default(){
     $gdInfo = function_exists('gd_info') ? gd_info() : array('GD Version'=>'none');
 
     /* System settings */
-    $hl = '<fieldset><legend><a href="#" onclick="toggleFieldset(this,\'.table\')" class="collapsed">'.L('sysinfo/@title').'</a></legend>';
+    $hl = '<fieldset><legend><a class="collapsed" rel=".table">'.L('sysinfo/@title').'</a></legend>';
     $hl.= '<table class="table">';
     $hl.= '<tbody>';
     $hl.= '<tr><td class="width-30">'.L('sysinfo/server_os').'</td><td>'.php_uname().'</td></tr>';
@@ -59,7 +59,7 @@ function lazy_Default(){
     $hl.= '</tbody></table></fieldset>';
     
     /* PHP settings */
-    $hl.= '<fieldset><legend><a href="#;" onclick="toggleFieldset(this,\'.table\')" class="collapsed">'.L('sysinfo/phpsettings/@title').'</a></legend>';
+    $hl.= '<fieldset><legend><a class="collapsed" rel=".table">'.L('sysinfo/phpsettings/@title').'</a></legend>';
     $hl.= '<table class="table"><tbody>';
     $hl.= '<tr><td class="width-30">'.L('sysinfo/phpsettings/safe_mode').'</td><td>'.get_php_setting('safe_mode').'</td></tr>';
     $hl.= '<tr><td>'.L('sysinfo/phpsettings/display_errors').'</td><td>'.get_php_setting('display_errors').'</td></tr>';

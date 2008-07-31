@@ -8,6 +8,10 @@
  * jquery.jqDnR.js
  * jquery.ContextMenu.js
  */
+var collapseHost = (('https:' == self.location.protocol) ? 'https://'+self.location.hostname : 'http://'+self.location.hostname);
+var collapsePath = self.location.href.replace(/\?(.*)/,'').replace(collapseHost,'');
+	collapsePath = collapsePath.substr(0,collapsePath.lastIndexOf('/'));
+var collapseUid  = UrlMD5(self.location.href);
 
 // 函数加载 JavaScript *** *** www.LazyCMS.net *** ***
 function LoadScript(plugin){
@@ -47,15 +51,28 @@ function autoTitle(){
 		$('#tabs li.active a').text(title);
 	}
 }
-// autoTitle *** *** www.LazyCMS.net *** ***
-function toggleFieldset(p1,p2){
+// toggleFieldset *** *** www.LazyCMS.net *** ***
+function toggleFieldset(){
 	// 展开事件
-	$(p1).toggleClass('collapse').toggleClass('collapsed');
-	$(p2,$(p1).parents('fieldset')).toggle();
-	parent.$('#main').height($(document).find('body').height()+7);
-	return false;
+	$('a.collapse,a.collapsed')
+		.attr('href','javascript:;')
+		.collapsed()
+		.click(function(){
+			$(this).toggleClass('collapse').toggleClass('collapsed');
+			var collapse = $($(this).attr('rel'),$(this).parents('fieldset')).toggle().css('display');
+			$.cookie('collapse_'+$(this).attr('i')+'_'+collapseUid,collapse,{expires:365,path:collapsePath});
+			parent.$('#main').height($(document).find('body').height()+7);
+		});
 }
-
+// UrlMD5 *** *** www.LazyCMS.net *** ***
+function UrlMD5(p1){
+	var R = '';
+	var R1 = encodeURIComponent(p1).replace(/[^\w]+/g,'').toUpperCase();
+	for (var i=0;i<R1.length;i++) {
+		R += R1.substr(i+1,1);
+	}
+	return R.substr(R.length-31);
+}
 /*
  * LazyCMS JS library for jQuery
  * http://www.lazycms.net
@@ -69,6 +86,27 @@ function toggleFieldset(p1,p2){
  * $("#element").tips(JSON String or Object);
  */
  (function($) {
+	// 展开事件 *** *** www.LazyCMS.net *** ***
+	$.fn.collapsed = function(){
+		this.each(function(i){
+			$(this).attr('i',i);
+			var rel      = $($(this).attr('rel'),$(this).parents('fieldset'));
+			var collapse = $.cookie('collapse_'+i+'_'+collapseUid);
+			switch (collapse) {
+				case 'block':rel.show();break;
+				case 'none':rel.hide();break;
+				default:
+					if ($(this).attr('class')=='collapse') {
+						rel.hide();
+					} else {
+						rel.show();
+					}
+					break;
+			
+			}
+		});
+		return this;
+	}
 	// 获取分词 *** *** www.LazyCMS.net *** ***
 	$.fn.getKeywords = function(){
 		var $this = this;
@@ -82,7 +120,7 @@ function toggleFieldset(p1,p2){
 			$this.val(data);
 		});
 		return this;
-	}
+	};
 	// 获取编辑器对象 *** *** www.LazyCMS.net *** ***
     $.fn.editor = function (){
         var editor = FCKeditorAPI.GetInstance(this.attr('name'));
@@ -128,16 +166,8 @@ function toggleFieldset(p1,p2){
 		} else {
 			return this;
 		}
-    }
-	$.fn.menuDrag = function(p1){
-		/**
-		这里暂停一下，制作起来很麻烦
-		$(p1,this).css({cursor:'move',position:'relative'}).mousedown(function(){
-			$('a',this).unbind().click(function(){return false});
-
-		}).find('a').css({cursor:'move'});
-		*/
-	}
+    };
+	// 列表上按钮的提交动作 *** *** www.LazyCMS.net *** ***
 	$.fn.gp = function(p1,url){
 		var form = this.parents('form');
 		var url  = url||form.attr('action');
@@ -184,18 +214,20 @@ function toggleFieldset(p1,p2){
 			});
 		}
 		return this;
-	}
+	};
+	// 应用按钮 *** *** www.LazyCMS.net *** ***
 	$.fn.apply = function(){
 		if ($('input[@name=___method]').is('input')==false) {
 			this.append('<input name="___method" type="hidden" value="apply" />');
 		}
 		return this.data('___method','apply').ajaxSubmit();
-	}
+	};
+	// 保存按钮 *** *** www.LazyCMS.net *** ***
 	$.fn.save = function(){
 		$('input[@name=___method]').remove();
 		return this.data('___method','submit').ajaxSubmit();
-	}
-    // 封装 ajaxSubmit
+	};
+    // 封装 ajaxSubmit *** *** www.LazyCMS.net *** ***
 	$.fn.ajaxSubmit = function(){
 		var form = this;
 		var method = this.data('___method');
@@ -243,8 +275,8 @@ function toggleFieldset(p1,p2){
 			}
 		});
 		return false;
-	}
-	// 封装 ajaxTip
+	};
+	// 封装 ajaxTip *** *** www.LazyCMS.net *** ***
 	$.ajaxTip = function(params){
 		// 解析传入的参数，并更新对话框的内容
 		var data = params||{}; if (typeof data == 'string'){ data = parent.$.parseJSON(data); }
@@ -263,7 +295,8 @@ function toggleFieldset(p1,p2){
 			parent.$("#tip").hide().show().animate({backgroundColor:'#FF00FF'},600).animate({backgroundColor:color},600).floatdiv({top:56});
 			parent.window.setTimeout("parent.$('#tip').slideUp('fast');",6000);
 		}
-	}
+	};
+	// input错误提示 *** *** www.LazyCMS.net *** ***
 	$.fn.error = function(v){
 		var error = v||{};
 		if (typeof v == 'string'){ error = $.parseJSON(v); }
@@ -274,15 +307,9 @@ function toggleFieldset(p1,p2){
 		this.tips('error','input.error');
 		return this;
 	};
+	// 气泡提示 *** *** www.LazyCMS.net *** ***
 	$.fn.tips = function(attr,selector){
 		var $this = this;
-		/*
-		$(selector,this).mouseover(function(){
-			if (this.type=='text' || this.type=='password') {
-				$(this).focus();
-			}
-		});
-		*/
 		$(selector,this).hover(function(e){
 			var width = 200; // 默认宽度
 			$('.jTip').remove();
@@ -308,7 +335,8 @@ function toggleFieldset(p1,p2){
 			$('.jTip').remove();
 		});
 		return this;
-	}
+	};
+	// 任意位置浮动 *** *** www.LazyCMS.net *** ***
 	$.fn.floatdiv = function(position){
 		var isIE6  = false;
 		if ($.browser.msie && $.browser.version=='6.0') {
@@ -342,7 +370,7 @@ function toggleFieldset(p1,p2){
 				$(this).css('position','absolute');
 			}
 		});
-	}
+	};
 })(jQuery);
 
 /*

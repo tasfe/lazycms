@@ -313,8 +313,10 @@ function print_v($p1=null){
     $hl.= '<script type="text/javascript" src="../../common/js/jquery.lazycms.js?ver=1.0"></script>';
     $hl.= '<script type="text/javascript">parent.document.title = "'.G('TITLE').' - '.L('system/@title','system').'";';
     $hl.= '$(document).ready(function(){ ';
-    $hl.= 'autoTitle();';
-    // 用户打开操作提示
+    // 批量去除连接虚线
+    $hl.= '$("a").focus(function(){ this.blur(); });';
+    // 执行函数
+    $hl.= 'toggleFieldset(); autoTitle();';
     $hl.= '$("#box").tips("tip","[@tip]");';
     $hl.= ' });'.G('SCRIPT').'</script>';
     $hl.= G('HEAD');
