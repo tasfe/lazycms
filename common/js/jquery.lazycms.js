@@ -306,7 +306,7 @@ function getCollapse(){
 				}
 				parent.$("#tip").css('background-color',c);
 			}
-			parent.$("#tip").hide().show().animate({backgroundColor:'#FF00FF'},600).animate({backgroundColor:color},600).floatdiv({top:56});
+			parent.$("#tip").hide().show().animate({backgroundColor:'#FF00FF'},600).animate({backgroundColor:c},600).floatdiv({top:56});
 			parent.window.setTimeout("parent.$('#tip').slideUp('fast');",6000);
 		}
 	};
