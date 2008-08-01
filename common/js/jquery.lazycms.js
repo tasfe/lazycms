@@ -66,7 +66,7 @@ function toggleFieldset(){
 			if (c) {
 				$.cookie('collapse_'+t.attr('i')+'_'+gc.Uid,e.css('display'),{expires:365,path:gc.Path});
 			}
-			parent.$('#main').height($(document).find('body').height()+7);
+			changeHeight();
 		});
 }
 // getCollapse *** *** www.LazyCMS.net *** ***
@@ -79,7 +79,10 @@ function getCollapse(){
 		e.Uid  = e.Uid.substr(e.Uid.length-32);
 		return e;
 }
-
+// changeHeight *** *** www.LazyCMS.net *** ***
+function changeHeight(){
+	parent.$('#main').height($(document).find('body').height()+7);
+}
 
 /*
  * LazyCMS JS library for jQuery
@@ -131,14 +134,14 @@ function getCollapse(){
 		}
 		t.val('Loading...');
 		$.post('../system/keywords.php',e,function(d){
-			alert(d);
 			t.val(d);
 		});
 		return this;
 	};
 	// 获取编辑器对象 *** *** www.LazyCMS.net *** ***
     $.fn.editor = function (){
-        var e = FCKeditorAPI.GetInstance(this.attr('name'));
+		var t = this;
+        var e = FCKeditorAPI.GetInstance(t.attr('name'));
 		if (typeof e !== 'undefined') {
 			$.extend(e,{
 				// 计算编辑器内文字长度 *** *** www.LazyCMS.net *** ***
@@ -169,12 +172,27 @@ function getCollapse(){
 				},
 				// 追加内容 *** *** www.LazyCMS.net *** ***
 				insert:function(s){
-					if (this.EditMode == FCK_EDITMODE_WYSIWYG){
-						this.InsertHtml(s);
-					} else {
-						 alert('You must be on WYSIWYG mode!');
+					if (this.EditMode != FCK_EDITMODE_WYSIWYG){
+						this.SwitchEditMode(FCK_EDITMODE_WYSIWYG);
 					}
+					this.InsertHtml(s);
 					return this;
+				},
+				// 调整编辑器大小 *** *** www.LazyCMS.net *** ***
+				resize:function(p1,p2){
+					var o = t.nextAll('iframe[@src*=InstanceName='+t.attr('name')+']');
+						if (typeof t.attr('rel') == 'undefined') {
+							t.attr('rel',o.height());
+						}
+						if (p1=='+') {
+							o.height(o.height()+p2);
+						} else {
+							if ((o.height()-p2) >= t.attr('rel')) {
+								o.height(o.height()-p2);
+							}
+						}
+						changeHeight();
+						return this;
 				}
 			});
 			return e;

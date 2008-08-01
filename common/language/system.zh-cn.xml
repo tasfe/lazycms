@@ -36,8 +36,13 @@
 		<osite>官方网站</osite>
 		<forums>支持论坛</forums>
 		<get tip="点击获取推荐的关键词">获取</get>
-		<browse>浏览...</browse>
     </common>
+	
+	<upload>
+		<file>上传文件</file>
+		<image>上传图片</image>
+		<pagebreak>插入分页符</pagebreak>
+	</upload>
 
 	<confirm>
         <logout>确定要退出吗？</logout>

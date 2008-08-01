@@ -575,6 +575,16 @@ function editor($p1,$p2=array()){
     switch (strtolower((string)$p3)) {
         case 'fckeditor': 
             import('class.fckeditor');
+            $but = '<style type="text/css">';
+            $but.= '.fckeditor_button{margin-top:3px}';
+            $but.= '.fckeditor_button .fr a{margin-left:8px;}';
+            $but.= '</style><div class="fckeditor_button">';
+            $but.= '<div class="fl">';
+            $but.= '<button type="button">'.L('upload/image','system').'</button><button type="button">'.L('upload/file','system').'</button><button type="button">'.L('upload/pagebreak','system').'</button>';
+            $but.= '</div><div class="fr">';
+            $but.= '<a href="javascript:;" onclick="$(\'#onecontent\').editor().resize(\'+\',100);"><img src="'.SITE_BASE.'common/images/icon/add.png" /></a>';
+            $but.= '<a href="javascript:;" onclick="$(\'#onecontent\').editor().resize(\'-\',100);"><img src="'.SITE_BASE.'common/images/icon/cut.png" /></a>';
+            $but.= '</div></div>';
             $FCK = new FCKeditor($p1);
             $FCK->BasePath = SITE_BASE.'common/editor/fckeditor/';
             if (isset($A1['toolbar'])) {
@@ -591,9 +601,10 @@ function editor($p1,$p2=array()){
             }
             $FCK->Value = $p2;
             if (empty($A1['print'])) {
-                return $FCK->CreateHtml();
+                return $FCK->CreateHtml().$but;
             } else {
                 $FCK->Create();
+                echo $but;
             }
             unset($FCK);
             break;

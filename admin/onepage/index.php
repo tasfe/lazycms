@@ -43,9 +43,9 @@ function lazy_default(){
     $ds->create("SELECT * FROM `#@_onepage` WHERE `oneid1`=0 ORDER BY `oneorder` DESC");
     $ds->action = PHP_FILE."?action=set";
     $ds->but = $ds->button();
-    $ds->td  = "cklist(K[0]) + K[0] + ') <a href=\"users.php?action=user_list&groupid=' + K[0] + '\">' + K[1] + '</a>'";
+    $ds->td  = "cklist(K[0]) + K[0] + ') <a href=\"index.php?action=edit&oneid=' + K[0] + '\">' + K[1] + '</a>'";
     $ds->td  = "K[2]";
-    $ds->td  = "icon('add','users.php?action=user_edit&groupid=' + K[0]) + icon('edit','users.php?action=group_edit&groupid=' + K[0])";
+    $ds->td  = "icon('edit','index.php?action=edit&oneid=' + K[0])";
     $ds->open();
     $ds->thead = '<tr><th>ID) '.L('list/name').'</th><th>'.L('list/path').'</th><th>'.L('common/action','system').'</th></tr>';
     while ($rs = $ds->result()) {
@@ -67,13 +67,13 @@ function lazy_edit(){
     $onecontent  = isset($_POST['onecontent']) ? $_POST['onecontent'] : null;
     $keywords    = isset($_POST['keywords']) ? $_POST['keywords'] : null;
     $description = isset($_POST['description']) ? $_POST['description'] : null;
-    $onetemplate = isset($_POST['onetemplate']) ? $_POST['onetemplate'] : null;
+    $onetemplate = isset($_POST['onetemplate']) ? $_POST['onetemplate'] : 'default.html';
     
     $val = new Validate();
     if ($val->method()) {
-        $val->check('onename|0|页面名称不能为空');
-        $val->check('onetitle|0|页面标题不能为空');
-        $val->check('onepath|0|路径不能为空;onepath|5|路径错误');
+        $val->check('onename|0|'.L('add/check/name'));
+        $val->check('onetitle|0|'.L('add/check/title'));
+        $val->check('onepath|0|'.L('add/check/path').';onepath|5|'.L('add/check/path1'));
         if ($val->isVal()) {
             $val->out();
         } else {
@@ -89,6 +89,17 @@ function lazy_edit(){
                     'description' => $description,
                 ));
                 $text = L('add/pop/addok');
+            } else {
+                $db->update('#@_onepage',array(
+                    'oneid1'  => $oneid1,
+                    'onetitle'=> $onetitle,
+                    'onepath' => $onepath,
+                    'onename' => $onename,
+                    'onecontent'  => $onecontent,
+                    'onetemplate' => $onetemplate,
+                    'description' => $description,
+                ),DB::quoteInto('`oneid` = ?',$oneid));
+                $text = L('add/pop/editok');
             }
             echo_json(array(
                 'text' => $text,
@@ -96,7 +107,18 @@ function lazy_edit(){
             ),1);
         }
     } else {
-    
+        if (!empty($oneid)) {
+            $res = $db->query("SELECT * FROM `#@_onepage` WHERE `oneid`=?",$oneid);
+            if ($rs = $db->fetch($res)) {
+                $oneid1   = $rs['oneid1'];
+                $onename  = h2encode($rs['onename']);
+                $onetitle = h2encode($rs['onetitle']);
+                $onepath  = h2encode($rs['onepath']);
+                $onecontent  = h2encode($rs['onecontent']);
+                $description = h2encode($rs['description']);
+                $onetemplate = h2encode($rs['onetemplate']);
+            }
+        }
     }
 
     $hl = '<form id="form1" name="form1" method="post" action="">';
@@ -118,7 +140,7 @@ function lazy_edit(){
     $hl.= '<p><label>'.L('add/description').'：</label><textarea name="description" id="description" rows="5" class="in4">'.$description.'</textarea></p>';
     $hl.= '<p><label>'.L('add/template').'：</label>';
     $hl.= '<select name="onetemplate" id="onetemplate">';
-    $hl.= form_opts('themes/'.C('TEMPLATE'),'htm,html,xml,php','<option value="#value#"#selected#>#name#</option>','default.html');
+    $hl.= form_opts('themes/'.C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$onetemplate);
     $hl.= '</select></p>';
     $hl.= '</div></fieldset>';
     $hl.= but('save').'<input name="oneid" type="hidden" value="'.$oneid.'" /></form>';

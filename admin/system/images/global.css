@@ -62,4 +62,5 @@ a:hover   { text-decoration: underline; }
 .tl{ text-align:left; }
 .tr{ text-align:right; }
 .tc{ text-align:center; }
-
+.fl{float:left; display:block;}
+.fr{float:right; display:block;}
