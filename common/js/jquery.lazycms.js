@@ -273,6 +273,12 @@ function changeHeight(){
 		var u = t.attr('action'); if (u==''||typeof u=='undefined') { u = self.location.href; }
 		// 设置登录按钮
 		s.attr('disabled',true);
+		// ajax submit fckeditor必须进行 UpdateLinkedField
+		for (var i=0;i<frames.length;++i){
+			if (frames[i].FCK) {
+				frames[i].FCK.UpdateLinkedField();
+			}
+		}
 		// ajax submit
 		$.ajax({
 			cache: false,

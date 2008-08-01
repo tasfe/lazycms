@@ -114,7 +114,7 @@ function lazy_edit(){
                 $onename  = h2encode($rs['onename']);
                 $onetitle = h2encode($rs['onetitle']);
                 $onepath  = h2encode($rs['onepath']);
-                $onecontent  = h2encode($rs['onecontent']);
+                $onecontent  = $rs['onecontent'];
                 $description = h2encode($rs['description']);
                 $onetemplate = h2encode($rs['onetemplate']);
             }
