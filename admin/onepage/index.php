@@ -100,7 +100,7 @@ function lazy_edit(){
     }
 
     $hl = '<form id="form1" name="form1" method="post" action="">';
-    $hl.= '<fieldset><legend rel="tab"><a class="collapsed" rel=".more-attr">'.$title.'</a></legend>';
+    $hl.= '<fieldset><legend rel="tab"><a class="collapsed" rel=".more-attr" cookie="false">'.$title.'</a></legend>';
     $hl.= '<div class="more-attr">';
     $hl.= '<p><label>'.L('add/sort').'：</label>';
     $hl.= '<select name="oneid1" id="oneid1">';

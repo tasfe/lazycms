@@ -71,9 +71,9 @@ function toggleShortcutSort(){
 }
 // deleteShortcutSort *** *** www.LazyCMS.net *** ***
 function deleteShortcutSort(){
-	var SortName = $('#ShortcutSort option[@selected]').val();
-		if (SortName!='') {
-			$.post('manage.php?action=deleteSort',{'ShortcutSortName':SortName},function(){
+	var s = $('#ShortcutSort option[@selected]').val();
+		if (s!='') {
+			$.post('manage.php?action=deleteSort',{'ShortcutSortName':s},function(){
 				if ($('#ShortcutSort option').size()==1) {
 					$('#ShortcutSort').append('<option value="">-- No Category --</option>');
 				}
@@ -83,18 +83,18 @@ function deleteShortcutSort(){
 }
 // submitShortcutSort *** *** www.LazyCMS.net *** ***
 function submitShortcutSort(){
-	var SortName = $('#ShortcutSortName').unbind().removeClass('error').val(); $('.jTip').remove();
-	var option = $('#ShortcutSort option:last');
+	var s = $('#ShortcutSortName').unbind().removeClass('error').val(); $('.jTip').remove();
+	var opt = $('#ShortcutSort option:last');
 		$.ajax({
 			cache: false,
 			dataType: 'json',
 			url: 'manage.php?action=createSort',
 			type: 'post',
-			data: {'ShortcutSortName':SortName},
-			success: function(data){
-				if (data.length>0) { $('#addShortcut dl').error(data); } else {
-					if (option.val()=='') {	$('#ShortcutSort option:last').remove(); }
-					option.clone().val(SortName).html(SortName).attr('selected',true).appendTo('#ShortcutSort');
+			data: {'ShortcutSortName':s},
+			success: function(d){
+				if (d.length>0) { $('#addShortcut dl').error(d); } else {
+					if (opt.val()=='') { $('#ShortcutSort option:last').remove(); }
+					opt.clone().val(s).html(s).attr('selected',true).appendTo('#ShortcutSort');
 					$('#ShortcutSort').width($('#ShortcutSort').width()+10); toggleShortcutSort();
 				}
 			}
@@ -104,24 +104,24 @@ function submitShortcutSort(){
 // submitShortcut *** *** www.LazyCMS.net *** ***
 function submitShortcut(){
 	$('input.error').unbind().toggleClass('error'); $('.jTip').remove();
-	var form = $('#formShortcut');
-	var url  = form.attr('action')
+	var f = $('#formShortcut');
+	var u = f.attr('action')
 		$.ajax({
 			cache: false,
 			dataType: 'json',
-			url: url,
-			type: form.attr('method').toUpperCase(),
-			data: form.serializeArray(),
+			url: u,
+			type: f.attr('method').toUpperCase(),
+			data: f.serializeArray(),
 			error: function(){
-				$.post(url,form.serializeArray(),function(data){
-					alert(data);
+				$.post(u,f.serializeArray(),function(d){
+					alert(d);
 				});
 			},
-			success: function(data){
-				if (typeof data.status != 'undefined') {
-					$.ajaxTip(data);
-				} else if (data.length>0) {
-					$('#addShortcut').error(data);
+			success: function(d){
+				if (typeof d.status != 'undefined') {
+					$.ajaxTip(d);
+				} else if (d.length>0) {
+					$('#addShortcut').error(d);
 				} else {
 					toggleAddShortcut();
 				}
