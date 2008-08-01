@@ -127,10 +127,11 @@ function getCollapse(){
 		var a = arguments;
 		var e = {};
 		for (var i=0;i<a.length;i++) {
-			eval('e.' + $(a[i]).attr('name') + ' = "' + $(a[i]).editor().val() + '";');
+			eval('e.' + $(a[i]).attr('name') + ' = "' + encodeURIComponent($(a[i]).editor().val()) + '";');
 		}
 		t.val('Loading...');
 		$.post('../system/keywords.php',e,function(d){
+			alert(d);
 			t.val(d);
 		});
 		return this;
@@ -164,7 +165,7 @@ function getCollapse(){
 				},
 				// 读取编辑器内的文字 *** *** www.LazyCMS.net *** ***
 				val:function(){
-					return $(this.GetXHTML(true)).text();
+					return this.GetXHTML(true);
 				},
 				// 追加内容 *** *** www.LazyCMS.net *** ***
 				insert:function(s){

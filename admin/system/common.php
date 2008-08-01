@@ -42,13 +42,16 @@ class System{
         return $R;
     }
     // getKeywords *** *** www.LazyCMS.net *** ***
-    static function getKeywords($p1){
+    static function getKeywords($p1,$p2=null){
         $keywords = array();
         import('class.downloader');
         import('class.splitword');
         // 先从远程获取分词
-        $d = new DownLoader("http://keyword.discuz.com/related_kw.html?ics=utf-8&ocs=utf-8&title=".rawurlencode($p1));
-        $d->send();
+        $d = new DownLoader("http://keyword.lazycms.net/related_kw.php");
+        $d->send(array(
+            'title' => $p1,
+            'content' => $p2,
+        ));
         // 请求成功
         if ($d->status() == 200) {
             $XML = $d->body();
@@ -59,10 +62,12 @@ class System{
         }
         // 使用本地词库分词
         $sw = new SplitWord();
-        $splitWord = $sw->getWord($p1);
-        foreach ($splitWord as $keyword) {
-            if (!in_array($keyword,$keywords)) {
-                $keywords[] = $keyword;
+        $splitWord = $sw->getWord(rawurldecode($p1));
+        if (!empty($splitWord)) {
+            foreach ($splitWord as $keyword) {
+                if (!in_array($keyword,$keywords)) {
+                    $keywords[] = $keyword;
+                }
             }
         }
         return $keywords;

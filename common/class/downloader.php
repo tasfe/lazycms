@@ -60,6 +60,7 @@ class DownLoader{
     // send *** *** www.LazyCMS.net *** ***
     public function send($params=array()){
         $header = null; $body = null; $QueryStr = null;
+        if (!empty($params)) { $this->method = 'POST'; }
         if (function_exists('fsockopen')) {
             $fp = @fsockopen($this->host,$this->port,$errno,$errstr,$this->timeout);
             if (!$fp) { return false; }
@@ -89,7 +90,6 @@ class DownLoader{
             fputs($fp,$SendStr);
             // 读取 header
             do{ $header.= fread($fp,1); } while (!preg_match("/\r\n\r\n$/",$header));
-			
             // 遇到跳转，执行跟踪跳转
             if ($this->redirect($header)) { return true; }
             // 读取内容
@@ -105,6 +105,7 @@ class DownLoader{
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_USERAGENT => self::SEND_USER_AGENT,
                 CURLOPT_REFERER => $this->referer,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0,
             ));
             if ($this->method=='GET') {
                 curl_setopt($ch,CURLOPT_HTTPGET,true);
