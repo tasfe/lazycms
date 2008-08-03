@@ -81,7 +81,7 @@ function lazy_edit(){
         } else {
             if (empty($oneid)) {
                 $db->insert('#@_onepage',array(
-                    'oneid1'  => $oneid1,
+                    'oneid1'  => (int)$oneid1,
                     'oneorder'=> $db->max('oneid','#@_onepage'),
                     'onetitle'=> $onetitle,
                     'onepath' => $onepath,
@@ -104,8 +104,7 @@ function lazy_edit(){
                 ),DB::quoteInto('`oneid` = ?',$oneid));
                 $text = L('add/pop/editok');
             }
-            
-            $key->save($oneid,$keywords);
+            $key->save($oneid,$keywords,C('GET_RELATED_KEY'));
             // 输出执行结果
             echo_json(array(
                 'text' => $text,
@@ -137,7 +136,8 @@ function lazy_edit(){
     $hl.= Onepage::__sort(0,0,$oneid,$oneid1);
     $hl.= '</select></p>';
     $hl.= '<p><label>'.L('add/name').'：</label><input tip="'.L('add/name').'::'.L('add/name/@tip').'" class="in3" type="text" name="onename" id="onename" value="'.$onename.'" /></p>';
-    $hl.= '<p><label>'.L('add/title').'：</label><input tip="'.L('add/title').'::'.h2encode(L('add/title/@tip')).'" class="in4" type="text" name="onetitle" id="onetitle" value="'.$onetitle.'" /></p>';
+    $hl.= '<p><label>'.L('add/title').'：</label><input tip="'.L('add/title').'::'.h2encode(L('add/title/@tip')).'" class="in4" type="text" name="onetitle" id="onetitle" value="'.$onetitle.'" />';
+    $hl.= '<span tip="'.L('add/autokeywords/@tip').'"><input type="checkbox" name="autokeywords" id="autokeywords" checked="checked"><label for="autokeywords">'.L('add/autokeywords').'</label></span></p>';
     $hl.= '<p><label>'.L('add/path').'：</label><input tip="'.L('add/path').'::300::'.h2encode(L('add/path/@tip')).'" class="in5" type="text" name="onepath" id="onepath" value="'.$onepath.'" /></p>';
     $hl.= '<p><label>'.L('add/content').'：</label><div class="box">';
     $hl.= editor('onecontent',array(

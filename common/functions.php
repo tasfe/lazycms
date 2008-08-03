@@ -124,6 +124,7 @@ function utf2ansi($p1,$p2='GB2312'){
 
 // ansi2utf *** *** www.LazyCMS.net *** ***
 function ansi2utf($p1){
+    if (strlen($p1)==0) { return ;}
     if (is_utf8($p1)) { return $p1; }
     if (function_exists('iconv')) {
         return iconv('',"UTF-8//IGNORE",$p1);
@@ -434,6 +435,57 @@ function menu($p1){
     }
     $R.= '</ul>';
     return $R;
+}
+
+// sect *** *** www.LazyCMS.net *** ***
+function sect($p1,$p2,$p3,$p4=null){
+    if (empty($p1) || empty($p2) || empty($p3)) { return ;}
+    if (substr($p2,0,1)==chr(40) && substr($p2,-1)==chr(41) && substr($p3,0,1)==chr(40) && substr($p3,-1)==chr(41)) {
+        if (preg_match("/{$p2}(.*){$p3}/isU",$p1,$R2)) {
+            if (count($R2)>0) {
+                $p5 = $R2[0];
+            }
+        }
+        if (preg_match("/{$p2}/isU",$p5,$R2)) {
+            if (count($R2)>0) {
+                $p6 = $R2[0];
+            }
+        }
+        if (preg_match("/{$p3}/isU",$p5,$R2)) {
+            if (count($R2)>0) {
+                $p7 = $R2[0];
+            }
+        }
+    } else {
+        $p5 = $p1; $p6 = $p2; $p7 = $p3;
+    }
+    $p8 = strpos(strtolower($p5),strtolower($p6)); if ($p8===false) { return ; }
+    $p9 = strpos(strtolower(substr($p5,-(strlen($p5)-$p8-strlen($p6)))),strtolower($p7));
+    $R3 = null;
+    if ($p8!==false && $p9!==false) {
+        $R3 = trim(substr($p5,$p8+strlen($p6),$p9));
+    }
+    if (strlen($R3)>0 && strlen($p4)>0) {
+        $R3 = clsre($R3,$p4);
+    }
+    return $R3;
+}
+
+// clsre *** *** www.LazyCMS.net *** ***
+function clsre($p1,$p2){
+    $R1 = $p1;
+    $R2 = explode("\n",$p2);
+    foreach ($R2 as $p3) {
+        $p4 = trim($p3);
+        if (!empty($p4)) {
+            if (trim(substr($p4,0,1))==chr(40) && trim(substr($p4,-1))==chr(41)) {
+                $R1 = preg_replace("/{$p4}/isU",'',$R1);
+            } else {
+                if (strpos($R1,$p3)!==false) { $R1 = str_replace($p3,'',$R1); }
+            }
+        }
+    }
+    return $R1;
 }
 
 // validate *** *** www.LazyCMS.net *** ***

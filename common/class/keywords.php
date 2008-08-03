@@ -28,19 +28,18 @@ defined('COM_PATH') or die('Restricted access!');
  */
 // Keywords *** *** www.LazyCMS.net *** ***
 class Keywords {
-    private $db;
-    private $dict;
-    private $module;
+    private $db,$dict,$module;
+    private $dicts = array();
     // __construct *** *** www.LazyCMS.net *** ***
     function __construct($module=null){
         if (empty($module)) {
             $this->module = MODULE;
         }
         $this->db   = get_conn();
-        $this->dict = COM_PATH.'/data/dict/Private_LazyCMS.dict';
+        $this->dict = COM_PATH.'/data/dict/LazyCMS_Private.dict';
     }
     // get *** *** www.LazyCMS.net *** ***
-    function get($id){
+    public function get($id){
         $R = array();
         $result = $this->db->query("SELECT `keyword` FROM `#@_keyword_join` AS `kj` LEFT JOIN `#@_keywords` AS `k` ON `kj`.`keyid`=`k`.`keyid` WHERE `kj`.`targetid`=? ORDER BY `kj`.`keyid` ASC;",$id);
         while ($keywords = $this->db->fetch($result,0)) {
@@ -48,15 +47,37 @@ class Keywords {
         }
         return join(',',$R);
     }
+    // loadDicts *** *** www.LazyCMS.net *** ***
+    private function loadDicts(){
+        if (!is_file($this->dict)) { return ;}
+        $this->dicts = array();
+        $fp = fopen($this->dict,'r');
+        while($ws = trim(fgets($fp))){
+            if (empty($ws)){ continue; }
+            $this->dicts[strlen($ws)][$ws] = 1;
+        }
+        fclose($fp);
+    }
+    // isKeyword *** *** www.LazyCMS.net *** ***
+    private function isKeyword($string){
+        $len = strlen(trim($string));
+        return isset($this->dicts[$len][$string]);
+    }
     // save *** *** www.LazyCMS.net *** ***
-    public function save($id,$keywords){
+    public function save($id,$keywords,$related=false){
+        if (strlen($keywords)==0) { return ; }
+        // 按优先级处理关键词
         $keywords = str_replace(array('，','　'),array(',',' '),$keywords);
         $splitWords = explode(',',$keywords);
-        if (count($splitWords)===1) {
+        if (count($splitWords)==1) {
             $splitWords = explode(' ',$keywords);
         }
         // 移除重复的关键词
         $splitWords = array_unique($splitWords);
+        // 去除关键词两边的空格
+        array_walk($splitWords,create_function('&$p1,$p2','$p1=trim($p1);'));
+        // 加载私有词库
+        $this->loadDicts();
         // 删除关键词关联
         $this->rejoin($id,array_diff(explode(',',$this->get($id)),$splitWords));
         // 查询数据库中存在的关键词
@@ -82,7 +103,20 @@ class Keywords {
             // 更新关键词的记录数
             $this->keysum($keyid);
             // 将此关键词写入文本词库
-            save_file($this->dict,$v.chr(10),false);
+            if (!$this->isKeyword($v)) {
+                $this->dicts[strlen($v)][$v] = 1;
+                save_file($this->dict,$v.chr(10),false);
+            }
+            // 获取相关的长尾关键词
+            if (!$related) { continue; }
+            if ($rKeys = $this->getRelated($v)) {
+                foreach ($rKeys as $rKey) {
+                    if (!$this->isKeyword($rKey)) {
+                        $this->dicts[strlen($rKey)][$rKey] = 1;
+                        save_file($this->dict,$rKey.chr(10),false);
+                    }
+                }    
+            }
         }
         return true;
     }
@@ -120,6 +154,35 @@ class Keywords {
             return $this->db->update('#@_keywords',array(
                 'keysum' => $this->db->count("SELECT * FROM `#@_keyword_join` WHERE `keyid`=".DB::quote($keyid)." AND `module`=".DB::quote($this->module).";")
             ),DB::quoteInto('`keyid` = ?',$keyid));    
+        }
+    }
+    // getRelated *** *** www.LazyCMS.net *** ***
+    function getRelated($keyword){
+        // 获取相关的长尾关键词
+        import('class.downloader');
+        $d = new DownLoader('http://www.baidu.com/s?ie=utf-8&wd='.rawurlencode($keyword));
+        $d->send();
+        if ($d->status() == 200) {
+            $R = array();
+            $body = ansi2utf($d->body());
+            $body = sect($body,'>相关搜索</td>','</table>','( href="(.+)")');
+            if (preg_match_all('/<a>(.+)<\/a>/iU',$body,$Keywords)) {
+                if (!isset($Keywords[1])) { return false; }
+                foreach ($Keywords[1] as $key) {
+                    $eKeyword = explode(' ',$key);
+                    if (count($eKeyword)>1) {
+                        foreach ($eKeyword as $eKey) {
+                            $R[] = trim($eKey);
+                        }
+                    } else {
+                        $R[] = trim($key);
+                    }
+                }
+                $R = array_unique($R);
+            }
+            return $R;
+        } else {
+            return false;
         }
     }
 }

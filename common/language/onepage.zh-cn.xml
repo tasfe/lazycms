@@ -20,6 +20,7 @@
 		<topsort>顶级分类</topsort>
         <name tip="后台管理里显示的名称">页面名称</name>
         <title tip="title 中的内容">页面标题</title>
+        <autokeywords tip="选中此选项，更多属性-&gt;关键词会自动填充。">自动获取关键词</autokeywords>
         <path tip="不支持 &lt;\:*?&quot;|,;&gt; 字符，不能以/开始或结束">页面路径</path>
         <content>页面内容</content>
         <keywords tip="关键字之间用“英文逗号”或“空格”分开">关键词</keywords>

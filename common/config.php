@@ -35,6 +35,7 @@ return array(
     'LANGUAGE'   => 'zh-cn',
     'RSS_NUMBER' => 10,
     'TEMPLATE'   => 'default',
+    'GET_RELATED_KEY' => false,
 
     /* 会员设置 */
     'USER_ALLOW_REG'  => true,

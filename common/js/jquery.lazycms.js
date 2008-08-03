@@ -294,7 +294,7 @@ function changeHeight(){
 					type: t.attr('method').toUpperCase(),
 					data: t.serializeArray(),
 					success: function(d){
-						alert(d);
+						document.write(d);
 					}
 				});
 			},

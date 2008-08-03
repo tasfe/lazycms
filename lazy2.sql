@@ -126,7 +126,6 @@ CREATE TABLE IF NOT EXISTS `lazy_onepage` (
   `oneopen` tinyint(1) default '0' COMMENT '是否打开',
   `description` varchar(250) default NULL COMMENT '描述',
   PRIMARY KEY  (`oneid`),
-  UNIQUE KEY `onepath` (`onepath`),
   KEY `oneid1` (`oneid1`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 

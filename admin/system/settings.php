@@ -58,6 +58,7 @@ function lazy_default(){
                 'LANGUAGE',
                 'TEMPLATE',
                 'RSS_NUMBER',
+                'GET_RELATED_KEY',
                 'USER_ALLOW_REG',
                 'USER_GROUP_REG',
                 'USER_ACTIVE_REG',
@@ -102,6 +103,12 @@ function lazy_default(){
         $hl.= '<option value="'.$number.'"'.$selected.'>'.$number.L('common/unit/item').'</option>';
     }
     $hl.= '</select></p>';
+
+    $hl.= '<p><label>'.L('settings/site/related/@title').'：</label><span tip="'.L('settings/site/related/@title').'::300::'.L('settings/site/related/@tip').'">';
+    $hl.= '<input type="radio" name="GET_RELATED_KEY" id="GET_RELATED_KEY[1]" value="true"'.((C('GET_RELATED_KEY') == 1) ? ' checked="checked"':null).'/><label for="GET_RELATED_KEY[1]">'.L('settings/site/related/true').'</label> ';
+    $hl.= '<input type="radio" name="GET_RELATED_KEY" id="GET_RELATED_KEY[0]" value="false"'.((C('GET_RELATED_KEY') == 0) ? ' checked="checked"':null).'/><label for="GET_RELATED_KEY[0]">'.L('settings/site/related/false').'</label>';
+    $hl.= '</span></p>';
+
     $hl.= '</div></fieldset>';
 
     $hl.= '<fieldset><legend><a class="collapsed" rel=".show">'.L('settings/user/@title').'</a></legend>';

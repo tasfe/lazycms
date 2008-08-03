@@ -65,7 +65,7 @@ class SplitWord{
         }
     }
     // isKeyword *** *** www.LazyCMS.net *** ***
-    function isKeyword($string){
+    private function isKeyword($string){
         $len = strlen($string);
         if ($len > $this->maxLen) {
             return false;
@@ -74,7 +74,7 @@ class SplitWord{
         }
     }
     // cnSplit *** *** www.LazyCMS.net *** ***
-    function cnSplit($string){
+    private function cnSplit($string){
         $len = len($string);
         $substring = array();
         $cnTmpStr = "";
@@ -135,7 +135,7 @@ class SplitWord{
         return $substring;
     }
     // getWord *** *** www.LazyCMS.net *** ***
-    function getWord($string, $maxLen=8, $saveSingle=false, $saveOther=false){
+    public function getWord($string, $maxLen=8, $saveSingle=false, $saveOther=false){
         $this->result = array();
         // 使用标点将长句分成短句
         $subSens = $this->cnSplit($string);

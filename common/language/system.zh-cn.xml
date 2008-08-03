@@ -114,6 +114,10 @@
 			<rssnumber tip="RSS Feed 显示最新的多少条。">RSS Feed</rssnumber>
 			<language tip="网站默认使用的语言包。">界面语言</language>
             <template tip="更改模板，静态页面需要重新生成页面。">系统模板</template>
+            <related title="获取长尾关键词" tip="选择“是”，则在添加文章时，会自动从百度相关搜索获取长尾关键词，添加到词库，会影响添加速度。">
+                <true>是</true>
+                <false>否</false>
+            </related>
 		</site>
         <user title="会员设置">
             <allowreg title="允许注册" tip="若设为是，则允许用户注册。">
