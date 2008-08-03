@@ -85,7 +85,6 @@ class lazy_mysql extends DB{
         $sql = preg_replace('/\#\~(.+)\~\#/e','$this->config(\'\\1\')',$sql);
         $sql = preg_replace('/`(#@_)(\w+)`/i','`'.$this->config('prefix').'$2`',$sql);
         $this->_sql = $sql;
-        
         if(!($R= $func($sql,$this->_conn))){
             if(in_array($this->errno(),array(2006,2013)) && substr($type,0,5) != 'RETRY') {
                 $this->close();$this->connect();

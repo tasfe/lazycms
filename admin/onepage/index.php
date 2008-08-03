@@ -68,7 +68,9 @@ function lazy_edit(){
     $keywords    = isset($_POST['keywords']) ? $_POST['keywords'] : null;
     $description = isset($_POST['description']) ? $_POST['description'] : null;
     $onetemplate = isset($_POST['onetemplate']) ? $_POST['onetemplate'] : 'default.html';
-    
+    // 加载 Keywords 处理类
+    import('class.keywords');
+    $key = new Keywords();
     $val = new Validate();
     if ($val->method()) {
         $val->check('onename|0|'.L('add/check/name'));
@@ -88,6 +90,7 @@ function lazy_edit(){
                     'onetemplate' => $onetemplate,
                     'description' => $description,
                 ));
+                $oneid = $db->lastId();
                 $text = L('add/pop/addok');
             } else {
                 $db->update('#@_onepage',array(
@@ -101,6 +104,9 @@ function lazy_edit(){
                 ),DB::quoteInto('`oneid` = ?',$oneid));
                 $text = L('add/pop/editok');
             }
+            
+            $key->save($oneid,$keywords);
+            // 输出执行结果
             echo_json(array(
                 'text' => $text,
                 'url'  => 'index.php',
@@ -115,6 +121,7 @@ function lazy_edit(){
                 $onetitle = h2encode($rs['onetitle']);
                 $onepath  = h2encode($rs['onepath']);
                 $onecontent  = $rs['onecontent'];
+                $keywords    = $key->get($oneid);
                 $description = h2encode($rs['description']);
                 $onetemplate = h2encode($rs['onetemplate']);
             }
@@ -132,8 +139,17 @@ function lazy_edit(){
     $hl.= '<p><label>'.L('add/name').'：</label><input tip="'.L('add/name').'::'.L('add/name/@tip').'" class="in3" type="text" name="onename" id="onename" value="'.$onename.'" /></p>';
     $hl.= '<p><label>'.L('add/title').'：</label><input tip="'.L('add/title').'::'.h2encode(L('add/title/@tip')).'" class="in4" type="text" name="onetitle" id="onetitle" value="'.$onetitle.'" /></p>';
     $hl.= '<p><label>'.L('add/path').'：</label><input tip="'.L('add/path').'::300::'.h2encode(L('add/path/@tip')).'" class="in5" type="text" name="onepath" id="onepath" value="'.$onepath.'" /></p>';
-    $hl.= '<p><label>'.L('add/content').'：</label><div class="box">'.editor('onecontent',array('value'=>$onecontent,'editor'=>'fckeditor')).'</div></p>';
-    $hl.= '</div></fieldset>';
+    $hl.= '<p><label>'.L('add/content').'：</label><div class="box">';
+    $hl.= editor('onecontent',array(
+        'upimg'   => true,
+        'upfile'  => true,
+        'snapimg' => array(1,1),
+        'dellink' => array(1,0),
+        'resize'  => true,
+        'value'   => $onecontent,
+        'editor'  => 'fckeditor'
+    ));
+    $hl.= '</div></p></div></fieldset>';
     $hl.= '<fieldset><legend><a class="collapse" rel=".more-attr">'.L('common/attr').'</a></legend>';
     $hl.= '<div class="more-attr">';
     $hl.= '<p><label>'.L('add/keywords').'：</label><input tip="'.L('add/keywords').'::250::'.L('add/keywords/@tip').'" class="in4" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" onclick="$(\'#keywords\').getKeywords(\'#onetitle\',\'#onecontent\')" tip="'.L('common/get/@tip','system').'">'.L('common/get','system').'</button></p>';

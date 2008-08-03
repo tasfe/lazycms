@@ -8,7 +8,7 @@
  * jquery.jqDnR.js
  * jquery.ContextMenu.js
  */
-
+var sleepTimeout = null;
 // 函数加载 JavaScript *** *** www.LazyCMS.net *** ***
 function LoadScript(p){
     var u = $("script[@src*=jquery.lazycms]").attr("src").replace("jquery.lazycms.js","jquery." + p + ".js");
@@ -74,9 +74,9 @@ function getCollapse(){
 	var e = {};
 		e.Host = (('https:' == self.location.protocol) ? 'https://'+self.location.hostname : 'http://'+self.location.hostname);
 		e.Path = self.location.href.replace(/\?(.*)/,'').replace(e.Host,'');
-		e.Path = e.Path.substr(0,e.Path.lastIndexOf('/'));
-		e.Uid  = encodeURIComponent(self.location.href).replace(/[^\w]+/g,'').toUpperCase();
-		e.Uid  = e.Uid.substr(e.Uid.length-32);
+		e.Path = e.Path.substr(0,e.Path.lastIndexOf('/')+1);
+		e.Uid  = encodeURIComponent(self.location.href.replace(/\?(.+)?/,'')).replace(/[^\w]+/g,'').toUpperCase();
+		e.Uid  = e.Uid.substr(e.Uid.length-20);
 		return e;
 }
 // changeHeight *** *** www.LazyCMS.net *** ***
@@ -241,7 +241,7 @@ function changeHeight(){
 					$.ajaxTip(d);
 					if (typeof d.url != 'undefined') {
 						if (typeof d.sleep == 'undefined') { d.sleep = 0; }
-						window.setTimeout("self.location.href = '" + d.url + "';",d.sleep*1000);
+						window.clearTimeout(sleepTimeout); sleepTimeout = window.setTimeout("self.location.href = '" + d.url + "';",d.sleep*1000);
 					}
 				}
 			});
@@ -305,7 +305,7 @@ function changeHeight(){
 					$.ajaxTip(d);
 					if (typeof d.url != 'undefined' && m != 'apply') {
 						if (typeof d.sleep == 'undefined') { d.sleep = 0; }
-						window.setTimeout("self.location.href = '" + d.url + "';",d.sleep*1000);
+						window.clearTimeout(sleepTimeout); sleepTimeout = window.setTimeout("self.location.href = '" + d.url + "';",d.sleep*1000);
 					}
 				}
 			},
@@ -332,7 +332,7 @@ function changeHeight(){
 				parent.$("#tip").css('background-color',c);
 			}
 			parent.$("#tip").hide().show().animate({backgroundColor:'#FF00FF'},600).animate({backgroundColor:c},600).floatdiv({top:56});
-			parent.window.setTimeout("parent.$('#tip').slideUp('fast');",6000);
+			parent.window.clearTimeout(sleepTimeout); sleepTimeout = parent.window.setTimeout("parent.$('#tip').slideUp('fast');",6000);
 		}
 	};
 	// input错误提示 *** *** www.LazyCMS.net *** ***

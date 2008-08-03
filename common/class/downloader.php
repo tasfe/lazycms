@@ -64,8 +64,9 @@ class DownLoader{
         if (function_exists('fsockopen')) {
             $fp = @fsockopen($this->host,$this->port,$errno,$errstr,$this->timeout);
             if (!$fp) { return false; }
+            $_port   = ((int)$this->port!==80) ? ':'.$this->port : null;
             $SendStr = "{$this->method} {$this->path}{$this->query} HTTP/1.0\r\n";
-            $SendStr.= "Host:{$this->host}:{$this->port}\r\n";
+            $SendStr.= "Host:{$this->host}{$_port}\r\n";
             $SendStr.= "Accept: */*\r\n";
             $SendStr.= "Referer:{$this->referer}\r\n";
             $SendStr.= "User-Agent: ".self::SEND_USER_AGENT."\r\n";

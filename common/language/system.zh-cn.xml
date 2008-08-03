@@ -38,11 +38,14 @@
 		<get tip="点击获取推荐的关键词">获取</get>
     </common>
 	
-	<upload>
-		<file>上传文件</file>
-		<image>上传图片</image>
+	<fckeditor>
+		<upfile>上传文件</upfile>
+		<upimg>上传图片</upimg>
 		<pagebreak>插入分页符</pagebreak>
-	</upload>
+        <snapimg>下载远程图片</snapimg>
+        <dellink>删除站外链接</dellink>
+        <setimg>设第一幅图为缩略图</setimg>
+	</fckeditor>
 
 	<confirm>
         <logout>确定要退出吗？</logout>

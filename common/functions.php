@@ -575,16 +575,39 @@ function editor($p1,$p2=array()){
     switch (strtolower((string)$p3)) {
         case 'fckeditor': 
             import('class.fckeditor');
+            $A1['upimg'] = isset($A1['upimg']) ? $A1['upimg'] : false;
+            $A1['upfile'] = isset($A1['upfile']) ? $A1['upfile'] : false;
+            $A1['pagebreak'] = isset($A1['pagebreak']) ? $A1['pagebreak'] : false;
+            $A1['snapimg'] = isset($A1['snapimg']) ? $A1['snapimg'] : array(0,0);
+            $A1['dellink'] = isset($A1['dellink']) ? $A1['dellink'] : array(0,0);
+            $A1['setimg'] = isset($A1['setimg']) ? $A1['setimg'] : array(0,0);
+            $A1['resize'] = isset($A1['resize']) ? $A1['resize'] : false;
             $but = '<style type="text/css">';
             $but.= '.fckeditor_button{margin-top:3px}';
             $but.= '.fckeditor_button .fr a{margin-left:8px;}';
             $but.= '</style><div class="fckeditor_button">';
             $but.= '<div class="fl">';
-            $but.= '<button type="button">'.L('upload/image','system').'</button><button type="button">'.L('upload/file','system').'</button><button type="button">'.L('upload/pagebreak','system').'</button>';
-            $but.= '</div><div class="fr">';
-            $but.= '<a href="javascript:;" onclick="$(\'#onecontent\').editor().resize(\'+\',100);"><img src="'.SITE_BASE.'common/images/icon/add.png" /></a>';
-            $but.= '<a href="javascript:;" onclick="$(\'#onecontent\').editor().resize(\'-\',100);"><img src="'.SITE_BASE.'common/images/icon/cut.png" /></a>';
-            $but.= '</div></div>';
+            if ($A1['upimg']) { $but.= '<button type="button">'.L('fckeditor/upimg','system').'</button>'; }
+            if ($A1['upfile']) { $but.= '<button type="button">'.L('fckeditor/upfile','system').'</button>'; }
+            if ($A1['pagebreak']) { $but.= '<button type="button">'.L('fckeditor/pagebreak','system').'</button>'; }
+            if ($A1['snapimg'][0]) {
+                $but.= '<input type="checkbox" name="snapimg" id="snapimg"'.($A1['snapimg'][1]?' checked="checked"':null).'><label for="snapimg">'.L('fckeditor/snapimg','system').'</label>&nbsp; ';
+            }
+            if ($A1['dellink'][0]) {
+                $but.= '<input type="checkbox" name="dellink" id="dellink"'.($A1['dellink'][1]?' checked="checked"':null).'><label for="dellink">'.L('fckeditor/dellink','system').'</label>&nbsp; ';
+            }
+            if ($A1['setimg'][0]) {
+                $but.= '<input type="checkbox" name="setimg" id="setimg"'.($A1['setimg'][1]?' checked="checked"':null).'><label for="setimg">'.L('fckeditor/setimg','system').'</label>';
+            }
+            $but.= '</div>';
+            // 是否显示调整编辑器高度按钮
+            if ($A1['resize']) {
+                $but.= '<div class="fr">';
+                $but.= '<a href="javascript:;" onclick="$(\'#onecontent\').editor().resize(\'+\',100);"><img src="'.SITE_BASE.'common/images/icon/add.png" /></a>';
+                $but.= '<a href="javascript:;" onclick="$(\'#onecontent\').editor().resize(\'-\',100);"><img src="'.SITE_BASE.'common/images/icon/cut.png" /></a>';
+                $but.= '</div>';    
+            }
+            $but.= '</div>';
             $FCK = new FCKeditor($p1);
             $FCK->BasePath = SITE_BASE.'common/editor/fckeditor/';
             if (isset($A1['toolbar'])) {

@@ -200,11 +200,11 @@ CREATE INDEX IDX_keywords__keyword ON keywords(keyword);
 
 CREATE TABLE keyword_join (
   kjid integer PRIMARY KEY,
-  typeid int(11),
+  module varchar(50),
   targetid int(11),
   keyid int(11)
 );
-CREATE INDEX IDX_keyword_join__typeid ON keyword_join(typeid);
+CREATE INDEX IDX_keyword_join__module ON keyword_join(module);
 CREATE INDEX IDX_keyword_join__targetid ON keyword_join(targetid);
 CREATE INDEX IDX_keyword_join__keyid ON keyword_join(keyid);
 

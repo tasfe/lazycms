@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `lazy_keywords` (
 
 CREATE TABLE IF NOT EXISTS `lazy_keyword_join` (
   `kjid` int(11) NOT NULL auto_increment COMMENT '编号',
-  `typeid` int(11) NOT NULL COMMENT '分类编号',
+  `module` varchar(50) NOT NULL COMMENT '分类使用模块名称',
   `targetid` int(11) NOT NULL COMMENT '文档编号',
   `keyid` int(11) NOT NULL,
   PRIMARY KEY  (`kjid`)
@@ -123,6 +123,7 @@ CREATE TABLE IF NOT EXISTS `lazy_onepage` (
   `onename` varchar(50) NOT NULL COMMENT '名称',
   `onecontent` text COMMENT '内容',
   `onetemplate` varchar(255) NOT NULL COMMENT '模板',
+  `oneopen` tinyint(1) default '0' COMMENT '是否打开',
   `description` varchar(250) default NULL COMMENT '描述',
   PRIMARY KEY  (`oneid`),
   UNIQUE KEY `onepath` (`onepath`),
