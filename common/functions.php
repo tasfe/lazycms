@@ -29,8 +29,7 @@ defined('COM_PATH') or die('Restricted access!');
 
 // now *** *** www.LazyCMS.net *** ***
 function now(){
-    $time = isset($_SERVER['REQUEST_TIME'])?$_SERVER['REQUEST_TIME']:time();
-    return $time + (C('TIME_ZONE')*3600);
+    return time() + (C('TIME_ZONE')*3600);
 }
 
 // stripslashes_deep *** *** www.LazyCMS.net *** ***
