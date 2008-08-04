@@ -78,7 +78,8 @@ function isok($p1){
 
 // vsort *** *** www.LazyCMS.net *** ***
 function vsort($p1){
-    $R = $p2 = array();
+    if (empty($p1) || !is_array($p1)) { return array(); }
+    sort($p1); $R = $p2 = array();
     foreach ($p1 as $v){
         $p2[] = len($v);
     }
@@ -658,13 +659,13 @@ function editor($p1,$p2=array()){
             if ($A1['upfile']) { $but.= '<button type="button">'.L('fckeditor/upfile','system').'</button>'; }
             if ($A1['pagebreak']) { $but.= '<button type="button">'.L('fckeditor/pagebreak','system').'</button>'; }
             if ($A1['snapimg'][0]) {
-                $but.= '<input type="checkbox" name="snapimg" id="snapimg" value="1"'.($A1['snapimg'][1]?' checked="checked"':null).'><label for="snapimg">'.L('fckeditor/snapimg','system').'</label>&nbsp; ';
+                $but.= '<input type="checkbox" name="snapimg" id="snapimg" value="1"'.($A1['snapimg'][1]?' checked="checked"':null).' cookie="true" /><label for="snapimg">'.L('fckeditor/snapimg','system').'</label>&nbsp; ';
             }
             if ($A1['dellink'][0]) {
-                $but.= '<input type="checkbox" name="dellink" id="dellink" value="1"'.($A1['dellink'][1]?' checked="checked"':null).'><label for="dellink">'.L('fckeditor/dellink','system').'</label>&nbsp; ';
+                $but.= '<input type="checkbox" name="dellink" id="dellink" value="1"'.($A1['dellink'][1]?' checked="checked"':null).' cookie="true" /><label for="dellink">'.L('fckeditor/dellink','system').'</label>&nbsp; ';
             }
             if ($A1['setimg'][0]) {
-                $but.= '<input type="checkbox" name="setimg" id="setimg" value="1"'.($A1['setimg'][1]?' checked="checked"':null).'><label for="setimg">'.L('fckeditor/setimg','system').'</label>';
+                $but.= '<input type="checkbox" name="setimg" id="setimg" value="1"'.($A1['setimg'][1]?' checked="checked"':null).' cookie="true" /><label for="setimg">'.L('fckeditor/setimg','system').'</label>';
             }
             $but.= '</div>';
             // 是否显示调整编辑器高度按钮

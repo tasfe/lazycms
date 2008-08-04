@@ -49,8 +49,8 @@ class System{
         // 先从远程获取分词
         $d = new DownLoader("http://keyword.lazycms.net/related_kw.php");
         $d->send(array(
-            'title' => $p1,
-            'content' => $p2,
+            'title' => rawurlencode($p1),
+            'content' => rawurlencode($p2),
         ));
         // 请求成功
         if ($d->status() == 200) {

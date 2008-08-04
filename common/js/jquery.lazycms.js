@@ -54,6 +54,14 @@ function autoTitle(){
 // toggleFieldset *** *** www.LazyCMS.net *** ***
 function toggleFieldset(){
 	var gc = getCollapse();
+	$('input:checkbox[@cookie=true]').each(function(i){
+		var c = $.cookie('checkbox_'+$(this).attr('id'));
+		if (c!==null) {
+			this.checked = (c=='true') ? true : false;
+		}
+	}).click(function(){
+		$.cookie('checkbox_'+$(this).attr('id'),this.checked,{expires:365,path:gc.Path});
+	});
 	// 展开事件
 	$('a.collapse,a.collapsed')
 		.attr('href','javascript:;')
@@ -286,7 +294,7 @@ function changeHeight(){
 			url: u,
 			type: t.attr('method').toUpperCase(),
 			data: t.serializeArray(),
-			error: function(){
+			error: function(o,m){
 				// 输出错误
 				$.ajax({
 					cache: false,

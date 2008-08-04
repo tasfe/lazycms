@@ -1,4 +1,6 @@
 var topUrl = top.location.href.replace(/#(.+)?/,'');
+// 不准放到框架内
+if (top.location != self.location) {top.location.href = topUrl;}
 $(document).ready(function(){
     // Reset separator width
     $('#menu li.hr').width($('#menu li.hr').parent().width());
