@@ -110,12 +110,14 @@ class Keywords {
             // 获取相关的长尾关键词
             if (!$related) { continue; }
             if ($rKeys = $this->getRelated($v)) {
-                foreach ($rKeys as $rKey) {
+                $length = (($len = count($rKeys))>3) ? 3 : $len;
+                for ($i=0;$i<$length;$i++) {
+                    $rKey = $rKeys[$i];
                     if (!$this->isKeyword($rKey)) {
                         $this->dicts[strlen($rKey)][$rKey] = 1;
                         save_file($this->dict,$rKey.chr(10),false);
                     }
-                }    
+                }
             }
         }
         return true;
@@ -180,7 +182,7 @@ class Keywords {
                 }
                 $R = array_unique($R);
             }
-            return $R;
+            return vsort($R);
         } else {
             return false;
         }

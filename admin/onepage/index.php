@@ -64,10 +64,11 @@ function lazy_edit(){
     $onename  = isset($_POST['onename']) ? $_POST['onename'] : null;
     $onetitle = isset($_POST['onetitle']) ? $_POST['onetitle'] : null;
     $onepath  = isset($_POST['onepath']) ? $_POST['onepath'] : null;
-    $onecontent  = isset($_POST['onecontent']) ? $_POST['onecontent'] : null;
-    $keywords    = isset($_POST['keywords']) ? $_POST['keywords'] : null;
-    $description = isset($_POST['description']) ? $_POST['description'] : null;
-    $onetemplate = isset($_POST['onetemplate']) ? $_POST['onetemplate'] : 'default.html';
+    $onecontent   = isset($_POST['onecontent']) ? $_POST['onecontent'] : null;
+    $keywords     = isset($_POST['keywords']) ? $_POST['keywords'] : null;
+    $description  = isset($_POST['description']) ? $_POST['description'] : null;
+    $onetemplate  = isset($_POST['onetemplate']) ? $_POST['onetemplate'] : 'default.html';
+    $autokeywords = isset($_POST['autokeywords']) ? $_POST['autokeywords'] : null;
     // 加载 Keywords 处理类
     import('class.keywords');
     $key = new Keywords();
@@ -104,6 +105,12 @@ function lazy_edit(){
                 ),DB::quoteInto('`oneid` = ?',$oneid));
                 $text = L('add/pop/editok');
             }
+            // 自动获取关键词
+            if ($autokeywords && empty($keywords)) {
+                require_file('../system/common.php');
+                $keywords = System::getKeywords($onetitle,$onecontent);
+                $keywords = implode(',',$keywords);
+            }
             $key->save($oneid,$keywords,C('GET_RELATED_KEY'));
             // 输出执行结果
             echo_json(array(
@@ -137,7 +144,7 @@ function lazy_edit(){
     $hl.= '</select></p>';
     $hl.= '<p><label>'.L('add/name').'：</label><input tip="'.L('add/name').'::'.L('add/name/@tip').'" class="in3" type="text" name="onename" id="onename" value="'.$onename.'" /></p>';
     $hl.= '<p><label>'.L('add/title').'：</label><input tip="'.L('add/title').'::'.h2encode(L('add/title/@tip')).'" class="in4" type="text" name="onetitle" id="onetitle" value="'.$onetitle.'" />';
-    $hl.= '<span tip="'.L('add/autokeywords/@tip').'"><input type="checkbox" name="autokeywords" id="autokeywords" checked="checked"><label for="autokeywords">'.L('add/autokeywords').'</label></span></p>';
+    $hl.= '<span tip="'.L('add/autokeywords/@tip').'"><input type="checkbox" name="autokeywords" id="autokeywords" value="1" checked="checked"><label for="autokeywords">'.L('add/autokeywords').'</label></span></p>';
     $hl.= '<p><label>'.L('add/path').'：</label><input tip="'.L('add/path').'::300::'.h2encode(L('add/path/@tip')).'" class="in5" type="text" name="onepath" id="onepath" value="'.$onepath.'" /></p>';
     $hl.= '<p><label>'.L('add/content').'：</label><div class="box">';
     $hl.= editor('onecontent',array(

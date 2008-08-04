@@ -77,6 +77,22 @@ function isok($p1){
                     '<strong style="color:#FF0000;">'.L('common/off','system').'</strong>';
 }
 
+// vsort *** *** www.LazyCMS.net *** ***
+function vsort($p1){
+    $R = $p2 = array();
+    foreach ($p1 as $v){
+        $p2[] = len($v);
+    }
+    do {
+        $p3 = min($p2);
+        $pk = array_search($p3,$p2);
+        if ($pk === false) { break; }
+        $R[] = $p1[$pk];
+        unset($p2[$pk]);
+    } while (count($p2)>0);
+    return $R;
+}
+
 // get_conn *** *** www.LazyCMS.net *** ***
 function get_conn(){
     static $db = null;
@@ -643,13 +659,13 @@ function editor($p1,$p2=array()){
             if ($A1['upfile']) { $but.= '<button type="button">'.L('fckeditor/upfile','system').'</button>'; }
             if ($A1['pagebreak']) { $but.= '<button type="button">'.L('fckeditor/pagebreak','system').'</button>'; }
             if ($A1['snapimg'][0]) {
-                $but.= '<input type="checkbox" name="snapimg" id="snapimg"'.($A1['snapimg'][1]?' checked="checked"':null).'><label for="snapimg">'.L('fckeditor/snapimg','system').'</label>&nbsp; ';
+                $but.= '<input type="checkbox" name="snapimg" id="snapimg" value="1"'.($A1['snapimg'][1]?' checked="checked"':null).'><label for="snapimg">'.L('fckeditor/snapimg','system').'</label>&nbsp; ';
             }
             if ($A1['dellink'][0]) {
-                $but.= '<input type="checkbox" name="dellink" id="dellink"'.($A1['dellink'][1]?' checked="checked"':null).'><label for="dellink">'.L('fckeditor/dellink','system').'</label>&nbsp; ';
+                $but.= '<input type="checkbox" name="dellink" id="dellink" value="1"'.($A1['dellink'][1]?' checked="checked"':null).'><label for="dellink">'.L('fckeditor/dellink','system').'</label>&nbsp; ';
             }
             if ($A1['setimg'][0]) {
-                $but.= '<input type="checkbox" name="setimg" id="setimg"'.($A1['setimg'][1]?' checked="checked"':null).'><label for="setimg">'.L('fckeditor/setimg','system').'</label>';
+                $but.= '<input type="checkbox" name="setimg" id="setimg" value="1"'.($A1['setimg'][1]?' checked="checked"':null).'><label for="setimg">'.L('fckeditor/setimg','system').'</label>';
             }
             $but.= '</div>';
             // 是否显示调整编辑器高度按钮
