@@ -81,7 +81,7 @@ function lazy_default(){
         <li><span>内容管理<b class="down-arrow"></b></span>
             <ul>
                 <li><a href="#">首页设置</a></li>
-                <li><a href="onepage/index.php" class="icon-16-page">单页管理</a></li>
+                <li><a href="article/onepage.php" class="icon-16-page">单页管理</a></li>
                 <li class="hr"></li>
                 <li><a href="#" class="icon-16-article">文章管理</a></li>
                 <li><a href="#" class="icon-16-trash">回收站</a></li>

@@ -91,16 +91,6 @@ function changeHeight(){
 	parent.$('#main').height($(document).find('body').height()+7);
 }
 
-function dump_props(obj)
-{
-   var result = ""
-   for (var i in obj) {
-	  result += "OBJ." + i + " = " + obj[i] + "\n"
-   }
-   result += "\n"
-   return result;
-}
-
 /*
  * LazyCMS JS library for jQuery
  * http://www.lazycms.net

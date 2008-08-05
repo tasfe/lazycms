@@ -29,23 +29,23 @@ require '../../global.php';
 
 // lazy_before *** *** www.LazyCMS.net *** ***
 function lazy_before(){
-    check_login('onepage');
+    G('MODULE','onepage');
     // 设置公共菜单
     G('TABS',
-        L('title').':index.php;'.
-        L('add/@title').':index.php?action=edit'
+        L('title').':onepage.php;'.
+        L('add/@title').':onepage.php?action=edit'
     );
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){ 
-    $db = get_conn();
+    $db = get_conn(); check_login('onepage');
     $ds = new Recordset();
     $ds->create("SELECT * FROM `#@_onepage` WHERE `oneid1`=0 ORDER BY `oneorder` DESC");
     $ds->action = PHP_FILE."?action=set";
     $ds->but = $ds->button();
-    $ds->td  = "cklist(K[0]) + K[0] + ') <a href=\"index.php?action=edit&oneid=' + K[0] + '\">' + K[1] + '</a>'";
+    $ds->td  = "cklist(K[0]) + K[0] + ') <a href=\"onepage.php?action=edit&oneid=' + K[0] + '\">' + K[1] + '</a>'";
     $ds->td  = "K[2]";
-    $ds->td  = "icon('edit','index.php?action=edit&oneid=' + K[0])";
+    $ds->td  = "icon('edit','onepage.php?action=edit&oneid=' + K[0])";
     $ds->open();
     $ds->thead = '<tr><th>ID) '.L('list/name').'</th><th>'.L('list/path').'</th><th>'.L('common/action','system').'</th></tr>';
     while ($rs = $ds->result()) {
@@ -57,7 +57,7 @@ function lazy_default(){
 }
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){
-    $db = get_conn(); require_file('common.php');
+    $_USER    = check_login('onepage'); $db = get_conn(); require_file('onepage_class.php');
     $oneid    = isset($_REQUEST['oneid']) ? $_REQUEST['oneid'] : 0;
     $title    = empty($oneid) ? L('add/@title') : L('edit/@title');
     $oneid1   = isset($_REQUEST['oneid1']) ? $_REQUEST['oneid1'] : 0;
@@ -89,7 +89,7 @@ function lazy_edit(){
                 $onecontent  = preg_replace('/<a([^>]*)href=["\']*(http|https)\:\/\/(?!'.preg_quote($_SERVER['HTTP_HOST'],'/').')([^>]*)>(.*)<\/a>/isU','$4',$onecontent);
             }
             // 自动截取简述
-            $description = (strlen($description)==0) ? cnsubstr(preg_replace('/<[^>]*>/iU','',$description),200) : $description;
+            $description = (strlen($description)==0) ? left(cls(preg_replace('/<[^>]*>/iU','',$onecontent)),180) : $description;
             if (empty($oneid)) {
                 $db->insert('#@_onepage',array(
                     'oneid1'  => (int)$oneid1,
@@ -138,7 +138,7 @@ function lazy_edit(){
                 $onepath  = h2encode($rs['onepath']);
                 $onecontent  = $rs['onecontent'];
                 $keywords    = $key->get($oneid);
-                $description = h2encode($rs['description']);
+                $description = $rs['description'];
                 $onetemplate = h2encode($rs['onetemplate']);
             }
         }
@@ -164,7 +164,7 @@ function lazy_edit(){
         'dellink' => array(1,0),
         'resize'  => true,
         'value'   => $onecontent,
-        'editor'  => 'fckeditor'
+        'editor'  => $_USER['editor']
     ));
     $hl.= '</div></p></div></fieldset>';
     $hl.= '<fieldset><legend><a class="collapse" rel=".more-attr">'.L('common/attr').'</a></legend>';

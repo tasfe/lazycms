@@ -76,6 +76,15 @@ function isok($p1){
                     '<strong style="color:#FF0000;">'.L('common/off','system').'</strong>';
 }
 
+// left *** *** www.LazyCMS.net *** ***
+function left($p1,$p2){
+    if ((int)len($p1)>(int)$p2) {
+        return cnsubstr($p1,$p2).'...';
+    } else{
+        return $p1;
+    }
+}
+
 // vsort *** *** www.LazyCMS.net *** ***
 function vsort($p1){
     if (empty($p1) || !is_array($p1)) { return array(); }
@@ -504,6 +513,16 @@ function clsre($p1,$p2){
     return $R1;
 }
 
+// cls *** *** www.LazyCMS.net *** ***
+function cls($p1){
+    if (strlen($p1)==0) { return ;} { $R = $p1; }
+    $R = str_replace(array(chr(9),chr(10),chr(13)),'',$R);
+    while (strpos($R,chr(32).chr(32))!==false || strpos($R,'&nbsp;')!==false) {
+        $R = str_replace(chr(32).chr(32),chr(32),str_replace('&nbsp;',chr(32),$R));
+    }
+    return $R;
+}
+
 // validate *** *** www.LazyCMS.net *** ***
 function validate($p1,$p2){
     // $p1:str, $p2:类型
@@ -631,7 +650,6 @@ function import($p1,$p2='',$p3='.php',$p4=false){
 }
 // editor *** *** www.LazyCMS.net *** ***
 function editor($p1,$p2=array()){
-    //$_USER = get_user();
     $A1 = array(); $p3 = null;
     if (is_array($p2) && !empty($p2)) {
         $A1 = $p2;

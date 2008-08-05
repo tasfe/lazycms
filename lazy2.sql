@@ -244,4 +244,4 @@ CREATE TABLE IF NOT EXISTS `lazy_system_users` (
 -- 
 
 INSERT INTO `lazy_system_users` (`userid`, `groupid`, `username`, `userpass`, `userkey`, `usermail`, `question`, `answer`, `language`, `editor`, `regdate`, `isdel`, `islock`) VALUES 
-(1, 1, 'admin', 'd1b148e3ec54d5ff4f7a5e21baffb3af', '73526e', 'mylukin@gmail.com', '888', '8888', 'zh-cn', 'editor', 1215399176, 0, 0);
+(1, 1, 'admin', 'd1b148e3ec54d5ff4f7a5e21baffb3af', '73526e', 'mylukin@gmail.com', '888', '8888', 'zh-cn', 'fckeditor', 1215399176, 0, 0);
