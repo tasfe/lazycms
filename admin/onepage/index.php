@@ -64,6 +64,8 @@ function lazy_edit(){
     $onename  = isset($_POST['onename']) ? $_POST['onename'] : null;
     $onetitle = isset($_POST['onetitle']) ? $_POST['onetitle'] : null;
     $onepath  = isset($_POST['onepath']) ? $_POST['onepath'] : null;
+    $snapimg  = isset($_POST['snapimg']) ? $_POST['snapimg'] : null;
+    $dellink  = isset($_POST['dellink']) ? $_POST['dellink'] : null;
     $onecontent   = isset($_POST['onecontent']) ? $_POST['onecontent'] : null;
     $keywords     = isset($_POST['keywords']) ? $_POST['keywords'] : null;
     $description  = isset($_POST['description']) ? $_POST['description'] : null;
@@ -80,6 +82,16 @@ function lazy_edit(){
         if ($val->isVal()) {
             $val->out();
         } else {
+            // 下载远程图片
+            
+            // 删除站外连接
+            if ($dellink) {
+                $onecontent  = str_replace(HTTP_HOST,'#HTTP_HOST#',$onecontent);
+                $onecontent  = preg_replace('/<a([^>]*)href=["\']*(http|https)\:\/\/([^>]*)>(.*)<\/a>/isU','$4',$onecontent);
+                $onecontent  = str_replace('#HTTP_HOST#',HTTP_HOST,$onecontent);
+            }
+            // 自动截取简述
+            $description = (strlen($description)==0) ? cnsubstr(preg_replace('/<[^>]*>/iU','',$description),200) : $description;
             if (empty($oneid)) {
                 $db->insert('#@_onepage',array(
                     'oneid1'  => (int)$oneid1,

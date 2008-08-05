@@ -47,7 +47,7 @@ class System{
         import('class.downloader');
         import('class.splitword');
         // 先从远程获取分词
-        $d = new DownLoader("http://keyword.lazycms.net/related_kw.php");
+        $d = new DownLoader("http://keyword.lazycms.net/related_kw.php","POST",10);
         $d->send(array(
             'title' => rawurlencode($p1),
             'content' => rawurlencode($p2),

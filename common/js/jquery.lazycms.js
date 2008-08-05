@@ -72,7 +72,7 @@ function toggleFieldset(){
 			var e = $(t.attr('rel'),t.parents('fieldset')).toggle();
 				t.toggleClass('collapse').toggleClass('collapsed');
 			if (c) {
-				$.cookie('collapse_'+t.attr('i')+'_'+gc.Uid,e.css('display'),{expires:365,path:gc.Path});
+				$.cookie('collapse_'+t.attr('i'),e.css('display'),{expires:365,path:gc.Path});
 			}
 			changeHeight();
 		});
@@ -84,12 +84,21 @@ function getCollapse(){
 		e.Path = self.location.href.replace(/\?(.*)/,'').replace(e.Host,'');
 		e.Path = e.Path.substr(0,e.Path.lastIndexOf('/')+1);
 		e.Uid  = encodeURIComponent(self.location.href.replace(/\?(.+)?/,'')).replace(/[^\w]+/g,'').toUpperCase();
-		e.Uid  = e.Uid.substr(e.Uid.length-20);
 		return e;
 }
 // changeHeight *** *** www.LazyCMS.net *** ***
 function changeHeight(){
 	parent.$('#main').height($(document).find('body').height()+7);
+}
+
+function dump_props(obj)
+{
+   var result = ""
+   for (var i in obj) {
+	  result += "OBJ." + i + " = " + obj[i] + "\n"
+   }
+   result += "\n"
+   return result;
 }
 
 /*
@@ -111,7 +120,7 @@ function changeHeight(){
 		this.each(function(i){
 			var t = $(this); t.attr('i',i);
 			var r = $(t.attr('rel'),t.parents('fieldset'));
-			var c = $.cookie('collapse_'+i+'_'+gc.Uid);
+			var c = $.cookie('collapse_'+i);
 			switch (c) {
 				case 'block':
 					t.removeClass('collapse').addClass('collapsed');
