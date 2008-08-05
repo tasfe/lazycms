@@ -86,9 +86,7 @@ function lazy_edit(){
             
             // 删除站外连接
             if ($dellink) {
-                $onecontent  = str_replace(HTTP_HOST,'#HTTP_HOST#',$onecontent);
-                $onecontent  = preg_replace('/<a([^>]*)href=["\']*(http|https)\:\/\/([^>]*)>(.*)<\/a>/isU','$4',$onecontent);
-                $onecontent  = str_replace('#HTTP_HOST#',HTTP_HOST,$onecontent);
+                $onecontent  = preg_replace('/<a([^>]*)href=["\']*(http|https)\:\/\/(?!'.preg_quote($_SERVER['HTTP_HOST'],'/').')([^>]*)>(.*)<\/a>/isU','$4',$onecontent);
             }
             // 自动截取简述
             $description = (strlen($description)==0) ? cnsubstr(preg_replace('/<[^>]*>/iU','',$description),200) : $description;
@@ -114,7 +112,7 @@ function lazy_edit(){
                     'onecontent'  => $onecontent,
                     'onetemplate' => $onetemplate,
                     'description' => $description,
-                ),DB::quoteInto('`oneid` = ?',$oneid));
+                ),$db->quoteInto('`oneid` = ?',$oneid));
                 $text = L('add/pop/editok');
             }
             // 自动获取关键词

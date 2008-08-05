@@ -29,10 +29,10 @@ defined('COM_PATH') or die('Restricted access!');
  * @date        2008-6-24
  * 
  * 统一处理引号
- * DB::quote(mixed value)
+ * $db->quote(mixed value)
  * 
  * 统一处理数据库字段
- * DB::quoteInto(mixed value)
+ * $db->quoteInto(mixed value)
  * @example:
  *   // 单一占位符
  *   quoteInto('field = ?','value');
@@ -179,7 +179,12 @@ abstract class DB {
     public function getName(){
         return $this->config('db');
     }
-
+    
+    // getSQL *** *** www.LazyCMS.net *** ***
+    public function getSQL(){
+        return $this->_sql;
+    }
+    
     // max *** *** www.LazyCMS.net *** ***
     public function max($p1,$p2){
         // $p1:field, $p2:table
@@ -278,29 +283,35 @@ abstract class DB {
     }
     
     // quote *** *** www.LazyCMS.net *** ***
-    static function quote($p1){
+    public function quote($p1){
         if (is_array($p1)) {
             foreach ($p1 as &$val) {
-                $val = self::quote($val);
+                $val = $this->quote($val);
             }
             return implode(', ', $p1);
         }
         if (is_int($p1) || is_float($p1)) {
             return $p1;
         }
-        return "'".addcslashes($p1, "\000\n\r\\'\"\032")."'";
+        switch ($this->config('scheme')) {
+            case 'sqlite': 
+                $R = sqlite_escape_string($p1); break;
+            default:
+                $R = addcslashes($p1, "\000\n\r\\'\"\032");break;
+        }
+        return "'{$R}'";
     }
     
     // quoteInto *** *** www.LazyCMS.net *** ***
-    static function quoteInto($sql, $bind) {
+    public function quoteInto($sql, $bind) {
         // 替换单一占位符
         if (!is_array($bind) && strpos($sql,'?')!==false) {
-            return preg_replace('/\?/',self::quote($bind),$sql,1);
+            return preg_replace('/\?/',$this->quote($bind),$sql,1);
         }
         // 替换占位符
         if (is_array($bind)) {
             foreach ($bind as $k=>$v) {
-                $sql = str_replace("[{$k}]",self::quote($v),$sql);
+                $sql = str_replace("[{$k}]",$this->quote($v),$sql);
             }
         }
         return $sql;

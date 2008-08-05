@@ -294,8 +294,6 @@ function dump_props(obj)
 		for (var i=0;i<frames.length;++i){
 			if (frames[i].FCK) {
 				frames[i].FCK.UpdateLinkedField();
-				var editor = $('[@name=' + frames[i].FCK.Name + ']');
-				editor.val(editor.val().replace(/\n/g,''));
 			}
 		}
 		// ajax submit

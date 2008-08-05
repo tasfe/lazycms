@@ -767,7 +767,7 @@ function get_user($p1=null,$p2=null){
                 $db->update('#@_system_users',array(
                     'userpass' => $newpass,
                     'userkey'  => $newkey,
-                ),DB::quoteInto('`username` = ?',$username));
+                ),$db->quoteInto('`username` = ?',$username));
                 // 合并新密码和key
                 $rs = array_merge($rs,array(
                     'userpass' => $newpass,
