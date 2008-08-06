@@ -183,8 +183,8 @@ CREATE TABLE IF NOT EXISTS `lazy_system_group` (
 -- 
 
 INSERT INTO `lazy_system_group` (`groupid`, `groupename`, `groupname`, `purview`, `system`) VALUES 
-(1, 'super', '超级管理员', 'system/system,system/users,system/webftp,system/module,system/settings', 1),
-(2, 'admin', '普通管理员', 'system/system,system/users,system/webftp,system/module,system/settings', 1),
+(1, 'super', '超级管理员', 'system/system,system/users,system/webftp,system/module,system/settings,article/onepage', 1),
+(2, 'admin', '普通管理员', 'system/system,system/users,system/webftp,system/module,system/settings,article/onepage', 1),
 (3, 'user', '注册用户', '', 1);
 
 -- --------------------------------------------------------

@@ -48,8 +48,8 @@ CREATE INDEX IDX_system_group__system ON system_group(system);
 -- 导出表中的数据 system_group
 -- 
 
-INSERT INTO system_group (groupid, groupename, groupname, purview, system) VALUES (1, 'super', '超级管理员', 'system/system,system/users,system/webftp,system/module,system/settings', 1);
-INSERT INTO system_group (groupid, groupename, groupname, purview, system) VALUES (2, 'admin', '普通管理员', 'system/system,system/users,system/webftp,system/module,system/settings', 1);
+INSERT INTO system_group (groupid, groupename, groupname, purview, system) VALUES (1, 'super', '超级管理员', 'system/system,system/users,system/webftp,system/module,system/settings,article/onepage', 1);
+INSERT INTO system_group (groupid, groupename, groupname, purview, system) VALUES (2, 'admin', '普通管理员', 'system/system,system/users,system/webftp,system/module,system/settings,article/onepage', 1);
 INSERT INTO system_group (groupid, groupename, groupname, purview, system) VALUES (3, 'user', '注册用户', null, 1);
 
 -- --------------------------------------------------------

@@ -29,10 +29,10 @@ defined('COM_PATH') or die('Restricted access!');
  * @date        2008-6-24
  * 
  * 统一处理引号
- * $db->quote(mixed value)
+ * DB::quote(mixed value)
  * 
  * 统一处理数据库字段
- * $db->quoteInto(mixed value)
+ * DB::quoteInto(mixed value)
  * @example:
  *   // 单一占位符
  *   quoteInto('field = ?','value');
@@ -226,7 +226,6 @@ abstract class DB {
              . $this->quoteIdentifier($p1)
              . ' (' . implode(', ', $cols) . ') '
              . 'VALUES (' . implode(', ', $vals) . ')';
-
         $this->exec($sql);
         return $this->affected_rows();
     }
@@ -283,35 +282,29 @@ abstract class DB {
     }
     
     // quote *** *** www.LazyCMS.net *** ***
-    public function quote($p1){
+    static function quote($p1){
         if (is_array($p1)) {
             foreach ($p1 as &$val) {
-                $val = $this->quote($val);
+                $val = self::quote($val);
             }
             return implode(', ', $p1);
         }
         if (is_int($p1) || is_float($p1)) {
             return $p1;
         }
-        switch ($this->config('scheme')) {
-            case 'sqlite': 
-                $R = sqlite_escape_string($p1); break;
-            default:
-                $R = addcslashes($p1, "\000\n\r\\'\"\032");break;
-        }
-        return "'{$R}'";
+        return "'".addcslashes($p1, "\000\n\r\\'\"\032")."'";
     }
     
     // quoteInto *** *** www.LazyCMS.net *** ***
-    public function quoteInto($sql, $bind) {
+    static function quoteInto($sql, $bind) {
         // 替换单一占位符
         if (!is_array($bind) && strpos($sql,'?')!==false) {
-            return preg_replace('/\?/',$this->quote($bind),$sql,1);
+            return preg_replace('/\?/',self::quote($bind),$sql,1);
         }
         // 替换占位符
         if (is_array($bind)) {
             foreach ($bind as $k=>$v) {
-                $sql = str_replace("[{$k}]",$this->quote($v),$sql);
+                $sql = str_replace("[{$k}]",self::quote($v),$sql);
             }
         }
         return $sql;

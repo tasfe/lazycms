@@ -33,8 +33,8 @@ function now(){
 }
 
 // stripslashes_deep *** *** www.LazyCMS.net *** ***
-function stripslashes_deep($p1) {
-    return is_array($p1) ? array_map('stripslashes_deep', $p1) : stripslashes($p1);
+function stripslashes_deep($p1,$p2='stripslashes') {
+    return is_array($p1) ? array_map('stripslashes_deep', $p1) : $p2($p1);
 }
 
 // replace_root *** *** www.LazyCMS.net *** ***
@@ -785,7 +785,7 @@ function get_user($p1=null,$p2=null){
                 $db->update('#@_system_users',array(
                     'userpass' => $newpass,
                     'userkey'  => $newkey,
-                ),$db->quoteInto('`username` = ?',$username));
+                ),DB::quoteInto('`username` = ?',$username));
                 // 合并新密码和key
                 $rs = array_merge($rs,array(
                     'userpass' => $newpass,

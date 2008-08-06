@@ -112,7 +112,7 @@ function lazy_edit(){
                     'onecontent'  => $onecontent,
                     'onetemplate' => $onetemplate,
                     'description' => $description,
-                ),$db->quoteInto('`oneid` = ?',$oneid));
+                ),DB::quoteInto('`oneid` = ?',$oneid));
                 $text = L('add/pop/editok');
             }
             // 自动获取关键词
@@ -125,7 +125,7 @@ function lazy_edit(){
             // 输出执行结果
             echo_json(array(
                 'text' => $text,
-                'url'  => 'index.php',
+                'url'  => PHP_FILE,
             ),1);
         }
     } else {

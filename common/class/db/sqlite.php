@@ -54,10 +54,11 @@ class lazy_sqlite extends DB{
     private function execute($sql,$func,$type=''){
         $this->connect();
         $sql = preg_replace(array('/\#\~(.+)\~\#/e','/`(#@_)(\w+)`/i','/`([^`]+)`/'),array('$this->config(\'\\1\')','`$2`','[$1]'),$sql);
+        $sql = stripslashes_deep(str_replace("\'","''",$sql),'stripcslashes');
         $this->_sql = $sql;
         
         if(!($R= $func($this->_conn,$sql))){
-            trigger_error('SQLite Query Error:<br/>SQL:'.$sql."<br>".$this->error(),$this->errno());
+            trigger_error('SQLite Query Error:<br/>SQL:'.$sql."<br>".$this->error());
         }
         return $R;
     }

@@ -108,7 +108,7 @@ function lazy_group_edit(){
                     'groupename' => $groupename,
                     'groupname'  => $groupname,
                     'purview'    => $purview,
-                ),$db->quoteInto('`groupid` = ?',$groupid));
+                ),DB::quoteInto('`groupid` = ?',$groupid));
                 $text = L('users/group/pop/editok');
             }
             echo_json(array(
@@ -226,7 +226,7 @@ function lazy_user_edit(){
                         'userkey'  => '',
                     ));
                 }
-                $db->update('#@_system_users',$row,$db->quoteInto('`userid` = ?',$userid));
+                $db->update('#@_system_users',$row,DB::quoteInto('`userid` = ?',$userid));
                 $text = L('users/user/pop/editok');
             }
             echo_json(array(

@@ -90,7 +90,7 @@ class lazy_mysqli extends DB{
                 $this->close();$this->connect();
                 $this->execute($sql,$func,'RETRY'.$type);
             } elseif($type != 'SILENT' && substr($type, 5) != 'SILENT') {
-                trigger_error('MySQL Query Error:<br/>SQL:'.$sql."<br>".$this->error(),$this->errno());
+                trigger_error('MySQL Query Error:<br/>SQL:'.$sql."<br>".$this->error());
             }
         }
         return $R;

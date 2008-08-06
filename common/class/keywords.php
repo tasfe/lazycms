@@ -81,7 +81,7 @@ class Keywords {
         // 删除关键词关联
         $this->rejoin($id,array_diff(explode(',',$this->get($id)),$splitWords));
         // 查询数据库中存在的关键词
-        $result = $this->db->query("SELECT * FROM `#@_keywords` WHERE `keyword` IN(".$this->db->quote($splitWords).");");
+        $result = $this->db->query("SELECT * FROM `#@_keywords` WHERE `keyword` IN(".DB::quote($splitWords).");");
         // 从数组移除
         while ($data = $this->db->fetch($result)) {
             // 数据库中已经存在，插入关联记录
@@ -125,7 +125,7 @@ class Keywords {
     // rejoin *** *** www.LazyCMS.net *** ***
     private function rejoin($id,$keywords){
         if (empty($keywords) || !is_array($keywords)) { return ; }
-        $this->db->exec("DELETE FROM `#@_keyword_join` WHERE `module`=[module] AND `targetid`=[targetid] AND `keyid` IN(SELECT `keyid` FROM `#@_keywords` WHERE `keyword` IN(".$this->db->quote($keywords)."));",array(
+        $this->db->exec("DELETE FROM `#@_keyword_join` WHERE `module`=[module] AND `targetid`=[targetid] AND `keyid` IN(SELECT `keyid` FROM `#@_keywords` WHERE `keyword` IN(".DB::quote($keywords)."));",array(
             'module'   => $this->module,
             'targetid' => $id,
         ));
@@ -135,7 +135,7 @@ class Keywords {
     // join *** *** www.LazyCMS.net *** ***
     private function join($id,$keyid){
         // 如果关联不存在，则插入
-        $N = $this->db->count("SELECT * FROM `#@_keyword_join` WHERE `module`=".$this->db->quote($this->module)." AND `targetid`=".$this->db->quote($id)." AND `keyid`=".$this->db->quote($keyid).";");
+        $N = $this->db->count("SELECT * FROM `#@_keyword_join` WHERE `module`=".DB::quote($this->module)." AND `targetid`=".DB::quote($id)." AND `keyid`=".$this->db->quote($keyid).";");
         return ((int)$N>0) ? true : $this->db->insert('#@_keyword_join',array(
             'module'   => $this->module,
             'targetid' => $id,
@@ -146,7 +146,7 @@ class Keywords {
     private function keysum($keywords){
         if (empty($keywords)) { return ; }
         if (is_array($keywords)) {
-            $result = $this->db->query("SELECT `keyid` FROM `#@_keywords` WHERE `keyword` IN(".$this->db->quote($keywords).");");
+            $result = $this->db->query("SELECT `keyid` FROM `#@_keywords` WHERE `keyword` IN(".DB::quote($keywords).");");
             while ($data = $this->db->fetch($result,0)) {
                 $this->keysum($data[0]);
             }
@@ -154,8 +154,8 @@ class Keywords {
         } else {
             $keyid = $keywords;
             return $this->db->update('#@_keywords',array(
-                'keysum' => $this->db->count("SELECT * FROM `#@_keyword_join` WHERE `keyid`=".$this->db->quote($keyid)." AND `module`=".$this->db->quote($this->module).";")
-            ),$this->db->quoteInto('`keyid` = ?',$keyid));    
+                'keysum' => $this->db->count("SELECT * FROM `#@_keyword_join` WHERE `keyid`=".DB::quote($keyid)." AND `module`=".$this->db->quote($this->module).";")
+            ),DB::quoteInto('`keyid` = ?',$keyid));    
         }
     }
     // getRelated *** *** www.LazyCMS.net *** ***
