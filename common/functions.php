@@ -342,7 +342,7 @@ function print_v($p1=null){
     // 批量去除连接虚线
     $hl.= '$("a").focus(function(){ this.blur(); });';
     // 执行函数
-    $hl.= 'toggleFieldset(); autoTitle();';
+    $hl.= 'SemiMemory(); autoTitle();';
     $hl.= '$("#box").tips("tip","[@tip]");';
     $hl.= ' });'.G('SCRIPT').'</script>';
     $hl.= G('HEAD');
@@ -523,6 +523,63 @@ function cls($p1){
     return $R;
 }
 
+// snapImg *** *** www.LazyCMS.net *** ***
+function snapImg($p1){
+    $R = $p1;
+    if (preg_match_all('/<img[^>]*src=("([^"]+)"|\'([^\']+)\')[^>]*>/isU',$R,$imgs)) {
+        $imgs[1] = array_unique($imgs[1]);
+        foreach ($imgs[1] as $img) {
+            $img = trim($img,'"\'');
+            if ($downImg = downImg($img)) {
+                if (validate($img,5)) {
+                    $R = str_replace($img,SITE_BASE.ltrim($downImg,'/'),$R);
+                }
+            }
+        }
+    }
+    return $R;
+}
+
+// downImg *** *** www.LazyCMS.net *** ***
+function downImg($p1,$p2=null){
+    static $d = null;
+    if (validate($p1,5)) {
+        if (!is_object($d)) {
+            import("class.downloader");
+            $d = new DownLoader();
+            $d->timeout = 100;
+        }
+        $d->connect($p1,'GET',$d->timeout)->send();
+        if ($d->status() == 200) {
+            if (empty($p2)) {
+                $imgInfo = pathinfo($p1);
+                $imgPath = C('UPLOAD_IMAGE_PATH').date('/Y/m/d/',now());
+                $imgPath = str_replace('/',SEPARATOR,$imgPath);
+                if (isset($imgInfo['extension']) && isset($imgInfo['filename'])) {
+                    $fileName = $imgInfo['filename'].'.'.$imgInfo['extension'];
+                    if (is_file(LAZY_PATH.SEPARATOR.$imgPath.$fileName)) {
+                        $fileName = str_replace('.','',microtime(true)).'.'.$imgInfo['extension'];
+                    }
+                } else {
+                    if(preg_match("/Content-Type\:(.+)\r\n/i",$d->header(),$imgInfo)){
+                        $fileName = str_replace('.','',microtime(true)).'.'.substr($imgInfo[1],strrpos($imgInfo[1],'/')+1);
+                    }
+                }
+            } else {
+                $imgInfo  = pathinfo($p1);
+                $imgPath  = $imgInfo['dirname'];
+                $fileName = $imgInfo['basename'];
+            }
+            mkdirs(LAZY_PATH.SEPARATOR.$imgPath);
+            save_file(LAZY_PATH.SEPARATOR.$imgPath.$fileName,$d->body());
+            return str_replace(SEPARATOR,'/',$imgPath).$fileName;
+        } else {
+            return $p1;
+        }
+    }
+    return $p1;
+}
+
 // validate *** *** www.LazyCMS.net *** ***
 function validate($p1,$p2){
     // $p1:str, $p2:类型
@@ -547,10 +604,6 @@ function validate($p1,$p2){
             break;
         case '6' : // 
             $p3 = '^[\d\,\.]+$';
-            break;
-        case '7' : // 图片连接 http://www.example.com/xxx.jpg
-            $p4 = str_replace(',','|',C('UPLOAD_IMAGE_EXT'));
-            $p3 = '^(http|https|ftp):(\/\/|\\\\)(([\w\/\\\+\-~`@:%])+\.)+([\w\/\\\.\=\?\+\-~`@\':!%#]|(&amp;)|&)+\.('.$p4.')$';
             break;
         default  : // 自定义正则
             $p3 = $p2;

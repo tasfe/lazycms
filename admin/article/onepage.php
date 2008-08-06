@@ -83,10 +83,12 @@ function lazy_edit(){
             $val->out();
         } else {
             // 下载远程图片
-            
+            if ($snapimg) {
+                $onecontent = snapImg($onecontent);
+            }
             // 删除站外连接
             if ($dellink) {
-                $onecontent  = preg_replace('/<a([^>]*)href=["\']*(http|https)\:\/\/(?!'.preg_quote($_SERVER['HTTP_HOST'],'/').')([^>]*)>(.*)<\/a>/isU','$4',$onecontent);
+                $onecontent = preg_replace('/<a([^>]*)href=["\']*(http|https)\:\/\/(?!'.preg_quote($_SERVER['HTTP_HOST'],'/').')([^>]*)>(.*)<\/a>/isU','$4',$onecontent);
             }
             // 自动截取简述
             $description = (strlen($description)==0) ? left(cls(preg_replace('/<[^>]*>/iU','',$onecontent)),180) : $description;

@@ -51,8 +51,8 @@ function autoTitle(){
 		$('#tabs li.active a').text(t);
 	}
 }
-// toggleFieldset *** *** www.LazyCMS.net *** ***
-function toggleFieldset(){
+// SemiMemory *** *** www.LazyCMS.net *** ***
+function SemiMemory(){
 	var gc = getCollapse();
 	$('input:checkbox[@cookie=true]').each(function(i){
 		var c = $.cookie('checkbox_'+$(this).attr('id'));
