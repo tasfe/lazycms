@@ -53,14 +53,14 @@ function autoTitle(){
 }
 // SemiMemory *** *** www.LazyCMS.net *** ***
 function SemiMemory(){
-	var gc = getCollapse();
+	var o = getHP();
 	$('input:checkbox[@cookie=true]').each(function(i){
 		var c = $.cookie('checkbox_'+$(this).attr('id'));
 		if (c!==null) {
 			this.checked = (c=='true') ? true : false;
 		}
 	}).click(function(){
-		$.cookie('checkbox_'+$(this).attr('id'),this.checked,{expires:365,path:gc.Path});
+		$.cookie('checkbox_'+$(this).attr('id'),this.checked,{expires:365,path:o.Path});
 	});
 	// 展开事件
 	$('a.collapse,a.collapsed')
@@ -72,18 +72,29 @@ function SemiMemory(){
 			var e = $(t.attr('rel'),t.parents('fieldset')).toggle();
 				t.toggleClass('collapse').toggleClass('collapsed');
 			if (c) {
-				$.cookie('collapse_'+t.attr('i'),e.css('display'),{expires:365,path:gc.Path});
+				$.cookie('collapse_'+t.attr('i'),e.css('display'),{expires:365,path:o.Path});
 			}
 			changeHeight();
 		});
+	// 调整编辑器的高度
+	$('iframe[@src*=fckeditor.html]').each(function(i){
+		var id = this.id.replace('___Frame','');
+		var height = $.cookie('editor_height_'+id);
+		if (height!==null) {
+			if (typeof $('#'+id).attr('rel') == 'undefined') {
+				$('#'+id).attr('rel',this.height);
+			}
+			this.height = height;
+		}
+	});
 }
-// getCollapse *** *** www.LazyCMS.net *** ***
-function getCollapse(){
+
+// getHP *** *** www.LazyCMS.net *** ***
+function getHP(){
 	var e = {};
 		e.Host = (('https:' == self.location.protocol) ? 'https://'+self.location.hostname : 'http://'+self.location.hostname);
 		e.Path = self.location.href.replace(/\?(.*)/,'').replace(e.Host,'');
 		e.Path = e.Path.substr(0,e.Path.lastIndexOf('/')+1);
-		e.Uid  = encodeURIComponent(self.location.href.replace(/\?(.+)?/,'')).replace(/[^\w]+/g,'').toUpperCase();
 		return e;
 }
 // changeHeight *** *** www.LazyCMS.net *** ***
@@ -106,7 +117,6 @@ function changeHeight(){
  (function($) {
 	// 展开事件 *** *** www.LazyCMS.net *** ***
 	$.fn.collapsed = function(){
-		var gc = getCollapse();
 		this.each(function(i){
 			var t = $(this); t.attr('i',i);
 			var r = $(t.attr('rel'),t.parents('fieldset'));
@@ -187,6 +197,7 @@ function changeHeight(){
 				},
 				// 调整编辑器大小 *** *** www.LazyCMS.net *** ***
 				resize:function(p1,p2){
+					var e = getHP();
 					var o = t.nextAll('iframe[@src*=InstanceName='+t.attr('name')+']');
 						if (typeof t.attr('rel') == 'undefined') {
 							t.attr('rel',o.height());
@@ -198,6 +209,7 @@ function changeHeight(){
 								o.height(o.height()-p2);
 							}
 						}
+						$.cookie('editor_height_'+t.attr('name'),o.height(),{expires:365,path:e.Path});
 						changeHeight();
 						return this;
 				}

@@ -55,6 +55,24 @@ function lazy_default(){
 
     print_x(L('title'),$ds->fetch());
 }
+// lazy_set *** *** www.LazyCMS.net *** ***
+function lazy_set(){
+    check_login('onepage');
+    $db = get_conn();
+    $submit = isset($_POST['submit']) ? strtolower($_POST['submit']) : null;
+    $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
+    switch($submit){
+        case 'delete':
+            empty($lists) ? echo_json(L('list/pop/select'),0) : null ;
+            $db->update('#@_onepage',array('oneid1'=>0),"`oneid1` IN({$lists})");
+            $db->exec("DELETE FROM `#@_onepage` WHERE `oneid` IN({$lists});");
+            echo_json(array(
+                'text' => L('list/pop/deleteok'),
+                'url'  => $_SERVER["HTTP_REFERER"],
+            ),1);
+            break;
+    }
+}
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){
     $_USER    = check_login('onepage'); $db = get_conn(); require_file('onepage_class.php');

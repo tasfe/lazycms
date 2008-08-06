@@ -13,6 +13,10 @@
     <list>
         <name>页面名称</name>
         <path>路径</path>
+		<pop>
+			<select>请选择一个页面</select>
+			<deleteok>页面删除成功</deleteok>
+		</pop>
     </list>
     <edit title="编辑单页"/>
     <add title="添加单页">
