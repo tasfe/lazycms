@@ -123,7 +123,6 @@ CREATE TABLE IF NOT EXISTS `lazy_onepage` (
   `onename` varchar(50) NOT NULL COMMENT '名称',
   `onecontent` text COMMENT '内容',
   `onetemplate` varchar(255) NOT NULL COMMENT '模板',
-  `oneopen` tinyint(1) default '0' COMMENT '是否打开',
   `description` varchar(250) default NULL COMMENT '描述',
   PRIMARY KEY  (`oneid`),
   KEY `oneid1` (`oneid1`)
