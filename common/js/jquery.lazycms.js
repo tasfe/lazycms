@@ -14,23 +14,17 @@ function LoadScript(p){
     var u = $("script[@src*=jquery.lazycms]").attr("src").replace("jquery.lazycms.js","jquery." + p + ".js");
     document.write('<scr' + 'ipt type="text/javascript" src="' + u + '"><\/scr' + 'ipt>');
 }
-
+function lock(p1){ return p1 ? icon('lock') : icon('lock-open'); }
+function changeHeight(){ parent.$('#main').height($(document).find('body').height()+7); }
+function cklist(p1){ return '<input name="list" id="list_'+p1+'" type="checkbox" value="'+p1+'"/>'; }
+function path(){ return $('script[@src*=jquery.js]').attr('src').replace(/\/js\/jquery\.js\?(.*)/,''); }
+function autoTitle(){ var t = $('#box fieldset legend[@rel=tab]').text(); if (t!=='') { $('#tabs li.active a').text(t); } }
+function checkALL(e){ $.each($(e.form).find('input:checkbox'),function(i,a){ if (checkALL.arguments[1]!=undefined) { this.checked = true; } else { this.checked = !this.checked; }}); }
+// icon *** *** www.LazyCMS.net *** ***
 function icon(i,a){
 	var IMG  = '<img src="../../common/images/icon/'+i+'.png" alt="'+i.toUpperCase()+'" class="os" />';
 	var HREF = '<a href="'+a+'" title="'+i.toUpperCase()+'">'+IMG+'</a>';
 	if (typeof a == "undefined") { return IMG; } else { return HREF; }
-}
-function cklist(p1){ return '<input name="list" id="list_'+p1+'" type="checkbox" value="'+p1+'"/>'; }
-function lock(p1){ return p1 ? icon('lock') : icon('lock-open'); }
-// checkALL *** *** www.LazyCMS.net *** ***
-function checkALL(e){
-	$.each($(e.form).find('input:checkbox'),function(i,a){
-		if (checkALL.arguments[1]!=undefined) { 
-			this.checked = true;
-		} else {
-			this.checked = !this.checked;
-		}
-	});
 }
 // Purview *** *** www.LazyCMS.net *** ***
 function Purview(){
@@ -43,13 +37,6 @@ function Purview(){
 		});
 		$('#' + this.id).attr('checked',checked);
 	});
-}
-// autoTitle *** *** www.LazyCMS.net *** ***
-function autoTitle(){
-	var t = $('#box fieldset legend[@rel=tab]').text();
-	if (t!=='') {
-		$('#tabs li.active a').text(t);
-	}
 }
 // SemiMemory *** *** www.LazyCMS.net *** ***
 function SemiMemory(){
@@ -88,7 +75,6 @@ function SemiMemory(){
 		}
 	});
 }
-
 // getHP *** *** www.LazyCMS.net *** ***
 function getHP(){
 	var e = {};
@@ -97,9 +83,50 @@ function getHP(){
 		e.Path = e.Path.substr(0,e.Path.lastIndexOf('/')+1);
 		return e;
 }
-// changeHeight *** *** www.LazyCMS.net *** ***
-function changeHeight(){
-	parent.$('#main').height($(document).find('body').height()+7);
+// addSub *** *** www.LazyCMS.net *** ***
+function addSub(p1,p2,p3){
+	var nbsp = ''; var e = getHP();
+	var p2 = (typeof p2=='undefined') ? 1 : p2;
+	var p3 = (typeof p3=='undefined') ? false : p3;
+	if (p3==0||p3==false) { return ; }
+	var td = $('#list_'+p1).parent();
+	var os = td.find('img[src*=dir].os').css('cursor','pointer').unbind().click(function(){ 
+			$.cookie('getSub_'+p1,true,{expires:365,path:e.Path}); addSub(p1,p2,p3); 
+		});
+	if ($.cookie('getSub_'+p1)==null || $.cookie('getSub_'+p1)=='false') { return ; }
+	var tr = td.parent();
+	var fm = td.parents('form');
+	var tb = td.parents('tbody');
+	for (var i=0; i<p2; i++) { nbsp += "&nbsp; &nbsp;"; }
+	if ($('.sub' + p1 + ':visible',tb).is("tr")==false) {
+		if ($('.sub' + p1,tb).css('display')=='none') {
+			os.attr('src',path()+'/images/icon/dir2.png');
+			$('.sub' + p1,tb).show(); changeHeight();
+			return ;
+		};
+		os.attr('src',path()+'/images/icon/loading.gif');
+		$.ajax({
+			cache: false,
+			dataType: 'json',
+			url:fm.attr('action'),
+			type: 'POST',
+			data: {submit:'getsub',lists:p1,space:p2},
+			error: function(){
+				alert('error');
+			},
+			success: function(d){
+				os.attr('src',path()+'/images/icon/dir2.png');
+				$(d).each(function(){
+					tr.after($("td:first input",eval(this.code)).before(nbsp).end().addClass('sub'+p1).show());
+					addSub(this.id,p2+1,this.sub); changeHeight();
+				});
+			}
+		});
+	} else {
+		os.attr('src',path() + '/images/icon/dir1.png');
+		$.cookie('getSub_'+p1,false,{expires:365,path:e.Path});
+		$('.sub' + p1,tb).hide(); changeHeight();
+	}
 }
 
 /*

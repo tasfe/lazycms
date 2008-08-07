@@ -107,9 +107,9 @@ class Recordset {
     public function open(){
         $this->hl = '<form name="form1" id="form1"  action="'.$this->action.'" class="form">';
         if ((int)$this->length > 0) {
-            $this->hl.= "<script type=\"text/javascript\">var lazy_delete = '".L('confirm/delete','system')."';var lazy_clear = '".L('confirm/clear','system')."';function ll(){var K = ll.arguments;document.writeln('<tr>'+".$this->td."'</tr>');};function lll(){ var K = lll.arguments; return '<tr>'+".$this->td."'</tr>';}</script>";    
+            $this->hl.= "<script type=\"text/javascript\">var lazy_delete = '".L('confirm/delete','system')."';var lazy_clear = '".L('confirm/clear','system')."';function E(){var K = arguments;document.writeln('<tr>'+".$this->td."'</tr>');};function R(){ var K = arguments; return '<tr>'+".$this->td."'</tr>';}</script>";    
         }
-        $this->hl.= '<table class="table">';
+        $this->hl.= '<table class="table" cellspacing="0">';
     }
     // close *** *** www.LazyCMS.net *** ***
     public function close(){

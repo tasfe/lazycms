@@ -25,20 +25,20 @@
  */
 @charset "utf-8";
 /* 16x16 ICONS */
-.icon-16-cpanel		{ background: url(icon/menu-icons.png) no-repeat 2px 0px !important; }
-.icon-16-user		{ background: url(icon/menu-icons.png) no-repeat 2px -37px !important; }
-.icon-16-media		{ background: url(icon/menu-icons.png) no-repeat 2px -73px !important; }
-.icon-16-config		{ background: url(icon/menu-icons.png) no-repeat 2px -107px !important; }
-.icon-16-logout		{ background: url(icon/menu-icons.png) no-repeat 2px -143px !important; }
-.icon-16-info		{ background: url(icon/menu-icons.png) no-repeat 2px -178px !important; }
-.icon-16-home		{ background: url(icon/menu-icons.png) no-repeat 2px -215px !important; }
-.icon-16-help		{ background: url(icon/menu-icons.png) no-repeat 2px -249px !important; }
-.icon-16-category	{ background: url(icon/menu-icons.png) no-repeat 2px -319px !important; }
-.icon-16-trash		{ background: url(icon/menu-icons.png) no-repeat 2px -354px !important; }
-.icon-16-page		{ background: url(icon/menu-icons.png) no-repeat 2px -390px !important; }
-.icon-16-article	{ background: url(icon/menu-icons.png) no-repeat 2px -427px !important; }
-.icon-16-model		{ background: url(icon/menu-icons.png) no-repeat 2px -461px !important; }
-.icon-16-install	{ background: url(icon/menu-icons.png) no-repeat 2px -496px !important; }
+.icon-16-cpanel		{ background: url(menu-icons.png) no-repeat 2px 0px !important; }
+.icon-16-user		{ background: url(menu-icons.png) no-repeat 2px -37px !important; }
+.icon-16-media		{ background: url(menu-icons.png) no-repeat 2px -73px !important; }
+.icon-16-config		{ background: url(menu-icons.png) no-repeat 2px -107px !important; }
+.icon-16-logout		{ background: url(menu-icons.png) no-repeat 2px -143px !important; }
+.icon-16-info		{ background: url(menu-icons.png) no-repeat 2px -178px !important; }
+.icon-16-home		{ background: url(menu-icons.png) no-repeat 2px -215px !important; }
+.icon-16-help		{ background: url(menu-icons.png) no-repeat 2px -249px !important; }
+.icon-16-category	{ background: url(menu-icons.png) no-repeat 2px -319px !important; }
+.icon-16-trash		{ background: url(menu-icons.png) no-repeat 2px -354px !important; }
+.icon-16-page		{ background: url(menu-icons.png) no-repeat 2px -390px !important; }
+.icon-16-article	{ background: url(menu-icons.png) no-repeat 2px -427px !important; }
+.icon-16-model		{ background: url(menu-icons.png) no-repeat 2px -461px !important; }
+.icon-16-install	{ background: url(menu-icons.png) no-repeat 2px -496px !important; }
 /* 32x32 ICONS */
 .icon-32-user		{ background-image:url(icon-32/user.png) !important; }
 .icon-32-media		{ background-image:url(icon-32/media.png) !important; }

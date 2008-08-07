@@ -76,7 +76,7 @@ body { height:100%; margin:0; background: #FFF; text-align:center; }
 	#menu ul { display:none; position:absolute; border:solid 1px #c6d9e7; background: #f6f6f6 url(bg-menu.gif) repeat-y left; padding-top:1px; }
 	#menu li li { clear:both; margin:0 1px; }
 	#menu li li.hr { background: #DDE1E6 url(bg-menu.gif);  height:1px; width:auto; overflow:hidden; margin:1px 0; }
-	#menu ul a { background:url(../../../common/images/icon/menu-icons.png) no-repeat 3px -285px; display:block; line-height:20px; white-space: nowrap; text-decoration:none; padding:0 20px 0 25px; cursor: default; color: #333333; }
+	#menu ul a { background:url(../../../common/images/menu-icons.png) no-repeat 3px -285px; display:block; line-height:20px; white-space: nowrap; text-decoration:none; padding:0 20px 0 25px; cursor: default; color: #333333; }
 	
 	/* TopMenu */
 	#top .menu{ position:absolute; top:24px; right:0px; list-style: none; margin: 0; padding: 0; }
@@ -96,11 +96,11 @@ body { height:100%; margin:0; background: #FFF; text-align:center; }
 	#shortcut div.head{ width:495px; display:table; zoom:1; height:25px; line-height:25px; border-bottom:solid 1px #c6d9e7; background:url(../../../common/images/buttons-bg.png) repeat-x 0 center; padding-left:5px; }
 	#shortcut div.head strong{ padding:3px 0 0 20px; background:url(../../../common/images/icon/fav.png) no-repeat 0 center; display:block; float:left; cursor:default;}
 	#shortcut div.head a{ display:block; float:right; padding:0 5px; margin-right:5px; text-decoration:none; font-weight:bold;}
-	#shortcut div.body{ background:#FFF url(../../../common/images/icon/loading.gif) no-repeat center 40%; height:480px; padding:5px;}
+	#shortcut div.body{ background:#FFF url(../../../common/images/loading.gif) no-repeat center 40%; height:480px; padding:5px;}
 	#shortcut dl{ margin-bottom:15px; clear:both; display:table; zoom:1;  }
 	#shortcut dt{ padding-left:10px; line-height:150%; font-weight:bold; background:url(shortcut-line.png) no-repeat left bottom; }
 	#shortcut dd{ float:left; margin:8px 8px 0 5px; }
-	#shortcut dd a{ margin:1px; background-image:url(../../../common/images/icon/weblink.png); background-repeat:no-repeat; background-position:center 3px; display:block; width:60px; padding:40px 5px 3px 5px; text-align:center; text-decoration:none; color:#333333;}
+	#shortcut dd a{ margin:1px; background-image:url(../../../common/images/icon-32/weblink.png); background-repeat:no-repeat; background-position:center 3px; display:block; width:60px; padding:40px 5px 3px 5px; text-align:center; text-decoration:none; color:#333333;}
 	#shortcut dd a:hover{ margin:0; border:solid 1px #A5D11F; background-color:#F4FBE1;}
 
 /* addShortcut */

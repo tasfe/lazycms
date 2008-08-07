@@ -44,10 +44,10 @@ div.jTip-foot { width:10px; height:10px; position:relative; top:-1px; float:left
 	#poping .head a:hover{ color:#FF6600; border-color:#FF6600;}
 	#poping .body{ width:98%; height:88%; padding:10px 1% 5px 1%; margin:0 auto; display:block; clear:both; line-height:150%; overflow:auto;}
 	#poping .icon { width:70px; height:55px; overflow:hidden; float:left; }
-	#poping .loading { background:url(icon/loading.gif) no-repeat center center;}
-	#poping .success { background:url(icon/info-icons.png) no-repeat 0px -1px;}
-	#poping .error { background:url(icon/info-icons.png) no-repeat 0px -65px; }
-	#poping .tips { background:url(icon/info-icons.png) no-repeat 0 -130px; }
+	#poping .loading { background:url(loading.gif) no-repeat center center;}
+	#poping .success { background:url(info-icons.png) no-repeat 0px -1px;}
+	#poping .error { background:url(info-icons.png) no-repeat 0px -65px; }
+	#poping .tips { background:url(info-icons.png) no-repeat 0 -130px; }
 	
 /* 分页样式 */
 .pages { display:table; }

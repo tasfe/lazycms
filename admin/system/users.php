@@ -57,7 +57,7 @@ function lazy_default(){
     $ds->open();
     $ds->thead = '<tr><th>ID) '.L('users/group/list/name').'</th><th>'.L('users/group/list/logo').'</th><th>'.L('users/group/list/addtable').'</th><th>'.L('users/group/list/count').'</th><th>'.L('common/action').'</th></tr>';
     while ($rs = $ds->result()) {
-        $ds->tbody = "ll(".$rs['groupid'].",'".t2js(h2encode($rs['groupname']))."','".t2js(h2encode($rs['groupename']))."',".$rs['count'].");";
+        $ds->tbody = "E(".$rs['groupid'].",'".t2js(h2encode($rs['groupname']))."','".t2js(h2encode($rs['groupename']))."',".$rs['count'].");";
     }
     $ds->close();
 
@@ -164,7 +164,7 @@ function lazy_user_list(){
     $ds->open();
     $ds->thead = '<tr><th>ID) '.L('users/user/list/name').'</th><th>'.L('users/user/list/mail').'</th><th>'.L('users/user/list/language').'</th><th>'.L('users/user/list/regdate').'</th><th>'.L('users/user/list/state').'</th></tr>';
     while ($rs = $ds->result()) {
-        $ds->tbody = "ll(".$rs['userid'].",'".t2js(h2encode($rs['username']))."','".t2js(h2encode($rs['usermail']))."','".t2js(h2encode(langbox($rs['language'])))."','".date('Y-m-d H:i:s',$rs['regdate'])."',".$rs['islock'].");";
+        $ds->tbody = "E(".$rs['userid'].",'".t2js(h2encode($rs['username']))."','".t2js(h2encode($rs['usermail']))."','".t2js(h2encode(langbox($rs['language'])))."','".date('Y-m-d H:i:s',$rs['regdate'])."',".$rs['islock'].");";
     }
     $ds->close();
 

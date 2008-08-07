@@ -40,11 +40,17 @@ class Onepage{
             if ((int)$p3 != (int)$rs[0]) {
                 $selected = ((int)$p4 == (int)$rs[0]) ? ' selected="selected"' : null;
                 $R.= '<option value="'.$rs[0].'"'.$selected.'>'.$nbsp.'├'.$rs[1].'</option>';
-                if ((int)$db->count("SELECT * FROM `#@_onepage` WHERE `oneid1`='".$rs[0]."';") > 0) {
+                if ((int)$db->count("SELECT * FROM `#@_onepage` WHERE `oneid1`=".DB::quote($rs[0]).";") > 0) {
                     $R.= self::__sort($rs[0],$p2+1,$p3,$p4);
                 }
             }
         }
         return $R;
+    }
+    // __sub *** *** www.LazyCMS.net *** ***
+    static function __sub($p1){
+        $db  = get_conn();
+        $num = $db->count("SELECT * FROM `#@_onepage` WHERE `oneid1`=".DB::quote($p1).";");
+        return ((int)$num>0)?'1':'0';
     }
 }

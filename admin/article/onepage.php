@@ -39,17 +39,18 @@ function lazy_before(){
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){ 
     $db = get_conn(); check_login('onepage');
-    $ds = new Recordset();
+    $ds = new Recordset(); require_file('onepage_class.php');
     $ds->create("SELECT * FROM `#@_onepage` WHERE `oneid1`=0 ORDER BY `oneorder` DESC");
     $ds->action = PHP_FILE."?action=set";
     $ds->but = $ds->button();
-    $ds->td  = "cklist(K[0]) + icon('dir2') + K[0] + ') <a href=\"onepage.php?action=edit&oneid=' + K[0] + '\">' + K[1] + '</a>'";
-    $ds->td  = "(K[4]?icon('link',K[2]):icon('tip',K[2])) + K[2]";
+    $ds->td  = "cklist(K[0]) + icon('dir'+K[4]) + K[0] + ') <a href=\"onepage.php?action=edit&oneid=' + K[0] + '\">' + K[1] + '</a>'";
+    $ds->td  = "(K[3]?icon('link',K[2]):icon('tip',K[2])) + K[2]";
     $ds->td  = "icon('edit','onepage.php?action=edit&oneid=' + K[0])";
     $ds->open();
     $ds->thead = '<tr><th>ID) '.L('list/name').'</th><th>'.L('list/path').'</th><th>'.L('common/action','system').'</th></tr>';
     while ($rs = $ds->result()) {
-        $ds->tbody = "ll(".$rs['oneid'].",'".t2js(h2encode($rs['onename']))."','".t2js(h2encode(SITE_BASE.$rs['onepath']))."',".$rs['oneid1'].",".(is_file(LAZY_PATH.$rs['onepath'])?1:0).");";
+        $isSub = Onepage::__sub($rs['oneid']);
+        $ds->tbody = "E(".$rs['oneid'].",'".t2js(h2encode($rs['onename']))."','".t2js(h2encode(SITE_BASE.$rs['onepath']))."',".(is_file(LAZY_PATH.$rs['onepath'])?1:0).",{$isSub});addSub(".$rs['oneid'].",1,{$isSub});";
     }
     $ds->close();
 
@@ -70,6 +71,21 @@ function lazy_set(){
                 'text' => L('list/pop/deleteok'),
                 'url'  => $_SERVER["HTTP_REFERER"],
             ),1);
+            break;
+        case 'getsub':
+            require_file('onepage_class.php');
+            $space  = isset($_POST['space']) ? $_POST['space'] : 1;
+            $result = $db->query("SELECT * FROM `#@_onepage` WHERE `oneid1`=? ORDER BY `oneorder` DESC",$lists);
+            $array  = array();
+            while ($rs = $db->fetch($result)) {
+                $isSub = Onepage::__sub($rs['oneid']);
+                $array[] = array(
+                    'id'    => $rs['oneid'],
+                    'sub'   => $isSub,
+                    'code'  => "R(".$rs['oneid'].",'".t2js(h2encode($rs['onename']))."','".t2js(h2encode(SITE_BASE.$rs['onepath']))."',".(is_file(LAZY_PATH.$rs['onepath'])?1:0).",{$isSub});",
+                );
+            }
+            echo(json_encode($array));
             break;
     }
 }

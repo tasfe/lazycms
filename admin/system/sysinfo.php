@@ -46,7 +46,7 @@ function lazy_Default(){
 
     /* System settings */
     $hl = '<fieldset><legend><a class="collapsed" rel=".table">'.L('sysinfo/@title').'</a></legend>';
-    $hl.= '<table class="table">';
+    $hl.= '<table class="table" cellspacing="0">';
     $hl.= '<tbody>';
     $hl.= '<tr><td class="width-30">'.L('sysinfo/server_os').'</td><td>'.php_uname().'</td></tr>';
     $hl.= '<tr><td>'.L('sysinfo/gdversion').'</td><td>'.$gdInfo['GD Version'].'</td></tr>';
@@ -60,7 +60,7 @@ function lazy_Default(){
     
     /* PHP settings */
     $hl.= '<fieldset><legend><a class="collapsed" rel=".table">'.L('sysinfo/phpsettings/@title').'</a></legend>';
-    $hl.= '<table class="table"><tbody>';
+    $hl.= '<table class="table" cellspacing="0"><tbody>';
     $hl.= '<tr><td class="width-30">'.L('sysinfo/phpsettings/safe_mode').'</td><td>'.get_php_setting('safe_mode').'</td></tr>';
     $hl.= '<tr><td>'.L('sysinfo/phpsettings/display_errors').'</td><td>'.get_php_setting('display_errors').'</td></tr>';
     $hl.= '<tr><td>'.L('sysinfo/phpsettings/file_uploads').'</td><td>'.get_php_setting('file_uploads').'</td></tr>';
@@ -83,7 +83,7 @@ function lazy_Default(){
 // lazy_Settings *** *** www.LazyCMS.net *** ***
 function lazy_Settings(){
     $hl = '<fieldset><legend>'.L('sysinfo/settings').'</legend>';
-    $hl.= '<table class="table"><tbody>';
+    $hl.= '<table class="table" cellspacing="0"><tbody>';
     $fp = file(COM_PATH.'/config.php');
     $config = null;
     $isFlag = false;
@@ -124,7 +124,7 @@ function lazy_Directory(){
         '/common/images/icons.css',
     );
     $hl = '<fieldset><legend>'.L('sysinfo/directory/@title').'</legend>';
-    $hl.= '<table class="table"><tbody>';
+    $hl.= '<table class="table" cellspacing="0"><tbody>';
     $hl.= '<tr><th>'.L('sysinfo/directory/path').'</th><th>'.L('sysinfo/directory/read').'</th><th>'.L('sysinfo/directory/write').'</th></tr>';
     foreach ($paths as $path) {
         $hl.= '<tr><td>'.$path.'</td><td>'.isok(is_readable(LAZY_PATH.$path)).'</td><td>'.isok(is_writable(LAZY_PATH.$path)).'</td></tr>';
