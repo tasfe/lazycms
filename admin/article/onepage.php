@@ -110,9 +110,10 @@ function lazy_edit(){
     $key = new Keywords();
     $val = new Validate();
     if ($val->method()) {
-        $val->check('onename|0|'.L('add/check/name'));
-        $val->check('onetitle|0|'.L('add/check/title'));
-        $val->check('onepath|0|'.L('add/check/path').';onepath|5|'.L('add/check/path1'));
+        $val->check('onename|1|'.L('add/check/name').'|1-50')
+            ->check('onetitle|1|'.L('add/check/title').'|1-100')
+            ->check('onepath|0|'.L('add/check/path').';onepath|5|'.L('add/check/path1').';onepath|4|'.L('add/check/path2')."|SELECT COUNT(`oneid`) FROM `#@_onepage` WHERE `onepath`='#pro#'".(empty($oneid)?null:" AND `oneid` <> {$oneid}"))
+            ->check('description|1|'.L('add/check/description').'|0-250');
         if ($val->isVal()) {
             $val->out();
         } else {
@@ -206,7 +207,7 @@ function lazy_edit(){
     $hl.= '<fieldset><legend><a class="collapse" rel=".more-attr">'.L('common/attr').'</a></legend>';
     $hl.= '<div class="more-attr">';
     $hl.= '<p><label>'.L('add/keywords').'：</label><input tip="'.L('add/keywords').'::250::'.L('add/keywords/@tip').'" class="in4" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" onclick="$(\'#keywords\').getKeywords(\'#onetitle\',\'#onecontent\')" tip="'.L('common/get/@tip','system').'">'.L('common/get','system').'</button></p>';
-    $hl.= '<p><label>'.L('add/description').'：</label><textarea name="description" id="description" rows="5" class="in4">'.$description.'</textarea></p>';
+    $hl.= '<p><label>'.L('add/description').'：</label><textarea tip="'.L('add/description').'::'.L('add/description/@tip').'" name="description" id="description" rows="5" class="in4">'.$description.'</textarea></p>';
     $hl.= '<p><label>'.L('add/template').'：</label>';
     $hl.= '<select name="onetemplate" id="onetemplate">';
     $hl.= form_opts('themes/'.C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$onetemplate);

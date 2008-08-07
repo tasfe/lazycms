@@ -389,7 +389,7 @@ function addSub(p1,p2,p3){
 		for (var i=0;i<e.length;i++) {
 			$('#'+e[i].id).unbind().attr('error',e[i].text).addClass('error');
 		}
-		this.tips('error','input.error');
+		this.tips('error','input.error,textarea.error');
 		return this;
 	};
 	// 气泡提示 *** *** www.LazyCMS.net *** ***

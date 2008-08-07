@@ -29,7 +29,7 @@
 button{ letter-spacing:1px; padding:2px 4px; border:1px solid #c6d9e7; height:23px; color:#333333; background:url(buttons-bg.png) repeat-x;line-height:100%; vertical-align:middle; margin-right:6px; }
 
 /* 错误信息 */
-input.error { border:solid 1px #FF0000 !important; background:url(invalid-line.gif) repeat-x left bottom !important;}
+input.error,textarea.error { border:solid 1px #FF0000 !important; background:url(invalid-line.gif) repeat-x left bottom !important;}
 a.tip { padding:0 3px; cursor:help; text-decoration:none; }
 div.jTip { display:none; position:absolute; z-index:100; color:#000; text-align:left; }
 div.jTip-body { border:solid 1px #D4D5AA; padding:5px 5px 2px 5px; background:#FFFFCC; }
