@@ -11,5 +11,9 @@
     <article title="文章管理"></article>
     <trash title="回收站管理"></trash>
     <sort title="分类管理"></sort>
-    <model title="模型管理"></model>
+    <model title="模型管理">
+		<add title="添加模型">
+		
+		</add>
+	</model>
 </lazycms>

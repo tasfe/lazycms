@@ -57,7 +57,7 @@ function lazy_default(){
     }
     if (instr($_USER['purview'],'system/webftp')) {
         $hr = true;
-        $hl.= '<li><a href="#" class="icon-16-media">'.L('webftp/@title').'</a></li>';
+        $hl.= '<li><a href="system/media.php" class="icon-16-media">'.L('webftp/@title').'</a></li>';
     }
     if ($hr) {
         $hl.= '<li class="hr"></li>';
@@ -65,7 +65,7 @@ function lazy_default(){
     $hr = false;
     if (instr($_USER['purview'],'system/module')) {
         $hr = true;
-        $hl.= '<li><a href="#" class="icon-16-install">'.L('module/@title').'</a></li>';
+        $hl.= '<li><a href="system/install.php" class="icon-16-install">'.L('module/@title').'</a></li>';
     }
     if (instr($_USER['purview'],'system/settings')) {
         $hr = true;
@@ -83,11 +83,11 @@ function lazy_default(){
                 <li><a href="#">首页设置</a></li>
                 <li><a href="article/onepage.php" class="icon-16-page">单页管理</a></li>
                 <li class="hr"></li>
-                <li><a href="#" class="icon-16-article">文章管理</a></li>
-                <li><a href="#" class="icon-16-trash">回收站</a></li>
+                <li><a href="article/index.php" class="icon-16-article">文章管理</a></li>
+                <li><a href="article/trash.php" class="icon-16-trash">回收站</a></li>
                 <li class="hr"></li>
-                <li><a href="#" class="icon-16-category">分类管理</a></li>
-                <li><a href="#" class="icon-16-model">模型管理</a></li>
+                <li><a href="article/category.php" class="icon-16-category">分类管理</a></li>
+                <li><a href="article/model.php" class="icon-16-model">模型管理</a></li>
             </ul>
         </li>';
 

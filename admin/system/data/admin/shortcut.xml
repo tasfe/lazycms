@@ -3,15 +3,15 @@
     <dl>
 		<dt>内容管理</dt>
 		<a href="article/onepage.php" class="page">单页管理</a>
-		<a href="#" class="article">文章管理</a>
-		<a href="#" class="category">分类管理</a>
-        <a href="#" class="model">模型管理</a>
+		<a href="article/index.php" class="article">文章管理</a>
+		<a href="article/category.php" class="category">分类管理</a>
+        <a href="article/model.php" class="model">模型管理</a>
 	</dl>
 	<dl>
 		<dt>系统管理</dt>
 		<a href="system/users.php" class="user">用户管理</a>
-		<a href="#" class="media">文件管理</a>
-		<a href="#" class="install">安装卸载</a>
+		<a href="system/media.php" class="media">文件管理</a>
+		<a href="system/install.php" class="install">安装卸载</a>
 		<a href="system/settings.php" class="config">全局设置</a>
 	</dl>
 </root>
