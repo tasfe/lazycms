@@ -12,11 +12,16 @@
     <trash title="回收站管理"></trash>
     <sort title="分类管理"></sort>
     <model title="模型管理">
-		<add title="添加模型"></add>
+		<edit title="编辑模型"></edit>
+		<add title="添加模型">
+			<name>模型名称</name>
+			<ename tip="模型英文名称，用来作为模板标签的一部分">模型标识</ename>
+			<fields>字段管理</fields>
+		</add>
 		<list>
-			<name>名称</name>
-			<ename>标识</ename>
-			<table>表名</table>
+			<name>模型名称</name>
+			<ename>模型标识</ename>
+			<table>数据表名</table>
 			<state>状态</state>
 		</list>
 	</model>

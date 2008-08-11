@@ -44,7 +44,7 @@ function lazy_default(){
     $ds->action = PHP_FILE."?action=set";
     $ds->but = $ds->button();
     $ds->td  = "cklist(K[0]) + icon('dir'+K[4]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&oneid=' + K[0] + '\">' + K[1] + '</a>'";
-    $ds->td  = "(K[3]?icon('link',K[2]):icon('tip',K[2])) + K[2]";
+    $ds->td  = "(K[3]?icon('link',K[2]):icon('link-error',K[2])) + K[2]";
     $ds->td  = "icon('edit','".PHP_FILE."?action=edit&oneid=' + K[0])";
     $ds->open();
     $ds->thead = '<tr><th>ID) '.L('list/name').'</th><th>'.L('list/path').'</th><th>'.L('common/action','system').'</th></tr>';

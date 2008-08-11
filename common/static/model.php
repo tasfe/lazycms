@@ -20,42 +20,17 @@
  */
 defined('COM_PATH') or die('Restricted access!');
 /**
- * LazyCMS 模块配置文件
+ * 系统模块的公共函数
  *
  * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
  * @author      Lukin <mylukin@gmail.com>
- * @date        2008-6-17
+ * @date        2008-7-6
  */
-return array(
-    /* 系统管理模块 */
-    'system' => array(
-        /* 需要导入的文件 */
-        'import' => array(
-            'static.system'
-        ),
-        /* 权限列表 */
-        'purview' => array(
-            'system',
-            'users',
-            'webftp',
-            'module',
-            'settings',
-        )
-    ),
-    /* 内容管理模块 */
-    'content' => array(
-        /* 需要导入的文件 */
-        'import' => array(
-            'static.onepage',
-            'static.model'
-        ),
-        /* 权限列表 */
-        'purview' => array(
-            'onepage',
-            'article',
-            'trash',
-            'sort',
-            'model',
-        )
-    ),
-);
+// Model *** *** www.LazyCMS.net *** ***
+class Model{
+    // getDBName *** *** www.LazyCMS.net *** ***
+    static function getDBName($p1){
+        $db = get_conn(); if (strlen($p1)==0) { return false; }
+        return str_replace('#@_',$db->config('prefix'),"#@_content_data_{$p1}");
+    }
+}

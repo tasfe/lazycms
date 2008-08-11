@@ -91,7 +91,6 @@ CREATE TABLE content_model (
   modelid integer PRIMARY KEY,
   modelname varchar(50),
   modelename varchar(50),
-  modeletable varchar(50),
   modelstate tinyint(1) default '1'
 );
 CREATE INDEX IDX_content_model__modelename ON content_model(modelename);
