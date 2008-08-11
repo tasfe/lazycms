@@ -38,5 +38,25 @@ function lazy_before(){
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){ 
     $db = get_conn(); check_login('model');
-    print_x(L('model/@title'),'模型管理');
+    $ds = new Recordset();
+    $ds->create("SELECT * FROM `#@_content_model` WHERE 1=1 ORDER BY `modelid` DESC");
+    $ds->action = PHP_FILE."?action=set";
+    $ds->but = $ds->button();
+    $ds->td  = "cklist(K[0]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&modelid=' + K[0] + '\">' + K[1] + '</a>'";
+    $ds->td  = "K[2]";
+    $ds->td  = "K[3]";
+    $ds->td  = "(K[4]?icon('stop'):icon('tick'))";
+    $ds->td  = "icon('edit','".PHP_FILE."?action=edit&modelid=' + K[0])";
+    $ds->open();
+    $ds->thead = '<tr><th>ID) '.L('model/list/name').'</th><th>'.L('model/list/ename').'</th><th>'.L('model/list/table').'</th><th>'.L('model/list/state').'</th><th>'.L('common/action','system').'</th></tr>';
+    while ($rs = $ds->result()) {
+        $ds->tbody = "E(".$rs['modelid'].",'".t2js(h2encode($rs['modelname']))."','".t2js(h2encode($rs['modelename']))."','".t2js(h2encode(str_replace('#@_',$db->config('prefix'),$rs['modeletable'])))."',".$rs['modelstate'].");";
+    }
+    $ds->close();
+
+    print_x(L('model/@title'),$ds->fetch());
+}
+// lazy_edit *** *** www.LazyCMS.net *** ***
+function lazy_edit(){
+    
 }

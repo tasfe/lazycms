@@ -12,8 +12,12 @@
     <trash title="回收站管理"></trash>
     <sort title="分类管理"></sort>
     <model title="模型管理">
-		<add title="添加模型">
-		
-		</add>
+		<add title="添加模型"></add>
+		<list>
+			<name>名称</name>
+			<ename>标识</ename>
+			<table>表名</table>
+			<state>状态</state>
+		</list>
 	</model>
 </lazycms>

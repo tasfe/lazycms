@@ -43,9 +43,9 @@ function lazy_default(){
     $ds->create("SELECT * FROM `#@_onepage` WHERE `oneid1`=0 ORDER BY `oneorder` DESC");
     $ds->action = PHP_FILE."?action=set";
     $ds->but = $ds->button();
-    $ds->td  = "cklist(K[0]) + icon('dir'+K[4]) + K[0] + ') <a href=\"onepage.php?action=edit&oneid=' + K[0] + '\">' + K[1] + '</a>'";
+    $ds->td  = "cklist(K[0]) + icon('dir'+K[4]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&oneid=' + K[0] + '\">' + K[1] + '</a>'";
     $ds->td  = "(K[3]?icon('link',K[2]):icon('tip',K[2])) + K[2]";
-    $ds->td  = "icon('edit','onepage.php?action=edit&oneid=' + K[0])";
+    $ds->td  = "icon('edit','".PHP_FILE."?action=edit&oneid=' + K[0])";
     $ds->open();
     $ds->thead = '<tr><th>ID) '.L('list/name').'</th><th>'.L('list/path').'</th><th>'.L('common/action','system').'</th></tr>';
     while ($rs = $ds->result()) {
