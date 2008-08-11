@@ -55,3 +55,7 @@ div.jTip-foot { width:10px; height:10px; position:relative; top:-1px; float:left
 .pages a:hover{ position:relative; line-height:130%; padding:0 5px; font-size:24px; z-index:100; margin:-8px 0 0 -8px; text-decoration:none;}
 .pages a:hover + a{ position:relative; line-height:130%; padding:0 5px; font-size:18px; z-index:90; margin:-4px 0 0 -4px; text-decoration:none;}
 .pages span.active{ color:#990000 !important; font-weight:bold; }
+/* 拖动效果 */
+tr.Drag td{ color:#0000FF !important; background-color:#FFFFCC; }
+tr.Over td{ background-color:#FFFFCC; }
+input{ cursor:default;}

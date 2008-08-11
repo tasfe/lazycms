@@ -337,14 +337,14 @@ function print_v($p1=null){
     $hl.= '<link href="../system/images/main.css" rel="stylesheet" type="text/css" />';
     $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.2.6"></script>';
     $hl.= '<script type="text/javascript" src="../../common/js/jquery.lazycms.js?ver=1.0"></script>';
-    $hl.= '<script type="text/javascript">parent.document.title = "'.G('TITLE').' - '.L('system/@title','system').'";';
+    $hl.= '<script type="text/javascript">parent.document.title = "'.G('TITLE').' - '.L('system/@title','system').'";'.G('SCRIPT');
     $hl.= '$(document).ready(function(){ ';
     // 批量去除连接虚线
     $hl.= '$("a").focus(function(){ this.blur(); });';
     // 执行函数
     $hl.= 'SemiMemory(); autoTitle();';
     $hl.= '$("#box").tips("tip","[@tip]");';
-    $hl.= ' });'.G('SCRIPT').'</script>';
+    $hl.= ' });</script>';
     $hl.= G('HEAD');
     $hl.= '</head><body>'.$p1.'</body></html>'; echo $hl;
 }

@@ -35,6 +35,7 @@ function lazy_before(){
         L('model/@title').':model.php;'.
         L('model/add/@title').':model.php?action=edit'
     );
+    G('SCRIPT','LoadScript("content.model");');
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){ 
@@ -59,6 +60,25 @@ function lazy_default(){
 }
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){
+    G('HEAD','
+        <script type="text/javascript">
+        $(document).ready(function() {
+            $("div.fields table.table").tableDnD({
+                onDragClass: "Drag",
+                onDrop: function(table, row) {
+                    //alert($.tableDnD.serialize());
+                }
+            }).find("tr").hover(function(){
+                $(this).addClass("Over");
+            },function(){
+                $(this).removeClass("Over");
+            });
+        });
+        </script>
+        <style type="text/css">
+        #Fields thead tr{ cursor:default !important; }
+        </style>
+    ');
     $db = get_conn();
     $modelid = isset($_REQUEST['modelid']) ? $_REQUEST['modelid'] : 0;
     $title   = empty($modelid) ? L('model/add/@title') : L('model/edit/@title');
@@ -74,12 +94,12 @@ function lazy_edit(){
 
     $hl.= '<fieldset><legend><a class="collapsed" rel=".fields">'.L('model/add/fields').'</a></legend>';
     $hl.= '<div class="fields">';
-    $hl.= '<table class="table" cellspacing="0">';
-    $hl.= '<thead><tr><th>ID) 表单文字</th><th>字段名</th><th>输入类型</th><th>默认值</th><th>验证规则</th><th>操作</th></tr></thead><tbody>';
-    for ($i=1;$i<11;$i++) {
-        $hl.= '<tr><td><input type="checkbox" name="list_'.$i.'" />'.$i.') 标题</td><td>title</td><td>输入框(20)</td><td>NULL</td><td>Email</td><td><a href="#"><img src="'.SITE_BASE.'common/images/icon/edit.png" class="os"/></a></td></tr>';
+    $hl.= '<table id="Fields" class="table" cellspacing="0">';
+    $hl.= '<thead><tr><th>表单文字</th><th>字段名</th><th>输入类型</th><th>默认值</th><th>验证规则</th><th>操作</th></tr></thead><tbody>';
+    for ($i=1;$i<6;$i++) {
+        $hl.= '<tr id="TR_'.$i.'"><td tip="标题::标题介绍"><input type="checkbox" name="list_'.$i.'" value="'.$i.'" /> 标题</td><td>title</td><td>输入框(20)</td><td>NULL</td><td>Email</td><td><a href="#"><img src="'.SITE_BASE.'common/images/icon/edit.png" class="os"/></a></td></tr>';
     }
-    $hl.= '</tbody></table><div class="but"><button onclick="checkALL(this,\'all\');" type="button">全选</button><button onclick="checkALL(this);" type="button">反选</button><button type="button">删除</button><button type="button">添加字段</button></div>';
+    $hl.= '</tbody></table><div class="but"><button onclick="checkALL(\'#Fields\',\'all\');" type="button">全选</button><button onclick="checkALL(\'#Fields\');" type="button">反选</button><button type="button" onclick="$(\'#Fields\').delFields();">删除</button><button type="button" onclick="$(\'#Fields\').addFields();">添加字段</button></div>';
     $hl.= '</div>';
     $hl.= '</fieldset>';
 
