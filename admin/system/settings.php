@@ -34,7 +34,7 @@ function lazy_before(){
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){ 
-    check_login('settings'); require_file('common.php');
+    check_login('settings');
     $val = new Validate();
     if ($val->method()) {
         $DSN_CONFIG = isset($_POST['DSN_CONFIG']) ? $_POST['DSN_CONFIG'] : null;

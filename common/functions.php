@@ -545,7 +545,7 @@ function downImg($p1,$p2=null){
     static $d = null;
     if (validate($p1,5)) {
         if (!is_object($d)) {
-            import("class.downloader");
+            import("system.downloader");
             $d = new DownLoader();
             $d->timeout = 100;
         }
@@ -674,7 +674,7 @@ function import($p1,$p2='',$p3='.php',$p4=false){
          * 用于子目录递归调用
          */
     } elseif('@' == $R1[0]) {
-        // 加载page目录的文件
+        // 加载根目录目录的文件
         $p1 = str_replace('@.','',$p1);
         $p2 = LAZY_PATH;
     }
@@ -713,7 +713,7 @@ function editor($p1,$p2=array()){
     }
     switch (strtolower((string)$p3)) {
         case 'fckeditor': 
-            import('class.fckeditor');
+            import('system.fckeditor');
             $A1['upimg'] = isset($A1['upimg']) ? $A1['upimg'] : false;
             $A1['upfile'] = isset($A1['upfile']) ? $A1['upfile'] : false;
             $A1['pagebreak'] = isset($A1['pagebreak']) ? $A1['pagebreak'] : false;
@@ -1122,7 +1122,7 @@ if (!function_exists('json_encode')) {
     function json_encode($p1){
         static $R = array();
         if (!isset($R[0])) {
-            import('class.json');
+            import('system.json');
             $R[0] = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
         }
         return $R[0]->encode($p1);
@@ -1134,7 +1134,7 @@ if (!function_exists('json_decode')) {
     function json_decode($p1){
         static $R = array();
         if (!isset($R[0])) {
-            import('class.json');
+            import('system.json');
             $R[0] = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
         }
         return $R[0]->decode($p1);

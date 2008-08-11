@@ -44,8 +44,8 @@ class System{
     // getKeywords *** *** www.LazyCMS.net *** ***
     static function getKeywords($p1,$p2=null){
         $keywords = array();
-        import('class.downloader');
-        import('class.splitword');
+        import('system.downloader');
+        import('system.splitword');
         // 先从远程获取分词
         $d = new DownLoader("http://keyword.lazycms.net/related_kw.php","POST",10);
         $d->send(array(

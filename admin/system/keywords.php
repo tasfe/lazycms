@@ -34,7 +34,6 @@ function lazy_before(){
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){
-    require_file('common.php');
     $title   = isset($_POST['onetitle']) ? rawurldecode($_POST['onetitle']) : null;
     $content = isset($_POST['onecontent']) ? rawurldecode($_POST['onecontent']) : null;
     if (!empty($title)) {

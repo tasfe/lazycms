@@ -30,7 +30,9 @@ return array(
     /* 系统管理模块 */
     'system' => array(
         /* 需要导入的文件 */
-        'import' => array(),
+        'import' => array(
+            'static.system_system'
+        ),
         /* 权限列表 */
         'purview' => array(
             'system',
@@ -41,10 +43,10 @@ return array(
         )
     ),
     /* 内容管理模块 */
-    'article' => array(
+    'content' => array(
         /* 需要导入的文件 */
         'import' => array(
-            'common'
+            'static.content_onepage'
         ),
         /* 权限列表 */
         'purview' => array(

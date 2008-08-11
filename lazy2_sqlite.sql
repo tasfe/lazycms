@@ -23,11 +23,6 @@ CREATE TABLE system_fields (
 CREATE INDEX IDX_system_fields__fieldename ON system_fields(fieldename);
 CREATE INDEX IDX_system_fields__module ON system_fields(module);
 
--- 
--- 导出表中的数据 system_fields
--- 
-
-
 -- --------------------------------------------------------
 
 -- 
@@ -48,31 +43,9 @@ CREATE INDEX IDX_system_group__system ON system_group(system);
 -- 导出表中的数据 system_group
 -- 
 
-INSERT INTO system_group (groupid, groupename, groupname, purview, system) VALUES (1, 'super', '超级管理员', 'system/system,system/users,system/webftp,system/module,system/settings,article/onepage', 1);
-INSERT INTO system_group (groupid, groupename, groupname, purview, system) VALUES (2, 'admin', '普通管理员', 'system/system,system/users,system/webftp,system/module,system/settings,article/onepage', 1);
+INSERT INTO system_group (groupid, groupename, groupname, purview, system) VALUES (1, 'super', '超级管理员', 'system/system,system/users,system/webftp,system/module,system/settings,content/onepage', 1);
+INSERT INTO system_group (groupid, groupename, groupname, purview, system) VALUES (2, 'admin', '普通管理员', 'system/system,system/users,system/webftp,system/module,system/settings,content/onepage', 1);
 INSERT INTO system_group (groupid, groupename, groupname, purview, system) VALUES (3, 'user', '注册用户', null, 1);
-
--- --------------------------------------------------------
-
--- 
--- 表的结构 system_model
--- 
-
-CREATE TABLE system_model (
-  modelid integer PRIMARY KEY,
-  modelname varchar(50),
-  modelename varchar(50),
-  maintable varchar(50),
-  addtable varchar(50),
-  modelstate tinyint(1) default '1'
-);
-CREATE INDEX IDX_system_model__modelename ON system_model(modelename);
-CREATE INDEX IDX_system_model__modelstate ON system_model(modelstate);
-
--- 
--- 导出表中的数据 system_model
--- 
-
 
 -- --------------------------------------------------------
 
@@ -111,71 +84,36 @@ INSERT INTO system_users (userid, groupid, username, userpass, userkey, usermail
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 onepage
+-- 表的结构 content_model
 -- 
-CREATE TABLE onepage (
-  oneid integer PRIMARY KEY,
-  oneid1 int(11),
-  oneorder int(11),
-  onetitle varchar(100),
-  onepath varchar(255),
-  onename varchar(50),
-  onecontent text,
-  onetemplate varchar(255),
-  description varchar(250)
-);
 
+CREATE TABLE content_model (
+  modelid integer PRIMARY KEY,
+  modelname varchar(50),
+  modelename varchar(50),
+  modeletable varchar(50),
+  modelstate tinyint(1) default '1'
+);
+CREATE INDEX IDX_content_model__modelename ON content_model(modelename);
+CREATE INDEX IDX_content_model__modelstate ON content_model(modelstate);
 
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 article_sort
--- 
--- keywords:index.html 使用数据库字段里的内容，分页第二页使用其他关键词
--- description:同上
-
-CREATE TABLE article_sort (
-  sortid integer PRIMARY KEY,
-  modelid int(11),
-  sortid1 int(11),
-  sortorder int(11),
-  sortname varchar(50),
-  sortpath varchar(255),
-  description varchar(255),
-  sortopen tinyint(1) default '0',
-  sorttemplate varchar(255),
-  pagetemplate varchar(255),
-  subdomain varchar(255),
-  UNIQUE (sortname),
-  UNIQUE (sortpath)
-);
-CREATE INDEX IDX_article_sort__sortid1 ON article_sort(sortid1);
-CREATE INDEX IDX_article_sort__sortname ON article_sort(sortname);
-CREATE INDEX IDX_article_sort__modelid ON article_sort(modelid);
-
-
--- --------------------------------------------------------
-
--- 
--- 表的结构 article_index
+-- 表的结构 content_article
 -- 
 
-CREATE TABLE article_index (
-  artid integer PRIMARY KEY,
-  sortid int(11),
-  modelid int(11),
-  artorder int(11),
-  artpath varchar(255),
-  artdate int(11),
-  arthits int(11),
-  artdigg int(11),
-  description varchar(255),
-  isdel tinyint(1) default '0',
-  UNIQUE (artpath)
-);
-CREATE INDEX IDX_article_index__sortid ON article_index(sortid);
-CREATE INDEX IDX_article_index__modelid ON article_index(modelid);
-
+-- CREATE TABLE content_article (
+--   id integer PRIMARY KEY,
+--   order int(11),
+--   path varchar(255),
+--   date int(11),
+--   hits int(11),
+--   digg int(11),
+--   description varchar(255),
+--   isdel tinyint(1) default '1',
+--   UNIQUE (path)
+-- );
 
 -- --------------------------------------------------------
 
@@ -199,11 +137,28 @@ CREATE INDEX IDX_keywords__keyword ON keywords(keyword);
 
 CREATE TABLE keyword_join (
   kjid integer PRIMARY KEY,
-  module varchar(50),
-  targetid int(11),
+  kjtype varchar(50),
+  itemid int(11),
   keyid int(11)
 );
-CREATE INDEX IDX_keyword_join__module ON keyword_join(module);
-CREATE INDEX IDX_keyword_join__targetid ON keyword_join(targetid);
+CREATE INDEX IDX_keyword_join__kjtype ON keyword_join(kjtype);
+CREATE INDEX IDX_keyword_join__itemid ON keyword_join(itemid);
 CREATE INDEX IDX_keyword_join__keyid ON keyword_join(keyid);
 
+
+-- --------------------------------------------------------
+
+-- 
+-- 表的结构 onepage
+-- 
+CREATE TABLE onepage (
+  oneid integer PRIMARY KEY,
+  oneid1 int(11),
+  oneorder int(11),
+  onetitle varchar(100),
+  onepath varchar(255),
+  onename varchar(50),
+  onecontent text,
+  onetemplate varchar(255),
+  description varchar(250)
+);

@@ -47,11 +47,11 @@ require COM_PATH."/defines.php";
 require COM_PATH.'/functions.php';
 
 // 加载基础类
-import('class.lazycms');
-import('class.db');
-import('class.cookie');
-import('class.validate');
-import('class.recordset');
+import('system.lazycms');
+import('system.db');
+import('system.cookie');
+import('system.validate');
+import('system.recordset');
 
 // 执行程序
 LazyCMS::run();

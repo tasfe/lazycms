@@ -172,8 +172,7 @@ function lazy_user_list(){
 }
 // lazy_user_edit *** *** www.LazyCMS.net *** ***
 function lazy_user_edit(){
-    $db = get_conn(); require_file('common.php');
-
+    $db = get_conn();
     $groupid  = isset($_REQUEST['groupid']) ? $_REQUEST['groupid'] : 0;
     $groupid  = empty($groupid) ? $db->result("SELECT `groupid` FROM `#@_system_group` WHERE 1=1 ORDER BY `groupid` DESC;") : $groupid;
     $userid   = isset($_REQUEST['userid']) ? $_REQUEST['userid'] : 0;

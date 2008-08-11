@@ -33,5 +33,5 @@ function lazy_default(){
 
         $db->batQuery(read_file(LAZY_PATH.'/lazy2_sqlite.sql'));
     }
-    echo 'OK!';
+    redirect('admin');
 }
