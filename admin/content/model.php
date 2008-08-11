@@ -79,7 +79,7 @@ function lazy_edit(){
     for ($i=1;$i<11;$i++) {
         $hl.= '<tr><td><input type="checkbox" name="list_'.$i.'" />'.$i.') 标题</td><td>title</td><td>输入框(20)</td><td>NULL</td><td>Email</td><td><a href="#"><img src="'.SITE_BASE.'common/images/icon/edit.png" class="os"/></a></td></tr>';
     }
-    $hl.= '</tbody></table><div class="but"><button onclick="checkALL(this,\'all\');" type="button">全选</button><button onclick="checkALL(this);" type="button">反选</button><button>删除</button><button>添加字段</button></div>';
+    $hl.= '</tbody></table><div class="but"><button onclick="checkALL(this,\'all\');" type="button">全选</button><button onclick="checkALL(this);" type="button">反选</button><button type="button">删除</button><button type="button">添加字段</button></div>';
     $hl.= '</div>';
     $hl.= '</fieldset>';
 
