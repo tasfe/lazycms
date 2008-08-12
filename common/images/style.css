@@ -58,4 +58,3 @@ div.jTip-foot { width:10px; height:10px; position:relative; top:-1px; float:left
 /* 拖动效果 */
 tr.Drag td{ color:#0000FF !important; background-color:#FFFFCC; }
 tr.Over td{ background-color:#FFFFCC; }
-input{ cursor:default;}

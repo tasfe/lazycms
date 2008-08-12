@@ -16,7 +16,14 @@
 		<add title="添加模型">
 			<name>模型名称</name>
 			<ename tip="模型英文名称，用来作为模板标签的一部分">模型标识</ename>
-			<fields>字段管理</fields>
+			<fields title="字段管理">
+				<add>添加字段</add>
+				<text>表单文字</text>
+				<ename>字段名</ename>
+				<input>输入类型</input>
+				<default>默认值</default>
+				<validate>验证规则</validate>
+			</fields>
 		</add>
 		<list>
 			<name>模型名称</name>
@@ -24,5 +31,21 @@
 			<table>数据表名</table>
 			<state>状态</state>
 		</list>
+		<type>
+			<input>输入框</input>
+			<textarea>文本框</textarea>
+			<select>下拉列表框</select>
+			<radio>单选框</radio>
+			<checkbox>复选框</checkbox>
+			<basic>简易编辑器</basic>
+			<editor>内容编辑器</editor>
+			<date>日期选择器</date>
+			<upfile>文件上传框</upfile>
+		</type>
+		<validate>
+			<empty>不能为空</empty>
+			<limit>限制长度</limit>
+			<equal>对比两个值</equal>
+		</validate>
 	</model>
 </lazycms>

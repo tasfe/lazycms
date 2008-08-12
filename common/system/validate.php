@@ -64,12 +64,12 @@ class Validate {
                 $p6 = isset($_POST[$p5]) ? $_POST[$p5] : null;
                 if ($p2 != $p6) { $R = $p4; }
                 break;
-            case '3' :
+            case '3' : // 直接返回错误信息
                 if ($p5=='false' || $p5==false) {
                     $R = $p4;
                 }
                 break;
-            case '4' :
+            case '4' : // 数据库验证
                 $db = get_conn();
                 if (strpos($p5,'#pro#')!==false) {
                     $p6 = str_replace('#pro#',$p2,$p5);
@@ -79,7 +79,7 @@ class Validate {
                 if ($db->result($p6) > 0) { $R = $p4; }
                 unset($db);
                 break;
-            case '5' :
+            case '5' : // 验证是含有特殊字符
                 $p6 = array("'","\\",":","*","?","<",">","|",";",",");
                 if (instr("/,.",substr($p2,-1)) || instr("/,.",substr($p2,0,1))){
                     $R = $p4; break;

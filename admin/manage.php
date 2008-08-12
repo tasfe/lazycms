@@ -103,10 +103,10 @@ function lazy_default(){
     $hl.= '</div>';
     $hl.= '<iframe src="about:blank" id="main" name="main" width="99%" marginwidth="0" height="510" marginheight="0" scrolling="no" frameborder="0"></iframe>';
     $hl.= '<div id="footer"><a href="http://www.lazycms.net" target="_blank">Copyright &copy; LazyCMS.net All Rights Reserved.</a></div>';
-    $hl.= '<div id="shortcut"><div class="head"><strong>'.L('shortcut/@title').'</strong><a href="javascript:;" onclick="toggleShortcut();">×</a></div><div class="body"></div></div>';
+    $hl.= '<div id="shortcut" class="panel"><div class="head"><strong>'.L('shortcut/@title').'</strong><a href="javascript:;" onclick="toggleShortcut();">×</a></div><div class="body"></div></div>';
     $hl.= '<div id="toolbar"><div class="logo"><a href="manage.php"><img src="system/images/toolbar-logo.png" /></a></div></div>';
 
-    $hl.= '<div id="addShortcut"><div class="head"><strong>'.L('shortcut/add/@title').'</strong><a href="javascript:;" onclick="toggleAddShortcut();">×</a></div><div class="body">';
+    $hl.= '<div id="addShortcut" class="panel"><div class="head"><strong>'.L('shortcut/add/@title').'</strong><a href="javascript:;" onclick="toggleAddShortcut();">×</a></div><div class="body">';
     $hl.= '<form id="formShortcut" name="formShortcut" method="post" action="manage.php?action=addShortcut">';
     $hl.= '<p><label>'.L('shortcut/add/name').'：</label><input class="in2" type="text" name="ShortcutName" id="ShortcutName"></p>';
     $hl.= '<p><label>'.L('shortcut/add/url').'：</label><input class="in3" type="text" name="ShortcutUrl" id="ShortcutUrl"></p>';

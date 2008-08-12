@@ -33,4 +33,27 @@ class Model{
         $db = get_conn(); if (strlen($p1)==0) { return false; }
         return str_replace('#@_',$db->config('prefix'),"#@_content_data_{$p1}");
     }
+    // getType *** *** www.LazyCMS.net *** ***
+    static function getType($p1=null){
+        $R = array(
+            'input'    => 'varchar',   // 输入框
+            'textarea' => 'text',      // 文本框
+            'radio'    => 'varchar',   // 单选框
+            'checkbox' => 'varchar',   // 复选框
+            'select'   => 'varchar',   // 下拉菜单
+            'basic'    => 'text',      // 简易编辑器
+            'editor'   => 'mediumtext',// 内容编辑器
+            'date'     => 'datetime',  // 日期选择器
+            'upfile'   => 'varchar',   // 文件上传框
+        );
+        return empty($p1) ? $R : $R[$p1];
+    }
+    // getValidate *** *** www.LazyCMS.net *** ***
+    static function getValidate(){
+        return array(
+            'empty' => '[field]|0|不能为空',
+            'limit' => '[field]|1|长度不正确|1-100',
+            'equal' => '[field]|2|两个值不相等|[field1]',
+        );
+    }
 }
