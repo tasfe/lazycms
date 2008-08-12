@@ -77,7 +77,7 @@ function lazy_edit(){
         </script>
         <style type="text/css">
         #Fields thead tr,#Fields td input{ cursor:default !important; }
-        #toggleField{width:400px; left:28%; top:0px; z-index:100;}
+        #toggleField{width:400px; left:28%; top:10px; z-index:100;}
         #toggleField .head{ width:395px;}
         #toggleField .body p label{ width:80px;}
         </style>

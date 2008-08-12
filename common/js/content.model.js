@@ -10,61 +10,64 @@
 			SemiMemory();
 			// 判断是否显示提示说明
 			if ($('#needTip').attr('checked')) {
-				$('#fieldtip').parents('p').show();
+				slideDown('#fieldtip');
 			} else {
-				$('#fieldtip').parents('p').hide();
+				slideUp('#fieldtip');
 			}
 			// 对需要说明多选按钮进行click事件绑定
 			$('#needTip').click(function(){
 				if (this.checked) {
-					$('#fieldtip').parents('p').show();
+					slideDown('#fieldtip');
 				} else {
-					$('#fieldtip').parents('p').hide();
+					slideUp('#fieldtip');
 				}
-				changeHeight();
 			});
 			// 输入类型绑定 change 事件
 			$('#fieldintype').change(function(){
 				//alert($('option:selected',this).attr('type'));
 				switch (this.value) {
 					case 'input':
-						$('#fieldlength').parents('p').show();
-						$('#fieldvalue').parents('p').hide();
+						slideDown('#fieldlength'); slideUp('#fieldvalue');
 						break;
 					case 'radio': case 'checkbox': case 'select':
-						$('#fieldlength').parents('p').hide().end().val('');
-						if ($('#fieldvalue').parents('p').show().end().val()=='') {
-							$('#fieldvalue').parents('p').show().end().val("name1:value1\nname2:value2\nname3:value3");
+						$('#fieldlength').parents('p').slideUp('fast',function(){changeHeight();}).end().val('');
+						if ($('#fieldvalue').parents('p').slideDown('fast',function(){changeHeight();}).end().val()=='') {
+							$('#fieldvalue').parents('p').slideDown('fast',function(){changeHeight();}).end().val("name1:value1\nname2:value2\nname3:value3");
 						}
 						break;
 					default:
-						$('#fieldlength').parents('p').hide().end().val('');
-						$('#fieldvalue').parents('p').hide().end().val('');
+						$('#fieldlength').parents('p').slideUp('fast',function(){changeHeight();}).end().val('');
+						$('#fieldvalue').parents('p').slideUp('fast',function(){changeHeight();}).end().val('');
 						break;
 				}
-				changeHeight();
 			});
 			// 判断是否显示提示说明
 			if ($('#isValidate').attr('checked')) {
-				$('#fieldvalidate').parents('p').show();
+				slideDown('#fieldvalidate');
 			} else {
-				$('#fieldvalidate').parents('p').hide();
+				slideUp('#fieldvalidate');
 			}
 			// 绑定需要验证规则
 			$('#isValidate').click(function(){
 				if (this.checked) {
-					$('#fieldvalidate').parents('p').show();
+					slideDown('#fieldvalidate');
 				} else {
-					$('#fieldvalidate').parents('p').hide();
+					slideUp('#fieldvalidate');
 				}
-				changeHeight();
 			});
-			changeHeight();
 		});
+		function slideDown(p1){
+			$(p1).parents('p').slideDown('fast',function(){changeHeight();});
+		}
+		function slideUp(p1){
+			$(p1).parents('p').slideUp('fast',function(){changeHeight();});
+		}
 		function changeHeight(){
 			var e = {t:$('#toggleField').height(),b:$('body').height()};
 			if (e.t > e.b) {
-				parent.$('#main').height(e.t+7);
+				parent.$('#main').height(e.t+17);
+			} else {
+				parent.$('#main').height(e.b+7);
 			}
 		}
 		return this;
