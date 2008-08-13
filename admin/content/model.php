@@ -97,16 +97,27 @@ function lazy_edit(){
 
     $hl.= '<fieldset><legend><a class="collapsed" rel=".fields">'.L('model/add/fields/@title').'</a></legend>';
     $hl.= '<div class="fields">';
-    $hl.= '<table id="Fields" class="table" cellspacing="0">';
+    $hl.= '<table id="Fields" action="'.PHP_FILE.'?action=fields" class="table" cellspacing="0">';
     $hl.= '<thead><tr><th>'.L('model/add/fields/text').'</th><th>'.L('model/add/fields/ename').'</th><th>'.L('model/add/fields/input').'</th><th>'.L('model/add/fields/default').'</th><th>'.L('model/add/fields/validate').'</th><th>'.L('common/action','system').'</th></tr></thead><tbody>';
     for ($i=1;$i<6;$i++) {
-        $hl.= '<tr id="TR_'.$i.'"><td tip="标题::标题介绍"><input type="checkbox" name="list_'.$i.'" value="'.$i.'" /> 标题</td><td>title</td><td>输入框(20)</td><td>NULL</td><td>Email</td><td><a href="javascript:;" onclick="$(\'#Fields\').addFields(\''.PHP_FILE.'?action=fields\',{name:1});"><img src="'.SITE_BASE.'common/images/icon/edit.png" class="os"/></a></td></tr>';
+        $data = array(
+            'id'      => $i,
+            'label'   => $i.'.标题',
+            'tip'     => '提示"内容',
+            'ename'   => 'tit\'le',
+            'intype'  => 'checkbox',
+            'validate'=> 'ddddd',
+            'value'   => 'sfasdf',
+            'length'  => '50',
+            'default' => '',
+        );
+        $hl.= '<tr id="TR_'.$i.'"><td tip="标题::标题介绍"><input type="checkbox" name="list_'.$i.'" value="'.$i.'" /> '.$i.'.标题</td><td>title</td><td>输入框(20)</td><td>NULL</td><td>Email</td><td><a href="javascript:;" onclick="$(this).getFields(\'#Fields\',$(\'#TR_HIDE_'.$i.'\').val());"><img src="'.SITE_BASE.'common/images/icon/edit.png" class="os"/></a><textarea class="hide" name="TR_HIDE_'.$i.'" id="TR_HIDE_'.$i.'">'.json_encode($data).'</textarea></td></tr>';
     }
     $hl.= '</tbody></table>';
     $hl.= '<div class="but"><button onclick="checkALL(\'#Fields\',\'all\');" type="button">'.L('common/selectall','system').'</button>';
     $hl.= '<button onclick="checkALL(\'#Fields\');" type="button">'.L('common/reselect','system').'</button>';
     $hl.= '<button type="button" onclick="$(\'#Fields\').delFields(\''.L('confirm/delete','system').'\');">'.L('common/delete','system').'</button>';
-    $hl.= '<button type="button" onclick="$(\'#Fields\').addFields(\''.PHP_FILE.'?action=fields\');">'.L('model/add/fields/add').'</button></div>';
+    $hl.= '<button type="button" onclick="$(this).getFields(\'#Fields\');">'.L('model/add/fields/add').'</button></div>';
     $hl.= '</div>';
     $hl.= '</fieldset>';
 
@@ -115,24 +126,36 @@ function lazy_edit(){
 }
 // lazy_fields *** *** www.LazyCMS.net *** ***
 function lazy_fields(){
+    $fieldid     = isset($_POST['id']) ? $_POST['id'] : null;
+    $fieldlabel  = isset($_POST['label']) ? $_POST['label'] : null;
+    $fieldtip    = isset($_POST['tip']) ? $_POST['tip'] : null;
+    $fieldename  = isset($_POST['ename']) ? $_POST['ename'] : null;
+    $fieldintype = isset($_POST['intype']) ? $_POST['intype'] : null;
+    $fieldvalidate = isset($_POST['validate']) ? $_POST['validate'] : null;
+    $fieldvalue    = isset($_POST['value']) ? $_POST['value'] : null;
+    $fieldlength   = isset($_POST['length']) ? $_POST['length'] : null;
+    $fieldefault   = isset($_POST['default']) ? $_POST['default'] : null;
+
     $hl = '<div id="toggleField" class="panel">';
     $hl.= '<div class="head"><strong>添加字段</strong><a href="javascript:;" onclick="$(\'#toggleField\').remove()">×</a></div><div class="body">';
-    $hl.= '<p><label>表单文字：</label><input class="in2" type="text" name="fieldlabel" id="fieldlabel" value="'.$fieldlabel.'" /><span><input type="checkbox" name="needTip" id="needTip" cookie="true"><label for="needTip">需要说明</label></span></p>';
-    $hl.= '<p class="hide"><label>提示说明：</label><textarea name="fieldtip" id="fieldtip" rows="3" class="in3">'.$fieldtip.'</textarea></p>';
-    $hl.= '<p><label>字段名：</label><input class="in2" type="text" name="fieldename" id="fieldename" value="'.$fieldename.'" /></p>';
+    $hl.= '<p><label>表单文字：</label><input tip="表单文字::输入框前的说明文字" class="in2" type="text" name="fieldlabel" id="fieldlabel" value="'.$fieldlabel.'" /><span><input type="checkbox" name="needTip" id="needTip"'.(empty($fieldtip)?null:' checked="checked"').(empty($fieldid)?' cookie="true"':null).'><label for="needTip">需要说明</label></span></p>';
+    $hl.= '<p class="hide"><label>提示说明：</label><textarea tip="提示说明::鼠标移上去之后显示的气泡帮助" name="fieldtip" id="fieldtip" rows="3" class="in3">'.$fieldtip.'</textarea></p>';
+    $hl.= '<p><label>字段名：</label><input tip="字段名::必填，用处很多了" class="in2" type="text" name="fieldename" id="fieldename" value="'.$fieldename.'" /></p>';
     $hl.= '<p><label>输入类型：</label><select name="fieldintype" id="fieldintype">';
     foreach (Model::getType() as $k=>$v) {
-        $hl.= '<option value="'.$k.'" type="'.$v.'">'.L('model/type/'.$k).'</option>';
+        $selected = $fieldintype==$k?' selected="selected"':null;
+        $hl.= '<option value="'.$k.'" type="'.$v.'"'.$selected.'>'.L('model/type/'.$k).'</option>';
     }
-    $hl.= '</select><span><input type="checkbox" name="isValidate" id="isValidate" cookie="true"><label for="isValidate">需要验证</label></span></p>';
-    $hl.= '<p class="hide"><label>序列值：</label><textarea name="fieldvalue" id="fieldvalue" rows="5" class="in3">'.$fieldvalue.'</textarea></p>';
+    $hl.= '</select><span><input type="checkbox" name="isValidate" id="isValidate"'.(empty($fieldvalidate)?null:' checked="checked"').(empty($fieldid)?' cookie="true"':null).'><label for="isValidate">需要验证</label></span></p>';
+    $hl.= '<p class="'.(empty($fieldvalue)?'hide':'show').'"><label>序列值：</label><textarea name="fieldvalue" id="fieldvalue" rows="5" class="in3">'.$fieldvalue.'</textarea></p>';
     $hl.= '<p class="hide"><label>验证规则：</label><select name="setValidate" id="setValidate">';
     foreach (Model::getValidate() as $k=>$v) {
         $hl.= '<option value="'.$v.'">'.L('model/validate/'.$k).'</option>';
     }
-    $hl.= '</select><textarea name="fieldvalidate" id="fieldvalidate" rows="3" class="in3">'.$fieldvalidate.'</textarea></p>';
+    $hl.= '</select>&nbsp;<a href="#" onclick="$(\'#setValidate\').setValidate(\'#fieldvalidate\',1);"><img src="'.SITE_BASE.'common/images/icon/add.png" class="os" /></a>&nbsp;<a href="javascript:;" onclick="$(\'#setValidate\').setValidate(\'#fieldvalidate\',0);"><img src="'.SITE_BASE.'common/images/icon/cut.png" class="os" /></a>';
+    $hl.= '<textarea tip="验证规则::250::可以有多个规则，使用“分号”分割。<br/>规则：字段名|类型|错误提示|其它" name="fieldvalidate" id="fieldvalidate" rows="3" class="in3">'.$fieldvalidate.'</textarea></p>';
     $hl.= '<p><label>最大长度：</label><input class="in1" type="text" name="fieldlength" id="fieldlength" value="'.$fieldlength.'" /></p>';
-    $hl.= '<p><label>默认值：</label><input class="in3" type="text" name="fielddefault" id="fielddefault" value="'.$fielddefault.'" /></p>';
+    $hl.= '<p><label>默认值：</label><input class="in3" type="text" name="fieldefault" id="fieldefault" value="'.$fieldefault.'" /></p>';
     $hl.= '<p class="tr"><button type="button">保存</button>&nbsp;<button type="button" onclick="$(\'#toggleField\').remove()">取消</button></p>';
     $hl.= '</div></div>'; echo $hl;
 }

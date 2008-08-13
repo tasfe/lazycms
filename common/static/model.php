@@ -51,9 +51,14 @@ class Model{
     // getValidate *** *** www.LazyCMS.net *** ***
     static function getValidate(){
         return array(
-            'empty' => '[field]|0|不能为空',
-            'limit' => '[field]|1|长度不正确|1-100',
-            'equal' => '[field]|2|两个值不相等|[field1]',
+            'empty'  => '[field]|0|'.L('model/validate/empty/@err'),
+            'limit'  => '[field]|1|'.L('model/validate/limit/@err').'|1-100',
+            'equal'  => '[field]|2|'.L('model/validate/equal/@err').'|[field1]',
+            'email'  => '[field]|validate|'.L('model/validate/email/@err').'|4',
+            'letter' => '[field]|validate|'.L('model/validate/letter/@err').'|1',
+            'number' => '[field]|validate|'.L('model/validate/number/@err').'|2',
+            'url'    => '[field]|validate|'.L('model/validate/url/@err').'|5',
+            'custom' => '[field]|validate|'.L('model/validate/custom/@err').'|'.L('model/validate/custom/@reg').'',
         );
     }
 }

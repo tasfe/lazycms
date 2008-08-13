@@ -43,9 +43,14 @@
 			<upfile>文件上传框</upfile>
 		</type>
 		<validate>
-			<empty>不能为空</empty>
-			<limit>限制长度</limit>
-			<equal>对比两个值</equal>
+			<empty err="必填项，不能为空">不能为空</empty>
+			<limit err="内容长度必须是1-100个字符">限制长度</limit>
+			<equal err="两个值的内容不相等">对比两个值相等</equal>
+			<email err="邮箱格式不正确">电子邮箱</email>
+			<letter err="必须是英文字母">英文字母</letter>
+			<number err="必须是数字">必须是数字</number>
+			<url err="输入的网址格式不正确">匹配网址</url>
+			<custom err="这里是错误提示" reg="这里是正则表达式">自定义验证</custom>
 		</validate>
 	</model>
 </lazycms>

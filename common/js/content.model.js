@@ -1,9 +1,13 @@
 (function($) {
-	// addFields *** *** www.LazyCMS.net *** ***
-	$.fn.addFields = function(p1,p2){
-		if ($('#toggleField').is('div')) { return ; }
-		var p2 = p2||{};
-		$.post(p1,p2,function(d){
+	// getFields *** *** www.LazyCMS.net *** ***
+	$.fn.getFields = function(p1,p2){
+		var p1  = $(p1);
+		var p2  = p2||{}; p2 = (typeof p2)=='string'?$.parseJSON(p2):p2;
+		var url = p1.attr('action');
+		var id = 'CONTENT_MODEL_' + Math.floor(Math.random()*100000);
+		var t = this.replaceWith('<img id="' + id + '" src="' + path() + '/images/icon/loading.gif" class="os" />');
+			$('#toggleField').remove();
+		$.post(url,p2,function(d){
 			// 将html代码加入
 			$('body').append(d);
 			// 进行半记忆化操作
@@ -55,6 +59,9 @@
 					slideUp('#fieldvalidate');
 				}
 			});
+			$('#fieldvalidate').val($('#setValidate option:selected').val()+';\n');
+			$('#toggleField').tips('tip','[@tip]'); 
+			$('#'+id).replaceWith(t);
 		});
 		function slideDown(p1){
 			$(p1).parents('p').slideDown('fast',function(){changeHeight();});
@@ -72,6 +79,16 @@
 		}
 		return this;
 	};
+	// setValidate *** *** www.LazyCMS.net *** ***
+	$.fn.setValidate = function(p1,p2){
+		var v = $(p1).val();
+		var s = $('option:selected',this).val();
+			if (p2) {
+				$(p1).val(v+s+';\n');
+			} else {
+				$(p1).val(v.replace(s+';\n',''));
+			}
+	}
 	// delFields *** *** www.LazyCMS.net *** ***
 	$.fn.delFields = function(p1){
 		if (!confirm(p1)) {return ;}
