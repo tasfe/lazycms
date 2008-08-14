@@ -6,7 +6,11 @@
     <email>mylukin@gmail.com</email>
     <source>http://www.lazycms.net</source>
 
-    
+    <common>
+		<save>保存</save>
+		<cancel>取消</cancel>
+	</common>
+
     <onepage title="单页管理"></onepage>
     <article title="文章管理"></article>
     <trash title="回收站管理"></trash>
@@ -18,11 +22,17 @@
 			<ename tip="模型英文名称，用来作为模板标签的一部分">模型标识</ename>
 			<fields title="字段管理">
 				<add>添加字段</add>
-				<text>表单文字</text>
-				<ename>字段名</ename>
+				<edit>编辑字段</edit>
+				<text tip="输入框前的说明文字">表单文字</text>
+				<ename tip="必填，用处很多了">字段名</ename>
 				<input>输入类型</input>
-				<default>默认值</default>
-				<validate>验证规则</validate>
+				<default tip="若输入类型为“日期选择器”&#13;可使用 date('Y-m-d',time()) 函数">默认值</default>
+				<validate>需要验证</validate>
+				<needtip>需要提示</needtip>
+				<tiptext tip="鼠标移上去之后显示的气泡帮助">提示文字</tiptext>
+				<value tip="例：name:value">序列值</value>
+				<rules tip="可以有多个规则，使用“分号”分割。&#13;规则：类型|错误提示|其它">验证规则</rules>
+				<length tip="只能输入数字，单位：字节">最大长度</length>
 			</fields>
 		</add>
 		<list>
@@ -52,5 +62,12 @@
 			<url err="输入的网址格式不正确">匹配网址</url>
 			<custom err="这里是错误提示" reg="这里是正则表达式">自定义验证</custom>
 		</validate>
+		<check>
+			<label>表单文字不能为空</label>
+			<ename>字段名不能为空</ename>
+			<ename1>字段名只能使用：字母、数字、下划线、中杠</ename1>
+			<length>最大长度不能为空</length>
+			<length1>最大长度必须为数字</length1>
+		</check>
 	</model>
 </lazycms>

@@ -176,10 +176,10 @@ function is_utf8($p1){
 
 // but *** *** www.LazyCMS.net *** ***
 function but($p1){
-    $R = '<p class="button"><button type="submit" class="submit" onClick="return $(this.form).save();">'.L("common/{$p1}",'system').'</button>';
-    $R.= '<button type="button" class="apply" onClick="return $(this.form).apply();">'.L("common/apply",'system').'</button>';
-    $R.= '<button type="reset" onClick="javascript:return confirm(\''.L('confirm/reset','system').'\')">'.L('common/reset','system').'</button>';
-    $R.= '<button type="button" onClick="javascript:history.back();">'.L('common/back','system').'</button></p>';
+    $R = '<p class="button"><button type="submit" class="submit" onclick="return $(this.form).save();">'.L("common/{$p1}",'system').'</button>';
+    $R.= '<button type="button" class="apply" onclick="return $(this.form).apply();">'.L("common/apply",'system').'</button>';
+    $R.= '<button type="reset" onclick="javascript:return confirm(\''.L('confirm/reset','system').'\')">'.L('common/reset','system').'</button>';
+    $R.= '<button type="button" onclick="javascript:history.back();">'.L('common/back','system').'</button></p>';
     return $R;
 }
 

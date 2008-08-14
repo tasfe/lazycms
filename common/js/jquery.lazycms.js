@@ -14,6 +14,7 @@ function LoadScript(p){
     var u = $("script[@src*=jquery.lazycms]").attr("src").replace(/\?(.*)/,'').replace("jquery.lazycms.js",p + ".js");
     document.write('<scr' + 'ipt type="text/javascript" src="' + u + '"><\/scr' + 'ipt>');
 }
+function debug(v){ alert('debug:'+v); }
 function lock(p1){ return p1 ? icon('lock') : icon('lock-open'); }
 function changeHeight(){ parent.$('#main').height($(document).find('body').height()+7); }
 function cklist(p1){ return '<input name="list" id="list_'+p1+'" type="checkbox" value="'+p1+'"/>'; }
@@ -42,12 +43,12 @@ function Purview(){
 function SemiMemory(){
 	var o = getHP();
 	$('input:checkbox[@cookie=true]').each(function(i){
-		var c = $.cookie('checkbox_'+$(this).attr('id'));
+		var c = $.cookie('checkbox_'+o.File+'_'+$(this).attr('id'));
 		if (c!==null) {
 			this.checked = (c=='true') ? true : false;
 		}
 	}).click(function(){
-		$.cookie('checkbox_'+$(this).attr('id'),this.checked,{expires:365,path:o.Path});
+		$.cookie('checkbox_'+o.File+'_'+$(this).attr('id'),this.checked,{expires:365,path:o.Path});
 	});
 	// 展开事件
 	$('a.collapse,a.collapsed')
@@ -59,14 +60,14 @@ function SemiMemory(){
 			var e = $(t.attr('rel'),t.parents('fieldset')).toggle();
 				t.toggleClass('collapse').toggleClass('collapsed');
 			if (c) {
-				$.cookie('collapse_'+t.attr('i'),e.css('display'),{expires:365,path:o.Path});
+				$.cookie('collapse_'+o.File+'_'+t.attr('i'),e.css('display'),{expires:365,path:o.Path});
 			}
 			changeHeight();
 		});
 	// 调整编辑器的高度
 	$('iframe[@src*=fckeditor.html]').each(function(i){
 		var id = this.id.replace('___Frame','');
-		var height = $.cookie('editor_height_'+id);
+		var height = $.cookie('editor_height_'+o.File+'_'+id);
 		if (height!==null) {
 			if (typeof $('#'+id).attr('rel') == 'undefined') {
 				$('#'+id).attr('rel',this.height);
@@ -80,6 +81,7 @@ function getHP(){
 	var e = {};
 		e.Host = (('https:' == self.location.protocol) ? 'https://'+self.location.hostname : 'http://'+self.location.hostname);
 		e.Path = self.location.href.replace(/\?(.*)/,'').replace(e.Host,'');
+		e.File = e.Path.split('/').pop();
 		e.Path = e.Path.substr(0,e.Path.lastIndexOf('/')+1);
 		return e;
 }
@@ -107,19 +109,19 @@ function addSub(p1,p2,p3){
 		os.attr('src',path()+'/images/icon/loading.gif');
 		$.ajax({
 			cache: false,
-			dataType: 'json',
 			url:fm.attr('action'),
 			type: 'POST',
 			data: {submit:'getsub',lists:p1,space:p2},
-			error: function(){
-				alert('error');
-			},
-			success: function(d){
-				os.attr('src',path()+'/images/icon/dir2.png');
-				$(d).each(function(){
-					tr.after($("td:first input",eval(this.code)).before(nbsp).end().addClass('sub'+p1).show());
-					addSub(this.id,p2+1,this.sub); changeHeight();
-				});
+			success: function(data){
+				if (d = $.parseJSON(data)) {
+					os.attr('src',path()+'/images/icon/dir2.png');
+					$(d).each(function(){
+						tr.after($("td:first input",eval(this.code)).before(nbsp).end().addClass('sub'+p1).show());
+						addSub(this.id,p2+1,this.sub); changeHeight();
+					});
+				} else {
+					debug(data);
+				}
 			}
 		});
 	} else {
@@ -144,10 +146,11 @@ function addSub(p1,p2,p3){
  (function($) {
 	// 展开事件 *** *** www.LazyCMS.net *** ***
 	$.fn.collapsed = function(){
+		var o = getHP()
 		this.each(function(i){
 			var t = $(this); t.attr('i',i);
 			var r = $(t.attr('rel'),t.parents('fieldset'));
-			var c = $.cookie('collapse_'+i);
+			var c = $.cookie('collapse_'+o.File+'_'+i);
 			switch (c) {
 				case 'block':
 					t.removeClass('collapse').addClass('collapsed');
@@ -236,7 +239,7 @@ function addSub(p1,p2,p3){
 								o.height(o.height()-p2);
 							}
 						}
-						$.cookie('editor_height_'+t.attr('name'),o.height(),{expires:365,path:e.Path});
+						$.cookie('editor_height_'+e.File+'_'+t.attr('name'),o.height(),{expires:365,path:e.Path});
 						changeHeight();
 						return this;
 				}
@@ -274,20 +277,18 @@ function addSub(p1,p2,p3){
             });
 			$.ajax({
 				cache: false,
-				dataType: 'json',
 				url: u,
 				type: 'POST',
 				data: {'submit':R,'lists':l},
-				error: function(){
-					$.post(u,{'submit':R,'lists':l},function(d){
-						alert(d);
-					});
-				},
-				success: function(d){
-					$.ajaxTip(d);
-					if (typeof d.url != 'undefined') {
-						if (typeof d.sleep == 'undefined') { d.sleep = 0; }
-						window.clearTimeout(sleepTimeout); sleepTimeout = window.setTimeout("self.location.href = '" + d.url + "';",d.sleep*1000);
+				success: function(data){
+					if (d = $.parseJSON(data)) {
+						$.ajaxTip(d);
+						if (typeof d.url != 'undefined') {
+							if (typeof d.sleep == 'undefined') { d.sleep = 0; }
+							window.clearTimeout(sleepTimeout); sleepTimeout = window.setTimeout("self.location.href = '" + d.url + "';",d.sleep*1000);
+						}
+					} else {
+						debug(data);
 					}
 				}
 			});
@@ -308,13 +309,13 @@ function addSub(p1,p2,p3){
 	};
     // 封装 ajaxSubmit *** *** www.LazyCMS.net *** ***
 	$.fn.ajaxSubmit = function(){
-		var t = this;
-		var m = this.data('___method');
-		var s = $('button.' + m,t);
 		// 先释放绑定的所有事件，清除错误样式
-		$('input.error').unbind().toggleClass('error');
+		$('input.error,textarea.error').unbind().toggleClass('error');
 		// 移除所有 Tips 信息
 		$('.jTip').remove();
+		var t = this.tips('tip','[@tip]');
+		var m = this.data('___method');
+		var s = $('button.' + m,t);
 		// 取得 action 地址
 		var u = t.attr('action'); if (u==''||typeof u=='undefined') { u = self.location.href; }
 		// 设置登录按钮
@@ -328,31 +329,22 @@ function addSub(p1,p2,p3){
 		// ajax submit
 		$.ajax({
 			cache: false,
-			dataType: 'json',
 			url: u,
 			type: t.attr('method').toUpperCase(),
 			data: t.serializeArray(),
-			error: function(o,m){
-				// 输出错误
-				$.ajax({
-					cache: false,
-					url: u,
-					type: t.attr('method').toUpperCase(),
-					data: t.serializeArray(),
-					success: function(d){
-						document.write(d);
+			success: function(data){
+				if (d = $.parseJSON(data)) {
+					if (d.length>0) {
+						t.error(d);
+					} else {
+						$.ajaxTip(d);
+						if (typeof d.url != 'undefined' && m != 'apply') {
+							if (typeof d.sleep == 'undefined') { d.sleep = 0; }
+							window.clearTimeout(sleepTimeout); sleepTimeout = window.setTimeout("self.location.href = '" + d.url + "';",d.sleep*1000);
+						}
 					}
-				});
-			},
-			success: function(d){
-				if (d.length>0) {
-					t.error(d);
 				} else {
-					$.ajaxTip(d);
-					if (typeof d.url != 'undefined' && m != 'apply') {
-						if (typeof d.sleep == 'undefined') { d.sleep = 0; }
-						window.clearTimeout(sleepTimeout); sleepTimeout = window.setTimeout("self.location.href = '" + d.url + "';",d.sleep*1000);
-					}
+					debug(data);
 				}
 			},
 			complete: function(){
@@ -634,8 +626,13 @@ function addSub(p1,p2,p3){
 	$.parseJSON = function(v, safe) {
 		if (safe === undefined) safe = $.parseJSON.safe;
 		if (safe && !/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/.test(v))
-			return undefined;
-		return eval('('+v+')');
+			return false;
+		try	{
+			return eval('('+v+')');
+		} catch (e)	{
+			return false;
+		}
+		
 	};
 	
 	$.parseJSON.safe = false;

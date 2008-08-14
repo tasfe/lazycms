@@ -39,35 +39,6 @@ a:link    { color: #0B55C4; text-decoration: none; }
 a:visited { color: #0B55C4; text-decoration: none; }
 a:hover   { text-decoration: underline; }
 
-/* 宽度定义 */
-.width-30 { width: 30%; }
-.width-40 { width: 40%; }
-.width-45 { width: 45%; }
-.width-55 { width: 55%; }
-.width-50 { width: 50%; }
-.width-60 { width: 60%; }
-.width-70 { width: 70%; }
-
-/* 表单长度设置 */
-.in0 ,.in1, .in2, .in3, .in4, .in5, .in6{border:solid 1px #7F9DB9;padding:2px;}
-.in0{ width:50px;}
-.in1{ width:100px;}
-.in2{ width:200px;}
-.in3{ width:300px;}
-.in4{ width:400px;}
-.in5{ width:500px;}
-.in6{ width:600px;}
-
-/* 对齐样式 */
-.tl{ text-align:left; }
-.tr{ text-align:right; }
-.tc{ text-align:center; }
-.fl{float:left; display:block;}
-.fr{float:right; display:block;}
-
-.hide{ display:none; }
-.show{ display:block; }
-
 /* 样式表 */
 .panel{ position:absolute; border:solid 1px #c6d9e7; background:#FFF; text-align:left; }
 	.panel .head{ display:table; zoom:1; height:25px; line-height:25px; border-bottom:solid 1px #c6d9e7; background:url(../../../common/images/buttons-bg.png) repeat-x 0 center; padding-left:5px;}

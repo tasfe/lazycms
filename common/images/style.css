@@ -55,6 +55,39 @@ div.jTip-foot { width:10px; height:10px; position:relative; top:-1px; float:left
 .pages a:hover{ position:relative; line-height:130%; padding:0 5px; font-size:24px; z-index:100; margin:-8px 0 0 -8px; text-decoration:none;}
 .pages a:hover + a{ position:relative; line-height:130%; padding:0 5px; font-size:18px; z-index:90; margin:-4px 0 0 -4px; text-decoration:none;}
 .pages span.active{ color:#990000 !important; font-weight:bold; }
+
 /* 拖动效果 */
 tr.Drag td{ color:#0000FF !important; background-color:#FFFFCC; }
 tr.Over td{ background-color:#FFFFCC; }
+
+/* 宽度定义 */
+.width-30 { width: 30%; }
+.width-40 { width: 40%; }
+.width-45 { width: 45%; }
+.width-55 { width: 55%; }
+.width-50 { width: 50%; }
+.width-60 { width: 60%; }
+.width-70 { width: 70%; }
+
+/* 表单长度设置 */
+.in0 ,.in1, .in2, .in3, .in4, .in5, .in6{border:solid 1px #7F9DB9;padding:2px;}
+.in0{ width:50px;}
+.in1{ width:100px;}
+.in2{ width:200px;}
+.in3{ width:300px;}
+.in4{ width:400px;}
+.in5{ width:500px;}
+.in6{ width:600px;}
+
+/* 对齐样式 */
+.tl{ text-align:left; }
+.tr{ text-align:right; }
+.tc{ text-align:center; }
+
+/* 左右浮动 */
+.fl{float:left; display:block;}
+.fr{float:right; display:block;}
+
+/* 显示隐藏 */
+.hide{ display:none; }
+.show{ display:block; }

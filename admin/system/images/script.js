@@ -60,7 +60,7 @@ function toggleShortcutActive(){
 }
 // toggleAddShortcut *** *** www.LazyCMS.net *** ***
 function toggleAddShortcut(){
-	$('input.error').unbind().toggleClass('error'); $('.jTip').remove();
+	$('input.error,textarea.error').unbind().toggleClass('error'); $('.jTip').remove();
 	var addShortcut = $('#addShortcut').toggle();
 		$('input[@name=ShortcutName]',addShortcut).val($('#main').contents().find('title').html());
 		$('input[@name=ShortcutUrl]',addShortcut).val(getUrl());
@@ -89,15 +89,18 @@ function submitShortcutSort(){
 	var opt = $('#ShortcutSort option:last');
 		$.ajax({
 			cache: false,
-			dataType: 'json',
 			url: 'manage.php?action=createSort',
 			type: 'post',
 			data: {'ShortcutSortName':s},
-			success: function(d){
-				if (d.length>0) { $('#addShortcut dl').error(d); } else {
-					if (opt.val()=='') { $('#ShortcutSort option:last').remove(); }
-					opt.clone().val(s).html(s).attr('selected',true).appendTo('#ShortcutSort');
-					$('#ShortcutSort').width($('#ShortcutSort').width()+10); toggleShortcutSort();
+			success: function(data){
+				if (d = $.parseJSON(data)) {
+					if (d.length>0) { $('#addShortcut dl').error(d); } else {
+						if (opt.val()=='') { $('#ShortcutSort option:last').remove(); }
+						opt.clone().val(s).html(s).attr('selected',true).appendTo('#ShortcutSort');
+						$('#ShortcutSort').width($('#ShortcutSort').width()+10); toggleShortcutSort();
+					}
+				} else {
+					debug(data);
 				}
 			}
 		});
@@ -105,27 +108,25 @@ function submitShortcutSort(){
 }
 // submitShortcut *** *** www.LazyCMS.net *** ***
 function submitShortcut(){
-	$('input.error').unbind().toggleClass('error'); $('.jTip').remove();
+	$('input.error,textarea.error').unbind().toggleClass('error'); $('.jTip').remove();
 	var f = $('#formShortcut');
 	var u = f.attr('action')
 		$.ajax({
 			cache: false,
-			dataType: 'json',
 			url: u,
 			type: f.attr('method').toUpperCase(),
 			data: f.serializeArray(),
-			error: function(){
-				$.post(u,f.serializeArray(),function(d){
-					alert(d);
-				});
-			},
-			success: function(d){
-				if (typeof d.status != 'undefined') {
-					$.ajaxTip(d);
-				} else if (d.length>0) {
-					$('#addShortcut').error(d);
+			success: function(data){
+				if (d = $.parseJSON(data)) {
+					if (typeof d.status != 'undefined') {
+						$.ajaxTip(d);
+					} else if (d.length>0) {
+						$('#addShortcut').error(d);
+					} else {
+						toggleAddShortcut();
+					}
 				} else {
-					toggleAddShortcut();
+					debug(data);
 				}
 			}
 		});
