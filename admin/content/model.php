@@ -85,17 +85,42 @@ function lazy_edit(){
     $val = new Validate();
     if ($val->method()) {
         $val->check('modelname|1|'.L('model/check/name').'|1-50')
-            ->check('modelename|1|'.L('model/check/ename').'|1-50;modelename|validate|'.L('model/check/ename1').'|3');
+            ->check('modelename|1|'.L('model/check/ename').'|1-50;modelename|validate|'.L('model/check/ename1').'|3;modelename|4|'.L('model/check/ename2')."|SELECT COUNT(`modelid`) FROM `#@_content_model` WHERE `modelename`='#pro#'".(empty($modelid)?null:" AND `modelid` <> {$modelid}"));
         if ($val->isVal()) {
             $val->out();
         } else {
+            $table = Model::getDBName($modelename);
             if (empty($modelid)) {
+                $structure   = null;
+                $arrayfields = json_decode($modelfields);
+                foreach ($arrayfields as $v) {
+                    $data = (array) $v;
+                    $len  = empty($data['length'])?null:'('.$data['length'].')';
+                    $type = Model::getType($data['intype']);
+                    $type = strpos($type,')')===false ? $type.$len : $type;
+                    $def  = empty($data['default'])?null:" default '".$data['default']."'";
+                    $structure.= ",\n`".$data['ename']."` {$type} {$def}";
+                }
                 $db->insert('#@_content_model',array(
                     'modelname'  => $modelname,
                     'modelename' => $modelename,
                     'modelfields'=> $modelfields,
                 ));
                 $modelid = $db->lastId();
+                // 先删除表
+                if ($db->isTable($table)) {
+                    $db->exec("DROP TABLE `{$table}`;");
+                }
+                // 创建表
+                $db->exec("CREATE TABLE `{$table}` (
+                    `id` int(11) auto_increment,
+                    `order` int(11) default '0',
+                    `date` int(11) default '0',
+                    `hits` int(11) default '0',
+                    `digg` int(11) default '0',
+                    `description` varchar(255),
+                    `isdel` tinyint(1) default '1'{$structure}
+                );");
                 $text = L('model/pop/addok');
             } else {
                 $db->update('#@_content_model',array(
@@ -204,7 +229,7 @@ function lazy_fields(){
     $hl.= '<p><label>'.L('model/add/fields/input').'：</label><select name="fieldintype" id="fieldintype">';
     foreach (Model::getType() as $k=>$v) {
         $selected = $data[4]==$k?' selected="selected"':null;
-        $hl.= '<option value="'.$k.'" type="'.$v.'"'.$selected.'>'.L('model/type/'.$k).'</option>';
+        $hl.= '<option value="'.$k.'"'.$selected.'>'.L('model/type/'.$k).'</option>';
     }
     $hl.= '</select>';
     

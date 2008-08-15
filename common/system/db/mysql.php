@@ -98,7 +98,7 @@ class lazy_mysql extends DB{
     // isTable *** *** www.LazyCMS.net *** ***
     public function isTable($p1){
         $p1 = str_replace('#@_',$this->config('prefix'),$p1);
-        $res = $this->query("SHOW TABLES");
+        $res = $this->query("SHOW TABLES;");
         while ($data = $this->fetch($res,0)) {
             if (strtolower($p1)==strtolower($data[0])) {
                 $this->free($res);

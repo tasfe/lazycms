@@ -38,13 +38,13 @@ class Model{
         $R = array(
             'input'    => 'varchar',   // 输入框
             'textarea' => 'text',      // 文本框
-            'radio'    => 'varchar',   // 单选框
-            'checkbox' => 'varchar',   // 复选框
-            'select'   => 'varchar',   // 下拉菜单
+            'radio'    => 'varchar(255)',   // 单选框
+            'checkbox' => 'varchar(255)',   // 复选框
+            'select'   => 'varchar(255)',   // 下拉菜单
             'basic'    => 'text',      // 简易编辑器
             'editor'   => 'mediumtext',// 内容编辑器
-            'date'     => 'datetime',  // 日期选择器
-            'upfile'   => 'varchar',   // 文件上传框
+            'date'     => 'int(11)',       // 日期选择器
+            'upfile'   => 'varchar(255)',   // 文件上传框
         );
         return empty($p1) ? $R : $R[$p1];
     }

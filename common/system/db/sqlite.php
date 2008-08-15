@@ -53,7 +53,21 @@ class lazy_sqlite extends DB{
     // execute *** *** www.LazyCMS.net *** ***
     private function execute($sql,$func,$type=''){
         $this->connect();
-        $sql = preg_replace(array('/\#\~(.+)\~\#/e','/`(#@_)(\w+)`/i','/`([^`]+)`/'),array('$this->config(\'\\1\')','`$2`','[$1]'),$sql);
+        $sql = preg_replace(array(
+            '/\#\~(.+)\~\#/e',
+            '/`(#@_)(\w+)`/i',
+            '/`([^`]+)`/',
+            '/ auto_increment/i',
+            '/ (tinyint|int)\((\d+)\) /i',
+            '/ mediumtext /i'
+        ),array(
+            '$this->config(\'\\1\')',
+            '`$2`',
+            '[$1]',
+            ' PRIMARY KEY',
+            ' INTEGER ',
+            ' TEXT '
+        ),$sql);
         $sql = stripslashes_deep(str_replace("\'","''",$sql),'stripcslashes');
         $this->_sql = $sql;
         
@@ -61,6 +75,17 @@ class lazy_sqlite extends DB{
             trigger_error('SQLite Query Error:<br/>SQL:'.$sql."<br>".$this->error());
         }
         return $R;
+    }
+    // isTable *** *** www.LazyCMS.net *** ***
+    public function isTable($p1){
+        $p1 = str_replace('#@_',$this->config('prefix'),$p1);
+        $res = $this->query("SELECT `name` FROM `sqlite_master` WHERE `type`='table';");
+        while ($data = $this->fetch($res,0)) {
+            if (strtolower($p1)==strtolower($data[0])) {
+                return true;
+            }
+        }
+        return false;
     }
     // batQuery *** *** www.LazyCMS.net *** ***
     public function batQuery($p1){ // $p1:sql

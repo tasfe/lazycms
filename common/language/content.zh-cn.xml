@@ -67,6 +67,7 @@
 			<label>表单文字不能为空</label>
 			<ename>此项不能为空</ename>
 			<ename1>此项只能使用：字母、数字、下划线、中杠</ename1>
+			<ename2>模型标识重复，请更换</ename2>
 			<length>最大长度不能为空</length>
 			<length1>最大长度必须为数字</length1>
 		</check>

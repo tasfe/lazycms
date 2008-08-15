@@ -79,10 +79,10 @@ CREATE INDEX IDX_content_model__modelstate ON content_model(modelstate);
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 content_article
+-- 表的结构 content_data_article
 -- 
 
--- CREATE TABLE content_article (
+-- CREATE TABLE content_data_article (
 --   id integer PRIMARY KEY,
 --   order int(11),
 --   path varchar(255),
