@@ -5,7 +5,7 @@
 		var p2  = p2||{}; p2 = (typeof p2)=='string'?$.parseJSON(p2):p2;
 		var url = p3.attr('action');
 		var id = 'CONTENT_MODEL_' + Math.floor(Math.random()*100000);
-		var t = this.replaceWith('<img id="' + id + '" src="' + path() + '/images/icon/loading.gif" class="os" />');
+		var t = this.replaceWith('<img id="' + id + '" src="' + path() + '/images/icon/loading.gif" style="cursor:default;" class="os" />');
 			$('#formFields').remove();
 		$.post(url,p2,function(d){
 			// 将html代码加入
