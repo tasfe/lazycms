@@ -63,11 +63,16 @@
 			<custom err="这里是错误提示" reg="这里是正则表达式">自定义验证</custom>
 		</validate>
 		<check>
+			<name>模型名称不能为空</name>
 			<label>表单文字不能为空</label>
-			<ename>字段名不能为空</ename>
-			<ename1>字段名只能使用：字母、数字、下划线、中杠</ename1>
+			<ename>此项不能为空</ename>
+			<ename1>此项只能使用：字母、数字、下划线、中杠</ename1>
 			<length>最大长度不能为空</length>
 			<length1>最大长度必须为数字</length1>
 		</check>
+		<pop>
+			<addok>添加成功</addok>
+			<editok>编辑成功</editok>
+		</pop>
 	</model>
 </lazycms>

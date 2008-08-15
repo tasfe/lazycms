@@ -48,7 +48,7 @@
 			// 判断是否显示提示说明
 			if ($('#isValidate').attr('checked')) {
 				slideDown('#fieldvalidate');
-				$('#fieldvalidate').val($('#setValidate option:selected').val()+';\n');
+				//$('#fieldvalidate').val($('#setValidate option:selected').val()+';\n');
 			} else {
 				slideUp('#fieldvalidate');
 			}
@@ -59,6 +59,7 @@
 				} else {
 					slideUp('#fieldvalidate');
 				}
+				$('#fieldvalidate').val('');
 			});
 			if ($('#fieldid').val()=='') {
 				$('#fieldid').val($('tbody tr',p3).size()+1);

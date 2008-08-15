@@ -47,7 +47,7 @@ function lazy_default(){
     $ds->td  = "cklist(K[0]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&modelid=' + K[0] + '\">' + K[1] + '</a>'";
     $ds->td  = "K[2]";
     $ds->td  = "K[3]";
-    $ds->td  = "(K[4]?icon('stop'):icon('tick'))";
+    $ds->td  = "(K[4]?icon('tick'):icon('stop'))";
     $ds->td  = "icon('edit','".PHP_FILE."?action=edit&modelid=' + K[0])";
     $ds->open();
     $ds->thead = '<tr><th>ID) '.L('model/list/name').'</th><th>'.L('model/list/ename').'</th><th>'.L('model/list/table').'</th><th>'.L('model/list/state').'</th><th>'.L('common/action','system').'</th></tr>';
@@ -76,9 +76,51 @@ function lazy_edit(){
     $db = get_conn();
     $modelid = isset($_REQUEST['modelid']) ? $_REQUEST['modelid'] : 0;
     $title   = empty($modelid) ? L('model/add/@title') : L('model/edit/@title');
-    $modelname  = isset($_POST['modelname']) ? $_POST['modelname'] : null;
-    $modelename = isset($_POST['modelename']) ? $_POST['modelename'] : null;
-
+    $modelname   = isset($_POST['modelname']) ? $_POST['modelname'] : null;
+    $modelename  = isset($_POST['modelename']) ? $_POST['modelename'] : null;
+    $modelfields = isset($_POST['modelfields']) ? $_POST['modelfields'] : null;
+    if (is_array($modelfields) && !empty($modelfields)) {
+        $modelfields = '['.implode(',',$modelfields).']';
+    }
+    $val = new Validate();
+    if ($val->method()) {
+        $val->check('modelname|1|'.L('model/check/name').'|1-50')
+            ->check('modelename|1|'.L('model/check/ename').'|1-50;modelename|validate|'.L('model/check/ename1').'|3');
+        if ($val->isVal()) {
+            $val->out();
+        } else {
+            if (empty($modelid)) {
+                $db->insert('#@_content_model',array(
+                    'modelname'  => $modelname,
+                    'modelename' => $modelename,
+                    'modelfields'=> $modelfields,
+                ));
+                $modelid = $db->lastId();
+                $text = L('model/pop/addok');
+            } else {
+                $db->update('#@_content_model',array(
+                    'modelname'  => $modelname,
+                    'modelename' => $modelename,
+                    'modelfields'=> $modelfields,
+                ),DB::quoteInto('`modelid` = ?',$modelid));
+                $text = L('model/pop/editok');
+            }
+            // 输出执行结果
+            echo_json(array(
+                'text' => $text,
+                'url'  => PHP_FILE,
+            ),1);
+        }
+    } else {
+        if (!empty($modelid)) {
+            $res = $db->query("SELECT * FROM `#@_content_model` WHERE `modelid`=?",$modelid);
+            if ($rs = $db->fetch($res)) {
+                $modelname   = h2encode($rs['modelname']);
+                $modelename  = h2encode($rs['modelename']);
+                $modelfields = empty($rs['modelfields'])?array():json_decode($rs['modelfields']);
+            }
+        }
+    }
     $hl = '<form id="form1" name="form1" method="post" action="">';
     $hl.= '<fieldset><legend rel="tab"><a class="collapsed" rel=".show" cookie="false">'.$title.'</a></legend>';
     $hl.= '<div class="show">';
@@ -90,19 +132,14 @@ function lazy_edit(){
     $hl.= '<div class="fields">';
     $hl.= '<table id="Fields" action="'.PHP_FILE.'?action=fields" class="table" cellspacing="0">';
     $hl.= '<thead><tr><th>'.L('model/add/fields/text').'</th><th>'.L('model/add/fields/ename').'</th><th>'.L('model/add/fields/input').'</th><th>'.L('model/add/fields/default').'</th><th>'.L('common/action','system').'</th></tr></thead><tbody>';
-    for ($i=1;$i<1;$i++) {
-        $data = array(
-            'id'      => $i,
-            'label'   => $i.'.标题',
-            'tip'     => '提示"内容',
-            'ename'   => 'tit\'le',
-            'intype'  => 'checkbox',
-            'validate'=> 'ddddd',
-            'value'   => 'sfasdf',
-            'length'  => '',
-            'default' => '',
-        );
-        $hl.= '<tr id="TR_'.$i.'"><td tip="标题::标题介绍"><input type="checkbox" name="list_'.$i.'" value="'.$i.'" /> '.$i.'.标题</td><td>title</td><td>输入框(20)</td><td>NULL</td><td><a href="javascript:;" onclick="$(this).getFields(\'#Fields\',$(\'#TR_HIDE_'.$i.'\').val());"><img src="'.SITE_BASE.'common/images/icon/edit.png" class="os"/></a><textarea class="hide" name="TR_HIDE_'.$i.'" id="TR_HIDE_'.$i.'">'.json_encode($data).'</textarea></td></tr>';
+    foreach ($modelfields as $i=>$v) {
+        $data = (array) $v;
+        $tip = empty($data['tip'])?null:' tip="'.$data['label'].'::'.$data['tip'].'"';
+        $len = empty($data['length'])?null:'('.$data['length'].')';
+        $hl.= '<tr id="TR_'.$i.'"><td'.$tip.'><input type="checkbox" name="list_'.$i.'" value="'.$i.'" /> '.$data['label'].'</td>';
+        $hl.= '<td>'.$data['ename'].'</td><td>'.L('model/type/'.$data['intype']).$len.'</td><td>'.(empty($data['default'])?'NULL':$data['default']).'</td>';
+        $hl.= '<td><a href="javascript:;" onclick="$(this).getFields(\'#Fields\',$(\'#TR_Field_'.$i.'\').val());"><img src="'.SITE_BASE.'common/images/icon/edit.png" class="os"/></a>';
+        $hl.= '<textarea class="hide" name="modelfields['.$i.']" id="TR_Field_'.$i.'">'.json_encode($data).'</textarea></td></tr>';
     }
     $hl.= '</tbody></table>';
     $hl.= '<div class="but"><button onclick="checkALL(\'#Fields\',\'all\');" type="button">'.L('common/selectall','system').'</button>';
@@ -145,8 +182,8 @@ function lazy_fields(){
             $hl.= '<td>'.$data[3].'</td>';
             $hl.= '<td>'.L('model/type/'.$data[4]).$len.'</td>';
             $hl.= '<td>'.(empty($data[9])?'NULL':$data[9]).'</td>';
-            $hl.= '<td><a href="javascript:;" onclick="$(this).getFields(\'#Fields\',$(\'#TR_HIDE_'.$data[0].'\').val());"><img src="'.SITE_BASE.'common/images/icon/edit.png" class="os"/></a>';
-            $hl.= '<textarea class="hide" name="TR_HIDE_'.$data[0].'" id="TR_HIDE_'.$data[0].'">'.json_encode($R).'</textarea></td></tr>';
+            $hl.= '<td><a href="javascript:;" onclick="$(this).getFields(\'#Fields\',$(\'#TR_Field_'.$data[0].'\').val());"><img src="'.SITE_BASE.'common/images/icon/edit.png" class="os"/></a>';
+            $hl.= '<textarea class="hide" name="modelfields['.$data[0].']" id="TR_Field_'.$data[0].'">'.json_encode($R).'</textarea></td></tr>';
             echo_json(array(
                 'id' => $data[0],
                 'tr' => $hl

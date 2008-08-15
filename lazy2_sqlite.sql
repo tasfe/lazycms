@@ -5,27 +5,6 @@
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 system_fields
--- 
-
-CREATE TABLE system_fields (
-  fieldid integer PRIMARY KEY,
-  module varchar(50),
-  fieldorder integer(11) default '0',
-  fieldname varchar(100),
-  fieldename varchar(50),
-  fieldtype varchar(20),
-  fieldlength varchar(255) default '50',
-  fieldefault varchar(255),
-  fieldvalue text,
-  widgetype varchar(20)
-);
-CREATE INDEX IDX_system_fields__fieldename ON system_fields(fieldename);
-CREATE INDEX IDX_system_fields__module ON system_fields(module);
-
--- --------------------------------------------------------
-
--- 
 -- 表的结构 system_group
 -- 
 
@@ -91,6 +70,7 @@ CREATE TABLE content_model (
   modelid integer PRIMARY KEY,
   modelname varchar(50),
   modelename varchar(50),
+  modelfields text,
   modelstate tinyint(1) default '1'
 );
 CREATE INDEX IDX_content_model__modelename ON content_model(modelename);
