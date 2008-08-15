@@ -97,15 +97,30 @@ class lazy_mysql extends DB{
     }
     // isTable *** *** www.LazyCMS.net *** ***
     public function isTable($p1){
-        $p1 = str_replace('#@_',$this->config('prefix'),$p1);
-        $res = $this->query("SHOW TABLES;");
-        while ($data = $this->fetch($res,0)) {
-            if (strtolower($p1)==strtolower($data[0])) {
+        $tbl = str_replace('#@_',$this->config('prefix'),$p1);
+        $res = mysql_list_tables($this->config('name'), $this->_conn);
+        while ($rs = mysql_fetch_row($res)) {
+            if (strtolower($tbl)==strtolower($rs[0])) {
                 $this->free($res);
                 return true;
             }
         }
         $this->free($res);
+        return false;
+    }
+    // isField *** *** www.LazyCMS.net *** ***
+    public function isField($p1,$p2){
+        $table   = str_replace('#@_',$this->config('prefix'),$p1);
+        $fields  = mysql_list_fields($this->config('name'), $table, $this->_conn);
+        $columns = mysql_num_fields($fields);
+        for ($i=0; $i<$columns; $i++) {
+            $field = mysql_field_name($fields, $i);
+            if (strtolower($field)==strtolower($p2)) {
+                $this->free($fields);
+                return true;
+            }
+        }
+        $this->free($fields);
         return false;
     }
     // batQuery *** *** www.LazyCMS.net *** ***

@@ -237,9 +237,10 @@ function lazy_fields(){
         foreach ($eField as $field) {
             $data[] = isset($_POST['field'.$field]) ? $_POST['field'.$field] : null;
         }
+        $isField = !instr('id,order,date,hits,digg,description,isdel',$data[3]);
         $val = new Validate();
         $val->check('fieldlabel|0|'.L('model/check/label'));
-        $val->check('fieldename|0|'.L('model/check/ename').';fieldename|validate|'.L('model/check/ename1').'|3');
+        $val->check('fieldename|0|'.L('model/check/ename').';fieldename|validate|'.L('model/check/ename1').'|3;fieldename|3|'.L('model/check/restrict').'|'.$isField);
         if ($data[4]=='input') {
             $val->check('fieldlength|0|'.L('model/check/length').';fieldlength|validate|'.L('model/check/length1').'|2');
         }
@@ -276,7 +277,7 @@ function lazy_fields(){
     $hl.= '<div class="head"><strong>'.L('model/add/fields/'.(empty($data[0])?'add':'edit')).'</strong><a href="javascript:;" onclick="$(\'#formFields\').remove()">×</a></div><div class="body">';
     $hl.= '<p><label>'.L('model/add/fields/text').'：</label><input tip="'.L('model/add/fields/text').'::'.L('model/add/fields/text/@tip').'" class="in2" type="text" name="fieldlabel" id="fieldlabel" value="'.$data[1].'" /><span><input type="checkbox" name="needTip" id="needTip"'.(empty($data[2])?null:' checked="checked"').(empty($data[0])?' cookie="true"':null).'><label for="needTip">'.L('model/add/fields/needtip').'</label></span></p>';
     $hl.= '<p class="hide"><label>'.L('model/add/fields/tiptext').'：</label><textarea tip="'.L('model/add/fields/tiptext').'::'.L('model/add/fields/tiptext/@tip').'" name="fieldtip" id="fieldtip" rows="3" class="in3">'.$data[2].'</textarea></p>';
-    $hl.= '<p><label>'.L('model/add/fields/ename').'：</label><input tip="'.L('model/add/fields/ename').'::'.L('model/add/fields/ename/@tip').'" class="in2" type="text" name="fieldename" id="fieldename" value="'.$data[3].'" /></p>';
+    $hl.= '<p><label>'.L('model/add/fields/ename').'：</label><input tip="'.L('model/add/fields/ename').'::300::'.L('model/add/fields/ename/@tip').'" class="in2" type="text" name="fieldename" id="fieldename" value="'.$data[3].'" /></p>';
     $hl.= '<p><label>'.L('model/add/fields/input').'：</label><select name="fieldintype" id="fieldintype">';
     foreach (Model::getType() as $k=>$v) {
         $selected = $data[4]==$k?' selected="selected"':null;

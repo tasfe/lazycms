@@ -24,7 +24,7 @@
 				<add>添加字段</add>
 				<edit>编辑字段</edit>
 				<text tip="输入框前的说明文字">表单文字</text>
-				<ename tip="必填，用处很多了">字段名</ename>
+				<ename tip="必填，用处很多了，以下字段名已被系统使用：(id,order,date,hits,digg,description,isdel)">字段名</ename>
 				<input>输入类型</input>
 				<default tip="若输入类型为“日期选择器”&#13;可使用 date('Y-m-d',time()) 函数">默认值</default>
 				<validate>需要验证</validate>
@@ -68,6 +68,7 @@
 			<ename>此项不能为空</ename>
 			<ename1>此项只能使用：字母、数字、下划线、中杠</ename1>
 			<ename2>模型标识重复，请更换</ename2>
+            <restrict>此字段名已被系统使用</restrict>
 			<length>最大长度不能为空</length>
 			<length1>最大长度必须为数字</length1>
 		</check>
