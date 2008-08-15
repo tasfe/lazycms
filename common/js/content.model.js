@@ -28,7 +28,6 @@
 			});
 			// 输入类型绑定 change 事件
 			$('#fieldintype').change(function(){
-				//alert($('option:selected',this).attr('type'));
 				switch (this.value) {
 					case 'input':
 						slideDown('#fieldlength'); slideUp('#fieldvalue');
@@ -48,7 +47,6 @@
 			// 判断是否显示提示说明
 			if ($('#isValidate').attr('checked')) {
 				slideDown('#fieldvalidate');
-				//$('#fieldvalidate').val($('#setValidate option:selected').val()+';\n');
 			} else {
 				slideUp('#fieldvalidate');
 			}

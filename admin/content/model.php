@@ -79,7 +79,7 @@ function lazy_edit(){
     $modelname   = isset($_POST['modelname']) ? $_POST['modelname'] : null;
     $modelename  = isset($_POST['modelename']) ? $_POST['modelename'] : null;
     $modelfields = isset($_POST['modelfields']) ? $_POST['modelfields'] : null;
-    if (is_array($modelfields) && !empty($modelfields)) {
+    if (is_array($modelfields)) {
         $modelfields = '['.implode(',',$modelfields).']';
     }
     $val = new Validate();
@@ -89,11 +89,11 @@ function lazy_edit(){
         if ($val->isVal()) {
             $val->out();
         } else {
-            $table = Model::getDBName($modelename);
+            $table  = Model::getDBName($modelename);
+            $fields = json_decode($modelfields);
             if (empty($modelid)) {
                 $structure   = null;
-                $arrayfields = json_decode($modelfields);
-                foreach ($arrayfields as $v) {
+                foreach ($fields as $v) {
                     $data = (array) $v;
                     $len  = empty($data['length'])?null:'('.$data['length'].')';
                     $type = Model::getType($data['intype']);
@@ -101,12 +101,6 @@ function lazy_edit(){
                     $def  = empty($data['default'])?null:" default '".$data['default']."'";
                     $structure.= ",\n`".$data['ename']."` {$type} {$def}";
                 }
-                $db->insert('#@_content_model',array(
-                    'modelname'  => $modelname,
-                    'modelename' => $modelename,
-                    'modelfields'=> $modelfields,
-                ));
-                $modelid = $db->lastId();
                 // 先删除表
                 if ($db->isTable($table)) {
                     $db->exec("DROP TABLE `{$table}`;");
@@ -121,8 +115,31 @@ function lazy_edit(){
                     `description` varchar(255),
                     `isdel` tinyint(1) default '1'{$structure}
                 );");
+                $db->insert('#@_content_model',array(
+                    'modelname'  => $modelname,
+                    'modelename' => $modelename,
+                    'modelfields'=> $modelfields,
+                ));
+                $modelid = $db->lastId();
                 $text = L('model/pop/addok');
             } else {
+                $modelfields = array();
+                $structure   = null;
+                foreach ($fields as $v) {
+                    $data = (array) $v;
+                    if ($data['ename']!==$data['oname']) {
+                        $len  = empty($data['length'])?null:'('.$data['length'].')';
+                        $type = Model::getType($data['intype']);
+                        $type = strpos($type,')')===false ? $type.$len : $type;
+                        $def  = empty($data['default'])?null:" default '".$data['default']."'";
+                        // sqlite 的alter语句怎么写？
+                        $structure.= " CHANGE `".$data['oname']."` `".$data['ename']."` {$type} {$def},";
+                        $data['oname'] = $data['ename'];
+                    }
+                    $modelfields[] = $data;
+                }
+                $structure = rtrim($structure,',');
+                $db->exec("ALTER TABLE `{$table}` {$structure};");
                 $db->update('#@_content_model',array(
                     'modelname'  => $modelname,
                     'modelename' => $modelename,
@@ -158,7 +175,7 @@ function lazy_edit(){
     $hl.= '<table id="Fields" action="'.PHP_FILE.'?action=fields" class="table" cellspacing="0">';
     $hl.= '<thead><tr><th>'.L('model/add/fields/text').'</th><th>'.L('model/add/fields/ename').'</th><th>'.L('model/add/fields/input').'</th><th>'.L('model/add/fields/default').'</th><th>'.L('common/action','system').'</th></tr></thead><tbody>';
     foreach ($modelfields as $i=>$v) {
-        $data = (array) $v;
+        $data = (array) $v; $i++;
         $tip = empty($data['tip'])?null:' tip="'.$data['label'].'::'.$data['tip'].'"';
         $len = empty($data['length'])?null:'('.$data['length'].')';
         $hl.= '<tr id="TR_'.$i.'"><td'.$tip.'><input type="checkbox" name="list_'.$i.'" value="'.$i.'" /> '.$data['label'].'</td>';
@@ -181,7 +198,7 @@ function lazy_edit(){
 function lazy_fields(){
     $data   = array();
     $method = isset($_POST['method']) ? $_POST['method'] : null;
-    $fields = "id,label,tip,ename,intype,width,validate,value,length,default";//9
+    $fields = "id,label,tip,ename,intype,width,validate,value,length,default,oname";//10
     $eField = explode(',',$fields);
     if ($method=='POST') {
         foreach ($eField as $field) {
@@ -200,6 +217,7 @@ function lazy_fields(){
             foreach ($eField as $k=>$field){
                 $R[$field] = $data[$k];
             }
+            $R['oname'] = empty($R['oname']) ? $R['ename'] : $R['oname'];
             $tip = empty($data[2])?null:' tip="'.$data[1].'::'.$data[2].'"';
             $len = empty($data[8])?null:'('.$data[8].')';
             $hl = '<tr id="TR_'.$data[0].'">';
@@ -256,5 +274,5 @@ function lazy_fields(){
     $hl.= '<p class="'.(empty($data[8]) && !empty($data[0])?'hide':'show').'"><label>'.L('model/add/fields/length').'：</label><input tip="'.L('model/add/fields/length/@tip').'" class="in1" type="text" name="fieldlength" id="fieldlength" value="'.$data[8].'" /></p>';
     $hl.= '<p><label>'.L('model/add/fields/default').'：</label><input tip="'.L('model/add/fields/default').'::250::'.ubbencode(L('model/add/fields/default/@tip')).'" class="in3" type="text" name="fielddefault" id="fielddefault" value="'.$data[9].'" /></p>';
     $hl.= '<p class="tr"><button type="button" onclick="$(this).submitFields();">'.L('common/save').'</button>&nbsp;<button type="button" onclick="$(\'#formFields\').remove()">'.L('common/cancel').'</button></p>';
-    $hl.= '</div></div><input id="fieldid" name="fieldid" type="hidden" value="'.$data[0].'" /><input name="method" type="hidden" value="POST" /></form>'; echo $hl;
+    $hl.= '</div></div><input id="fieldid" name="fieldid" type="hidden" value="'.$data[0].'" /><input name="fieldoname" type="hidden" value="'.$data[10].'" /><input name="method" type="hidden" value="POST" /></form>'; echo $hl;
 }
