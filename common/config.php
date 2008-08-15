@@ -51,7 +51,7 @@ return array(
 
     /* 服务器设置 */
     'TIME_ZONE'  => 8,
-    'DSN_CONFIG' => 'sqlite://path=db/LazyCMS.db',
+    'DSN_CONFIG' => 'mysql://root@localhost/lazy/lazy2',
 
     /* Cookie设置 */
     'COOKIE_DOMAIN' => '',

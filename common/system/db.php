@@ -127,8 +127,6 @@ abstract class DB {
         switch ($scheme) {
             // DSN format: lazysql://path=LazyCMS#DataBase
             case 'lazysql':
-            // DSN format: sqlite://path=LazyCMS.db
-            case 'sqlite': 
                 if (preg_match('/^(\w+):\/\/path\=(.+)$/i',trim($DSN),$info)){
                     $info[2] = str_replace(array('\\','/'),SEPARATOR,trim($info[2]));
                     if (strncmp($info[2],SEPARATOR,1)!==0 && strpos($info[2],':/')===false && strpos($info[2],':\\')===false){

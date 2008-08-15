@@ -90,15 +90,18 @@
 			} else {
 				$(p1).val(v.replace(s+';\n',''));
 			}
+			return this;
 	}
 	// delFields *** *** www.LazyCMS.net *** ***
-	$.fn.delFields = function(p1){
-		if (!confirm(p1)) {return ;}
-		$('input:checkbox',this).each(function(i){
-			if (this.checked) {
-				$(this).parents('tr').remove();
-			}
+	$.fn.delFields = function(p1,p2){
+		if (!confirm(p2)) {return ;}
+		var listids = '';
+		$('input:checkbox:checked',this).each(function(){
+			listids += (listids=='')?this.value:','+this.value;
+			$(this).parents('tr').remove();
 		});
+		$(p1).val(listids);
+		return this;
 	};
 	// submitFields *** *** www.LazyCMS.net *** ***
 	$.fn.submitFields = function(){
@@ -130,6 +133,7 @@
 				}
 			}
 		});
+		return this;
 	}
 })(jQuery);
 

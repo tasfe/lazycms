@@ -58,6 +58,26 @@ function lazy_default(){
 
     print_x(L('model/@title'),$ds->fetch());
 }
+// lazy_set *** *** www.LazyCMS.net *** ***
+function lazy_set(){
+    $db = get_conn();
+    $submit = isset($_POST['submit']) ? strtolower($_POST['submit']) : null;
+    $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
+    switch($submit){
+        case 'delete':
+            empty($lists) ? echo_json(L('model/pop/select'),0) : null ;
+            $res = $db->query("SELECT `modelename` FROM `#@_content_model` WHERE `modelid` IN({$lists});");
+            while ($rs = $db->fetch($res,0)) {
+                $db->exec("DROP TABLE IF EXISTS `".Model::getDBName($rs[0])."`;");
+            }
+            $db->exec("DELETE FROM `#@_content_model` WHERE `modelid` IN({$lists});");
+            echo_json(array(
+                'text' => L('model/pop/deleteok'),
+                'url'  => $_SERVER["HTTP_REFERER"],
+            ),1);
+            break;
+    }
+}
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){
     G('HEAD','
@@ -79,6 +99,8 @@ function lazy_edit(){
     $modelname   = isset($_POST['modelname']) ? $_POST['modelname'] : null;
     $modelename  = isset($_POST['modelename']) ? $_POST['modelename'] : null;
     $modelfields = isset($_POST['modelfields']) ? $_POST['modelfields'] : null;
+    $oldename    = isset($_POST['oldename']) ? $_POST['oldename'] : null;
+    $delFields   = isset($_POST['delFields']) ? $_POST['delFields'] : null;
     if (is_array($modelfields)) {
         $modelfields = '['.implode(',',$modelfields).']';
     }
@@ -98,23 +120,21 @@ function lazy_edit(){
                     $len  = empty($data['length'])?null:'('.$data['length'].')';
                     $type = Model::getType($data['intype']);
                     $type = strpos($type,')')===false ? $type.$len : $type;
-                    $def  = empty($data['default'])?null:" default '".$data['default']."'";
+                    $def  = empty($data['default'])?null:" DEFAULT '".$data['default']."'";
                     $structure.= ",\n`".$data['ename']."` {$type} {$def}";
                 }
                 // 先删除表
-                if ($db->isTable($table)) {
-                    $db->exec("DROP TABLE `{$table}`;");
-                }
+                $db->exec("DROP TABLE IF EXISTS `{$table}`;");
                 // 创建表
-                $db->exec("CREATE TABLE `{$table}` (
-                    `id` int(11) auto_increment,
-                    `order` int(11) default '0',
-                    `date` int(11) default '0',
-                    `hits` int(11) default '0',
-                    `digg` int(11) default '0',
-                    `description` varchar(255),
-                    `isdel` tinyint(1) default '1'{$structure}
-                );");
+                $db->exec("CREATE TABLE IF NOT EXISTS `{$table}` (
+                    `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    `order` INT(11) DEFAULT '0',
+                    `date` INT(11) DEFAULT '0',
+                    `hits` INT(11) DEFAULT '0',
+                    `digg` INT(11) DEFAULT '0',
+                    `description` VARCHAR(255),
+                    `isdel` TINYINT(1) DEFAULT '1'{$structure}
+                ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");
                 $db->insert('#@_content_model',array(
                     'modelname'  => $modelname,
                     'modelename' => $modelename,
@@ -123,6 +143,10 @@ function lazy_edit(){
                 $modelid = $db->lastId();
                 $text = L('model/pop/addok');
             } else {
+                if ($oldename!=$modelename) {
+                    $otable = Model::getDBName($oldename);
+                    $db->exec("RENAME TABLE `{$otable}` TO `{$table}`;");
+                }
                 $modelfields = array();
                 $structure   = null;
                 foreach ($fields as $v) {
@@ -131,19 +155,28 @@ function lazy_edit(){
                         $len  = empty($data['length'])?null:'('.$data['length'].')';
                         $type = Model::getType($data['intype']);
                         $type = strpos($type,')')===false ? $type.$len : $type;
-                        $def  = empty($data['default'])?null:" default '".$data['default']."'";
-                        // sqlite 的alter语句怎么写？
+                        $def  = empty($data['default'])?null:" DEFAULT '".$data['default']."'";
                         $structure.= " CHANGE `".$data['oname']."` `".$data['ename']."` {$type} {$def},";
                         $data['oname'] = $data['ename'];
                     }
                     $modelfields[] = $data;
                 }
-                $structure = rtrim($structure,',');
-                $db->exec("ALTER TABLE `{$table}` {$structure};");
+                if (!empty($structure)) {
+                    $structure = rtrim($structure,',');
+                    $db->exec("ALTER TABLE `{$table}` {$structure};");    
+                }
+                if (!empty($delFields)) {
+                    $arrFields = explode(',',$delFields); $structure = null;
+                    foreach ($arrFields as $field) {
+                        $structure.= " DROP `{$field}`,";
+                    }
+                    $structure = rtrim($structure,',');
+                    $db->exec("ALTER TABLE `{$table}` {$structure};");
+                }
                 $db->update('#@_content_model',array(
                     'modelname'  => $modelname,
                     'modelename' => $modelename,
-                    'modelfields'=> $modelfields,
+                    'modelfields'=> json_encode($modelfields),
                 ),DB::quoteInto('`modelid` = ?',$modelid));
                 $text = L('model/pop/editok');
             }
@@ -178,7 +211,7 @@ function lazy_edit(){
         $data = (array) $v; $i++;
         $tip = empty($data['tip'])?null:' tip="'.$data['label'].'::'.$data['tip'].'"';
         $len = empty($data['length'])?null:'('.$data['length'].')';
-        $hl.= '<tr id="TR_'.$i.'"><td'.$tip.'><input type="checkbox" name="list_'.$i.'" value="'.$i.'" /> '.$data['label'].'</td>';
+        $hl.= '<tr id="TR_'.$i.'"><td'.$tip.'><input type="checkbox" name="list_'.$i.'" value="'.$data['oname'].'" /> '.$data['label'].'</td>';
         $hl.= '<td>'.$data['ename'].'</td><td>'.L('model/type/'.$data['intype']).$len.'</td><td>'.(empty($data['default'])?'NULL':$data['default']).'</td>';
         $hl.= '<td><a href="javascript:;" onclick="$(this).getFields(\'#Fields\',$(\'#TR_Field_'.$i.'\').val());"><img src="'.SITE_BASE.'common/images/icon/edit.png" class="os"/></a>';
         $hl.= '<textarea class="hide" name="modelfields['.$i.']" id="TR_Field_'.$i.'">'.json_encode($data).'</textarea></td></tr>';
@@ -186,12 +219,12 @@ function lazy_edit(){
     $hl.= '</tbody></table>';
     $hl.= '<div class="but"><button onclick="checkALL(\'#Fields\',\'all\');" type="button">'.L('common/selectall','system').'</button>';
     $hl.= '<button onclick="checkALL(\'#Fields\');" type="button">'.L('common/reselect','system').'</button>';
-    $hl.= '<button type="button" onclick="$(\'#Fields\').delFields(\''.L('confirm/delete','system').'\');">'.L('common/delete','system').'</button>';
+    $hl.= '<button type="button" onclick="$(\'#Fields\').delFields(\'#delFields\',\''.L('confirm/delete','system').'\');">'.L('common/delete','system').'</button>';
     $hl.= '<button type="button" onclick="$(this).getFields(\'#Fields\',{\'method\':\'get\'});">'.L('model/add/fields/add').'</button></div>';
     $hl.= '</div>';
     $hl.= '</fieldset>';
 
-    $hl.= but('save').'<input name="modelid" type="hidden" value="'.$modelid.'" /></form>';
+    $hl.= but('save').'<input name="modelid" type="hidden" value="'.$modelid.'" /><input id="oldename" name="oldename" type="hidden" value="'.$modelename.'" /><input id="delFields" name="delFields" type="hidden" value="" /></form>';
     print_x($title,$hl);
 }
 // lazy_fields *** *** www.LazyCMS.net *** ***
@@ -221,7 +254,7 @@ function lazy_fields(){
             $tip = empty($data[2])?null:' tip="'.$data[1].'::'.$data[2].'"';
             $len = empty($data[8])?null:'('.$data[8].')';
             $hl = '<tr id="TR_'.$data[0].'">';
-            $hl.= '<td'.$tip.'><input type="checkbox" name="list_'.$data[0].'" value="'.$data[0].'" /> '.$data[1].'</td>';
+            $hl.= '<td'.$tip.'><input type="checkbox" name="list_'.$data[0].'" value="'.$data[10].'" /> '.$data[1].'</td>';
             $hl.= '<td>'.$data[3].'</td>';
             $hl.= '<td>'.L('model/type/'.$data[4]).$len.'</td>';
             $hl.= '<td>'.(empty($data[9])?'NULL':$data[9]).'</td>';

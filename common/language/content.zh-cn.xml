@@ -74,6 +74,8 @@
 		<pop>
 			<addok>添加成功</addok>
 			<editok>编辑成功</editok>
+            <deleteok>删除成功</deleteok>
+            <select>请选择一个模型</select>
 		</pop>
 	</model>
 </lazycms>
