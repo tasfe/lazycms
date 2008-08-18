@@ -256,6 +256,7 @@
 	</sysinfo>
     
     <error>
+        <invalid>您输入的参数有误！</invalid>
         <title>系统发生错误</title>
         <position>错误位置</position>
         <errinfo>错误信息</errinfo>

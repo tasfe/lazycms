@@ -91,7 +91,7 @@ class Recordset {
             foreach ($R1 as $v) {
                 if ($v!='-') {
                     $R2 = explode(':',$v);
-                    $R.= '<button onclick="" type="button"'.$disabled.'>'.$R2[1].'</button>';
+                    $R.= '<button onclick="$(this).gp(\''.$R2[0].'\');" type="button"'.$disabled.'>'.$R2[1].'</button>';
                 }
             }
         }

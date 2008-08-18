@@ -282,7 +282,9 @@ function addSub(p1,p2,p3){
 				data: {'submit':R,'lists':l},
 				success: function(data){
 					if (d = $.parseJSON(data)) {
-						$.ajaxTip(d);
+						if (typeof d.text != 'undefined') {
+							$.ajaxTip(d);
+						}
 						if (typeof d.url != 'undefined') {
 							if (typeof d.sleep == 'undefined') { d.sleep = 0; }
 							window.clearTimeout(sleepTimeout); sleepTimeout = window.setTimeout("self.location.href = '" + d.url + "';",d.sleep*1000);

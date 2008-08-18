@@ -77,6 +77,7 @@
 			<editok>编辑成功</editok>
             <deleteok>删除成功</deleteok>
             <select>请选择一个模型</select>
+            <success>操作成功</success>
 		</pop>
 	</model>
 </lazycms>

@@ -43,7 +43,7 @@ function lazy_default(){
     $ds = new Recordset();
     $ds->create("SELECT * FROM `#@_content_model` WHERE 1=1 ORDER BY `modelid` DESC");
     $ds->action = PHP_FILE."?action=set";
-    $ds->but = $ds->button();
+    $ds->but = $ds->button('unlock:启用|lock:禁用');
     $ds->td  = "cklist(K[0]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&modelid=' + K[0] + '\">' + K[1] + '</a>'";
     $ds->td  = "K[2]";
     $ds->td  = "K[3]";
@@ -63,9 +63,9 @@ function lazy_set(){
     $db = get_conn();
     $submit = isset($_POST['submit']) ? strtolower($_POST['submit']) : null;
     $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
+    empty($lists) ? echo_json(L('model/pop/select'),0) : null ;
     switch($submit){
         case 'delete':
-            empty($lists) ? echo_json(L('model/pop/select'),0) : null ;
             $res = $db->query("SELECT `modelename` FROM `#@_content_model` WHERE `modelid` IN({$lists});");
             while ($rs = $db->fetch($res,0)) {
                 $db->exec("DROP TABLE IF EXISTS `".Model::getDBName($rs[0])."`;");
@@ -75,6 +75,17 @@ function lazy_set(){
                 'text' => L('model/pop/deleteok'),
                 'url'  => $_SERVER["HTTP_REFERER"],
             ),1);
+            break;
+        case 'lock': case 'unlock':
+            $state = ($submit=='lock') ? 0 : 1;
+            $db->update('#@_content_model',array('modelstate' => $state),"`modelid` IN({$lists})");
+            echo_json(array(
+                'text' => L('model/pop/success'),
+                'url'  => PHP_FILE
+            ));
+            break;
+        default :
+            echo_json(L('error/invalid','system'));
             break;
     }
 }
@@ -206,7 +217,7 @@ function lazy_edit(){
     $hl.= '<fieldset><legend><a class="collapsed" rel=".fields">'.L('model/add/fields/@title').'</a></legend>';
     $hl.= '<div class="fields">';
     $hl.= '<table id="Fields" action="'.PHP_FILE.'?action=fields" class="table" cellspacing="0">';
-    $hl.= '<thead><tr><th>'.L('model/add/fields/text').'</th><th>'.L('model/add/fields/ename').'</th><th>'.L('model/add/fields/input').'</th><th>'.L('model/add/fields/default').'</th><th>'.L('common/action','system').'</th></tr></thead><tbody>';
+    $hl.= '<thead><tr class="nodrop"><th>'.L('model/add/fields/text').'</th><th>'.L('model/add/fields/ename').'</th><th>'.L('model/add/fields/input').'</th><th>'.L('model/add/fields/default').'</th><th>'.L('common/action','system').'</th></tr></thead><tbody>';
     foreach ($modelfields as $i=>$v) {
         $data = (array) $v; $i++;
         $tip = empty($data['tip'])?null:' tip="'.$data['label'].'::'.$data['tip'].'"';
