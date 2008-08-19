@@ -9,6 +9,8 @@
     <common>
 		<save>保存</save>
 		<cancel>取消</cancel>
+		<lock>禁用</lock>
+		<unlock>启用</unlock>
 	</common>
 
     <onepage title="单页管理"></onepage>

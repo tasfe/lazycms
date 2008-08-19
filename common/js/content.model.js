@@ -140,10 +140,7 @@
 // tableDnD *** *** www.LazyCMS.net *** ***
 function tableDnD(selector){
 	$(selector).tableDnD({
-		onDragClass: 'Drag',
-		onDrop: function(table, row) {
-			//alert($.tableDnD.serialize());
-		}
+		onDragClass: 'Drag'
 	}).find('tr').hover(function(){
 		$(this).addClass('Over');
 	},function(){

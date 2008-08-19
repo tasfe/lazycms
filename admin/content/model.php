@@ -43,7 +43,7 @@ function lazy_default(){
     $ds = new Recordset();
     $ds->create("SELECT * FROM `#@_content_model` WHERE 1=1 ORDER BY `modelid` DESC");
     $ds->action = PHP_FILE."?action=set";
-    $ds->but = $ds->button('unlock:启用|lock:禁用');
+    $ds->but = $ds->button('unlock:'.L('common/unlock').'|lock:'.L('common/lock').'');
     $ds->td  = "cklist(K[0]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&modelid=' + K[0] + '\">' + K[1] + '</a>'";
     $ds->td  = "K[2]";
     $ds->td  = "K[3]";
