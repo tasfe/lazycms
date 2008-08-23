@@ -4,7 +4,7 @@
 		<dt>内容管理</dt>
 		<a href="content/onepage.php" class="page">单页管理</a>
 		<a href="content/article.php" class="article">文章管理</a>
-		<a href="content/category.php" class="category">分类管理</a>
+		<a href="content/sort.php" class="sort">分类管理</a>
         <a href="content/model.php" class="model">模型管理</a>
 	</dl>
 	<dl>

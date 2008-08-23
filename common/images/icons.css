@@ -33,7 +33,7 @@
 .icon-16-info		{ background: url(menu-icons.png) no-repeat 2px -178px !important; }
 .icon-16-home		{ background: url(menu-icons.png) no-repeat 2px -215px !important; }
 .icon-16-help		{ background: url(menu-icons.png) no-repeat 2px -249px !important; }
-.icon-16-category	{ background: url(menu-icons.png) no-repeat 2px -319px !important; }
+.icon-16-sort		{ background: url(menu-icons.png) no-repeat 2px -319px !important; }
 .icon-16-trash		{ background: url(menu-icons.png) no-repeat 2px -354px !important; }
 .icon-16-page		{ background: url(menu-icons.png) no-repeat 2px -390px !important; }
 .icon-16-article	{ background: url(menu-icons.png) no-repeat 2px -427px !important; }
@@ -45,6 +45,6 @@
 .icon-32-config		{ background-image:url(icon-32/config.png) !important; }
 .icon-32-install	{ background-image:url(icon-32/install.png) !important; }
 .icon-32-article	{ background-image:url(icon-32/article.png) !important; }
-.icon-32-category	{ background-image:url(icon-32/category.png) !important; }
+.icon-32-sort		{ background-image:url(icon-32/sort.png) !important; }
 .icon-32-model		{ background-image:url(icon-32/model.png) !important; }
 .icon-32-page		{ background-image:url(icon-32/page.png) !important; }

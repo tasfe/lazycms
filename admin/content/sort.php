@@ -29,32 +29,14 @@ require '../../global.php';
 
 // lazy_before *** *** www.LazyCMS.net *** ***
 function lazy_before(){
-    check_login('model');
+    check_login('category');
     // 设置公共菜单
     G('TABS',
-        L('model/@title').':model.php;'.
-        L('model/add/@title').':model.php?action=edit'
+        L('model/@title').':sort.php;'.
+        L('model/add/@title').':sort.php?action=edit'
     );
-    G('SCRIPT','LoadScript("content.model");');
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){ 
-    $db = get_conn();
-    $ds = new Recordset();
-    $ds->create("SELECT * FROM `#@_content_model` WHERE 1=1 ORDER BY `modelid` DESC");
-    $ds->action = PHP_FILE."?action=set";
-    $ds->but = $ds->button('unlock:启用|lock:禁用');
-    $ds->td  = "cklist(K[0]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&modelid=' + K[0] + '\">' + K[1] + '</a>'";
-    $ds->td  = "K[2]";
-    $ds->td  = "K[3]";
-    $ds->td  = "(K[4]?icon('tick'):icon('stop'))";
-    $ds->td  = "icon('edit','".PHP_FILE."?action=edit&modelid=' + K[0])";
-    $ds->open();
-    $ds->thead = '<tr><th>ID) '.L('model/list/name').'</th><th>'.L('model/list/ename').'</th><th>'.L('model/list/table').'</th><th>'.L('model/list/state').'</th><th>'.L('common/action','system').'</th></tr>';
-    while ($rs = $ds->result()) {
-        $ds->tbody = "E(".$rs['modelid'].",'".t2js(h2encode($rs['modelname']))."','".t2js(h2encode($rs['modelename']))."','".t2js(h2encode(Model::getDBName($rs['modelename'])))."',".$rs['modelstate'].");";
-    }
-    $ds->close();
-
-    print_x(L('model/@title'),$ds->fetch());
+    
 }
