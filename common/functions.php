@@ -335,7 +335,7 @@ function print_v($p1=null){
     $hl.= $title ? '<title>'.G('TITLE').'</title>': null;
     $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
     $hl.= '<link href="../system/images/main.css" rel="stylesheet" type="text/css" />';
-    $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.2.6"></script>';
+    $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=r1.2.6"></script>';
     $hl.= '<script type="text/javascript" src="../../common/js/jquery.lazycms.js?ver=1.0"></script>';
     $hl.= '<script type="text/javascript">parent.document.title = "'.G('TITLE').' - '.L('system/@title','system').'";'.G('SCRIPT');
     $hl.= '$(document).ready(function(){ ';

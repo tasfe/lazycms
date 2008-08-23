@@ -29,6 +29,7 @@ require 'global.php';
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){ 
     $db = DB::factory(C('DSN_CONFIG'));
+    $db->select_db();
     $db->batQuery(read_file(LAZY_PATH.'/lazy2.sql'));
     redirect('admin');
 }
