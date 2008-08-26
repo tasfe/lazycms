@@ -408,7 +408,7 @@ function addSub(p1,p2,p3){
 			var jTop    = parent.$('#main').is('iframe')?parent.$('#top').height():0;
 			var jTip    = parent.$('.jTip'); jTip.width(width);
 			var jHeight = jTip.height();
-				jTip.css({'top':(e.pageY - jHeight ) + 'px','left':(e.pageX + 2) + 'px'}).fadeIn('fast');
+				jTip.css({'top':(e.pageY + jTop - jHeight ) + 'px','left':(e.pageX + 2) + 'px'}).fadeIn('fast');
 				$(selector,t).mousemove(function(e){
 					jTip.css({'top':(e.pageY + jTop - jHeight ) + 'px','left':(e.pageX + 2) + 'px'});
 				});

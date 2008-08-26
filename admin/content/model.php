@@ -110,7 +110,7 @@ function lazy_edit(){
     $modelname   = isset($_POST['modelname']) ? $_POST['modelname'] : null;
     $modelename  = isset($_POST['modelename']) ? $_POST['modelename'] : null;
     $modelpath   = isset($_POST['modelpath']) ? $_POST['modelpath'] : null;
-    $modelfields = isset($_POST['modelfields']) ? $_POST['modelfields'] : null;
+    $modelfields = isset($_POST['modelfields']) ? $_POST['modelfields'] : array();
     $oldename    = isset($_POST['oldename']) ? $_POST['oldename'] : null;
     $delFields   = isset($_POST['delFields']) ? $_POST['delFields'] : null;
     if (is_array($modelfields)) {

@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `lazy_content_model` (
   `modelename` varchar(50) NOT NULL COMMENT '模型英文标识',
   `modelpath` varchar(100) NOT NULL COMMENT '生成文件的命名规则',
   `modelfields` text COMMENT '字段序列',
-  `modelstate` tinyint(1) default '1' COMMENT '1:禁用',
+  `modelstate` tinyint(1) default '1' COMMENT '1:启用',
   PRIMARY KEY  (`modelid`),
   UNIQUE KEY `modelename` (`modelename`),
   KEY `modelstate` (`modelstate`)

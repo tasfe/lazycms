@@ -12,11 +12,14 @@
 		<cancel>取消</cancel>
 		<lock>禁用</lock>
 		<unlock>启用</unlock>
+		<attr>更多属性</attr>
 	</common>
 
     <onepage title="单页管理"></onepage>
     <article title="文档管理">
-		<add title="添加文档">
+		<add>
+			<keywords tip="关键字之间用“英文逗号”或“空格”分开">关键词</keywords>
+			<description tip="Meta简述，不要超过250个字符">Meta简述</description>
 		</add>
 	</article>
     <trash title="回收站管理"></trash>

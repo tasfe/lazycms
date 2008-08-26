@@ -29,18 +29,42 @@ require '../../global.php';
 
 // lazy_before *** *** www.LazyCMS.net *** ***
 function lazy_before(){
-    check_login('article'); $menu = null;
+    check_login('article');
     // 设置公共菜单
-    foreach (Model::getModel() as $k=>$v) { $menu.= L('common/add').$v['modelname'].':article.php?action=edit&model='.$v['modelename'].';'; }
-    G('TABS',L('article/@title').':article.php;'.$menu);
+    $menus = array(); $model = array();
+    foreach (Model::getModel() as $v) {
+        $model[] = $v['modelename'];
+        $menus[] = L('common/add').$v['modelname'].':article.php?action=edit&model='.$v['modelename'];
+    }
+    G('MODEL',$model);
+    G('TABS',L('article/@title').':article.php;'.implode(';',$menus));
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){ 
-    print_x(L('article/@title'),'开发中...');
+    print_x(L('article/@title'),'显示一个搜索过滤器，直接进行搜索');
 }
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){
-    $model = isset($_REQUEST['model'])?strtolower($_REQUEST['model']):0;
-    $db = get_conn(); $M = Model::getModel($model);
-    print_x(L('common/add').$M['modelname'],L('common/add').$M['modelname'].'开发中...',$M['i']+2);
+    $db = get_conn();
+    $md = isset($_REQUEST['model'])?strtolower($_REQUEST['model']):null;
+    $num    = array_search($md,G('MODEL'))+2;
+    $model  = Model::getModel($md); if (!$model) { trigger_error(L('error/invalid','system')); }
+    $title  = L('common/add').$model['modelname'];
+
+    import('system.field2tag');
+    $tag = new Field2Tag($model['modelfields']);
+    //$data = $tag->_POST();
+    $hl = '<form id="form1" name="form1" method="post" action="">';
+    $hl.= '<fieldset><legend rel="tab"><a class="collapsed" rel=".more-attr" cookie="false">'.$title.'</a></legend>';
+    $hl.= '<div class="more-attr">';
+    $hl.= $tag->fetch('<p><label>{label}：</label>{object}</p>');
+    $hl.= '</div></fieldset>';
+
+    $hl.= '<fieldset><legend><a class="collapse" rel=".more-attr">'.L('common/attr').'</a></legend>';
+    $hl.= '<div class="more-attr">';
+    $hl.= '<p><label>'.L('article/add/keywords').'：</label><input tip="'.L('article/add/keywords').'::250::'.L('article/add/keywords/@tip').'" class="in4" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" onclick="$(\'#keywords\').getKeywords(\'#onetitle\',\'#onecontent\')" tip="'.L('common/get/@tip','system').'">'.L('common/get','system').'</button></p>';
+    $hl.= '<p><label>'.L('article/add/description').'：</label><textarea tip="'.L('article/add/description').'::'.L('article/add/description/@tip').'" name="description" id="description" rows="5" class="in4">'.$description.'</textarea></p>';
+    $hl.= '</div></fieldset>';
+    $hl.= but('save').'<input name="id" type="hidden" value="'.$id.'" /></form>';
+    print_x($title,$hl,$num);
 }
