@@ -226,8 +226,8 @@ function lazy_edit(){
     $hl.= '<div class="fields">';
     $hl.= '<table id="Fields" action="'.PHP_FILE.'?action=fields" class="table" cellspacing="0">';
     $hl.= '<thead><tr class="nodrop"><th>'.L('model/add/fields/text').'</th><th>'.L('model/add/fields/ename').'</th><th>'.L('model/add/fields/input').'</th><th>'.L('model/add/fields/default').'</th><th>'.L('common/action','system').'</th></tr></thead><tbody>';
-    foreach ($modelfields as $i=>$v) {
-        $data = (array) $v; $i++;
+    foreach ($modelfields as $v) {
+        $data = (array) $v; $i = $data['id'];
         $tip = empty($data['tip'])?null:' tip="'.$data['label'].'::'.$data['tip'].'"';
         $len = empty($data['length'])?null:'('.$data['length'].')';
         $hl.= '<tr id="TR_'.$i.'"><td'.$tip.'><input type="checkbox" name="list_'.$i.'" value="'.$data['oname'].'" /> '.$data['label'].'</td>';

@@ -62,6 +62,7 @@ function lazy_edit(){
 
     $hl.= '<fieldset><legend><a class="collapse" rel=".more-attr">'.L('common/attr').'</a></legend>';
     $hl.= '<div class="more-attr">';
+    $hl.= '<p><label>'.L('article/add/path').'：</label><input tip="::300::'.ubbencode(L('model/add/path/@tip')).'<br/>'.h2encode(L('article/add/path/@tip')).'" class="in5" type="text" name="path" id="path" value="'.(empty($path)?$model['modelpath']:$path).'" /></p>';
     $hl.= '<p><label>'.L('article/add/keywords').'：</label><input tip="'.L('article/add/keywords').'::250::'.L('article/add/keywords/@tip').'" class="in4" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" onclick="$(\'#keywords\').getKeywords(\'#onetitle\',\'#onecontent\')" tip="'.L('common/get/@tip','system').'">'.L('common/get','system').'</button></p>';
     $hl.= '<p><label>'.L('article/add/description').'：</label><textarea tip="'.L('article/add/description').'::'.L('article/add/description/@tip').'" name="description" id="description" rows="5" class="in4">'.$description.'</textarea></p>';
     $hl.= '</div></fieldset>';

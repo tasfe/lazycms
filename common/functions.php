@@ -722,9 +722,9 @@ function editor($p1,$p2=array()){
             $A1['setimg'] = isset($A1['setimg']) ? $A1['setimg'] : array(0,0);
             $A1['resize'] = isset($A1['resize']) ? $A1['resize'] : false;
             $but = '<style type="text/css">';
-            $but.= '.fckeditor_button{margin-top:3px}';
-            $but.= '.fckeditor_button .fr a{margin-left:8px;}';
-            $but.= '</style><div class="fckeditor_button">';
+            $but.= '.'.$p1.'_fckeditor_button{width:'.$A1['width'].'; margin-top:3px;}';
+            $but.= '.'.$p1.'_fckeditor_button .fr a{margin-left:8px;}';
+            $but.= '</style><div class="'.$p1.'_fckeditor_button">';
             $but.= '<div class="fl">';
             if ($A1['upimg']) { $but.= '<button type="button">'.L('fckeditor/upimg','system').'</button>'; }
             if ($A1['upfile']) { $but.= '<button type="button">'.L('fckeditor/upfile','system').'</button>'; }
@@ -742,8 +742,8 @@ function editor($p1,$p2=array()){
             // 是否显示调整编辑器高度按钮
             if ($A1['resize']) {
                 $but.= '<div class="fr">';
-                $but.= '<a href="javascript:;" onclick="$(\'#onecontent\').editor().resize(\'+\',100);"><img src="'.SITE_BASE.'common/images/icon/add.png" /></a>';
-                $but.= '<a href="javascript:;" onclick="$(\'#onecontent\').editor().resize(\'-\',100);"><img src="'.SITE_BASE.'common/images/icon/cut.png" /></a>';
+                $but.= '<a href="javascript:;" onclick="$(\'#'.$p1.'\').editor().resize(\'+\',100);"><img src="'.SITE_BASE.'common/images/icon/add.png" /></a>';
+                $but.= '<a href="javascript:;" onclick="$(\'#'.$p1.'\').editor().resize(\'-\',100);"><img src="'.SITE_BASE.'common/images/icon/cut.png" /></a>';
                 $but.= '</div>';    
             }
             $but.= '</div>';
@@ -773,6 +773,7 @@ function editor($p1,$p2=array()){
         default:
             break;
     }
+    unset($A1);
 }
 // check_user *** *** www.LazyCMS.net *** ***
 function check_user($p1=null,$p2=null){
