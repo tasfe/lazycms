@@ -428,9 +428,9 @@ function form_opts($p1,$p2,$p3,$p4=null){
 
 // menu *** *** www.LazyCMS.net *** ***
 function menu($p1){
-    if (($p2 = strpos($p1,'|'))!==false) {
-        $p2 = substr($p1,0,$p2);
-        $p1 = substr($p1,$p2+1);
+    if (($p3 = strpos($p1,'|'))!==false) {
+        $p2 = substr($p1,0,$p3);
+        $p1 = substr($p1,$p3+1);
     }
     $p3 = basename(PHP_FILE);
     $p4 = isset($_REQUEST['action']) ? strtolower($_REQUEST['action']) : null;

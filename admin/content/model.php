@@ -41,7 +41,7 @@ function lazy_before(){
 function lazy_default(){ 
     $db = get_conn();
     $ds = new Recordset();
-    $ds->create("SELECT * FROM `#@_content_model` WHERE 1=1 ORDER BY `modelid` DESC");
+    $ds->create("SELECT * FROM `#@_content_model` WHERE 1=1 ORDER BY `modelid` ASC");
     $ds->action = PHP_FILE."?action=set";
     $ds->but = $ds->button('unlock:'.L('common/unlock').'|lock:'.L('common/lock').'');
     $ds->td  = "cklist(K[0]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&modelid=' + K[0] + '\">' + K[1] + '</a>'";
@@ -218,7 +218,7 @@ function lazy_edit(){
     $hl.= '<div class="show">';
     $hl.= '<p><label>'.L('model/add/name').'：</label><input class="in2" type="text" name="modelname" id="modelname" value="'.$modelname.'" /></p>';
     $hl.= '<p><label>'.L('model/add/ename').'：</label><input tip="'.L('model/add/ename').'::'.L('model/add/ename/@tip').'" class="in3" type="text" name="modelename" id="modelename" value="'.$modelename.'" /></p>';
-    $hl.= '<p><label>'.L('model/add/path').'：</label><input tip="::250::'.ubbencode(L('model/add/path/@tip')).'" class="in3" type="text" name="modelpath" id="modelpath" value="'.(empty($modelpath)?'%Y%m%d/%I.htm':null).'" />';
+    $hl.= '<p><label>'.L('model/add/path').'：</label><input tip="::250::'.ubbencode(L('model/add/path/@tip')).'" class="in3" type="text" name="modelpath" id="modelpath" value="'.(empty($modelpath)?'%Y%m%d/%I.htm':$modelpath).'" />';
     $hl.= '</p>';
     $hl.= '</div></fieldset>';
 
@@ -256,7 +256,7 @@ function lazy_fields(){
         foreach ($eField as $field) {
             $data[] = isset($_POST['field'.$field]) ? $_POST['field'.$field] : null;
         }
-        $isField = !instr('id,order,date,hits,digg,description,isdel',$data[3]);
+        $isField = !instr('id,order,date,hits,digg,path,description,isdel',$data[3]);
         $val = new Validate();
         $val->check('fieldlabel|0|'.L('model/check/label'));
         $val->check('fieldename|0|'.L('model/check/ename').';fieldename|validate|'.L('model/check/ename1').'|3;fieldename|3|'.L('model/check/restrict').'|'.$isField);

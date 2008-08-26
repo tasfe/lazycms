@@ -61,4 +61,20 @@ class Model{
             'custom' => 'validate|'.L('model/validate/custom/@err').'|'.L('model/validate/custom/@reg').'',
         );
     }
+    // getModel *** *** www.LazyCMS.net *** ***
+    static function getModel($p1=null){
+        $db  = get_conn();
+        $R   = array(); $i = 0;
+        $res = $db->query("SELECT * FROM `#@_content_model` WHERE 1=1 ORDER BY `modelid` ASC");
+        while ($rs = $db->fetch($res)) {
+            if ($p1==$rs['modelename']){
+                $rs['i'] = $i;
+                return $rs;
+            } else {
+                $R[] = $rs;
+            }
+            $i++;
+        }
+        return $R;
+    }
 }

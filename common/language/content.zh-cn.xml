@@ -7,6 +7,7 @@
     <source>http://www.lazycms.net</source>
 
     <common>
+		<add>添加</add>
 		<save>保存</save>
 		<cancel>取消</cancel>
 		<lock>禁用</lock>
@@ -14,7 +15,10 @@
 	</common>
 
     <onepage title="单页管理"></onepage>
-    <article title="文章管理"></article>
+    <article title="文档管理">
+		<add title="添加文档">
+		</add>
+	</article>
     <trash title="回收站管理"></trash>
     <sort title="分类管理">
 		<add title="添加分类">
