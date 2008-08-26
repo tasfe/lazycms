@@ -869,7 +869,7 @@ function get_user($p1=null,$p2=null){
 
 // lazycms_error *** *** www.LazyCMS.net *** ***
 function lazycms_error($errno, $errstr, $errfile, $errline){
-    if (!in_array($errno,array(E_PARSE,E_USER_ERROR,E_USER_WARNING,E_USER_NOTICE,E_ALL,E_STRICT))) { return ; }
+    if (!in_array($errno,array(E_PARSE,E_USER_ERROR,E_USER_WARNING,E_USER_NOTICE,E_ALL))) { return ; }
     $errfile = replace_root($errfile); $errstr = replace_root($errstr);
     $trace = debug_backtrace(); unset($trace[0]);
     $error = array(); $traceInfo = null;

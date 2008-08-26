@@ -16,17 +16,21 @@
     <onepage title="单页管理"></onepage>
     <article title="文章管理"></article>
     <trash title="回收站管理"></trash>
-    <sort title="分类管理"></sort>
+    <sort title="分类管理">
+		<add title="添加分类">
+		</add>
+	</sort>
     <model title="模型管理">
 		<edit title="编辑模型"></edit>
 		<add title="添加模型">
 			<name>模型名称</name>
 			<ename tip="模型英文名称，用来作为模板标签的一部分">模型标识</ename>
+			<path tip="[b]生成文件的命名规则：[/b]&#13;%Y=4位数字表示的年份：1999 或 2008&#13;%y=2位数字表示的年份：99 或 08&#13;%m=数字表示的月份，01 到 12&#13;%d=月份中的第几天，01 到 31&#13;%I=ID编号&#13;%M=MD5值&#13;%P=标题拼音">生成规则</path>
 			<fields title="字段管理">
 				<add>添加字段</add>
 				<edit>编辑字段</edit>
 				<text tip="输入框前的说明文字">表单文字</text>
-				<ename tip="必填，用处很多了，以下字段名已被系统使用：(id,order,date,hits,digg,description,isdel)">字段名</ename>
+				<ename tip="必填，用处很多了，以下字段名已被系统使用：(id,order,date,hits,digg,path,description,isdel)">字段名</ename>
 				<input>输入类型</input>
 				<default tip="若输入类型为“日期选择器”&#13;可使用 date('Y-m-d',time()) 函数">默认值</default>
 				<validate>需要验证</validate>

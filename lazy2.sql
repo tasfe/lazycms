@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS `lazy_content_model` (
   `modelid` int(11) NOT NULL auto_increment,
   `modelname` varchar(50) NOT NULL COMMENT '模型名称',
   `modelename` varchar(50) NOT NULL COMMENT '模型英文标识',
+  `modelpath` varchar(100) NOT NULL COMMENT '生成文件的命名规则',
   `modelfields` text COMMENT '字段序列',
   `modelstate` tinyint(1) default '1' COMMENT '1:禁用',
   PRIMARY KEY  (`modelid`),
@@ -51,28 +52,6 @@ CREATE TABLE IF NOT EXISTS `lazy_keywords` (
 
 -- 
 -- 导出表中的数据 `lazy_keywords`
--- 
-
-
--- --------------------------------------------------------
-
--- 
--- 表的结构 `lazy_keyword_join`
--- 
-
-CREATE TABLE IF NOT EXISTS `lazy_keyword_join` (
-  `kjid` int(11) NOT NULL auto_increment COMMENT '编号',
-  `kjtype` varchar(50) NOT NULL COMMENT '分类使用模块名称',
-  `itemid` int(11) NOT NULL COMMENT '文档编号',
-  `keyid` int(11) NOT NULL,
-  PRIMARY KEY  (`kjid`),
-  KEY `kjtype` (`kjtype`),
-  KEY `itemid` (`itemid`),
-  KEY `keyid` (`keyid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
-
--- 
--- 导出表中的数据 `lazy_keyword_join`
 -- 
 
 

@@ -32,11 +32,15 @@ function lazy_before(){
     check_login('category');
     // 设置公共菜单
     G('TABS',
-        L('model/@title').':sort.php;'.
-        L('model/add/@title').':sort.php?action=edit'
+        L('sort/@title').':sort.php;'.
+        L('sort/add/@title').':sort.php?action=edit'
     );
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){ 
+    print_x(L('sort/@title'),'开发中...');
+}
+// lazy_edit *** *** www.LazyCMS.net *** ***
+function lazy_edit(){
     
 }

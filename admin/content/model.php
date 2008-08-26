@@ -109,6 +109,7 @@ function lazy_edit(){
     $title   = empty($modelid) ? L('model/add/@title') : L('model/edit/@title');
     $modelname   = isset($_POST['modelname']) ? $_POST['modelname'] : null;
     $modelename  = isset($_POST['modelename']) ? $_POST['modelename'] : null;
+    $modelpath   = isset($_POST['modelpath']) ? $_POST['modelpath'] : null;
     $modelfields = isset($_POST['modelfields']) ? $_POST['modelfields'] : null;
     $oldename    = isset($_POST['oldename']) ? $_POST['oldename'] : null;
     $delFields   = isset($_POST['delFields']) ? $_POST['delFields'] : null;
@@ -137,18 +138,21 @@ function lazy_edit(){
                 // 先删除表
                 $db->exec("DROP TABLE IF EXISTS `{$table}`;");
                 // 创建表
-                $db->exec("CREATE TABLE IF NOT EXISTS `{$table}` (
+                $db->exec("
+                CREATE TABLE IF NOT EXISTS `{$table}` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     `order` INT(11) DEFAULT '0',
                     `date` INT(11) DEFAULT '0',
                     `hits` INT(11) DEFAULT '0',
                     `digg` INT(11) DEFAULT '0',
+                    `path` VARCHAR(255),
                     `description` VARCHAR(255),
                     `isdel` TINYINT(1) DEFAULT '1'{$structure}
                 ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");
                 $db->insert('#@_content_model',array(
                     'modelname'  => $modelname,
                     'modelename' => $modelename,
+                    'modelpath'  => $modelpath,
                     'modelfields'=> $modelfields,
                 ));
                 $modelid = $db->lastId();
@@ -187,6 +191,7 @@ function lazy_edit(){
                 $db->update('#@_content_model',array(
                     'modelname'  => $modelname,
                     'modelename' => $modelename,
+                    'modelpath'  => $modelpath,
                     'modelfields'=> json_encode($modelfields),
                 ),DB::quoteInto('`modelid` = ?',$modelid));
                 $text = L('model/pop/editok');
@@ -203,6 +208,7 @@ function lazy_edit(){
             if ($rs = $db->fetch($res)) {
                 $modelname   = h2encode($rs['modelname']);
                 $modelename  = h2encode($rs['modelename']);
+                $modelpath   = $rs['modelpath'];
                 $modelfields = empty($rs['modelfields'])?array():json_decode($rs['modelfields']);
             }
         }
@@ -212,6 +218,8 @@ function lazy_edit(){
     $hl.= '<div class="show">';
     $hl.= '<p><label>'.L('model/add/name').'：</label><input class="in2" type="text" name="modelname" id="modelname" value="'.$modelname.'" /></p>';
     $hl.= '<p><label>'.L('model/add/ename').'：</label><input tip="'.L('model/add/ename').'::'.L('model/add/ename/@tip').'" class="in3" type="text" name="modelename" id="modelename" value="'.$modelename.'" /></p>';
+    $hl.= '<p><label>'.L('model/add/path').'：</label><input tip="::250::'.ubbencode(L('model/add/path/@tip')).'" class="in3" type="text" name="modelpath" id="modelpath" value="'.(empty($modelpath)?'%Y%m%d/%I.htm':null).'" />';
+    $hl.= '</p>';
     $hl.= '</div></fieldset>';
 
     $hl.= '<fieldset><legend><a class="collapsed" rel=".fields">'.L('model/add/fields/@title').'</a></legend>';

@@ -391,11 +391,12 @@ function addSub(p1,p2,p3){
 		var t = this;
 		$(selector,t).hover(function(e){
 			var width = 200; // 默认宽度
-			$('.jTip').remove();
+			parent.$('.jTip').remove();
 			var text  = $(this).attr(attr);
 			
 			if (text.indexOf('::')>-1) {
-				var title = '<strong>' + text.substr(0,text.indexOf('::')) + '</strong><br/>';
+				var title = text.substr(0,text.indexOf('::'));
+					title = title!=''? '<strong>' + title + '</strong><br/>':'';
 				var text  = text.substr(text.indexOf('::')+2);
 					if (text.indexOf('::')>-1) {
 						width = text.substr(0,text.indexOf('::'));
@@ -403,15 +404,16 @@ function addSub(p1,p2,p3){
 					}
 					text = title + text;
 			}
-			$('body').append('<div class="jTip"><div class="jTip-body">' + text + '</div><div class="jTip-foot"></div></div>');
-			var jTip    = $('.jTip'); jTip.width(width);
+			parent.$('body').append('<div class="jTip"><div class="jTip-body">' + text + '</div><div class="jTip-foot"></div></div>');
+			var jTop    = parent.$('#main').is('iframe')?parent.$('#top').height():0;
+			var jTip    = parent.$('.jTip'); jTip.width(width);
 			var jHeight = jTip.height();
 				jTip.css({'top':(e.pageY - jHeight ) + 'px','left':(e.pageX + 2) + 'px'}).fadeIn('fast');
 				$(selector,t).mousemove(function(e){
-					jTip.css({'top':(e.pageY - jHeight ) + 'px','left':(e.pageX + 2) + 'px'});
+					jTip.css({'top':(e.pageY + jTop - jHeight ) + 'px','left':(e.pageX + 2) + 'px'});
 				});
 		},function(){
-			$('.jTip').remove();
+			parent.$('.jTip').remove();
 		});
 		return this;
 	};
