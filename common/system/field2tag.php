@@ -33,9 +33,7 @@ class Field2Tag {
     // __construct *** *** www.LazyCMS.net *** ***
     function __construct($model){
         $this->model  = $model;
-        $this->fields = json_decode($model['modelfields']);
-        foreach ($this->fields as &$f) { $f = (array)$f; }
-        //print_r($this->model);
+        $this->fields = object_deep(json_decode($model['modelfields']));
     }
     // _POST *** *** www.LazyCMS.net *** ***
     public function _POST(){
@@ -49,11 +47,12 @@ class Field2Tag {
     public function tag($p1){
         $R = null;
         $f = $p1;
-        $tip     = empty($f['tip'])?null:' tip="'.$f['label'].'::'.$f['tip'].'"';
+        $tip     = empty($f['tip'])?null:' tip="'.$f['label'].'::'.ubbencode(h2encode($f['tip'])).'"';
         $name    = $f['ename'];
         $class   = $f['width']!='auto'?' class="'.$f['width'].'"':null;
         $length  = $f['length'];
         $default = $f['default'];
+        $opts    = isset($f['option'])?$f['option']:null;
         switch ($f['intype']) {
             case 'input':
                 $R = "<input{$tip}{$class} type=\"text\" name=\"{$name}\" id=\"{$name}\" maxlength=\"{$length}\" value=\"{$default}\" />";
@@ -92,34 +91,25 @@ class Field2Tag {
                 }
                 $R.= '</span>';
                 break;
-            case 'basic':
-                $width = $f['width']=='auto'?'100%':$this->class2px($f['width']);
-                $R = '<div class="box">'.editor($name,array(
-                    'upimg'   => true,    
-                    'snapimg' => array(1,1),
-                    'dellink' => array(1,1),
-                    'toolbar' => 'Basic',
-                    'resize'  => true,
-                    'value'   => $default,
-                    'width'   => $width,
-                    'height'  => 150,
-                    'editor'  => 'fckeditor'
-                )).'</div>';
-                break;
-            case 'editor':
-                $width = $f['width']=='auto'?'100%':$this->class2px($f['width']);
-                $R = '<div class="box">'.editor($name,array(
-                    'upimg'     => true,
-                    'upfile'    => true,
-                    'pagebreak' => true,
-                    'snapimg'   => array(1,1),
-                    'dellink'   => array(1,1),
-                    'setimg'    => array(1,1),
-                    'resize'    => true,
+            case 'editor': case 'basic':
+                $width   = $f['width']=='auto'?'100%':$this->class2px($f['width']);
+                $setting = array(
+                    'upimg'     => $opts['upimg'],
+                    'upfile'    => $opts['upfile'],
+                    'pagebreak' => $opts['break'],
+                    'snapimg'   => array($opts['snapimg'],1),
+                    'dellink'   => array($opts['dellink'],1),
+                    'setimg'    => array($opts['setimg'],1),
+                    'resize'    => $opts['resize'],
                     'value'     => $default,
                     'width'     => $width,
                     'editor'    => 'fckeditor'
-                )).'</div>';
+                );
+                if ($f['intype']=='basic') {
+                    $setting['toolbar'] = 'Basic';
+                    $setting['height']  = 150;
+                }
+                $R = '<div class="box">'.editor($name,$setting).'</div>';
                 break;
             case 'date':
 

@@ -2,7 +2,7 @@
 	// getFields *** *** www.LazyCMS.net *** ***
 	$.fn.getFields = function(p1,p2){
 		var p3  = $(p1);
-		var p2  = p2||{}; p2 = (typeof p2)=='string'?$.parseJSON(p2):p2;
+		var p2  = {JSON:p2};// p2 = (typeof p2)=='string'?$.parseJSON(p2):p2;
 		var url = p3.attr('action');
 		var id = 'CONTENT_MODEL_' + Math.floor(Math.random()*100000);
 		var t = this.replaceWith('<img id="' + id + '" src="' + path() + '/images/icon/loading.gif" style="cursor:default;" class="os" />');
@@ -30,17 +30,19 @@
 			$('#fieldintype').change(function(){
 				switch (this.value) {
 					case 'input':
-						slideDown('#fieldlength'); slideUp('#fieldvalue');
+						slideDown('#fieldlength'); slideUp('#fieldvalue'); slideUp('#fieldoption');
 						break;
 					case 'radio': case 'checkbox': case 'select':
-						$('#fieldlength').parents('p').slideUp('fast',function(){changeHeight();}).end().val('');
-						if ($('#fieldvalue').parents('p').slideDown('fast',function(){changeHeight();}).end().val()=='') {
-							$('#fieldvalue').parents('p').slideDown('fast',function(){changeHeight();}).end().val("name1:value1\nname2:value2\nname3:value3");
+						slideUp('#fieldlength').val(''); slideUp('#fieldoption');
+						if (slideDown('#fieldvalue').val()=='') {
+							slideDown('#fieldvalue').val("name1:value1\nname2:value2\nname3:value3");
 						}
 						break;
+					case 'basic': case 'editor':
+						slideDown('#fieldoption'); slideUp('#fieldlength').val(''); slideUp('#fieldvalue').val('');
+						break;
 					default:
-						$('#fieldlength').parents('p').slideUp('fast',function(){changeHeight();}).end().val('');
-						$('#fieldvalue').parents('p').slideUp('fast',function(){changeHeight();}).end().val('');
+						slideUp('#fieldoption'); slideUp('#fieldlength').val(''); slideUp('#fieldvalue').val('');
 						break;
 				}
 			});
@@ -66,10 +68,10 @@
 			$('#'+id).replaceWith(t);
 		});
 		function slideDown(p1){
-			$(p1).parents('p').slideDown('fast',function(){changeHeight();});
+			return $(p1).parents('p').slideDown('fast',function(){changeHeight();}).end();
 		}
 		function slideUp(p1){
-			$(p1).parents('p').slideUp('fast',function(){changeHeight();});
+			return $(p1).parents('p').slideUp('fast',function(){changeHeight();}).end();
 		}
 		function changeHeight(){
 			var e = {t:$('#toggleFields').height(),b:$('body').height()};

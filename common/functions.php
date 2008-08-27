@@ -37,6 +37,19 @@ function stripslashes_deep($p1,$p2='stripslashes') {
     return is_array($p1) ? array_map('stripslashes_deep', $p1) : $p2($p1);
 }
 
+// object_deep *** *** www.LazyCMS.net *** ***
+function object_deep($p1) {
+    if (is_object($p1) || is_array($p1)) {
+        $R = array();
+        foreach ((array)$p1 as $k=>$v) {
+            $R[$k] = object_deep($v);
+        }
+        return $R;
+    } else {
+        return $p1;
+    }
+}
+
 // replace_root *** *** www.LazyCMS.net *** ***
 function replace_root($p1){
     return str_replace(SEPARATOR,'/',str_replace(LAZY_PATH.SEPARATOR,SITE_BASE,$p1));
@@ -721,32 +734,39 @@ function editor($p1,$p2=array()){
             $A1['dellink'] = isset($A1['dellink']) ? $A1['dellink'] : array(0,0);
             $A1['setimg'] = isset($A1['setimg']) ? $A1['setimg'] : array(0,0);
             $A1['resize'] = isset($A1['resize']) ? $A1['resize'] : false;
-            $but = '<style type="text/css">';
-            $but.= '.'.$p1.'_fckeditor_button{width:'.$A1['width'].'; margin-top:3px;}';
-            $but.= '.'.$p1.'_fckeditor_button .fr a{margin-left:8px;}';
-            $but.= '</style><div class="'.$p1.'_fckeditor_button">';
-            $but.= '<div class="fl">';
+            $css = '<style type="text/css">';
+            $css.= '.'.$p1.'_fckeditor_button{width:'.$A1['width'].'; margin-top:3px;}';
+            $css.= '.'.$p1.'_fckeditor_button .fr a{margin-left:8px;}';
+            $css.= '</style>';
+            $div = $css; $but = $size = null;
             if ($A1['upimg']) { $but.= '<button type="button">'.L('fckeditor/upimg','system').'</button>'; }
             if ($A1['upfile']) { $but.= '<button type="button">'.L('fckeditor/upfile','system').'</button>'; }
             if ($A1['pagebreak']) { $but.= '<button type="button">'.L('fckeditor/pagebreak','system').'</button>'; }
             if ($A1['snapimg'][0]) {
-                $but.= '<input type="checkbox" name="snapimg" id="snapimg" value="1"'.($A1['snapimg'][1]?' checked="checked"':null).' cookie="true" /><label for="snapimg">'.L('fckeditor/snapimg','system').'</label>&nbsp; ';
+                $but.= '<input type="checkbox" name="'.$p1.'_attr[snapimg]" id="'.$p1.'_attr[snapimg]" value="1"'.($A1['snapimg'][1]?' checked="checked"':null).' cookie="true" /><label for="'.$p1.'_attr[snapimg]">'.L('fckeditor/snapimg','system').'</label>&nbsp; ';
             }
             if ($A1['dellink'][0]) {
-                $but.= '<input type="checkbox" name="dellink" id="dellink" value="1"'.($A1['dellink'][1]?' checked="checked"':null).' cookie="true" /><label for="dellink">'.L('fckeditor/dellink','system').'</label>&nbsp; ';
+                $but.= '<input type="checkbox" name="'.$p1.'_attr[dellink]" id="'.$p1.'_attr[dellink]" value="1"'.($A1['dellink'][1]?' checked="checked"':null).' cookie="true" /><label for="'.$p1.'_attr[dellink]">'.L('fckeditor/dellink','system').'</label>&nbsp; ';
             }
             if ($A1['setimg'][0]) {
-                $but.= '<input type="checkbox" name="setimg" id="setimg" value="1"'.($A1['setimg'][1]?' checked="checked"':null).' cookie="true" /><label for="setimg">'.L('fckeditor/setimg','system').'</label>';
+                $but.= '<input type="checkbox" name="'.$p1.'_attr[setimg]" id="'.$p1.'_attr[setimg]" value="1"'.($A1['setimg'][1]?' checked="checked"':null).' cookie="true" /><label for="'.$p1.'_attr[setimg]">'.L('fckeditor/setimg','system').'</label>';
             }
-            $but.= '</div>';
+            
             // 是否显示调整编辑器高度按钮
             if ($A1['resize']) {
-                $but.= '<div class="fr">';
-                $but.= '<a href="javascript:;" onclick="$(\'#'.$p1.'\').editor().resize(\'+\',100);"><img src="'.SITE_BASE.'common/images/icon/add.png" /></a>';
-                $but.= '<a href="javascript:;" onclick="$(\'#'.$p1.'\').editor().resize(\'-\',100);"><img src="'.SITE_BASE.'common/images/icon/cut.png" /></a>';
-                $but.= '</div>';    
+                $size.= '<div class="fr">';
+                $size.= '<a href="javascript:;" onclick="$(\'#'.$p1.'\').editor().resize(\'+\',100);"><img src="'.SITE_BASE.'common/images/icon/add.png" /></a>';
+                $size.= '<a href="javascript:;" onclick="$(\'#'.$p1.'\').editor().resize(\'-\',100);"><img src="'.SITE_BASE.'common/images/icon/cut.png" /></a>';
+                $size.= '</div>';    
             }
-            $but.= '</div>';
+            if (!empty($but) || !empty($size)) {
+                $div.= '<div class="'.$p1.'_fckeditor_button">';
+                $div.= '<div class="fl">';
+                $div.= $but;
+                $div.= '</div>';
+                $div.= $size;
+                $div.= '</div>';
+            }
             $FCK = new FCKeditor($p1);
             $FCK->BasePath = SITE_BASE.'common/editor/fckeditor/';
             if (isset($A1['toolbar'])) {
@@ -763,7 +783,7 @@ function editor($p1,$p2=array()){
             }
             $FCK->Value = $p2;
             if (empty($A1['print'])) {
-                return $FCK->CreateHtml().$but;
+                return $FCK->CreateHtml().$div;
             } else {
                 $FCK->Create();
                 echo $but;

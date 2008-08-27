@@ -232,7 +232,7 @@ function lazy_edit(){
     $hl.= '<thead><tr class="nodrop"><th>'.L('model/add/fields/text').'</th><th>'.L('model/add/fields/ename').'</th><th>'.L('model/add/fields/input').'</th><th>'.L('model/add/fields/default').'</th><th>'.L('common/action','system').'</th></tr></thead><tbody>';
     foreach ($modelfields as $v) {
         $data = (array) $v; $i = $data['id'];
-        $tip = empty($data['tip'])?null:' tip="'.$data['label'].'::'.$data['tip'].'"';
+        $tip = empty($data['tip'])?null:' tip="'.$data['label'].'::'.ubbencode(h2encode($data['tip'])).'"';
         $len = empty($data['length'])?null:'('.$data['length'].')';
         $hl.= '<tr id="TR_'.$i.'"><td'.$tip.'><input type="checkbox" name="list_'.$i.'" value="'.$data['oname'].'" /> '.$data['label'].'</td>';
         $hl.= '<td>'.$data['ename'].'</td><td>'.L('model/type/'.$data['intype']).$len.'</td><td>'.(empty($data['default'])?'NULL':$data['default']).'</td>';
@@ -258,7 +258,7 @@ function lazy_edit(){
 function lazy_fields(){
     $data   = array();
     $method = isset($_POST['method']) ? $_POST['method'] : null;
-    $fields = "id,label,tip,ename,intype,width,validate,value,length,default,oname";//10
+    $fields = "id,label,tip,ename,intype,width,validate,value,length,default,oname,option";//11
     $eField = explode(',',$fields);
     if ($method=='POST') {
         foreach ($eField as $field) {
@@ -279,7 +279,7 @@ function lazy_fields(){
                 $R[$field] = $data[$k];
             }
             $R['oname'] = empty($R['oname']) ? $R['ename'] : $R['oname'];
-            $tip = empty($data[2])?null:' tip="'.$data[1].'::'.$data[2].'"';
+            $tip = empty($data[2])?null:' tip="'.$data[1].'::'.ubbencode(h2encode($data[2])).'"';
             $len = empty($data[8])?null:'('.$data[8].')';
             $hl = '<tr id="TR_'.$data[0].'">';
             $hl.= '<td'.$tip.'><input type="checkbox" name="list_'.$data[0].'" value="'.$data[10].'" /> '.$data[1].'</td>';
@@ -297,15 +297,15 @@ function lazy_fields(){
             ),1);
         }
     } else {
+        $_JSON = isset($_POST['JSON']) ? object_deep(json_decode($_POST['JSON'])) : null;
         foreach ($eField as $field) {
-            $data[] = isset($_POST[$field]) ? $_POST[$field] : null;
+            $data[] = isset($_JSON[$field]) ? $_JSON[$field] : null;
         }
     }
-
     $hl = '<form id="formFields" name="formFields" method="post" action="'.PHP_FILE.'?action=fields">';
     $hl.= '<div id="toggleFields" class="panel">';
     $hl.= '<div class="head"><strong>'.L('model/add/fields/'.(empty($data[0])?'add':'edit')).'</strong><a href="javascript:;" onclick="$(\'#formFields\').remove()">×</a></div><div class="body">';
-    $hl.= '<p><label>'.L('model/add/fields/text').'：</label><input tip="'.L('model/add/fields/text').'::'.L('model/add/fields/text/@tip').'" class="in2" type="text" name="fieldlabel" id="fieldlabel" value="'.$data[1].'" /><span><input type="checkbox" name="needTip" id="needTip"'.(empty($data[2])?null:' checked="checked"').(empty($data[0])?' cookie="true"':null).'><label for="needTip">'.L('model/add/fields/needtip').'</label></span></p>';
+    $hl.= '<p><label>'.L('model/add/fields/text').'：</label><input tip="'.L('model/add/fields/text').'::'.L('model/add/fields/text/@tip').'" class="in2" type="text" name="fieldlabel" id="fieldlabel" value="'.$data[1].'" /><span><input type="checkbox" name="needTip" id="needTip"'.(empty($data[2])?null:' checked="checked"').(empty($data[0])?' cookie="true"':null).'/><label for="needTip">'.L('model/add/fields/needtip').'</label></span></p>';
     $hl.= '<p class="hide"><label>'.L('model/add/fields/tiptext').'：</label><textarea tip="'.L('model/add/fields/tiptext').'::'.L('model/add/fields/tiptext/@tip').'" name="fieldtip" id="fieldtip" rows="3" class="in3">'.$data[2].'</textarea></p>';
     $hl.= '<p><label>'.L('model/add/fields/ename').'：</label><input tip="'.L('model/add/fields/ename').'::300::'.L('model/add/fields/ename/@tip').'" class="in2" type="text" name="fieldename" id="fieldename" value="'.$data[3].'" /></p>';
     $hl.= '<p><label>'.L('model/add/fields/input').'：</label><select name="fieldintype" id="fieldintype">';
@@ -326,7 +326,7 @@ function lazy_fields(){
             }
         }
     }
-    $hl.= '</select><span><input type="checkbox" name="isValidate" id="isValidate"'.(empty($data[6])?null:' checked="checked"').(empty($data[0])?' cookie="true"':null).'><label for="isValidate">'.L('model/add/fields/validate').'</label></span></p>';
+    $hl.= '</select><span><input type="checkbox" name="isValidate" id="isValidate"'.(empty($data[6])?null:' checked="checked"').(empty($data[0])?' cookie="true"':null).' /><label for="isValidate">'.L('model/add/fields/validate').'</label></span></p>';
     
     $hl.= '<p class="'.(empty($data[7])?'hide':'show').'"><label>'.L('model/add/fields/value').'：</label><textarea tip="'.L('model/add/fields/value').'::'.L('model/add/fields/value/@tip').'" name="fieldvalue" id="fieldvalue" rows="5" class="in3">'.$data[7].'</textarea></p>';
     $hl.= '<p class="hide"><label>'.L('model/add/fields/rules').'：</label><select name="setValidate" id="setValidate">';
@@ -336,6 +336,15 @@ function lazy_fields(){
     $hl.= '</select>&nbsp;<a href="javascript:;" onclick="$(\'#setValidate\').setValidate(\'#fieldvalidate\',1);"><img src="'.SITE_BASE.'common/images/icon/add.png" class="os" /></a>&nbsp;<a href="javascript:;" onclick="$(\'#setValidate\').setValidate(\'#fieldvalidate\',0);"><img src="'.SITE_BASE.'common/images/icon/cut.png" class="os" /></a>';
     $hl.= '<textarea tip="'.L('model/add/fields/rules').'::250::'.ubbencode(L('model/add/fields/rules/@tip')).'" name="fieldvalidate" id="fieldvalidate" rows="3" class="in3">'.$data[6].'</textarea></p>';
     $hl.= '<p class="'.(empty($data[8]) && !empty($data[0])?'hide':'show').'"><label>'.L('model/add/fields/length').'：</label><input tip="'.L('model/add/fields/length/@tip').'" class="in1" type="text" name="fieldlength" id="fieldlength" value="'.$data[8].'" /></p>';
+    $hl.= '<p class="'.(instr('basic,editor',$data[4])?'show':'hide').'"><label>'.L('common/attr').'：</label><span id="fieldoption">';
+    $hl.= '<input type="checkbox" name="fieldoption[upimg]" id="upimg" value="1"'.($data[11]['upimg']?' checked="checked"':null).' /><label for="upimg">'.L('fckeditor/upimg','system').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[upfile]" id="upfile" value="1"'.($data[11]['upfile']?' checked="checked"':null).' /><label for="upfile">'.L('fckeditor/upfile','system').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[break]" id="pagebreak" value="1"'.($data[11]['break']?' checked="checked"':null).' /><label for="pagebreak">'.L('fckeditor/pagebreak','system').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[snapimg]" id="snapimg" value="1"'.($data[11]['snapimg']?' checked="checked"':null).' /><label for="snapimg">'.L('fckeditor/snapimg','system').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[dellink]" id="dellink" value="1"'.($data[11]['dellink']?' checked="checked"':null).' /><label for="dellink">'.L('fckeditor/dellink','system').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[setimg]" id="setimg" value="1"'.($data[11]['setimg']?' checked="checked"':null).' /><label for="setimg">'.L('fckeditor/setimg','system').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[resize]" id="resize" value="1"'.($data[11]['resize']?' checked="checked"':null).' /><label for="resize">'.L('fckeditor/resize','system').'</label>';
+    $hl.= '</span></p>';
     $hl.= '<p><label>'.L('model/add/fields/default').'：</label><input tip="'.L('model/add/fields/default').'::250::'.ubbencode(L('model/add/fields/default/@tip')).'" class="in3" type="text" name="fielddefault" id="fielddefault" value="'.$data[9].'" /></p>';
     $hl.= '<p class="tr"><button type="button" onclick="$(this).submitFields();">'.L('common/save').'</button>&nbsp;<button type="button" onclick="$(\'#formFields\').remove()">'.L('common/cancel').'</button></p>';
     $hl.= '</div></div><input id="fieldid" name="fieldid" type="hidden" value="'.$data[0].'" /><input name="fieldoname" type="hidden" value="'.$data[10].'" /><input name="method" type="hidden" value="POST" /></form>'; echo $hl;
