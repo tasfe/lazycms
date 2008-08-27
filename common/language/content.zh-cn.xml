@@ -47,6 +47,7 @@
 				<value tip="例：name:value">序列值</value>
 				<rules tip="可以有多个规则，使用“分号”分割。&#13;规则：类型|错误提示|其它">验证规则</rules>
 				<length tip="只能输入数字，单位：字节">最大长度</length>
+				<autokeywords>点亮自动获取关键词</autokeywords>
 			</fields>
 		</add>
 		<list>

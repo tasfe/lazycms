@@ -172,15 +172,9 @@ function addSub(p1,p2,p3){
 		return this;
 	}
 	// 获取分词 *** *** www.LazyCMS.net *** ***
-	$.fn.getKeywords = function(){
-		var t = this;
-		var a = arguments;
-		var e = {};
-		for (var i=0;i<a.length;i++) {
-			eval('e.' + $(a[i]).attr('name') + ' = "' + encodeURIComponent($(a[i]).editor().val()) + '";');
-		}
-		t.val('Loading...');
-		$.post('../system/keywords.php',e,function(d){
+	$.fn.getKeywords = function(id){
+		var t = this; t.val('Loading...');
+		$.post('../system/keywords.php',{title:$(id).val()},function(d){
 			t.val(d);
 		});
 		return this;
@@ -372,7 +366,8 @@ function addSub(p1,p2,p3){
 				parent.$("#tip").css('background-color',c);
 			}
 			parent.$("#tip").hide().show().animate({backgroundColor:'#FF00FF'},600).animate({backgroundColor:c},600).floatdiv({top:56});
-			parent.window.clearTimeout(sleepTimeout); sleepTimeout = parent.window.setTimeout("parent.$('#tip').slideUp('fast');",6000);
+			parent.$('.jTip').remove(); parent.window.clearTimeout(sleepTimeout);
+			sleepTimeout = parent.window.setTimeout("parent.$('.jTip').remove();parent.$('#tip').slideUp('fast');",6000);
 		}
 	};
 	// input错误提示 *** *** www.LazyCMS.net *** ***

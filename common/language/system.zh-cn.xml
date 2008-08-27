@@ -36,6 +36,7 @@
 		<osite>官方网站</osite>
 		<forums>支持论坛</forums>
 		<get tip="点击获取推荐的关键词">获取</get>
+		<autokeywords tip="选中此选项，更多属性-&gt;关键词会自动填充。">自动获取关键词</autokeywords>
     </common>
 	
 	<fckeditor>

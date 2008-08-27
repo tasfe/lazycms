@@ -113,6 +113,7 @@ function lazy_edit(){
     $modelfields = isset($_POST['modelfields']) ? $_POST['modelfields'] : array();
     $oldename    = isset($_POST['oldename']) ? $_POST['oldename'] : null;
     $delFields   = isset($_POST['delFields']) ? $_POST['delFields'] : null;
+    $setKeyword  = isset($_POST['setKeyword']) ? $_POST['setKeyword'] : null;
     if (is_array($modelfields)) {
         $modelfields = '['.implode(',',$modelfields).']';
     }
@@ -154,6 +155,7 @@ function lazy_edit(){
                     'modelename' => $modelename,
                     'modelpath'  => $modelpath,
                     'modelfields'=> $modelfields,
+                    'setkeyword' => $setKeyword,
                 ));
                 $modelid = $db->lastId();
                 $text = L('model/pop/addok');
@@ -193,6 +195,7 @@ function lazy_edit(){
                     'modelename' => $modelename,
                     'modelpath'  => $modelpath,
                     'modelfields'=> json_encode($modelfields),
+                    'setkeyword' => $setKeyword,
                 ),DB::quoteInto('`modelid` = ?',$modelid));
                 $text = L('model/pop/editok');
             }
@@ -210,6 +213,7 @@ function lazy_edit(){
                 $modelename  = h2encode($rs['modelename']);
                 $modelpath   = $rs['modelpath'];
                 $modelfields = empty($rs['modelfields'])?array():json_decode($rs['modelfields']);
+                $setKeyword  = $rs['setkeyword'];
             }
         }
     }
@@ -233,6 +237,10 @@ function lazy_edit(){
         $hl.= '<tr id="TR_'.$i.'"><td'.$tip.'><input type="checkbox" name="list_'.$i.'" value="'.$data['oname'].'" /> '.$data['label'].'</td>';
         $hl.= '<td>'.$data['ename'].'</td><td>'.L('model/type/'.$data['intype']).$len.'</td><td>'.(empty($data['default'])?'NULL':$data['default']).'</td>';
         $hl.= '<td><a href="javascript:;" onclick="$(this).getFields(\'#Fields\',$(\'#TR_Field_'.$i.'\').val());"><img src="'.SITE_BASE.'common/images/icon/edit.png" class="os"/></a>';
+        if ($data['intype']=='input') {
+            $selected = ($setKeyword==$data['ename']) ? null : '-off';
+            $hl.= '<a href="javascript:;" class="autoKeywords" tip="::120::'.L('model/add/fields/autokeywords').'" onclick="$(this).autoKeywords(\'#setKeyword\',\''.$data['ename'].'\');"><img src="'.SITE_BASE.'common/images/icon/lightbulb'.$selected.'.png" class="os" /></a>';
+        }
         $hl.= '<textarea class="hide" name="modelfields['.$i.']" id="TR_Field_'.$i.'">'.json_encode($data).'</textarea></td></tr>';
     }
     $hl.= '</tbody></table>';
@@ -243,7 +251,7 @@ function lazy_edit(){
     $hl.= '</div>';
     $hl.= '</fieldset>';
 
-    $hl.= but('save').'<input name="modelid" type="hidden" value="'.$modelid.'" /><input id="oldename" name="oldename" type="hidden" value="'.$modelename.'" /><input id="delFields" name="delFields" type="hidden" value="" /></form>';
+    $hl.= but('save').'<input name="modelid" type="hidden" value="'.$modelid.'" /><input id="oldename" name="oldename" type="hidden" value="'.$modelename.'" /><input id="delFields" name="delFields" type="hidden" value="" /><input id="setKeyword" name="setKeyword" type="hidden" value="'.$setKeyword.'" /></form>';
     print_x($title,$hl);
 }
 // lazy_fields *** *** www.LazyCMS.net *** ***
@@ -279,6 +287,9 @@ function lazy_fields(){
             $hl.= '<td>'.L('model/type/'.$data[4]).$len.'</td>';
             $hl.= '<td>'.(empty($data[9])?'NULL':$data[9]).'</td>';
             $hl.= '<td><a href="javascript:;" onclick="$(this).getFields(\'#Fields\',$(\'#TR_Field_'.$data[0].'\').val());"><img src="'.SITE_BASE.'common/images/icon/edit.png" class="os"/></a>';
+            if ($data[4]=='input') {
+                $hl.= '<a href="javascript:;" class="autoKeywords" tip="::120::'.L('model/add/fields/autokeywords').'" onclick="$(this).autoKeywords(\'lightbulb\');"><img src="'.SITE_BASE.'common/images/icon/lightbulb-off.png" class="os" /></a>';
+            }
             $hl.= '<textarea class="hide" name="modelfields['.$data[0].']" id="TR_Field_'.$data[0].'">'.json_encode($R).'</textarea></td></tr>';
             echo_json(array(
                 'id' => $data[0],

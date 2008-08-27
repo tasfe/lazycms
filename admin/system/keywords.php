@@ -34,10 +34,9 @@ function lazy_before(){
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){
-    $title   = isset($_POST['onetitle']) ? rawurldecode($_POST['onetitle']) : null;
-    $content = isset($_POST['onecontent']) ? rawurldecode($_POST['onecontent']) : null;
+    $title = isset($_POST['title']) ? $_POST['title'] : null;
     if (!empty($title)) {
-        $keywords = System::getKeywords($title,$content);
+        $keywords = System::getKeywords($title);
         echo implode(',',$keywords);
     }
 }

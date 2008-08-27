@@ -28,12 +28,14 @@ defined('COM_PATH') or die('Restricted access!');
  */
 // Field2Tag *** *** www.LazyCMS.net *** ***
 class Field2Tag {
+    private $model  = array();
     private $fields = array();
     // __construct *** *** www.LazyCMS.net *** ***
-    function __construct($fields){
-        $this->fields = json_decode($fields);
+    function __construct($model){
+        $this->model  = $model;
+        $this->fields = json_decode($model['modelfields']);
         foreach ($this->fields as &$f) { $f = (array)$f; }
-        //print_r($this->fields);
+        //print_r($this->model);
     }
     // _POST *** *** www.LazyCMS.net *** ***
     public function _POST(){
@@ -55,6 +57,9 @@ class Field2Tag {
         switch ($f['intype']) {
             case 'input':
                 $R = "<input{$tip}{$class} type=\"text\" name=\"{$name}\" id=\"{$name}\" maxlength=\"{$length}\" value=\"{$default}\" />";
+                if ($this->model['setkeyword']==$name) {
+                    $R.= '<span tip="'.L('common/autokeywords/@tip','system').'"><input type="checkbox" name="autokeywords" id="autokeywords" value="1" checked="checked" cookie="true" /><label for="autokeywords">'.L('common/autokeywords','system').'</label></span></p>';
+                }
                 break;
             case 'textarea':
                 $R = "<textarea{$tip}{$class} name=\"{$name}\" id=\"{$name}\" rows=\"5\">{$default}</textarea>";

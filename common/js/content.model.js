@@ -127,6 +127,7 @@
 						}
 						tableDnD(f.attr('insert'));
 						f.remove(); changeHeight();
+						t.tips('tip','[@tip]');
 					}
 				} else {
 					debug(data);
@@ -134,6 +135,21 @@
 			}
 		});
 		return this;
+	};
+	// autoKeywords *** *** www.LazyCMS.net *** ***
+	$.fn.autoKeywords = function(p1,p2){
+		var img = this.find('img');
+		var src = img.attr('src');
+		$('a.autoKeywords img').each(function(){
+			if (this.src.indexOf('-off')==-1) {
+				this.src = src.replace('lightbulb.png','lightbulb-off.png');
+			}
+		});
+		if (src.indexOf('-off')!=-1) {
+			img.attr('src',src.replace('-off','')); $(p1).val(p2);
+		} else {
+			img.attr('src',src.replace('lightbulb.png','lightbulb-off.png')); $(p1).val('');
+		}
 	}
 })(jQuery);
 

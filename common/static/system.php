@@ -42,30 +42,28 @@ class System{
         return $R;
     }
     // getKeywords *** *** www.LazyCMS.net *** ***
-    static function getKeywords($p1,$p2=null){
-        $keywords = array();
+    static function getKeywords($p1){
+        $keywords = $RemoteKeywords = array();
         import('system.downloader');
         import('system.splitword');
-        // 先从远程获取分词
+        // 先使用本地词库分词
+        $sw = new SplitWord();
+        $keywords = $sw->getWord($p1);
+        // 使用远程分词
         $d = new DownLoader("http://keyword.lazycms.net/related_kw.php","POST",10);
-        $d->send(array(
-            'title' => rawurlencode($p1),
-            'content' => rawurlencode($p2),
-        ));
+        $d->send(array('title'=>rawurlencode($p1)));
         // 请求成功
         if ($d->status() == 200) {
             $XML = $d->body();
             // 取出关键词为数组
             if (preg_match_all('/\<kw\>\<\!\[CDATA\[(.+)\]\]\>\<\/kw\>/i',$XML,$Regs)) {
-                $keywords = $Regs[1];
+                $RemoteKeywords = $Regs[1];
             }
         }
-        // 使用本地词库分词
-        $sw = new SplitWord();
-        $splitWord = $sw->getWord(rawurldecode($p1));
-        if (!empty($splitWord)) {
-            foreach ($splitWord as $keyword) {
-                if (!in_array($keyword,$keywords)) {
+        // 合并两次分词的结果
+        if (!empty($RemoteKeywords)) {
+            foreach ($RemoteKeywords as $keyword) {
+                if (array_search_value($keyword,$keywords)===false) {
                     $keywords[] = $keyword;
                 }
             }
