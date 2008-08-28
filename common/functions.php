@@ -50,6 +50,16 @@ function object_deep($p1) {
     }
 }
 
+// salt *** *** www.LazyCMS.net *** ***
+function salt($p1=6){
+    $p2 = "0123456789abcdefghijklmnopqrstopwxyz";
+    $p3 = strlen($p2); $p4 = null;
+    for ($i=0;$i<$p1;$i++) {
+        $p4.= $p2[mt_rand(0,strlen($p2)-1)];
+    }
+    return $p4;
+}
+
 // replace_root *** *** www.LazyCMS.net *** ***
 function replace_root($p1){
     return str_replace(SEPARATOR,'/',str_replace(LAZY_PATH.SEPARATOR,SITE_BASE,$p1));
@@ -345,8 +355,9 @@ function include_file($p1){
 function print_v($p1=null){
     $title = G('TITLE');
     $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
-    $hl.= $title ? '<title>'.G('TITLE').'</title>': null;
     $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
+    $hl.= $title ? '<title>'.G('TITLE').'</title>': null;
+    $hl.= '<meta http-equiv="x-ua-compatible" content="ie=7" />';
     $hl.= '<link href="../system/images/main.css" rel="stylesheet" type="text/css" />';
     $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=r1.2.6"></script>';
     $hl.= '<script type="text/javascript" src="../../common/js/jquery.lazycms.js?ver=1.0"></script>';

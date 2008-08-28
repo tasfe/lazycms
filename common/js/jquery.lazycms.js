@@ -306,7 +306,7 @@ function addSub(p1,p2,p3){
     // 封装 ajaxSubmit *** *** www.LazyCMS.net *** ***
 	$.fn.ajaxSubmit = function(){
 		// 先释放绑定的所有事件，清除错误样式
-		$('input.error,textarea.error').unbind().toggleClass('error');
+		$('.error').unbind().toggleClass('error');
 		// 移除所有 Tips 信息
 		$('.jTip').remove();
 		var t = this.tips('tip','[@tip]');
@@ -376,9 +376,13 @@ function addSub(p1,p2,p3){
 		if (typeof p == 'string'){ e = $.parseJSON(p); }
 		if (e==undefined) { return ; }
 		for (var i=0;i<e.length;i++) {
-			$('#'+e[i].id).unbind().attr('error',e[i].text).addClass('error');
+			if ($('#'+e[i].id+'___Frame').is('iframe')) {
+				$('#'+e[i].id+'___Frame').unbind().attr('error',e[i].text).addClass('error');
+			} else {
+				$('#'+e[i].id).unbind().attr('error',e[i].text).addClass('error');
+			}
 		}
-		this.tips('error','input.error,textarea.error');
+		this.tips('error','.error');
 		return this;
 	};
 	// 气泡提示 *** *** www.LazyCMS.net *** ***
@@ -403,9 +407,9 @@ function addSub(p1,p2,p3){
 			var jTop    = parent.$('#main').is('iframe')?parent.$('#top').height():0;
 			var jTip    = parent.$('.jTip'); jTip.width(width);
 			var jHeight = jTip.height();
-				jTip.css({'top':(e.pageY + jTop - jHeight ) + 'px','left':(e.pageX + 2) + 'px'}).fadeIn('fast');
+				jTip.css({'top':(e.clientY + jTop - jHeight ) + 'px','left':(e.clientX + 2) + 'px'}).fadeIn('fast');
 				$(selector,t).mousemove(function(e){
-					jTip.css({'top':(e.pageY + jTop - jHeight ) + 'px','left':(e.pageX + 2) + 'px'});
+					jTip.css({'top':(e.clientY + jTop - jHeight ) + 'px','left':(e.clientX + 2) + 'px'});
 				});
 		},function(){
 			parent.$('.jTip').remove();

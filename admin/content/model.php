@@ -288,7 +288,7 @@ function lazy_fields(){
             $hl.= '<td>'.(empty($data[9])?'NULL':$data[9]).'</td>';
             $hl.= '<td><a href="javascript:;" onclick="$(this).getFields(\'#Fields\',$(\'#TR_Field_'.$data[0].'\').val());"><img src="'.SITE_BASE.'common/images/icon/edit.png" class="os"/></a>';
             if ($data[4]=='input') {
-                $hl.= '<a href="javascript:;" class="autoKeywords" tip="::120::'.L('model/add/fields/autokeywords').'" onclick="$(this).autoKeywords(\'lightbulb\');"><img src="'.SITE_BASE.'common/images/icon/lightbulb-off.png" class="os" /></a>';
+                $hl.= '<a href="javascript:;" class="autoKeywords" tip="::120::'.L('model/add/fields/autokeywords').'" onclick="$(this).autoKeywords(\'#setKeyword\',\''.$data[3].'\');"><img src="'.SITE_BASE.'common/images/icon/lightbulb-off.png" class="os" /></a>';
             }
             $hl.= '<textarea class="hide" name="modelfields['.$data[0].']" id="TR_Field_'.$data[0].'">'.json_encode($R).'</textarea></td></tr>';
             echo_json(array(

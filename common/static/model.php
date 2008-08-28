@@ -51,14 +51,14 @@ class Model{
     // getValidate *** *** www.LazyCMS.net *** ***
     static function getValidate(){
         return array(
-            'empty'  => '0|'.L('model/validate/empty/@err'),
-            'limit'  => '1|'.L('model/validate/limit/@err').'|1-100',
-            'equal'  => '2|'.L('model/validate/equal/@err').'|[field]',
-            'email'  => 'validate|'.L('model/validate/email/@err').'|4',
-            'letter' => 'validate|'.L('model/validate/letter/@err').'|1',
-            'number' => 'validate|'.L('model/validate/number/@err').'|2',
-            'url'    => 'validate|'.L('model/validate/url/@err').'|5',
-            'custom' => 'validate|'.L('model/validate/custom/@err').'|'.L('model/validate/custom/@reg').'',
+            'empty'  => '%s|0|'.L('model/validate/empty/@err'),
+            'limit'  => '%s|1|'.L('model/validate/limit/@err').'|1-100',
+            'equal'  => '%s|2|'.L('model/validate/equal/@err').'|[field]',
+            'email'  => '%s|validate|'.L('model/validate/email/@err').'|4',
+            'letter' => '%s|validate|'.L('model/validate/letter/@err').'|1',
+            'number' => '%s|validate|'.L('model/validate/number/@err').'|2',
+            'url'    => '%s|validate|'.L('model/validate/url/@err').'|5',
+            'custom' => '%s|validate|'.L('model/validate/custom/@err').'|'.L('model/validate/custom/@reg').'',
         );
     }
     // getModel *** *** www.LazyCMS.net *** ***

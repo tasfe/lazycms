@@ -153,8 +153,7 @@ function lazy_edit(){
             }
             // 自动获取关键词
             if ($autokeywords && empty($keywords)) {
-                require_file('../system/common.php');
-                $keywords = System::getKeywords($onetitle,$onecontent);
+                $keywords = System::getKeywords($onetitle);
                 $keywords = implode(',',$keywords);
             }
             $key->save($oneid,$keywords,C('GET_RELATED_KEY'));
