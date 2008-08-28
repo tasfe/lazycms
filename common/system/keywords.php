@@ -34,9 +34,7 @@ class Keywords {
     function __construct($module=null){
         $this->db   = get_conn();
         $this->dict = COM_PATH.'/data/dict/LazyCMS_Private.dict';
-        if (empty($module)) {
-            $this->module = MODULE;
-        }
+        $this->module    = empty($module)?MODULE:$module;
         $this->joinTable = "#@_keywords_{$this->module}";
         $this->autoCreateTable();
     }

@@ -114,6 +114,7 @@ function lazy_edit(){
     $oldename    = isset($_POST['oldename']) ? $_POST['oldename'] : null;
     $delFields   = isset($_POST['delFields']) ? $_POST['delFields'] : null;
     $setKeyword  = isset($_POST['setKeyword']) ? $_POST['setKeyword'] : null;
+    $description = isset($_POST['description']) ? $_POST['description'] : null;
     if (is_array($modelfields)) {
         $modelfields = '['.implode(',',$modelfields).']';
     }
@@ -147,6 +148,7 @@ function lazy_edit(){
                     `hits` INT(11) DEFAULT '0',
                     `digg` INT(11) DEFAULT '0',
                     `path` VARCHAR(255),
+                    `img` VARCHAR(255),
                     `description` VARCHAR(255),
                     `isdel` TINYINT(1) DEFAULT '1'{$structure}
                 ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");
@@ -156,6 +158,7 @@ function lazy_edit(){
                     'modelpath'  => $modelpath,
                     'modelfields'=> $modelfields,
                     'setkeyword' => $setKeyword,
+                    'description'=> $description,
                 ));
                 $modelid = $db->lastId();
                 $text = L('model/pop/addok');
@@ -196,6 +199,7 @@ function lazy_edit(){
                     'modelpath'  => $modelpath,
                     'modelfields'=> json_encode($modelfields),
                     'setkeyword' => $setKeyword,
+                    'description'=> $description,
                 ),DB::quoteInto('`modelid` = ?',$modelid));
                 $text = L('model/pop/editok');
             }
@@ -214,6 +218,7 @@ function lazy_edit(){
                 $modelpath   = $rs['modelpath'];
                 $modelfields = empty($rs['modelfields'])?array():json_decode($rs['modelfields']);
                 $setKeyword  = $rs['setkeyword'];
+                $description = $rs['description'];
             }
         }
     }
@@ -239,7 +244,11 @@ function lazy_edit(){
         $hl.= '<td><a href="javascript:;" onclick="$(this).getFields(\'#Fields\',$(\'#TR_Field_'.$i.'\').val());"><img src="'.SITE_BASE.'common/images/icon/edit.png" class="os"/></a>';
         if ($data['intype']=='input') {
             $selected = ($setKeyword==$data['ename']) ? null : '-off';
-            $hl.= '<a href="javascript:;" class="autoKeywords" tip="::120::'.L('model/add/fields/autokeywords').'" onclick="$(this).autoKeywords(\'#setKeyword\',\''.$data['ename'].'\');"><img src="'.SITE_BASE.'common/images/icon/lightbulb'.$selected.'.png" class="os" /></a>';
+            $hl.= '<a href="javascript:;" rel="autoKeywords" tip="::120::'.L('model/add/fields/autokeywords').'" onclick="$(this).autoKeywords(\'#setKeyword\',\''.$data['ename'].'\');"><img src="'.SITE_BASE.'common/images/icon/lightbulb'.$selected.'.png" class="os" /></a>';
+        }
+        if (instr('basic,editor',$data['intype'])) {
+            $selected = ($description==$data['ename']) ? null : '-off';
+            $hl.= '<a href="javascript:;" rel="autoDescription" tip="::120::'.L('model/add/fields/autodescription').'" onclick="$(this).autoKeywords(\'#description\',\''.$data['ename'].'\');"><img src="'.SITE_BASE.'common/images/icon/cut'.$selected.'.png" class="os" /></a>';
         }
         $hl.= '<textarea class="hide" name="modelfields['.$i.']" id="TR_Field_'.$i.'">'.json_encode($data).'</textarea></td></tr>';
     }
@@ -251,13 +260,15 @@ function lazy_edit(){
     $hl.= '</div>';
     $hl.= '</fieldset>';
 
-    $hl.= but('save').'<input name="modelid" type="hidden" value="'.$modelid.'" /><input id="oldename" name="oldename" type="hidden" value="'.$modelename.'" /><input id="delFields" name="delFields" type="hidden" value="" /><input id="setKeyword" name="setKeyword" type="hidden" value="'.$setKeyword.'" /></form>';
+    $hl.= but('save').'<input name="modelid" type="hidden" value="'.$modelid.'" /><input id="oldename" name="oldename" type="hidden" value="'.$modelename.'" /><input id="delFields" name="delFields" type="hidden" value="" /><input id="setKeyword" name="setKeyword" type="hidden" value="'.$setKeyword.'" /><input id="description" name="description" type="hidden" value="'.$description.'" /></form>';
     print_x($title,$hl);
 }
 // lazy_fields *** *** www.LazyCMS.net *** ***
 function lazy_fields(){
     $data   = array();
     $method = isset($_POST['method']) ? $_POST['method'] : null;
+    $keyword = isset($_POST['keyword']) ? $_POST['keyword'] : null;
+    $description = isset($_POST['description']) ? $_POST['description'] : null;
     $fields = "id,label,tip,ename,intype,width,validate,value,length,default,oname,option";//11
     $eField = explode(',',$fields);
     if ($method=='POST') {
@@ -288,7 +299,12 @@ function lazy_fields(){
             $hl.= '<td>'.(empty($data[9])?'NULL':$data[9]).'</td>';
             $hl.= '<td><a href="javascript:;" onclick="$(this).getFields(\'#Fields\',$(\'#TR_Field_'.$data[0].'\').val());"><img src="'.SITE_BASE.'common/images/icon/edit.png" class="os"/></a>';
             if ($data[4]=='input') {
-                $hl.= '<a href="javascript:;" class="autoKeywords" tip="::120::'.L('model/add/fields/autokeywords').'" onclick="$(this).autoKeywords(\'#setKeyword\',\''.$data[3].'\');"><img src="'.SITE_BASE.'common/images/icon/lightbulb-off.png" class="os" /></a>';
+                $selected = ($keyword==$data[3]) ? null : '-off';
+                $hl.= '<a href="javascript:;" rel="autoKeywords" tip="::120::'.L('model/add/fields/autokeywords').'" onclick="$(this).autoKeywords(\'#setKeyword\',\''.$data[3].'\');"><img src="'.SITE_BASE.'common/images/icon/lightbulb'.$selected.'.png" class="os" /></a>';
+            }
+            if (instr('basic,editor',$data[4])) {
+                $selected = ($description==$data[3]) ? null : '-off';
+                $hl.= '<a href="javascript:;" rel="autoDescription" tip="::120::'.L('model/add/fields/autodescription').'" onclick="$(this).autoKeywords(\'#description\',\''.$data[3].'\');"><img src="'.SITE_BASE.'common/images/icon/cut'.$selected.'.png" class="os" /></a>';
             }
             $hl.= '<textarea class="hide" name="modelfields['.$data[0].']" id="TR_Field_'.$data[0].'">'.json_encode($R).'</textarea></td></tr>';
             echo_json(array(
@@ -333,7 +349,7 @@ function lazy_fields(){
     foreach (Model::getValidate() as $k=>$v) {
         $hl.= '<option value="'.$v.'">'.L('model/validate/'.$k).'</option>';
     }
-    $hl.= '</select>&nbsp;<a href="javascript:;" onclick="$(\'#setValidate\').setValidate(\'#fieldvalidate\',1);"><img src="'.SITE_BASE.'common/images/icon/add.png" class="os" /></a>&nbsp;<a href="javascript:;" onclick="$(\'#setValidate\').setValidate(\'#fieldvalidate\',0);"><img src="'.SITE_BASE.'common/images/icon/cut.png" class="os" /></a>';
+    $hl.= '</select>&nbsp;<a href="javascript:;" onclick="$(\'#setValidate\').setValidate(\'#fieldvalidate\',1);"><img src="'.SITE_BASE.'common/images/icon/add.png" class="os" /></a>&nbsp;<a href="javascript:;" onclick="$(\'#setValidate\').setValidate(\'#fieldvalidate\',0);"><img src="'.SITE_BASE.'common/images/icon/reduce.png" class="os" /></a>';
     $hl.= '<textarea tip="'.L('model/add/fields/rules').'::250::'.ubbencode(L('model/add/fields/rules/@tip')).'" name="fieldvalidate" id="fieldvalidate" rows="3" class="in3">'.$data[6].'</textarea></p>';
     $hl.= '<p class="'.(empty($data[8]) && !empty($data[0])?'hide':'show').'"><label>'.L('model/add/fields/length').'：</label><input tip="'.L('model/add/fields/length/@tip').'" class="in1" type="text" name="fieldlength" id="fieldlength" value="'.$data[8].'" /></p>';
     $hl.= '<p class="'.(instr('basic,editor',$data[4])?'show':'hide').'"><label>'.L('common/attr').'：</label><span id="fieldoption">';
@@ -347,5 +363,5 @@ function lazy_fields(){
     $hl.= '</span></p>';
     $hl.= '<p><label>'.L('model/add/fields/default').'：</label><input tip="'.L('model/add/fields/default').'::250::'.ubbencode(L('model/add/fields/default/@tip')).'" class="in3" type="text" name="fielddefault" id="fielddefault" value="'.$data[9].'" /></p>';
     $hl.= '<p class="tr"><button type="button" onclick="$(this).submitFields();">'.L('common/save').'</button>&nbsp;<button type="button" onclick="$(\'#formFields\').remove()">'.L('common/cancel').'</button></p>';
-    $hl.= '</div></div><input id="fieldid" name="fieldid" type="hidden" value="'.$data[0].'" /><input name="fieldoname" type="hidden" value="'.$data[10].'" /><input name="method" type="hidden" value="POST" /></form>'; echo $hl;
+    $hl.= '</div></div><input id="fieldid" name="fieldid" type="hidden" value="'.$data[0].'" /><input name="description" id="fieldescription" type="hidden" value="'.$description.'" /><input id="fieldkeyword" name="keyword" type="hidden" value="'.$keyword.'" /><input name="fieldoname" type="hidden" value="'.$data[10].'" /><input name="method" type="hidden" value="POST" /></form>'; echo $hl;
 }

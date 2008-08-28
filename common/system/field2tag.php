@@ -73,13 +73,13 @@ class Field2Tag {
         return $R;
     }
     // tag *** *** www.LazyCMS.net *** ***
-    public function tag($p1){
+    public function tag($p1,$p2=false){
         $R = null;
         $f = $p1;
         $tip     = empty($f['tip'])?null:' tip="'.$f['label'].'::'.ubbencode(h2encode($f['tip'])).'"';
         $name    = $f['ename'];
         $length  = $f['length'];
-        $default = $f['default'];
+        $default = ($p2===false) ? $f['default'] : $p2;
         $opts    = isset($f['option'])?$f['option']:null;
         switch ($f['intype']) {
             case 'input':
@@ -151,10 +151,10 @@ class Field2Tag {
         return $R;
     }
     // fetch *** *** www.LazyCMS.net *** ***
-    public function fetch($p1){
+    public function fetch($p1,$p2=null){
         $R = null;
         foreach ($this->fields as $field) {
-            $R.= str_replace(array('{label}','{object}'),array($field['label'],$this->tag($field)),$p1);
+            $R.= str_replace(array('{label}','{object}'),array($field['label'],$this->tag($field,$p2[$field['ename']])),$p1);
         }
         return $R;
     }

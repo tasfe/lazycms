@@ -20,43 +20,19 @@
  */
 defined('COM_PATH') or die('Restricted access!');
 /**
- * LazyCMS 模块配置文件
+ * 系统模块的公共函数
  *
  * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
  * @author      Lukin <mylukin@gmail.com>
- * @date        2008-6-17
+ * @date        2008-7-6
  */
-return array(
-    /* 系统管理模块 */
-    'system' => array(
-        /* 需要导入的文件 */
-        'import' => array(
-            'static.system'
-        ),
-        /* 权限列表 */
-        'purview' => array(
-            'system',
-            'users',
-            'webftp',
-            'module',
-            'settings',
-        )
-    ),
-    /* 内容管理模块 */
-    'content' => array(
-        /* 需要导入的文件 */
-        'import' => array(
-            'static.onepage',
-            'static.model',
-            'static.article',
-        ),
-        /* 权限列表 */
-        'purview' => array(
-            'onepage',
-            'article',
-            'trash',
-            'sort',
-            'model',
-        )
-    ),
-);
+// Article *** *** www.LazyCMS.net *** ***
+class Article{
+    // formatPath *** *** www.LazyCMS.net *** ***
+    static function formatPath($p1,$p2,$p3,$p4=null){
+        $p4 = empty($p4) ? now() : $p4;
+        $R = str_replace(array('%I','%M','%P'),array($p1,md5($p1.salt(10)),pinyin($p3)),$p2);
+        $R = strftime($R,$p4);
+        return $R;
+    }
+}

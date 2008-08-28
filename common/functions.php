@@ -767,7 +767,7 @@ function editor($p1,$p2=array()){
             if ($A1['resize']) {
                 $size.= '<div class="fr">';
                 $size.= '<a href="javascript:;" onclick="$(\'#'.$p1.'\').editor().resize(\'+\',100);"><img src="'.SITE_BASE.'common/images/icon/add.png" /></a>';
-                $size.= '<a href="javascript:;" onclick="$(\'#'.$p1.'\').editor().resize(\'-\',100);"><img src="'.SITE_BASE.'common/images/icon/cut.png" /></a>';
+                $size.= '<a href="javascript:;" onclick="$(\'#'.$p1.'\').editor().resize(\'-\',100);"><img src="'.SITE_BASE.'common/images/icon/reduce.png" /></a>';
                 $size.= '</div>';    
             }
             if (!empty($but) || !empty($size)) {

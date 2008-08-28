@@ -64,6 +64,8 @@
 			if ($('#fieldid').val()=='') {
 				$('#fieldid').val($('tbody tr',p3).size()+1);
 			}
+			$('#fieldescription').val($('#description').val());
+			$('#fieldkeyword').val($('#setKeyword').val());
 			$('#formFields').attr('insert',p1).tips('tip','[@tip]'); 
 			$('#'+id).replaceWith(t);
 		});
@@ -142,15 +144,15 @@
 	$.fn.autoKeywords = function(p1,p2){
 		var img = this.find('img');
 		var src = img.attr('src');
-		$('a.autoKeywords img').each(function(){
+		$('a[@rel='+this.attr('rel')+'] img').each(function(){
 			if (this.src.indexOf('-off')==-1) {
-				this.src = src.replace('lightbulb.png','lightbulb-off.png');
+				this.src = this.src.replace('.png','-off.png');
 			}
 		});
 		if (src.indexOf('-off')!=-1) {
 			img.attr('src',src.replace('-off','')); $(p1).val(p2);
 		} else {
-			img.attr('src',src.replace('lightbulb.png','lightbulb-off.png')); $(p1).val('');
+			img.attr('src',src.replace('.png','-off.png')); $(p1).val('');
 		}
 	}
 })(jQuery);

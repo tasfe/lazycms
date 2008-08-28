@@ -44,12 +44,7 @@ function lazy_default(){
     print_x(L('article/@title'),'显示一个搜索过滤器，直接进行搜索');
 }
 
-function formatPath($p1,$p2,$p3,$p4=null){
-    $p4 = empty($p4) ? now() : $p4;
-    $R = str_replace(array('%I','%M','%P'),array($p1,md5($p1.salt(10)),pinyin($p3)),$p2);
-    $R = strftime($p2,$p4);
-    return $R;
-}
+
 
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){
@@ -58,19 +53,21 @@ function lazy_edit(){
     $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
     $n  = array_search($m,G('MODEL'))+2;
     $model = Model::getModel($m); if (!$model) { trigger_error(L('error/invalid','system')); }
-    $title = L('common/add').$model['modelname'];
+    $title = (empty($id) ? L('common/add') : L('common/edit')).$model['modelname'];
     $path  = isset($_POST['path']) ? $_POST['path'] : null;
+    $table = Model::getDBName($model['modelename']);
     $description = isset($_POST['description']) ? $_POST['description'] : null;
-
+    // 加载字段解析类
     import('system.field2tag');
+    import('system.keywords');
+    $key = new Keywords($model['modelename']);
     $tag = new Field2Tag($model);
     $val = $tag->getVal();
     if ($val->method()) {
-        $table = Model::getDBName($model['modelename']);
         $data  = $tag->_POST();
         // 路径转换
         $maxid = $db->max('id',$table);
-        $path  = formatPath($maxid,$path,$data[$model['setkeyword']]);
+        $path  = Article::formatPath($maxid,$path,$data[$model['setkeyword']]);
         if ($val->isVal()) {
             $val->out();
         } else {
@@ -86,6 +83,10 @@ function lazy_edit(){
                 // 删除站外连接
                 if ($e['dellink']) {
                     $data[$k] = preg_replace('/<a([^>]*)href=["\']*(http|https)\:\/\/(?!'.preg_quote($_SERVER['HTTP_HOST'],'/').')([^>]*)>(.*)<\/a>/isU','$4',$data[$k]);
+                }
+                // 自动截取简述
+                if (!empty($model['description']) && $model['description']==$k) {
+                    $description = (strlen($description)==0) ? left(cls(preg_replace('/<[^>]*>/iU','',$data[$k])),180) : $description;
                 }
             }
             // 将数据写入数据库
@@ -115,8 +116,6 @@ function lazy_edit(){
             }
             // 自动获取关键词
             if (!empty($model['setkeyword'])) {
-                import('system.keywords');
-                $key = new Keywords();
                 $keywords = isset($_POST['keywords']) ? $_POST['keywords'] : null;
                 $autokeys = isset($_POST['autokeywords']) ? $_POST['autokeywords'] : null;
                 if ($autokeys && empty($keywords)) {
@@ -132,15 +131,22 @@ function lazy_edit(){
             ),1);
         }
     } else {
-        if (!empty($oneid)) {
-        
+        if (!empty($id)) {
+            $res = $db->query("SELECT * FROM `{$table}` WHERE `id`=?",$id);
+            if ($data = $db->fetch($res)) {
+                $path   = h2encode($data['path']);
+                if (!empty($model['setkeyword'])) {
+                    $keywords = $key->get($id);
+                }
+                $description = $data['description'];
+            }
         }
     }
     
     $hl = '<form id="form1" name="form1" method="post" action="">';
     $hl.= '<fieldset><legend rel="tab"><a class="collapsed" rel=".more-attr" cookie="false">'.$title.'</a></legend>';
     $hl.= '<div class="more-attr">';
-    $hl.= $tag->fetch('<p><label>{label}：</label>{object}</p>');
+    $hl.= $tag->fetch('<p><label>{label}：</label>{object}</p>',$data);
     $hl.= '</div></fieldset>';
 
     $hl.= '<fieldset><legend><a class="collapse" rel=".more-attr">'.L('common/attr').'</a></legend>';
