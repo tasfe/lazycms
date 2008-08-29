@@ -50,6 +50,14 @@ function object_deep($p1) {
     }
 }
 
+// nocache *** *** www.LazyCMS.net *** ***
+function nocache(){
+    header("Expires:".date("D,d M Y H:i:s",now()-60*10)." GMT");
+    header("Last-Modified:".date("D,d M Y H:i:s")." GMT");
+    header("Cache-Control:no-cache,must-revalidate");
+    header("Pragma:no-cache");
+}
+
 // salt *** *** www.LazyCMS.net *** ***
 function salt($p1=6){
     $p2 = "0123456789abcdefghijklmnopqrstopwxyz";
