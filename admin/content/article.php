@@ -20,11 +20,11 @@
  */
 require '../../global.php';
 /**
- * 系统设置
+ * 文档管理
  *
  * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
  * @author      Lukin <mylukin@gmail.com>
- * @date        2008-6-26
+ * @date        2008-8-26
  */
 
 // lazy_before *** *** www.LazyCMS.net *** ***
@@ -41,10 +41,14 @@ function lazy_before(){
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){ 
-    print_x(L('article/@title'),'显示一个搜索过滤器，直接进行搜索');
+    $hl = '<form id="form1" name="form1" method="post" action="">';
+    $hl.= '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.L('article/@title').'</a></legend>';
+    $hl.= '<div class="show">';
+    $hl.= 'sdfsdf';
+    $hl.= '</div></fieldset>';
+    $hl.= '</form>';
+    print_x(L('article/@title'),$hl);
 }
-
-
 
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){

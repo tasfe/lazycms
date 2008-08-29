@@ -20,11 +20,11 @@
  */
 defined('COM_PATH') or die('Restricted access!');
 /**
- * 系统模块的公共函数
+ * 公共函数
  *
  * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
  * @author      Lukin <mylukin@gmail.com>
- * @date        2008-7-6
+ * @date        2008-8-11
  */
 // Model *** *** www.LazyCMS.net *** ***
 class Model{
@@ -36,14 +36,14 @@ class Model{
     // getType *** *** www.LazyCMS.net *** ***
     static function getType($p1=null){
         $R = array(
-            'input'    => 'varchar',   // 输入框
-            'textarea' => 'text',      // 文本框
+            'input'    => 'varchar',        // 输入框
+            'textarea' => 'text',           // 文本框
             'radio'    => 'varchar(255)',   // 单选框
             'checkbox' => 'varchar(255)',   // 复选框
             'select'   => 'varchar(255)',   // 下拉菜单
-            'basic'    => 'text',      // 简易编辑器
-            'editor'   => 'mediumtext',// 内容编辑器
-            'date'     => 'int(11)',       // 日期选择器
+            'basic'    => 'text',           // 简易编辑器
+            'editor'   => 'mediumtext',     // 内容编辑器
+            'date'     => 'int(11)',        // 日期选择器
             'upfile'   => 'varchar(255)',   // 文件上传框
         );
         return empty($p1) ? $R : $R[$p1];

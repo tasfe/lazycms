@@ -20,7 +20,7 @@
  */
 require '../../global.php';
 /**
- * 系统设置
+ * 单页管理
  *
  * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
  * @author      Lukin <mylukin@gmail.com>

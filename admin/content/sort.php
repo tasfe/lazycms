@@ -20,11 +20,11 @@
  */
 require '../../global.php';
 /**
- * 系统设置
+ * 分类管理
  *
  * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
  * @author      Lukin <mylukin@gmail.com>
- * @date        2008-6-26
+ * @date        2008-8-24
  */
 
 // lazy_before *** *** www.LazyCMS.net *** ***

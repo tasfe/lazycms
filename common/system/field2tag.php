@@ -24,7 +24,7 @@ defined('COM_PATH') or die('Restricted access!');
  *
  * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
  * @author      Lukin <mylukin@gmail.com>
- * @date        2008-8-3
+ * @date        2008-8-26
  */
 // Field2Tag *** *** www.LazyCMS.net *** ***
 class Field2Tag {

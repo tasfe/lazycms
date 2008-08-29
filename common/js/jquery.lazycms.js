@@ -51,7 +51,7 @@ function SemiMemory(){
 		$.cookie('checkbox_'+o.File+'_'+$(this).attr('id'),this.checked,{expires:365,path:o.Path});
 	});
 	// 展开事件
-	$('a.collapse,a.collapsed')
+	$('a.collapse:not(a[@cookie=false]),a.collapsed:not(a[@cookie=false])')
 		.attr('href','javascript:;')
 		.collapsed()
 		.click(function(){

@@ -20,11 +20,11 @@
  */
 defined('COM_PATH') or die('Restricted access!');
 /**
- * 系统模块的公共函数
+ * 公共函数
  *
  * @copyright   Copyright (c) 2007-2008 lazycms.net All rights reserved.
  * @author      Lukin <mylukin@gmail.com>
- * @date        2008-7-6
+ * @date        2008-8-11
  */
 // Onepage *** *** www.LazyCMS.net *** ***
 class Onepage{
