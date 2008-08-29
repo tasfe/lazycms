@@ -26,6 +26,8 @@ CREATE TABLE IF NOT EXISTS `lazy_content_model` (
   `modelpath` varchar(100) NOT NULL COMMENT '生成文件的命名规则',
   `setkeyword` varchar(50) COMMENT '自动获取关键词',
   `description` varchar(50) COMMENT '自动获取简述',
+  `sortemplate` varchar(50) COMMENT '列表页模板',
+  `pagetemplate` varchar(50) COMMENT '内容页模板',
   `modelfields` text COMMENT '字段序列',
   `modelstate` tinyint(1) default '1' COMMENT '1:启用',
   PRIMARY KEY  (`modelid`),
@@ -42,6 +44,8 @@ CREATE TABLE IF NOT EXISTS `lazy_content_model` (
 CREATE TABLE IF NOT EXISTS `lazy_content_sort` (
   `sortid` int(11) NOT NULL auto_increment,
   `sortname` varchar(100) NOT NULL COMMENT '分类名称',
+  `sortemplate` varchar(50) COMMENT '列表页模板',
+  `pagetemplate` varchar(50) COMMENT '内容页模板',
   `parentid` int(11) default '0' COMMENT '父类id',
   PRIMARY KEY  (`sortid`),
   KEY `parentid` (`parentid`)

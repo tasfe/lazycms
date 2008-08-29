@@ -69,8 +69,12 @@ function lazy_set(){
             $res = $db->query("SELECT `modelename` FROM `#@_content_model` WHERE `modelid` IN({$lists});");
             while ($rs = $db->fetch($res,0)) {
                 $db->exec("DROP TABLE IF EXISTS `".Model::getDataTableName($rs[0])."`;");
+                $db->exec("DROP TABLE IF EXISTS `".Model::getJoinTableName($rs[0])."`;");
             }
+            // 删除模型
             $db->exec("DELETE FROM `#@_content_model` WHERE `modelid` IN({$lists});");
+            // 删除模型和分类的关联关系
+            $db->exec("DELETE FROM `#@_content_sort_model` WHERE `modelid` IN({$lists});");
             echo_json(array(
                 'text' => L('model/pop/deleteok'),
                 'url'  => $_SERVER["HTTP_REFERER"],
@@ -177,8 +181,10 @@ function lazy_edit(){
                 $text = L('model/pop/addok');
             } else {
                 if ($oldename!=$modelename) {
-                    $otable = Model::getDataTableName($oldename);
+                    $otable  = Model::getDataTableName($oldename);
+                    $ojtable = Model::getJoinTableName($oldename);
                     $db->exec("RENAME TABLE `{$otable}` TO `{$table}`;");
+                    $db->exec("RENAME TABLE `{$ojtable}` TO `{$jtable}`;");
                 }
                 $modelfields = array();
                 $structure   = null;
