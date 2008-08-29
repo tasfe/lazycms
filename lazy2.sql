@@ -33,10 +33,34 @@ CREATE TABLE IF NOT EXISTS `lazy_content_model` (
   KEY `modelstate` (`modelstate`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
--- 
--- 导出表中的数据 `lazy_content_model`
--- 
+-- --------------------------------------------------------
 
+--
+-- 表的结构 `lazy_content_sort`
+--
+
+CREATE TABLE IF NOT EXISTS `lazy_content_sort` (
+  `sortid` int(11) NOT NULL auto_increment,
+  `sortname` varchar(100) NOT NULL COMMENT '分类名称',
+  `parentid` int(11) default '0' COMMENT '父类id',
+  PRIMARY KEY  (`sortid`),
+  KEY `parentid` (`parentid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `lazy_content_sort_model`
+--
+
+CREATE TABLE IF NOT EXISTS `lazy_content_sort_model` (
+  `joinid` int(11) NOT NULL auto_increment,
+  `sortid` int(11) NOT NULL COMMENT '分类ID',
+  `modelid` int(11) NOT NULL COMMENT '模型ID',
+  PRIMARY KEY  (`joinid`),
+  KEY `sortid` (`sortid`),
+  KEY `modelid` (`modelid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -51,11 +75,6 @@ CREATE TABLE IF NOT EXISTS `lazy_keywords` (
   PRIMARY KEY  (`keyid`),
   UNIQUE KEY `keyword` (`keyword`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
-
--- 
--- 导出表中的数据 `lazy_keywords`
--- 
-
 
 -- --------------------------------------------------------
 
@@ -76,11 +95,6 @@ CREATE TABLE IF NOT EXISTS `lazy_onepage` (
   PRIMARY KEY  (`oneid`),
   KEY `oneid1` (`oneid1`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
-
--- 
--- 导出表中的数据 `lazy_onepage`
--- 
-
 
 -- --------------------------------------------------------
 

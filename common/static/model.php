@@ -28,10 +28,15 @@ defined('COM_PATH') or die('Restricted access!');
  */
 // Model *** *** www.LazyCMS.net *** ***
 class Model{
-    // getDBName *** *** www.LazyCMS.net *** ***
-    static function getDBName($p1){
+    // getDataTableName *** *** www.LazyCMS.net *** ***
+    static function getDataTableName($p1){
         $db = get_conn(); if (strlen($p1)==0) { return false; }
         return str_replace('#@_',$db->config('prefix'),"#@_content_data_{$p1}");
+    }
+    // getJoinTableName *** *** www.LazyCMS.net *** ***
+    static function getJoinTableName($p1){
+        $db = get_conn(); if (strlen($p1)==0) { return false; }
+        return str_replace('#@_',$db->config('prefix'),"#@_content_join_{$p1}");
     }
     // getType *** *** www.LazyCMS.net *** ***
     static function getType($p1=null){

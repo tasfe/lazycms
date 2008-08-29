@@ -52,7 +52,7 @@ function lazy_default(){
     $ds->open();
     $ds->thead = '<tr><th>ID) '.L('model/list/name').'</th><th>'.L('model/list/ename').'</th><th>'.L('model/list/table').'</th><th>'.L('model/list/state').'</th><th>'.L('common/action','system').'</th></tr>';
     while ($rs = $ds->result()) {
-        $ds->tbody = "E(".$rs['modelid'].",'".t2js(h2encode($rs['modelname']))."','".t2js(h2encode($rs['modelename']))."','".t2js(h2encode(Model::getDBName($rs['modelename'])))."',".$rs['modelstate'].");";
+        $ds->tbody = "E(".$rs['modelid'].",'".t2js(h2encode($rs['modelname']))."','".t2js(h2encode($rs['modelename']))."','".t2js(h2encode(Model::getDataTableName($rs['modelename'])))."',".$rs['modelstate'].");";
     }
     $ds->close();
 
@@ -68,7 +68,7 @@ function lazy_set(){
         case 'delete':
             $res = $db->query("SELECT `modelename` FROM `#@_content_model` WHERE `modelid` IN({$lists});");
             while ($rs = $db->fetch($res,0)) {
-                $db->exec("DROP TABLE IF EXISTS `".Model::getDBName($rs[0])."`;");
+                $db->exec("DROP TABLE IF EXISTS `".Model::getDataTableName($rs[0])."`;");
             }
             $db->exec("DELETE FROM `#@_content_model` WHERE `modelid` IN({$lists});");
             echo_json(array(
@@ -125,7 +125,8 @@ function lazy_edit(){
         if ($val->isVal()) {
             $val->out();
         } else {
-            $table  = Model::getDBName($modelename);
+            $table  = Model::getDataTableName($modelename);
+            $jtable = Model::getJoinTableName($modelename);
             $fields = json_decode($modelfields);
             if (empty($modelid)) {
                 $structure   = null;
@@ -152,6 +153,18 @@ function lazy_edit(){
                     `description` VARCHAR(255),
                     `isdel` TINYINT(1) DEFAULT '1'{$structure}
                 ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");
+                // 创建关联表
+                $db->exec("
+                CREATE TABLE IF NOT EXISTS `{$jtable}` (
+                    `jid` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    `tid` INT(11) NOT NULL,
+                    `sid` INT(11) NOT NULL,
+                    `type` INT(11) NOT NULL,
+                    KEY `tid` (`tid`),
+                    KEY `sid` (`sid`),
+                    KEY `type` (`type`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");
+                // 执行数据插入
                 $db->insert('#@_content_model',array(
                     'modelname'  => $modelname,
                     'modelename' => $modelename,
@@ -164,7 +177,7 @@ function lazy_edit(){
                 $text = L('model/pop/addok');
             } else {
                 if ($oldename!=$modelename) {
-                    $otable = Model::getDBName($oldename);
+                    $otable = Model::getDataTableName($oldename);
                     $db->exec("RENAME TABLE `{$otable}` TO `{$table}`;");
                 }
                 $modelfields = array();

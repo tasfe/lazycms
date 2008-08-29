@@ -59,7 +59,7 @@ function lazy_edit(){
     $model = Model::getModel($m); if (!$model) { trigger_error(L('error/invalid','system')); }
     $title = (empty($id) ? L('common/add') : L('common/edit')).$model['modelname'];
     $path  = isset($_POST['path']) ? $_POST['path'] : null;
-    $table = Model::getDBName($model['modelename']);
+    $table = Model::getDataTableName($model['modelename']);
     $description = isset($_POST['description']) ? $_POST['description'] : null;
     // 加载字段解析类
     import('system.field2tag');

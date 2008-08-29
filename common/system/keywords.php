@@ -35,13 +35,12 @@ class Keywords {
         $this->db   = get_conn();
         $this->dict = COM_PATH.'/data/dict/LazyCMS_Private.dict';
         $this->module    = empty($module)?MODULE:$module;
-        $this->joinTable = "#@_keywords_{$this->module}";
-        $this->autoCreateTable();
+        $this->joinTable = Model::getJoinTableName($this->module);
     }
     // get *** *** www.LazyCMS.net *** ***
     public function get($id){
         $R = array();
-        $result = $this->db->query("SELECT `keyword` FROM `{$this->joinTable}` AS `kj` LEFT JOIN `#@_keywords` AS `k` ON `kj`.`keyid`=`k`.`keyid` WHERE `kj`.`itemid`=? ORDER BY `kj`.`keyid` ASC;",$id);
+        $result = $this->db->query("SELECT `keyword` FROM `{$this->joinTable}` AS `j` LEFT JOIN `#@_keywords` AS `k` ON `j`.`jid`=`k`.`keyid` WHERE `j`.`tid`=? AND `j`.`type`=0 ORDER BY `j`.`sid` ASC;",$id);
         while ($keywords = $this->db->fetch($result,0)) {
             $R[] = $keywords[0];
         }
@@ -125,17 +124,18 @@ class Keywords {
     // rejoin *** *** www.LazyCMS.net *** ***
     private function rejoin($id,$keywords){
         if (empty($keywords) || !is_array($keywords)) { return ; }
-        $this->db->exec("DELETE FROM `{$this->joinTable}` WHERE `itemid`=? AND `keyid` IN(SELECT `keyid` FROM `#@_keywords` WHERE `keyword` IN(".DB::quote($keywords)."));",$id);
+        $this->db->exec("DELETE FROM `{$this->joinTable}` WHERE `tid`=? AND `type`=0 AND `sid` IN(SELECT `keyid` FROM `#@_keywords` WHERE `keyword` IN(".DB::quote($keywords)."));",$id);
         $this->keysum($keywords);
         return true;
     }
     // join *** *** www.LazyCMS.net *** ***
     private function join($id,$keyid){
         // 如果关联不存在，则插入
-        $N = $this->db->count("SELECT * FROM `{$this->joinTable}` WHERE `itemid`=".DB::quote($id)." AND `keyid`=".$this->db->quote($keyid).";");
+        $N = $this->db->count("SELECT * FROM `{$this->joinTable}` WHERE `tid`=".DB::quote($id)." AND `type`=0 AND `sid`=".$this->db->quote($keyid).";");
         return ((int)$N>0) ? true : $this->db->insert($this->joinTable,array(
-            'itemid' => $id,
-            'keyid'  => $keyid,
+            'tid'  => $id,
+            'sid'  => $keyid,
+            'type' => 0,
         ));
     }
     // keysum *** *** www.LazyCMS.net *** ***
@@ -150,25 +150,9 @@ class Keywords {
         } else {
             $keyid = $keywords;
             return $this->db->update('#@_keywords',array(
-                'keysum' => $this->db->count("SELECT * FROM `{$this->joinTable}` WHERE `keyid`=".DB::quote($keyid).";")
+                'keysum' => $this->db->count("SELECT * FROM `{$this->joinTable}` WHERE `sid`=".DB::quote($keyid)." AND `type`=0;")
             ),DB::quoteInto('`keyid` = ?',$keyid));    
         }
-    }
-    // autoCreateTable *** *** www.LazyCMS.net *** ***
-    private function autoCreateTable(){
-        // 表不存在，创建表
-        if (!$this->db->isTable($this->joinTable)) {
-            // 创建表
-            $this->db->exec("
-            CREATE TABLE IF NOT EXISTS `{$this->joinTable}` (
-                `kjid` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                `itemid` INT(11) NOT NULL,
-                `keyid` INT(11) NOT NULL,
-                KEY `itemid` (`itemid`),
-                KEY `keyid` (`keyid`)
-            ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");
-        }
-        return true;
     }
     // getRelated *** *** www.LazyCMS.net *** ***
     function getRelated($keyword){
