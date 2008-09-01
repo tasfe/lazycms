@@ -40,6 +40,9 @@ define('LAZY_PATH',dirname(__FILE__));
 // 定义内核路径
 define('COM_PATH',LAZY_PATH.'/common');
 
+// 开启IE7兼容模式
+header('X-UA-Compatible: IE=EmulateIE7');
+
 // 加载系统定义文件
 require COM_PATH."/defines.php";
 

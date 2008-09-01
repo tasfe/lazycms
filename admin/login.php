@@ -40,7 +40,7 @@ function lazy_default(){
     }
     $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
     $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-    $hl.= '<title>'.L('login/@title').'</title><meta http-equiv="x-ua-compatible" content="ie=7" />';
+    $hl.= '<title>'.L('login/@title').'</title>';
     $hl.= '<link href="system/images/style.css" rel="stylesheet" type="text/css" />';
     $hl.= '<script type="text/javascript" src="../common/js/jquery.js?ver=1.2.6"></script>';
     $hl.= '<script type="text/javascript" src="../common/js/jquery.lazycms.js?ver=1.0"></script>';
