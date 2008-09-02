@@ -39,7 +39,19 @@ function lazy_before(){
     G('TABS',L('article/@title').':article.php;'.implode(';',$menus));
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
-function lazy_default(){ 
+function lazy_default(){
+    // 载入html解析类
+    import('system.parsetags');
+    // 实例化对象
+    $ph = new ParseTags();// $ph = ParseHTML::load(LAZY_PATH.'/themes/'.C('TEMPLATE').'/tags.html');
+    // 加载HTML文件
+    $ph->loadHTML(LAZY_PATH.'/themes/'.C('TEMPLATE').'/tags.html');
+    $tag = $ph->fetch('foreach');
+    print_r($tag);
+    // 分析html
+    //foreach ($ph->find('div[@foreach]') as $e) {
+    //    print_r($e);
+    //}
     /*
     $r = read_file(LAZY_PATH.'/themes/'.C('TEMPLATE').'/tags.html');
     if (preg_match_all('#<div[^>]*>((?!</div>).*|(?R))*</div>#i',$r,$regs)) {
@@ -58,9 +70,6 @@ function lazy_default(){
     $hl.= '</form>';
     print_x(L('article/@title'),$hl);
     */
-}
-function find($str){
-    
 }
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){
