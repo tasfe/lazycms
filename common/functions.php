@@ -1134,7 +1134,7 @@ function L($p1,$p2=null,$p3=null){
         $R1[$p4] = $R2;
     }
     $R3 = new DOMXPath($R2);
-    $R4 = $R3->evaluate("//lazycms/$p1");
+    $R4 = $R3->evaluate("/lazycms/$p1");
     if (false !== strpos($p1,'/@')) {
         $R = $R4->item(0)->value;
     } else {

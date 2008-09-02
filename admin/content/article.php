@@ -26,7 +26,6 @@ require '../../global.php';
  * @author      Lukin <mylukin@gmail.com>
  * @date        2008-8-26
  */
-
 // lazy_before *** *** www.LazyCMS.net *** ***
 function lazy_before(){
     check_login('article');
@@ -41,6 +40,16 @@ function lazy_before(){
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){ 
+    /*
+    $r = read_file(LAZY_PATH.'/themes/'.C('TEMPLATE').'/tags.html');
+    if (preg_match_all('#<div[^>]*>((?!</div>).*|(?R))*</div>#i',$r,$regs)) {
+        print_r($regs[0]);
+    } else {
+        var_dump(false);
+    }
+    */
+    //preg_match_all('#<([\w\-\:]+) [^>]*foreach="([^"]*)"[^>]*>#is',$r,$regs);
+    /*
     $hl = '<form id="form1" name="form1" method="post" action="">';
     $hl.= '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.L('article/@title').'</a></legend>';
     $hl.= '<div class="show">';
@@ -48,8 +57,11 @@ function lazy_default(){
     $hl.= '</div></fieldset>';
     $hl.= '</form>';
     print_x(L('article/@title'),$hl);
+    */
 }
-
+function find($str){
+    
+}
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){
     $db = get_conn(); $data = array();
