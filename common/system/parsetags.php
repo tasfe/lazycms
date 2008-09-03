@@ -28,12 +28,12 @@ defined('COM_PATH') or die('Restricted access!');
  */
 // ParseHTML *** *** www.LazyCMS.net *** ***
 class ParseTags {
-    private $tag  = array();
+    private $tags = array();
     private $HTML = null;
     // load *** *** www.LazyCMS.net *** ***
     public function load($p1){
         $this->HTML = $this->encode($p1);
-        $this->formatTags();
+        $this->tags = $this->formatTags();
         return $this;
     }
     // loadHTML *** *** www.LazyCMS.net *** ***
@@ -46,8 +46,8 @@ class ParseTags {
         $i = 0; $R = array();
         foreach ($this->tags as $k=>$v) {
             if (preg_match('#<([\w\-\:]+) [^>]*'.$p1.'="([^"]*)"[^>]*>#i',$v,$r)) { 
-                $R[$i][$p1] = $r[2];
-                $R[$i]['tag'] = $this->getTag($r[1],$i,$k);
+                $R[$i]['rules'] = $r[2];
+                $R[$i]['tag']   = $this->getTag($r[1],$i,$k);
                 $i++;
             }
         }
@@ -81,6 +81,8 @@ class ParseTags {
     }
     // formatTags *** *** www.LazyCMS.net *** ***
     private function formatTags(){
+        // 需要缓存此结果
+        $R = array();
         if (preg_match_all('#<[^>]*>#is',$this->HTML,$r)) {
             $tags = $r[0];
         }
@@ -88,9 +90,10 @@ class ParseTags {
         for ($i=0;$i<$len;$i++) {
             $next = isset($tags[$i+1]) ? $tags[$i+1] : null;
             $mid  = $this->mid($tags[$i],$next);
-            $this->tags[] = $tags[$i]; if (empty($next)) { break; }
-            if (empty($mid)) { continue; }; $this->tags[] = $mid;
+            $R[]  = $tags[$i]; if (empty($next)) { break; }
+            if (empty($mid)) { continue; }; $R[] = $mid;
         }
+        return $R;
     }
     // mid *** *** www.LazyCMS.net *** ***
     private function mid($p1,$p2){
