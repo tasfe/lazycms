@@ -40,25 +40,22 @@ function lazy_before(){
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){
-    // 载入html解析类
+    /*
     import('system.parsetags');
-    // 实例化对象
-    $ph = new ParseTags();// $ph = ParseHTML::load(LAZY_PATH.'/themes/'.C('TEMPLATE').'/tags.html');
-    // 加载HTML文件
+    $ph = new ParseTags();
     $ph->loadHTML(LAZY_PATH.'/themes/'.C('TEMPLATE').'/tags.html');
     $tag = $ph->fetch('foreach');
     print_r($tag);
     $tag = $ph->fetch('select');
     print_r($tag);
-    /*
+    */
     $hl = '<form id="form1" name="form1" method="post" action="">';
     $hl.= '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.L('article/@title').'</a></legend>';
     $hl.= '<div class="show">';
-    $hl.= 'sdfsdf';
+    $hl.= '开发中...';
     $hl.= '</div></fieldset>';
     $hl.= '</form>';
     print_x(L('article/@title'),$hl);
-    */
 }
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){

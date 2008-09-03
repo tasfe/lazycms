@@ -51,9 +51,8 @@ function SemiMemory(){
 		$.cookie('checkbox_'+o.File+'_'+$(this).attr('id'),this.checked,{expires:365,path:o.Path});
 	});
 	// 展开事件
-	$('a.collapse:not(a[@cookie=false]),a.collapsed:not(a[@cookie=false])')
+	$('a.collapse,a.collapsed')
 		.attr('href','javascript:;')
-		.collapsed()
 		.click(function(){
 			var t = $(this);
 			var c = (t.attr('cookie')!=='false')?true:false;
@@ -64,6 +63,7 @@ function SemiMemory(){
 			}
 			changeHeight();
 		});
+	$('a.collapse:not(a[@cookie=false]),a.collapsed:not(a[@cookie=false])').collapsed();
 	// 调整编辑器的高度
 	$('iframe[@src*=fckeditor.html]').each(function(i){
 		var id = this.id.replace('___Frame','');

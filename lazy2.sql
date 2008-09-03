@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS `lazy_content_model` (
 CREATE TABLE IF NOT EXISTS `lazy_content_sort` (
   `sortid` int(11) NOT NULL auto_increment,
   `sortname` varchar(100) NOT NULL COMMENT '分类名称',
+  `sortpath` varchar(255) NOT NULL COMMENT '路径',
   `sortemplate` varchar(50) COMMENT '列表页模板',
   `pagetemplate` varchar(50) COMMENT '内容页模板',
   `parentid` int(11) default '0' COMMENT '父类id',

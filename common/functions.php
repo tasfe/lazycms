@@ -37,37 +37,6 @@ function stripslashes_deep($p1,$p2='stripslashes') {
     return is_array($p1) ? array_map('stripslashes_deep', $p1) : $p2($p1);
 }
 
-// object_deep *** *** www.LazyCMS.net *** ***
-function object_deep($p1) {
-    if (is_object($p1) || is_array($p1)) {
-        $R = array();
-        foreach ((array)$p1 as $k=>$v) {
-            $R[$k] = object_deep($v);
-        }
-        return $R;
-    } else {
-        return $p1;
-    }
-}
-
-// nocache *** *** www.LazyCMS.net *** ***
-function nocache(){
-    header("Expires:".date("D,d M Y H:i:s",now()-60*10)." GMT");
-    header("Last-Modified:".date("D,d M Y H:i:s")." GMT");
-    header("Cache-Control:no-cache,must-revalidate");
-    header("Pragma:no-cache");
-}
-
-// salt *** *** www.LazyCMS.net *** ***
-function salt($p1=6){
-    $p2 = "0123456789abcdefghijklmnopqrstopwxyz";
-    $p3 = strlen($p2); $p4 = null;
-    for ($i=0;$i<$p1;$i++) {
-        $p4.= $p2[mt_rand(0,strlen($p2)-1)];
-    }
-    return $p4;
-}
-
 // replace_root *** *** www.LazyCMS.net *** ***
 function replace_root($p1){
     return str_replace(SEPARATOR,'/',str_replace(LAZY_PATH.SEPARATOR,SITE_BASE,$p1));
@@ -105,6 +74,37 @@ function instr($p1,$p2){
 function isok($p1){
     return $p1 ? '<strong style="color:#009900;">'.L('common/on','system').'</strong>' :
                     '<strong style="color:#FF0000;">'.L('common/off','system').'</strong>';
+}
+
+// nocache *** *** www.LazyCMS.net *** ***
+function nocache(){
+    header("Expires:".date("D,d M Y H:i:s",now()-60*10)." GMT");
+    header("Last-Modified:".date("D,d M Y H:i:s")." GMT");
+    header("Cache-Control:no-cache,must-revalidate");
+    header("Pragma:no-cache");
+}
+
+// object_deep *** *** www.LazyCMS.net *** ***
+function object_deep($p1) {
+    if (is_object($p1) || is_array($p1)) {
+        $R = array();
+        foreach ((array)$p1 as $k=>$v) {
+            $R[$k] = object_deep($v);
+        }
+        return $R;
+    } else {
+        return $p1;
+    }
+}
+
+// salt *** *** www.LazyCMS.net *** ***
+function salt($p1=6){
+    $p2 = "0123456789abcdefghijklmnopqrstopwxyz";
+    $p3 = strlen($p2); $p4 = null;
+    for ($i=0;$i<$p1;$i++) {
+        $p4.= $p2[mt_rand(0,strlen($p2)-1)];
+    }
+    return $p4;
 }
 
 // left *** *** www.LazyCMS.net *** ***
@@ -243,7 +243,7 @@ function save_file($p1,$p2='',$p3=true){
     if (file_exists($p1)) {
         if (!is_writable($p1)) {
             // 设置ftp信息，则修改权限，反之则输出错误
-            echo_json('没有可写权限<br/>文件：'.replace_root($p1),0);
+            // echo_json('没有可写权限<br/>文件：'.replace_root($p1),0);
         }
     }
     if (!$fp = fopen($p1,($p3?'wb':'ab'))) {

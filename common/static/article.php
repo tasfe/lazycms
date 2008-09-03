@@ -35,4 +35,23 @@ class Article{
         $R = strftime($R,$p4);
         return $R;
     }
+    // __sort *** *** www.LazyCMS.net *** ***
+    static function __sort($p1=0,$p2=0,$p3=0,$p4=null){
+        // $p1:father sortid, $p2:number, $p3:current sortid, $p4:selected
+        $R = $nbsp = null; $db = get_conn(); 
+        for ($i=0;$i<$p2;$i++) {
+            $nbsp.= "&nbsp; &nbsp;";
+        }
+        $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` ASC;",$p1);
+        while ($rs = $db->fetch($res,0)) {
+            if ((int)$p3 != (int)$rs[0]) {
+                $selected = ((int)$p4 == (int)$rs[0]) ? ' selected="selected"' : null;
+                $R.= '<option value="'.$rs[0].'"'.$selected.'>'.$nbsp.'├'.$rs[1].'</option>';
+                if ((int)$db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
+                    $R.= self::__sort($rs[0],$p2+1,$p3,$p4);
+                }
+            }
+        }
+        return $R;
+    }
 }

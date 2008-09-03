@@ -42,5 +42,30 @@ function lazy_default(){
 }
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){
-    
+    $hl = '<form id="form1" name="form1" method="post" action="">';
+    $hl.= '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.L('sort/add/@title').'</a></legend>';
+    $hl.= '<div class="show">';
+    $hl.= '<p><label>'.L('sort/add/sort').'：</label>';
+    $hl.= '<select name="sortid" id="sortid">';
+    $hl.= '<option value="0">--- '.L('sort/add/topsort').' ---</option>';
+    $hl.= Article::__sort(0,0,$sortid);
+    $hl.= '</select></p>';
+    $hl.= '<p><label>'.L('sort/add/name').'：</label><input class="in2" type="text" name="sortname" id="sortname" value="'.$sortname.'" /></p>';
+    $hl.= '<p><label>'.L('sort/add/path').'：</label><input tip="'.L('sort/add/path').'::300::'.h2encode(L('sort/add/path/@tip')).'" class="in4" type="text" name="sortpath" id="sortpath" value="'.$sortpath.'" /></p>';
+    $hl.= '<p><label>'.L('sort/add/model').'：</label><span tip="'.L('sort/add/model').'::'.L('sort/add/model/@tip').'">';
+    foreach (Model::getModel() as $model) {
+        $hl.= '<input type="checkbox" name="model['.$model['modelename'].']" id="model['.$model['modelename'].']" value="" /><label for="model['.$model['modelename'].']">'.$model['modelname'].'</label> ';
+    }
+    $hl.= '</span></p>';
+    $hl.= '<p><label>'.L('sort/add/sortemplate').'：</label>';
+    $hl.= '<select name="sortemplate" id="sortemplate" tip="'.L('sort/add/sortemplate').'::'.L('sort/add/sortemplate/@tip').'">';
+    $hl.= form_opts('themes/'.C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$sortemplate);
+    $hl.= '</select></p>';
+    $hl.= '<p><label>'.L('sort/add/pagetemplate').'：</label>';
+    $hl.= '<select name="pagetemplate" id="pagetemplate" tip="'.L('sort/add/pagetemplate').'::'.L('sort/add/pagetemplate/@tip').'">';
+    $hl.= form_opts('themes/'.C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$pagetemplate);
+    $hl.= '</select></p>';
+    $hl.= '</div></fieldset>';
+    $hl.= but('save').'<input name="sortid" type="hidden" value="'.$sortid.'" /></form>';
+    print_x(L('sort/add/@title'),$hl);
 }
