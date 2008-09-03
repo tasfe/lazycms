@@ -48,19 +48,8 @@ function lazy_default(){
     $ph->loadHTML(LAZY_PATH.'/themes/'.C('TEMPLATE').'/tags.html');
     $tag = $ph->fetch('foreach');
     print_r($tag);
-    // 分析html
-    //foreach ($ph->find('div[@foreach]') as $e) {
-    //    print_r($e);
-    //}
-    /*
-    $r = read_file(LAZY_PATH.'/themes/'.C('TEMPLATE').'/tags.html');
-    if (preg_match_all('#<div[^>]*>((?!</div>).*|(?R))*</div>#i',$r,$regs)) {
-        print_r($regs[0]);
-    } else {
-        var_dump(false);
-    }
-    */
-    //preg_match_all('#<([\w\-\:]+) [^>]*foreach="([^"]*)"[^>]*>#is',$r,$regs);
+    $tag = $ph->fetch('select');
+    print_r($tag);
     /*
     $hl = '<form id="form1" name="form1" method="post" action="">';
     $hl.= '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.L('article/@title').'</a></legend>';
