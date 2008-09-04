@@ -109,10 +109,12 @@ function lazy_edit(){
     $hl.= '<div class="more-attr">';
     $hl.= '<p><label>'.L('sort/add/sortemplate').'：</label>';
     $hl.= '<select name="sortemplate" id="sortemplate" tip="'.L('sort/add/sortemplate').'::'.L('sort/add/sortemplate/@tip').'">';
+    $hl.= '<option value="">'.L('sort/add/defaultemplate').'</option>';
     $hl.= form_opts('themes/'.C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$sortemplate);
     $hl.= '</select></p>';
     $hl.= '<p><label>'.L('sort/add/pagetemplate').'：</label>';
     $hl.= '<select name="pagetemplate" id="pagetemplate" tip="'.L('sort/add/pagetemplate').'::'.L('sort/add/pagetemplate/@tip').'">';
+    $hl.= '<option value="">'.L('sort/add/defaultemplate').'</option>';
     $hl.= form_opts('themes/'.C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$pagetemplate);
     $hl.= '</select></p>';
     $hl.= '</div></fieldset>';
