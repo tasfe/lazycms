@@ -133,9 +133,17 @@ function lazy_edit(){
                     'sortemplate' => $sortemplate,
                     'pagetemplate'=> $pagetemplate,
                 ),DB::quoteInto('`sortid` = ?',$sortid));
+                // 删除没选中的
+                $allModels = array(); foreach ($models as $v) { $allModels[$v['modelename']] = $v['modelid']; }
+                $delModels = array_diff($allModels,$model);
+                if (is_array($delModels) && !empty($delModels)) {
+                    foreach ($delModels as $modelid) {
+                        $db->delete('#@_content_sort_model',array('`sortid`='.DB::quote($sortid),'`modelid`='.DB::quote($modelid)));
+                    }
+                }
                 $text = L('sort/pop/editok');
             }
-            // 拆掉模型（$model）变量，录入相关记录
+            // 录入相关记录
             if (is_array($model)) {
                 foreach ($model as $modelid) {
                     if ($db->count("SELECT * FROM `#@_content_sort_model` WHERE `sortid`=".DB::quote($sortid)." AND `modelid`=".DB::quote($modelid).";")==0) {
@@ -143,15 +151,6 @@ function lazy_edit(){
                             'sortid' => $sortid,
                             'modelid' => $modelid,
                         ));
-                    }
-                }
-                // 删除没选中的
-                $allModels = array();
-                foreach ($models as $v) { $allModels[$v['modelename']] = $v['modelid']; }
-                $delModels = array_diff($allModels,$model);
-                if (is_array($delModels) && !empty($delModels)) {
-                    foreach ($delModels as $modelid) {
-                        $db->delete('#@_content_sort_model',array('`sortid`='.DB::quote($sortid),'`modelid`='.DB::quote($modelid)));
                     }
                 }
             }
@@ -185,12 +184,14 @@ function lazy_edit(){
     $hl.= '</select></p>';
     $hl.= '<p><label>'.L('sort/add/name').'：</label><input class="in2" type="text" name="sortname" id="sortname" value="'.$sortname.'" /></p>';
     $hl.= '<p><label>'.L('sort/add/path').'：</label><input tip="'.L('sort/add/path').'::300::'.h2encode(L('sort/add/path/@tip')).'" class="in4" type="text" name="sortpath" id="sortpath" value="'.$sortpath.'" /></p>';
-    $hl.= '<p><label>'.L('sort/add/model').'：</label><span tip="'.L('sort/add/model').'::'.L('sort/add/model/@tip').'">';
-    foreach ($models as $model) {
-        $checked = instr($getModels,$model['modelid'])?' checked="checked"':null;
-        $hl.= '<input type="checkbox" name="model['.$model['modelename'].']" id="model['.$model['modelename'].']" value="'.$model['modelid'].'"'.$checked.' /><label for="model['.$model['modelename'].']">'.$model['modelname'].'</label> ';
+    if (!empty($models)) {
+        $hl.= '<p><label>'.L('sort/add/model').'：</label><span tip="'.L('sort/add/model').'::'.L('sort/add/model/@tip').'">';
+        foreach ($models as $model) {
+            $checked = instr($getModels,$model['modelid'])?' checked="checked"':null;
+            $hl.= '<input type="checkbox" name="model['.$model['modelename'].']" id="model['.$model['modelename'].']" value="'.$model['modelid'].'"'.$checked.' /><label for="model['.$model['modelename'].']">'.$model['modelname'].'</label> ';
+        }
+        $hl.= '</span></p>';
     }
-    $hl.= '</span></p>';
     $hl.= '</div></fieldset>';
 
     $hl.= '<fieldset><legend><a class="collapse" rel=".more-attr">'.L('common/attr').'</a></legend>';

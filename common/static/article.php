@@ -35,6 +35,23 @@ class Article{
         $R = strftime($R,$p4);
         return $R;
     }
+    // sort *** *** www.LazyCMS.net *** ***
+    function sort($p1,$p2=null,$p3=0,$p4=0){
+        // $p1:modelid, $p2:selected, $p3:father id, $p4:number
+        $R = $nbsp = null; $db = get_conn();
+        for ($i=0;$i<$p4;$i++) {
+            $nbsp.= "&nbsp; &nbsp;";
+        }
+        $res = $db->query("SELECT `cs`.`sortid`,`cs`.`sortname` FROM `#@_content_sort_model` AS `csm` LEFT JOIN `#@_content_sort` AS `cs` ON `csm`.`sortid`=`cs`.`sortid` WHERE `csm`.`modelid`=[m] AND `cs`.`parentid`=[p] ORDER BY `cs`.`sortid` ASC;",array('m'=>$p1,'p'=>$p3));
+        while ($rs = $db->fetch($res,0)) {
+            $selected = ((int)$p2 == (int)$rs[0]) ? ' selected="selected"' : null;
+            $R.= '<option value="'.$rs[0].'"'.$selected.'>'.$nbsp.'├'.$rs[1].'</option>';
+            if ((int)$db->count("SELECT * FROM `#@_content_sort_model` AS `csm` LEFT JOIN `#@_content_sort` AS `cs` ON `csm`.`sortid`=`cs`.`sortid` WHERE `csm`.`modelid`=".DB::quote($p1)." AND `cs`.`parentid`=".DB::quote($rs[0]).";") > 0) {
+                $R.= self::sort($p1,$p2,$rs[0],$p4+1);
+            }
+        }
+        return $R;
+    }
     // __sort *** *** www.LazyCMS.net *** ***
     static function __sort($p1=0,$p2=0,$p3=0,$p4=null){
         // $p1:father sortid, $p2:number, $p3:current sortid, $p4:selected
@@ -63,7 +80,7 @@ class Article{
     // getModels *** *** www.LazyCMS.net *** ***
     static function getModels($p1,$p2='modelid'){
         $db = get_conn(); $R = array();
-        $res = $db->query("SELECT * FROM `#@_content_sort_model` AS `csm` LEFT JOIN `#@_content_model` AS `cm` ON `csm`.`modelid`=`cm`.`modelid` WHERE `csm`.`sortid`=?;",$p1);
+        $res = $db->query("SELECT * FROM `#@_content_sort_model` AS `csm` LEFT JOIN `#@_content_model` AS `cm` ON `csm`.`modelid`=`cm`.`modelid` WHERE `cm`.`modelstate`=1 AND `csm`.`sortid`=?;",$p1);
         while ($rs = $db->fetch($res)) {
             $R[] = $rs[$p2];
         }

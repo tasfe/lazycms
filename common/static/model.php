@@ -69,7 +69,7 @@ class Model{
     // getModels *** *** www.LazyCMS.net *** ***
     static function getModels($p1=null){
         $db  = get_conn(); $R = array();
-        $in  = empty($p1) ? null : DB::quoteInto('And `modelename`=?',$p1);
+        $in = empty($p1) ? null : DB::quoteInto('AND `modelename`=?',$p1);
         $res = $db->query("SELECT * FROM `#@_content_model` WHERE `modelstate`=1 {$in} ORDER BY `modelid` ASC");
         while ($rs = $db->fetch($res)) {
             if (empty($p1)) {

@@ -64,6 +64,7 @@ function lazy_edit(){
     $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
     $n  = array_search($m,G('MODEL'))+2;
     $model = Model::getModels($m); if (!$model) { trigger_error(L('error/invalid','system')); }
+    $sort  = Article::sort($model['modelid']);
     $title = (empty($id) ? L('common/add') : L('common/edit')).$model['modelname'];
     $path  = isset($_POST['path']) ? $_POST['path'] : null;
     $table = Model::getDataTableName($model['modelename']);
@@ -157,6 +158,11 @@ function lazy_edit(){
     $hl = '<form id="form1" name="form1" method="post" action="">';
     $hl.= '<fieldset><legend rel="tab"><a class="collapsed" rel=".more-attr" cookie="false">'.$title.'</a></legend>';
     $hl.= '<div class="more-attr">';
+
+    if ($sort) {
+        $hl.= '<p><label>'.L('article/add/sort').'：</label><select name="sortid" id="sortid">'.$sort.'</select></p>';
+    }
+
     $hl.= $tag->fetch('<p><label>{label}：</label>{object}</p>',$data);
     $hl.= '</div></fieldset>';
 

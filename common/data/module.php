@@ -46,7 +46,6 @@ return array(
     'content' => array(
         /* 需要导入的文件 */
         'import' => array(
-            'static.onepage',
             'static.model',
             'static.article',
         ),

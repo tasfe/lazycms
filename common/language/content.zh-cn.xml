@@ -19,6 +19,7 @@
     <onepage title="单页管理"></onepage>
     <article title="文档管理">
 		<add>
+            <sort>所属分类</sort>
             <path tip="不支持 &lt;\:*?&quot;|,;&gt; 字符，不能以/开始或结束">路径</path>
 			<keywords tip="关键字之间用“英文逗号”或“空格”分开">关键词</keywords>
 			<description tip="Meta简述，不要超过250个字符">Meta简述</description>

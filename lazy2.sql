@@ -84,26 +84,6 @@ CREATE TABLE IF NOT EXISTS `lazy_keywords` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `lazy_onepage`
--- 
-
-CREATE TABLE IF NOT EXISTS `lazy_onepage` (
-  `oneid` int(11) NOT NULL auto_increment COMMENT '编号',
-  `oneid1` int(11) default '0' COMMENT '所属id',
-  `oneorder` int(11) default '0' COMMENT '排序',
-  `onetitle` varchar(100) NOT NULL COMMENT '标题',
-  `onepath` varchar(255) NOT NULL COMMENT '路径',
-  `onename` varchar(50) NOT NULL COMMENT '名称',
-  `onecontent` text COMMENT '内容',
-  `onetemplate` varchar(255) NOT NULL COMMENT '模板',
-  `description` varchar(250) default NULL COMMENT '描述',
-  PRIMARY KEY  (`oneid`),
-  KEY `oneid1` (`oneid1`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
-
--- --------------------------------------------------------
-
--- 
 -- 表的结构 `lazy_system_group`
 -- 
 

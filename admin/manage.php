@@ -80,9 +80,6 @@ function lazy_default(){
     $hl.= '    
         <li><span>内容管理<b class="down-arrow"></b></span>
             <ul>
-                <li><a href="#">首页设置</a></li>
-                <li><a href="content/onepage.php" class="icon-16-page">单页管理</a></li>
-                <li class="hr"></li>
                 <li><a href="content/article.php" class="icon-16-article">文档管理</a></li>
                 <li><a href="content/trash.php" class="icon-16-trash">回收站</a></li>
                 <li class="hr"></li>
