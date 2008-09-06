@@ -60,7 +60,8 @@ body { height:100%; margin:0; background: #FFF; text-align:center; }
 	
 	/* 展示快捷方式的按钮 */
 	#top div.shortcut{ width:55px; float:left; margin-top:26px; padding:2px 0;}
-	#top div.shortcut a{ width:18px; margin:1px 3px 1px 1px;  padding:1px; float:left; display:block; cursor:default;}
+	#top div.shortcut a{ width:18px; margin:1px 3px 1px 1px; padding:1px; float:left; display:block; }
+	#top div.shortcut i.os{ margin:0px; float:none; }
 	#top div.shortcut a.active,
 	#top div.shortcut a:hover{ border:solid 1px #c6d9e7; background:#f6f6f6; margin:0 2px 0 0;}
     
@@ -72,7 +73,7 @@ body { height:100%; margin:0; background: #FFF; text-align:center; }
 	#menu li span.active { background:#f6f6f6; }
 	#menu li span.gray{ color:#999999; }
 	#menu li span a{ text-decoration:none; }
-	#menu li b.down-arrow{ position:absolute; top:0px; right:5px; display:block; background:url(../../../common/images/icon/down-arrow.png) no-repeat center 3px; height:25px; width:16px;}
+	#menu li b.down-arrow{ position:absolute; top:0px; right:5px; display:block; background:url(../../../common/images/icons.png) no-repeat center -115px; height:25px; width:16px;}
 	#menu ul { display:none; position:absolute; border:solid 1px #c6d9e7; background: #f6f6f6 url(bg-menu.gif) repeat-y left; padding-top:1px; }
 	#menu li li { clear:both; margin:0 1px; }
 	#menu li li.hr { background: #DDE1E6 url(bg-menu.gif);  height:1px; width:auto; overflow:hidden; margin:1px 0; }
@@ -96,7 +97,7 @@ body { height:100%; margin:0; background: #FFF; text-align:center; }
 
 /* shortcut */
 #shortcut{ display:none; width:500px; left:1px; top:50px; }
-	#shortcut .head{ width:495px; }
+	#shortcut .head{ width:495px;}
 	#shortcut .head strong{ cursor:default;}
 	#shortcut .body{ background:#FFF url(../../../common/images/loading.gif) no-repeat center 40%; height:480px; padding:5px;}
 	#shortcut dl{ margin-bottom:15px; clear:both; display:table; zoom:1;  }
@@ -110,8 +111,8 @@ body { height:100%; margin:0; background: #FFF; text-align:center; }
 	#addShortcut .head{ width:395px; cursor:move;}
 	#addShortcut .head strong{ cursor:move;}
 	#addShortcut dl{ display:none; width:300px; position:absolute; left:50px; top:40px; border:solid 1px #c6d9e7; background:#FFF; text-align:left; z-index:101; }
-	#addShortcut dt{ width:295px; display:table; zoom:1; height:25px; line-height:25px; border-bottom:solid 1px #c6d9e7; background:url(../../../common/images/buttons-bg.png) repeat-x 0 center; padding-left:5px; }
-	#addShortcut dt strong{ padding:3px 0 0 20px; background:url(../../../common/images/icon/fav.png) no-repeat 0 center; display:block; float:left; cursor:default;}
+	#addShortcut dt{ width:295px; height:23px; line-height:21px; display:table; zoom:1; height:23px; border-bottom:solid 1px #c6d9e7; background:url(../../../common/images/buttons-bg.png) repeat-x 0 center; padding-left:5px; overflow:hidden; }
+	#addShortcut dt strong{ padding:3px 0 0 20px; background:url(../../../common/images/icons.png) no-repeat 0px -176px; display:block; float:left; cursor:default;}
 	#addShortcut dt a{ display:block; float:right; padding:0 5px; margin-right:5px; text-decoration:none; font-weight:bold;}
 	#addShortcut dd{ padding-left:13px;}
 	#addShortcut dd p{ margin:5px 0 5px 0; clear:both; }

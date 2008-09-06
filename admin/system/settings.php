@@ -151,7 +151,7 @@ function lazy_default(){
     }
     $hl.= '</select></p>';
 
-    $hl.= '<p><label>'.L('settings/server/dsnconfig').'：</label><input tip="'.L('settings/server/dsnconfig').'::300::'.h2encode(ubbencode(L('settings/server/dsnconfig/@tip'))).'" class="in4" type="text" name="DSN_CONFIG" id="DSN_CONFIG" value="'.C('DSN_CONFIG').'">&nbsp;<img src="../../common/images/icon/help.png" tip="'.L('settings/server/dsnformat').'::400::'.h2encode(ubbencode(L('settings/server/dsnformat/@tip'))).'" class="os"/></p>';
+    $hl.= '<p><label>'.L('settings/server/dsnconfig').'：</label><input tip="'.L('settings/server/dsnconfig').'::400::'.h2encode(ubbencode(L('settings/server/dsnconfig/@tip'))).'" class="in4" type="text" name="DSN_CONFIG" id="DSN_CONFIG" value="'.C('DSN_CONFIG').'"></p>';
 
     $hl.= '</div></fieldset>';
 

@@ -141,8 +141,7 @@
 		</upload>
 		<server title="服务器设置">
 			<timezone tip="选择服务器所在的时区，当前选择：&#13;{$zone}">时区设置</timezone>
-            <dsnconfig tip="填写数据库连接字符串，连接字符串格式请将鼠标移到[img]../common/images/icon/help.png[/img]查看。">数据库设置</dsnconfig>
-            <dsnformat tip="mysql://用户名:[密码]@主机名:[端口][/数据库前缀]/数据库名称&#13;mysqli://用户名:[密码]@主机名:[端口][/数据库前缀]/数据库名称">数据库字符串格式</dsnformat>
+            <dsnconfig tip="填写数据库连接字符串，连接字符串格式：&#13;mysql://用户名:[密码]@主机名:[端口][/数据库前缀]/数据库名称&#13;mysqli://用户名:[密码]@主机名:[端口][/数据库前缀]/数据库名称">数据库设置</dsnconfig>
 		</server>
         <check>
             <sitename>网站名称不能为空</sitename>

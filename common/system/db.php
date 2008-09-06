@@ -287,7 +287,7 @@ abstract class DB {
             }
             return implode(', ', $p1);
         }
-        if (is_int($p1) || is_float($p1)) {
+        if (is_int($p1) || is_float($p1) || is_numeric($p1)) {
             return $p1;
         }
         return "'".addcslashes($p1, "\000\n\r\\'\"\032")."'";

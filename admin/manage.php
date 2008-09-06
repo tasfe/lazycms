@@ -45,7 +45,7 @@ function lazy_default(){
     $hl.= '<div id="top">';
     $hl.= '<div class="logo"><a href="manage.php" target="_top"><img src="system/images/logo.png" alt="LazyCMS '.LAZY_VERSION.'" /></a></div>';
     $hl.= '<div id="version">Version: <span>'.LAZY_VERSION.'</span></div>';
-    $hl.= '<div class="shortcut"><a href="javascript:;" onclick="toggleShortcut();"><img src="../common/images/icon/fav.png" /></a><a href="javascript:;" onclick="toggleAddShortcut()"><img src="../common/images/icon/fav-add.png" /></a></div>';
+    $hl.= '<div class="shortcut"><a href="javascript:;" onclick="toggleShortcut();"><i class="os icon-16-fav"></i></a><a href="javascript:;" onclick="toggleAddShortcut()"><i class="os icon-16-fav-add"></i></a></div>';
     $hl.= '<ul id="menu">';
     $hl.= '<li><span>'.L('system/manage').'<b class="down-arrow"></b></span><ul>';
     $hl.= '    <li><a href="manage.php" class="icon-16-cpanel" target="_top">'.L('system/cpanel').'</a></li>';

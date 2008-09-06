@@ -83,9 +83,9 @@ function lazy_set(){
                 $db->exec("DROP TABLE IF EXISTS `".Model::getJoinTableName($rs[0])."`;");
             }
             // 删除模型
-            $db->exec("DELETE FROM `#@_content_model` WHERE `modelid` IN({$lists});");
+            $db->delete('#@_content_model',"`modelid` IN({$lists})");
             // 删除模型和分类的关联关系
-            $db->exec("DELETE FROM `#@_content_sort_model` WHERE `modelid` IN({$lists});");
+            $db->delete('#@_content_sort_model',"`modelid` IN({$lists})");
             echo_json(array(
                 'text' => L('model/pop/deleteok'),
                 'url'  => $_SERVER["HTTP_REFERER"],
@@ -286,14 +286,14 @@ function lazy_edit(){
         $len = empty($data['length'])?null:'('.$data['length'].')';
         $hl.= '<tr id="TR_'.$i.'"><td'.$tip.'><input type="checkbox" name="list_'.$i.'" value="'.$data['oname'].'" /> '.$data['label'].'</td>';
         $hl.= '<td>'.$data['ename'].'</td><td>'.L('model/type/'.$data['intype']).$len.'</td><td>'.(empty($data['default'])?'NULL':$data['default']).'</td>';
-        $hl.= '<td><a href="javascript:;" onclick="$(this).getFields(\'#Fields\',$(\'#TR_Field_'.$i.'\').val());"><img src="'.SITE_BASE.'common/images/icon/edit.png" class="os"/></a>';
+        $hl.= '<td><a href="javascript:;" onclick="$(this).getFields(\'#Fields\',$(\'#TR_Field_'.$i.'\').val());"><i class="os icon-16-edit"></i></a>';
         if ($data['intype']=='input') {
             $selected = ($setKeyword==$data['ename']) ? null : '-off';
-            $hl.= '<a href="javascript:;" rel="autoKeywords" tip="::120::'.L('model/add/fields/autokeywords').'" onclick="$(this).autoKeywords(\'#setKeyword\',\''.$data['ename'].'\');"><img src="'.SITE_BASE.'common/images/icon/lightbulb'.$selected.'.png" class="os" /></a>';
+            $hl.= '<a href="javascript:;" rel="light" tip="::120::'.L('model/add/fields/autokeywords').'" onclick="$(this).autoKeywords(\'#setKeyword\',\''.$data['ename'].'\');"><i class="os icon-16-light'.$selected.'"></i></a>';
         }
         if (instr('basic,editor',$data['intype'])) {
             $selected = ($description==$data['ename']) ? null : '-off';
-            $hl.= '<a href="javascript:;" rel="autoDescription" tip="::120::'.L('model/add/fields/autodescription').'" onclick="$(this).autoKeywords(\'#description\',\''.$data['ename'].'\');"><img src="'.SITE_BASE.'common/images/icon/cut'.$selected.'.png" class="os" /></a>';
+            $hl.= '<a href="javascript:;" rel="cut" tip="::120::'.L('model/add/fields/autodescription').'" onclick="$(this).autoKeywords(\'#description\',\''.$data['ename'].'\');"><i class="os icon-16-cut'.$selected.'"></i></a>';
         }
         $hl.= '<textarea class="hide" name="modelfields['.$i.']" id="TR_Field_'.$i.'">'.json_encode($data).'</textarea></td></tr>';
     }
@@ -342,14 +342,14 @@ function lazy_fields(){
             $hl.= '<td>'.$data[3].'</td>';
             $hl.= '<td>'.L('model/type/'.$data[4]).$len.'</td>';
             $hl.= '<td>'.(empty($data[9])?'NULL':$data[9]).'</td>';
-            $hl.= '<td><a href="javascript:;" onclick="$(this).getFields(\'#Fields\',$(\'#TR_Field_'.$data[0].'\').val());"><img src="'.SITE_BASE.'common/images/icon/edit.png" class="os"/></a>';
+            $hl.= '<td><a href="javascript:;" onclick="$(this).getFields(\'#Fields\',$(\'#TR_Field_'.$data[0].'\').val());"><i class="os icon-16-edit"></i></a>';
             if ($data[4]=='input') {
                 $selected = ($keyword==$data[3]) ? null : '-off';
-                $hl.= '<a href="javascript:;" rel="autoKeywords" tip="::120::'.L('model/add/fields/autokeywords').'" onclick="$(this).autoKeywords(\'#setKeyword\',\''.$data[3].'\');"><img src="'.SITE_BASE.'common/images/icon/lightbulb'.$selected.'.png" class="os" /></a>';
+                $hl.= '<a href="javascript:;" rel="light" tip="::120::'.L('model/add/fields/autokeywords').'" onclick="$(this).autoKeywords(\'#setKeyword\',\''.$data[3].'\');"><i class="os icon-16-light'.$selected.'"></i></a>';
             }
             if (instr('basic,editor',$data[4])) {
                 $selected = ($description==$data[3]) ? null : '-off';
-                $hl.= '<a href="javascript:;" rel="autoDescription" tip="::120::'.L('model/add/fields/autodescription').'" onclick="$(this).autoKeywords(\'#description\',\''.$data[3].'\');"><img src="'.SITE_BASE.'common/images/icon/cut'.$selected.'.png" class="os" /></a>';
+                $hl.= '<a href="javascript:;" rel="cut" tip="::120::'.L('model/add/fields/autodescription').'" onclick="$(this).autoKeywords(\'#description\',\''.$data[3].'\');"><i class="os icon-16-cut'.$selected.'"></i></a>';
             }
             $hl.= '<textarea class="hide" name="modelfields['.$data[0].']" id="TR_Field_'.$data[0].'">'.json_encode($R).'</textarea></td></tr>';
             echo_json(array(

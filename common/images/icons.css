@@ -39,6 +39,27 @@
 .icon-16-article	{ background: url(menu-icons.png) no-repeat 2px -427px !important; }
 .icon-16-model		{ background: url(menu-icons.png) no-repeat 2px -461px !important; }
 .icon-16-install	{ background: url(menu-icons.png) no-repeat 2px -496px !important; }
+
+.icon-16-add		{ background: url(icons.png) no-repeat 0px 0px !important; }
+.icon-16-cut		{ background: url(icons.png) no-repeat 0px -20px !important; }
+.icon-16-cut-off	{ background: url(icons.png) no-repeat 0px -40px !important; }
+.icon-16-dir0		{ background: url(icons.png) no-repeat 0px -60px !important; }
+.icon-16-dir1		{ background: url(icons.png) no-repeat 0px -80px !important; }
+.icon-16-dir2		{ background: url(icons.png) no-repeat 0px -100px !important; }
+.icon-16-edit		{ background: url(icons.png) no-repeat 0px -140px !important; }
+.icon-16-export		{ background: url(icons.png) no-repeat 0px -160px !important; }
+.icon-16-fav		{ background: url(icons.png) no-repeat 0px -180px !important; }
+.icon-16-fav-add	{ background: url(icons.png) no-repeat 0px -200px !important; }
+.icon-16-light		{ background: url(icons.png) no-repeat 0px -260px !important; }
+.icon-16-light-off	{ background: url(icons.png) no-repeat 0px -280px !important; }
+.icon-16-link		{ background: url(icons.png) no-repeat 0px -300px !important; }
+.icon-16-link-error	{ background: url(icons.png) no-repeat 0px -320px !important; }
+.icon-16-lock		{ background: url(icons.png) no-repeat 0px -340px !important; }
+.icon-16-lock-open	{ background: url(icons.png) no-repeat 0px -360px !important; }
+.icon-16-reduce		{ background: url(icons.png) no-repeat 0px -380px !important; }
+.icon-16-stop		{ background: url(icons.png) no-repeat 0px -400px !important; }
+.icon-16-tick		{ background: url(icons.png) no-repeat 0px -420px !important; }
+
 /* 32x32 ICONS */
 .icon-32-user		{ background-image:url(icon-32/user.png) !important; }
 .icon-32-media		{ background-image:url(icon-32/media.png) !important; }

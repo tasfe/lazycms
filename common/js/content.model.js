@@ -5,7 +5,7 @@
 		var p2  = {JSON:p2};// p2 = (typeof p2)=='string'?$.parseJSON(p2):p2;
 		var url = p3.attr('action');
 		var id = 'CONTENT_MODEL_' + Math.floor(Math.random()*100000);
-		var t = this.replaceWith('<img id="' + id + '" src="' + path() + '/images/icon/loading.gif" style="cursor:default;" class="os" />');
+		var t = this.replaceWith('<img id="' + id + '" src="' + path() + '/images/icon/loading.gif" style="float:left;cursor:default;" class="os" />');
 			$('#formFields').remove();
 		$.post(url,p2,function(d){
 			// 将html代码加入
@@ -142,17 +142,22 @@
 	};
 	// autoKeywords *** *** www.LazyCMS.net *** ***
 	$.fn.autoKeywords = function(p1,p2){
-		var img = this.find('img');
-		var src = img.attr('src');
-		$('a[@rel='+this.attr('rel')+'] img').each(function(){
-			if (this.src.indexOf('-off')==-1) {
-				this.src = this.src.replace('.png','-off.png');
+		var i   = this.find('i');
+		var rel = this.attr('rel');
+		var is  = i.hasClass('icon-16-'+rel+'-off');
+		$('a[@rel='+rel+'] i').each(function(){
+			if ($(this).hasClass('icon-16-'+rel)) {
+				$(this).removeClass('icon-16-'+rel);
+				$(this).addClass('icon-16-'+rel+'-off');
 			}
 		});
-		if (src.indexOf('-off')!=-1) {
-			img.attr('src',src.replace('-off','')); $(p1).val(p2);
+		if (is) {
+			i.removeClass('icon-16-'+rel+'-off');
+			i.addClass('icon-16-'+rel); $(p1).val(p2);
 		} else {
-			img.attr('src',src.replace('.png','-off.png')); $(p1).val('');
+			i.removeClass('icon-16-'+rel);
+			i.addClass('icon-16-'+rel+'-off'); 
+			$(p1).val('');
 		}
 	}
 })(jQuery);

@@ -30,6 +30,7 @@
 	</article>
     <trash title="回收站管理"></trash>
     <sort title="分类管理">
+        <edit title="编辑分类"/>
 		<add title="添加分类">
             <sort>所属分类</sort>
             <topsort>顶级分类</topsort>
@@ -40,6 +41,12 @@
             <sortemplate tip="列表页面的模板">列表模板</sortemplate>
             <pagetemplate tip="内容页面的模板">内容模板</pagetemplate>
 		</add>
+        <list>
+            <name>分类名称</name>
+            <model>内容类型</model>
+            <count>文档数</count>
+            <path>分类目录</path>
+        </list>
 		<check>
 			<name>分类名称不能为空</name>
 			<path>分类目录不能为空</path>
@@ -54,7 +61,7 @@
 		</pop>
 	</sort>
     <model title="模型管理">
-		<edit title="编辑模型"></edit>
+		<edit title="编辑模型"/>
 		<add title="添加模型">
 			<name>模型名称</name>
 			<ename tip="模型英文名称，用来作为模板标签的一部分">模型标识</ename>

@@ -54,4 +54,19 @@ class Article{
         }
         return $R;
     }
+    // __sub *** *** www.LazyCMS.net *** ***
+    static function __sub($p1){
+        $db  = get_conn();
+        $num = $db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($p1).";");
+        return ((int)$num>0)?'1':'0';
+    }
+    // getModels *** *** www.LazyCMS.net *** ***
+    static function getModels($p1,$p2='modelid'){
+        $db = get_conn(); $R = array();
+        $res = $db->query("SELECT * FROM `#@_content_sort_model` AS `csm` LEFT JOIN `#@_content_model` AS `cm` ON `csm`.`modelid`=`cm`.`modelid` WHERE `csm`.`sortid`=?;",$p1);
+        while ($rs = $db->fetch($res)) {
+            $R[] = $rs[$p2];
+        }
+        return $R;
+    }
 }

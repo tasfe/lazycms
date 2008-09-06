@@ -23,8 +23,9 @@ function autoTitle(){ var t = $('#box fieldset legend[@rel=tab]').text(); if (t!
 function checkALL(e){ var e = (typeof e=='object')?e.form:e; $('input:checkbox',e).each(function(){ if (typeof checkALL.arguments[1]!='undefined') { this.checked = true; } else { this.checked = !this.checked; }}); }
 // icon *** *** www.LazyCMS.net *** ***
 function icon(i,a){
-	var IMG  = '<img src="../../common/images/icon/'+i+'.png" alt="'+i.toUpperCase()+'" class="os" />';
-	var HREF = '<a href="'+a+'" title="'+i.toUpperCase()+'">'+IMG+'</a>';
+	var cur = typeof a == "undefined"?' style="cursor:default;"':'';
+	var IMG = '<i class="os icon-16-'+i+'"'+cur+'></i>';
+	var HREF = '<a href="'+a+'">'+IMG+'</a>';
 	if (typeof a == "undefined") { return IMG; } else { return HREF; }
 }
 // Purview *** *** www.LazyCMS.net *** ***
@@ -84,51 +85,6 @@ function getHP(){
 		e.File = e.Path.split('/').pop();
 		e.Path = e.Path.substr(0,e.Path.lastIndexOf('/')+1);
 		return e;
-}
-// addSub *** *** www.LazyCMS.net *** ***
-function addSub(p1,p2,p3){
-	var nbsp = ''; var e = getHP();
-	var p2 = (typeof p2=='undefined') ? 1 : p2;
-	var p3 = (typeof p3=='undefined') ? false : p3;
-	if (p3==0||p3==false) { return ; }
-	var td = $('#list_'+p1).parent();
-	var os = td.find('img[src*=dir].os').css('cursor','pointer').unbind().click(function(){ 
-			$.cookie('getSub_'+p1,true,{expires:365,path:e.Path}); addSub(p1,p2,p3); 
-		});
-	if ($.cookie('getSub_'+p1)==null || $.cookie('getSub_'+p1)=='false') { return ; }
-	var tr = td.parent();
-	var fm = td.parents('form');
-	var tb = td.parents('tbody');
-	for (var i=0; i<p2; i++) { nbsp += "&nbsp; &nbsp;"; }
-	if ($('.sub' + p1 + ':visible',tb).is("tr")==false) {
-		if ($('.sub' + p1,tb).css('display')=='none') {
-			os.attr('src',path()+'/images/icon/dir2.png');
-			$('.sub' + p1,tb).show(); changeHeight();
-			return ;
-		};
-		os.attr('src',path()+'/images/icon/loading.gif');
-		$.ajax({
-			cache: false,
-			url:fm.attr('action'),
-			type: 'POST',
-			data: {submit:'getsub',lists:p1,space:p2},
-			success: function(data){
-				if (d = $.parseJSON(data)) {
-					os.attr('src',path()+'/images/icon/dir2.png');
-					$(d).each(function(){
-						tr.after($("td:first input",eval(this.code)).before(nbsp).end().addClass('sub'+p1).show());
-						addSub(this.id,p2+1,this.sub); changeHeight();
-					});
-				} else {
-					debug(data);
-				}
-			}
-		});
-	} else {
-		os.attr('src',path() + '/images/icon/dir1.png');
-		$.cookie('getSub_'+p1,false,{expires:365,path:e.Path});
-		$('.sub' + p1,tb).hide(); changeHeight();
-	}
 }
 
 /*

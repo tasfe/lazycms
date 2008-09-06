@@ -71,11 +71,14 @@ function lazy_group_set(){
     switch($submit){
         case 'delete':
             empty($lists) ? echo_json(L('users/group/pop/select'),0) : null ;
-            $db->exec("DELETE FROM `#@_system_group` WHERE `system`=0 AND `groupid` IN({$lists});");
+            $db->delete('#@_system_group',array("`system`=0","`groupid` IN({$lists})"));
             echo_json(array(
                 'text' => L('users/group/pop/deleteok'),
                 'url'  => $_SERVER["HTTP_REFERER"],
             ),1);
+            break;
+        default :
+            echo_json(L('error/invalid','system'));
             break;
     }
 }
@@ -170,6 +173,25 @@ function lazy_user_list(){
 
     print_x(L('users/group/@title'),$ds->fetch(),1);
 }
+// lazy_user_set *** *** www.LazyCMS.net *** ***
+function lazy_user_set(){
+    $db = get_conn();
+    $submit = isset($_POST['submit']) ? strtolower($_POST['submit']) : null;
+    $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
+    switch($submit){
+        case 'delete':
+            empty($lists) ? echo_json(L('users/user/pop/select'),0) : null ;
+            $db->update('#@_system_users',array('isdel'=>1),"`userid` IN({$lists})");
+            echo_json(array(
+                'text' => L('users/user/pop/deleteok'),
+                'url'  => $_SERVER["HTTP_REFERER"],
+            ),1);
+            break;
+        default :
+            echo_json(L('error/invalid','system'));
+            break;
+    }
+}
 // lazy_user_edit *** *** www.LazyCMS.net *** ***
 function lazy_user_edit(){
     $db = get_conn();
@@ -230,7 +252,7 @@ function lazy_user_edit(){
             }
             echo_json(array(
                 'text' => $text,
-                'url'  => 'users.php',
+                'url'  => PHP_FILE.'?action=user_list&groupid='.$groupid,
             ),1);
         }
     } else {

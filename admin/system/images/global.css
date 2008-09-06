@@ -27,11 +27,12 @@
 @charset "utf-8";
 
 /* 全局样式 */
-body,td,th { color: #333333; line-height: 130%; font-family: Verdana; font-size: 12px;}
+body,td,th,p,div { color: #333333; line-height: 130%; font-family: Verdana; font-size: 12px;}
 dl,dt,dd,form{ margin:0; padding:0;}
 img,input,button,select{ vertical-align:middle; }
 img{ border:none; }
-	img.os{ width:16px;height:16px;vertical-align:middle;margin:0px 2px; }
+	img.os{ width:16px; height:16px; vertical-align:middle; margin:0px 2px; }
+i.os{ width:16px; height:16px; vertical-align:middle; margin:0px 2px; float:left; display:block; overflow:hidden; cursor:pointer; }
 a img{ border:none; vertical-align:middle;}
 
 /* 连接样式 */
@@ -41,8 +42,8 @@ a:hover   { text-decoration: underline; }
 
 /* 样式表 */
 .panel{ position:absolute; border:solid 1px #c6d9e7; background:#FFF; text-align:left; }
-	.panel .head{ display:table; zoom:1; height:25px; line-height:25px; border-bottom:solid 1px #c6d9e7; background:url(../../../common/images/buttons-bg.png) repeat-x 0 center; padding-left:5px;}
-	.panel .head strong{ padding:3px 0 0 20px; background:url(../../../common/images/icon/fav.png) no-repeat 0 center; display:block; float:left;}
+	.panel .head{ display:table; zoom:1; height:23px; line-height:21px; border-bottom:solid 1px #c6d9e7; background:url(../../../common/images/buttons-bg.png) repeat-x 0 center; padding-left:5px; overflow:hidden;}
+	.panel .head strong{ padding:3px 0 0 20px; background:url(../../../common/images/icons.png) no-repeat 0px -176px; display:block; float:left;}
 	.panel .head a{ display:block; float:right; padding:0 5px; margin-right:5px; text-decoration:none; font-weight:bold;}
 	.panel .body p{ margin:5px 0 5px 0; clear:both; }
 	.panel .body p label{ width:60px; text-align:right; display:block; float:left; color:#0000FF; line-height:200%; font-size:12px; margin:0 5px 3px 0;}
