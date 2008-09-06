@@ -54,7 +54,7 @@ function lazy_default(){
     while ($rs = $ds->result()) {
         $isSub = Article::__sub($rs['sortid']);
         $model = implode(',',Article::getModels($rs['sortid'],'modelename'));
-        $ds->tbody = "E(".$rs['sortid'].",'".t2js(h2encode($rs['sortname']))."','".t2js(h2encode(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($model)?'&nbsp;':$model)."');addSub(".$rs['sortid'].",1,{$isSub});";
+        $ds->tbody = "E(".$rs['sortid'].",'".t2js(h2encode($rs['sortname']))."','".t2js(h2encode(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($model)?'&nbsp;':$model)."');$('#list_".$rs['sortid']."').parents('tr').addSub(".$rs['sortid'].",1,{$isSub});";
     }
     $ds->close();
 
