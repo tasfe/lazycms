@@ -42,7 +42,7 @@ class Article{
         for ($i=0;$i<$p4;$i++) {
             $nbsp.= "&nbsp; &nbsp;";
         }
-        $res = $db->query("SELECT `cs`.`sortid`,`cs`.`sortname` FROM `#@_content_sort_model` AS `csm` LEFT JOIN `#@_content_sort` AS `cs` ON `csm`.`sortid`=`cs`.`sortid` WHERE `csm`.`modelid`=[m] AND `cs`.`parentid`=[p] ORDER BY `cs`.`sortid` ASC;",array('m'=>$p1,'p'=>$p3));
+        $res = $db->query("SELECT `cs`.`sortid`,`cs`.`sortname` FROM `#@_content_sort_model` AS `csm`  LEFT JOIN `#@_content_sort` AS `cs` ON `csm`.`sortid`=`cs`.`sortid` WHERE `csm`.`modelid`=[m] AND `cs`.`parentid`=[p] ORDER BY `cs`.`sortid` ASC;",array('m'=>$p1,'p'=>$p3));
         while ($rs = $db->fetch($res,0)) {
             $selected = ((int)$p2 == (int)$rs[0]) ? ' selected="selected"' : null;
             $R.= '<option value="'.$rs[0].'"'.$selected.'>'.$nbsp.'├'.$rs[1].'</option>';
