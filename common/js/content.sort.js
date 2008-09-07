@@ -5,22 +5,22 @@
 		var p2 = (typeof p2=='undefined') ? 1 : p2;
 		var p3 = (typeof p3=='undefined') ? false : p3;
 		if (p3==0||p3==false) { return ; }
-		var tr = this;
-		var td = $('td:first',this);
+		var tr = this.parents('tr');
+		var td = $('td:first',tr);
 		var os = td.find('i.os').css('cursor','pointer').unbind().click(function(){ 
-				$.cookie('getSub_'+e.File+'_'+p1,true,{expires:365,path:e.Path}); $('#list_'+p1).parents('tr').addSub(p1,p2,p3); 
+				$.cookie('getSub_'+e.File+'_'+p1,true,{expires:365,path:e.Path}); $('#list_'+p1).addSub(p1,p2,p3); 
 			});
 		if ($.cookie('getSub_'+e.File+'_'+p1)==null || $.cookie('getSub_'+e.File+'_'+p1)=='false') { return ; }
 		var fm = td.parents('form');
 		var tb = td.parents('tbody');
-		var cs = $(this).attr('class');
+		var cs = $(tr).attr('class');
 		var is = true;
 		for (var i=0; i<p2; i++) { nbsp += "&nbsp; &nbsp;"; }
 		if ($('tr.sub' + p1 + ':visible',tb).is("tr")==false) {
 			if ($('tr.sub' + p1,tb).css('display')=='none') {
 				os.removeClass('icon-16-dir0'); os.removeClass('icon-16-dir1'); os.addClass('icon-16-dir2');
 				$('tr.sub' + $('td:first input',tr).val()).show();
-				this.nextAll('tr').each(function(){
+				tr.nextAll('tr').each(function(){
 					if ($(this).attr('class')==cs || $(this).attr('class')=='') {
 						is = false;
 					}
@@ -45,7 +45,7 @@
 						os.removeClass('icon-16-dir0'); os.removeClass('icon-16-dir1'); os.addClass('icon-16-dir2');
 						$(d).each(function(){
 							tr.after($("td:first input",eval(this.code)).before(nbsp).end().addClass('sub'+p1).show());
-							$('#list_'+this.id).parents('tr').addSub(this.id,p2+1,this.sub); changeHeight();
+							$('#list_'+this.id).addSub(this.id,p2+1,this.sub); changeHeight();
 						});
 					} else {
 						debug(data);
@@ -55,7 +55,7 @@
 		} else {
 			os.removeClass('icon-16-dir0'); os.removeClass('icon-16-dir2'); os.addClass('icon-16-dir1');
 			$.cookie('getSub_'+e.File+'_'+p1,false,{expires:365,path:e.Path});
-			this.nextAll('tr').each(function(){
+			tr.nextAll('tr').each(function(){
 				if ($(this).attr('class')==cs || $(this).attr('class')=='') {
 					is = false;
 				}
