@@ -48,7 +48,7 @@ function lazy_default(){
     $ds->td  = "K[5]";
     $ds->td  = "'0'";
     $ds->td  = "(K[3]?icon('link',K[2]):icon('link-error','javascript:alert(\'create\');')) + K[2]";
-    $ds->td  = "icon('edit','".PHP_FILE."?action=edit&oneid=' + K[0])";
+    $ds->td  = "icon('edit','".PHP_FILE."?action=edit&sortid=' + K[0])";
     $ds->open();
     $ds->thead = '<tr><th>ID) '.L('sort/list/name').'</th><th>'.L('sort/list/model').'</th><th>'.L('sort/list/count').'</th><th>'.L('sort/list/path').'</th><th>'.L('common/action','system').'</th></tr>';
     while ($rs = $ds->result()) {
