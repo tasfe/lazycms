@@ -42,11 +42,12 @@ class Article{
         for ($i=0;$i<$p4;$i++) {
             $nbsp.= "&nbsp; &nbsp;";
         }
-        $res = $db->query("SELECT `cs`.`sortid`,`cs`.`sortname` FROM `#@_content_sort_model` AS `csm`  LEFT JOIN `#@_content_sort` AS `cs` ON `csm`.`sortid`=`cs`.`sortid` WHERE `csm`.`modelid`=[m] AND `cs`.`parentid`=[p] ORDER BY `cs`.`sortid` ASC;",array('m'=>$p1,'p'=>$p3));
+        $in  = empty($p3) ? DB::quoteInto(" AND `csm`.`modelid`=?",$p1) : null;
+        $res = $db->query("SELECT `cs`.`sortid`,`cs`.`sortname` FROM `#@_content_sort` AS `cs` LEFT JOIN `#@_content_sort_model` AS `csm` ON `csm`.`sortid`=`cs`.`sortid` WHERE `cs`.`parentid`=? {$in} ORDER BY `cs`.`sortid` ASC;",$p3);
         while ($rs = $db->fetch($res,0)) {
             $selected = ((int)$p2 == (int)$rs[0]) ? ' selected="selected"' : null;
             $R.= '<option value="'.$rs[0].'"'.$selected.'>'.$nbsp.'├'.$rs[1].'</option>';
-            if ((int)$db->count("SELECT * FROM `#@_content_sort_model` AS `csm` LEFT JOIN `#@_content_sort` AS `cs` ON `csm`.`sortid`=`cs`.`sortid` WHERE `csm`.`modelid`=".DB::quote($p1)." AND `cs`.`parentid`=".DB::quote($rs[0]).";") > 0) {
+            if ((int)$db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
                 $R.= self::sort($p1,$p2,$rs[0],$p4+1);
             }
         }

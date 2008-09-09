@@ -178,14 +178,14 @@ function lazy_edit(){
     $hl.= '<fieldset><legend rel="tab"><a class="collapsed" rel=".show" cookie="false">'.$title.'</a></legend>';
     $hl.= '<div class="show">';
     $hl.= '<p><label>'.L('sort/add/sort').'：</label>';
-    $hl.= '<select name="parentid" id="parentid">';
+    $hl.= '<select name="parentid" id="parentid" onchange="$(\'#models\').toggleModels(this.value);">';
     $hl.= '<option value="0">--- '.L('sort/add/topsort').' ---</option>';
     $hl.= Article::__sort(0,0,$sortid,$parentid);
     $hl.= '</select></p>';
     $hl.= '<p><label>'.L('sort/add/name').'：</label><input class="in2" type="text" name="sortname" id="sortname" value="'.$sortname.'" /></p>';
     $hl.= '<p><label>'.L('sort/add/path').'：</label><input tip="'.L('sort/add/path').'::300::'.h2encode(L('sort/add/path/@tip')).'" class="in4" type="text" name="sortpath" id="sortpath" value="'.$sortpath.'" /></p>';
-    if (!empty($models)) {
-        $hl.= '<p><label>'.L('sort/add/model').'：</label><span tip="'.L('sort/add/model').'::'.L('sort/add/model/@tip').'">';
+    if (!empty($models) && empty($parentid)) {
+        $hl.= '<p><label>'.L('sort/add/model').'：</label><span id="models" tip="'.L('sort/add/model').'::'.L('sort/add/model/@tip').'">';
         foreach ($models as $model) {
             $checked = instr($getModels,$model['modelid'])?' checked="checked"':null;
             $hl.= '<input type="checkbox" name="model['.$model['modelename'].']" id="model['.$model['modelename'].']" value="'.$model['modelid'].'"'.$checked.' /><label for="model['.$model['modelename'].']">'.$model['modelname'].'</label> ';

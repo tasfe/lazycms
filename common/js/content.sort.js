@@ -65,5 +65,13 @@
 			});
 			changeHeight();
 		}
-	}
+	};
+	// toggleModels *** *** www.LazyCMS.net *** ***
+	$.fn.toggleModels = function(p1){
+	    if (p1==0) {
+            this.parents('p').show();
+	    } else {
+    	    this.parents('p').hide();
+	    }
+	};
 })(jQuery);
