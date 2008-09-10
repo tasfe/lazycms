@@ -469,6 +469,7 @@ function menu($p1){
     $R = '<ul id="tabs">';
     $R1 = explode(';',$p1);
     foreach ($R1 as $k=>$v) {
+        if (strlen($v)==0) { continue; }
         if (strpos($v,':')!==false) {
             $R2 = explode(':',$v); $active = null;
             if (!empty($p2)) {

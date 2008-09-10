@@ -36,7 +36,11 @@ function lazy_before(){
         $menus[] = L('common/add').$v['modelname'].':article.php?action=edit&model='.$v['modelename'];
     }
     G('MODEL',$model);
-    G('TABS',L('article/@title').':article.php;'.implode(';',$menus));
+    G('TABS',
+        L('sort/@title').':sort.php;'.
+        L('article/@title').':article.php;'.
+        L('sort/add/@title').':sort.php?action=edit;'.implode(';',$menus)
+    );
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){
@@ -62,7 +66,7 @@ function lazy_edit(){
     $db = get_conn(); $data = array();
     $m  = isset($_REQUEST['model']) ? strtolower($_REQUEST['model']) : null;
     $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
-    $n  = array_search($m,G('MODEL'))+2;
+    $n  = array_search($m,G('MODEL'))+4;
     $model = Model::getModels($m); if (!$model) { trigger_error(L('error/invalid','system')); }
     $sort  = Article::sort($model['modelid']);
     $title = (empty($id) ? L('common/add') : L('common/edit')).$model['modelname'];

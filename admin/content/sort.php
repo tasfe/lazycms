@@ -31,9 +31,14 @@ require '../../global.php';
 function lazy_before(){
     check_login('sort');
     // 设置公共菜单
+    $menus = array();
+    foreach (Model::getModels() as $v) {
+        $menus[] = L('common/add').$v['modelname'].':article.php?action=edit&model='.$v['modelename'];
+    }
     G('TABS',
         L('sort/@title').':sort.php;'.
-        L('sort/add/@title').':sort.php?action=edit'
+        L('article/@title').':article.php;'.
+        L('sort/add/@title').':sort.php?action=edit;'.implode(';',$menus)
     );
     G('SCRIPT','LoadScript("content.sort");');
 }
@@ -44,16 +49,15 @@ function lazy_default(){
     $ds->create("SELECT * FROM `#@_content_sort` WHERE `parentid`=0 ORDER BY `sortid` ASC");
     $ds->action = PHP_FILE."?action=set";
     $ds->but = $ds->button();
-    $ds->td  = "'<div class=\"fl\">' + cklist(K[0]) + '</div><div class=\"dir\">' + icon('dir'+K[4]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&sortid=' + K[0] + '\">' + K[1] + '</a></div>'";
-    $ds->td  = "K[5]";
+    $ds->td  = "'<div class=\"fl\">' + cklist(K[0]) + '</div><div class=\"dir\">' + icon('dir'+K[4]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&sortid=' + K[0] + '\">' + K[1] + '</a>' + (K[5]=='&nbsp;'?'':' <span tip=\"::60::".L('sort/list/model')."\">('+K[5]+')</span>') + '</div>'";
     $ds->td  = "'0'";
     $ds->td  = "(K[3]?icon('link',K[2]):icon('link-error','javascript:alert(\'create\');')) + K[2]";
     $ds->td  = "icon('edit','".PHP_FILE."?action=edit&sortid=' + K[0])";
     $ds->open();
-    $ds->thead = '<tr><th>ID) '.L('sort/list/name').'</th><th>'.L('sort/list/model').'</th><th>'.L('sort/list/count').'</th><th>'.L('sort/list/path').'</th><th>'.L('common/action','system').'</th></tr>';
+    $ds->thead = '<tr><th>ID) '.L('sort/list/name').'</th><th>'.L('sort/list/count').'</th><th>'.L('sort/list/path').'</th><th>'.L('common/action','system').'</th></tr>';
     while ($rs = $ds->result()) {
         $isSub = Article::__sub($rs['sortid']);
-        $model = implode(',',Article::getModels($rs['sortid'],'modelename'));
+        $model = implode(',',Article::getModels($rs['sortid'],'modelname'));
         $ds->tbody = "E(".$rs['sortid'].",'".t2js(h2encode($rs['sortname']))."','".t2js(h2encode(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($model)?'&nbsp;':$model)."');$('#list_".$rs['sortid']."').addSub(".$rs['sortid'].",1,{$isSub});";
     }
     $ds->close();
@@ -71,6 +75,7 @@ function lazy_set(){
             // 取得要删除分类的所有子类，进行删除
             $db->update('#@_content_sort',array('parentid'=>0),"`parentid` IN({$lists})");
             $db->delete('#@_content_sort',"`sortid` IN({$lists})");
+            $db->delete('#@_content_sort_model',"`sortid` IN({$lists})");
             echo_json(array(
                 'text' => L('sort/pop/deleteok'),
                 'url'  => $_SERVER["HTTP_REFERER"],
@@ -82,11 +87,10 @@ function lazy_set(){
             $array  = array();
             while ($rs = $db->fetch($result)) {
                 $isSub = Article::__sub($rs['sortid']);
-                $model = implode(',',Article::getModels($rs['sortid'],'modelename'));
                 $array[] = array(
                     'id'    => $rs['sortid'],
                     'sub'   => $isSub,
-                    'code'  => "R(".$rs['sortid'].",'".t2js(h2encode($rs['sortname']))."','".t2js(h2encode(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($model)?'&nbsp;':$model)."');",
+                    'code'  => "R(".$rs['sortid'].",'".t2js(h2encode($rs['sortname']))."','".t2js(h2encode(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'&nbsp;');",
                 );
             }
             echo(json_encode($array));
