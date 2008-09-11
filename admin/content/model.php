@@ -268,11 +268,11 @@ function lazy_edit(){
     $hl.= '<p><label>'.L('model/add/path').'：</label><input tip="::250::'.ubbencode(L('model/add/path/@tip')).'" class="in3" type="text" name="modelpath" id="modelpath" value="'.(empty($modelpath)?'%Y%m%d/%I.htm':$modelpath).'" /></p>';
     $hl.= '<p><label>'.L('model/add/sortemplate').'：</label>';
     $hl.= '<select name="sortemplate" id="sortemplate" tip="'.L('model/add/sortemplate').'::'.L('model/add/sortemplate/@tip').'">';
-    $hl.= form_opts('themes/'.C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$sortemplate);
+    $hl.= form_opts(C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$sortemplate);
     $hl.= '</select></p>';
     $hl.= '<p><label>'.L('model/add/pagetemplate').'：</label>';
     $hl.= '<select name="pagetemplate" id="pagetemplate" tip="'.L('model/add/pagetemplate').'::'.L('model/add/pagetemplate/@tip').'">';
-    $hl.= form_opts('themes/'.C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$pagetemplate);
+    $hl.= form_opts(C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$pagetemplate);
     $hl.= '</select></p>';
     $hl.= '</div></fieldset>';
 
