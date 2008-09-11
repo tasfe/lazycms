@@ -30,7 +30,12 @@ require '../../global.php';
 // lazy_before *** *** www.LazyCMS.net *** ***
 function lazy_before(){
     // 设置公共菜单
-    G('TABS',L('settings/@title').':settings.php');
+    G('TABS',L('settings/@title').':settings.php;'.
+        L('sysinfo/@title').':sysinfo.php;'.
+        L('sysinfo/settings').':sysinfo.php?action=settings;'.
+        L('sysinfo/directory/@title').':sysinfo.php?action=directory;'.
+        L('sysinfo/phpinfo').':sysinfo.php?action=phpinfo'
+    );
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){ 
@@ -56,7 +61,6 @@ function lazy_default(){
             $fields = array(
                 'SITE_NAME',
                 'LANGUAGE',
-                'TEMPLATE',
                 'RSS_NUMBER',
                 'GET_RELATED_KEY',
                 'USER_ALLOW_REG',
@@ -89,11 +93,6 @@ function lazy_default(){
     $hl.= '<p><label>'.L('settings/site/language').'：</label>';
     $hl.= '<select name="LANGUAGE" id="LANGUAGE" tip="'.L('settings/site/language').'::'.L('settings/site/language/@tip').'">';
     $hl.= form_opts('@.language','xml','<option value="#value#"#selected#>#name#</option>',C('LANGUAGE'));
-    $hl.= '</select></p>';
-
-    $hl.= '<p><label>'.L('settings/site/template').'：</label>';
-    $hl.= '<select name="TEMPLATE" id="TEMPLATE" tip="'.L('settings/site/template').'::'.L('settings/site/template/@tip').'">';
-    $hl.= form_opts('themes','dir','<option value="#value#"#selected#>#name#</option>',C('TEMPLATE'));
     $hl.= '</select></p>';
 
     $hl.= '<p><label>'.L('settings/site/rssnumber').'：</label>';

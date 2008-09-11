@@ -32,10 +32,11 @@ function lazy_before(){
     check_login('system');
     // 设置公共菜单
     G('TABS',
-        L('sysinfo/@title').':sysinfo.php;'
-        .L('sysinfo/settings').':sysinfo.php?action=settings;'
-        .L('sysinfo/directory/@title').':sysinfo.php?action=directory;'
-        .L('sysinfo/phpinfo').':sysinfo.php?action=phpinfo'
+        L('settings/@title').':settings.php;'.
+        L('sysinfo/@title').':sysinfo.php;'.
+        L('sysinfo/settings').':sysinfo.php?action=settings;'.
+        L('sysinfo/directory/@title').':sysinfo.php?action=directory;'.
+        L('sysinfo/phpinfo').':sysinfo.php?action=phpinfo'
     );
 }
 

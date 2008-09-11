@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>LazyCMS模板标签实例</title>
+</head>
+
+<body>
+<!-- 栏目名称 -->
+<div class="title"><@sortname/></div>
+<!-- 循环id=3的热门文章 -->
+<div id="list" foreach="/article/[@type=hot]|[@id=3,4,5]|[@number=10]">
+	<div id="1"><a href="<@sortpath/>&id=xxx">[<@sortname/>]</a> <div><a href="<@path/>"><@title/></a></div></div>
+</div>
+<!-- 自定义标签 -->
+<div select="/tag/[@type=html]|[@id=3]"><div><div><div><@code/></div></div></div></div>
+</body>
+</html>
