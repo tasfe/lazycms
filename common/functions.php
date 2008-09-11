@@ -207,10 +207,11 @@ function is_utf8($p1){
 
 // but *** *** www.LazyCMS.net *** ***
 function but($p1){
+    $RE= isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:PHP_FILE;
     $R = '<p class="button"><button type="submit" class="submit" onclick="return $(this.form).save();">'.L("common/{$p1}",'system').'</button>';
     $R.= '<button type="button" class="apply" onclick="return $(this.form).apply();">'.L("common/apply",'system').'</button>';
-    $R.= '<button type="reset" onclick="javascript:return confirm(\''.L('confirm/reset','system').'\')">'.L('common/reset','system').'</button>';
-    $R.= '<button type="button" onclick="javascript:history.back();">'.L('common/back','system').'</button></p>';
+    $R.= '<button type="reset" onclick="return confirm(\''.L('confirm/reset','system').'\')">'.L('common/reset','system').'</button>';
+    $R.= '<button type="button" onclick="self.location.href=\''.$RE.'\';">'.L('common/back','system').'</button></p>';
     return $R;
 }
 
