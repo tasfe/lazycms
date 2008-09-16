@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS `lazy_content_model` (
   `sortemplate` varchar(50) COMMENT '列表页模板',
   `pagetemplate` varchar(50) COMMENT '内容页模板',
   `modelfields` text COMMENT '字段序列',
+  `modeltype` varchar(20) COMMENT '模型类型',
   `modelstate` tinyint(1) default '1' COMMENT '1:启用',
   PRIMARY KEY  (`modelid`),
   UNIQUE KEY `modelename` (`modelename`),

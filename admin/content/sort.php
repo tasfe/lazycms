@@ -32,7 +32,7 @@ function lazy_before(){
     check_login('sort');
     // 设置公共菜单
     $menus = array();
-    foreach (Model::getModels() as $v) {
+    foreach (Model::getModels('list') as $v) {
         $menus[] = L('common/add').$v['modelname'].':article.php?action=edit&model='.$v['modelename'];
     }
     G('TABS',
@@ -103,7 +103,7 @@ function lazy_set(){
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){
     $db = get_conn();
-    $models   = Model::getModels();
+    $models   = Model::getModels('list');
     $sortid   = isset($_REQUEST['sortid']) ? $_REQUEST['sortid'] : 0;
     $title    = empty($sortid) ? L('sort/add/@title') : L('sort/edit/@title');
     $parentid = isset($_POST['parentid']) ? $_POST['parentid'] : 0;
@@ -188,14 +188,13 @@ function lazy_edit(){
     $hl.= '</select></p>';
     $hl.= '<p><label>'.L('sort/add/name').'：</label><input class="in2" type="text" name="sortname" id="sortname" value="'.$sortname.'" /></p>';
     $hl.= '<p><label>'.L('sort/add/path').'：</label><input tip="'.L('sort/add/path').'::300::'.h2encode(L('sort/add/path/@tip')).'" class="in4" type="text" name="sortpath" id="sortpath" value="'.$sortpath.'" /></p>';
-    if (!empty($models) && empty($parentid)) {
-        $hl.= '<p><label>'.L('sort/add/model').'：</label><span id="models" tip="'.L('sort/add/model').'::'.L('sort/add/model/@tip').'">';
-        foreach ($models as $model) {
-            $checked = instr($getModels,$model['modelid'])?' checked="checked"':null;
-            $hl.= '<input type="checkbox" name="model['.$model['modelename'].']" id="model['.$model['modelename'].']" value="'.$model['modelid'].'"'.$checked.' /><label for="model['.$model['modelename'].']">'.$model['modelname'].'</label> ';
-        }
-        $hl.= '</span></p>';
+    $class = !empty($models) && empty($parentid) ? 'show':'hide';
+    $hl.= '<p class="'.$class.'"><label>'.L('sort/add/model').'：</label><span id="models" tip="'.L('sort/add/model').'::'.L('sort/add/model/@tip').'">';
+    foreach ($models as $model) {
+        $checked = instr($getModels,$model['modelid'])?' checked="checked"':null;
+        $hl.= '<input type="checkbox" name="model['.$model['modelename'].']" id="model['.$model['modelename'].']" value="'.$model['modelid'].'"'.$checked.' /><label for="model['.$model['modelename'].']">'.$model['modelname'].'</label> ';
     }
+    $hl.= '</span></p>';
     $hl.= '</div></fieldset>';
 
     $hl.= '<fieldset><legend><a class="collapse" rel=".more-attr">'.L('common/attr').'</a></legend>';

@@ -73,5 +73,7 @@
 	    } else {
     	    this.parents('p').hide();
 	    }
+	    changeHeight();
 	};
+	
 })(jQuery);

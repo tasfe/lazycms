@@ -66,17 +66,22 @@ class Model{
             'custom' => '%s|validate|'.L('model/validate/custom/@err').'|'.L('model/validate/custom/@reg').'',
         );
     }
+    // getModel *** *** www.LazyCMS.net *** ***
+    static function getModel($p1){
+        $db = get_conn(); $R = array();
+        $res = $db->query("SELECT * FROM `#@_content_model` WHERE `modelstate`=1 AND `modelename`=?;",$p1);
+        if ($rs = $db->fetch($res)) {
+            return $rs;
+        }
+        return empty($R)?false:$R;
+    }
     // getModels *** *** www.LazyCMS.net *** ***
     static function getModels($p1=null){
-        $db  = get_conn(); $R = array();
-        $in = empty($p1) ? null : DB::quoteInto('AND `modelename`=?',$p1);
+        $db = get_conn(); $R = array();
+        $in = empty($p1) ? null : DB::quoteInto('AND `modeltype` IN(?)',(is_array($p1)?implode("','",$p1):$p1));
         $res = $db->query("SELECT * FROM `#@_content_model` WHERE `modelstate`=1 {$in} ORDER BY `modelid` ASC");
         while ($rs = $db->fetch($res)) {
-            if (empty($p1)) {
-                $R[] = $rs;
-            } else {
-                return $rs;
-            }
+            $R[] = $rs;
         }
         return empty($R)?false:$R;
     }

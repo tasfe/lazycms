@@ -31,7 +31,7 @@ function lazy_before(){
     check_login('article');
     // 设置公共菜单
     $menus = array(); $model = array();
-    foreach (Model::getModels() as $v) {
+    foreach (Model::getModels('list') as $v) {
         $model[] = $v['modelename'];
         $menus[] = L('common/add').$v['modelname'].':article.php?action=edit&model='.$v['modelename'];
     }
@@ -67,7 +67,7 @@ function lazy_edit(){
     $m  = isset($_REQUEST['model']) ? strtolower($_REQUEST['model']) : null;
     $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
     $n  = array_search($m,G('MODEL'))+4;
-    $model = Model::getModels($m); if (!$model) { trigger_error(L('error/invalid','system')); }
+    $model = Model::getModel($m); if (!$model) { trigger_error(L('error/invalid','system')); }
     $sort  = Article::sort($model['modelid']);
     $title = (empty($id) ? L('common/add') : L('common/edit')).$model['modelname'];
     $path  = isset($_POST['path']) ? $_POST['path'] : null;

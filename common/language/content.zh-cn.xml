@@ -62,8 +62,11 @@
 		</pop>
 	</sort>
     <model title="模型管理">
-		<edit title="编辑模型"/>
-		<add title="添加模型">
+        <editlist>编辑列表模型</editlist>
+        <addlist>添加列表模型</addlist>
+		<editpage>编辑单页模型</editpage>
+        <addpage>添加单页模型</addpage>
+		<add>
 			<name>模型名称</name>
 			<ename tip="模型英文名称，用来作为模板标签的一部分">模型标识</ename>
 			<path tip="[b]生成文件的命名规则：[/b]&#13;%Y=4位数字表示的年份：1999 或 2008&#13;%y=2位数字表示的年份：99 或 08&#13;%m=数字表示的月份，01 到 12&#13;%d=月份中的第几天，01 到 31&#13;%I=ID编号&#13;%M=MD5值&#13;%P=标题拼音">生成规则</path>

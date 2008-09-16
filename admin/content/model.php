@@ -33,7 +33,8 @@ function lazy_before(){
     // 设置公共菜单
     G('TABS',
         L('model/@title').':model.php;'.
-        L('model/add/@title').':model.php?action=edit'
+        L('model/addlist').':model.php?action=edit&type=list;'.
+        L('model/addpage').':model.php?action=edit&type=page'
     );
     G('SCRIPT','LoadScript("content.model");');
 }
@@ -120,8 +121,8 @@ function lazy_edit(){
         </style>
     ');
     $db = get_conn();
-    $modelid = isset($_REQUEST['modelid']) ? $_REQUEST['modelid'] : 0;
-    $title   = empty($modelid) ? L('model/add/@title') : L('model/edit/@title');
+    $modelid     = isset($_REQUEST['modelid']) ? $_REQUEST['modelid'] : 0;
+    $modeltype   = isset($_REQUEST['type']) ? strtolower($_REQUEST['type']) : 'list';
     $modelname   = isset($_POST['modelname']) ? $_POST['modelname'] : null;
     $modelename  = isset($_POST['modelename']) ? $_POST['modelename'] : null;
     $modelpath   = isset($_POST['modelpath']) ? $_POST['modelpath'] : null;
@@ -186,6 +187,7 @@ function lazy_edit(){
                     'modelname'   => $modelname,
                     'modelename'  => $modelename,
                     'modelpath'   => $modelpath,
+                    'modeltype'   => $modeltype,
                     'modelfields' => $modelfields,
                     'setkeyword'  => $setKeyword,
                     'description' => $description,
@@ -228,12 +230,13 @@ function lazy_edit(){
                     $db->exec("ALTER TABLE `{$table}` {$structure};");
                 }
                 $db->update('#@_content_model',array(
-                    'modelname'  => $modelname,
-                    'modelename' => $modelename,
-                    'modelpath'  => $modelpath,
-                    'modelfields'=> json_encode($modelfields),
-                    'setkeyword' => $setKeyword,
-                    'description'=> $description,
+                    'modelname'   => $modelname,
+                    'modelename'  => $modelename,
+                    'modelpath'   => $modelpath,
+                    'modeltype'   => $modeltype,
+                    'modelfields' => json_encode($modelfields),
+                    'setkeyword'  => $setKeyword,
+                    'description' => $description,
                     'sortemplate' => $sortemplate,
                     'pagetemplate'=> $pagetemplate,
                 ),DB::quoteInto('`modelid` = ?',$modelid));
@@ -252,6 +255,7 @@ function lazy_edit(){
                 $modelname   = h2encode($rs['modelname']);
                 $modelename  = h2encode($rs['modelename']);
                 $modelpath   = $rs['modelpath'];
+                $modeltype   = $rs['modeltype'];
                 $modelfields = empty($rs['modelfields'])?array():json_decode($rs['modelfields']);
                 $setKeyword  = h2encode($rs['setkeyword']);
                 $description = h2encode($rs['description']);
@@ -260,16 +264,31 @@ function lazy_edit(){
             }
         }
     }
+    $title = empty($modelid) ? L('model/add'.$modeltype) : L('model/edit'.$modeltype);
+    // 判断tab显示
+    switch ($modeltype) {
+        case 'page':
+            $modelpath = empty($modelpath)?'%P.htm':$modelpath;
+            $n = 3; break;
+        case 'list': default:
+            $modelpath = empty($modelpath)?'%Y%m%d/%I.htm':$modelpath;
+            $n = 2; break;
+    }
+    
     $hl = '<form id="form1" name="form1" method="post" action="">';
     $hl.= '<fieldset><legend rel="tab"><a class="collapsed" rel=".show" cookie="false">'.$title.'</a></legend>';
     $hl.= '<div class="show">';
     $hl.= '<p><label>'.L('model/add/name').'：</label><input class="in2" type="text" name="modelname" id="modelname" value="'.$modelname.'" /></p>';
     $hl.= '<p><label>'.L('model/add/ename').'：</label><input tip="'.L('model/add/ename').'::'.L('model/add/ename/@tip').'" class="in3" type="text" name="modelename" id="modelename" value="'.$modelename.'" /></p>';
-    $hl.= '<p><label>'.L('model/add/path').'：</label><input tip="::250::'.ubbencode(L('model/add/path/@tip')).'" class="in3" type="text" name="modelpath" id="modelpath" value="'.(empty($modelpath)?'%Y%m%d/%I.htm':$modelpath).'" /></p>';
-    $hl.= '<p><label>'.L('model/add/sortemplate').'：</label>';
-    $hl.= '<select name="sortemplate" id="sortemplate" tip="'.L('model/add/sortemplate').'::'.L('model/add/sortemplate/@tip').'">';
-    $hl.= form_opts(C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$sortemplate);
-    $hl.= '</select></p>';
+    $hl.= '<p><label>'.L('model/add/path').'：</label><input tip="::250::'.ubbencode(L('model/add/path/@tip')).'" class="in3" type="text" name="modelpath" id="modelpath" value="'.$modelpath.'" /></p>';
+    
+    if ($modeltype=='list') {
+        $hl.= '<p><label>'.L('model/add/sortemplate').'：</label>';
+        $hl.= '<select name="sortemplate" id="sortemplate" tip="'.L('model/add/sortemplate').'::'.L('model/add/sortemplate/@tip').'">';
+        $hl.= form_opts(C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$sortemplate);
+        $hl.= '</select></p>';
+    }
+    
     $hl.= '<p><label>'.L('model/add/pagetemplate').'：</label>';
     $hl.= '<select name="pagetemplate" id="pagetemplate" tip="'.L('model/add/pagetemplate').'::'.L('model/add/pagetemplate/@tip').'">';
     $hl.= form_opts(C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$pagetemplate);
@@ -305,8 +324,10 @@ function lazy_edit(){
     $hl.= '</div>';
     $hl.= '</fieldset>';
 
-    $hl.= but('save').'<input name="modelid" type="hidden" value="'.$modelid.'" /><input id="oldename" name="oldename" type="hidden" value="'.$modelename.'" /><input id="delFields" name="delFields" type="hidden" value="" /><input id="setKeyword" name="setKeyword" type="hidden" value="'.$setKeyword.'" /><input id="description" name="description" type="hidden" value="'.$description.'" /></form>';
-    print_x($title,$hl);
+    $hl.= but('save').'<input name="modelid" type="hidden" value="'.$modelid.'" /><input id="oldename" name="oldename" type="hidden" value="'.$modelename.'" />';
+    $hl.= '<input id="delFields" name="delFields" type="hidden" value="" /><input id="setKeyword" name="setKeyword" type="hidden" value="'.$setKeyword.'" />';
+    $hl.= '<input id="description" name="description" type="hidden" value="'.$description.'" /><input name="type" type="hidden" value="'.$modeltype.'" /></form>';
+    print_x($title,$hl,$n);
 }
 // lazy_fields *** *** www.LazyCMS.net *** ***
 function lazy_fields(){
