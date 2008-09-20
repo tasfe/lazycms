@@ -63,6 +63,7 @@ function lazy_default(){
                 'LANGUAGE',
                 'RSS_NUMBER',
                 'GET_RELATED_KEY',
+                'COMPRESS_MODE',
                 'USER_ALLOW_REG',
                 'USER_GROUP_REG',
                 'USER_ACTIVE_REG',
@@ -107,6 +108,13 @@ function lazy_default(){
     $hl.= '<input type="radio" name="GET_RELATED_KEY" id="GET_RELATED_KEY[1]" value="true"'.((C('GET_RELATED_KEY') == 1) ? ' checked="checked"':null).'/><label for="GET_RELATED_KEY[1]">'.L('settings/site/related/true').'</label> ';
     $hl.= '<input type="radio" name="GET_RELATED_KEY" id="GET_RELATED_KEY[0]" value="false"'.((C('GET_RELATED_KEY') == 0) ? ' checked="checked"':null).'/><label for="GET_RELATED_KEY[0]">'.L('settings/site/related/false').'</label>';
     $hl.= '</span></p>';
+    
+    if (extension_loaded("zlib")) {
+        $hl.= '<p><label>'.L('settings/site/compress/@title').'：</label><span tip="'.L('settings/site/compress/@title').'::300::'.L('settings/site/compress/@tip').'">';
+        $hl.= '<input type="radio" name="COMPRESS_MODE" id="COMPRESS_MODE[1]" value="true"'.((C('COMPRESS_MODE') == 1) ? ' checked="checked"':null).'/><label for="COMPRESS_MODE[1]">'.L('settings/site/compress/true').'</label> ';
+        $hl.= '<input type="radio" name="COMPRESS_MODE" id="COMPRESS_MODE[0]" value="false"'.((C('COMPRESS_MODE') == 0) ? ' checked="checked"':null).'/><label for="COMPRESS_MODE[0]">'.L('settings/site/compress/false').'</label>';
+        $hl.= '</span></p>';
+    }
 
     $hl.= '</div></fieldset>';
 

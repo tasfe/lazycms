@@ -27,56 +27,106 @@ defined('COM_PATH') or die('Restricted access!');
  * @date        2008-6-17
  */
 
-// now *** *** www.LazyCMS.net *** ***
+/**
+ * 获取当前时间戳
+ *
+ * @return int
+ */
 function now(){
     return time() + (C('TIME_ZONE')*3600);
 }
 
-// stripslashes_deep *** *** www.LazyCMS.net *** ***
+/**
+ * 递归转义数组
+ *
+ * @param  array    $p1   输入数组
+ * @param  string   $p2   函数名：可以使用其他函数进行递归转义
+ * @return array
+ */
 function stripslashes_deep($p1,$p2='stripslashes') {
     return is_array($p1) ? array_map('stripslashes_deep', $p1) : $p2($p1);
 }
 
-// replace_root *** *** www.LazyCMS.net *** ***
+/**
+ * 替换文件路径以网站根目录开始，防止暴露文件的真实地址
+ *
+ * @param  string    $p1   要替换的文件路径
+ * @return string
+ */
 function replace_root($p1){
     return str_replace(SEPARATOR,'/',str_replace(LAZY_PATH.SEPARATOR,SITE_BASE,$p1));
 }
 
-// t2js *** *** www.LazyCMS.net *** ***
+/**
+ * 转换字符串以js语法输出
+ *
+ * @param  string    $p1   字符串
+ * @param  bool      $p2   是否输出
+ *      true    转换后的代码 加上 document.writeln 输出方法
+ * @return string
+ */
 function t2js($p1,$p2=false){
     $R = str_replace(array("\r", "\n"), array('', '\n'), addslashes($p1));
     return $p2 ? "document.writeln(\"$R\");" : $R;
 }
 
-// h2encode *** *** www.LazyCMS.net *** ***
+/**
+ * 转换特殊字符为HTML实体
+ *
+ * @param  string    $p1   字符串
+ * @return string
+ */
 function h2encode($p1){
     return htmlspecialchars($p1);
 }
 
-// h2decode *** *** www.LazyCMS.net *** ***
+/**
+ * 转换HTML实体为特殊字符
+ *
+ * @param  string    $p1   字符串
+ * @return string
+ */
 function h2decode($p1){
     return empty($p1) ? $p1 : htmlspecialchars_decode($p1);
 }
 
-// get_php_setting *** *** www.LazyCMS.net *** ***
+/**
+ * 取得PHP设置
+ *
+ * @param  string    $p1   配置选项的名称
+ * @return string
+ */
 function get_php_setting($p1){
     $R = (ini_get($p1) == '1' ? 1 : 0);return isok($R);
 }
 
-// instr *** *** www.LazyCMS.net *** ***
-function instr($p1,$p2){
-    if (strlen($p1)==0) { return false; }
-    if (!is_array($p1)) { $p1 = explode(",",$p1); }
-    return in_array($p2,$p1) ? true : false;
-}
-
-// isok *** *** www.LazyCMS.net *** ***
+/**
+ * 返回正对符号
+ *
+ * @param  bool    $p1   true or false
+ * @return string
+ */
 function isok($p1){
     return $p1 ? '<strong style="color:#009900;">'.L('common/on','system').'</strong>' :
                     '<strong style="color:#FF0000;">'.L('common/off','system').'</strong>';
 }
 
-// nocache *** *** www.LazyCMS.net *** ***
+/**
+ * 在数组或字符串中查找
+ *
+ * @param  array|string    $p1   被搜索的数据，字符串用英文“逗号”分割
+ * @param  string          $p2   需要搜索的字符串
+ * @return bool
+ */
+function instr($p1,$p2){
+    if (empty($p1)) { return false; }
+    if (!is_array($p1)) { $p1 = explode(",",$p1); }
+    return in_array($p2,$p1) ? true : false;
+}
+
+/**
+ * 防止浏览器缓存
+ */
 function nocache(){
     header("Expires:".date("D,d M Y H:i:s",now()-60*10)." GMT");
     header("Last-Modified:".date("D,d M Y H:i:s")." GMT");
@@ -84,7 +134,12 @@ function nocache(){
     header("Pragma:no-cache");
 }
 
-// object_deep *** *** www.LazyCMS.net *** ***
+/**
+ * 递归转换对象为数组
+ *
+ * @param  object|array    $p1   需要转换的数组或对象
+ * @return array
+ */
 function object_deep($p1) {
     if (is_object($p1) || is_array($p1)) {
         $R = array();
@@ -97,7 +152,28 @@ function object_deep($p1) {
     }
 }
 
-// salt *** *** www.LazyCMS.net *** ***
+/**
+ * 执行gzip压缩并输出
+ *
+ * @param  string   $p1     字符串
+ * @return gzip
+ */
+function ob_zip($p1){
+    if (!headers_sent() && extension_loaded("zlib") && strstr($_SERVER["HTTP_ACCEPT_ENCODING"],"gzip")) {
+        $p1 = gzencode($p1,9);
+        header("Content-Encoding: gzip");
+        header("Vary: Accept-Encoding");
+        header("Content-Length: ".strlen($p1));
+    }
+    return $p1;
+}
+
+/**
+ * 随机字符串
+ *
+ * @param  integer   $p1    返回字符串的位数，默认为6位
+ * @return string
+ */
 function salt($p1=6){
     $p2 = "0123456789abcdefghijklmnopqrstopwxyz";
     $p3 = strlen($p2); $p4 = null;
@@ -967,7 +1043,7 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
     $hl.= '<p class="trace">'.nl2br($error['trace']).'</p></div>';
     $hl.= '<div id="footer">LazyCMS <sup>'.LAZY_VERSION.'</sup></div>';
     $hl.= '</body></html>';
-    ob_end_clean();
+    //ob_end_clean();
     exit($hl);
 }
 

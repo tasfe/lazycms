@@ -347,7 +347,7 @@ function getHP(){
 		$(selector,t).hover(function(e){
 			var width = 200; // 默认宽度
 			parent.$('.jTip').remove();
-			var text  = $(this).attr(attr);
+			var text = $(this).attr(attr);
 			
 			if (text.indexOf('::')>-1) {
 				var title = text.substr(0,text.indexOf('::'));
@@ -361,7 +361,7 @@ function getHP(){
 			}
 			parent.$('body').append('<div class="jTip"><div class="jTip-body">' + text + '</div><div class="jTip-foot"></div></div>');
 			var jTop    = parent.$('#main').is('iframe')?parent.$('#top').height():0;
-			var jTip    = parent.$('.jTip'); jTip.width(width);
+			var jTip    = parent.$('.jTip'); jTip.css('width',width+'px');
 			var jHeight = jTip.height();
 				jTip.css({'top':(e.clientY + jTop - jHeight ) + 'px','left':(e.clientX + 2) + 'px'}).fadeIn('fast');
 				$(selector,t).mousemove(function(e){

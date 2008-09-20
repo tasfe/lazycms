@@ -44,7 +44,7 @@ function lazy_before(){
 function lazy_Default(){
     $db = get_conn();
     $gdInfo = function_exists('gd_info') ? gd_info() : array('GD Version'=>'none');
-
+    
     /* System settings */
     $hl = '<fieldset><legend><a class="collapsed" rel=".table">'.L('sysinfo/@title').'</a></legend>';
     $hl.= '<table class="table" cellspacing="0">';

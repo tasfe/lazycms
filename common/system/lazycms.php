@@ -30,7 +30,7 @@ defined('COM_PATH') or die('Restricted access!');
 abstract class LazyCMS{
     // init *** *** www.LazyCMS.net *** ***
     private function init(){
-        static $R = true; ob_start();
+        static $R = true;
         if (!$R) { return ; } $R = false;
         if (!defined('E_STRICT')) { define('E_STRICT', 2048); }
         // 加载惯例配置文件
@@ -50,6 +50,8 @@ abstract class LazyCMS{
         unset($_ENV,$HTTP_ENV_VARS,$HTTP_POST_VARS,$HTTP_GET_VARS,$HTTP_POST_FILES,$HTTP_COOKIE_VARS);
         // 设置系统时区 PHP5支持
         if(function_exists('date_default_timezone_set')) { date_default_timezone_set('UTC'); }
+        // 是否开启gzip压缩
+        if (C('COMPRESS_MODE')) { ob_start('ob_zip'); } else { ob_start(); }
     }
     // exec *** *** www.LazyCMS.net *** ***
     private function exec(){
@@ -91,7 +93,7 @@ abstract class LazyCMS{
             }
         }
         // 在动作之后执行的函数
-        if (function_exists('lazy_after')){ lazy_after(); }
+        if (function_exists('lazy_after')){ lazy_after(); } ob_end_flush();
     }
     // run *** *** www.LazyCMS.net *** ***
     final public function run(){

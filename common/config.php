@@ -36,6 +36,7 @@ return array(
     'RSS_NUMBER' => 10,
     'TEMPLATE'   => 'themes',
     'GET_RELATED_KEY' => false,
+    'COMPRESS_MODE'   => true,
 
     /* 会员设置 */
     'USER_ALLOW_REG'  => true,

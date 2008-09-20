@@ -50,7 +50,7 @@ define('SITE_BASE',str_replace(str_replace(str_replace(SEPARATOR,'/',LAZY_PATH.S
 // 取得当前站点的 SCHEME
 define('HTTP_SCHEME',(($scheme=isset($_SERVER['HTTPS'])?$_SERVER['HTTPS']:null)=='off' || empty($scheme))?'http':'https');
 // 取得 host
-define('HTTP_HOST',SCHEME.'://'.$_SERVER['HTTP_HOST']);
+define('HTTP_HOST',HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
 
 // 支持的URL模式
 define('URL_COMMON',   0);   //普通模式

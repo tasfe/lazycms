@@ -119,6 +119,10 @@
                 <true>是</true>
                 <false>否</false>
             </related>
+            <compress title="开启GZIP压缩" tip="选择“是”，则所有的动态页面都将开启GZIP压缩模式，可大大提高浏览速度，但是会消耗更多的服务器资源。">
+                <true>是</true>
+                <false>否</false>
+            </compress>
 		</site>
         <user title="会员设置">
             <allowreg title="允许注册" tip="若设为是，则允许用户注册。">
