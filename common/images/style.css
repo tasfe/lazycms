@@ -71,7 +71,8 @@ tr.Over td{ background-color:#FFFFCC; }
 .width-70 { width: 70%; }
 
 /* 表单长度设置 */
-.in0 ,.in1, .in2, .in3, .in4, .in5, .in6{border:solid 1px #7F9DB9;padding:2px;}
+.in ,.in0 ,.in1, .in2, .in3, .in4, .in5, .in6{border:solid 1px #7F9DB9;padding:2px;}
+.in{ font-size:14px;padding:2px; }
 .in0{ width:50px;}
 .in1{ width:100px;}
 .in2{ width:200px;}

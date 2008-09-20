@@ -133,12 +133,12 @@ class Field2Tag {
                     'resize'    => $opts['resize'],
                     'value'     => $default,
                     'width'     => $width,
-                    'editor'    => 'fckeditor'
                 );
                 if ($f['intype']=='basic') {
                     $setting['toolbar'] = 'Basic';
-                    $setting['height']  = 150;
+                    $setting['height']  = "80px";
                 }
+                $setting['height'] = isset($setting['height'])?$setting['height']:"300px";
                 $R = '<div class="box">'.editor($name,$setting).'</div>';
                 break;
             case 'date':

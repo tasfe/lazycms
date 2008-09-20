@@ -39,7 +39,7 @@
 		<autokeywords tip="选中此选项，更多属性-&gt;关键词会自动填充。">自动获取关键词</autokeywords>
     </common>
 	
-	<fckeditor>
+	<editor>
 		<upfile>上传文件</upfile>
 		<upimg>上传图片</upimg>
 		<pagebreak>插入分页符</pagebreak>
@@ -47,7 +47,7 @@
         <dellink>删除站外链接</dellink>
         <setimg>设第一幅图为缩略图</setimg>
         <resize>可调整大小</resize>
-	</fckeditor>
+	</editor>
 
 	<confirm>
         <logout>确定要退出吗？</logout>

@@ -66,14 +66,15 @@ function SemiMemory(){
 		});
 	$('a.collapse:not(a[@cookie=false]),a.collapsed:not(a[@cookie=false])').collapsed();
 	// 调整编辑器的高度
-	$('iframe[@src*=fckeditor.html]').each(function(i){
-		var id = this.id.replace('___Frame','');
+	$('textarea[@editor=true]').each(function(i){
+		var id = this.id;
+		var ne = $(this).prev().find('div.nicEdit-main');
 		var height = $.cookie('editor_height_'+o.File+'_'+id);
 		if (height!==null) {
 			if (typeof $('#'+id).attr('rel') == 'undefined') {
-				$('#'+id).attr('rel',this.height);
+				$('#'+id).attr('rel',ne.height());
 			}
-			this.height = height;
+			ne.css('height',height+'px');
 		}
 	});
 }
@@ -135,70 +136,26 @@ function getHP(){
 		});
 		return this;
 	};
-	// 获取编辑器对象 *** *** www.LazyCMS.net *** ***
-    $.fn.editor = function (){
-		var t = this;
-        var e = FCKeditorAPI.GetInstance(t.attr('name'));
-		if (typeof e !== 'undefined') {
-			$.extend(e,{
-				// 计算编辑器内文字长度 *** *** www.LazyCMS.net *** ***
-				length: function (){
-					var d = this.EditorDocument;
-					var l;
-					if(document.all){
-						l = d.body.innerText.length;
-					} else {
-						var r = d.createRange();
-							r.selectNodeContents(d.body);
-							l = r.toString().length;
-					}
-					return l;
-				},
-				// 读取和设置内容 *** *** www.LazyCMS.net *** ***
-				html:function(s){
-					if (typeof string=='undefined'){
-						return this.GetXHTML(true);
-					} else {
-						this.SetHTML(s);
-						return this;
-					}
-				},
-				// 读取编辑器内的文字 *** *** www.LazyCMS.net *** ***
-				val:function(){
-					return this.GetXHTML(true);
-				},
-				// 追加内容 *** *** www.LazyCMS.net *** ***
-				insert:function(s){
-					if (this.EditMode != FCK_EDITMODE_WYSIWYG){
-						this.SwitchEditMode(FCK_EDITMODE_WYSIWYG);
-					}
-					this.InsertHtml(s);
-					return this;
-				},
-				// 调整编辑器大小 *** *** www.LazyCMS.net *** ***
-				resize:function(p1,p2){
-					var e = getHP();
-					var o = t.nextAll('iframe[@src*=InstanceName='+t.attr('name')+']');
-						if (typeof t.attr('rel') == 'undefined') {
-							t.attr('rel',o.height());
-						}
-						if (p1=='+') {
-							o.height(o.height()+p2);
-						} else {
-							if ((o.height()-p2) >= t.attr('rel')) {
-								o.height(o.height()-p2);
-							}
-						}
-						$.cookie('editor_height_'+e.File+'_'+t.attr('name'),o.height(),{expires:365,path:e.Path});
-						changeHeight();
-						return this;
+    // 调整编辑器大小 *** *** www.LazyCMS.net *** ***
+	$.fn.resize = function(p1){
+	    var t = this;
+		var e = getHP();
+		var o = t.prev().find('div.nicEdit-main');
+			if (typeof t.attr('rel') == 'undefined') {
+				t.attr('rel',o.height());
+			}
+	    var p2 = parseInt(t.attr('rel'));
+			if (p1=='+') {
+				o.height(o.height()+p2);
+			} else {
+				if ((o.height()-p2) >= t.attr('rel')) {
+					o.height(o.height()-p2);
 				}
-			});
-			return e;
-		} else {
+			}
+			$.cookie('editor_height_'+e.File+'_'+t.attr('name'),o.height(),{expires:365,path:e.Path});
+			changeHeight();
 			return this;
-		}
-    };
+	}
 	// 列表上按钮的提交动作 *** *** www.LazyCMS.net *** ***
 	$.fn.gp = function(p,u){
 		var f = this.parents('form');
@@ -272,12 +229,6 @@ function getHP(){
 		var u = t.attr('action'); if (u==''||typeof u=='undefined') { u = self.location.href; }
 		// 设置登录按钮
 		s.attr('disabled',true);
-		// ajax submit fckeditor必须进行 UpdateLinkedField
-		for (var i=0;i<frames.length;++i){
-			if (frames[i].FCK) {
-				frames[i].FCK.UpdateLinkedField();
-			}
-		}
 		// ajax submit
 		$.ajax({
 			cache: false,
