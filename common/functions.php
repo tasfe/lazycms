@@ -864,9 +864,9 @@ function editor($p1,$p2=array()){
             $panel = "fullPanel:true";
             break;
     }
-    $hl = '<script src="'.SITE_BASE.'common/editor/nicEdit/nicEdit.js" type="text/javascript"></script>';
+    $hl = '<script src="'.SITE_BASE.'common/editor/nicEdit.js" type="text/javascript"></script>';
     $hl.= '<textarea editor="true" style="width:'.$A1['width'].';height:'.$A1['height'].';" id="'.$p1.'" name="'.$p1.'">'.h2encode($p2).'</textarea>';
-    $hl.= '<script type="text/javascript">new nicEditor({'.$panel.',iconsPath:\''.SITE_BASE.'common/editor/nicEdit/nicEditorIcons.gif\'}).panelInstance(\''.$p1.'\');</script>';
+    $hl.= '<script type="text/javascript">new nicEditor({'.$panel.',iconsPath:\''.SITE_BASE.'common/editor/nicEditorIcons.gif\'}).panelInstance(\''.$p1.'\');</script>';
     $R = $hl.$div;
     unset($A1); return $R;
 }
