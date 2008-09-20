@@ -204,7 +204,6 @@ function lazy_user_edit(){
     $question = isset($_POST['question']) ? $_POST['question'] : null;
     $answer   = isset($_POST['answer']) ? $_POST['answer'] : null;
     $language = isset($_POST['language']) ? $_POST['language'] : null;
-    $editor   = isset($_POST['editor']) ? $_POST['editor'] : null;
     $title    = empty($userid) ? L('users/user/add/@title') : L('users/user/edit/@title');
     $val = new Validate();
     if ($val->method()) {
@@ -227,7 +226,6 @@ function lazy_user_edit(){
                     'question' => $question,
                     'answer'   => $answer,
                     'language' => $language,
-                    'editor'   => $editor,
                     'regdate'  => now(),
                 ));
                 $text = L('users/user/pop/addok');
@@ -239,7 +237,6 @@ function lazy_user_edit(){
                     'question' => $question,
                     'answer'   => $answer,
                     'language' => $language,
-                    'editor'   => $editor,
                 );
                 if (!empty($userpass)) {
                     $row = array_merge($row,array(
@@ -265,7 +262,6 @@ function lazy_user_edit(){
                 $question = h2encode($rs['question']);
                 $answer   = h2encode($rs['answer']);
                 $language = h2encode($rs['language']);
-                $editor   = h2encode($rs['editor']);
             }
         }
     }
@@ -288,11 +284,6 @@ function lazy_user_edit(){
     $hl.= '<p><label>'.L('users/user/add/language').'：</label>';
     $hl.= '<select name="language" id="language" tip="'.L('users/user/add/language').'::'.L('users/user/add/language/@tip').'">';
     $hl.= form_opts('@.language','xml','<option value="#value#"#selected#>#name#</option>',$language);
-    $hl.= '</select></p>';
-    
-    $hl.= '<p><label>'.L('users/user/add/editor').'：</label>';
-    $hl.= '<select name="editor" id="editor" tip="'.L('users/user/add/editor').'::'.L('users/user/add/editor/@tip').'">';
-    $hl.= form_opts('@.editor','dir','<option value="#value#"#selected#>#name#</option>',$editor);
     $hl.= '</select></p>';
 
     $hl.= '</fieldset>';

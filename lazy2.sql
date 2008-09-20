@@ -124,7 +124,6 @@ CREATE TABLE IF NOT EXISTS `lazy_system_users` (
   `question` varchar(50) default NULL COMMENT '问题',
   `answer` varchar(50) default NULL COMMENT '回答',
   `language` varchar(30) default NULL COMMENT '界面语言',
-  `editor` varchar(30) default NULL COMMENT '编辑器',
   `regdate` int(11) default '0' COMMENT '添加时间',
   `isdel` tinyint(1) default '0' COMMENT '是否被删除，删除自动屏蔽',
   `islock` tinyint(1) default '0' COMMENT '锁定',
@@ -140,5 +139,5 @@ CREATE TABLE IF NOT EXISTS `lazy_system_users` (
 -- 导出表中的数据 `lazy_system_users`
 -- 
 
-INSERT INTO `lazy_system_users` (`userid`, `groupid`, `username`, `userpass`, `userkey`, `usermail`, `question`, `answer`, `language`, `editor`, `regdate`, `isdel`, `islock`) VALUES 
-(1, 1, 'admin', 'e1f385d47f79d5ab1921fb85bcecedda', 'd1b148', 'mylukin@gmail.com', '888', '8888', 'zh-cn', 'fckeditor', 1215399176, 0, 0);
+INSERT INTO `lazy_system_users` (`userid`, `groupid`, `username`, `userpass`, `userkey`, `usermail`, `question`, `answer`, `language`, `regdate`, `isdel`, `islock`) VALUES 
+(1, 1, 'admin', 'e1f385d47f79d5ab1921fb85bcecedda', 'd1b148', 'mylukin@gmail.com', '888', '8888', 'zh-cn', 1215399176, 0, 0);

@@ -200,7 +200,6 @@
                 <question tip="取回密码时用的提示问题。">提示问题</question>
                 <answer tip="取回密码时用的提示答案。">提示答案</answer>
                 <language tip="用户登录网站所使用的界面语言。">界面语言</language>
-                <editor tip="默认使用的在线编辑器。">编辑器</editor>
             </add>
 			<list>
 				<name>用户名</name>
