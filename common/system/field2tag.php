@@ -122,7 +122,7 @@ class Field2Tag {
                 $R.= '</span>';
                 break;
             case 'editor': case 'basic':
-                $width   = $f['width']=='auto'?'100%':$this->class2px($f['width']);
+                $width   = $this->class2px($f['width']);
                 $setting = array(
                     'upimg'     => $opts['upimg'],
                     'upfile'    => $opts['upfile'],
@@ -138,7 +138,7 @@ class Field2Tag {
                     $setting['toolbar'] = 'Basic';
                     $setting['height']  = "80px";
                 }
-                $setting['height'] = isset($setting['height'])?$setting['height']:"300px";
+                $setting['height'] = isset($setting['height'])?$setting['height']:"250px";
                 $R = '<div class="box">'.editor($name,$setting).'</div>';
                 break;
             case 'date':

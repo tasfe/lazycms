@@ -398,7 +398,6 @@ function lazy_fields(){
     $hl.= '</select>';
     
     $hl.= '<select name="fieldwidth" id="fieldwidth">';
-    $hl.= '<option value="auto">width:auto</option>';
     $style = COM_PATH.'/images/style.css';
     if (is_file($style)) {
         if (preg_match_all('/\.(in(\d+)) *\{.*(width\:.*)\;.*\}/iU',read_file($style),$ins)) {
