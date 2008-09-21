@@ -77,7 +77,7 @@ function t2js($p1,$p2=false){
  * @return string
  */
 function h2encode($p1){
-    return htmlspecialchars($p1);
+    return empty($p1)?null:htmlspecialchars($p1);
 }
 
 /**
@@ -825,7 +825,7 @@ function editor($p1,$p2=array()){
     $A1['setimg'] = isset($A1['setimg']) ? $A1['setimg'] : array(0,0);
     $A1['resize'] = isset($A1['resize']) ? $A1['resize'] : false;
     $css = '<style type="text/css">';
-    $css.= '.'.$p1.'_editor_button{width:'.$A1['width'].'; display:table; margin:3px 0 5px 0;}';
+    $css.= '.'.$p1.'_editor_button{ width:'.$A1['width'].'; display:table; zoom:100%; margin:3px 0 5px 0;}';
     $css.= '.'.$p1.'_editor_button .fr a{margin-left:8px;}';
     $css.= '</style>';
     $div = $css; $but = $size = null;
