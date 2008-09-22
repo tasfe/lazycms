@@ -68,7 +68,7 @@ function SemiMemory(){
 	// 调整编辑器的高度
 	$('textarea[@editor=true]').each(function(i){
 		var id = this.id;
-		var ne = $(this).prev().find('div.nicEdit-main');
+		var ne = $(this).editor();
 		var height = $.cookie('editor_height_'+o.File+'_'+id);
 		if (height!==null) {
 			if (typeof $('#'+id).attr('rel') == 'undefined') {
@@ -136,11 +136,21 @@ function getHP(){
 		});
 		return this;
 	};
+	// 取得编辑器对象 *** *** www.LazyCMS.net *** ***
+	$.fn.editor = function(){
+	    var e = this.prev().find('div.nicEdit-main');
+	    return e.is('div')?e:this;
+	};
+	// 判断是否为编辑器对象 *** *** www.LazyCMS.net *** ***
+	$.fn.isEditor = function(){
+	    var e = this.prev().find('div.nicEdit-main');
+	    return e.is('div')?true:false;
+	};
     // 调整编辑器大小 *** *** www.LazyCMS.net *** ***
 	$.fn.resize = function(p1){
 	    var t = this;
 		var e = getHP();
-		var o = t.prev().find('div.nicEdit-main');
+		var o = t.editor();
 			if (typeof t.attr('rel') == 'undefined') {
 				t.attr('rel',o.height());
 			}
@@ -229,6 +239,10 @@ function getHP(){
 		var u = t.attr('action'); if (u==''||typeof u=='undefined') { u = self.location.href; }
 		// 设置登录按钮
 		s.attr('disabled',true);
+		// 给编辑器赋值
+		$('textarea[@editor=true]').each(function(){
+		    this.value = $(this).editor().html();
+		});
 		// ajax submit
 		$.ajax({
 			cache: false,
@@ -283,8 +297,8 @@ function getHP(){
 		if (typeof p == 'string'){ e = $.parseJSON(p); }
 		if (e==undefined) { return ; }
 		for (var i=0;i<e.length;i++) {
-			if ($('#'+e[i].id+'___Frame').is('iframe')) {
-				$('#'+e[i].id+'___Frame').unbind().attr('error',e[i].text).addClass('error');
+		    if ($('#'+e[i].id).isEditor()) {
+		        $('#'+e[i].id).editor().unbind().attr('error',e[i].text).addClass('error');
 			} else {
 				$('#'+e[i].id).unbind().attr('error',e[i].text).addClass('error');
 			}

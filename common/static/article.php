@@ -36,7 +36,25 @@ class Article{
         return $R;
     }
     // sort *** *** www.LazyCMS.net *** ***
-    function sort($p1,$p2=null,$p3=0,$p4=0){
+    static function sort($p1,$p2=null,$p3=0,$p4=0){
+        // $p1:modelid, $p2:selected, $p3:father id, $p4:number
+        $R = $nbsp = null; $db = get_conn();
+        for ($i=0;$i<$p4;$i++) {
+            $nbsp.= "&nbsp; &nbsp;";
+        }
+        $in  = empty($p3) ? DB::quoteInto(" AND `csm`.`modelid`=?",$p1) : null;
+        $res = $db->query("SELECT `cs`.`sortid`,`cs`.`sortname` FROM `#@_content_sort` AS `cs` LEFT JOIN `#@_content_sort_model` AS `csm` ON `csm`.`sortid`=`cs`.`sortid` WHERE `cs`.`parentid`=? {$in} ORDER BY `cs`.`sortid` ASC;",$p3);
+        while ($rs = $db->fetch($res,0)) {
+            $selected = ((int)$p2 == (int)$rs[0]) ? ' selected="selected"' : null;
+            $R.= '<option value="'.$rs[0].'"'.$selected.'>'.$nbsp.'├'.$rs[1].'</option>';
+            if ((int)$db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
+                $R.= self::sort($p1,$p2,$rs[0],$p4+1);
+            }
+        }
+        return $R;
+    }
+    // sort *** *** www.LazyCMS.net *** ***
+    static function sort1($p1,$p2=null,$p3=0,$p4=0){
         // $p1:modelid, $p2:selected, $p3:father id, $p4:number
         $R = $nbsp = null; $db = get_conn();
         for ($i=0;$i<$p4;$i++) {
@@ -63,8 +81,9 @@ class Article{
         $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` ASC;",$p1);
         while ($rs = $db->fetch($res,0)) {
             if ((int)$p3 != (int)$rs[0]) {
+                $model = implode(',',self::getModels($rs[0],'modelid'));
                 $selected = ((int)$p4 == (int)$rs[0]) ? ' selected="selected"' : null;
-                $R.= '<option value="'.$rs[0].'"'.$selected.'>'.$nbsp.'├'.$rs[1].'</option>';
+                $R.= '<option models="'.$model.'" value="'.$rs[0].'"'.$selected.'>'.$nbsp.'├'.$rs[1].'</option>';
                 if ((int)$db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
                     $R.= self::__sort($rs[0],$p2+1,$p3,$p4);
                 }

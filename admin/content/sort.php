@@ -49,12 +49,13 @@ function lazy_default(){
     $ds->create("SELECT * FROM `#@_content_sort` WHERE `parentid`=0 ORDER BY `sortid` ASC");
     $ds->action = PHP_FILE."?action=set";
     $ds->but = $ds->button();
-    $ds->td  = "'<div class=\"fl\">' + cklist(K[0]) + '</div><div class=\"dir\">' + icon('dir'+K[4]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&sortid=' + K[0] + '\">' + K[1] + '</a>' + (K[5]=='&nbsp;'?'':' <span tip=\"::60::".L('sort/list/model')."\">('+K[5]+')</span>') + '</div>'";
+    $ds->td  = "'<div class=\"fl\">' + cklist(K[0]) + '</div><div class=\"dir\">' + icon('dir'+K[4]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&sortid=' + K[0] + '\">' + K[1] + '</a></div>'";
+    $ds->td  = "K[5]";
     $ds->td  = "'0'";
     $ds->td  = "(K[3]?icon('link',K[2]):icon('link-error','javascript:alert(\'create\');')) + K[2]";
     $ds->td  = "icon('edit','".PHP_FILE."?action=edit&sortid=' + K[0])";
     $ds->open();
-    $ds->thead = '<tr><th>ID) '.L('sort/list/name').'</th><th>'.L('sort/list/count').'</th><th>'.L('sort/list/path').'</th><th>'.L('common/action','system').'</th></tr>';
+    $ds->thead = '<tr><th>ID) '.L('sort/list/name').'</th><th>'.L('sort/list/model').'</th><th>'.L('sort/list/count').'</th><th>'.L('sort/list/path').'</th><th>'.L('common/action','system').'</th></tr>';
     while ($rs = $ds->result()) {
         $isSub = Article::__sub($rs['sortid']);
         $model = implode(',',Article::getModels($rs['sortid'],'modelname'));
@@ -87,10 +88,11 @@ function lazy_set(){
             $array  = array();
             while ($rs = $db->fetch($result)) {
                 $isSub = Article::__sub($rs['sortid']);
+                $model = implode(',',Article::getModels($rs['sortid'],'modelname'));
                 $array[] = array(
                     'id'    => $rs['sortid'],
                     'sub'   => $isSub,
-                    'code'  => "R(".$rs['sortid'].",'".t2js(h2encode($rs['sortname']))."','".t2js(h2encode(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'&nbsp;');",
+                    'code'  => "R(".$rs['sortid'].",'".t2js(h2encode($rs['sortname']))."','".t2js(h2encode(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($model)?'&nbsp;':$model)."');",
                 );
             }
             echo(json_encode($array));
@@ -182,14 +184,13 @@ function lazy_edit(){
     $hl.= '<fieldset><legend rel="tab"><a class="collapsed" rel=".show" cookie="false">'.$title.'</a></legend>';
     $hl.= '<div class="show">';
     $hl.= '<p><label>'.L('sort/add/sort').'：</label>';
-    $hl.= '<select name="parentid" id="parentid" onchange="$(\'#models\').toggleModels(this.value);">';
-    $hl.= '<option value="0">--- '.L('sort/add/topsort').' ---</option>';
+    $hl.= '<select name="parentid" id="parentid" onchange="$(this).selectModels();">';
+    $hl.= '<option models="" value="0">--- '.L('sort/add/topsort').' ---</option>';
     $hl.= Article::__sort(0,0,$sortid,$parentid);
     $hl.= '</select></p>';
     $hl.= '<p><label>'.L('sort/add/name').'：</label><input class="in2" type="text" name="sortname" id="sortname" value="'.$sortname.'" /></p>';
     $hl.= '<p><label>'.L('sort/add/path').'：</label><input tip="'.L('sort/add/path').'::300::'.h2encode(L('sort/add/path/@tip')).'" class="in4" type="text" name="sortpath" id="sortpath" value="'.$sortpath.'" /></p>';
-    $class = !empty($models) && empty($parentid) ? 'show':'hide';
-    $hl.= '<p class="'.$class.'"><label>'.L('sort/add/model').'：</label><span id="models" tip="'.L('sort/add/model').'::'.L('sort/add/model/@tip').'">';
+    $hl.= '<p><label>'.L('sort/add/model').'：</label><span id="models" tip="'.L('sort/add/model').'::'.L('sort/add/model/@tip').'">';
     foreach ($models as $model) {
         $checked = instr($getModels,$model['modelid'])?' checked="checked"':null;
         $hl.= '<input type="checkbox" name="model['.$model['modelename'].']" id="model['.$model['modelename'].']" value="'.$model['modelid'].'"'.$checked.' /><label for="model['.$model['modelename'].']">'.$model['modelname'].'</label> ';

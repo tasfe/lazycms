@@ -66,14 +66,16 @@
 			changeHeight();
 		}
 	};
-	// toggleModels *** *** www.LazyCMS.net *** ***
-	$.fn.toggleModels = function(p1){
-	    if (p1==0) {
-            this.parents('p').show();
-	    } else {
-    	    this.parents('p').hide();
-	    }
-	    changeHeight();
+	// selectModels *** *** www.LazyCMS.net *** ***
+	$.fn.selectModels = function(){
+	    var models = this.find('option:selected').attr('models').split(',');
+	    $('#models input:checkbox').each(function(){
+	        if ($.inArray(this.value,models)==-1) {
+	            this.checked = false;
+	        } else {
+	            this.checked = true;
+	        }
+	    });
 	};
 	
 })(jQuery);
