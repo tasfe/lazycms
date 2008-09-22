@@ -241,7 +241,8 @@ function getHP(){
 		s.attr('disabled',true);
 		// 给编辑器赋值
 		$('textarea[@editor=true]').each(function(){
-		    this.value = $(this).editor().html();
+			var html = $(this).editor().html();
+		    this.value = (html.toLowerCase()=='<br>')?'':html;
 		});
 		// ajax submit
 		$.ajax({

@@ -41,6 +41,7 @@ function lazy_before(){
         L('article/@title').':article.php;'.
         L('sort/add/@title').':sort.php?action=edit;'.implode(';',$menus)
     );
+    G('SCRIPT','LoadScript("content.article");');
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){
@@ -164,7 +165,7 @@ function lazy_edit(){
     $hl.= '<div class="more-attr">';
 
     if ($sort) {
-        $hl.= '<p><label>'.L('article/add/sort').'：</label><select name="sortid" id="sortid">'.$sort.'</select></p>';
+        $hl.= '<p><label>'.L('article/add/sort').'：</label><button type="button" onclick="$(this).getSelect(1,2,3);">请选择分类...</button></p>';
     }
 
     $hl.= $tag->fetch('<p><label>{label}：</label>{object}</p>',$data);

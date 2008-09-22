@@ -143,18 +143,20 @@ function lazy_edit(){
         if ($val->isVal()) {
             $val->out();
         } else {
+            // 数据表名
             $table  = Model::getDataTableName($modelename);
+            // 关联表名
             $jtable = Model::getJoinTableName($modelename);
             $fields = json_decode($modelfields);
             if (empty($modelid)) {
-                $structure   = null;
+                $sute = null;
                 foreach ($fields as $v) {
                     $data = (array) $v;
                     $len  = empty($data['length'])?null:'('.$data['length'].')';
                     $type = Model::getType($data['intype']);
                     $type = strpos($type,')')===false ? $type.$len : $type;
                     $def  = empty($data['default'])?null:" DEFAULT '".$data['default']."'";
-                    $structure.= ",\n`".$data['ename']."` {$type} {$def}";
+                    $sute.= ",\n`".$data['ename']."` {$type} {$def}";
                 }
                 // 先删除表
                 $db->exec("DROP TABLE IF EXISTS `{$table}`;");
@@ -169,7 +171,7 @@ function lazy_edit(){
                     `path` VARCHAR(255),
                     `img` VARCHAR(255),
                     `description` VARCHAR(255),
-                    `isdel` TINYINT(1) DEFAULT '1'{$structure}
+                    `isdel` TINYINT(1) DEFAULT '1'{$sute}
                 ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");
                 // 创建关联表
                 $db->exec("
@@ -197,38 +199,56 @@ function lazy_edit(){
                 $modelid = $db->lastId();
                 $text = L('model/pop/addok');
             } else {
+                // 模型名称被修改，修改数据结构
                 if ($oldename!=$modelename) {
                     $otable  = Model::getDataTableName($oldename);
                     $ojtable = Model::getJoinTableName($oldename);
                     $db->exec("RENAME TABLE `{$otable}` TO `{$table}`;");
                     $db->exec("RENAME TABLE `{$ojtable}` TO `{$jtable}`;");
                 }
-                $modelfields = array();
-                $structure   = null;
+                // 删除不需要的字段
+                if (!empty($delFields)) {
+                    $arrFields = explode(',',$delFields); $sute = null;
+                    foreach ($arrFields as $field) {
+                        if ($db->isField($table,$field)) {
+                            $sute.= " DROP `{$field}`,";
+                        }
+                    }
+                    $sute = rtrim($sute,',');
+                    $db->exec("ALTER TABLE `{$table}` {$sute};");
+                }
+                // 组成修改数据结构的SQL
+                $modelfields = $sute = array();
+                $chang = $add = array();
                 foreach ($fields as $v) {
-                    $data = (array) $v;
+                    $data = (array) $v; $k = $data['ename'];
+                    $type = Model::getType($data['intype']);
+                    $sute[$k]['len']  = empty($data['length'])?null:'('.$data['length'].')';
+                    $sute[$k]['type'] = strpos($type,')')===false ? $type.$sute[$k]['len'] : $type;
+                    $sute[$k]['def']  = empty($data['default'])?null:" DEFAULT '".$data['default']."'";
+                    $sute[$k]['add'] = " ADD `".$data['ename']."` ".$sute[$k]['type']." ".$sute[$k]['def'];
                     if ($data['ename']!==$data['oname']) {
-                        $len  = empty($data['length'])?null:'('.$data['length'].')';
-                        $type = Model::getType($data['intype']);
-                        $type = strpos($type,')')===false ? $type.$len : $type;
-                        $def  = empty($data['default'])?null:" DEFAULT '".$data['default']."'";
-                        $structure.= " CHANGE `".$data['oname']."` `".$data['ename']."` {$type} {$def},";
+                        $chang[] = " CHANGE `".$data['oname']."` `".$data['ename']."` ".$sute[$k]['type']." ".$sute[$k]['def'];
                         $data['oname'] = $data['ename'];
                     }
                     $modelfields[] = $data;
                 }
-                if (!empty($structure)) {
-                    $structure = rtrim($structure,',');
-                    $db->exec("ALTER TABLE `{$table}` {$structure};");    
+                // 修改现有字段的结构
+                if (!empty($chang)) {
+                    $chang = implode(',',$chang);
+                    $db->exec("ALTER TABLE `{$table}` {$chang};");
                 }
-                if (!empty($delFields)) {
-                    $arrFields = explode(',',$delFields); $structure = null;
-                    foreach ($arrFields as $field) {
-                        $structure.= " DROP `{$field}`,";
+                // 添加新增的字段
+                foreach ($modelfields as $data) {
+                    if (!$db->isField($table,$data['ename'])) {
+                        $add[] = $sute[$data['ename']]['add'];
                     }
-                    $structure = rtrim($structure,',');
-                    $db->exec("ALTER TABLE `{$table}` {$structure};");
                 }
+                if (!empty($add)) {
+                    $add = implode(',',$add);
+                    $db->exec("ALTER TABLE `{$table}` {$add};");
+                }
+                // 更新数据
                 $db->update('#@_content_model',array(
                     'modelname'   => $modelname,
                     'modelename'  => $modelename,
