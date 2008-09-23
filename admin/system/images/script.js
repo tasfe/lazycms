@@ -59,16 +59,31 @@ function toggleShortcutActive(){
 }
 // toggleAddShortcut *** *** www.LazyCMS.net *** ***
 function toggleAddShortcut(){
-	$('input.error,textarea.error').unbind().toggleClass('error'); $('.jTip').remove();
-	var addShortcut = $('#addShortcut').toggle();
-		$('input[@name=ShortcutName]',addShortcut).val($('#main').contents().find('title').html());
-		$('input[@name=ShortcutUrl]',addShortcut).val(getUrl());
+    if ($('#formShortcut').is('form')) {
+        $('#window').remove();
+    } else {
+        $.ajax({
+            cache: false,
+		    url: 'manage.php?action=AddShortcut',
+		    type: 'get',
+		    success: function(data){
+		        if (d = $.parseJSON(data)) {
+				    $.window(d.title,d.body);
+				    var window = $('#window'); $('.jTip').remove();
+				    $('input[@name=ShortcutName]',window).val($('#main').contents().find('title').html());
+            		$('input[@name=ShortcutUrl]',window).val(getUrl());
+			    } else {
+				    debug(data);
+			    }
+		    }
+        });
+    }
 }
 // toggleShortcutSort *** *** www.LazyCMS.net *** ***
 function toggleShortcutSort(){
 	$('#ShortcutSortName').unbind().removeClass('error').val('');
-	$('.jTip').remove(); $('#addShortcut dl').toggle();
-	if ($.browser.msie && $.browser.version=='6.0') { $('#addShortcut select').toggle(); }
+	$('.jTip').remove(); $('dl.ShortcutSort').toggle();
+	if ($.browser.msie && $.browser.version=='6.0') { $('dl.ShortcutSort select').toggle(); }
 }
 // deleteShortcutSort *** *** www.LazyCMS.net *** ***
 function deleteShortcutSort(){
@@ -93,7 +108,7 @@ function submitShortcutSort(){
 			data: {'ShortcutSortName':s},
 			success: function(data){
 				if (d = $.parseJSON(data)) {
-					if (d.length>0) { $('#addShortcut dl').error(d); } else {
+					if (d.length>0) { $('dl.ShortcutSort').error(d); } else {
 						if (opt.val()=='') { $('#ShortcutSort option:last').remove(); }
 						opt.clone().val(s).html(s).attr('selected',true).appendTo('#ShortcutSort');
 						$('#ShortcutSort').width($('#ShortcutSort').width()+10); toggleShortcutSort();
@@ -120,7 +135,7 @@ function submitShortcut(){
 					if (typeof d.status != 'undefined') {
 						$.ajaxTip(d);
 					} else if (d.length>0) {
-						$('#addShortcut').error(d);
+						$('#window').error(d);
 					} else {
 						toggleAddShortcut();
 					}

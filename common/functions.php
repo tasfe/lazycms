@@ -162,7 +162,6 @@ function ob_zip($p1){
     if (!headers_sent() && extension_loaded("zlib") && strstr($_SERVER["HTTP_ACCEPT_ENCODING"],"gzip")) {
         $p1 = gzencode($p1,9);
         header("Content-Encoding: gzip");
-        header("Vary: Accept-Encoding");
         header("Content-Length: ".strlen($p1));
     }
     return $p1;

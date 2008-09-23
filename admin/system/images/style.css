@@ -106,20 +106,20 @@ body { height:100%; margin:0; background: #FFF; text-align:center; }
 	#shortcut dd a{ margin:1px; background-image:url(../../../common/images/icon-32/weblink.png); background-repeat:no-repeat; background-position:center 3px; display:block; width:60px; padding:40px 5px 3px 5px; text-align:center; text-decoration:none; color:#333333;}
 	#shortcut dd a:hover{ margin:0; border:solid 1px #A5D11F; background-color:#F4FBE1;}
 
-/* addShortcut */
-#addShortcut{ display:none; width:400px; left:35%; top:100px; z-index:100; }
-	#addShortcut .head{ width:395px; cursor:move;}
-	#addShortcut .head strong{ cursor:move;}
-	#addShortcut dl{ display:none; width:300px; position:absolute; left:50px; top:40px; border:solid 1px #c6d9e7; background:#FFF; text-align:left; z-index:101; }
-	#addShortcut dt{ width:295px; height:23px; line-height:21px; display:table; zoom:1; height:23px; border-bottom:solid 1px #c6d9e7; background:url(../../../common/images/buttons-bg.png) repeat-x 0 center; padding-left:5px; overflow:hidden; }
-	#addShortcut dt strong{ padding:3px 0 0 20px; background:url(../../../common/images/icons.png) no-repeat 0px -176px; display:block; float:left; cursor:default;}
-	#addShortcut dt a{ display:block; float:right; padding:0 5px; margin-right:5px; text-decoration:none; font-weight:bold;}
-	#addShortcut dd{ padding-left:13px;}
-	#addShortcut dd p{ margin:5px 0 5px 0; clear:both; }
-	#addShortcut dd p label{ display:block; float:left; color:#0000FF; line-height:200%; font-size:12px; margin:0 5px 3px 0;}
-	#addShortcut div.icons {float:left;}
-	#addShortcut div.icons a{ width:32px; height:32px; display:block; float:left; margin-right:5px; text-decoration: none; border:solid 2px #fff; }
-	#addShortcut div.icons a.active { border:solid 2px #FF6600;}
+/* window */
+#window{ width:400px; left:35%; top:100px; z-index:100; }
+	#window .head{ width:395px; cursor:move;}
+	#window .head strong{ cursor:move;}
+	#window dl{ display:none; width:300px; position:absolute; left:50px; top:40px; border:solid 1px #c6d9e7; background:#FFF; text-align:left; z-index:101; }
+	#window dt{ width:295px; height:23px; line-height:21px; display:table; zoom:1; height:23px; border-bottom:solid 1px #c6d9e7; background:url(../../../common/images/buttons-bg.png) repeat-x 0 center; padding-left:5px; overflow:hidden; }
+	#window dt strong{ padding:3px 0 0 20px; background:url(../../../common/images/icons.png) no-repeat 0px -176px; display:block; float:left; cursor:default;}
+	#window dt a{ display:block; float:right; padding:0 5px; margin-right:5px; text-decoration:none; font-weight:bold;}
+	#window dd{ padding-left:13px;}
+	#window dd p{ margin:5px 0 5px 0; clear:both; }
+	#window dd p label{ display:block; float:left; color:#0000FF; line-height:200%; font-size:12px; margin:0 5px 3px 0;}
+	#window div.icons {float:left;}
+	#window div.icons a{ width:32px; height:32px; display:block; float:left; margin-right:5px; text-decoration: none; border:solid 2px #fff; }
+	#window div.icons a.active { border:solid 2px #FF6600;}
 
 /* toolbar */
 #toolbar{ display:none; position:absolute; left:0; bottom:0; width:100%; height:30px; line-height:30px; background:url(toolbar-bg.png) repeat-x left center; border-top:solid 1px #CCCCCC; text-align:left;}

@@ -271,6 +271,14 @@ function getHP(){
 		});
 		return false;
 	};
+	// window *** *** www.LazyCMS.net *** ***
+	$.window = function(title,body){
+	    var win = '<div id="window" class="panel">';
+	        win+= '<div class="head"><strong>' + title + '</strong><a href="javascript:;" onclick="parent.$(\'#window\').remove();">×</a></div>';
+	        win+= '<div class="body">' + body + '</div></div>';
+    	    parent.$('body').append(win);
+    	    return this;
+	}
 	// 封装 ajaxTip *** *** www.LazyCMS.net *** ***
 	$.ajaxTip = function(p){
 		// 解析传入的参数，并更新对话框的内容
@@ -326,7 +334,7 @@ function getHP(){
 					text = title + text;
 			}
 			parent.$('body').append('<div class="jTip"><div class="jTip-body">' + text + '</div><div class="jTip-foot"></div></div>');
-			var jTop    = parent.$('#main').is('iframe')?parent.$('#top').height():0;
+			var jTop    = (top.location!=self.location)?parent.$('#top').height():0;
 			var jTip    = parent.$('.jTip'); jTip.css('width',width+'px');
 			var jHeight = jTip.height();
 				jTip.css({'top':(e.clientY + jTop - jHeight ) + 'px','left':(e.clientX + 2) + 'px'}).fadeIn('fast');

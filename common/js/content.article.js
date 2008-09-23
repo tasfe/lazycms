@@ -1,7 +1,7 @@
 (function($) {
 	// getSelect *** *** www.LazyCMS.net *** ***
 	$.fn.getSelect = function(){
-		//alert(arguments);
+		
 		this.setSelect();
 		return this;
 	};

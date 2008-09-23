@@ -165,7 +165,7 @@ function lazy_edit(){
     $hl.= '<div class="more-attr">';
 
     if ($sort) {
-        $hl.= '<p><label>'.L('article/add/sort').'：</label><button type="button" onclick="$(this).getSelect(1,2,3);">请选择分类...</button></p>';
+        $hl.= '<p><label>'.L('article/add/sort').'：</label><button type="button" onclick="$(this).getSelect(\''.$id.'\',\''.$model['modelid'].'\');">请选择分类...</button></p>';
     }
 
     $hl.= $tag->fetch('<p><label>{label}：</label>{object}</p>',$data);
