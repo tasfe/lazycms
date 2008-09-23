@@ -69,9 +69,9 @@ function toggleAddShortcut(){
 		    success: function(data){
 		        if (d = $.parseJSON(data)) {
 				    $.window(d.title,d.body);
-				    var window = $('#window'); $('.jTip').remove();
-				    $('input[@name=ShortcutName]',window).val($('#main').contents().find('title').html());
-            		$('input[@name=ShortcutUrl]',window).val(getUrl());
+				    var win = $('#window'); $('.jTip').remove();
+				    $('input[@name=ShortcutName]',win).val($('#main').contents().find('title').html());
+            		$('input[@name=ShortcutUrl]',win).val(getUrl());
 			    } else {
 				    debug(data);
 			    }

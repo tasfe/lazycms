@@ -182,7 +182,6 @@ function lazy_addShortcut(){
     $hl.= '<p><label>'.L('shortcut/add/sortname').'：</label><input class="in2" type="text" name="ShortcutSortName" id="ShortcutSortName"></p>';
     $hl.= '<p class="tr"><button type="button" onclick="submitShortcutSort()">'.L('shortcut/button/add').'</button>&nbsp;<button type="button" onclick="toggleShortcutSort()">'.L('shortcut/button/cancel').'</button></p>';
     $hl.= '</dd></dl>';
-    $hl.= '</div>';
     echo_json(array(
         'title' => L('shortcut/add/@title'),
         'body'  => $hl,
