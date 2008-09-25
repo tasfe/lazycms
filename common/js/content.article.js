@@ -1,8 +1,8 @@
 (function($) {
 	// getSelect *** *** www.LazyCMS.net *** ***
 	$.fn.getSelect = function(){
-		
-		this.setSelect();
+		$('#SelectSort').show();
+		//this.setSelect();
 		return this;
 	};
 	// setSelect *** *** www.LazyCMS.net *** ***

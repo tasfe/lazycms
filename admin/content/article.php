@@ -64,6 +64,14 @@ function lazy_default(){
 }
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){
+    G('HEAD','
+        <style type="text/css">
+        #SelectSort{ display:none; width:500px; left:140px; top:56px; z-index:100; }
+	    #SelectSort .head{ width:495px;}
+        #SelectSort .body{ padding:5px;}
+        #SelectSort ul{margin:0 0 0 20px;}
+        </style>
+    ');
     $db = get_conn(); $data = array();
     $m  = isset($_REQUEST['model']) ? strtolower($_REQUEST['model']) : null;
     $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
@@ -180,5 +188,17 @@ function lazy_edit(){
     $hl.= '<p><label>'.L('article/add/description').'：</label><textarea tip="'.L('article/add/description').'::'.L('article/add/description/@tip').'" name="description" id="description" rows="5" class="in4">'.$description.'</textarea></p>';
     $hl.= '</div></fieldset>';
     $hl.= but('save').'<input name="id" type="hidden" value="'.$id.'" /></form>';
+    $hl.= '<div id="SelectSort" class="panel">';
+    $hl.= '<div class="head"><strong>请选择分类...</strong><a href="javascript:;" onclick="$(\'#SelectSort\').hide()">×</a></div>';
+    $hl.= '<ul class="body">';
+    $hl.= '<li><input type="checkbox" name="sortid" id="sortid[1]"><label for="sortid[1]">新闻</label><ul>';
+    $hl.= '<li><input type="checkbox" name="sortid" id="sortid[3]"><label for="sortid[3]">国际新闻</label><ul>';
+    $hl.= '<li><input type="checkbox" name="sortid" id="sortid[5]"><label for="sortid[5]">美国新闻</label></li>';
+    $hl.= '</ul></li>';
+    $hl.= '<li><input type="checkbox" name="sortid" id="sortid[2]"><label for="sortid[2]">国内新闻</label><ul>';
+    $hl.= '<li><input type="checkbox" name="sortid" id="sortid[4]"><label for="sortid[4]">地方新闻</label></li>';
+    $hl.= '</ul></li>';
+    $hl.= '</ul></li>';
+    $hl.= '</ul></div>';
     print_x($title,$hl,$n);
 }
