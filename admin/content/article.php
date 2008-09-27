@@ -66,10 +66,10 @@ function lazy_default(){
 function lazy_edit(){
     G('HEAD','
         <style type="text/css">
-        #SelectSort{ display:none; width:500px; left:140px; top:56px; z-index:100; }
-	    #SelectSort .head{ width:495px;}
-        #SelectSort .body{ padding:5px;}
-        #SelectSort ul{margin:0 0 0 20px;}
+        #toggleSorts{ display:none; width:500px; left:140px; top:55px; z-index:100; }
+	    #toggleSorts .head{ width:495px;}
+        #toggleSorts .body{ padding:5px;}
+        #toggleSorts ul{margin:0 0 0 20px;padding:0;}
         </style>
     ');
     $db = get_conn(); $data = array();
@@ -173,7 +173,7 @@ function lazy_edit(){
     $hl.= '<div class="more-attr">';
 
     if ($sort) {
-        $hl.= '<p><label>'.L('article/add/sort').'：</label><button type="button" onclick="$(this).getSelect(\''.$id.'\',\''.$model['modelid'].'\');">请选择分类...</button></p>';
+        $hl.= '<p><label>'.L('article/add/sort').'：</label><button type="button" onclick="$(this).toggleSorts();">请选择分类...</button></p>';
     }
 
     $hl.= $tag->fetch('<p><label>{label}：</label>{object}</p>',$data);
@@ -188,17 +188,11 @@ function lazy_edit(){
     $hl.= '<p><label>'.L('article/add/description').'：</label><textarea tip="'.L('article/add/description').'::'.L('article/add/description/@tip').'" name="description" id="description" rows="5" class="in4">'.$description.'</textarea></p>';
     $hl.= '</div></fieldset>';
     $hl.= but('save').'<input name="id" type="hidden" value="'.$id.'" /></form>';
-    $hl.= '<div id="SelectSort" class="panel">';
-    $hl.= '<div class="head"><strong>请选择分类...</strong><a href="javascript:;" onclick="$(\'#SelectSort\').hide()">×</a></div>';
-    $hl.= '<ul class="body">';
-    $hl.= '<li><input type="checkbox" name="sortid" id="sortid[1]"><label for="sortid[1]">新闻</label><ul>';
-    $hl.= '<li><input type="checkbox" name="sortid" id="sortid[3]"><label for="sortid[3]">国际新闻</label><ul>';
-    $hl.= '<li><input type="checkbox" name="sortid" id="sortid[5]"><label for="sortid[5]">美国新闻</label></li>';
-    $hl.= '</ul></li>';
-    $hl.= '<li><input type="checkbox" name="sortid" id="sortid[2]"><label for="sortid[2]">国内新闻</label><ul>';
-    $hl.= '<li><input type="checkbox" name="sortid" id="sortid[4]"><label for="sortid[4]">地方新闻</label></li>';
-    $hl.= '</ul></li>';
-    $hl.= '</ul></li>';
-    $hl.= '</ul></div>';
+
+    $hl.= '<div id="toggleSorts" class="panel">';
+    $hl.= '<div class="head"><strong>请选择分类...</strong><a href="javascript:;" onclick="$(this).toggleSorts();">×</a></div><div class="body">';
+    $hl.= Article::sort($model['modelid'],$sortids);
+    $hl.= '<p class="tr"><button type="button">'.L('article/add/submit').'</button>&nbsp;<button type="button" onclick="$(this).toggleSorts();">'.L('article/add/cancel').'</button></p>';
+    $hl.= '</div></div>';
     print_x($title,$hl,$n);
 }

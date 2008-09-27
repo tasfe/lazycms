@@ -1,8 +1,7 @@
 (function($) {
-	// getSelect *** *** www.LazyCMS.net *** ***
-	$.fn.getSelect = function(){
-		$('#SelectSort').show();
-		//this.setSelect();
+	// toggleSorts *** *** www.LazyCMS.net *** ***
+	$.fn.toggleSorts = function(){
+		$('#toggleSorts').slideToggle('fast',function(){changeHeight();});
 		return this;
 	};
 	// setSelect *** *** www.LazyCMS.net *** ***
@@ -11,3 +10,11 @@
 		return this;
 	};
 })(jQuery);
+function changeHeight(){
+	var e = {t:$('#toggleSorts').height(),d:$('#toggleSorts').css('display'),b:$('body').height()};
+	if (e.t > e.b && e.d == 'block') {
+		parent.$('#main').height(e.t+65);
+	} else {
+		parent.$('#main').height(e.b+7);
+	}
+}

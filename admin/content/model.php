@@ -406,7 +406,7 @@ function lazy_fields(){
     }
     $hl = '<form id="formFields" name="formFields" method="post" action="'.PHP_FILE.'?action=fields">';
     $hl.= '<div id="toggleFields" class="panel">';
-    $hl.= '<div class="head"><strong>'.L('model/add/fields/'.(empty($data[0])?'add':'edit')).'</strong><a href="javascript:;" onclick="$(\'#formFields\').remove()">×</a></div><div class="body">';
+    $hl.= '<div class="head"><strong>'.L('model/add/fields/'.(empty($data[0])?'add':'edit')).'</strong><a href="javascript:;" onclick="$(\'#formFields\').remove();changeHeight();">×</a></div><div class="body">';
     $hl.= '<p><label>'.L('model/add/fields/text').'：</label><input tip="'.L('model/add/fields/text').'::'.L('model/add/fields/text/@tip').'" class="in2" type="text" name="fieldlabel" id="fieldlabel" value="'.$data[1].'" /><span><input type="checkbox" name="needTip" id="needTip"'.(empty($data[2])?null:' checked="checked"').(empty($data[0])?' cookie="true"':null).'/><label for="needTip">'.L('model/add/fields/needtip').'</label></span></p>';
     $hl.= '<p class="hide"><label>'.L('model/add/fields/tiptext').'：</label><textarea tip="'.L('model/add/fields/tiptext').'::'.L('model/add/fields/tiptext/@tip').'" name="fieldtip" id="fieldtip" rows="3" class="in3">'.$data[2].'</textarea></p>';
     $hl.= '<p><label>'.L('model/add/fields/ename').'：</label><input tip="'.L('model/add/fields/ename').'::300::'.L('model/add/fields/ename/@tip').'" class="in2" type="text" name="fieldename" id="fieldename" value="'.$data[3].'" /></p>';
@@ -447,6 +447,6 @@ function lazy_fields(){
     $hl.= '<input type="checkbox" name="fieldoption[resize]" id="resize" value="1"'.($data[11]['resize']?' checked="checked"':null).' /><label for="resize">'.L('editor/resize','system').'</label>';
     $hl.= '</span></p>';
     $hl.= '<p><label>'.L('model/add/fields/default').'：</label><input tip="'.L('model/add/fields/default').'::250::'.ubbencode(L('model/add/fields/default/@tip')).'" class="in3" type="text" name="fielddefault" id="fielddefault" value="'.$data[9].'" /></p>';
-    $hl.= '<p class="tr"><button type="button" onclick="$(this).submitFields();">'.L('common/save').'</button>&nbsp;<button type="button" onclick="$(\'#formFields\').remove()">'.L('common/cancel').'</button></p>';
+    $hl.= '<p class="tr"><button type="button" onclick="$(this).submitFields();">'.L('common/save').'</button>&nbsp;<button type="button" onclick="$(\'#formFields\').remove();changeHeight();">'.L('common/cancel').'</button></p>';
     $hl.= '</div></div><input id="fieldid" name="fieldid" type="hidden" value="'.$data[0].'" /><input name="description" id="fieldescription" type="hidden" value="'.$description.'" /><input id="fieldkeyword" name="keyword" type="hidden" value="'.$keyword.'" /><input name="fieldoname" type="hidden" value="'.$data[10].'" /><input name="method" type="hidden" value="POST" /></form>'; echo $hl;
 }

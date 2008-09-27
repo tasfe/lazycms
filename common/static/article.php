@@ -36,40 +36,27 @@ class Article{
         return $R;
     }
     // sort *** *** www.LazyCMS.net *** ***
-    static function sort($p1,$p2=null,$p3=0,$p4=0){
+    static function sort($p1,$p2=null,$p3=0){
         // $p1:modelid, $p2:selected, $p3:father id, $p4:number
-        $R = $nbsp = null; $db = get_conn();
-        for ($i=0;$i<$p4;$i++) {
-            $nbsp.= "&nbsp; &nbsp;";
-        }
-        $in  = empty($p3) ? DB::quoteInto(" AND `csm`.`modelid`=?",$p1) : null;
-        $res = $db->query("SELECT `cs`.`sortid`,`cs`.`sortname` FROM `#@_content_sort` AS `cs` LEFT JOIN `#@_content_sort_model` AS `csm` ON `csm`.`sortid`=`cs`.`sortid` WHERE `cs`.`parentid`=? {$in} ORDER BY `cs`.`sortid` ASC;",$p3);
+        $R = null; $db = get_conn();
+        $oby = $p3==0?'ASC':'DESC';
+        $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` {$oby};",$p3);
         while ($rs = $db->fetch($res,0)) {
-            $selected = ((int)$p2 == (int)$rs[0]) ? ' selected="selected"' : null;
-            $R.= '<option value="'.$rs[0].'"'.$selected.'>'.$nbsp.'├'.$rs[1].'</option>';
-            if ((int)$db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
-                $R.= self::sort($p1,$p2,$rs[0],$p4+1);
+            if ($db->count("SELECT * FROM `#@_content_sort_model` WHERE `modelid`=".DB::quote($p1)." AND `sortid`=".DB::quote($rs[0]).";") == 0) {
+                $disabled = ' disabled="disabled"';
+                $sortname = '<span>'.$rs[1].'</span>';
+            } else {
+                $disabled = null;
+                $sortname = $rs[1];
             }
-        }
-        return $R;
-    }
-    // sort *** *** www.LazyCMS.net *** ***
-    static function sort1($p1,$p2=null,$p3=0,$p4=0){
-        // $p1:modelid, $p2:selected, $p3:father id, $p4:number
-        $R = $nbsp = null; $db = get_conn();
-        for ($i=0;$i<$p4;$i++) {
-            $nbsp.= "&nbsp; &nbsp;";
-        }
-        $in  = empty($p3) ? DB::quoteInto(" AND `csm`.`modelid`=?",$p1) : null;
-        $res = $db->query("SELECT `cs`.`sortid`,`cs`.`sortname` FROM `#@_content_sort` AS `cs` LEFT JOIN `#@_content_sort_model` AS `csm` ON `csm`.`sortid`=`cs`.`sortid` WHERE `cs`.`parentid`=? {$in} ORDER BY `cs`.`sortid` ASC;",$p3);
-        while ($rs = $db->fetch($res,0)) {
-            $selected = ((int)$p2 == (int)$rs[0]) ? ' selected="selected"' : null;
-            $R.= '<option value="'.$rs[0].'"'.$selected.'>'.$nbsp.'├'.$rs[1].'</option>';
+            $R.= '<li><input type="checkbox" name="sortid" id="sortid['.$rs[0].']"'.$disabled.'><label for="sortid['.$rs[0].']">'.$sortname.'</label>';
             if ((int)$db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
-                $R.= self::sort($p1,$p2,$rs[0],$p4+1);
+                $R.= self::sort($p1,$p2,$rs[0]);
             }
+            $R.= '</li>';
+            
         }
-        return $R;
+        return '<ul>'.$R.'</ul>';
     }
     // __sort *** *** www.LazyCMS.net *** ***
     static function __sort($p1=0,$p2=0,$p3=0,$p4=null){
