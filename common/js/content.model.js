@@ -2,7 +2,7 @@
 	// getFields *** *** www.LazyCMS.net *** ***
 	$.fn.getFields = function(p1,p2){
 		var p3  = $(p1);
-		var p2  = {JSON:p2};// p2 = (typeof p2)=='string'?$.parseJSON(p2):p2;
+		var p2  = {JSON:p2};
 		var url = p3.attr('action');
 		var id = 'CONTENT_MODEL_' + Math.floor(Math.random()*100000);
 		var t = this.replaceWith('<img id="' + id + '" src="' + path() + '/images/icon/loading.gif" style="float:left;cursor:default;" class="os" />');

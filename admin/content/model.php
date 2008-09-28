@@ -61,7 +61,7 @@ function lazy_default(){
 }
 // lazy_export *** *** www.LazyCMS.net *** ***
 function lazy_export(){
-    nocache();
+    no_cache();
     ob_start();
     header("Content-type: application/octet-stream; charset=utf-8");
     header("Content-Disposition: attachment; filename=LazyCMS.xml");
@@ -399,9 +399,9 @@ function lazy_fields(){
             ),1);
         }
     } else {
-        $_JSON = isset($_POST['JSON']) ? object_deep(json_decode($_POST['JSON'])) : null;
+        $_JSON = isset($_POST['JSON']) ? json_decode($_POST['JSON']) : null;
         foreach ($eField as $field) {
-            $data[] = isset($_JSON[$field]) ? $_JSON[$field] : null;
+            $data[] = isset($_JSON->$field) ? $_JSON->$field : null;
         }
     }
     $hl = '<form id="formFields" name="formFields" method="post" action="'.PHP_FILE.'?action=fields">';
@@ -438,13 +438,13 @@ function lazy_fields(){
     $hl.= '<textarea tip="'.L('model/add/fields/rules').'::250::'.ubbencode(L('model/add/fields/rules/@tip')).'" name="fieldvalidate" id="fieldvalidate" rows="3" class="in3">'.$data[6].'</textarea></p>';
     $hl.= '<p class="'.(empty($data[8]) && !empty($data[0])?'hide':'show').'"><label>'.L('model/add/fields/length').'：</label><input tip="'.L('model/add/fields/length/@tip').'" class="in1" type="text" name="fieldlength" id="fieldlength" value="'.$data[8].'" /></p>';
     $hl.= '<p class="'.(instr('basic,editor',$data[4])?'show':'hide').'"><label>'.L('common/attr').'：</label><span id="fieldoption">';
-    $hl.= '<input type="checkbox" name="fieldoption[upimg]" id="upimg" value="1"'.($data[11]['upimg']?' checked="checked"':null).' /><label for="upimg">'.L('editor/upimg','system').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[upfile]" id="upfile" value="1"'.($data[11]['upfile']?' checked="checked"':null).' /><label for="upfile">'.L('editor/upfile','system').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[break]" id="pagebreak" value="1"'.($data[11]['break']?' checked="checked"':null).' /><label for="pagebreak">'.L('editor/pagebreak','system').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[snapimg]" id="snapimg" value="1"'.($data[11]['snapimg']?' checked="checked"':null).' /><label for="snapimg">'.L('editor/snapimg','system').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[dellink]" id="dellink" value="1"'.($data[11]['dellink']?' checked="checked"':null).' /><label for="dellink">'.L('editor/dellink','system').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[setimg]" id="setimg" value="1"'.($data[11]['setimg']?' checked="checked"':null).' /><label for="setimg">'.L('editor/setimg','system').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[resize]" id="resize" value="1"'.($data[11]['resize']?' checked="checked"':null).' /><label for="resize">'.L('editor/resize','system').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[upimg]" id="upimg" value="1"'.($data[11]->upimg?' checked="checked"':null).' /><label for="upimg">'.L('editor/upimg','system').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[upfile]" id="upfile" value="1"'.($data[11]->upfile?' checked="checked"':null).' /><label for="upfile">'.L('editor/upfile','system').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[break]" id="pagebreak" value="1"'.($data[11]->break?' checked="checked"':null).' /><label for="pagebreak">'.L('editor/pagebreak','system').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[snapimg]" id="snapimg" value="1"'.($data[11]->snapimg?' checked="checked"':null).' /><label for="snapimg">'.L('editor/snapimg','system').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[dellink]" id="dellink" value="1"'.($data[11]->dellink?' checked="checked"':null).' /><label for="dellink">'.L('editor/dellink','system').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[setimg]" id="setimg" value="1"'.($data[11]->setimg?' checked="checked"':null).' /><label for="setimg">'.L('editor/setimg','system').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[resize]" id="resize" value="1"'.($data[11]->resize?' checked="checked"':null).' /><label for="resize">'.L('editor/resize','system').'</label>';
     $hl.= '</span></p>';
     $hl.= '<p><label>'.L('model/add/fields/default').'：</label><input tip="'.L('model/add/fields/default').'::250::'.ubbencode(L('model/add/fields/default/@tip')).'" class="in3" type="text" name="fielddefault" id="fielddefault" value="'.$data[9].'" /></p>';
     $hl.= '<p class="tr"><button type="button" onclick="$(this).submitFields();">'.L('common/save').'</button>&nbsp;<button type="button" onclick="$(\'#formFields\').remove();changeHeight();">'.L('common/cancel').'</button></p>';

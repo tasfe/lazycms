@@ -70,6 +70,7 @@ function lazy_edit(){
 	    #toggleSorts .head{ width:495px;}
         #toggleSorts .body{ padding:5px;}
         #toggleSorts ul{margin:0 0 0 20px;padding:0;}
+        #sortView{ width:300px; height:23px; cursor:default; line-height:23px; letter-spacing:1px; padding:0px 4px; border:1px solid #c6d9e7; color:#333333; background:url(../../common/images/buttons-bg.png) repeat-x; }
         </style>
     ');
     $db = get_conn(); $data = array();
@@ -77,10 +78,12 @@ function lazy_edit(){
     $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
     $n  = array_search($m,G('MODEL'))+4;
     $model = Model::getModel($m); if (!$model) { trigger_error(L('error/invalid','system')); }
-    $sort  = Article::sort($model['modelid']);
+    $sort  = $db->count("SELECT * FROM `#@_content_sort_model` WHERE `modelid`=".DB::quote($model['modelid']).";");
     $title = (empty($id) ? L('common/add') : L('common/edit')).$model['modelname'];
     $path  = isset($_POST['path']) ? $_POST['path'] : null;
     $table = Model::getDataTableName($model['modelename']);
+    $jtable  = Model::getJoinTableName($model['modelename']);
+    $sortids = isset($_POST['sortids']) ? $_POST['sortids'] : null;
     $description = isset($_POST['description']) ? $_POST['description'] : null;
     // 加载字段解析类
     import('system.field2tag');
@@ -99,14 +102,14 @@ function lazy_edit(){
             $editor = $tag->getEditors();
             foreach ($editor as $k=>$e) {
                 // 下载远程图片
-                if ($e['snapimg']) {
+                if ($e->snapimg) {
                     $snapimg = isset($_POST[$k.'_attr']['snapimg']) ? $_POST[$k.'_attr']['snapimg'] : false;
                     if ($snapimg) {
                         $data[$k] = snapImg($data[$k]);
                     }
                 }
                 // 删除站外连接
-                if ($e['dellink']) {
+                if ($e->dellink) {
                     $data[$k] = preg_replace('/<a([^>]*)href=["\']*(http|https)\:\/\/(?!'.preg_quote($_SERVER['HTTP_HOST'],'/').')([^>]*)>(.*)<\/a>/isU','$4',$data[$k]);
                 }
                 // 自动截取简述
@@ -126,7 +129,7 @@ function lazy_edit(){
                     $row = array_merge($row,$data);
                 }
                 $db->insert($table,$row);
-                $id   = $db->lastId();
+                $id = $db->lastId();
                 $text = L('article/pop/addok');
             } else {
                 $row = array(
@@ -137,7 +140,14 @@ function lazy_edit(){
                     $row = array_merge($row,$data);
                 }
                 $db->update($table,$row,DB::quoteInto('`id` = ?',$id));
+                // 删除未选中的分类
+                $sortDiff = array_diff(Article::getSortIds($jtable,$id),$sortids);
+                var_dump($sortDiff);
                 $text = L('article/pop/editok');
+            }
+            // 写分类关系
+            foreach ($sortids as $sortid) {
+                Article::join($jtable,$id,$sortid);
             }
             // 自动获取关键词
             if (!empty($model['setkeyword'])) {
@@ -164,6 +174,7 @@ function lazy_edit(){
                     $keywords = $key->get($id);
                 }
                 $description = $data['description'];
+                $sortids = Article::getSortIds($jtable,$id);
             }
         }
     }
@@ -172,8 +183,13 @@ function lazy_edit(){
     $hl.= '<fieldset><legend rel="tab"><a class="collapsed" rel=".more-attr" cookie="false">'.$title.'</a></legend>';
     $hl.= '<div class="more-attr">';
 
-    if ($sort) {
-        $hl.= '<p><label>'.L('article/add/sort').'：</label><button type="button" onclick="$(this).toggleSorts();">请选择分类...</button></p>';
+    if ($sort > 0) {
+        $hl.= '<p><label>'.L('article/add/sort').'：</label><div class="box"><div id="sortView" onclick="$.toggleSorts();" empty="'.L('article/add/select').'">'.L('article/add/select').'</div></div></p>';
+        $hl.= '<div id="toggleSorts" class="panel">';
+        $hl.= '<div class="head"><strong>'.L('article/add/select').'</strong><a href="javascript:;" onclick="$.toggleSorts();">×</a></div><div class="body">';
+        $hl.= Article::sort($model['modelid'],$sortids);
+        $hl.= '<p class="tr"><button type="button" onclick="$(\'#sortView\').selectSorts();">'.L('article/add/submit').'</button>&nbsp;<button type="button" onclick="$.toggleSorts();">'.L('article/add/cancel').'</button></p>';
+        $hl.= '</div></div>';
     }
 
     $hl.= $tag->fetch('<p><label>{label}：</label>{object}</p>',$data);
@@ -188,11 +204,6 @@ function lazy_edit(){
     $hl.= '<p><label>'.L('article/add/description').'：</label><textarea tip="'.L('article/add/description').'::'.L('article/add/description/@tip').'" name="description" id="description" rows="5" class="in4">'.$description.'</textarea></p>';
     $hl.= '</div></fieldset>';
     $hl.= but('save').'<input name="id" type="hidden" value="'.$id.'" /></form>';
-
-    $hl.= '<div id="toggleSorts" class="panel">';
-    $hl.= '<div class="head"><strong>请选择分类...</strong><a href="javascript:;" onclick="$(this).toggleSorts();">×</a></div><div class="body">';
-    $hl.= Article::sort($model['modelid'],$sortids);
-    $hl.= '<p class="tr"><button type="button">'.L('article/add/submit').'</button>&nbsp;<button type="button" onclick="$(this).toggleSorts();">'.L('article/add/cancel').'</button></p>';
-    $hl.= '</div></div>';
+    
     print_x($title,$hl,$n);
 }

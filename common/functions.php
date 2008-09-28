@@ -30,7 +30,7 @@ defined('COM_PATH') or die('Restricted access!');
 /**
  * 获取当前时间戳
  *
- * @return int
+ * @return integer
  */
 function now(){
     return time() + (C('TIME_ZONE')*3600);
@@ -125,34 +125,6 @@ function instr($p1,$p2){
 }
 
 /**
- * 防止浏览器缓存
- */
-function nocache(){
-    header("Expires:".date("D,d M Y H:i:s",now()-60*10)." GMT");
-    header("Last-Modified:".date("D,d M Y H:i:s")." GMT");
-    header("Cache-Control:no-cache,must-revalidate");
-    header("Pragma:no-cache");
-}
-
-/**
- * 递归转换对象为数组
- *
- * @param  object|array    $p1   需要转换的数组或对象
- * @return array
- */
-function object_deep($p1) {
-    if (is_object($p1) || is_array($p1)) {
-        $R = array();
-        foreach ((array)$p1 as $k=>$v) {
-            $R[$k] = object_deep($v);
-        }
-        return $R;
-    } else {
-        return $p1;
-    }
-}
-
-/**
  * 执行gzip压缩并输出
  *
  * @param  string   $p1     字符串
@@ -182,7 +154,13 @@ function salt($p1=6){
     return $p4;
 }
 
-// left *** *** www.LazyCMS.net *** ***
+/**
+ * 从左边截取，支持中文
+ *
+ * @param  string   $p1    要截取的字符串
+ * @param  integer  $p2    截取多少个字
+ * @return string
+ */
 function left($p1,$p2){
     if ((int)len($p1)>(int)$p2) {
         return cnsubstr($p1,$p2).'...';
@@ -191,7 +169,12 @@ function left($p1,$p2){
     }
 }
 
-// vsort *** *** www.LazyCMS.net *** ***
+/**
+ * 根据数组值的长度排序
+ *
+ * @param  array   $p1    排序数组
+ * @return array
+ */
 function vsort($p1){
     if (empty($p1) || !is_array($p1)) { return array(); }
     sort($p1); $R = $p2 = array();
@@ -208,7 +191,11 @@ function vsort($p1){
     return $R;
 }
 
-// get_conn *** *** www.LazyCMS.net *** ***
+/**
+ * 取得数据库连接对象
+ *
+ * @return object
+ */
 function get_conn(){
     static $db = null;
     if (is_object($db)) { return $db; }
@@ -217,7 +204,9 @@ function get_conn(){
     return $db;
 }
 
-// array_search_value *** *** www.LazyCMS.net *** ***
+/**
+ * 取得数据库连接对象
+ */
 function array_search_value($p1,$p2){
     while (list($k,$v)=each($p2)) {
         if (strpos($v,$p1)!==false) {
@@ -227,22 +216,32 @@ function array_search_value($p1,$p2){
     return false;
 }
 
-// clear_cache *** *** www.LazyCMS.net *** ***
-function clear_cache(){
+/**
+ * 防止浏览器缓存
+ */
+function no_cache(){
     header("Expires:".date("D,d M Y H:i:s",now()-60*10)." GMT");
     header("Last-Modified:".date("D,d M Y H:i:s")." GMT");
     header("Cache-Control:no-cache,must-revalidate");
     header("Pragma:no-cache");
 }
 
-// language *** *** www.LazyCMS.net *** ***
+/**
+ * 取得网站的语言设置
+ */
 function language(){
     $R = isset($_GET['language'])?$_GET['language']:null;
     if (!$R) { $R = Cookie::get('language'); }
     return $R ? $R : C('LANGUAGE');
 }
 
-// utf2ansi *** *** www.LazyCMS.net *** ***
+/**
+ * UTF-8转换成其他任何编码
+ * 
+ * @param  string   $p1    要转换的内容
+ * @param  string   $p2    转换的编码
+ * @return string
+ */
 function utf2ansi($p1,$p2='GB2312'){
     if (function_exists('iconv')) {
         return iconv('UTF-8',"{$charset}//IGNORE",$p1);
@@ -253,7 +252,12 @@ function utf2ansi($p1,$p2='GB2312'){
     }
 }
 
-// ansi2utf *** *** www.LazyCMS.net *** ***
+/**
+ * ANSI转换为UTF－8
+ * 
+ * @param  string   $p1    要转换的内容
+ * @return string
+ */
 function ansi2utf($p1){
     if (strlen($p1)==0) { return ;}
     if (is_utf8($p1)) { return $p1; }
@@ -266,7 +270,11 @@ function ansi2utf($p1){
     }
 }
 
-// is_utf8 *** *** www.LazyCMS.net *** ***
+/**
+ * 判断是否为UTF-8编码
+ * 
+ * @return bool
+ */
 function is_utf8($p1){
     return preg_match('%^(?:
             [\x09\x0A\x0D\x20-\x7E] # ASCII

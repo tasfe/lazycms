@@ -34,7 +34,7 @@ class Field2Tag {
     // __construct *** *** www.LazyCMS.net *** ***
     function __construct($model){
         $this->model  = $model;
-        $this->fields = object_deep(json_decode($model['modelfields']));
+        $this->fields = json_decode($model['modelfields']);
         $this->val    = new Validate();
     }
     // getVal *** *** www.LazyCMS.net *** ***
@@ -45,10 +45,10 @@ class Field2Tag {
     public function _POST(){
         $R = array();
         foreach ($this->fields as $field) {
-            $R[$field['ename']] = isset($_POST[$field['ename']])?$_POST[$field['ename']]:null;
-            $R[$field['ename']] = is_array($R[$field['ename']])?implode(',',$R[$field['ename']]):$R[$field['ename']];
-            if (!empty($field['validate'])) {
-                $this->val->check($this->formatValidate($field['ename'],$field['validate']));
+            $R[$field->ename] = isset($_POST[$field->ename])?$_POST[$field->ename]:null;
+            $R[$field->ename] = is_array($R[$field->ename])?implode(',',$R[$field->ename]):$R[$field->ename];
+            if (!empty($field->validate)) {
+                $this->val->check($this->formatValidate($field->ename,$field->validate));
             }
         }
         return $R;
@@ -66,8 +66,8 @@ class Field2Tag {
     public function getEditors(){
         $R = array();
         foreach ($this->fields as $i=>$field) {
-            if (instr('editor,basic',$field['intype'])) {
-                $R[$field['ename']] = $field['option'];
+            if (instr('editor,basic',$field->intype)) {
+                $R[$field->ename] = $field->option;
             }
         }
         return $R;
@@ -76,26 +76,26 @@ class Field2Tag {
     public function tag($p1,$p2=false){
         $R = null;
         $f = $p1;
-        $tip     = empty($f['tip'])?null:' tip="'.$f['label'].'::'.ubbencode(h2encode($f['tip'])).'"';
-        $name    = $f['ename'];
-        $length  = $f['length'];
-        $default = ($p2===false) ? $f['default'] : $p2;
-        $opts    = isset($f['option'])?$f['option']:null;
-        switch ($f['intype']) {
+        $tip     = empty($f->tip)?null:' tip="'.$f->label.'::'.ubbencode(h2encode($f->tip)).'"';
+        $name    = $f->ename;
+        $length  = $f->length;
+        $default = ($p2===false) ? $f->default : $p2;
+        $opts    = isset($f->option)?$f->option:null;
+        switch ($f->intype) {
             case 'input':
-                $class   = $f['width']!='auto'?' class="'.$f['width'].'"':' class="in2"';
+                $class   = $f->width!='auto'?' class="'.$f->width.'"':' class="in2"';
                 $R = "<input{$tip}{$class} type=\"text\" name=\"{$name}\" id=\"{$name}\" maxlength=\"{$length}\" value=\"{$default}\" />";
                 if ($this->model['setkeyword']==$name) {
                     $R.= '<span tip="'.L('common/autokeywords/@tip','system').'"><input type="checkbox" name="autokeywords" id="autokeywords" value="1" checked="checked" cookie="true" /><label for="autokeywords">'.L('common/autokeywords','system').'</label></span></p>';
                 }
                 break;
             case 'textarea':
-                $class   = $f['width']!='auto'?' class="'.$f['width'].'"':' class="in4"';
+                $class   = $f->width!='auto'?' class="'.$f->width.'"':' class="in4"';
                 $R = "<textarea{$tip}{$class} name=\"{$name}\" id=\"{$name}\" rows=\"5\">{$default}</textarea>";
                 break;
             case 'select':
                 $R = "<select name=\"{$name}\" id=\"{$name}\">";
-                $R1 = explode("\n",$f['value']);
+                $R1 = explode("\n",$f->value);
                 foreach ($R1 as $v) {
                     $v = trim($v);
                     if ($v!='') {
@@ -109,32 +109,32 @@ class Field2Tag {
                 break;
             case 'radio': case 'checkbox':
                 $R = '<span>';
-                $R1 = explode("\n",$f['value']);
+                $R1 = explode("\n",$f->value);
                 foreach ($R1 as $k=>$v) {
                     $v = trim($v);
                     if ($v!='') {
                         $R2 = explode(':',$v);
                         foreach ($R2 as &$a) { $l3 = h2encode($a); }
                         $checked = !empty($default) ? (instr($default,$R2[1]) ? ' checked="checked"' : null) : null;
-                        $R.= "<input name=\"{$name}".($f['intype']=="checkbox"?"[]":null)."\" id=\"{$name}[{$k}]\" type=\"".$f['intype']."\" value=\"{$R2[1]}\"{$checked} /><label for=\"{$name}[{$k}]\">{$R2[0]}</label>";
+                        $R.= "<input name=\"{$name}".($f->intype=="checkbox"?"[]":null)."\" id=\"{$name}[{$k}]\" type=\"".$f->intype."\" value=\"{$R2[1]}\"{$checked} /><label for=\"{$name}[{$k}]\">{$R2[0]}</label>";
                     }
                 }
                 $R.= '</span>';
                 break;
             case 'editor': case 'basic':
-                $width   = $this->class2px($f['width']);
+                $width   = $this->class2px($f->width);
                 $setting = array(
-                    'upimg'     => $opts['upimg'],
-                    'upfile'    => $opts['upfile'],
-                    'pagebreak' => $opts['break'],
-                    'snapimg'   => array($opts['snapimg'],1),
-                    'dellink'   => array($opts['dellink'],1),
-                    'setimg'    => array($opts['setimg'],1),
-                    'resize'    => $opts['resize'],
+                    'upimg'     => $opts->upimg,
+                    'upfile'    => $opts->upfile,
+                    'pagebreak' => $opts->break,
+                    'snapimg'   => array($opts->snapimg,1),
+                    'dellink'   => array($opts->dellink,1),
+                    'setimg'    => array($opts->setimg,1),
+                    'resize'    => $opts->resize,
                     'value'     => $default,
                     'width'     => $width,
                 );
-                if ($f['intype']=='basic') {
+                if ($f->intype=='basic') {
                     $setting['toolbar'] = 'Basic';
                     $setting['height']  = "80px";
                 }
@@ -154,7 +154,7 @@ class Field2Tag {
     public function fetch($p1,$p2=null){
         $R = null;
         foreach ($this->fields as $field) {
-            $R.= str_replace(array('{label}','{object}'),array($field['label'],$this->tag($field,$p2[$field['ename']])),$p1);
+            $R.= str_replace(array('{label}','{object}'),array($field->label,$this->tag($field,$p2[$field->ename])),$p1);
         }
         return $R;
     }

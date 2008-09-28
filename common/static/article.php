@@ -28,16 +28,30 @@ defined('COM_PATH') or die('Restricted access!');
  */
 // Article *** *** www.LazyCMS.net *** ***
 class Article{
-    // formatPath *** *** www.LazyCMS.net *** ***
+    /**
+     * 格式化路径
+     *
+     * @param  integer  $p1     MaxID
+     * @param  string   $p2     用户输入的字符串（未格式化）
+     * @param  string   $p3     文章标题，需要用这个来格式化成为标题路径
+     * @param  integer  $p4     时间戳，用来格式化日期变量
+     * @return string
+     */
     static function formatPath($p1,$p2,$p3,$p4=null){
         $p4 = empty($p4) ? now() : $p4;
         $R = str_replace(array('%I','%M','%P'),array($p1,md5($p1.salt(10)),pinyin($p3)),$p2);
         $R = strftime($R,$p4);
         return $R;
     }
-    // sort *** *** www.LazyCMS.net *** ***
+    /**
+     * 添加文章的分类HTML
+     *
+     * @param  integer  $p1     模型ID
+     * @param  string   $p2     选择的分类IDs
+     * @param  integer  $p3     上级分类ID
+     * @return string
+     */
     static function sort($p1,$p2=null,$p3=0){
-        // $p1:modelid, $p2:selected, $p3:father id, $p4:number
         $R = null; $db = get_conn();
         $oby = $p3==0?'ASC':'DESC';
         $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` {$oby};",$p3);
@@ -49,7 +63,8 @@ class Article{
                 $disabled = null;
                 $sortname = $rs[1];
             }
-            $R.= '<li><input type="checkbox" name="sortid" id="sortid['.$rs[0].']"'.$disabled.'><label for="sortid['.$rs[0].']">'.$sortname.'</label>';
+            $checked = instr($p2,$rs[0])?' checked="checked"':null;
+            $R.= '<li><input type="checkbox" name="sortids[]" id="sortids['.$rs[0].']" value="'.$rs[0].'"'.$checked.$disabled.'><label for="sortids['.$rs[0].']">'.$sortname.'</label>';
             if ((int)$db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
                 $R.= self::sort($p1,$p2,$rs[0]);
             }
@@ -58,9 +73,16 @@ class Article{
         }
         return '<ul>'.$R.'</ul>';
     }
-    // __sort *** *** www.LazyCMS.net *** ***
+    /**
+     * 添加分类的select->option
+     *
+     * @param  integer  $p1     上级分类ID
+     * @param  integer  $p2     标识第几层分类
+     * @param  integer  $p3     当前分类的ID
+     * @param  integer  $p4     选中分类的ID
+     * @return string
+     */
     static function __sort($p1=0,$p2=0,$p3=0,$p4=null){
-        // $p1:father sortid, $p2:number, $p3:current sortid, $p4:selected
         $R = $nbsp = null; $db = get_conn(); 
         for ($i=0;$i<$p2;$i++) {
             $nbsp.= "&nbsp; &nbsp;";
@@ -78,18 +100,61 @@ class Article{
         }
         return $R;
     }
-    // __sub *** *** www.LazyCMS.net *** ***
+    /**
+     * 判断是否有子分类
+     *
+     * @param  integer  $p1     分类ID
+     * @return string
+     */
     static function __sub($p1){
         $db  = get_conn();
         $num = $db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($p1).";");
         return ((int)$num>0)?'1':'0';
     }
-    // getModels *** *** www.LazyCMS.net *** ***
+    /**
+     * 根据分类ID取得关联模型的数据
+     *
+     * @param  integer  $p1     分类ID
+     * @param  string   $p2     数据库字段
+     * @return array
+     */
     static function getModels($p1,$p2='modelid'){
         $db = get_conn(); $R = array();
         $res = $db->query("SELECT * FROM `#@_content_sort_model` AS `csm` LEFT JOIN `#@_content_model` AS `cm` ON `csm`.`modelid`=`cm`.`modelid` WHERE `cm`.`modelstate`=1 AND `csm`.`sortid`=?;",$p1);
         while ($rs = $db->fetch($res)) {
             $R[] = $rs[$p2];
+        }
+        return $R;
+    }
+    /**
+     * 写分类关系
+     *
+     * @param  string   $p1     关联表名称
+     * @param  integer  $p2     文档ID
+     * @param  integer  $p3     分类ID
+     * @return bool
+     */
+    static function join($p1,$p2,$p3){
+        $db = get_conn();
+        $N  = $db->count("SELECT * FROM `{$p1}` WHERE `tid`=".DB::quote($p2)." AND `type`=1 AND `sid`=".DB::quote($p3).";");
+        return ((int)$N>0) ? true : $db->insert($p1,array(
+            'tid'  => $p2,
+            'sid'  => $p3,
+            'type' => 1,
+        ));
+    }
+    /**
+     * 取得指定文档的所述分类
+     *
+     * @param  string   $p1     关联表名称
+     * @param  integer  $p2     文档ID
+     * @return array
+     */
+    static function getSortIds($p1,$p2){
+        $db = get_conn(); $R = array();
+        $res = $db->query("SELECT * FROM `{$p1}` WHERE `tid`=".DB::quote($p2)." AND `type`=1;");
+        while ($rs = $db->fetch($res)) {
+            $R[] = $rs['sid'];
         }
         return $R;
     }

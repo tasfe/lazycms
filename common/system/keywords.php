@@ -131,7 +131,7 @@ class Keywords {
     // join *** *** www.LazyCMS.net *** ***
     private function join($id,$keyid){
         // 如果关联不存在，则插入
-        $N = $this->db->count("SELECT * FROM `{$this->joinTable}` WHERE `tid`=".DB::quote($id)." AND `type`=0 AND `sid`=".$this->db->quote($keyid).";");
+        $N = $this->db->count("SELECT * FROM `{$this->joinTable}` WHERE `tid`=".DB::quote($id)." AND `type`=0 AND `sid`=".DB::quote($keyid).";");
         return ((int)$N>0) ? true : $this->db->insert($this->joinTable,array(
             'tid'  => $id,
             'sid'  => $keyid,
