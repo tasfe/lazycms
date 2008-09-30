@@ -57,7 +57,12 @@ function lazy_default(){
     $hl = '<form id="form1" name="form1" method="post" action="">';
     $hl.= '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.L('article/@title').'</a></legend>';
     $hl.= '<div class="show">';
-    $hl.= '开发中...';
+    $hl.= '<p><label>模型：</label><select name="model"><option value=""> --- --- --- </option><option value="onepage">单页</option><option value="article">文章</option></select></p>';
+    $hl.= '<p><label>分类：</label><select name="parentid" id="parentid">';
+    $hl.= '<option value=""> --- --- --- </option>';
+    $hl.= Article::__sort(0,0);
+    $hl.= '</select></p>';
+    $hl.= '<p><label>&nbsp;</label><button>提交</button></p>';
     $hl.= '</div></fieldset>';
     $hl.= '</form>';
     print_x(L('article/@title'),$hl);
