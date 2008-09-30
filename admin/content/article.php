@@ -142,7 +142,9 @@ function lazy_edit(){
                 $db->update($table,$row,DB::quoteInto('`id` = ?',$id));
                 // 删除未选中的分类
                 $sortDiff = array_diff(Article::getSortIds($jtable,$id),$sortids);
-                var_dump($sortDiff);
+                if (!empty($sortDiff)) {
+                    $db->delete($jtable,array("`type`=1","`sid` IN(".implode(',',$sortDiff).")"));
+                }
                 $text = L('article/pop/editok');
             }
             // 写分类关系
@@ -188,8 +190,8 @@ function lazy_edit(){
         $hl.= '<div id="toggleSorts" class="panel">';
         $hl.= '<div class="head"><strong>'.L('article/add/select').'</strong><a href="javascript:;" onclick="$.toggleSorts();">×</a></div><div class="body">';
         $hl.= Article::sort($model['modelid'],$sortids);
-        $hl.= '<p class="tr"><button type="button" onclick="$(\'#sortView\').selectSorts();">'.L('article/add/submit').'</button>&nbsp;<button type="button" onclick="$.toggleSorts();">'.L('article/add/cancel').'</button></p>';
-        $hl.= '</div></div>';
+        $hl.= '<p class="tr"><button type="button" onclick="$(\'#sortView\').setSorts();">'.L('article/add/submit').'</button>&nbsp;<button type="button" onclick="$.toggleSorts();">'.L('article/add/cancel').'</button></p>';
+        $hl.= '</div></div><script type="text/javascript">$("#sortView").selectSorts();</script>';
     }
 
     $hl.= $tag->fetch('<p><label>{label}：</label>{object}</p>',$data);

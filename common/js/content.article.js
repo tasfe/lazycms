@@ -4,6 +4,14 @@
 		$('#toggleSorts').slideToggle('fast',function(){$.changeHeight();});
 		return this;
 	};
+	// setSorts *** *** www.LazyCMS.net *** ***
+	$.fn.setSorts = function(){
+		this.selectSorts();
+	    $('#toggleSorts').slideToggle('fast',function(){
+	        $.changeHeight();
+	    });
+		return this;
+	};
 	// selectSorts *** *** www.LazyCMS.net *** ***
 	$.fn.selectSorts = function(){
 	    var sorts = new Array();
@@ -13,9 +21,6 @@
 	    var text = sorts.join(',');
 	        text = text.length>25?text.substr(0,25)+'...':text;
 	    this.text(text==''?this.attr('empty'):text);
-	    $('#toggleSorts').slideToggle('fast',function(){
-	        $.changeHeight();
-	    });
 		return this;
 	};
 	$.changeHeight = function(){
