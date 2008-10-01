@@ -51,7 +51,7 @@ function lazy_default(){
     $ds->but = $ds->button();
     $ds->td  = "'<div class=\"fl\">' + cklist(K[0]) + '</div><div class=\"dir\">' + icon('dir'+K[4]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&sortid=' + K[0] + '\">' + K[1] + '</a></div>'";
     $ds->td  = "K[5]";
-    $ds->td  = "'0'";
+    $ds->td  = "K[6]";
     $ds->td  = "(K[3]?icon('link',K[2]):icon('link-error','javascript:alert(\'create\');')) + K[2]";
     $ds->td  = "icon('edit','".PHP_FILE."?action=edit&sortid=' + K[0])";
     $ds->open();
@@ -59,7 +59,8 @@ function lazy_default(){
     while ($rs = $ds->result()) {
         $isSub = Article::__sub($rs['sortid']);
         $model = implode(',',Article::getModels($rs['sortid'],'modelname'));
-        $ds->tbody = "E(".$rs['sortid'].",'".t2js(h2encode($rs['sortname']))."','".t2js(h2encode(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($model)?'&nbsp;':$model)."');$('#list_".$rs['sortid']."').addSub(".$rs['sortid'].",1,{$isSub});";
+        $count = Article::count($rs['sortid'],implode(',',Article::getModels($rs['sortid'],'modelename')));
+        $ds->tbody = "E(".$rs['sortid'].",'".t2js(h2encode($rs['sortname']))."','".t2js(h2encode(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($model)?'&nbsp;':$model)."',{$count});$('#list_".$rs['sortid']."').addSub(".$rs['sortid'].",1,{$isSub});";
     }
     $ds->close();
 
@@ -89,10 +90,11 @@ function lazy_set(){
             while ($rs = $db->fetch($result)) {
                 $isSub = Article::__sub($rs['sortid']);
                 $model = implode(',',Article::getModels($rs['sortid'],'modelname'));
+                $count = Article::count($rs['sortid'],implode(',',Article::getModels($rs['sortid'],'modelename')));
                 $array[] = array(
                     'id'    => $rs['sortid'],
                     'sub'   => $isSub,
-                    'code'  => "R(".$rs['sortid'].",'".t2js(h2encode($rs['sortname']))."','".t2js(h2encode(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($model)?'&nbsp;':$model)."');",
+                    'code'  => "R(".$rs['sortid'].",'".t2js(h2encode($rs['sortname']))."','".t2js(h2encode(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($model)?'&nbsp;':$model)."',{$count});",
                 );
             }
             echo(json_encode($array));

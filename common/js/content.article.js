@@ -39,10 +39,14 @@
 		var checked = $('#fields_'+model).attr('checked');
 			$(fields).each(function(){
 				if (this.intype=='input') {
-					inputs+= '<input type="checkbox" id="fields[' + this.ename + ']" name="fields[]" value="' + this.ename + '"' + ((checked==this.ename)?' checked="checked"':'') + '/><label for="fields[' + this.ename + ']">' + this.label + '</label>';
+					inputs+= '<input type="checkbox" id="fields[' + this.ename + ']" name="fields[' + this.ename + ']" value="' + this.label + '"' + ((checked==this.ename)?' checked="checked"':'') + '/><label for="fields[' + this.ename + ']">' + this.label + '</label>';
 				}
 			});
-			$('#fields').html(inputs);
+			if (inputs=='')	{
+				$('#fields').parents('p').hide();$.changeHeight();
+			} else {
+				$('#fields').parents('p').show().end().html(inputs);$.changeHeight();
+			}
 	};
 })(jQuery);
 

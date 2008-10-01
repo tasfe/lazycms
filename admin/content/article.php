@@ -58,28 +58,73 @@ function lazy_default(){
         $hl.= '<p><label>'.L('article/search/model').':</label><select name="model" id="model" onchange="$(this).viewFields();">';
         foreach (Model::getModels('list') as $v) {
             $textarea.= '<textarea class="hide" checked="'.$v['setkeyword'].'" id="fields_'.$v['modelename'].'">'.$v['modelfields'].'</textarea>';
-            $selected = $v['modelename']==$model?' selected="selected"':null;
-            $hl.= '<option value="'.$v['modelename'].'"'.$selected.'>'.$v['modelname'].'</option>';
+            $hl.= '<option value="'.$v['modelename'].'">'.$v['modelname'].'</option>';
         }
         $hl.= '</select></p>';
-        $hl.= '<p><label>'.L('article/search/sort').':</label><select name="sortid"><option value="0">'.L('article/search/sortall').'</option>'.Article::__sort(0,0,false,$sortid).'</select></p>';
-        $hl.= '<p><label>'.L('article/search/keyword').':</label><input class="in2" type="text" name="keyword" id="keyword" value="'.$keyword.'" /></p>';
+        $hl.= '<p><label>'.L('article/search/sort').':</label><select name="sortid"><option value="0">'.L('article/search/sortall').'</option>'.Article::__sort(0,0,false).'</select></p>';
+        $hl.= '<p><label>'.L('article/search/keyword').':</label><input class="in2" type="text" name="keyword" id="keyword" value="" /></p>';
         $hl.= '<p><label>'.L('article/search/pagesize').':</label><select name="size">';
-        foreach (array(10,15,20,25,30,40,50) as $i) {
+        foreach (array(1,10,15,20,25,30,40,50) as $i) {
             $selected = $i==$size?' selected="selected"':null;
             $hl.= '<option value="'.$i.'"'.$selected.'>'.$i.L('common/unit/item','system').'</option>';
         }
         $hl.= '</select></p>';
-        $hl.= '<p><label>'.L('article/search/fields').':</label><span id="fields"></span></p>';
+        $hl.= '<p><label>'.L('article/search/fields').':</label><span id="fields" tip="'.L('article/search/fields').'::'.L('article/search/fields/@tip').'"></span></p>';
         $hl.= '<p><label>&nbsp;</label><button type="submit">'.L('article/search/submit').'</button></p>';
         $hl.= '</div></fieldset>';
         $hl.= '</form>'.$textarea;
         $hl.= '<script type="text/javascript">$(\'#model\').viewFields();</script>';
+        print_x(L('article/@title'),$hl);
     } else {
-        $hl.= '搜索结果';
+        $model  = Model::getModel($model);
+        $table  = Model::getDataTableName($model['modelename']);
+        $jtable = Model::getJoinTableName($model['modelename']);
+        $length = count($fields);
+        $query  = null; $inSQL = $inLike = null;
+        foreach ($fields as $k=>$v) {
+            $query .= '&fields'.rawurlencode("[{$k}]").'='.rawurlencode($v);
+            $inLike.= (empty($inLike)?null:" OR ")."BINARY UCASE(`a`.`{$k}`) LIKE UCASE('%{$keyword}%')";
+        }
+        $inSQL.= empty($inLike)?null:' AND ('.$inLike.')';
+        $inSQL.= ($sortid==0?null:" AND `b`.`sid`=".DB::quote($sortid));
+
+        $db = get_conn();
+        $ds = new Recordset();
+        $ds->create("SELECT * FROM `{$table}` AS `a` LEFT JOIN `{$jtable}` AS `b` ON `a`.`id`=`b`.`tid` WHERE `b`.`type`=1 {$inSQL} GROUP BY `a`.`path` ORDER BY `a`.`order` DESC,`a`.`id` DESC");
+        $ds->action = PHP_FILE."?action=set";
+        $ds->url = PHP_FILE.'?model='.$model['modelename'].'&sortid='.$sortid.'&keyword='.$keyword.'&size='.$size.$query.'&page=$';
+        $ds->but = $ds->button().$ds->plist();
+        // 循环自定义显示字段
+        for ($i=0; $i<$length; $i++) {
+            if ($i==0) {
+                $ds->td  = "cklist(K[0]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[".($i+5)."] + '</a>'";
+            } else {
+                $ds->td  = "K[".($i+5)."]";
+            }
+        }
+        if ($length==0) {
+            $ds->td  = "'<div class=\"fl\">' + cklist(K[0]) + K[0] + ') </div><div class=\"dir\">' + (K[3]?icon('link',K[2]):icon('link-error','javascript:alert(\'create\');')) + '<a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[2] + '</a></div>'";
+        } else {
+            $ds->td  = "(K[3]?icon('link',K[2]):icon('link-error','javascript:alert(\'create\');')) + K[2]";
+        }
+        $ds->td  = "K[4]";
+        $ds->td  = "icon('edit','".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0])";
+        $ds->open();
+        $ds->thead = '<tr>'; $i=0;
+        foreach ($fields as $field=>$label) {
+            $ds->thead.= '<th>'.($i==0?'ID) ':null).$label.'</th>'; $i++;
+        }
+        $ds->thead.= '<th>'.($length==0?'ID) ':null).L('article/list/path').'</th><th>'.L('article/list/date').'</th><th>'.L('common/action','system').'</th></tr>';
+        while ($rs = $ds->result()) {
+            $K = null;
+            foreach ($fields as $field=>$label) {
+                $K.= ",'".t2js(h2encode($rs[$field]))."'";
+            }
+            $ds->tbody = "E(".$rs['id'].",'".$rs['img']."','".$rs['path']."',".(is_file(LAZY_PATH.$rs['path'])?1:0).",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});";
+        }
+        $ds->close();
+        print_x(L('article/@title'),$ds->fetch());
     }
-    
-    print_x(L('article/@title'),$hl);
     /*
     import('system.parsetags');
     $ph = new ParseTags();

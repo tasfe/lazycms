@@ -158,4 +158,20 @@ class Article{
         }
         return $R;
     }
+    /**
+     * 统计分类和指定模型下的文档数量
+     *
+     * @param  integer  $p1     分类ID
+     * @param  string   $p2     模型标识，用英文逗号分隔
+     * @return integer
+     */
+    static function count($p1,$p2){
+        $db = get_conn(); $R = 0;
+        $p3 = explode(',',$p2);
+        foreach ($p3 as $v) {
+            $table = Model::getJoinTableName($v);
+            $R = $R + $db->count("SELECT * FROM `{$table}` WHERE `sid`=".DB::quote($p1)." AND `type`=1;");
+        }
+        return $R;
+    }
 }
