@@ -61,7 +61,42 @@ class DownLoader{
     public function send($params=array()){
         $header = null; $body = null; $QueryStr = null;
         if (!empty($params)) { $this->method = 'POST'; }
-        if (function_exists('fsockopen')) {
+        if (function_exists('curl_exec')) {
+            $ch = curl_init($this->url);
+            curl_setopt_array($ch,array(
+                CURLOPT_TIMEOUT => $this->timeout,
+                CURLOPT_HEADER => true,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_USERAGENT => self::SEND_USER_AGENT,
+                CURLOPT_REFERER => $this->referer,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0,
+            ));
+            if ($this->method=='GET') {
+                curl_setopt($ch,CURLOPT_HTTPGET,true);
+            } else {
+                if (is_array($params)) {
+                    $QueryStr = http_build_query($params);
+                } else {
+                    $QueryStr = $params;
+                }
+                curl_setopt($ch,CURLOPT_POST,true);
+                curl_setopt($ch,CURLOPT_POSTFIELDS,$QueryStr);
+            }
+            $fp = curl_exec($ch);
+            curl_close($ch);
+            if (!$fp) { return false; }
+            $i = 0; $length = strlen($fp);
+            // 读取 header
+            do{ $header.= substr($fp,$i,1); $i++; } while (!preg_match("/\r\n\r\n$/",$header));
+            // 遇到跳转，执行跟踪跳转
+            if ($this->redirect($header)) { return true; }
+            // 读取内容
+            do {
+                $body.= substr($fp,$i,4096);
+                $i = $i + 4096;
+            } while ($length>=$i);
+            unset($fp,$length,$i);
+        } elseif (function_exists('fsockopen')) {
             $fp = @fsockopen($this->host,$this->port,$errno,$errstr,$this->timeout);
             if (!$fp) { return false; }
             $_port   = ((int)$this->port!==80) ? ':'.$this->port : null;
@@ -98,41 +133,6 @@ class DownLoader{
                 $body.= fread($fp,4096);
             }
             fclose($fp);
-        } elseif (function_exists('curl_exec')) {
-            $ch = curl_init($this->url);
-            curl_setopt_array($ch,array(
-                CURLOPT_TIMEOUT => $this->timeout,
-                CURLOPT_HEADER => true,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_USERAGENT => self::SEND_USER_AGENT,
-                CURLOPT_REFERER => $this->referer,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0,
-            ));
-            if ($this->method=='GET') {
-                curl_setopt($ch,CURLOPT_HTTPGET,true);
-            } else {
-                if (is_array($params)) {
-                    $QueryStr = http_build_query($params);
-                } else {
-                    $QueryStr = $params;
-                }
-                curl_setopt($ch,CURLOPT_POST,true);
-                curl_setopt($ch,CURLOPT_POSTFIELDS,$QueryStr);
-            }
-            $fp = curl_exec($ch);
-            curl_close($ch);
-            if (!$fp) { return false; }
-            $i = 0; $length = strlen($fp);
-            // 读取 header
-            do{ $header.= substr($fp,$i,1); $i++; } while (!preg_match("/\r\n\r\n$/",$header));
-            // 遇到跳转，执行跟踪跳转
-            if ($this->redirect($header)) { return true; }
-            // 读取内容
-            do {
-                $body.= substr($fp,$i,4096);
-                $i = $i + 4096;
-            } while ($length>=$i);
-            unset($fp,$length,$i);
         }
         $this->header = $header;
         $this->body   = $body;

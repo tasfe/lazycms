@@ -40,9 +40,9 @@ class Keywords {
     // get *** *** www.LazyCMS.net *** ***
     public function get($id){
         $R = array();
-        $result = $this->db->query("SELECT `keyword` FROM `{$this->joinTable}` AS `j` LEFT JOIN `#@_keywords` AS `k` ON `j`.`jid`=`k`.`keyid` WHERE `j`.`tid`=? AND `j`.`type`=0 ORDER BY `j`.`sid` ASC;",$id);
-        while ($keywords = $this->db->fetch($result,0)) {
-            $R[] = $keywords[0];
+        $result = $this->db->query("SELECT `k`.`keyword` FROM `{$this->joinTable}` AS `j` LEFT JOIN `#@_keywords` AS `k` ON `j`.`sid`=`k`.`keyid` WHERE `j`.`tid`=? AND `j`.`type`=0 ORDER BY `j`.`sid` ASC;",$id);
+        while ($rs = $this->db->fetch($result,0)) {
+            $R[] = $rs[0];
         }
         return join(',',$R);
     }
