@@ -132,9 +132,9 @@ function lazy_group_edit(){
     $module = include_file(COM_PATH.'/data/module.php');
     $hl = '<form id="form1" name="form1" method="post" action="">';
     $hl.= '<fieldset><legend rel="tab">'.$title.'</legend>';
-    $hl.= '<p><label>'.L('users/group/add/name').'：</label><input tip="'.L('users/group/add/name').'::'.L('users/group/add/name/@tip').'" class="in2" type="text" name="groupname" id="groupname" value="'.$groupname.'" /></p>';
-    $hl.= '<p><label>'.L('users/group/add/logo').'：</label><input tip="'.L('users/group/add/logo').'::'.L('users/group/add/logo/@tip').'" class="in2" type="text" name="groupename" id="groupename" value="'.$groupename.'"'.(!empty($groupid) ? ' readonly="true"' : null).' /></p>';
-    $hl.= '<p><label>'.L('users/group/add/purview').'：</label><div class="box purview">';
+    $hl.= '<p><label>'.L('users/group/add/name').':</label><input tip="'.L('users/group/add/name').'::'.L('users/group/add/name/@tip').'" class="in2" type="text" name="groupname" id="groupname" value="'.$groupname.'" /></p>';
+    $hl.= '<p><label>'.L('users/group/add/logo').':</label><input tip="'.L('users/group/add/logo').'::'.L('users/group/add/logo/@tip').'" class="in2" type="text" name="groupename" id="groupename" value="'.$groupename.'"'.(!empty($groupid) ? ' readonly="true"' : null).' /></p>';
+    $hl.= '<p><label>'.L('users/group/add/purview').':</label><div class="box purview">';
     foreach ($module as $k=>$v) {
         if (isset($v['purview'])) {
             $hl.= '<input type="checkbox" name="'.$k.'" id="'.$k.'" class="__bigP" onclick="var checked = this.checked;$.each($(\'input.__'.$k.'\'),function(){ this.checked = checked; });" /><label for="'.$k.'"><strong>'.L('title',$k).'</strong></label><br/>';
@@ -269,19 +269,19 @@ function lazy_user_edit(){
     
     $hl.= '<fieldset><legend rel="tab">'.$title.'</legend>';
 
-    $hl.= '<p><label>'.L('users/user/add/group').'：</label>';
+    $hl.= '<p><label>'.L('users/user/add/group').':</label>';
     $hl.= '<select name="groupid" id="groupid" tip="'.L('users/user/add/group').'::'.L('users/user/add/group/@tip').'">';
     $hl.= System::__group(0,$groupid);
     $hl.= '</select></p>';
 
-    $hl.= '<p><label>'.L('users/user/add/name').'：</label><input tip="'.L('users/user/add/name').'::'.L('users/user/add/name/@tip').'" class="in2" type="text" name="username" id="username" value="'.$username.'" /></p>';
-    $hl.= '<p><label>'.L('users/user/add/pass').'：</label><input tip="'.L('users/user/add/pass').'::'.L('users/user/add/pass/@tip').'" class="in2" type="password" name="userpass" id="userpass" /></p>';
-    $hl.= '<p><label>'.L('users/user/add/pass1').'：</label><input tip="'.L('users/user/add/pass1').'::'.L('users/user/add/pass1/@tip').'" class="in2" type="password" name="userpass1" id="userpass1" /></p>';
-    $hl.= '<p><label>'.L('users/user/add/mail').'：</label><input tip="'.L('users/user/add/mail').'::'.L('users/user/add/mail/@tip').'" class="in3" type="text" name="usermail" id="usermail" value="'.$usermail.'" /></p>';
-    $hl.= '<p><label>'.L('users/user/add/question').'：</label><input tip="'.L('users/user/add/question').'::'.L('users/user/add/question/@tip').'" class="in3" type="text" name="question" id="question" value="'.$question.'" /></p>';
-    $hl.= '<p><label>'.L('users/user/add/answer').'：</label><input tip="'.L('users/user/add/answer').'::'.L('users/user/add/answer/@tip').'" class="in4" type="text" name="answer" id="answer" value="'.$answer.'" /></p>';
+    $hl.= '<p><label>'.L('users/user/add/name').':</label><input tip="'.L('users/user/add/name').'::'.L('users/user/add/name/@tip').'" class="in2" type="text" name="username" id="username" value="'.$username.'" /></p>';
+    $hl.= '<p><label>'.L('users/user/add/pass').':</label><input tip="'.L('users/user/add/pass').'::'.L('users/user/add/pass/@tip').'" class="in2" type="password" name="userpass" id="userpass" /></p>';
+    $hl.= '<p><label>'.L('users/user/add/pass1').':</label><input tip="'.L('users/user/add/pass1').'::'.L('users/user/add/pass1/@tip').'" class="in2" type="password" name="userpass1" id="userpass1" /></p>';
+    $hl.= '<p><label>'.L('users/user/add/mail').':</label><input tip="'.L('users/user/add/mail').'::'.L('users/user/add/mail/@tip').'" class="in3" type="text" name="usermail" id="usermail" value="'.$usermail.'" /></p>';
+    $hl.= '<p><label>'.L('users/user/add/question').':</label><input tip="'.L('users/user/add/question').'::'.L('users/user/add/question/@tip').'" class="in3" type="text" name="question" id="question" value="'.$question.'" /></p>';
+    $hl.= '<p><label>'.L('users/user/add/answer').':</label><input tip="'.L('users/user/add/answer').'::'.L('users/user/add/answer/@tip').'" class="in4" type="text" name="answer" id="answer" value="'.$answer.'" /></p>';
     
-    $hl.= '<p><label>'.L('users/user/add/language').'：</label>';
+    $hl.= '<p><label>'.L('users/user/add/language').':</label>';
     $hl.= '<select name="language" id="language" tip="'.L('users/user/add/language').'::'.L('users/user/add/language/@tip').'">';
     $hl.= form_opts('@.language','xml','<option value="#value#"#selected#>#name#</option>',$language);
     $hl.= '</select></p>';

@@ -1,4 +1,13 @@
 (function($) {
+	// changeHeight *** *** www.LazyCMS.net *** ***
+	$.changeHeight = function(){
+		var e = {t:$('#toggleFields').height(),b:$('body').height()};
+		if (e.t > e.b) {
+			parent.$('#main').height(e.t+17);
+		} else {
+			parent.$('#main').height(e.b+7);
+		}
+	}
 	// getFields *** *** www.LazyCMS.net *** ***
 	$.fn.getFields = function(p1,p2){
 		var p3  = $(p1);
@@ -70,18 +79,10 @@
 			$('#'+id).replaceWith(t);
 		});
 		function slideDown(p1){
-			return $(p1).parents('p').slideDown('fast',function(){changeHeight();}).end();
+			return $(p1).parents('p').slideDown('fast',function(){$.changeHeight();}).end();
 		}
 		function slideUp(p1){
-			return $(p1).parents('p').slideUp('fast',function(){changeHeight();}).end();
-		}
-		function changeHeight(){
-			var e = {t:$('#toggleFields').height(),b:$('body').height()};
-			if (e.t > e.b) {
-				parent.$('#main').height(e.t+17);
-			} else {
-				parent.$('#main').height(e.b+7);
-			}
+			return $(p1).parents('p').slideUp('fast',function(){$.changeHeight();}).end();
 		}
 		return this;
 	};
@@ -129,8 +130,14 @@
 						} else {
 							t.append(d.tr);
 						}
-						tableDnD(f.attr('insert'));
-						f.remove(); changeHeight();
+						$(f.attr('insert')).tableDnD({
+							onDragClass: 'Drag'
+						}).find('tr').hover(function(){
+							$(this).addClass('Over');
+						},function(){
+							$(this).removeClass('Over');
+						});
+						f.remove(); $.changeHeight();
 						t.tips('tip','[@tip]');
 					}
 				} else {
@@ -161,14 +168,3 @@
 		}
 	}
 })(jQuery);
-
-// tableDnD *** *** www.LazyCMS.net *** ***
-function tableDnD(selector){
-	$(selector).tableDnD({
-		onDragClass: 'Drag'
-	}).find('tr').hover(function(){
-		$(this).addClass('Over');
-	},function(){
-		$(this).removeClass('Over');
-	});
-}

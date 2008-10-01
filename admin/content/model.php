@@ -110,7 +110,13 @@ function lazy_edit(){
     G('HEAD','
         <script type="text/javascript">
         $(document).ready(function() {
-            tableDnD("#Fields");
+            $("#Fields").tableDnD({
+                onDragClass: "Drag"
+            }).find("tr").hover(function(){
+                $(this).addClass("Over");
+            },function(){
+                $(this).removeClass("Over");
+            });
         });
         </script>
         <style type="text/css">
@@ -298,18 +304,18 @@ function lazy_edit(){
     $hl = '<form id="form1" name="form1" method="post" action="">';
     $hl.= '<fieldset><legend rel="tab"><a class="collapsed" rel=".show" cookie="false">'.$title.'</a></legend>';
     $hl.= '<div class="show">';
-    $hl.= '<p><label>'.L('model/add/name').'：</label><input class="in2" type="text" name="modelname" id="modelname" value="'.$modelname.'" /></p>';
-    $hl.= '<p><label>'.L('model/add/ename').'：</label><input tip="'.L('model/add/ename').'::'.L('model/add/ename/@tip').'" class="in3" type="text" name="modelename" id="modelename" value="'.$modelename.'" /></p>';
-    $hl.= '<p><label>'.L('model/add/path').'：</label><input tip="::250::'.ubbencode(L('model/add/path/@tip')).'" class="in3" type="text" name="modelpath" id="modelpath" value="'.$modelpath.'" /></p>';
+    $hl.= '<p><label>'.L('model/add/name').':</label><input class="in2" type="text" name="modelname" id="modelname" value="'.$modelname.'" /></p>';
+    $hl.= '<p><label>'.L('model/add/ename').':</label><input tip="'.L('model/add/ename').'::'.L('model/add/ename/@tip').'" class="in3" type="text" name="modelename" id="modelename" value="'.$modelename.'" /></p>';
+    $hl.= '<p><label>'.L('model/add/path').':</label><input tip="::250::'.ubbencode(L('model/add/path/@tip')).'" class="in3" type="text" name="modelpath" id="modelpath" value="'.$modelpath.'" /></p>';
     
     if ($modeltype=='list') {
-        $hl.= '<p><label>'.L('model/add/sortemplate').'：</label>';
+        $hl.= '<p><label>'.L('model/add/sortemplate').':</label>';
         $hl.= '<select name="sortemplate" id="sortemplate" tip="'.L('model/add/sortemplate').'::'.L('model/add/sortemplate/@tip').'">';
         $hl.= form_opts(C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$sortemplate);
         $hl.= '</select></p>';
     }
     
-    $hl.= '<p><label>'.L('model/add/pagetemplate').'：</label>';
+    $hl.= '<p><label>'.L('model/add/pagetemplate').':</label>';
     $hl.= '<select name="pagetemplate" id="pagetemplate" tip="'.L('model/add/pagetemplate').'::'.L('model/add/pagetemplate/@tip').'">';
     $hl.= form_opts(C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$pagetemplate);
     $hl.= '</select></p>';
@@ -407,10 +413,10 @@ function lazy_fields(){
     $hl = '<form id="formFields" name="formFields" method="post" action="'.PHP_FILE.'?action=fields">';
     $hl.= '<div id="toggleFields" class="panel">';
     $hl.= '<div class="head"><strong>'.L('model/add/fields/'.(empty($data[0])?'add':'edit')).'</strong><a href="javascript:;" onclick="$(\'#formFields\').remove();changeHeight();">×</a></div><div class="body">';
-    $hl.= '<p><label>'.L('model/add/fields/text').'：</label><input tip="'.L('model/add/fields/text').'::'.L('model/add/fields/text/@tip').'" class="in2" type="text" name="fieldlabel" id="fieldlabel" value="'.$data[1].'" /><span><input type="checkbox" name="needTip" id="needTip"'.(empty($data[2])?null:' checked="checked"').(empty($data[0])?' cookie="true"':null).'/><label for="needTip">'.L('model/add/fields/needtip').'</label></span></p>';
-    $hl.= '<p class="hide"><label>'.L('model/add/fields/tiptext').'：</label><textarea tip="'.L('model/add/fields/tiptext').'::'.L('model/add/fields/tiptext/@tip').'" name="fieldtip" id="fieldtip" rows="3" class="in3">'.$data[2].'</textarea></p>';
-    $hl.= '<p><label>'.L('model/add/fields/ename').'：</label><input tip="'.L('model/add/fields/ename').'::300::'.L('model/add/fields/ename/@tip').'" class="in2" type="text" name="fieldename" id="fieldename" value="'.$data[3].'" /></p>';
-    $hl.= '<p><label>'.L('model/add/fields/input').'：</label><select name="fieldintype" id="fieldintype">';
+    $hl.= '<p><label>'.L('model/add/fields/text').':</label><input tip="'.L('model/add/fields/text').'::'.L('model/add/fields/text/@tip').'" class="in2" type="text" name="fieldlabel" id="fieldlabel" value="'.$data[1].'" /><span><input type="checkbox" name="needTip" id="needTip"'.(empty($data[2])?null:' checked="checked"').(empty($data[0])?' cookie="true"':null).'/><label for="needTip">'.L('model/add/fields/needtip').'</label></span></p>';
+    $hl.= '<p class="hide"><label>'.L('model/add/fields/tiptext').':</label><textarea tip="'.L('model/add/fields/tiptext').'::'.L('model/add/fields/tiptext/@tip').'" name="fieldtip" id="fieldtip" rows="3" class="in3">'.$data[2].'</textarea></p>';
+    $hl.= '<p><label>'.L('model/add/fields/ename').':</label><input tip="'.L('model/add/fields/ename').'::300::'.L('model/add/fields/ename/@tip').'" class="in2" type="text" name="fieldename" id="fieldename" value="'.$data[3].'" /></p>';
+    $hl.= '<p><label>'.L('model/add/fields/input').':</label><select name="fieldintype" id="fieldintype">';
     foreach (Model::getType() as $k=>$v) {
         $selected = $data[4]==$k?' selected="selected"':null;
         $hl.= '<option value="'.$k.'"'.$selected.'>'.L('model/type/'.$k).'</option>';
@@ -429,15 +435,15 @@ function lazy_fields(){
     }
     $hl.= '</select><span><input type="checkbox" name="isValidate" id="isValidate"'.(empty($data[6])?null:' checked="checked"').(empty($data[0])?' cookie="true"':null).' /><label for="isValidate">'.L('model/add/fields/validate').'</label></span></p>';
     
-    $hl.= '<p class="'.(empty($data[7])?'hide':'show').'"><label>'.L('model/add/fields/value').'：</label><textarea tip="'.L('model/add/fields/value').'::'.L('model/add/fields/value/@tip').'" name="fieldvalue" id="fieldvalue" rows="5" class="in3">'.$data[7].'</textarea></p>';
-    $hl.= '<p class="hide"><label>'.L('model/add/fields/rules').'：</label><select name="setValidate" id="setValidate">';
+    $hl.= '<p class="'.(empty($data[7])?'hide':'show').'"><label>'.L('model/add/fields/value').':</label><textarea tip="'.L('model/add/fields/value').'::'.L('model/add/fields/value/@tip').'" name="fieldvalue" id="fieldvalue" rows="5" class="in3">'.$data[7].'</textarea></p>';
+    $hl.= '<p class="hide"><label>'.L('model/add/fields/rules').':</label><select name="setValidate" id="setValidate">';
     foreach (Model::getValidate() as $k=>$v) {
         $hl.= '<option value="'.$v.'">'.L('model/validate/'.$k).'</option>';
     }
     $hl.= '</select>&nbsp;<a href="javascript:;" onclick="$(\'#setValidate\').setValidate(\'#fieldvalidate\',1);"><img src="'.SITE_BASE.'common/images/icon/add.png" class="os" /></a>&nbsp;<a href="javascript:;" onclick="$(\'#setValidate\').setValidate(\'#fieldvalidate\',0);"><img src="'.SITE_BASE.'common/images/icon/reduce.png" class="os" /></a>';
     $hl.= '<textarea tip="'.L('model/add/fields/rules').'::250::'.ubbencode(L('model/add/fields/rules/@tip')).'" name="fieldvalidate" id="fieldvalidate" rows="3" class="in3">'.$data[6].'</textarea></p>';
-    $hl.= '<p class="'.(empty($data[8]) && !empty($data[0])?'hide':'show').'"><label>'.L('model/add/fields/length').'：</label><input tip="'.L('model/add/fields/length/@tip').'" class="in1" type="text" name="fieldlength" id="fieldlength" value="'.$data[8].'" /></p>';
-    $hl.= '<p class="'.(instr('basic,editor',$data[4])?'show':'hide').'"><label>'.L('common/attr').'：</label><span id="fieldoption">';
+    $hl.= '<p class="'.(empty($data[8]) && !empty($data[0])?'hide':'show').'"><label>'.L('model/add/fields/length').':</label><input tip="'.L('model/add/fields/length/@tip').'" class="in1" type="text" name="fieldlength" id="fieldlength" value="'.$data[8].'" /></p>';
+    $hl.= '<p class="'.(instr('basic,editor',$data[4])?'show':'hide').'"><label>'.L('common/attr').':</label><span id="fieldoption">';
     $hl.= '<input type="checkbox" name="fieldoption[upimg]" id="upimg" value="1"'.($data[11]->upimg?' checked="checked"':null).' /><label for="upimg">'.L('editor/upimg','system').'</label>';
     $hl.= '<input type="checkbox" name="fieldoption[upfile]" id="upfile" value="1"'.($data[11]->upfile?' checked="checked"':null).' /><label for="upfile">'.L('editor/upfile','system').'</label>';
     $hl.= '<input type="checkbox" name="fieldoption[break]" id="pagebreak" value="1"'.($data[11]->break?' checked="checked"':null).' /><label for="pagebreak">'.L('editor/pagebreak','system').'</label>';
@@ -446,7 +452,7 @@ function lazy_fields(){
     $hl.= '<input type="checkbox" name="fieldoption[setimg]" id="setimg" value="1"'.($data[11]->setimg?' checked="checked"':null).' /><label for="setimg">'.L('editor/setimg','system').'</label>';
     $hl.= '<input type="checkbox" name="fieldoption[resize]" id="resize" value="1"'.($data[11]->resize?' checked="checked"':null).' /><label for="resize">'.L('editor/resize','system').'</label>';
     $hl.= '</span></p>';
-    $hl.= '<p><label>'.L('model/add/fields/default').'：</label><input tip="'.L('model/add/fields/default').'::250::'.ubbencode(L('model/add/fields/default/@tip')).'" class="in3" type="text" name="fielddefault" id="fielddefault" value="'.$data[9].'" /></p>';
+    $hl.= '<p><label>'.L('model/add/fields/default').':</label><input tip="'.L('model/add/fields/default').'::250::'.ubbencode(L('model/add/fields/default/@tip')).'" class="in3" type="text" name="fielddefault" id="fielddefault" value="'.$data[9].'" /></p>';
     $hl.= '<p class="tr"><button type="button" onclick="$(this).submitFields();">'.L('common/save').'</button>&nbsp;<button type="button" onclick="$(\'#formFields\').remove();changeHeight();">'.L('common/cancel').'</button></p>';
     $hl.= '</div></div><input id="fieldid" name="fieldid" type="hidden" value="'.$data[0].'" /><input name="description" id="fieldescription" type="hidden" value="'.$description.'" /><input id="fieldkeyword" name="keyword" type="hidden" value="'.$keyword.'" /><input name="fieldoname" type="hidden" value="'.$data[10].'" /><input name="method" type="hidden" value="POST" /></form>'; echo $hl;
 }

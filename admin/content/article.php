@@ -45,6 +45,41 @@ function lazy_before(){
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){
+    $size    = isset($_GET['size'])?$_GET['size']:15;
+    $model   = isset($_GET['model'])?$_GET['model']:null;
+    $sortid  = isset($_GET['sortid'])?$_GET['sortid']:0;
+    $keyword = isset($_GET['keyword'])?$_GET['keyword']:null;
+    $fields  = isset($_GET['fields'])?$_GET['fields']:null;
+    if (empty($model)) {
+        $textarea= null;
+        $hl = '<form id="form1" name="form1" method="get" action="'.PHP_FILE.'">';
+        $hl.= '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.L('article/@title').'</a></legend>';
+        $hl.= '<div class="show">';
+        $hl.= '<p><label>'.L('article/search/model').':</label><select name="model" id="model" onchange="$(this).viewFields();">';
+        foreach (Model::getModels('list') as $v) {
+            $textarea.= '<textarea class="hide" checked="'.$v['setkeyword'].'" id="fields_'.$v['modelename'].'">'.$v['modelfields'].'</textarea>';
+            $selected = $v['modelename']==$model?' selected="selected"':null;
+            $hl.= '<option value="'.$v['modelename'].'"'.$selected.'>'.$v['modelname'].'</option>';
+        }
+        $hl.= '</select></p>';
+        $hl.= '<p><label>'.L('article/search/sort').':</label><select name="sortid"><option value="0">'.L('article/search/sortall').'</option>'.Article::__sort(0,0,false,$sortid).'</select></p>';
+        $hl.= '<p><label>'.L('article/search/keyword').':</label><input class="in2" type="text" name="keyword" id="keyword" value="'.$keyword.'" /></p>';
+        $hl.= '<p><label>'.L('article/search/pagesize').':</label><select name="size">';
+        foreach (array(10,15,20,25,30,40,50) as $i) {
+            $selected = $i==$size?' selected="selected"':null;
+            $hl.= '<option value="'.$i.'"'.$selected.'>'.$i.L('common/unit/item','system').'</option>';
+        }
+        $hl.= '</select></p>';
+        $hl.= '<p><label>'.L('article/search/fields').':</label><span id="fields"></span></p>';
+        $hl.= '<p><label>&nbsp;</label><button type="submit">'.L('article/search/submit').'</button></p>';
+        $hl.= '</div></fieldset>';
+        $hl.= '</form>'.$textarea;
+        $hl.= '<script type="text/javascript">$(\'#model\').viewFields();</script>';
+    } else {
+        $hl.= '搜索结果';
+    }
+    
+    print_x(L('article/@title'),$hl);
     /*
     import('system.parsetags');
     $ph = new ParseTags();
@@ -54,25 +89,13 @@ function lazy_default(){
     $tag = $ph->fetch('select');
     print_r($tag);
     */
-    $hl = '<form id="form1" name="form1" method="post" action="">';
-    $hl.= '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.L('article/@title').'</a></legend>';
-    $hl.= '<div class="show">';
-    $hl.= '<p><label>模型：</label><select name="model"><option value=""> --- --- --- </option><option value="onepage">单页</option><option value="article">文章</option></select></p>';
-    $hl.= '<p><label>分类：</label><select name="parentid" id="parentid">';
-    $hl.= '<option value=""> --- --- --- </option>';
-    $hl.= Article::__sort(0,0);
-    $hl.= '</select></p>';
-    $hl.= '<p><label>&nbsp;</label><button>提交</button></p>';
-    $hl.= '</div></fieldset>';
-    $hl.= '</form>';
-    print_x(L('article/@title'),$hl);
 }
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){
     G('HEAD','
         <style type="text/css">
         #toggleSorts{ display:none; width:500px; left:140px; top:55px; z-index:100; }
-	    #toggleSorts .head{ width:495px;}
+        #toggleSorts .head{ width:495px;}
         #toggleSorts .body{ padding:5px;}
         #toggleSorts ul{margin:0 0 0 20px;padding:0;}
         #sortView{ width:300px; height:23px; cursor:default; line-height:23px; letter-spacing:1px; padding:0px 4px; border:1px solid #c6d9e7; color:#333333; background:url(../../common/images/buttons-bg.png) repeat-x; }
@@ -191,7 +214,7 @@ function lazy_edit(){
     $hl.= '<div class="more-attr">';
 
     if ($sort > 0) {
-        $hl.= '<p><label>'.L('article/add/sort').'：</label><div class="box"><div id="sortView" onclick="$.toggleSorts();" empty="'.L('article/add/select').'">'.L('article/add/select').'</div></div></p>';
+        $hl.= '<p><label>'.L('article/add/sort').':</label><div class="box"><div id="sortView" onclick="$.toggleSorts();" empty="'.L('article/add/select').'">'.L('article/add/select').'</div></div></p>';
         $hl.= '<div id="toggleSorts" class="panel">';
         $hl.= '<div class="head"><strong>'.L('article/add/select').'</strong><a href="javascript:;" onclick="$.toggleSorts();">×</a></div><div class="body">';
         $hl.= Article::sort($model['modelid'],$sortids);
@@ -199,16 +222,16 @@ function lazy_edit(){
         $hl.= '</div></div><script type="text/javascript">$("#sortView").selectSorts();</script>';
     }
 
-    $hl.= $tag->fetch('<p><label>{label}：</label>{object}</p>',$data);
+    $hl.= $tag->fetch('<p><label>{label}:</label>{object}</p>',$data);
     $hl.= '</div></fieldset>';
 
     $hl.= '<fieldset><legend><a class="collapse" rel=".more-attr">'.L('common/attr').'</a></legend>';
     $hl.= '<div class="more-attr">';
-    $hl.= '<p><label>'.L('article/add/path').'：</label><input tip="::300::'.ubbencode(L('model/add/path/@tip')).'<br/>'.h2encode(L('article/add/path/@tip')).'" class="in4" type="text" name="path" id="path" value="'.(empty($path)?$model['modelpath']:$path).'" /></p>';
+    $hl.= '<p><label>'.L('article/add/path').':</label><input tip="::300::'.ubbencode(L('model/add/path/@tip')).'<br/>'.h2encode(L('article/add/path/@tip')).'" class="in4" type="text" name="path" id="path" value="'.(empty($path)?$model['modelpath']:$path).'" /></p>';
     if (!empty($model['setkeyword'])) {
-        $hl.= '<p><label>'.L('article/add/keywords').'：</label><input tip="'.L('article/add/keywords').'::250::'.L('article/add/keywords/@tip').'" class="in4" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" onclick="$(\'#keywords\').getKeywords(\'#'.$model['setkeyword'].'\')" tip="'.L('common/get/@tip','system').'">'.L('common/get','system').'</button></p>';
+        $hl.= '<p><label>'.L('article/add/keywords').':</label><input tip="'.L('article/add/keywords').'::250::'.L('article/add/keywords/@tip').'" class="in4" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" onclick="$(\'#keywords\').getKeywords(\'#'.$model['setkeyword'].'\')" tip="'.L('common/get/@tip','system').'">'.L('common/get','system').'</button></p>';
     }
-    $hl.= '<p><label>'.L('article/add/description').'：</label><textarea tip="'.L('article/add/description').'::'.L('article/add/description/@tip').'" name="description" id="description" rows="5" class="in4">'.$description.'</textarea></p>';
+    $hl.= '<p><label>'.L('article/add/description').':</label><textarea tip="'.L('article/add/description').'::'.L('article/add/description/@tip').'" name="description" id="description" rows="5" class="in4">'.$description.'</textarea></p>';
     $hl.= '</div></fieldset>';
     $hl.= but('save').'<input name="id" type="hidden" value="'.$id.'" /></form>';
     

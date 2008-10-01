@@ -90,9 +90,9 @@ class Article{
         $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` ASC;",$p1);
         while ($rs = $db->fetch($res,0)) {
             if ((int)$p3 != (int)$rs[0]) {
-                $model = implode(',',self::getModels($rs[0],'modelid'));
+                $model = is_bool($p3)?null:' models="'.implode(',',self::getModels($rs[0],'modelid')).'"';
                 $selected = ((int)$p4 == (int)$rs[0]) ? ' selected="selected"' : null;
-                $R.= '<option models="'.$model.'" value="'.$rs[0].'"'.$selected.'>'.$nbsp.'├'.$rs[1].'</option>';
+                $R.= '<option'.$model.' value="'.$rs[0].'"'.$selected.'>'.$nbsp.'├'.$rs[1].'</option>';
                 if ((int)$db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
                     $R.= self::__sort($rs[0],$p2+1,$p3,$p4);
                 }

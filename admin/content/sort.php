@@ -183,14 +183,14 @@ function lazy_edit(){
     $hl = '<form id="form1" name="form1" method="post" action="">';
     $hl.= '<fieldset><legend rel="tab"><a class="collapsed" rel=".show" cookie="false">'.$title.'</a></legend>';
     $hl.= '<div class="show">';
-    $hl.= '<p><label>'.L('sort/add/sort').'：</label>';
+    $hl.= '<p><label>'.L('sort/add/sort').':</label>';
     $hl.= '<select name="parentid" id="parentid" onchange="$(this).selectModels();">';
     $hl.= '<option models="" value="0">--- '.L('sort/add/topsort').' ---</option>';
     $hl.= Article::__sort(0,0,$sortid,$parentid);
     $hl.= '</select></p>';
-    $hl.= '<p><label>'.L('sort/add/name').'：</label><input class="in2" type="text" name="sortname" id="sortname" value="'.$sortname.'" /></p>';
-    $hl.= '<p><label>'.L('sort/add/path').'：</label><input tip="'.L('sort/add/path').'::300::'.h2encode(L('sort/add/path/@tip')).'" class="in4" type="text" name="sortpath" id="sortpath" value="'.$sortpath.'" /></p>';
-    $hl.= '<p><label>'.L('sort/add/model').'：</label><span id="models" tip="'.L('sort/add/model').'::'.L('sort/add/model/@tip').'">';
+    $hl.= '<p><label>'.L('sort/add/name').':</label><input class="in2" type="text" name="sortname" id="sortname" value="'.$sortname.'" /></p>';
+    $hl.= '<p><label>'.L('sort/add/path').':</label><input tip="'.L('sort/add/path').'::300::'.h2encode(L('sort/add/path/@tip')).'" class="in4" type="text" name="sortpath" id="sortpath" value="'.$sortpath.'" /></p>';
+    $hl.= '<p><label>'.L('sort/add/model').':</label><span id="models" tip="'.L('sort/add/model').'::'.L('sort/add/model/@tip').'">';
     foreach ($models as $model) {
         $checked = instr($getModels,$model['modelid'])?' checked="checked"':null;
         $hl.= '<input type="checkbox" name="model['.$model['modelename'].']" id="model['.$model['modelename'].']" value="'.$model['modelid'].'"'.$checked.' /><label for="model['.$model['modelename'].']">'.$model['modelname'].'</label> ';
@@ -200,12 +200,12 @@ function lazy_edit(){
 
     $hl.= '<fieldset><legend><a class="collapse" rel=".more-attr">'.L('common/attr').'</a></legend>';
     $hl.= '<div class="more-attr">';
-    $hl.= '<p><label>'.L('sort/add/sortemplate').'：</label>';
+    $hl.= '<p><label>'.L('sort/add/sortemplate').':</label>';
     $hl.= '<select name="sortemplate" id="sortemplate" tip="'.L('sort/add/sortemplate').'::'.L('sort/add/sortemplate/@tip').'">';
     $hl.= '<option value="">'.L('sort/add/defaultemplate').'</option>';
     $hl.= form_opts(C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$sortemplate);
     $hl.= '</select></p>';
-    $hl.= '<p><label>'.L('sort/add/pagetemplate').'：</label>';
+    $hl.= '<p><label>'.L('sort/add/pagetemplate').':</label>';
     $hl.= '<select name="pagetemplate" id="pagetemplate" tip="'.L('sort/add/pagetemplate').'::'.L('sort/add/pagetemplate/@tip').'">';
     $hl.= '<option value="">'.L('sort/add/defaultemplate').'</option>';
     $hl.= form_opts(C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$pagetemplate);
