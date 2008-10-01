@@ -64,7 +64,7 @@ function lazy_default(){
         $hl.= '<p><label>'.L('article/search/sort').':</label><select name="sortid"><option value="0">'.L('article/search/sortall').'</option>'.Article::__sort(0,0,false).'</select></p>';
         $hl.= '<p><label>'.L('article/search/keyword').':</label><input class="in2" type="text" name="keyword" id="keyword" value="" /></p>';
         $hl.= '<p><label>'.L('article/search/pagesize').':</label><select name="size">';
-        foreach (array(1,10,15,20,25,30,40,50) as $i) {
+        foreach (array(10,15,20,25,30,40,50) as $i) {
             $selected = $i==$size?' selected="selected"':null;
             $hl.= '<option value="'.$i.'"'.$selected.'>'.$i.L('common/unit/item','system').'</option>';
         }
@@ -83,7 +83,9 @@ function lazy_default(){
         $query  = null; $inSQL = $inLike = null;
         foreach ($fields as $k=>$v) {
             $query .= '&fields'.rawurlencode("[{$k}]").'='.rawurlencode($v);
-            $inLike.= (empty($inLike)?null:" OR ")."BINARY UCASE(`a`.`{$k}`) LIKE UCASE('%{$keyword}%')";
+            if ($keyword!='') {
+                $inLike.= (empty($inLike)?null:" OR ")."BINARY UCASE(`a`.`{$k}`) LIKE UCASE('%{$keyword}%')";
+            }
         }
         $inSQL.= empty($inLike)?null:' AND ('.$inLike.')';
         $inSQL.= ($sortid==0?null:" AND `b`.`sid`=".DB::quote($sortid));
