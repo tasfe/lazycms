@@ -135,7 +135,7 @@ function lazy_group_edit(){
     $hl.= '<p><label>'.L('users/group/add/name').':</label><input tip="'.L('users/group/add/name').'::'.L('users/group/add/name/@tip').'" class="in2" type="text" name="groupname" id="groupname" value="'.$groupname.'" /></p>';
     $hl.= '<p><label>'.L('users/group/add/logo').':</label><input tip="'.L('users/group/add/logo').'::'.L('users/group/add/logo/@tip').'" class="in2" type="text" name="groupename" id="groupename" value="'.$groupename.'"'.(!empty($groupid) ? ' readonly="true"' : null).' /></p>';
     $hl.= '<p><label>'.L('users/group/add/purview').':</label><div class="box purview">';
-    foreach (G('PURVIEW') as $k=>$v) {
+    foreach (G('CONFIG') as $k=>$v) {
         if (isset($v['purview'])) {
             $hl.= '<input type="checkbox" name="'.$k.'" id="'.$k.'" class="__bigP" onclick="var checked = this.checked;$.each($(\'input.__'.$k.'\'),function(){ this.checked = checked; });" /><label for="'.$k.'"><strong>'.L('title',$k).'</strong></label><br/>';
             foreach ($v['purview'] as $i=>$p) {

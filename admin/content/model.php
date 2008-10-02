@@ -170,17 +170,21 @@ function lazy_edit(){
                 // 先删除表
                 $db->exec("DROP TABLE IF EXISTS `{$table}`;");
                 // 创建表
-                $db->exec("
-                CREATE TABLE IF NOT EXISTS `{$table}` (
-                    `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                    `order` INT(11) DEFAULT '0',
-                    `date` INT(11) DEFAULT '0',
-                    `hits` INT(11) DEFAULT '0',
-                    `digg` INT(11) DEFAULT '0',
-                    `path` VARCHAR(255),
-                    `img` VARCHAR(255),
-                    `description` VARCHAR(255){$sute}
-                ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");
+                $SQL = "CREATE TABLE IF NOT EXISTS `{$table}` (";
+                $SQL.= "    `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,";
+                $SQL.= "    `order` INT(11) DEFAULT '0',";
+                $SQL.= "    `date` INT(11) DEFAULT '0',";
+                $SQL.= "    `hits` INT(11) DEFAULT '0',";
+                if ($modeltype=='list') {
+                    $SQL.= "`img` VARCHAR(255),";
+                    $SQL.= "`digg` INT(11) DEFAULT '0',";
+                    $SQL.= "`passed` TINYINT(1) DEFAULT '0',";
+                    $SQL.= "`userid` INT(11) DEFAULT '0',";
+                }
+                $SQL.= "    `path` VARCHAR(255),";
+                $SQL.= "    `description` VARCHAR(255){$sute}";
+                $SQL.= ") ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;";
+                $db->exec($SQL);
                 // 创建关联表
                 $db->exec("
                 CREATE TABLE IF NOT EXISTS `{$jtable}` (

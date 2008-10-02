@@ -62,13 +62,13 @@ abstract class LazyCMS{
         // 获取当前动作
         $action = isset($_REQUEST['action']) ? strtolower($_REQUEST['action']) : null;
         // 导入权限列表
-        $purview = array();
-        $config  = glob(COM_PATH.'/modules/*',GLOB_ONLYDIR);
-        foreach ($config as $v) {
+        $config = array();
+        $modules= glob(COM_PATH.'/modules/*',GLOB_ONLYDIR);
+        foreach ($modules as $v) {
             $module = substr($v,strrpos($v,'/')+1);
-            $purview[$module] = include_file($v.'/config.php');
+            $config[$module] = include_file($v.'/config.php');
         }
-        G('PURVIEW',$purview); unset($purview,$config);
+        G('CONFIG',$config); unset($config,$modules);
         // 导入模块配置
         import('modules.*.static.*');
         // 在动作之前执行的函数

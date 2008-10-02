@@ -167,6 +167,7 @@ class Article{
      */
     static function count($p1,$p2){
         $db = get_conn(); $R = 0;
+        if (empty($p2)) { return $R; }
         $p3 = explode(',',$p2);
         foreach ($p3 as $v) {
             $table = Model::getJoinTableName($v);

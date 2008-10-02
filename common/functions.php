@@ -973,13 +973,19 @@ function get_user($p1=null,$p2=null){
                 // 密码错误，返回-1
                 return -1;
             }
+        } elseif ((int)$funcNum==0) {
+            if ((string)$userpass == (string)$rs['userpass']) {
+                return $rs;
+            } else {
+                return -1;
+            }
         } else {
             if ((string)$userpass == (string)$rs['userpass']) {
                 if (!empty($purview)) {
                     if (instr($rs['purview'],$purview)) {
                         return $rs;
                     } else {
-                        // 没有权限返回 -1
+                        // 没有权限返回 -2
                         return -2;
                     }
                 } else {

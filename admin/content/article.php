@@ -80,7 +80,8 @@ function lazy_default(){
         $table  = Model::getDataTableName($model['modelename']);
         $jtable = Model::getJoinTableName($model['modelename']);
         $length = count($fields);
-        $query  = null; $inSQL = $inLike = null;
+        $query  = null; $inSQL = null;
+        $inLike = empty($keyword)?null:"BINARY UCASE(`a`.`description`) LIKE UCASE('%{$keyword}%')";
         foreach ($fields as $k=>$v) {
             $query .= '&fields'.rawurlencode("[{$k}]").'='.rawurlencode($v);
             if ($keyword!='') {
@@ -92,16 +93,16 @@ function lazy_default(){
 
         $db = get_conn();
         $ds = new Recordset();
-        $ds->create("SELECT * FROM `{$table}` AS `a` LEFT JOIN `{$jtable}` AS `b` ON `a`.`id`=`b`.`tid` WHERE `b`.`type`=1 {$inSQL} GROUP BY `a`.`path` ORDER BY `a`.`order` DESC,`a`.`id` DESC");
+        $ds->create("SELECT * FROM `{$table}` AS `a` LEFT JOIN `{$jtable}` AS `b` ON `a`.`id`=`b`.`tid` WHERE `b`.`type`=1 AND `a`.`passed`=0 {$inSQL} GROUP BY `a`.`path` ORDER BY `a`.`order` DESC,`a`.`id` DESC");
         $ds->action = PHP_FILE.'?action=set&model='.$model['modelename'];
         $ds->url = PHP_FILE.'?model='.$model['modelename'].'&sortid='.$sortid.'&keyword='.$keyword.'&size='.$size.$query.'&page=$';
         $ds->but = $ds->button('create:生成|move:移动').$ds->plist();
         // 循环自定义显示字段
         for ($i=0; $i<$length; $i++) {
             if ($i==0) {
-                $ds->td  = "cklist(K[0]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[".($i+5)."] + '</a>'";
+                $ds->td  = "cklist(K[0]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[".($i+7)."] + '</a>'";
             } else {
-                $ds->td  = "K[".($i+5)."]";
+                $ds->td  = "K[".($i+7)."]";
             }
         }
         if ($length==0) {
@@ -110,19 +111,21 @@ function lazy_default(){
             $ds->td  = "(K[3]?icon('link',K[2]):icon('link-error','javascript:alert(\'create\');')) + K[2]";
         }
         $ds->td  = "K[4]";
+        $ds->td  = "K[5]";
+        $ds->td  = "K[6]";
         $ds->td  = "icon('edit','".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0])";
         $ds->open();
         $ds->thead = '<tr>'; $i=0;
         foreach ($fields as $field=>$label) {
             $ds->thead.= '<th>'.($i==0?'ID) ':null).$label.'</th>'; $i++;
         }
-        $ds->thead.= '<th>'.($length==0?'ID) ':null).L('article/list/path').'</th><th>'.L('article/list/date').'</th><th>'.L('common/action','system').'</th></tr>';
+        $ds->thead.= '<th>'.($length==0?'ID) ':null).L('article/list/path').'</th><th>'.L('article/list/hits').'</th><th>'.L('article/list/digg').'</th><th>'.L('article/list/date').'</th><th>'.L('common/action','system').'</th></tr>';
         while ($rs = $ds->result()) {
             $K = null;
             foreach ($fields as $field=>$label) {
                 $K.= ",'".t2js(h2encode($rs[$field]))."'";
             }
-            $ds->tbody = "E(".$rs['id'].",'".$rs['img']."','".$rs['path']."',".(is_file(LAZY_PATH.$rs['path'])?1:0).",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});";
+            $ds->tbody = "E(".$rs['id'].",'".$rs['img']."','".$rs['path']."',".(is_file(LAZY_PATH.$rs['path'])?1:0).",".$rs['hits'].",".$rs['digg'].",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});";
         }
         $ds->close();
         print_x(L('article/@title'),$ds->fetch());
@@ -171,7 +174,7 @@ function lazy_edit(){
         #sortView{ width:300px; height:23px; cursor:default; line-height:23px; letter-spacing:1px; padding:0px 4px; border:1px solid #c6d9e7; color:#333333; background:url(../../common/images/buttons-bg.png) repeat-x; }
         </style>
     ');
-    $db = get_conn(); $data = array();
+    $db = get_conn(); $data = array(); $_USER = get_user();
     $m  = isset($_REQUEST['model']) ? strtolower($_REQUEST['model']) : null;
     $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
     $n  = array_search($m,G('MODEL'))+4;
@@ -224,6 +227,7 @@ function lazy_edit(){
                     'order'=> $maxid,
                     'date' => now(),
                     'path' => $path,
+                    'userid' => $_USER['userid'],
                     'description' => $description,
                 );
                 if (!empty($data)) {
