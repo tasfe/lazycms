@@ -146,7 +146,7 @@ function lazy_default(){
     $hl.= '<p><label>'.L('settings/upload/imageext').':</label><input tip="'.L('settings/upload/imageext').'::300::'.L('settings/upload/imageext/@tip').'" class="in2" type="text" name="UPLOAD_IMAGE_EXT" id="UPLOAD_IMAGE_EXT" value="'.C('UPLOAD_IMAGE_EXT').'"></p>';
     $hl.= '</div></fieldset>';
     
-    $TIME_ZONE = include_file(COM_PATH.'/data/timezone.php');
+    $TIME_ZONE = include_file(COM_PATH.'/modules/system/config/timezone.php');
     $TIME_ZONE = isset($TIME_ZONE[C('LANGUAGE')]) ? $TIME_ZONE[C('LANGUAGE')] : $TIME_ZONE['en'];
     $hl.= '<fieldset><legend><a class="collapse" rel=".show">'.L('settings/server/@title').'</a></legend>';
     $hl.= '<div class="show">';

@@ -28,18 +28,6 @@ function icon(i,a){
 	var HREF = '<a href="'+a+'">'+IMG+'</a>';
 	if (typeof a == "undefined") { return IMG; } else { return HREF; }
 }
-// Purview *** *** www.LazyCMS.net *** ***
-function Purview(){
-	$('div.purview input.__bigP').each(function(){
-		var checked = true;
-		$('div.purview .__' + this.id).each(function(){
-			if (checked) {
-				checked = this.checked ? true : false;
-			}
-		});
-		$('#' + this.id).attr('checked',checked);
-	});
-}
 // SemiMemory *** *** www.LazyCMS.net *** ***
 function SemiMemory(){
 	var o = getHP();

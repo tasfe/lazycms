@@ -37,6 +37,7 @@ function lazy_before(){
         L('users/group/add/@title').':users.php?action=group_edit;'.
         L('users/user/add/@title').':users.php?action=user_edit'
     );
+    G('SCRIPT','LoadScript("system.users");');
 }
 // lazy_default *** *** www.LazyCMS.net *** ***
 function lazy_default(){
@@ -129,25 +130,24 @@ function lazy_group_edit(){
             }
         }
     }
-    $module = include_file(COM_PATH.'/data/module.php');
     $hl = '<form id="form1" name="form1" method="post" action="">';
     $hl.= '<fieldset><legend rel="tab">'.$title.'</legend>';
     $hl.= '<p><label>'.L('users/group/add/name').':</label><input tip="'.L('users/group/add/name').'::'.L('users/group/add/name/@tip').'" class="in2" type="text" name="groupname" id="groupname" value="'.$groupname.'" /></p>';
     $hl.= '<p><label>'.L('users/group/add/logo').':</label><input tip="'.L('users/group/add/logo').'::'.L('users/group/add/logo/@tip').'" class="in2" type="text" name="groupename" id="groupename" value="'.$groupename.'"'.(!empty($groupid) ? ' readonly="true"' : null).' /></p>';
     $hl.= '<p><label>'.L('users/group/add/purview').':</label><div class="box purview">';
-    foreach ($module as $k=>$v) {
+    foreach (G('PURVIEW') as $k=>$v) {
         if (isset($v['purview'])) {
             $hl.= '<input type="checkbox" name="'.$k.'" id="'.$k.'" class="__bigP" onclick="var checked = this.checked;$.each($(\'input.__'.$k.'\'),function(){ this.checked = checked; });" /><label for="'.$k.'"><strong>'.L('title',$k).'</strong></label><br/>';
             foreach ($v['purview'] as $i=>$p) {
                 $checked = instr($purview,"{$k}/{$p}") ? ' checked="checked"' : null;
-                $hl.= '<input type="checkbox" name="purview[]" id="'.$k.'_'.$i.'" class="__'.$k.'" onclick="Purview();" value="'.$k.'/'.$p.'"'.$checked.' /><label for="'.$k.'_'.$i.'">'.L("{$p}/@title",$k).'</label>';    
+                $hl.= '<input type="checkbox" name="purview[]" id="'.$k.'['.$i.']" class="__'.$k.'" onclick="$.Purview();" value="'.$k.'/'.$p.'"'.$checked.' /><label for="'.$k.'['.$i.']">'.L("{$p}/@title",$k).'</label>';    
             }
             $hl.= '<br/>';
         }
     }
     $hl.= '</div></p></fieldset>';
     $hl.= but('save').'<input name="groupid" type="hidden" value="'.$groupid.'" /></form>';
-    $hl.= '<script type="text/javascript">Purview();</script>';
+    $hl.= '<script type="text/javascript">$.Purview();</script>';
     print_x($title,$hl);
 }
 // lazy_user_list *** *** www.LazyCMS.net *** ***

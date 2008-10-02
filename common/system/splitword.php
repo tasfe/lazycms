@@ -48,7 +48,7 @@ class SplitWord{
         @set_time_limit(0);
         // 加载高频词
         // 预先加载词库
-        $files = glob(COM_PATH.'/data/dict/*',GLOB_BRACE); asort($files,SORT_REGULAR);
+        $files = glob(COM_PATH.'/dicts/*',GLOB_BRACE); asort($files,SORT_REGULAR);
         foreach ($files as $file){
             $isHFW = (substr($file,-4)=='.hfw')?true:false;
             $fp = fopen($file,'r');

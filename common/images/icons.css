@@ -25,20 +25,21 @@
  */
 @charset "utf-8";
 /* 16x16 ICONS */
-.icon-16-cpanel		{ background: url(menu-icons.png) no-repeat 2px 0px !important; }
-.icon-16-user		{ background: url(menu-icons.png) no-repeat 2px -37px !important; }
-.icon-16-media		{ background: url(menu-icons.png) no-repeat 2px -73px !important; }
-.icon-16-config		{ background: url(menu-icons.png) no-repeat 2px -107px !important; }
-.icon-16-logout		{ background: url(menu-icons.png) no-repeat 2px -143px !important; }
-.icon-16-info		{ background: url(menu-icons.png) no-repeat 2px -178px !important; }
-.icon-16-home		{ background: url(menu-icons.png) no-repeat 2px -215px !important; }
-.icon-16-help		{ background: url(menu-icons.png) no-repeat 2px -249px !important; }
-.icon-16-sort		{ background: url(menu-icons.png) no-repeat 2px -319px !important; }
-.icon-16-trash		{ background: url(menu-icons.png) no-repeat 2px -354px !important; }
-.icon-16-page		{ background: url(menu-icons.png) no-repeat 2px -390px !important; }
-.icon-16-article	{ background: url(menu-icons.png) no-repeat 2px -427px !important; }
-.icon-16-model		{ background: url(menu-icons.png) no-repeat 2px -461px !important; }
-.icon-16-install	{ background: url(menu-icons.png) no-repeat 2px -496px !important; }
+.icon-16-cpanel		{ background: url(menu-icons.png) no-repeat 0px 1px !important; }
+.icon-16-user		{ background: url(menu-icons.png) no-repeat 0px -32px !important; }
+.icon-16-media		{ background: url(menu-icons.png) no-repeat 0px -64px !important; }
+.icon-16-config		{ background: url(menu-icons.png) no-repeat 0px -96px !important; }
+.icon-16-logout		{ background: url(menu-icons.png) no-repeat 0px -128px !important; }
+.icon-16-info		{ background: url(menu-icons.png) no-repeat 0px -160px !important; }
+.icon-16-home		{ background: url(menu-icons.png) no-repeat 0px -192px !important; }
+.icon-16-help		{ background: url(menu-icons.png) no-repeat 0px -224px !important; }
+.icon-16-sort		{ background: url(menu-icons.png) no-repeat 0px -288px !important; }
+.icon-16-page		{ background: url(menu-icons.png) no-repeat 0px -320px !important; }
+.icon-16-article	{ background: url(menu-icons.png) no-repeat 0px -352px !important; }
+.icon-16-model		{ background: url(menu-icons.png) no-repeat 0px -384px !important; }
+.icon-16-install	{ background: url(menu-icons.png) no-repeat 0px -416px !important; }
+.icon-16-create		{ background: url(menu-icons.png) no-repeat 0px -448px !important; }
+.icon-16-label		{ background: url(menu-icons.png) no-repeat 0px -480px !important; }
 
 .icon-16-add		{ background: url(icons.png) no-repeat 0px 0px !important; }
 .icon-16-cut		{ background: url(icons.png) no-repeat 0px -20px !important; }

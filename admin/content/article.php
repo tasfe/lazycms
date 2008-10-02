@@ -93,9 +93,9 @@ function lazy_default(){
         $db = get_conn();
         $ds = new Recordset();
         $ds->create("SELECT * FROM `{$table}` AS `a` LEFT JOIN `{$jtable}` AS `b` ON `a`.`id`=`b`.`tid` WHERE `b`.`type`=1 {$inSQL} GROUP BY `a`.`path` ORDER BY `a`.`order` DESC,`a`.`id` DESC");
-        $ds->action = PHP_FILE."?action=set";
+        $ds->action = PHP_FILE.'?action=set&model='.$model['modelename'];
         $ds->url = PHP_FILE.'?model='.$model['modelename'].'&sortid='.$sortid.'&keyword='.$keyword.'&size='.$size.$query.'&page=$';
-        $ds->but = $ds->button().$ds->plist();
+        $ds->but = $ds->button('create:生成|move:移动').$ds->plist();
         // 循环自定义显示字段
         for ($i=0; $i<$length; $i++) {
             if ($i==0) {
@@ -137,6 +137,29 @@ function lazy_default(){
     print_r($tag);
     */
 }
+// lazy_set *** *** www.LazyCMS.net *** ***
+function lazy_set(){
+    $db = get_conn();
+    $submit = isset($_POST['submit']) ? strtolower($_POST['submit']) : null;
+    $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
+    $model  = isset($_GET['model'])?$_GET['model']:null;
+    switch($submit){
+        case 'delete':
+            empty($lists) ? echo_json(L('article/pop/select'),0) : null ;
+            $table  = Model::getDataTableName($model);
+            $jtable = Model::getJoinTableName($model);
+            $db->delete($table,"`id` IN({$lists})");
+            $db->delete($jtable,array("`tid` IN({$lists})"));
+            echo_json(array(
+                'text' => L('article/pop/deleteok'),
+                'url'  => $_SERVER["HTTP_REFERER"],
+            ),1);
+            break;
+        default :
+            echo_json(L('error/invalid','system'));
+            break;
+    }
+}
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){
     G('HEAD','
@@ -167,7 +190,10 @@ function lazy_edit(){
     $tag = new Field2Tag($model);
     $val = $tag->getVal();
     if ($val->method()) {
+        // 获取自定义字段的数据
         $data  = $tag->_POST();
+        // 解析后的字段数组
+        $fields= $tag->_Fields();
         // 路径转换
         $maxid = $db->max('id',$table);
         $path  = Article::formatPath($maxid,$path,$data[$model['setkeyword']]);
@@ -236,10 +262,11 @@ function lazy_edit(){
                 }
                 $key->save($id,$keywords,C('GET_RELATED_KEY'));
             }
+            $query = empty($model['setkeyword'])?null:'&'.rawurlencode('fields['.$model['setkeyword'].']').'='.rawurlencode($fields[$model['setkeyword']]->label);
             // 输出执行结果
             echo_json(array(
                 'text' => $text,
-                'url'  => PHP_FILE,
+                'url'  => PHP_FILE."?model={$m}{$query}",
             ),1);
         }
     } else {

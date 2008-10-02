@@ -27,35 +27,13 @@ defined('COM_PATH') or die('Restricted access!');
  * @date        2008-6-17
  */
 return array(
-    /* 系统管理模块 */
-    'system' => array(
-        /* 需要导入的文件 */
-        'import' => array(
-            'static.system'
-        ),
-        /* 权限列表 */
-        'purview' => array(
-            'system',
-            'users',
-            'webftp',
-            'module',
-            'settings',
-        )
-    ),
-    /* 内容管理模块 */
-    'content' => array(
-        /* 需要导入的文件 */
-        'import' => array(
-            'static.model',
-            'static.article',
-        ),
-        /* 权限列表 */
-        'purview' => array(
-            'onepage',
-            'article',
-            'trash',
-            'sort',
-            'model',
-        )
-    ),
+    /* 权限列表 */
+    'purview' => array(
+        'label',
+        'create',
+        'onepage',
+        'article',
+        'sort',
+        'model',
+    )
 );

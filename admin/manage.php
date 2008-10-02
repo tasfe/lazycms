@@ -74,16 +74,17 @@ function lazy_default(){
     if ($hr) {
         $hl.= '<li class="hr"></li>';
     }
-    $hl.= '    <li><a href="logout.php" class="icon-16-logout" target="_top" onclick="return confirm(\''.L('confirm/logout').'\')">'.L('common/logout').'</a></li>';
+    $hl.= '<li><a href="logout.php" class="icon-16-logout" target="_top" onclick="return confirm(\''.L('confirm/logout').'\')">'.L('common/logout').'</a></li>';
     $hl.= '</ul></li>';
 
     $hl.= '    
         <li><span>内容管理<b class="down-arrow"></b></span>
             <ul>
-                <li><a href="content/onepage.php" class="icon-16-page">单页管理</a></li>
+                <li><a href="content/label.php" class="icon-16-label">标签中心</a></li>
+                <li><a href="content/create.php" class="icon-16-create">生成中心</a></li>
                 <li class="hr"></li>
+                <li><a href="content/onepage.php" class="icon-16-page">单页管理</a></li>
                 <li><a href="content/article.php" class="icon-16-article">文档管理</a></li>
-                <li><a href="content/trash.php" class="icon-16-trash">回收站</a></li>
                 <li class="hr"></li>
                 <li><a href="content/sort.php" class="icon-16-sort">分类管理</a></li>
                 <li><a href="content/model.php" class="icon-16-model">模型管理</a></li>

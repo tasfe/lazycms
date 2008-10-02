@@ -15,7 +15,8 @@
 		<unlock>启用</unlock>
 		<attr>更多属性</attr>
 	</common>
-
+    <label title="标签中心"></label>
+    <create title="生成中心"></create>
     <onepage title="单页管理"></onepage>
     <article title="文档管理">
         <search>
@@ -43,9 +44,10 @@
 		<pop>
 			<addok>添加成功</addok>
 			<editok>编辑成功</editok>
+            <deleteok>删除成功</deleteok>
+            <select>请选择一个文档</select>
 		</pop>
 	</article>
-    <trash title="回收站管理"></trash>
     <sort title="分类管理">
         <edit title="编辑分类"/>
 		<add title="添加分类">
@@ -82,6 +84,7 @@
         <addlist>添加列表模型</addlist>
 		<editpage>编辑单页模型</editpage>
         <addpage>添加单页模型</addpage>
+        <import>导入模型</import>
 		<add>
 			<name>模型名称</name>
 			<ename tip="模型英文名称，用来作为模板标签的一部分">模型标识</ename>

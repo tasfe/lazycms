@@ -28,14 +28,13 @@ defined('COM_PATH') or die('Restricted access!');
  */
 // Keywords *** *** www.LazyCMS.net *** ***
 class Keywords {
-    private $db,$dict,$module,$joinTable;
+    private $db,$dict,$joinTable;
     private $dicts = array();
     // __construct *** *** www.LazyCMS.net *** ***
     function __construct($module=null){
         $this->db   = get_conn();
-        $this->dict = COM_PATH.'/data/dict/LazyCMS_Private.dict';
-        $this->module    = empty($module)?MODULE:$module;
-        $this->joinTable = Model::getJoinTableName($this->module);
+        $this->dict = COM_PATH.'/dicts/LazyCMS_Private.dict';
+        $this->joinTable = Model::getJoinTableName(empty($module)?MODULE:$module);
     }
     // get *** *** www.LazyCMS.net *** ***
     public function get($id){

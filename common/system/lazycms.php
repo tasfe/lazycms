@@ -61,16 +61,16 @@ abstract class LazyCMS{
         define('MODULE',substr($PHP_DIR,strrpos($PHP_DIR,'/')+1));
         // 获取当前动作
         $action = isset($_REQUEST['action']) ? strtolower($_REQUEST['action']) : null;
-        // 导入模块配置
-        $module = include_file(COM_PATH.'/data/module.php');
-        // 导入各模块的公用文件
-        foreach ($module as $k=>$v) {
-            if (!empty($v['import']) && is_array($v['import'])) {
-                foreach ($v['import'] as $f) {
-                    import($f);
-                }
-            }
+        // 导入权限列表
+        $purview = array();
+        $config  = glob(COM_PATH.'/modules/*',GLOB_ONLYDIR);
+        foreach ($config as $v) {
+            $module = substr($v,strrpos($v,'/')+1);
+            $purview[$module] = include_file($v.'/config.php');
         }
+        G('PURVIEW',$purview); unset($purview,$config);
+        // 导入模块配置
+        import('modules.*.static.*');
         // 在动作之前执行的函数
         if (function_exists('lazy_before')){ lazy_before(); }
         // 执行动作调度

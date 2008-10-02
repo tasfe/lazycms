@@ -271,6 +271,27 @@ function ansi2utf($p1){
 }
 
 /**
+ * 将数组或对象转换成XML
+ * 
+ * @param  object|array   $p1    要转换的数组或对象
+ * @return string
+ */
+function data2xml($p1) {
+    if(is_object($p1)) {
+        $p1 = get_object_vars($p1);
+    }
+    $R = null;
+    foreach($p1 as $k=>$v) {
+        is_numeric($k) && $k="item id=\"{$k}\"";
+        $R.= "<{$k}>";
+        $R.= (is_array($v)||is_object($v)) ? data2xml($v) : ((strlen($v)>0 && preg_match("%[&'\"><\n]+%",$v)) ? "<![CDATA[{$v}]]>" : $v);
+        list($k,) = explode(' ',$k);
+        $R.= "</{$k}>";
+    }
+    return $R;
+}
+
+/**
  * 判断是否为UTF-8编码
  * 
  * @return bool
@@ -478,7 +499,7 @@ function pinyin($p1){
     preg_match_all(G('CN_PATTERN'),trim($p1),$R1);
     $p2 = $R1[0]; $p3 = count($p2);
     if (empty($R2)) {
-        $R2 = include_file(COM_PATH.'/data/pinyin.php');
+        $R2 = include_file(COM_PATH.'/modules/system/config/pinyin.php');
     }
     for ($i=0;$i<$p3;$i++) {
         if (validate($p2[$i],'^\w+$')){
@@ -549,7 +570,7 @@ function menu($p1){
     }
     $p3 = basename(PHP_FILE);
     $p4 = isset($_REQUEST['action']) ? strtolower($_REQUEST['action']) : null;
-    $p5 = ' class="active"'; $p6 = 'javascript:self.location.reload();';
+    $p5 = ' class="active"';
     $R = '<ul id="tabs">';
     $R1 = explode(';',$p1);
     foreach ($R1 as $k=>$v) {
@@ -558,15 +579,15 @@ function menu($p1){
             $R2 = explode(':',$v); $active = null;
             if (!empty($p2)) {
                 if (($k+1)==$p2) {
-                    $active = $p5; $R2[1] = $p6;
+                    $active = $p5;
                 }
             } elseif (!empty($p4)){
                 if ((string)$R2[1]==(string)$p3.'?action='.$p4) {
-                    $active = $p5; $R2[1] = $p6;
+                    $active = $p5;
                 }
             } else {
                 if ((string)$R2[1]==(string)$p3) {
-                    $active = $p5; $R2[1] = $p6;
+                    $active = $p5;
                 }
             }
             $R.= '<li'.$active.'><a href="'.$R2[1].'">'.$R2[0].'</a></li>';
@@ -871,9 +892,9 @@ function editor($p1,$p2=array()){
             $panel = "fullPanel:true";
             break;
     }
-    $hl = '<script src="'.SITE_BASE.'common/editor/nicEdit.js" type="text/javascript"></script>';
+    $hl = '<script src="'.SITE_BASE.'common/js/nicEdit.js" type="text/javascript"></script>';
     $hl.= '<textarea editor="true" style="width:'.$A1['width'].';height:'.$A1['height'].';" id="'.$p1.'" name="'.$p1.'">'.h2encode($p2).'</textarea>';
-    $hl.= '<script type="text/javascript">new nicEditor({'.$panel.',iconsPath:\''.SITE_BASE.'common/editor/nicEditorIcons.gif\'}).panelInstance(\''.$p1.'\');</script>';
+    $hl.= '<script type="text/javascript">new nicEditor({'.$panel.',iconsPath:\''.SITE_BASE.'common/images/nicEditorIcons.gif\'}).panelInstance(\''.$p1.'\');</script>';
     $R = $hl.$div;
     unset($A1); return $R;
 }

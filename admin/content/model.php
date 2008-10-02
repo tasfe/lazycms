@@ -33,8 +33,9 @@ function lazy_before(){
     // 设置公共菜单
     G('TABS',
         L('model/@title').':model.php;'.
+        L('model/import').':model.php?action=import;'.
         L('model/addlist').':model.php?action=edit&type=list;'.
-        L('model/addpage').':model.php?action=edit&type=page'
+        L('model/addpage').':model.php?action=edit&type=page;'
     );
     G('SCRIPT','LoadScript("content.model");');
 }
@@ -49,7 +50,7 @@ function lazy_default(){
     $ds->td  = "K[2]";
     $ds->td  = "K[3]";
     $ds->td  = "(K[4]?icon('tick'):icon('stop'))";
-    $ds->td  = "icon('edit','".PHP_FILE."?action=edit&modelid=' + K[0]) + icon('export','".PHP_FILE."?action=export&modelid=' + K[0])";
+    $ds->td  = "icon('edit','".PHP_FILE."?action=edit&modelid=' + K[0]) + icon('export','".PHP_FILE."?action=export&model=' + K[2])";
     $ds->open();
     $ds->thead = '<tr><th>ID) '.L('model/list/name').'</th><th>'.L('model/list/ename').'</th><th>'.L('model/list/table').'</th><th>'.L('model/list/state').'</th><th>'.L('common/action','system').'</th></tr>';
     while ($rs = $ds->result()) {
@@ -61,13 +62,15 @@ function lazy_default(){
 }
 // lazy_export *** *** www.LazyCMS.net *** ***
 function lazy_export(){
-    no_cache();
-    ob_start();
+    ob_start(); no_cache(); $db = get_conn();
+    $model = isset($_GET['model'])?$_GET['model']:null;
     header("Content-type: application/octet-stream; charset=utf-8");
-    header("Content-Disposition: attachment; filename=LazyCMS.xml");
-    header("Pragma: no-cache");
-    header("Expires: 0");
-    echo 'export';
+    header("Content-Disposition: attachment; filename=LazyCMS_{$model}.xml");
+    $res = $db->query("SELECT * FROM `#@_content_model` WHERE `modelename`=".DB::quote($model).";");
+    if ($data = $db->fetch($res)) {
+        echo '<?xml version="1.0" encoding="UTF-8"?>';
+        echo '<lazycms>'.data2xml($data).'</lazycms>';
+    }
     ob_flush();
 }
 // lazy_set *** *** www.LazyCMS.net *** ***
@@ -176,8 +179,7 @@ function lazy_edit(){
                     `digg` INT(11) DEFAULT '0',
                     `path` VARCHAR(255),
                     `img` VARCHAR(255),
-                    `description` VARCHAR(255),
-                    `isdel` TINYINT(1) DEFAULT '1'{$sute}
+                    `description` VARCHAR(255){$sute}
                 ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");
                 // 创建关联表
                 $db->exec("
@@ -294,11 +296,11 @@ function lazy_edit(){
     // 判断tab显示
     switch ($modeltype) {
         case 'page':
-            $modelpath = empty($modelpath)?'%P.htm':$modelpath;
-            $n = 3; break;
+            $modelpath = empty($modelpath)?'%P.html':$modelpath;
+            $n = 4; break;
         case 'list': default:
-            $modelpath = empty($modelpath)?'%Y%m%d/%I.htm':$modelpath;
-            $n = 2; break;
+            $modelpath = empty($modelpath)?'%Y%m%d/%I.html':$modelpath;
+            $n = 3; break;
     }
     
     $hl = '<form id="form1" name="form1" method="post" action="">';

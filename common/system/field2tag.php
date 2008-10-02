@@ -53,6 +53,14 @@ class Field2Tag {
         }
         return $R;
     }
+    // _Fields *** *** www.LazyCMS.net *** ***
+    public function _Fields(){
+        $R = array();
+        foreach ($this->fields as $field) {
+            $R[$field->ename] = $field;
+        }
+        return $R;
+    }
     // formatValidate *** *** www.LazyCMS.net *** ***
     public function formatValidate($p1,$p2){
         $R  = null;

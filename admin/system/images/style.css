@@ -77,7 +77,7 @@ body { height:100%; margin:0; background: #FFF; text-align:center; }
 	#menu ul { display:none; position:absolute; border:solid 1px #c6d9e7; background: #f6f6f6 url(bg-menu.gif) repeat-y left; padding-top:1px; }
 	#menu li li { clear:both; margin:0 1px; }
 	#menu li li.hr { background: #DDE1E6 url(bg-menu.gif);  height:1px; width:auto; overflow:hidden; margin:1px 0; }
-	#menu ul a { background:url(../../../common/images/menu-icons.png) no-repeat 3px -285px; display:block; line-height:20px; white-space: nowrap; text-decoration:none; padding:0 20px 0 25px; cursor: default; color: #333333; }
+	#menu ul a { background:url(../../../common/images/menu-icons.png) no-repeat 0px -256px; display:block; line-height:20px; white-space: nowrap; text-decoration:none; padding:0 20px 0 25px; cursor: default; color: #333333; }
 	
 	/* TopMenu */
 	#top .menu{ position:absolute; top:24px; right:0px; list-style: none; margin: 0; padding: 0; }
