@@ -14,16 +14,28 @@
 		<lock>禁用</lock>
 		<unlock>启用</unlock>
 		<attr>更多属性</attr>
+        <model>请先创建并启用一个模型</model>
 	</common>
 
     <label title="标签中心"></label>
     <create title="生成中心"></create>
     <onepage title="单页管理">
+        <search>
+            <model>模型</model>
+            <fields tip="在列表上显示的字段">列表字段</fields>
+            <submit>提交</submit>
+        </search>
         <add>
             <path tip="不支持 &lt;\:*?&quot;|,;&gt; 字符，不能以/开始或结束">路径</path>
 			<keywords tip="关键字之间用“英文逗号”或“空格”分开">关键词</keywords>
 			<description tip="Meta简述，不要超过250个字符">Meta简述</description>
 		</add>
+        <check>
+            <path>路径不能为空</path>
+            <path1>路径错误</path1>
+            <path2>路径重复</path2>
+            <description>简述内容不要超过250个字符</description>
+        </check>
 		<pop>
 			<addok>添加成功</addok>
 			<editok>编辑成功</editok>
@@ -56,6 +68,12 @@
             <submit>确定</submit>
             <cancel>取消</cancel>
 		</add>
+        <check>
+            <path>路径不能为空</path>
+            <path1>路径错误</path1>
+            <path2>路径重复</path2>
+            <description>简述内容不要超过250个字符</description>
+        </check>
 		<pop>
 			<addok>添加成功</addok>
 			<editok>编辑成功</editok>

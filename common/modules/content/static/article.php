@@ -38,8 +38,12 @@ class Article{
      * @return string
      */
     static function formatPath($p1,$p2,$p3,$p4=null){
-        $p4 = empty($p4) ? now() : $p4;
-        $R = str_replace(array('%I','%M','%P'),array($p1,md5($p1.salt(10)),pinyin($p3)),$p2);
+        $p4 = empty($p4) ? now() : $p4; $p5 = null;
+        if (strpos($p2,'%P')!==false) {
+            $p5 = pinyin($p3);
+            $p5 = empty($p5)?$p1:$p5;
+        }
+        $R = str_replace(array('%I','%M','%P'),array($p1,md5($p1.salt(10)),$p5),$p2);
         $R = strftime($R,$p4);
         return $R;
     }

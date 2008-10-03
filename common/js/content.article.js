@@ -43,7 +43,7 @@
 				}
 			});
 			if (inputs=='')	{
-				$('#fields').parents('p').hide();$.changeHeight();
+				$('#fields').parents('p').hide().end().html(inputs);$.changeHeight();
 			} else {
 				$('#fields').parents('p').show().end().html(inputs);$.changeHeight();
 			}

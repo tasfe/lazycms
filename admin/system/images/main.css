@@ -57,10 +57,12 @@ body { width:99%; display:table; margin:3px; background: #F9FDFF; }
 	#box span label{ width:auto; margin:0px; text-align:left; float:none; display:inline; color:#666666;}
 	#box div.box{ width:85%; display:table; float:left; }
 	#box p.button{ margin-left:5px;}
-	#box div.but{ width:99.5%; margin:0 auto 3px auto; display:table; }
+	#box div.but{ width:99.5%; margin:0 auto 3px auto; display:table;}
 	#box div.but button{ float:left; }
 	#box div.button{ float:left; display:block; padding-bottom:1px;}
 	#box div.pages{float:right;}
+	#box p.empty{ padding-left:20px; }
+	#box p.empty strong{ color:#CC3333; }
 
 #box a.collapse{padding-left:18px; background:url(../../../common/images/icons.png) no-repeat 0px -220px;}
 #box a.collapsed{padding-left:18px; background:url(../../../common/images/icons.png) no-repeat 0px -120px;}

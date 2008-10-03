@@ -51,26 +51,31 @@ function lazy_default(){
     $keyword = isset($_GET['keyword'])?$_GET['keyword']:null;
     $fields  = isset($_GET['fields'])?$_GET['fields']:null;
     if (empty($model)) {
-        $textarea= null;
+        $textarea = null;
+        $models   = Model::getModels('list');
         $hl = '<form id="form1" name="form1" method="get" action="'.PHP_FILE.'">';
         $hl.= '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.L('article/@title').'</a></legend>';
         $hl.= '<div class="show">';
-        $hl.= '<p><label>'.L('article/search/model').':</label><select name="model" id="model" onchange="$(this).viewFields();">';
-        foreach (Model::getModels('list') as $v) {
-            $textarea.= '<textarea class="hide" checked="'.$v['setkeyword'].'" id="fields_'.$v['modelename'].'">'.$v['modelfields'].'</textarea>';
-            $hl.= '<option value="'.$v['modelename'].'">'.$v['modelname'].'</option>';
+        if ($models) {
+            $hl.= '<p><label>'.L('article/search/model').':</label><select name="model" id="model" onchange="$(this).viewFields();">';
+            foreach ($models as $v) {
+                $textarea.= '<textarea class="hide" checked="'.$v['setkeyword'].'" id="fields_'.$v['modelename'].'">'.$v['modelfields'].'</textarea>';
+                $hl.= '<option value="'.$v['modelename'].'">'.$v['modelname'].'</option>';
+            }
+            $hl.= '</select></p>';
+            $hl.= '<p><label>'.L('article/search/sort').':</label><select name="sortid"><option value="0">'.L('article/search/sortall').'</option>'.Article::__sort(0,0,false).'</select></p>';
+            $hl.= '<p><label>'.L('article/search/keyword').':</label><input class="in2" type="text" name="keyword" id="keyword" value="" /></p>';
+            $hl.= '<p><label>'.L('article/search/pagesize').':</label><select name="size">';
+            foreach (array(10,15,20,25,30,40,50) as $i) {
+                $selected = $i==$size?' selected="selected"':null;
+                $hl.= '<option value="'.$i.'"'.$selected.'>'.$i.L('common/unit/item','system').'</option>';
+            }
+            $hl.= '</select></p>';
+            $hl.= '<p><label>'.L('article/search/fields').':</label><span id="fields" tip="'.L('article/search/fields').'::'.L('article/search/fields/@tip').'"></span></p>';
+            $hl.= '<p><label>&nbsp;</label><button type="submit">'.L('article/search/submit').'</button></p>';
+        } else {
+            $hl.= '<p class="empty"><strong>'.L('common/model').'</strong> <a href="model.php">&gt;&gt;&gt;</a></p>';
         }
-        $hl.= '</select></p>';
-        $hl.= '<p><label>'.L('article/search/sort').':</label><select name="sortid"><option value="0">'.L('article/search/sortall').'</option>'.Article::__sort(0,0,false).'</select></p>';
-        $hl.= '<p><label>'.L('article/search/keyword').':</label><input class="in2" type="text" name="keyword" id="keyword" value="" /></p>';
-        $hl.= '<p><label>'.L('article/search/pagesize').':</label><select name="size">';
-        foreach (array(10,15,20,25,30,40,50) as $i) {
-            $selected = $i==$size?' selected="selected"':null;
-            $hl.= '<option value="'.$i.'"'.$selected.'>'.$i.L('common/unit/item','system').'</option>';
-        }
-        $hl.= '</select></p>';
-        $hl.= '<p><label>'.L('article/search/fields').':</label><span id="fields" tip="'.L('article/search/fields').'::'.L('article/search/fields/@tip').'"></span></p>';
-        $hl.= '<p><label>&nbsp;</label><button type="submit">'.L('article/search/submit').'</button></p>';
         $hl.= '</div></fieldset>';
         $hl.= '</form>'.$textarea;
         $hl.= '<script type="text/javascript">$(\'#model\').viewFields();</script>';
@@ -125,7 +130,7 @@ function lazy_default(){
             foreach ($fields as $field=>$label) {
                 $K.= ",'".t2js(h2encode($rs[$field]))."'";
             }
-            $ds->tbody = "E(".$rs['id'].",'".$rs['img']."','".$rs['path']."',".(is_file(LAZY_PATH.$rs['path'])?1:0).",".$rs['hits'].",".$rs['digg'].",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});";
+            $ds->tbody = "E(".$rs['id'].",'".$rs['img']."','".SITE_BASE.$rs['path']."',".(is_file(LAZY_PATH.$rs['path'])?1:0).",".$rs['hits'].",".$rs['digg'].",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});";
         }
         $ds->close();
         print_x(L('article/@title'),$ds->fetch());
@@ -200,6 +205,9 @@ function lazy_edit(){
         // 路径转换
         $maxid = $db->max('id',$table);
         $path  = Article::formatPath($maxid,$path,$data[$model['setkeyword']]);
+        // 验证路径不能重复
+        $val->check('path|0|'.L('onepage/check/path').';path|5|'.L('onepage/check/path1').';path|4|'.L('onepage/check/path2')."|SELECT COUNT(*) FROM `{$table}` WHERE `path`=".DB::quote($path).(empty($id)?null:" AND `id` <> {$id}"))
+            ->check('description|1|'.L('onepage/check/description').'|0-250');
         if ($val->isVal()) {
             $val->out();
         } else {
@@ -301,11 +309,11 @@ function lazy_edit(){
     }
 
     $hl.= $tag->fetch('<p><label>{label}:</label>{object}</p>',$data);
+    $hl.= '<p><label>'.L('article/add/path').':</label><input tip="::300::'.ubbencode(L('model/add/path/@tip')).'<br/>'.h2encode(L('article/add/path/@tip')).'" class="in4" type="text" name="path" id="path" value="'.(empty($path)?$model['modelpath']:$path).'" /></p>';
     $hl.= '</div></fieldset>';
 
     $hl.= '<fieldset><legend><a class="collapse" rel=".more-attr">'.L('common/attr').'</a></legend>';
     $hl.= '<div class="more-attr">';
-    $hl.= '<p><label>'.L('article/add/path').':</label><input tip="::300::'.ubbencode(L('model/add/path/@tip')).'<br/>'.h2encode(L('article/add/path/@tip')).'" class="in4" type="text" name="path" id="path" value="'.(empty($path)?$model['modelpath']:$path).'" /></p>';
     if (!empty($model['setkeyword'])) {
         $hl.= '<p><label>'.L('article/add/keywords').':</label><input tip="'.L('article/add/keywords').'::250::'.L('article/add/keywords/@tip').'" class="in4" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" onclick="$(\'#keywords\').getKeywords(\'#'.$model['setkeyword'].'\')" tip="'.L('common/get/@tip','system').'">'.L('common/get','system').'</button></p>';
     }
