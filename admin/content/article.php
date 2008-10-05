@@ -12,10 +12,10 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (c) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | 许可协议，请查看源代码中附带的 LICENSE.txt 文件，                         |
- * | 或者访问 http://www.lazycms.net/ 获得详细信息。                           |
+ * | LazyCMS is free software. This version use Apache License 2.0             |
+ * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
 require '../../global.php';
@@ -31,7 +31,7 @@ function lazy_before(){
     check_login('article');
     // 设置公共菜单
     $menus = array(); $model = array();
-    foreach (Model::getModels('list') as $v) {
+    foreach (Content_Model::getModels('list') as $v) {
         $model[] = $v['modelename'];
         $menus[] = L('common/add').$v['modelname'].':article.php?action=edit&model='.$v['modelename'];
     }
@@ -52,7 +52,7 @@ function lazy_default(){
     $fields  = isset($_GET['fields'])?$_GET['fields']:null;
     if (empty($model)) {
         $textarea = null;
-        $models   = Model::getModels('list');
+        $models   = Content_Model::getModels('list');
         $hl = '<form id="form1" name="form1" method="get" action="'.PHP_FILE.'">';
         $hl.= '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.L('article/@title').'</a></legend>';
         $hl.= '<div class="show">';
@@ -63,7 +63,7 @@ function lazy_default(){
                 $hl.= '<option value="'.$v['modelename'].'">'.$v['modelname'].'</option>';
             }
             $hl.= '</select></p>';
-            $hl.= '<p><label>'.L('article/search/sort').':</label><select name="sortid"><option value="0">'.L('article/search/sortall').'</option>'.Article::__sort(0,0,false).'</select></p>';
+            $hl.= '<p><label>'.L('article/search/sort').':</label><select name="sortid"><option value="0">'.L('article/search/sortall').'</option>'.Content_Article::__sort(0,0,false).'</select></p>';
             $hl.= '<p><label>'.L('article/search/keyword').':</label><input class="in2" type="text" name="keyword" id="keyword" value="" /></p>';
             $hl.= '<p><label>'.L('article/search/pagesize').':</label><select name="size">';
             foreach (array(10,15,20,25,30,40,50) as $i) {
@@ -81,9 +81,9 @@ function lazy_default(){
         $hl.= '<script type="text/javascript">$(\'#model\').viewFields();</script>';
         print_x(L('article/@title'),$hl);
     } else {
-        $model  = Model::getModel($model);
-        $table  = Model::getDataTableName($model['modelename']);
-        $jtable = Model::getJoinTableName($model['modelename']);
+        $model  = Content_Model::getModel($model);
+        $table  = Content_Model::getDataTableName($model['modelename']);
+        $jtable = Content_Model::getJoinTableName($model['modelename']);
         $length = count($fields);
         $query  = null; $inSQL = null;
         $inLike = empty($keyword)?null:"BINARY UCASE(`a`.`description`) LIKE UCASE('%{$keyword}%')";
@@ -154,8 +154,8 @@ function lazy_set(){
     switch($submit){
         case 'delete':
             empty($lists) ? echo_json(L('article/pop/select'),0) : null ;
-            $table  = Model::getDataTableName($model);
-            $jtable = Model::getJoinTableName($model);
+            $table  = Content_Model::getDataTableName($model);
+            $jtable = Content_Model::getJoinTableName($model);
             $db->delete($table,"`id` IN({$lists})");
             $db->delete($jtable,array("`tid` IN({$lists})"));
             echo_json(array(
@@ -183,12 +183,12 @@ function lazy_edit(){
     $m  = isset($_REQUEST['model']) ? strtolower($_REQUEST['model']) : null;
     $id = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
     $n  = array_search($m,G('MODEL'))+4;
-    $model = Model::getModel($m); if (!$model) { trigger_error(L('error/invalid','system')); }
+    $model = Content_Model::getModel($m); if (!$model) { trigger_error(L('error/invalid','system')); }
     $sort  = $db->count("SELECT * FROM `#@_content_sort_model` WHERE `modelid`=".DB::quote($model['modelid']).";");
     $title = (empty($id) ? L('common/add') : L('common/edit')).$model['modelname'];
     $path  = isset($_POST['path']) ? $_POST['path'] : null;
-    $table = Model::getDataTableName($model['modelename']);
-    $jtable  = Model::getJoinTableName($model['modelename']);
+    $table = Content_Model::getDataTableName($model['modelename']);
+    $jtable  = Content_Model::getJoinTableName($model['modelename']);
     $sortids = isset($_POST['sortids']) ? $_POST['sortids'] : null;
     $description = isset($_POST['description']) ? $_POST['description'] : null;
     // 加载字段解析类
@@ -204,7 +204,7 @@ function lazy_edit(){
         $fields= $tag->_Fields();
         // 路径转换
         $maxid = $db->max('id',$table);
-        $path  = Article::formatPath($maxid,$path,$data[$model['setkeyword']]);
+        $path  = Content_Article::formatPath($maxid,$path,$data[$model['setkeyword']]);
         // 验证路径不能重复
         $val->check('path|0|'.L('onepage/check/path').';path|5|'.L('onepage/check/path1').';path|4|'.L('onepage/check/path2')."|SELECT COUNT(*) FROM `{$table}` WHERE `path`=".DB::quote($path).(empty($id)?null:" AND `id` <> {$id}"))
             ->check('description|1|'.L('onepage/check/description').'|0-250');
@@ -254,7 +254,7 @@ function lazy_edit(){
                 }
                 $db->update($table,$row,DB::quoteInto('`id` = ?',$id));
                 // 删除未选中的分类
-                $sortDiff = array_diff(Article::getSortIds($jtable,$id),$sortids);
+                $sortDiff = array_diff(Content_Article::getSortIds($jtable,$id),$sortids);
                 if (!empty($sortDiff)) {
                     $db->delete($jtable,array("`type`=1","`sid` IN(".implode(',',$sortDiff).")"));
                 }
@@ -262,7 +262,7 @@ function lazy_edit(){
             }
             // 写分类关系
             foreach ($sortids as $sortid) {
-                Article::join($jtable,$id,$sortid);
+                Content_Article::join($jtable,$id,$sortid);
             }
             // 自动获取关键词
             if (!empty($model['setkeyword'])) {
@@ -290,7 +290,7 @@ function lazy_edit(){
                     $keywords = $key->get($id);
                 }
                 $description = $data['description'];
-                $sortids = Article::getSortIds($jtable,$id);
+                $sortids = Content_Article::getSortIds($jtable,$id);
             }
         }
     }
@@ -303,7 +303,7 @@ function lazy_edit(){
         $hl.= '<p><label>'.L('article/add/sort').':</label><div class="box"><div id="sortView" onclick="$.toggleSorts();" empty="'.L('article/add/select').'">'.L('article/add/select').'</div></div></p>';
         $hl.= '<div id="toggleSorts" class="panel">';
         $hl.= '<div class="head"><strong>'.L('article/add/select').'</strong><a href="javascript:;" onclick="$.toggleSorts();">×</a></div><div class="body">';
-        $hl.= Article::sort($model['modelid'],$sortids);
+        $hl.= Content_Article::sort($model['modelid'],$sortids);
         $hl.= '<p class="tr"><button type="button" onclick="$(\'#sortView\').setSorts();">'.L('article/add/submit').'</button>&nbsp;<button type="button" onclick="$.toggleSorts();">'.L('article/add/cancel').'</button></p>';
         $hl.= '</div></div><script type="text/javascript">$("#sortView").selectSorts();</script>';
     }

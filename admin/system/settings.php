@@ -12,10 +12,10 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (c) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | 许可协议，请查看源代码中附带的 LICENSE.txt 文件，                         |
- * | 或者访问 http://www.lazycms.net/ 获得详细信息。                           |
+ * | LazyCMS is free software. This version use Apache License 2.0             |
+ * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
 require '../../global.php';
@@ -127,7 +127,7 @@ function lazy_default(){
 
     $hl.= '<p><label>'.L('settings/user/group').':</label>';
     $hl.= '<select name="USER_GROUP_REG" id="USER_GROUP_REG" tip="'.L('settings/user/group').'::'.L('settings/user/group/@tip').'">';
-    $hl.= System::__group(0,C('USER_GROUP_REG'));
+    $hl.= System_System::__group(0,C('USER_GROUP_REG'));
     $hl.= '</select></p>';
 
     $hl.= '<p><label>'.L('settings/user/active/@title').':</label><span tip="'.L('settings/user/active/@title').'::350::'.L('settings/user/active/@tip').'">';

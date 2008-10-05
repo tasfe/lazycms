@@ -12,10 +12,10 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (c) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | 许可协议，请查看源代码中附带的 LICENSE.txt 文件，                         |
- * | 或者访问 http://www.lazycms.net/ 获得详细信息。                           |
+ * | LazyCMS is free software. This version use Apache License 2.0             |
+ * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
 require '../../global.php';
@@ -33,7 +33,7 @@ function lazy_before(){
     // 设置公共菜单
     G('TABS',
         L('model/@title').':model.php;'.
-        L('model/import').':model.php?action=import;'.
+        L('model/import/@title').':model.php?action=import;'.
         L('model/addlist').':model.php?action=edit&type=list;'.
         L('model/addpage').':model.php?action=edit&type=page;'
     );
@@ -54,7 +54,7 @@ function lazy_default(){
     $ds->open();
     $ds->thead = '<tr><th>ID) '.L('model/list/name').'</th><th>'.L('model/list/ename').'</th><th>'.L('model/list/table').'</th><th>'.L('model/list/state').'</th><th>'.L('common/action','system').'</th></tr>';
     while ($rs = $ds->result()) {
-        $ds->tbody = "E(".$rs['modelid'].",'".t2js(h2encode($rs['modelname']))."','".t2js(h2encode($rs['modelename']))."','".t2js(h2encode(Model::getDataTableName($rs['modelename'])))."',".$rs['modelstate'].");";
+        $ds->tbody = "E(".$rs['modelid'].",'".t2js(h2encode($rs['modelname']))."','".t2js(h2encode($rs['modelename']))."','".t2js(h2encode(Content_Model::getDataTableName($rs['modelename'])))."',".$rs['modelstate'].");";
     }
     $ds->close();
 
@@ -83,8 +83,8 @@ function lazy_set(){
         case 'delete':
             $res = $db->query("SELECT `modelename` FROM `#@_content_model` WHERE `modelid` IN({$lists});");
             while ($rs = $db->fetch($res,0)) {
-                $db->exec("DROP TABLE IF EXISTS `".Model::getDataTableName($rs[0])."`;");
-                $db->exec("DROP TABLE IF EXISTS `".Model::getJoinTableName($rs[0])."`;");
+                $db->exec("DROP TABLE IF EXISTS `".Content_Model::getDataTableName($rs[0])."`;");
+                $db->exec("DROP TABLE IF EXISTS `".Content_Model::getJoinTableName($rs[0])."`;");
             }
             // 删除模型
             $db->delete('#@_content_model',"`modelid` IN({$lists})");
@@ -107,6 +107,27 @@ function lazy_set(){
             echo_json(L('error/invalid','system'));
             break;
     }
+}
+// lazy_import *** *** www.LazyCMS.net *** ***
+function lazy_import(){
+    $hl = '<form id="form1" name="form1" method="post" action="">';
+    $hl.= '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">本地文件导入</a></legend>';
+    $hl.= '<div class="show">';
+    $hl.= '<p><label>模型文件:</label><input type="file" name="modelfile" id="modelfile" class="in4" /></p>';
+    $hl.= '<p><label>&nbsp;</label><button type="submit">导入</button></p>';
+    $hl.= '</div></fieldset>';
+    $hl.= '</form>';
+    
+    $hl.= '<form id="form2" name="form2" method="post" action="">';
+    $hl.= '<fieldset><legend><a class="collapse" rel=".show">远程文件导入</a></legend>';
+    $hl.= '<div class="show">';
+    $hl.= '<p><label>远程路径:</label><input class="in6" type="text" name="path" id="path"/></p>';
+    $hl.= '<p><label>模型代码:</label><textarea name="modelcode" id="modelcode" rows="15" class="in6"></textarea></p>';
+    $hl.= '<p><label>&nbsp;</label><button type="submit">导入</button></p>';
+    $hl.= '</div></fieldset>';
+    $hl.= '</form>';
+    
+    print_x(L('model/import/@title'),$hl);
 }
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){
@@ -153,16 +174,16 @@ function lazy_edit(){
             $val->out();
         } else {
             // 数据表名
-            $table  = Model::getDataTableName($modelename);
+            $table  = Content_Model::getDataTableName($modelename);
             // 关联表名
-            $jtable = Model::getJoinTableName($modelename);
+            $jtable = Content_Model::getJoinTableName($modelename);
             $fields = json_decode($modelfields);
             if (empty($modelid)) {
                 $sute = null;
                 foreach ($fields as $v) {
                     $data = (array) $v;
                     $len  = empty($data['length'])?null:'('.$data['length'].')';
-                    $type = Model::getType($data['intype']);
+                    $type = Content_Model::getType($data['intype']);
                     $type = strpos($type,')')===false ? $type.$len : $type;
                     $def  = empty($data['default'])?null:" DEFAULT '".$data['default']."'";
                     $sute.= ",\n`".$data['ename']."` {$type} {$def}";
@@ -213,8 +234,8 @@ function lazy_edit(){
             } else {
                 // 模型名称被修改，修改数据结构
                 if ($oldename!=$modelename) {
-                    $otable  = Model::getDataTableName($oldename);
-                    $ojtable = Model::getJoinTableName($oldename);
+                    $otable  = Content_Model::getDataTableName($oldename);
+                    $ojtable = Content_Model::getJoinTableName($oldename);
                     $db->exec("RENAME TABLE `{$otable}` TO `{$table}`;");
                     $db->exec("RENAME TABLE `{$ojtable}` TO `{$jtable}`;");
                 }
@@ -234,7 +255,7 @@ function lazy_edit(){
                 $chang = $add = array();
                 foreach ($fields as $v) {
                     $data = (array) $v; $k = $data['ename'];
-                    $type = Model::getType($data['intype']);
+                    $type = Content_Model::getType($data['intype']);
                     $sute[$k]['len']  = empty($data['length'])?null:'('.$data['length'].')';
                     $sute[$k]['type'] = strpos($type,')')===false ? $type.$sute[$k]['len'] : $type;
                     $sute[$k]['def']  = empty($data['default'])?null:" DEFAULT '".$data['default']."'";
@@ -423,7 +444,7 @@ function lazy_fields(){
     $hl.= '<p class="hide"><label>'.L('model/add/fields/tiptext').':</label><textarea tip="'.L('model/add/fields/tiptext').'::'.L('model/add/fields/tiptext/@tip').'" name="fieldtip" id="fieldtip" rows="3" class="in3">'.$data[2].'</textarea></p>';
     $hl.= '<p><label>'.L('model/add/fields/ename').':</label><input tip="'.L('model/add/fields/ename').'::300::'.L('model/add/fields/ename/@tip').'" class="in2" type="text" name="fieldename" id="fieldename" value="'.$data[3].'" /></p>';
     $hl.= '<p><label>'.L('model/add/fields/input').':</label><select name="fieldintype" id="fieldintype">';
-    foreach (Model::getType() as $k=>$v) {
+    foreach (Content_Model::getType() as $k=>$v) {
         $selected = $data[4]==$k?' selected="selected"':null;
         $hl.= '<option value="'.$k.'"'.$selected.'>'.L('model/type/'.$k).'</option>';
     }
@@ -443,7 +464,7 @@ function lazy_fields(){
     
     $hl.= '<p class="'.(empty($data[7])?'hide':'show').'"><label>'.L('model/add/fields/value').':</label><textarea tip="'.L('model/add/fields/value').'::'.L('model/add/fields/value/@tip').'" name="fieldvalue" id="fieldvalue" rows="5" class="in3">'.$data[7].'</textarea></p>';
     $hl.= '<p class="hide"><label>'.L('model/add/fields/rules').':</label><select name="setValidate" id="setValidate">';
-    foreach (Model::getValidate() as $k=>$v) {
+    foreach (Content_Model::getValidate() as $k=>$v) {
         $hl.= '<option value="'.$v.'">'.L('model/validate/'.$k).'</option>';
     }
     $hl.= '</select>&nbsp;<a href="javascript:;" onclick="$(\'#setValidate\').setValidate(\'#fieldvalidate\',1);"><img src="'.SITE_BASE.'common/images/icon/add.png" class="os" /></a>&nbsp;<a href="javascript:;" onclick="$(\'#setValidate\').setValidate(\'#fieldvalidate\',0);"><img src="'.SITE_BASE.'common/images/icon/reduce.png" class="os" /></a>';

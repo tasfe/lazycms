@@ -117,7 +117,9 @@
         <addlist>添加列表模型</addlist>
 		<editpage>编辑单页模型</editpage>
         <addpage>添加单页模型</addpage>
-        <import>导入模型</import>
+        <import title="导入模型">
+        
+        </import>
 		<add>
 			<name>模型名称</name>
 			<ename tip="模型英文名称，用来作为模板标签的一部分">模型标识</ename>

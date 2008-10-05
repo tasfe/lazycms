@@ -12,10 +12,10 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (c) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | 许可协议，请查看源代码中附带的 LICENSE.txt 文件，                         |
- * | 或者访问 http://www.lazycms.net/ 获得详细信息。                           |
+ * | LazyCMS is free software. This version use Apache License 2.0             |
+ * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
 defined('COM_PATH') or die('Restricted access!');
@@ -1030,6 +1030,7 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
         $traceInfo.=")\n";
     }
     $error['trace'] = replace_root($traceInfo);
+    $RE = isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:PHP_FILE;
     $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
     $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
     $hl.= '<title>'.L('error/title','system').'</title><style type="text/css">';
@@ -1048,7 +1049,7 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
     $hl.= '#footer span{color:silver;}';
     $hl.= '</style></head><body>';
     $hl.= '<div class="notice"><h2>'.L('error/title','system').'</h2>';
-    $hl.= '<div>You can choose to [ <a href="javascript:self.location.reload();">'.L('common/tryagain','system').'</a> ] [ <a href="javascript:history.back();">'.L('common/back','system').'</a> ] or [ <a href="'.SITE_BASE.'">'.L('common/backhome','system').'</a> ]</div>';
+    $hl.= '<div>You can choose to [ <a href="javascript:self.location.reload();">'.L('common/tryagain','system').'</a> ] [ <a href="'.$RE.'">'.L('common/back','system').'</a> ] or [ <a href="'.SITE_BASE.'">'.L('common/backhome','system').'</a> ]</div>';
     $hl.= '<p><strong>'.L('error/position','system').':</strong>　FILE: <strong class="red">'.$error['file'].'</strong>　LINE: <strong class="red">'.$error['line'].'</strong></p>';
     $hl.= '<p class="title">[ '.L('error/errinfo','system').' ]</p>';
     $hl.= '<p class="message">'.$error['message'].'</p>';

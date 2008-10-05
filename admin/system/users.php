@@ -12,10 +12,10 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (c) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | 许可协议，请查看源代码中附带的 LICENSE.txt 文件，                         |
- * | 或者访问 http://www.lazycms.net/ 获得详细信息。                           |
+ * | LazyCMS is free software. This version use Apache License 2.0             |
+ * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
 require '../../global.php';
@@ -271,7 +271,7 @@ function lazy_user_edit(){
 
     $hl.= '<p><label>'.L('users/user/add/group').':</label>';
     $hl.= '<select name="groupid" id="groupid" tip="'.L('users/user/add/group').'::'.L('users/user/add/group/@tip').'">';
-    $hl.= System::__group(0,$groupid);
+    $hl.= System_System::__group(0,$groupid);
     $hl.= '</select></p>';
 
     $hl.= '<p><label>'.L('users/user/add/name').':</label><input tip="'.L('users/user/add/name').'::'.L('users/user/add/name/@tip').'" class="in2" type="text" name="username" id="username" value="'.$username.'" /></p>';

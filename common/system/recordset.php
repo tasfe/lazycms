@@ -12,10 +12,10 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (c) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | 许可协议，请查看源代码中附带的 LICENSE.txt 文件，                         |
- * | 或者访问 http://www.lazycms.net/ 获得详细信息。                           |
+ * | LazyCMS is free software. This version use Apache License 2.0             |
+ * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
 defined('COM_PATH') or die('Restricted access!');
@@ -118,7 +118,7 @@ class Recordset {
             $this->hl.= '<script type="text/javascript">'.$this->tbody.'</script>';
         } else {
             preg_match_all('/<th>[^>]+<\/th>/',$this->thead,$R);
-            $this->hl.= '<tr><td colspan="'.count($R[0]).'">&nbsp;</td></tr>';
+            $this->hl.= '<tr><td colspan="'.count($R[0]).'" class="tc">&nbsp;</td></tr>';
         }
         $this->hl.= '</tbody></table>';
         $this->hl.= '<div class="but">'.$this->but.'</div>';

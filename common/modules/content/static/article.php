@@ -12,10 +12,10 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (c) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | 许可协议，请查看源代码中附带的 LICENSE.txt 文件，                         |
- * | 或者访问 http://www.lazycms.net/ 获得详细信息。                           |
+ * | LazyCMS is free software. This version use Apache License 2.0             |
+ * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
 defined('COM_PATH') or die('Restricted access!');
@@ -26,8 +26,8 @@ defined('COM_PATH') or die('Restricted access!');
  * @author      Lukin <mylukin@gmail.com>
  * @date        2008-8-26
  */
-// Article *** *** www.LazyCMS.net *** ***
-class Article{
+// Content_Article *** *** www.LazyCMS.net *** ***
+class Content_Article{
     /**
      * 格式化路径
      *

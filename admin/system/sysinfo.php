@@ -12,10 +12,10 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (c) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | 许可协议，请查看源代码中附带的 LICENSE.txt 文件，                         |
- * | 或者访问 http://www.lazycms.net/ 获得详细信息。                           |
+ * | LazyCMS is free software. This version use Apache License 2.0             |
+ * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
 require '../../global.php';
@@ -119,9 +119,11 @@ function lazy_Settings(){
 function lazy_Directory(){
     $paths = array(
         '/',
+        '/common/js/',
+        '/common/dicts/',
+        '/common/modules/',
+        '/common/language/',
         '/common/config.php',
-        '/common/data/dict/',
-        '/common/data/module.php',
         '/common/images/icons.css',
     );
     $hl = '<fieldset><legend>'.L('sysinfo/directory/@title').'</legend>';

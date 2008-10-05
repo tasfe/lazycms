@@ -12,10 +12,10 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (c) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | 许可协议，请查看源代码中附带的 LICENSE.txt 文件，                         |
- * | 或者访问 http://www.lazycms.net/ 获得详细信息。                           |
+ * | LazyCMS is free software. This version use Apache License 2.0             |
+ * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
 require '../../global.php';
@@ -32,7 +32,7 @@ function lazy_before(){
     check_login('sort');
     // 设置公共菜单
     $menus = array();
-    foreach (Model::getModels('list') as $v) {
+    foreach (Content_Model::getModels('list') as $v) {
         $menus[] = L('common/add').$v['modelname'].':article.php?action=edit&model='.$v['modelename'];
     }
     G('TABS',
@@ -57,9 +57,9 @@ function lazy_default(){
     $ds->open();
     $ds->thead = '<tr><th>ID) '.L('sort/list/name').'</th><th>'.L('sort/list/model').'</th><th>'.L('sort/list/count').'</th><th>'.L('sort/list/path').'</th><th>'.L('common/action','system').'</th></tr>';
     while ($rs = $ds->result()) {
-        $isSub = Article::__sub($rs['sortid']);
-        $model = implode(',',Article::getModels($rs['sortid'],'modelname'));
-        $count = Article::count($rs['sortid'],implode(',',Article::getModels($rs['sortid'],'modelename')));
+        $isSub = Content_Article::__sub($rs['sortid']);
+        $model = implode(',',Content_Article::getModels($rs['sortid'],'modelname'));
+        $count = Content_Article::count($rs['sortid'],implode(',',Content_Article::getModels($rs['sortid'],'modelename')));
         $ds->tbody = "E(".$rs['sortid'].",'".t2js(h2encode($rs['sortname']))."','".t2js(h2encode(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($model)?'&nbsp;':$model)."',{$count});$('#list_".$rs['sortid']."').addSub(".$rs['sortid'].",1,{$isSub});";
     }
     $ds->close();
@@ -88,9 +88,9 @@ function lazy_set(){
             $result = $db->query("SELECT * FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` ASC",$lists);
             $array  = array();
             while ($rs = $db->fetch($result)) {
-                $isSub = Article::__sub($rs['sortid']);
-                $model = implode(',',Article::getModels($rs['sortid'],'modelname'));
-                $count = Article::count($rs['sortid'],implode(',',Article::getModels($rs['sortid'],'modelename')));
+                $isSub = Content_Article::__sub($rs['sortid']);
+                $model = implode(',',Content_Article::getModels($rs['sortid'],'modelname'));
+                $count = Content_Article::count($rs['sortid'],implode(',',Content_Article::getModels($rs['sortid'],'modelename')));
                 $array[] = array(
                     'id'    => $rs['sortid'],
                     'sub'   => $isSub,
@@ -107,7 +107,7 @@ function lazy_set(){
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){
     $db = get_conn();
-    $models   = Model::getModels('list');
+    $models   = Content_Model::getModels('list');
     $sortid   = isset($_REQUEST['sortid']) ? $_REQUEST['sortid'] : 0;
     $title    = empty($sortid) ? L('sort/add/@title') : L('sort/edit/@title');
     $parentid = isset($_POST['parentid']) ? $_POST['parentid'] : 0;
@@ -177,7 +177,7 @@ function lazy_edit(){
                 $sortpath = h2encode($rs['sortpath']);
                 $sortemplate  = h2encode($rs['sortemplate']);
                 $pagetemplate = h2encode($rs['pagetemplate']);
-                $getModels    = Article::getModels($sortid);
+                $getModels    = Content_Article::getModels($sortid);
             }
         }
     }
@@ -188,7 +188,7 @@ function lazy_edit(){
     $hl.= '<p><label>'.L('sort/add/sort').':</label>';
     $hl.= '<select name="parentid" id="parentid" onchange="$(this).selectModels();">';
     $hl.= '<option models="" value="0">--- '.L('sort/add/topsort').' ---</option>';
-    $hl.= Article::__sort(0,0,$sortid,$parentid);
+    $hl.= Content_Article::__sort(0,0,$sortid,$parentid);
     $hl.= '</select></p>';
     $hl.= '<p><label>'.L('sort/add/name').':</label><input class="in2" type="text" name="sortname" id="sortname" value="'.$sortname.'" /></p>';
     $hl.= '<p><label>'.L('sort/add/path').':</label><input tip="'.L('sort/add/path').'::300::'.h2encode(L('sort/add/path/@tip')).'" class="in4" type="text" name="sortpath" id="sortpath" value="'.$sortpath.'" /></p>';
