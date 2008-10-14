@@ -61,8 +61,8 @@ body { width:99%; display:table; margin:3px; background: #F9FDFF; }
 	#box div.but button{ float:left; }
 	#box div.button{ float:left; display:block; padding-bottom:1px;}
 	#box div.pages{float:right;}
-	#box p.empty{ padding-left:20px; }
-	#box p.empty strong{ color:#CC3333; }
+	#box .tip{ display:table; margin:10px 0 10px 60px; padding:5px;  line-height:140%; color:#FF0000; }
+	#box .tip i.os{cursor:default;}
 
 #box a.collapse{padding-left:18px; background:url(../../../common/images/icons.png) no-repeat 0px -220px;}
 #box a.collapsed{padding-left:18px; background:url(../../../common/images/icons.png) no-repeat 0px -120px;}

@@ -118,7 +118,9 @@
 		<editpage>编辑单页模型</editpage>
         <addpage>添加单页模型</addpage>
         <import title="导入模型">
-        
+            <file>模型文件</file>
+            <code>模型代码</code>
+            <submit>导入</submit>
         </import>
 		<add>
 			<name>模型名称</name>
@@ -181,7 +183,8 @@
 			<length1>最大长度必须为数字</length1>
 		</check>
 		<pop>
-			<addok>添加成功</addok>
+			<importok>导入成功</importok>
+            <addok>添加成功</addok>
 			<editok>编辑成功</editok>
             <deleteok>删除成功</deleteok>
             <select>请选择一个模型</select>

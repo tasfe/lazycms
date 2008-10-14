@@ -486,10 +486,10 @@ function print_v($p1=null){
 }
 
 // redirect *** *** www.LazyCMS.net *** ***
-function redirect($p1){
-    header("Content-Type:text/html; charset=utf-8");
+function redirect($p1,$p2='parent'){
+    if (!headers_sent()) { header("Content-Type:text/html; charset=utf-8"); }
     $p1 = str_replace(array("\n", "\r"), '', $p1);
-    $js = '<script type="text/javascript" charset="utf-8">parent.location.href="'.$p1.'";</script>';
+    $js = '<script type="text/javascript" charset="utf-8">'.$p2.'.location.href="'.$p1.'";</script>';
     exit('<meta http-equiv="refresh" content="0;url='.$p1.'" />'.$js);
 }
 

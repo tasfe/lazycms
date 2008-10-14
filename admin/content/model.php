@@ -110,22 +110,22 @@ function lazy_set(){
 }
 // lazy_import *** *** www.LazyCMS.net *** ***
 function lazy_import(){
-    $hl = '<form id="form1" name="form1" method="post" action="">';
-    $hl.= '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">本地文件导入</a></legend>';
-    $hl.= '<div class="show">';
-    $hl.= '<p><label>模型文件:</label><input type="file" name="modelfile" id="modelfile" class="in4" /></p>';
-    $hl.= '<p><label>&nbsp;</label><button type="submit">导入</button></p>';
-    $hl.= '</div></fieldset>';
-    $hl.= '</form>';
+    $val = new Validate();
+    if ($val->method()) {
+        redirect(PHP_FILE,'self');
+    }
     
-    $hl.= '<form id="form2" name="form2" method="post" action="">';
-    $hl.= '<fieldset><legend><a class="collapse" rel=".show">远程文件导入</a></legend>';
+    $hl = '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.L('model/import/@title').'</a></legend>';
     $hl.= '<div class="show">';
-    $hl.= '<p><label>远程路径:</label><input class="in6" type="text" name="path" id="path"/></p>';
-    $hl.= '<p><label>模型代码:</label><textarea name="modelcode" id="modelcode" rows="15" class="in6"></textarea></p>';
-    $hl.= '<p><label>&nbsp;</label><button type="submit">导入</button></p>';
-    $hl.= '</div></fieldset>';
+    $hl.= '<div class="tip"><i class="os icon-16-light"></i>&nbsp;请先浏览要上传的模型文件。</div>';
+    $hl.= '<form id="form1" name="form1" method="post" enctype="multipart/form-data" action="'.PHP_FILE.'?action=upfile">';
+    $hl.= '<p><label>'.L('model/import/file').':</label><input type="file" name="modelfile" id="modelfile" onchange="alert(this.value)" class="in4" /></p>';
     $hl.= '</form>';
+    $hl.= '<form id="form2" name="form2" method="post" action="'.PHP_FILE.'?action=import">';
+    $hl.= '<p><label>'.L('model/import/code').':</label><textarea name="modelcode" id="modelcode" rows="20" class="in6"></textarea></p>';
+    $hl.= '<p><label>&nbsp;</label><button type="submit">'.L('model/import/submit').'</button></p>';
+    $hl.= '</form>';
+    $hl.= '</div></fieldset>';
     
     print_x(L('model/import/@title'),$hl);
 }
