@@ -113,6 +113,7 @@
 		</pop>
 	</sort>
     <model title="模型管理">
+        <tip>请先浏览要上传的模型文件，系统会自动上传并读取模型代码到文本框内，也可以直接将模型代码粘贴到文本框内。</tip>
         <editlist>编辑列表模型</editlist>
         <addlist>添加列表模型</addlist>
 		<editpage>编辑单页模型</editpage>
@@ -181,6 +182,8 @@
             <restrict>此字段名已被系统使用</restrict>
 			<length>最大长度不能为空</length>
 			<length1>最大长度必须为数字</length1>
+            <code>模型代码不能为空</code>
+            <code1>模型标识(modelename)重复，请修改模型标识</code1>
 		</check>
 		<pop>
 			<importok>导入成功</importok>

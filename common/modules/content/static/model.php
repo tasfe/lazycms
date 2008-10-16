@@ -85,4 +85,55 @@ class Content_Model{
         }
         return empty($R)?false:$R;
     }
+    // addModel *** *** www.LazyCMS.net *** ***
+    static function addModel($model){
+        $db = get_conn();
+        // 数据表名
+        $table  = Content_Model::getDataTableName($model['modelename']);
+        // 关联表名
+        $jtable = Content_Model::getJoinTableName($model['modelename']);
+        // 解析字段
+        $fields = json_decode($model['modelfields']);
+        $sute   = null;
+        foreach ($fields as $v) {
+            $data = (array) $v;
+            $len  = empty($data['length'])?null:'('.$data['length'].')';
+            $type = Content_Model::getType($data['intype']);
+            $type = strpos($type,')')===false ? $type.$len : $type;
+            $def  = empty($data['default'])?null:" DEFAULT '".$data['default']."'";
+            $sute.= ",\n`".$data['ename']."` {$type} {$def}";
+        }
+        // 先删除表
+        $db->exec("DROP TABLE IF EXISTS `{$table}`;");
+        // 创建表
+        $SQL = "CREATE TABLE IF NOT EXISTS `{$table}` (";
+        $SQL.= "    `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,";
+        $SQL.= "    `order` INT(11) DEFAULT '0',";
+        $SQL.= "    `date` INT(11) DEFAULT '0',";
+        $SQL.= "    `hits` INT(11) DEFAULT '0',";
+        if ($model[8]=='list') {
+            $SQL.= "`img` VARCHAR(255),";
+            $SQL.= "`digg` INT(11) DEFAULT '0',";
+            $SQL.= "`passed` TINYINT(1) DEFAULT '0',";
+            $SQL.= "`userid` INT(11) DEFAULT '0',";
+        }
+        $SQL.= "    `path` VARCHAR(255),";
+        $SQL.= "    `description` VARCHAR(255){$sute}";
+        $SQL.= ") ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;";
+        $db->exec($SQL);
+        // 创建关联表
+        $db->exec("
+        CREATE TABLE IF NOT EXISTS `{$jtable}` (
+            `jid` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            `tid` INT(11) NOT NULL,
+            `sid` INT(11) NOT NULL,
+            `type` INT(11) NOT NULL,
+            KEY `tid` (`tid`),
+            KEY `sid` (`sid`),
+            KEY `type` (`type`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");
+        // 执行数据插入
+        $db->insert('#@_content_model',$model);
+        return $db->lastId();
+    }
 }

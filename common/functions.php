@@ -286,7 +286,7 @@ function data2xml($p1) {
         $R.= "<{$k}>";
         $R.= (is_array($v)||is_object($v)) ? data2xml($v) : ((strlen($v)>0 && preg_match("%[&'\"><\n]+%",$v)) ? "<![CDATA[{$v}]]>" : $v);
         list($k,) = explode(' ',$k);
-        $R.= "</{$k}>";
+        $R.= "</{$k}>\n";
     }
     return $R;
 }

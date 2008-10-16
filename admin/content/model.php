@@ -60,19 +60,6 @@ function lazy_default(){
 
     print_x(L('model/@title'),$ds->fetch());
 }
-// lazy_export *** *** www.LazyCMS.net *** ***
-function lazy_export(){
-    ob_start(); no_cache(); $db = get_conn();
-    $model = isset($_GET['model'])?$_GET['model']:null;
-    header("Content-type: application/octet-stream; charset=utf-8");
-    header("Content-Disposition: attachment; filename=LazyCMS_{$model}.xml");
-    $res = $db->query("SELECT * FROM `#@_content_model` WHERE `modelename`=".DB::quote($model).";");
-    if ($data = $db->fetch($res)) {
-        echo '<?xml version="1.0" encoding="UTF-8"?>';
-        echo '<lazycms>'.data2xml($data).'</lazycms>';
-    }
-    ob_flush();
-}
 // lazy_set *** *** www.LazyCMS.net *** ***
 function lazy_set(){
     $db = get_conn();
@@ -108,26 +95,107 @@ function lazy_set(){
             break;
     }
 }
+// lazy_export *** *** www.LazyCMS.net *** ***
+function lazy_export(){
+    ob_start(); no_cache(); $db = get_conn();
+    $model = isset($_GET['model'])?$_GET['model']:null;
+    header("Content-type: application/octet-stream; charset=utf-8");
+    header("Content-Disposition: attachment; filename=LazyCMS_{$model}.xml");
+    $res = $db->query("SELECT * FROM `#@_content_model` WHERE `modelename`=".DB::quote($model).";");
+    if ($data = $db->fetch($res)) {
+        unset($data['modelid'],$data['modelstate']);
+        echo '<?xml version="1.0" encoding="UTF-8"?>'.chr(10);
+        echo '<lazycms>'.chr(10).data2xml($data).'</lazycms>';
+    }
+    ob_flush();
+}
 // lazy_import *** *** www.LazyCMS.net *** ***
 function lazy_import(){
+    $modelcode = isset($_POST['modelcode']) ? $_POST['modelcode'] : null;
     $val = new Validate();
     if ($val->method()) {
-        redirect(PHP_FILE,'self');
+        $val->check('modelcode|0|'.L('model/check/code'));
+        if ($val->isVal()) {
+            $val->out();
+        } else {
+            // 解析xml数据
+            $data  = array(); $db = get_conn();
+            $Doc   = DOMDocument::loadXML($modelcode);
+            $XPath = new DOMXPath($Doc);
+            // Model Value
+            $data[] = $XPath->evaluate("//lazycms/modelname")->item(0)->nodeValue;
+            $data[] = $XPath->evaluate("//lazycms/modelename")->item(0)->nodeValue;
+            $data[] = $XPath->evaluate("//lazycms/modelpath")->item(0)->nodeValue;
+            $data[] = $XPath->evaluate("//lazycms/setkeyword")->item(0)->nodeValue;
+            $data[] = $XPath->evaluate("//lazycms/description")->item(0)->nodeValue;
+            $data[] = $XPath->evaluate("//lazycms/sortemplate")->item(0)->nodeValue;
+            $data[] = $XPath->evaluate("//lazycms/pagetemplate")->item(0)->nodeValue;
+            $data[] = $XPath->evaluate("//lazycms/modelfields")->item(0)->nodeValue;
+            $data[] = $XPath->evaluate("//lazycms/modeltype")->item(0)->nodeValue;
+            $number = $db->result("SELECT COUNT(*) FROM `#@_content_model` WHERE `modelename`=".DB::quote($data[1]).";");
+            $isexist= $number>0?false:true;
+            $val->check('modelcode|3|'.L('model/check/code1').'|'.$isexist);
+            if ($val->isVal()) {
+                $val->out();
+            } else {
+                // 创建模型
+                Content_Model::addModel(array(
+                    'modelname'   => $data[0],
+                    'modelename'  => $data[1],
+                    'modelpath'   => $data[2],
+                    'modeltype'   => $data[8],
+                    'modelfields' => $data[7],
+                    'setkeyword'  => $data[3],
+                    'description' => $data[4],
+                    'sortemplate' => $data[5],
+                    'pagetemplate'=> $data[6],
+                ));
+                echo_json(array(
+                    'text' => L('model/pop/importok'),
+                    'url'  => PHP_FILE,
+                ),1);
+            }
+        }
     }
     
     $hl = '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.L('model/import/@title').'</a></legend>';
     $hl.= '<div class="show">';
-    $hl.= '<div class="tip"><i class="os icon-16-light"></i>&nbsp;请先浏览要上传的模型文件。</div>';
-    $hl.= '<form id="form1" name="form1" method="post" enctype="multipart/form-data" action="'.PHP_FILE.'?action=upfile">';
-    $hl.= '<p><label>'.L('model/import/file').':</label><input type="file" name="modelfile" id="modelfile" onchange="alert(this.value)" class="in4" /></p>';
+    $hl.= '<div class="tip"><i class="os icon-16-light"></i>&nbsp;'.L('model/tip').'</div>';
+    $hl.= '<form id="form1" name="form1" method="post" enctype="multipart/form-data" action="'.PHP_FILE.'?action=upmodel" target="tempform">';
+    $hl.= '<p><label>'.L('model/import/file').':</label><input type="file" name="modelfile" id="modelfile" onchange="$(this).autoUpFile();" class="in4" /></p>';
     $hl.= '</form>';
     $hl.= '<form id="form2" name="form2" method="post" action="'.PHP_FILE.'?action=import">';
     $hl.= '<p><label>'.L('model/import/code').':</label><textarea name="modelcode" id="modelcode" rows="20" class="in6"></textarea></p>';
-    $hl.= '<p><label>&nbsp;</label><button type="submit">'.L('model/import/submit').'</button></p>';
+    $hl.= '<p><label>&nbsp;</label><button type="submit" class="submit" onclick="return $(this.form).save();">'.L('model/import/submit').'</button></p>';
     $hl.= '</form>';
     $hl.= '</div></fieldset>';
     
     print_x(L('model/import/@title'),$hl);
+}
+// lazy_upmodel *** *** www.LazyCMS.net *** ***
+function lazy_upmodel(){
+    import('system.uploadfile');
+    $upload = new UpLoadFile();
+    $upload->allowExts = 'xml';
+    $upload->maxSize   = 500*1024;//500K
+    $folder = LAZY_PATH.SEPARATOR.C('UPLOAD_FILE_PATH');mkdirs($folder);
+    if ($file = $upload->save('modelfile',$folder.'/'.basename($_FILES['modelfile']['name']))) {
+        $modelcode = read_file($file['path']); @unlink($file['path']);
+        if (is_utf8($modelcode)) {
+            $charset = ' charset="utf-8"';
+        }
+        $msg = 'parent.$(\'#modelcode\').val(\''.t2js($modelcode).'\');';
+    } else {
+        $charset = ' charset="utf-8"';
+        $msg = 'alert(\''.t2js($upload->getError()).'\');';
+    }
+    header('Content-Type:text/html;'.str_replace('"','',$charset));
+    echo '<script type="text/javascript"'.$charset.'>';
+    echo 'parent.$(\'input.uploading\').remove();';
+    echo 'parent.$(\'#modelfile\').replaceWith(\'<input type="file" name="modelfile" id="modelfile" onchange="$(this).autoUpFile();" class="in4" />\');';
+    echo $msg;
+    echo 'parent.$(\'iframe[@name=tempform]\').remove();';
+    echo '</script>';
 }
 // lazy_edit *** *** www.LazyCMS.net *** ***
 function lazy_edit(){
@@ -173,52 +241,8 @@ function lazy_edit(){
         if ($val->isVal()) {
             $val->out();
         } else {
-            // 数据表名
-            $table  = Content_Model::getDataTableName($modelename);
-            // 关联表名
-            $jtable = Content_Model::getJoinTableName($modelename);
-            $fields = json_decode($modelfields);
             if (empty($modelid)) {
-                $sute = null;
-                foreach ($fields as $v) {
-                    $data = (array) $v;
-                    $len  = empty($data['length'])?null:'('.$data['length'].')';
-                    $type = Content_Model::getType($data['intype']);
-                    $type = strpos($type,')')===false ? $type.$len : $type;
-                    $def  = empty($data['default'])?null:" DEFAULT '".$data['default']."'";
-                    $sute.= ",\n`".$data['ename']."` {$type} {$def}";
-                }
-                // 先删除表
-                $db->exec("DROP TABLE IF EXISTS `{$table}`;");
-                // 创建表
-                $SQL = "CREATE TABLE IF NOT EXISTS `{$table}` (";
-                $SQL.= "    `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,";
-                $SQL.= "    `order` INT(11) DEFAULT '0',";
-                $SQL.= "    `date` INT(11) DEFAULT '0',";
-                $SQL.= "    `hits` INT(11) DEFAULT '0',";
-                if ($modeltype=='list') {
-                    $SQL.= "`img` VARCHAR(255),";
-                    $SQL.= "`digg` INT(11) DEFAULT '0',";
-                    $SQL.= "`passed` TINYINT(1) DEFAULT '0',";
-                    $SQL.= "`userid` INT(11) DEFAULT '0',";
-                }
-                $SQL.= "    `path` VARCHAR(255),";
-                $SQL.= "    `description` VARCHAR(255){$sute}";
-                $SQL.= ") ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;";
-                $db->exec($SQL);
-                // 创建关联表
-                $db->exec("
-                CREATE TABLE IF NOT EXISTS `{$jtable}` (
-                    `jid` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                    `tid` INT(11) NOT NULL,
-                    `sid` INT(11) NOT NULL,
-                    `type` INT(11) NOT NULL,
-                    KEY `tid` (`tid`),
-                    KEY `sid` (`sid`),
-                    KEY `type` (`type`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");
-                // 执行数据插入
-                $db->insert('#@_content_model',array(
+                $modelid = Content_Model::addModel(array(
                     'modelname'   => $modelname,
                     'modelename'  => $modelename,
                     'modelpath'   => $modelpath,
@@ -229,9 +253,14 @@ function lazy_edit(){
                     'sortemplate' => $sortemplate,
                     'pagetemplate'=> $pagetemplate,
                 ));
-                $modelid = $db->lastId();
                 $text = L('model/pop/addok');
             } else {
+                // 数据表名
+                $table  = Content_Model::getDataTableName($modelename);
+                // 关联表名
+                $jtable = Content_Model::getJoinTableName($modelename);
+                // 解析字段
+                $fields = json_decode($modelfields);
                 // 模型名称被修改，修改数据结构
                 if ($oldename!=$modelename) {
                     $otable  = Content_Model::getDataTableName($oldename);

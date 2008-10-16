@@ -166,5 +166,12 @@
 			i.addClass('icon-16-'+rel+'-off'); 
 			$(p1).val('');
 		}
+	};
+	// autoUpFile *** *** www.LazyCMS.net *** ***
+	$.fn.autoUpFile = function(){
+		var f = this.parents('form');
+			this.hide().after('<input type="text" value="UpLoading..." class="in4 uploading" />');
+			f.parents('fieldset').after('<iframe src="about:blank" id="tempform" name="tempform" style="display:none;width:0px;height:0px;border:none;"></iframe>');
+			f.submit();
 	}
 })(jQuery);

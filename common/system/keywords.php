@@ -34,7 +34,7 @@ class Keywords {
     function __construct($module=null){
         $this->db   = get_conn();
         $this->dict = COM_PATH.'/dicts/LazyCMS_Private.dict';
-        $this->joinTable = Model::getJoinTableName(empty($module)?MODULE:$module);
+        $this->joinTable = Content_Model::getJoinTableName(empty($module)?MODULE:$module);
     }
     // get *** *** www.LazyCMS.net *** ***
     public function get($id){
