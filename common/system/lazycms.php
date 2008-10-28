@@ -51,7 +51,11 @@ abstract class LazyCMS{
         // 设置系统时区 PHP5支持
         if(function_exists('date_default_timezone_set')) { date_default_timezone_set('UTC'); }
         // 是否开启gzip压缩
-        if (C('COMPRESS_MODE')) { ob_start('ob_zip'); } else { ob_start(); }
+        if (C('COMPRESS_MODE') &&
+            extension_loaded('zlib') &&
+            function_exists('ob_gzhandler') &&
+            strstr($_SERVER['HTTP_ACCEPT_ENCODING'],'gzip')
+        ) { ob_start('ob_gzhandler'); } else { ob_start(); }
     }
     // exec *** *** www.LazyCMS.net *** ***
     private function exec(){
@@ -93,7 +97,7 @@ abstract class LazyCMS{
             }
         }
         // 在动作之后执行的函数
-        if (function_exists('lazy_after')){ lazy_after(); } ob_end_flush();
+        if (function_exists('lazy_after')){ lazy_after(); }
     }
     // run *** *** www.LazyCMS.net *** ***
     final public function run(){

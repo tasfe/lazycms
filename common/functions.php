@@ -125,21 +125,6 @@ function instr($p1,$p2){
 }
 
 /**
- * 执行gzip压缩并输出
- *
- * @param  string   $p1     字符串
- * @return gzip
- */
-function ob_zip($p1){
-    if (!headers_sent() && extension_loaded("zlib") && strstr($_SERVER["HTTP_ACCEPT_ENCODING"],"gzip")) {
-        $p1 = gzencode($p1,9);
-        header("Content-Encoding: gzip");
-        header("Content-Length: ".strlen($p1));
-    }
-    return $p1;
-}
-
-/**
  * 随机字符串
  *
  * @param  integer   $p1    返回字符串的位数，默认为6位
@@ -851,7 +836,7 @@ function editor($p1,$p2=array()){
     $A1['snapimg'] = isset($A1['snapimg']) ? $A1['snapimg'] : array(0,0);
     $A1['dellink'] = isset($A1['dellink']) ? $A1['dellink'] : array(0,0);
     $A1['setimg'] = isset($A1['setimg']) ? $A1['setimg'] : array(0,0);
-    $A1['resize'] = isset($A1['resize']) ? $A1['resize'] : false;
+    $A1['resize'] = isset($A1['resize']) ? 'true' : 'false';
     $css = '<style type="text/css">';
     $css.= '.'.$p1.'_editor_button{ width:'.$A1['width'].'; display:table; zoom:100%; margin:3px 0 5px 0;}';
     $css.= '.'.$p1.'_editor_button .fr a{margin-left:8px;}';
@@ -869,32 +854,15 @@ function editor($p1,$p2=array()){
     if ($A1['setimg'][0]) {
         $but.= '<input type="checkbox" name="'.$p1.'_attr[setimg]" id="'.$p1.'_attr[setimg]" value="1"'.($A1['setimg'][1]?' checked="checked"':null).' cookie="true" /><label for="'.$p1.'_attr[setimg]">'.L('editor/setimg','system').'</label>';
     }
-    // 是否显示调整编辑器高度按钮
-    if ($A1['resize']) {
-        $size.= '<div class="fr">';
-        $size.= '<a href="javascript:;" onclick="$(\'#'.$p1.'\').resize(\'+\');"><img src="'.SITE_BASE.'common/images/icon/add.png" /></a>';
-        $size.= '<a href="javascript:;" onclick="$(\'#'.$p1.'\').resize(\'-\');"><img src="'.SITE_BASE.'common/images/icon/reduce.png" /></a>';
-        $size.= '</div>';    
+    if (!empty($but)) {
+        $div.= '<div class="'.$p1.'_editor_button">'.$but.'</div>';
     }
-    if (!empty($but) || !empty($size)) {
-        $div.= '<div class="'.$p1.'_editor_button">';
-        $div.= '<div class="fl">';
-        $div.= $but;
-        $div.= '</div>';
-        $div.= $size;
-        $div.= '</div>';
-    }
-    switch (strtolower($A1['toolbar'])) {
-        case 'basic':
-            $panel = "buttonList:['bold','italic','ol','ul','forecolor','fontSize','fontFamily','link','unlink','image']";
-            break;
-        default:
-            $panel = "fullPanel:true";
-            break;
-    }
-    $hl = '<script src="'.SITE_BASE.'common/js/nicEdit.js" type="text/javascript"></script>';
+    $hl = '<script src="'.SITE_BASE.'common/editor/tiny_mce/tiny_mce.js" type="text/javascript"></script>';
+    $hl.= '<script type="text/javascript">tinyMCE.init({';
+    $hl.= 'mode:"exact",elements:"'.$p1.'",theme:"advanced",plugins:"safari,pagebreak,table,inlinepopups,searchreplace,media,fullscreen,noneditable,nonbreaking,emotions,xhtmlxtras",';
+    $hl.= 'theme_advanced_toolbar_location:"top",theme_advanced_toolbar_align:"left",theme_advanced_statusbar_location:"bottom",theme_advanced_resizing:'.$A1['resize'];
+    $hl.= '});</script>';
     $hl.= '<textarea editor="true" style="width:'.$A1['width'].';height:'.$A1['height'].';" id="'.$p1.'" name="'.$p1.'">'.h2encode($p2).'</textarea>';
-    $hl.= '<script type="text/javascript">new nicEditor({'.$panel.',iconsPath:\''.SITE_BASE.'common/images/nicEditorIcons.gif\'}).panelInstance(\''.$p1.'\');</script>';
     $R = $hl.$div;
     unset($A1); return $R;
 }

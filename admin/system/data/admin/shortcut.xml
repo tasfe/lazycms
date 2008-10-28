@@ -6,7 +6,7 @@
 		<a href="content/article.php" class="article">文档管理</a>
 		<a href="content/sort.php" class="sort">分类管理</a>
         <a href="content/model.php" class="model">模型管理</a>
-	</dl>
+	<a href="content/onepage.php?action=edit&amp;amp;model=onepage" class="media">添加单页</a></dl>
 	<dl>
 		<dt>系统管理</dt>
 		<a href="system/users.php" class="user">用户管理</a>

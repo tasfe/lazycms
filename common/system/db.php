@@ -312,9 +312,6 @@ abstract class DB {
     static function quoteIdentifier($p1){
         $R = null;
         $p2 = $p1;
-        if (is_array($p2)) {
-            $p2 = implode(',',$p2);
-        }
         // 检测是否是多个字段
         if (strpos($p2,',') !== false) {
             // 多个字段，递归执行
