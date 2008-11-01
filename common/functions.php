@@ -864,7 +864,7 @@ function editor($p1,$p2=array()){
         $hl.= '<script src="'.SITE_BASE.'common/editor/tiny_mce/tiny_mce.js" type="text/javascript"></script>';
     }
     $hl.= '<script type="text/javascript">tinyMCE.init({';
-    $hl.= 'mode:"exact",elements:"'.$p1.'",theme:"advanced",language:"'.language().'",';
+    $hl.= 'mode:"exact",elements:"'.$p1.'",theme:"advanced",relative_urls:false,tab_focus:":prev,:next",language:"'.language().'",';
     if ($A1['toolbar']=='Basic') {
         $hl.= 'plugins:"safari,pagebreak,inlinepopups,noneditable,emotions",';
         $hl.= 'theme_advanced_buttons1:"bold,italic,underline,strikethrough,|,numlist,bullist,|,outdent,indent,blockquote,|,fontselect,|,forecolor,backcolor,|,link,unlink,image,emotions,|,help",theme_advanced_buttons2:"",';
