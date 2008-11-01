@@ -825,6 +825,7 @@ function import($p1,$p2='',$p3='.php',$p4=false){
 }
 // editor *** *** www.LazyCMS.net *** ***
 function editor($p1,$p2=array()){
+    static $isLoadJs = false;
     $A1 = array(); $p3 = null; $R = null;
     if (is_array($p2) && !empty($p2)) {
         $A1 = $p2;
@@ -844,7 +845,7 @@ function editor($p1,$p2=array()){
     $div = $css; $but = $size = null;
     if ($A1['upimg']) { $but.= '<button type="button">'.L('editor/upimg','system').'</button>'; }
     if ($A1['upfile']) { $but.= '<button type="button">'.L('editor/upfile','system').'</button>'; }
-    if ($A1['pagebreak']) { $but.= '<button type="button">'.L('editor/pagebreak','system').'</button>'; }
+    if ($A1['pagebreak']) { $but.= '<button type="button" onclick="tinyMCE.get(\''.$p1.'\').execCommand(\'mcePageBreak\',false);">'.L('editor/pagebreak','system').'</button>'; }
     if ($A1['snapimg'][0]) {
         $but.= '<input type="checkbox" name="'.$p1.'_attr[snapimg]" id="'.$p1.'_attr[snapimg]" value="1"'.($A1['snapimg'][1]?' checked="checked"':null).' cookie="true" /><label for="'.$p1.'_attr[snapimg]">'.L('editor/snapimg','system').'</label>&nbsp; ';
     }
@@ -857,12 +858,22 @@ function editor($p1,$p2=array()){
     if (!empty($but)) {
         $div.= '<div class="'.$p1.'_editor_button">'.$but.'</div>';
     }
-    $hl = '<script src="'.SITE_BASE.'common/editor/tiny_mce/tiny_mce.js" type="text/javascript"></script>';
+    $hl = '<!-- tinyMCE include script -->';
+    if (!$isLoadJs) {
+        $isLoadJs = true;
+        $hl.= '<script src="'.SITE_BASE.'common/editor/tiny_mce/tiny_mce.js" type="text/javascript"></script>';
+    }
     $hl.= '<script type="text/javascript">tinyMCE.init({';
-    $hl.= 'mode:"exact",elements:"'.$p1.'",theme:"advanced",plugins:"safari,pagebreak,table,inlinepopups,searchreplace,media,fullscreen,noneditable,nonbreaking,emotions,xhtmlxtras",';
+    $hl.= 'mode:"exact",elements:"'.$p1.'",theme:"advanced",language:"'.language().'",';
+    if ($A1['toolbar']=='Basic') {
+        $hl.= 'plugins:"safari,pagebreak,inlinepopups,noneditable,emotions",';
+        $hl.= 'theme_advanced_buttons1:"bold,italic,underline,strikethrough,|,numlist,bullist,|,outdent,indent,blockquote,|,fontselect,|,forecolor,backcolor,|,link,unlink,image,emotions,|,help",theme_advanced_buttons2:"",';
+    } else {
+        $hl.= 'plugins:"safari,pagebreak,table,inlinepopups,searchreplace,media,fullscreen,noneditable,emotions",';
+    }
     $hl.= 'theme_advanced_toolbar_location:"top",theme_advanced_toolbar_align:"left",theme_advanced_statusbar_location:"bottom",theme_advanced_resizing:'.$A1['resize'];
     $hl.= '});</script>';
-    $hl.= '<textarea editor="true" style="width:'.$A1['width'].';height:'.$A1['height'].';" id="'.$p1.'" name="'.$p1.'">'.h2encode($p2).'</textarea>';
+    $hl.= '<textarea style="width:'.$A1['width'].';height:'.$A1['height'].';" id="'.$p1.'" name="'.$p1.'">'.h2encode($p2).'</textarea>';
     $R = $hl.$div;
     unset($A1); return $R;
 }

@@ -177,7 +177,7 @@ function getHP(){
 		// 先释放绑定的所有事件，清除错误样式
 		$('.error').unbind().toggleClass('error');
 		// 移除所有 Tips 信息
-		$('.jTip').remove();
+		$('.editor_error,.jTip').remove();
 		var t = this.tips('tip','[@tip]');
 		var m = this.data('___method');
 		var s = $('button.' + m,t);
@@ -185,6 +185,12 @@ function getHP(){
 		var u = t.attr('action'); if (u==''||typeof u=='undefined') { u = self.location.href; }
 		// 设置登录按钮
 		s.attr('disabled',true);
+		if (typeof tinyMCE!='undefined') {
+			var editor = tinyMCE.editors;
+			for (e in editor) {
+				$('#'+editor[e].id).val(editor[e].getContent());
+			}
+		}		
 		// ajax submit
 		$.ajax({
 			cache: false,
@@ -247,11 +253,15 @@ function getHP(){
 		if (typeof p == 'string'){ e = $.parseJSON(p); }
 		if (e==undefined) { return ; }
 		for (var i=0;i<e.length;i++) {
-		    //if (typeof $('#'+e[i].id).editor()!='undefined') {
-			//	$($('#'+e[i].id).editor().getElm()).unbind().attr('error',e[i].text).addClass('error');;
-			//} else {
+			if (typeof tinyMCE!='undefined') {
+				if (typeof tinyMCE.get(e[i].id)!='undefined') {
+					$('#'+e[i].id+'_ifr').after('<div class="editor_error">&nbsp;</div>').unbind().attr('error',e[i].text).addClass('error');
+				} else {
+					$('#'+e[i].id).unbind().attr('error',e[i].text).addClass('error');
+				}
+			} else {
 				$('#'+e[i].id).unbind().attr('error',e[i].text).addClass('error');
-			//}
+			}
 		}
 		this.tips('error','.error');
 		return this;
