@@ -58,15 +58,5 @@ clipboard_msg:"\u590D\u5236\u3001\u526A\u4E0B\u53CA\u8D34\u4E0A\u529F\u80FD\u572
 path:"\u4F4D\u7F6E",
 newdocument:"\u60A8\u786E\u8BA4\u8981\u6E05\u9664\u5168\u90E8\u5185\u5BB9\u5417\uFF1F",
 toolbar_focus:"\u5DE5\u5177\u6309\u94AE - Alt+Q, \u7F16\u8F91\u5668 - Alt-Z, \u7EC4\u4EF6\u4F4D\u7F6E - Alt-X",
-more_colors:"\u66F4\u591A\u989C\u8272",
-image_delta_width:"image_delta_width",
-image_delta_height:"image_delta_height",
-link_delta_width:"link_delta_width",
-link_delta_height:"link_delta_height",
-colorpicker_delta_width:"colorpicker_delta_width",
-colorpicker_delta_height:"colorpicker_delta_height",
-charmap_delta_width:"charmap_delta_width",
-charmap_delta_height:"charmap_delta_height",
-anchor_delta_width:"anchor_delta_width",
-anchor_delta_height:"anchor_delta_height"
+more_colors:"\u66F4\u591A\u989C\u8272"
 });
