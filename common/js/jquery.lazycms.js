@@ -255,7 +255,7 @@ function getHP(){
 		for (var i=0;i<e.length;i++) {
 			if (typeof tinyMCE!='undefined') {
 				if (typeof tinyMCE.get(e[i].id)!='undefined') {
-					$('#'+e[i].id+'_ifr').after('<div class="editor_error">&nbsp;</div>').unbind().attr('error',e[i].text).addClass('error');
+					$('#'+e[i].id+'_ifr').after('<div class="editor_error">&nbsp;</div>').unbind().attr('error',e[i].text).addClass('error');changeHeight();
 				} else {
 					$('#'+e[i].id).unbind().attr('error',e[i].text).addClass('error');
 				}
