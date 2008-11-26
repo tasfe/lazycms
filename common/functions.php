@@ -162,11 +162,11 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
 /**
  * Enter description here...
  *
- * @param unknown_type $p1
- * @return unknown
+ * @param string $p1
+ * @return string
  */
 function but($p1){
-    $R = '<p class="button"><button type="submit">'.l('Submit').'</button>';
+    $R = '<p class="button"><button type="submit">'.l($p1).'</button>';
     $R.= '<button type="reset" onclick="return confirm(\''.l('Confirm reset').'\')">'.l('Reset').'</button>';
     $R.= '<button type="button" onclick="self.history.back();">'.l('Back').'</button></p>';
     return $R;

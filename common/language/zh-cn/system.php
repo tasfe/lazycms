@@ -27,6 +27,7 @@ return array(
     'ON'    => '√',
     'OFF'   => '×',
     'Help'  => '帮助',
+    'Save'  => '保存',
     'Reset' => '重置',
     'Submit'    => '提交',
     'Default'   => '默认',

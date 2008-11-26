@@ -137,7 +137,7 @@ function lazy_main(){
 
     echo '</div></fieldset>';
 
-    echo but('save');
+    echo but('Save');
     echo '</form>';
 }
 function lazy_after(){
