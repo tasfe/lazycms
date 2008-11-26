@@ -134,7 +134,7 @@ function salt($p1=6){
     $p2 = "0123456789abcdefghijklmnopqrstopwxyz";
     $p3 = strlen($p2); $p4 = null;
     for ($i=0;$i<$p1;$i++) {
-        $p4.= $p2[mt_rand(0,strlen($p2)-1)];
+        $p4.= $p2[mt_rand(0,$p3-1)];
     }
     return $p4;
 }
