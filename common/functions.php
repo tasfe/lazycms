@@ -101,7 +101,6 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
     $error['file']    = $errfile;
     $error['line']    = $errline;
     $error['message'] = $errstr;
-    $time = date("y-m-d H:i:s");
     foreach($trace as $t) {
         $file  = isset($t['file']) ? replace_root($t['file']) : null;
         $line  = isset($t['line']) ? $t['line'] : null;
@@ -109,7 +108,7 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
         $type  = isset($t['type']) ? $t['type'] : null;
         $args  = isset($t['args']) ? $t['args'] : null;
         $function  = isset($t['function']) ? $t['function'] : null;
-        $traceInfo.= '['.$time.'] '.$file.' ('.$line.') ';
+        $traceInfo.= '['.date("y-m-d H:i:s").'] '.$file.' ('.$line.') ';
         $traceInfo.= $class.$type.$function.'(';
         if (is_array($args)) {
             $arrs = array();
@@ -126,38 +125,51 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
     }
     $error['trace'] = replace_root($traceInfo);
     $RE = isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:PHP_FILE;
-    $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
-    $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-    $hl.= '<title>'.l('System error').'</title><style type="text/css">';
-    $hl.= 'body{ font-family: Verdana; font-size:14px; }';
-    $hl.= 'a{text-decoration:none;color:#174B73;}';
-    $hl.= 'a:hover{ text-decoration:none;color:#FF6600;}';
-    $hl.= '.red{ color:red; }';
-    $hl.= '.notice{ padding:10px; margin:5px; color:#666; background:#FCFCFC; border:1px solid #E0E0E0;}';
-    $hl.= '.notice h2{ border-bottom:1px solid #DDD; font-size:25px; margin-top:0; padding:8px 0;}';
-    $hl.= '.title{ margin:4px 0; color:#F60; font-weight:bold;}';
-    $hl.= '.message, .trace{ padding:1em; border:solid 1px #000; margin:10px 0; background:#FFD; line-height:150%;}';
-    $hl.= '.message{ background:#FFD; color:#2E2E2E; border:1px solid #E0E0E0; }';
-    $hl.= '.trace{ background:#E7F7FF; border:1px solid #E0E0E0; color:#535353;}';
-    $hl.= '#footer{ color:#FF3300; margin:5pt auto; font-weight:bold; text-align:center;}';
-    $hl.= '#footer sup{color:gray;font-size:9pt;}';
-    $hl.= '#footer span{color:silver;}';
-    $hl.= '</style></head><body>';
-    $hl.= '<div class="notice"><h2>'.l('System error').'</h2>';
+    $COMPRESS_MODE = c('COMPRESS_MODE');
+    if (!$COMPRESS_MODE) {
+        $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
+        $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
+        $hl.= '<title>'.l('System error').'</title>';
+    } else {
+        $hl.= '<script type="text/javascript">document.title="'.l('System error').'";</script>';
+    }
+    $hl.= '<style type="text/css">';
+    if (!$COMPRESS_MODE) {
+        $hl.= 'body { margin:0; }';
+    }
+    $hl.= '#System_error{ padding:20px 2%; width:96%; background:#FFFFFF; position:absolute; top:0; left:0; z-index:100000;}';
+    $hl.= '#System_error p,#System_error div{ color:#666; line-height:130%; font-family:Verdana; font-size:14px;}';
+    $hl.= '#System_error a{text-decoration:none;color:#174B73;}';
+    $hl.= '#System_error a:hover{ text-decoration:none;color:#FF6600;}';
+    $hl.= '#System_error .red{ color:red; }';
+    $hl.= '#System_error .body{ padding:10px; margin:5px; background:#FCFCFC; border:1px solid #E0E0E0;}';
+    $hl.= '#System_error p{ margin:10px 0;}';
+    $hl.= '#System_error h2{ border-bottom:1px solid #DDD; font-size:25px; margin-top:0; padding:8px 0;}';
+    $hl.= '#System_error .title{ margin:4px 0; color:#F60; font-weight:bold;}';
+    $hl.= '#System_error .message, .trace{ padding:1em; border:solid 1px #000; margin:10px 0; background:#FFD; line-height:150%;}';
+    $hl.= '#System_error .message{ background:#FFD; color:#2E2E2E; border:1px solid #E0E0E0; }';
+    $hl.= '#System_error .trace{ background:#E7F7FF; border:1px solid #E0E0E0; color:#535353;}';
+    $hl.= '#System_error .footer{ color:#FF3300; margin:5pt auto; font-weight:bold; text-align:center;}';
+    $hl.= '#System_error .footer sup{color:gray;font-size:9pt;}';
+    $hl.= '#System_error .footer span{color:silver;}';
+    $hl.= '</style>';
+    if (!$COMPRESS_MODE) { $hl.= '</head><body>'; }
+    $hl.= '<div id="System_error">';
+    $hl.= '<div class="body"><h2>'.l('System error').'</h2>';
     $hl.= '<div>You can choose to [ <a href="javascript:self.location.reload();">'.l('Try again').'</a> ] [ <a href="'.$RE.'">'.l('Back').'</a> ] or [ <a href="'.SITE_BASE.'">'.l('Back home').'</a> ]</div>';
     $hl.= '<p><strong>'.l('Error position').':</strong>　FILE: <strong class="red">'.$error['file'].'</strong>　LINE: <strong class="red">'.$error['line'].'</strong></p>';
     $hl.= '<p class="title">[ '.l('Error message').' ]</p>';
     $hl.= '<p class="message">'.$error['message'].'</p>';
     $hl.= '<p class="title">[ TRACE ]</p>';
     $hl.= '<p class="trace">'.nl2br($error['trace']).'</p></div>';
-    $hl.= '<div id="footer">LazyCMS <sup>'.LAZY_VERSION.'</sup></div>';
-    $hl.= '</body></html>';
-    if (!c('COMPRESS_MODE') &&
-        !extension_loaded('zlib') &&
-        !function_exists('ob_gzhandler') &&
-        !strstr($_SERVER['HTTP_ACCEPT_ENCODING'],'gzip')
-    ) { ob_end_clean(); }
-    exit($hl);
+    $hl.= '<div class="footer">LazyCMS <sup>'.LAZY_VERSION.'</sup></div></div>';
+    if (!$COMPRESS_MODE) {
+        $hl.= '</body></html>';
+        ob_end_clean();
+        exit($hl);
+    } else {
+        echo($hl);
+    }
 }
 /**
  * Enter description here...
@@ -1081,23 +1093,23 @@ function g($p1=null,$p2=null){
 function translate($p1,$p2,$p3=array()){
     static $T = array(); 
     $p4 = strtolower($p1);
-    if (empty($T)) {
+    if (!isset($T[$p2])) {
         $p5 = sprintf('%s/language/%s',COM_PATH,language());
         if (!file_exists($p5)) {
             $p5 = sprintf('%s/language/%s',COM_PATH,c('LANGUAGE'));
         }
         // 加载系统模块语言包
         if ($M = include_file($p5.'/'.strtolower($p2).'.php')) {
-            $T = array_merge($T,$M);
+            $T[$p2] = array_merge(array(),$M);
         }
         // key 全部转换成小写
-        $T = array_change_key_case($T);
+        $T[$p2] = array_change_key_case($T[$p2]);
     }
-    if (isset($T[$p4])) {
+    if (isset($T[$p2][$p4])) {
         if (!empty($p3) && is_array($p3)) {
-            $R = call_user_func_array('sprintf',array_merge(array($T[$p4]),$p3));
+            $R = call_user_func_array('sprintf',array_merge(array($T[$p2][$p4]),$p3));
         } else {
-            $R = $T[$p4];
+            $R = $T[$p2][$p4];
         }
     } else {
         $R = $p1;
