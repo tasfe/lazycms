@@ -29,7 +29,7 @@ class System{
      * @param string $title
      */
     function header($title=null,$selected=null){
-        $tabs  = g('TABS'); $selected = !empty($selected) ? $selected.'|' : null;
+        $selected = !empty($selected) ? $selected.'|' : null;
         $title = empty($title) ? l('System manage') : $title.' - '.l('System manage');
         $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
         $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
@@ -38,10 +38,13 @@ class System{
         $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.2.6"></script>';
         $hl.= '<script type="text/javascript" src="../../common/js/lazycms.library.js?ver=1.0"></script>';
         $hl.= '<script type="text/javascript" src="../system/images/system.js?ver=1.0"></script>';
+        if ($script = g('SCRIPT')) { 
+            $hl.= '<script type="text/javascript">'.$script.'</script>';
+        }
         $hl.= '</head><body>';
         $hl.= '<div id="top">';
         $hl.= '<div class="logo"><a href="../system/index.php"><img src="../system/images/logo.png" alt="LazyCMS '.LAZY_VERSION.'" /></a></div>';
-        $hl.= '<div id="version">'.l('Last Version').': <span>'.LAZY_VERSION.'</span></div>';
+        $hl.= '<div id="version" version="'.LAZY_VERSION.'">'.l('Last Version').': <span>Loading...</span></div>';
         $hl.= '<ul id="menu">';
         $hl.= '<li><span>'.l('System manage').'<b class="down-arrow"></b></span><ul>';
         $hl.= '    <li><a href="../system/index.php" class="icon-16-cpanel">'.l('Cpanel').'</a></li>';
@@ -65,7 +68,6 @@ class System{
                     <li><a href="../content/model.php" class="icon-16-model">模型管理</a></li>
                 </ul>
             </li>';
-    
         $hl.= '<li><span>'.l('Help').'<b class="down-arrow"></b></span><ul>';
         $hl.= '    <li><a href="http://www.lazycms.net/" class="icon-16-home" target="_blank">'.l('Official Website').'</a></li>';
         $hl.= '    <li><a href="http://forums.lazycms.net/" class="icon-16-help" target="_blank">'.l('Support Forums').'</a></li>';
@@ -75,7 +77,7 @@ class System{
         $hl.= '</li></ul>';
         $hl.= '<ul class="menu"><li><a href="'.SITE_BASE.'" target="_blank">'.l('Preview').'</a></li><li><a href="../system/logout.php" onclick="return confirm(\''.l('Confirm logout').'\')">'.l('Logout').'</a></li></ul>';
         $hl.= '</div><div id="main">';
-        if ($tabs) { 
+        if ($tabs = g('TABS')) { 
             $hl.= menu($selected.$tabs); 
             $hl.= '<div id="box">';
         }
@@ -88,6 +90,14 @@ class System{
      */
     function tabs($p1){
         g('TABS',$p1);
+    }
+    /**
+     * 设置script
+     *
+     * @param string $p1
+     */
+    function script($p1){
+        g('SCRIPT',$p1);
     }
     /**
      * 输出后台尾部
