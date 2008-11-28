@@ -97,7 +97,13 @@ class System{
      * @param string $p1
      */
     function script($p1){
-        g('SCRIPT',$p1);
+        static $R = null;
+        if (empty($R)) {
+            $R = $p1;
+        } else {
+            $R.= $p1;
+        }
+        g('SCRIPT',$R);
     }
     /**
      * 输出后台尾部
