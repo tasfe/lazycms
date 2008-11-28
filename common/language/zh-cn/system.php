@@ -32,10 +32,14 @@ return array(
     'Submit'    => '提交',
     'Default'   => '默认',
     'Delete'    => '删除',
+    'Manage'    => '管理',
     'Logout'    => '退出登录',
     'Preview'   => '预览网站',
     'Select all'    => '全选',
     'Reset select'  => '反选',
+    
+    /* Error */
+    'Error invalid' => '您输入的参数有误！',
     
     /* JavaScript确认 */
     'Confirm clear' => '确定要删除吗？',
@@ -141,7 +145,6 @@ return array(
     'Site name'     => '网站名称',
     'Language'      => '界面语言',
     'RSS number'    => 'RSS Feed',
-    'Use compress'  => '开启GZIP压缩',
     'Related keywords'  => '获取长尾关键词',
     
     /* Upload settings */
@@ -151,6 +154,19 @@ return array(
     'Upload file path'  => '上传文件路径',
     'Upload image path' => '上传图片路径',
     'Upload image ext'  => '允许的图片类型',
+    
+    /* 验证信息 */
+    'Site check name'    => '网站名称不能为空',
+    'Upload check allow ext'    => '必须填写允许上传的文件类型',
+    'Upload check error ext'    => '格式错误，以英文“,”逗号分隔。',
+    'Upload check max size'     => '不能为空，如不限制，则填“0”。',
+    'Upload check file path'    => '上传的文件路径不能为空',
+    'Upload check error path'   => '路径格式错误，不支持特殊符号，不能以/开始或结束',
+    'Upload check image path'   => '上传的图片路径不能为空',
+    'Upload check image ext'    => '必须填写允许上传的图片类型',
+    'Upload check DSN config'   => '数据库连接字符串不能为空',
+    'Upload check max size is number'   => '格式错误，必须是数字。',
+    'Upload check DSN config error format'  => '数据库连接字符串格式不正确',
     
     /* Server settings */
     'Server settings'   => '服务器设置',

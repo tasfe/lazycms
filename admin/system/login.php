@@ -23,6 +23,7 @@ require '../../global.php';
  * 后台登录
  *
  */
+// *** *** www.LazyCMS.net *** *** //
 function lazy_main() {
     if (check_admin('system')) { redirect('main.php'); return; }
     $val = new Validate();

@@ -46,13 +46,7 @@ function lazycms_run() {
     }
     unset($_ENV,$HTTP_ENV_VARS,$HTTP_POST_VARS,$HTTP_GET_VARS,$HTTP_POST_FILES,$HTTP_COOKIE_VARS);
     // 设置系统时区 PHP5支持
-    if(function_exists('date_default_timezone_set')) { date_default_timezone_set('UTC'); }
-    // 是否开启gzip压缩
-    if (c('COMPRESS_MODE') &&
-        extension_loaded('zlib') &&
-        function_exists('ob_gzhandler') &&
-        strstr($_SERVER['HTTP_ACCEPT_ENCODING'],'gzip')
-    ) { ob_start('ob_gzhandler'); } else { ob_start(); }
+    if(function_exists('date_default_timezone_set')) { date_default_timezone_set('UTC'); } ob_start();
     // 定义处理错误的函数
     set_error_handler('lazycms_error'); $PHP_DIR = dirname(PHP_FILE);
     // 设置当前模块的常量
@@ -151,8 +145,8 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
     $hl.= '<p class="trace">'.nl2br($error['trace']).'</p></div>';
     $hl.= '<div id="footer">LazyCMS <sup>'.LAZY_VERSION.'</sup></div>';
     $hl.= '</body></html>';
-    if (!c('COMPRESS_MODE')) { ob_end_clean(); }
-    exit($hl);
+    ob_end_clean(); exit($hl);
+    
 }
 /**
  * 按钮
@@ -222,6 +216,27 @@ function stripslashes_deep($p1,$p2='stripslashes') {
     return is_array($p1) ? array_map('stripslashes_deep', $p1) : $p2($p1);
 }
 /**
+ * 转换字符串以js语法输出
+ *
+ * @param  string    $p1   字符串
+ * @param  bool      $p2   是否输出
+ *      true    转换后的代码 加上 document.writeln 输出方法
+ * @return string
+ */
+function t2js($p1,$p2=false){
+    $R = str_replace(array("\r", "\n"), array('', '\n'), addslashes($p1));
+    return $p2 ? "document.writeln(\"$R\");" : $R;
+}
+/**
+ * 防止浏览器缓存
+ */
+function no_cache(){
+    header("Expires:".date("D,d M Y H:i:s",now()-60*10)." GMT");
+    header("Last-Modified:".date("D,d M Y H:i:s")." GMT");
+    header("Cache-Control:no-cache,must-revalidate");
+    header("Pragma:no-cache");
+}
+/**
  * 取得网站的语言设置
  *
  * @return string
@@ -230,6 +245,20 @@ function language() {
     $R = isset($_GET['lang'])?$_GET['lang']:null;
     if (!$R) { $R = Cookie::get('language'); }
     return $R ? $R : c('LANGUAGE');
+}
+/**
+ * 批量创建目录
+ *
+ * @param string $p1    文件夹路径
+ * @param int    $p2    权限
+ * @return bool
+ */
+function mkdirs($p1, $p2 = 0777){
+    if (!is_dir($p1)) {
+        mkdirs(dirname($p1), $p2);
+        return @mkdir($p1, $p2);
+    }
+    return true;
 }
 /**
  * 在数组或字符串中查找
@@ -347,6 +376,29 @@ function echo_json($p1,$p2){
         'CODE' => $p1,
         'DATA' => $p2,
     )));
+}
+/**
+ * alert警告窗
+ *
+ * @param string $p1    Message
+ * @param string $p2    Url:可选
+ *          默认参数：不进行转向
+ *          0：当前url，不带 $_SERVER["QUERY_STRING"]
+ *          1:来路，$_SERVER["HTTP_REFERER"]
+ */
+function alert($p1,$p2=null){
+    switch ((string)$p1) {
+        case '0':
+            $p2 = PHP_FILE;
+            break;
+        case '1':
+            $p2 = $_SERVER["HTTP_REFERER"];
+            break;
+    }
+    echo_json('ALERT',array(
+        'MESSAGE' => $p1,
+        'URL'     => $p2,
+    ));
 }
 /**
  * 执行gzip压缩并输出

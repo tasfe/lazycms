@@ -23,6 +23,7 @@ require '../../global.php';
  * 退出登录
  *
  */
+// *** *** www.LazyCMS.net *** *** //
 function lazy_main(){ 
     // 清空cookie
     Cookie::delete('adminname');

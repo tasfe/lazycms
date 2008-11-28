@@ -23,6 +23,7 @@ require '../../global.php';
  * 系统设置
  * 
  */
+// *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
     System::tabs(
         l('Settings').':settings.php;'.
@@ -32,17 +33,18 @@ function lazy_before(){
         l('PHP Settings').':sysinfo.php?action=phpinfo'
     );
 }
+// *** *** www.LazyCMS.net *** *** //
 function lazy_main(){
     $val = new Validate();
     if ($val->method()) {
         $DSN_CONFIG = isset($_POST['DSN_CONFIG']) ? $_POST['DSN_CONFIG'] : null;
         $val->check('SITE_NAME|0|'.l('Site check name'));
         $val->check('UPLOAD_ALLOW_EXT|0|'.l('Upload check allow ext').';UPLOAD_ALLOW_EXT|validate|'.l('Upload check error ext').'|^[\w\,]+$');
-        $val->check('UPLOAD_MAX_SIZE|0|'.l('Upload check max size').';UPLOAD_MAX_SIZE|validate|'.l('Upload check max size 1').'|2');
+        $val->check('UPLOAD_MAX_SIZE|0|'.l('Upload check max size').';UPLOAD_MAX_SIZE|validate|'.l('Upload check max size is number').'|2');
         $val->check('UPLOAD_FILE_PATH|0|'.l('Upload check file path').';UPLOAD_FILE_PATH|5|'.l('Upload check error path'));
         $val->check('UPLOAD_IMAGE_PATH|0|'.l('Upload check image path').';UPLOAD_IMAGE_PATH|5|'.l('Upload check error path'));
         $val->check('UPLOAD_IMAGE_EXT|0|'.l('Upload check image ext').';UPLOAD_IMAGE_EXT|validate|'.l('Upload check error ext').'|^[\w\,]+$');
-        $val->check('DSN_CONFIG|0|'.l('Upload check DSN config').';DSN_CONFIG|3|'.l('Upload check DSN config 1').'|'.validate($DSN_CONFIG,'^((\w+):\/\/path\=(.+)$)|(^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@(\w+)(:(\d+))?(\/(\w+)\/(\w+)|\/(\w+))$)'));
+        $val->check('DSN_CONFIG|0|'.l('Upload check DSN config').';DSN_CONFIG|3|'.l('Upload check DSN config error format').'|'.validate($DSN_CONFIG,'^((\w+):\/\/path\=(.+)$)|(^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@(\w+)(:(\d+))?(\/(\w+)\/(\w+)|\/(\w+))$)'));
         if ($val->isVal()) {
             $val->out();
         } else {
@@ -55,7 +57,6 @@ function lazy_main(){
                 'LANGUAGE',
                 'RSS_NUMBER',
                 'GET_RELATED_KEY',
-                'COMPRESS_MODE',
                 'USER_ALLOW_REG',
                 'USER_GROUP_REG',
                 'USER_ACTIVE_REG',
@@ -75,10 +76,7 @@ function lazy_main(){
                 $config = preg_replace('/(\''.$field.'\'( |\t)*\=\>( |\t)*)((true|false|null|[-\d]+)|\'.+\'),/ie','\'\\1\'.$data.\',\'',$config);
             }
             save_file(COM_PATH.'/config.php',$config);
-            echo_json('ALERT',array(
-                'MESSAGE'  => 'MESSAGE',
-                'URL' => PHP_FILE,
-            ));
+            alert('MESSAGE',0);
         }
     }
     System::header(l('Settings'));
@@ -99,13 +97,6 @@ function lazy_main(){
         echo '<option value="'.$number.'"'.$selected.'>'.$number.'</option>';
     }
     echo '</select></p>';
-    
-    if (extension_loaded("zlib")) {
-        echo '<p><label>'.l('Use compress').':</label><span>';
-        echo '<input type="radio" name="COMPRESS_MODE" id="COMPRESS_MODE[1]" value="true"'.((c('COMPRESS_MODE') == 1) ? ' checked="checked"':null).'/><label for="COMPRESS_MODE[1]">'.l('True').'</label> ';
-        echo '<input type="radio" name="COMPRESS_MODE" id="COMPRESS_MODE[0]" value="false"'.((c('COMPRESS_MODE') == 0) ? ' checked="checked"':null).'/><label for="COMPRESS_MODE[0]">'.l('False').'</label>';
-        echo '</span></p>';
-    }
     
     echo '<p><label>'.l('Related keywords').':</label><span>';
     echo '<input type="radio" name="GET_RELATED_KEY" id="GET_RELATED_KEY[1]" value="true"'.((c('GET_RELATED_KEY') == 1) ? ' checked="checked"':null).'/><label for="GET_RELATED_KEY[1]">'.l('True').'</label> ';
@@ -140,6 +131,7 @@ function lazy_main(){
     echo but('Save');
     echo '</form>';
 }
+// *** *** www.LazyCMS.net *** *** //
 function lazy_after(){
     System::footer();
 }

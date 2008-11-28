@@ -23,6 +23,20 @@ defined('COM_PATH') or die('Restricted access!');
  * 内容模块语言包
  */
 return array(
+    /* Model */
+    'Model manage'  => '模型管理',
+    'Model import'  => '模型导入',
+    'Model add list'    => '添加列表模型',
+    'Model add page'    => '添加单页模型',
+    'Model name'    => '模型名称',
+    'Model ename'   => '模型标识',
+    'Model table'   => '数据表名',
+    'Model state'   => '状态',
+    
+    /* Model tip */
+    'Model execute success' => '操作成功',
+    'Model execute delete success'  => '执行删除成功',
+    
     'Validate url'      => '匹配网址',    
     'Validate empty'    => '不能为空',
     'Validate limit'    => '限制长度',

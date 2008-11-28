@@ -23,6 +23,7 @@ require '../../global.php';
  * 系统信息
  * 
  */
+// *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
     System::tabs(
         l('Settings').':settings.php;'.
@@ -32,6 +33,7 @@ function lazy_before(){
         l('PHP Settings').':sysinfo.php?action=phpinfo'
     );
 }
+// *** *** www.LazyCMS.net *** *** //
 function lazy_main(){
     $db = get_conn();
     $gdInfo = function_exists('gd_info') ? gd_info() : array('GD Version'=>'none');
@@ -69,6 +71,7 @@ function lazy_main(){
     echo '<tr><td>'.l('PHP post max size').'</td><td>'.get_cfg_var('post_max_size').'</td></tr>';
     echo '</tbody></table></fieldset>';
 }
+// *** *** www.LazyCMS.net *** *** //
 function lazy_config(){
     System::header(l('Settings'));
     echo '<fieldset><legend>'.l('Settings').'</legend>';
@@ -101,6 +104,7 @@ function lazy_config(){
     echo $config;
     echo '</tbody></table></fieldset>';
 }
+// *** *** www.LazyCMS.net *** *** //
 function lazy_directory(){
     System::header(l('Directory'));
     $paths = array(
@@ -120,6 +124,7 @@ function lazy_directory(){
     }
     echo '</tbody></table></fieldset>';
 }
+// *** *** www.LazyCMS.net *** *** //
 function lazy_PHPInfo(){
     ob_start();
     phpinfo(INFO_GENERAL | INFO_CONFIGURATION | INFO_MODULES);
@@ -137,6 +142,7 @@ function lazy_PHPInfo(){
     $output = str_replace('</div>', '', $output);
     echo $output;
 }
+// *** *** www.LazyCMS.net *** *** //
 function lazy_after(){
     System::footer();
 }

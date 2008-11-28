@@ -23,6 +23,7 @@ require '../../global.php';
  * 后台首页面
  *
  */
+// *** *** www.LazyCMS.net *** *** //
 function lazy_main(){
     System::header();
     echo '<pre>';

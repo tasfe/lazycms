@@ -25,7 +25,7 @@ function dump(o){
 		alert(k+' : '+o[k]);
 	}
 }
-function debug(s){ alert(s); }
+function debug(s){ alert('debug:' + s); }
 function lock(p1){ return p1 ? icon('lock') : icon('lock-open'); }
 function cklist(p1){ return '<input name="list" id="list_'+p1+'" type="checkbox" value="'+p1+'"/>'; }
 function icon(i,a){

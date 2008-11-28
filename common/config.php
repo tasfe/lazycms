@@ -32,7 +32,6 @@ return array(
     'RSS_NUMBER' => 10,
     'TEMPLATE'   => 'themes',
     'GET_RELATED_KEY' => false,
-    'COMPRESS_MODE'   => true,
 
     /* 上传设置 */
     'UPLOAD_ALLOW_EXT' => 'bmp,png,gif,jpg,jpeg,zip,rar,doc,xls',

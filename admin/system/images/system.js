@@ -19,7 +19,7 @@
  */
 $(document).ready(function(){
     // 绑定submit提交事件
-    $("form[method=post]").ajaxSubmit();
+    $("form[method=post]:not(a[ajax=false]").ajaxSubmit();
     // Reset separator width
     $('#menu li.hr').each(function(){
         $(this).width($(this).parent().width());
@@ -53,7 +53,7 @@ $(document).ready(function(){
 			}
 		});
 	// 执行半记忆操作
-	$('a.collapse:not(a[@cookie=false]),a.collapsed:not(a[@cookie=false])').collapsed();
+	$('a.collapse:not(a[cookie=false]),a.collapsed:not(a[cookie=false])').collapsed();
 	// Get last version
 	$.getJSON("http://lazycms.net/ver/index.php?host=" + self.location.host + "&callback=?",function(d){
 		var localVersion = $('#version').attr('version').replace(/\./g,'');

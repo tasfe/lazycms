@@ -34,9 +34,9 @@ class Recordset{
     var $totalRows;
     var $totalPages;
     
-    var $_but;
+    var $but;
     var $_td;
-    var $_thead;
+    var $thead;
     var $_tbody;
     var $_fetch;
 
@@ -146,15 +146,15 @@ class Recordset{
      *
      */
     function close(){
-        $this->_hl.= "<thead>".$this->_thead."</thead><tbody>";
+        $this->_hl.= "<thead>".$this->thead."</thead><tbody>";
         if ((int)$this->length > 0) {
             $this->_hl.= '<script type="text/javascript">'.$this->_tbody.'</script>';
         } else {
-            preg_match_all('/<th>[^>]+<\/th>/',$this->_thead,$R);
+            preg_match_all('/<th>[^>]+<\/th>/',$this->thead,$R);
             $this->_hl.= '<tr><td colspan="'.count($R[0]).'" class="tc">&nbsp;</td></tr>';
         }
         $this->_hl.= '</tbody></table>';
-        $this->_hl.= '<div class="but">'.$this->_but.'</div>';
+        $this->_hl.= '<div class="but">'.$this->but.'</div>';
         $this->_hl.= '</form>';
     }
     /**
