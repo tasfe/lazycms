@@ -61,7 +61,7 @@ function lazy_main() {
     $hl.= '<link href="images/style.css" rel="stylesheet" type="text/css" />';
     $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.2.6"></script>';
     $hl.= '<script type="text/javascript" src="../../common/js/lazycms.library.js?ver=1.0"></script>';
-    $hl.= '<script type="text/javascript"> $(document).ready(function(){ $("#username").focus(); }); </script>';
+    $hl.= '<script type="text/javascript"> $(document).ready(function(){ $("#username").focus(); $("form[method=post]:not(form[ajax=false])").ajaxSubmit(); }); </script>';
     $hl.= '</head><body>';
     $hl.= '<form id="login" name="login" method="post" action="'.PHP_FILE.'">';
     $hl.= '<div class="col1">'.l('Login description').'</div>';

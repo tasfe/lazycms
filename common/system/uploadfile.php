@@ -37,20 +37,20 @@ class UpLoadFile{
     // 允许的文件后缀
     var $allowExts;
     // 错误信息
-    var $_error = -1;
+    var $_error = 0;
     /**
      * 兼容PHP5模式
      */
     function __construct(){
-        $this->UpLoadFile();
+        if ((int)get_cfg_var('post_max_size') < (int)$_SERVER["CONTENT_LENGTH"]/1024/1024) {
+            $this->_error = 10;
+        }
     }
     /**
      * 初始化
      */
     function UpLoadFile(){
-        if ((int)get_cfg_var('post_max_size') < (int)$_SERVER["CONTENT_LENGTH"]/1024/1024) {
-            $this->_error = 0;
-        }
+        $this->__construct();
     }
     /**
      * 保存上传的文件
@@ -64,7 +64,7 @@ class UpLoadFile{
         $Info = $_FILES[$p1];
         $Info['ext'] = $this->_getExt($Info['name']);
         // 返回错误信息
-        if ((int)$Info['error'] != 0){
+        if ((int)$Info['error'] > 0){
             $this->_error = $Info['error'];
             return false;
         }
@@ -89,6 +89,7 @@ class UpLoadFile{
                 $this->_error = $this->_UPLOAD_ERR_FORBID_EXT;
                 return false;
             }
+            
             if (move_uploaded_file($Info['tmp_name'],$p2)){
                 unset($Info['tmp_name'],$Info['error']);
                 return $Info;
@@ -135,7 +136,8 @@ class UpLoadFile{
      * @return string
      */
     function getError(){
-        if ($this->error==0) {
+        if ($this->_error==0) { return ; }
+        if ($this->_error==10) {
             return l('Upload error '.$this->_error,array(get_cfg_var('post_max_size')));
         } else {
             return l('Upload error '.$this->_error);

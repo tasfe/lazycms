@@ -31,7 +31,9 @@ class Field2Tag{
      *
      */
     function __construct($model){
-        $this->Field2Tag($model);
+        $this->_model  = $model;
+        $this->_fields = json_decode($model['modelfields']);
+        $this->_val    = new Validate();
     }
     /**
      * 初始化
@@ -39,9 +41,7 @@ class Field2Tag{
      * @return Field2Tag
      */
     function Field2Tag($model){
-        $this->_model  = $model;
-        $this->_fields = json_decode($model['modelfields']);
-        $this->_val    = new Validate();
+        $this->__construct($model);
     }
     /**
      * 取得验证对象

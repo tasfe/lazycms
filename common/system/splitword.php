@@ -43,14 +43,6 @@ class SplitWord{
      *
      */
     function __construct(){
-        $this->SplitWord();
-    }
-    /**
-     * 初始化类
-     *
-     * @return SplitWord
-     */
-    function SplitWord(){
         @set_time_limit(0);
         // 预先加载词库
         $files = glob(COM_PATH.'/dicts/*',GLOB_BRACE); asort($files,SORT_REGULAR);
@@ -68,6 +60,14 @@ class SplitWord{
             }
             fclose($fp);
         }
+    }
+    /**
+     * 初始化类
+     *
+     * @return SplitWord
+     */
+    function SplitWord(){
+        $this->__construct();
     }
     /**
      * 判断是否在词典内

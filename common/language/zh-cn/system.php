@@ -61,7 +61,6 @@ return array(
     'Database version lower'    => '%s数据库版本低于%s，请升级数据库版本！',
     
     /* 上传错误信息 */
-    'Upload error 0' => 'POST值超过了 post_max_size(%s)',
     'Upload error 1' => '上传的文件超过了 php.ini 中 upload_max_filesize 选项限制的值',
     'Upload error 2' => '上传文件的大小超过了 HTML 表单中 MAX_FILE_SIZE 选项指定的值',
     'Upload error 3' => '文件只有部分被上传',
@@ -71,6 +70,7 @@ return array(
     'Upload error 7' => '文件写入失败',
     'Upload error 8' => '上传的文件类型不允许',
     'Upload error 9' => '非法提交',
+    'Upload error 10' => 'POST值超过了 post_max_size(%s)',
     
     /* 其他 */
     'No Main'       => '没有定义默认函数：lazy_main()',

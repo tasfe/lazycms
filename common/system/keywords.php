@@ -30,7 +30,9 @@ class Keywords{
      *
      */
     function __construct($module=null){
-        $this->Keywords($module);
+        $this->_db   = get_conn();
+        $this->_dict = COM_PATH.'/dicts/LazyCMS_Private.dict';
+        $this->_joinTable = Content_Model::getJoinTableName(empty($module)?MODULE:$module);
     }
     /**
      * 初始化
@@ -38,9 +40,7 @@ class Keywords{
      * @return Keywords
      */
     function Keywords($module=null){
-        $this->_db   = get_conn();
-        $this->_dict = COM_PATH.'/dicts/LazyCMS_Private.dict';
-        $this->_joinTable = Content_Model::getJoinTableName(empty($module)?MODULE:$module);
+        $this->__construct($module);
     }
     /**
      * 根据id取得关键词列表

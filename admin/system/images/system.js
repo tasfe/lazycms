@@ -19,7 +19,7 @@
  */
 $(document).ready(function(){
     // 绑定submit提交事件
-    $("form[method=post]:not(a[ajax=false]").ajaxSubmit();
+    $("form[method=post]:not(form[ajax=false])").ajaxSubmit();
     // Reset separator width
     $('#menu li.hr').each(function(){
         $(this).width($(this).parent().width());

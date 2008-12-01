@@ -37,7 +37,11 @@ class Httplib{
      * @param 同下面的参数
      */
     function __construct($url=null,$method='GET',$timeout=60){
-        return $this->Httplib($url,$method,$timeout);
+        @set_time_limit(0);
+        if (!empty($url)) {
+            $this->connect($url,$method,$timeout);
+        }
+        return $this;
     }
     /**
      * 初始化对象
@@ -48,11 +52,7 @@ class Httplib{
      * @return object
      */
     function Httplib($url=null,$method='GET',$timeout=60){
-        @set_time_limit(0);
-        if (!empty($url)) {
-            $this->connect($url,$method,$timeout);
-        }
-        return $this;
+        return $this->__construct($url,$method,$timeout);
     }
     /**
      * 改变连接url

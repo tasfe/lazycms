@@ -29,12 +29,6 @@ class lazy_mysql extends DB {
      * 兼容PHP5模式
      */
     function __construct(){
-        $this->lazy_mysql();
-    }
-    /**
-     * 初始化类
-     */
-    function lazy_mysql(){
         // 添加PHP4下的析构函数
         register_shutdown_function(array(&$this, '__destruct'));
         // 添加额外的参数，不能添加 host,port,user,pwd,name,prefix
@@ -42,6 +36,12 @@ class lazy_mysql extends DB {
             'lang'  => 'utf8',
         );
         $this->config($config);
+    }
+    /**
+     * 初始化类
+     */
+    function lazy_mysql(){
+        $this->__construct();
     }
     /**
      * 连接MySQL

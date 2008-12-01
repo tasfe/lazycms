@@ -48,7 +48,11 @@ class Recordset{
      *
      */
     function __construct(){
-        $this->Recordset();
+        $this->action = null;
+        $this->url  = null;
+        $this->page = !empty($_REQUEST['page']) ? $_REQUEST['page'] : 1;
+        $this->size = !empty($_REQUEST['size']) ? $_REQUEST['size'] : 15;
+        $this->_db   = get_conn();
     }
     /**
      * 初始化
@@ -56,11 +60,7 @@ class Recordset{
      * @return Recordset
      */
     function Recordset(){
-        $this->action = null;
-        $this->url  = null;
-        $this->page = !empty($_REQUEST['page']) ? $_REQUEST['page'] : 1;
-        $this->size = !empty($_REQUEST['size']) ? $_REQUEST['size'] : 15;
-        $this->_db   = get_conn();
+        $this->__construct();
     }
     /**
      * 执行SQL
