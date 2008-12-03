@@ -1,14 +1,14 @@
 <?php
 /**
  * +---------------------------------------------------------------------------+
- * | LL                             LLLL   LL     L   LLLL                 LL  |
- * | LL                            LL   L  LLL   LL  LL   L               LLL  |
- * | LL      LLLL   LLLLL  LL  LL  LL      LLLL LLL  LL          LL  LL    LL  |
- * | LL         LL     LL  LL  LL  LL      L LLL LL  LLLLL       LL  LL    LL  |
- * | LL      LLLLL    LL    LLLL   LL      L  L  LL   LLLLL      LL  LL    LL  |
- * | LL     LL  LL   LL     LLLL   LL      L     LL      LL       LLLL     LL  |
- * | LL     LL  LL  LL       LL    LL   L  L     LL  L   LL       LLLL     LL  |
- * | LLLLLL  LLLLL  LLLLL    LL     LLLL   L     LL   LLLL         LL     LLLL |
+ * | LL                             LLLL   LL     L   LLLL               LLLL  |
+ * | LL                            LL   L  LLL   LL  LL   L             LL  LL |
+ * | LL      LLLL   LLLLL  LL  LL  LL      LLLL LLL  LL         LL  LL      LL |
+ * | LL         LL     LL  LL  LL  LL      L LLL LL  LLLLL      LL  LL     LL  |
+ * | LL      LLLLL    LL    LLLL   LL      L  L  LL   LLLLL     LL  LL    LL   |
+ * | LL     LL  LL   LL     LLLL   LL      L     LL      LL      LLLL    LL    |
+ * | LL     LL  LL  LL       LL    LL   L  L     LL  L   LL      LLLL   LL     |
+ * | LLLLLL  LLLLL  LLLLL    LL     LLLL   L     LL   LLLL        LL    LLLLLL |
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
@@ -114,7 +114,9 @@ class System{
         if (g('TABS')) {
             $hl.= '</div>';
         }
-        $hl.= '</div><div id="footer"><a href="http://www.lazycms.net" target="_blank">Copyright &copy; LazyCMS.net All Rights Reserved.</a></div>';
+        $GLOBALS['_endTime'] = microtime(true);
+        $execTime = ($GLOBALS['_endTime']-$GLOBALS['_beginTime']);
+        $hl.= sprintf('</div><div id="footer"><a href="http://www.lazycms.net" target="_blank">Copyright &copy; LazyCMS.net All Rights Reserved.</a><br/>Processed in %f second(s)</div>',$execTime);
         $hl.= '</body></html>'; echo $hl;
     }
     /**
