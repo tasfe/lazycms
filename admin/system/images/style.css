@@ -22,7 +22,7 @@
 @import url("../../../common/images/global.css");
 @import url("../../../common/images/icons.css");
 /* 全局样式 */
-body { height:100%; margin:0; background: #FFF; text-align:left; }
+body { height:100%; margin:0 0 25px 0; background: #FFF; text-align:left; }
 body,td,th,p,div { color: #333333; line-height: 130%; font-family: Verdana; font-size: 12px;}
 dl,dt,dd,form{ margin:0; padding:0;}
 img,input,button,select{ vertical-align:middle; }
@@ -86,26 +86,28 @@ a:hover   { text-decoration: underline; }
 	.panel .head strong{ padding-top:3px; display:block; float:left;}
 	.panel .head a{ display:block; float:right; padding:0 5px; margin-right:5px; text-decoration:none; font-weight:bold;}
 	.panel .body p{ margin:5px 0 5px 0; clear:both; }
-	.panel .body p label{ width:80px; text-align:right; display:block; float:left; color:#0000FF; line-height:200%; font-size:12px; margin:0 5px 3px 0;}
+	.panel .body p label{ width:90px; text-align:right; display:block; float:left; color:#0000FF; line-height:200%; font-size:12px; margin:0 5px 3px 0;}
 	.panel .body span label{ width:auto; margin:0px; text-align:left; float:none; display:inline; color:#666666;}
-	
-#shortcut{ width:49%; display:table; float:left; }
-	#shortcut .head strong{ cursor:default;}
-	#shortcut .body{ padding:5px;}
-	#shortcut dl{ margin-bottom:15px; clear:both; display:table; zoom:1;  }
-	#shortcut dt{ padding-left:8px; line-height:150%; font-weight:bold; background:url(shortcut-line.png) no-repeat left bottom; }
-	#shortcut dd{ margin:8px 8px 0 5px; }
-	#shortcut dd a{ margin:1px; background-image:url(../../../common/images/link/weblink.png); background-repeat:no-repeat; background-position:center 3px; display:block; width:60px; padding:40px 5px 3px 5px; text-align:center; text-decoration:none; color:#333333;}
-	#shortcut dd a:hover{ margin:0; border:solid 1px #A5D11F; background-color:#F4FBE1;}
 
-#sysinfo{ width:50%; display:table; float:right; }
+/* 系统信息 */
+#sysinfo{ width:40%; height:420px; display:table; float:left; }
 	#sysinfo .head strong{ cursor:default;}
-	#sysinfo .body{ padding:5px;}
+	#sysinfo .body{ padding:5px; }
 	#sysinfo .body p label{ line-height:150%; }
 	#sysinfo dl{ margin-bottom:15px; clear:both; display:table; zoom:1;  }
 	#sysinfo dt{ padding-left:8px; line-height:150%; font-weight:bold; background:url(shortcut-line.png) no-repeat left bottom; }
 	#sysinfo dd{ margin:8px 8px 0 5px; }
-	
+
+/* 快捷方式 */
+#shortcut{ width:59%; height:420px; display:table; float:right; }
+	#shortcut .head strong{ cursor:default;}
+	#shortcut .body{ padding:5px;}
+	#shortcut dl{ margin-bottom:15px; clear:both; display:table; zoom:1;  }
+	#shortcut dt{ padding-left:8px; line-height:150%; font-weight:bold; background:url(shortcut-line.png) no-repeat left bottom; }
+	#shortcut dd{ float:left; margin:8px 8px 0 5px; }
+	#shortcut dd a{ border:solid 1px #FFF; background-image:url(../../../common/images/link/weblink.png); background-repeat:no-repeat; background-position:center 3px; display:block; width:60px; padding:40px 5px 3px 5px; text-align:center; text-decoration:none; color:#333333;}
+	#shortcut dd a:hover{ border:solid 1px #A5D11F; background-color:#F4FBE1;}
+
 /* tabs */
 #tabs{ width:99%; display:table; zoom:1; position:relative; bottom:-1px; margin:0 0 0 5px; padding:0; list-style:none; clear:both;}
 	#tabs li{ line-height:23px; float:left; margin-right:5px; border:1px solid #c6d9e7; background:url(../../../common/images/buttons-bg.png) repeat-x 0 -2px;}
@@ -142,4 +144,7 @@ a:hover   { text-decoration: underline; }
 	#box a.collapsed{padding-left:18px; background:url(../../../common/images/icons.png) no-repeat 0px -120px;}
 
 /* footer */
-#footer{ padding:10px; text-align:center;}
+#footer{ padding:10px; text-align:center; }
+
+/* toolbar */
+#toolbar{ width:98%; height:25px; margin:0 1%; border:solid 1px #B5B5B5; border-bottom:none; background:#E5E5E5; /*position:fixed; bottom:0; z-index:9999;*/}

@@ -107,14 +107,14 @@ class Recordset{
         } else {
             $disabled = ' disabled="disabled"';
         }
-        $R = '<div class="button"><button onclick="checkALL(this,\'all\');" type="button"'.$disabled.'>'.l('Select all').'</button><button onclick="checkALL(this);" type="button"'.$disabled.'>'.l('Reset select').'</button>';
-        $p2 = '<button onclick="$(this).gp(\'delete\');" type="button"'.$disabled.'>'.l('Delete').'</button>';
+        $R = '<div class="button"><button onclick="$(this.form).checkALL(\'all\');" type="button"'.$disabled.'>'.l('Select all').'</button><button onclick="$(this.form).checkALL();" type="button"'.$disabled.'>'.l('Reset select').'</button>';
+        $p2 = '<button onclick="$(this.form).ajaxButton(\'delete\');" type="button"'.$disabled.'>'.l('Delete').'</button>';
         if (!empty($p1)) {
             $R1 = explode('|',$p1);
             foreach ($R1 as $v) {
                 if ($v!='-') {
                     $R2 = explode(':',$v);
-                    $R.= '<button onclick="$(this).gp(\''.$R2[0].'\');" type="button"'.$disabled.'>'.$R2[1].'</button>';
+                    $R.= '<button onclick="$(this.form).ajaxButton(\''.$R2[0].'\');" type="button"'.$disabled.'>'.$R2[1].'</button>';
                 }
             }
         }
@@ -137,7 +137,7 @@ class Recordset{
     function open(){
         $this->_hl = '<form name="form1" id="form1"  action="'.$this->action.'" class="form">';
         if ((int)$this->length > 0) {
-            $this->_hl.= "<script type=\"text/javascript\">var lazy_delete = '".l('Delete')."';var lazy_clear = '".l('Confirm clear')."';function E(){var K = arguments;document.writeln('<tr>'+".$this->_td."'</tr>');};function R(){ var K = arguments; return '<tr>'+".$this->_td."'</tr>';}</script>";    
+            $this->_hl.= "<script type=\"text/javascript\">var lazy_delete = '".l('Confirm delete')."';var lazy_clear = '".l('Confirm clear')."';function E(){var K = arguments;document.writeln('<tr>'+".$this->_td."'</tr>');};function R(){ var K = arguments; return '<tr>'+".$this->_td."'</tr>';}</script>";    
         }
         $this->_hl.= '<table class="table" cellspacing="0">';
     }

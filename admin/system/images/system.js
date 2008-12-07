@@ -60,4 +60,6 @@ $(document).ready(function(){
         var lastVersion  = d.version.replace(/\./g,''); $('#version span').text(d.version);
         if (lastVersion>localVersion) { if (typeof d.code!='undefined') { eval(d.code); } }
     });
+	$('#toolbar').floatDiv('LB');
 });
+

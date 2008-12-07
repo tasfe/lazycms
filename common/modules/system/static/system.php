@@ -49,11 +49,13 @@ class System{
         $hl.= '<li><span>'.l('System manage').'<b class="down-arrow"></b></span><ul>';
         $hl.= '    <li><a href="../system/index.php" class="icon-16-cpanel">'.l('Cpanel').'</a></li>';
         $hl.= '    <li class="hr"></li>';
-        $hl.= '    <li><a href="../system/media.php" class="icon-16-media">'.l('Webftp').'</a></li>';
+        $hl.= '    <li><a href="../system/admin.php" class="icon-16-admin">'.l('Admins').'</a></li>';
+        $hl.= '    <li><a href="../system/files.php" class="icon-16-files">'.l('Webftp').'</a></li>';
+        $hl.= '    <li class="hr"></li>';
         $hl.= '    <li><a href="../system/install.php" class="icon-16-install">'.l('Modules').'</a></li>';
         $hl.= '    <li><a href="../system/settings.php" class="icon-16-config">'.l('Settings').'</a></li>';
         $hl.= '    <li class="hr"></li>';
-        $hl.= '    <li><a href="../system/logout.php" class="icon-16-logout" onclick="return confirm(\''.l('Confirm logout').'\')">'.l('Logout').'</a></li>';
+        $hl.= '    <li><a href="javascript:;" class="icon-16-logout" onclick="return $.confirm(\''.l('Confirm logout').'\',function(r){ r ? $.redirect(\'../system/logout.php\') : false; })">'.l('Logout').'</a></li>';
         $hl.= '</ul></li>';
         $hl.= '
             <li><span>内容管理<b class="down-arrow"></b></span>
@@ -75,7 +77,7 @@ class System{
         $hl.= '    <li><a href="../system/sysinfo.php" class="icon-16-info">'.l('System info').'</a></li>';
         $hl.= '    </ul>';
         $hl.= '</li></ul>';
-        $hl.= '<ul class="menu"><li><a href="'.SITE_BASE.'" target="_blank">'.l('Preview').'</a></li><li><a href="../system/logout.php" onclick="return confirm(\''.l('Confirm logout').'\')">'.l('Logout').'</a></li></ul>';
+        $hl.= '<ul class="menu"><li><a href="'.SITE_BASE.'" target="_blank">'.l('Preview').'</a></li><li><a href="#">'.l('修改密码').'</a></li><li><a href="javascript:;" onclick="return $.confirm(\''.l('Confirm logout').'\',function(r){ r ? $.redirect(\'../system/logout.php\') : false; })">'.l('Logout').'</a></li></ul>';
         $hl.= '</div><div id="main">';
         if ($tabs = g('TABS')) { 
             $hl.= menu($selected.$tabs); 
@@ -106,6 +108,101 @@ class System{
         g('SCRIPT',$R);
     }
     /**
+     * 管理员登录验证
+     *
+     * @param string $p1    用户名
+     * @param string $p2    密码
+     */
+    function checkAdmin($p1,$p2){
+        return System::getAdmin($p1,$p2);
+    }
+    /**
+     * 验证管理员权限
+     *
+     * @param string $p1    用户名
+     * @param string $p2    权限不正确，退出地址
+     */
+    function purview($p1){
+        $_USER = System::getAdmin($p1);
+        if (!$_USER) {
+            // TODO: 没有权限，或没有登录，提示
+            if ($_SERVER['HTTP_AJAX_SUBMIT']) {
+                alert('你没有权限查看此页');
+            } else {
+                die('你没有权限查看此页!');
+            }
+        }
+        return $_USER;
+    }
+    /**
+     * 验证后台用户的登录和权限
+     * 
+     * @example 
+     *  get_admin() 取得已登录管理员的信息
+     *  get_admin('purview') 验证已登录管理员的权限
+     *  get_admin('adminname','adminpass') 进行管理员登录验证
+     */
+    function getAdmin(){
+        $db = get_conn(); 
+        $funcNum = func_num_args();
+        $params  = func_get_args();
+        if ((int)$funcNum <= 1) {
+            $params[2] = $params[0];
+            $params[0] = Cookie::get('adminname');
+            $params[1] = Cookie::get('adminpass');
+        }
+        if (empty($params[0]) || empty($params[0])) { return false; }
+        // 开始验证
+        $res = $db->query("SELECT * FROM `#@_system_admin` WHERE `adminname`=? LIMIT 0,1;",$params[0]);
+        if ($rs = $db->fetch($res)) {
+            // 验证用户名密码
+            if ((int)$funcNum > 1) {
+                $md5pass = md5($params[1].$rs['adminkey']);
+                if ($md5pass == $rs['adminpass']) {
+                    $newkey  = substr($md5pass,0,6);
+                    $newpass = md5($params[1].$newkey);
+                    // 更新数据
+                    $db->update('#@_system_admin',array(
+                        'adminpass' => $newpass,
+                        'adminkey'  => $newkey,
+                    ),DB::quoteInto('`adminname` = ?',$params[0]));
+                    // 合并新密码和key
+                    $rs = array_merge($rs,array(
+                        'adminpass' => $newpass,
+                        'adminkey'  => $newkey,
+                    ));
+                    return $rs;
+                }
+            } elseif ((int)$funcNum == 1) {
+                // 验证权限正确，则返回管理员信息
+                if ((string)$params[1] == (string)$rs['adminpass']) {
+                    // 输入权限则进行验证，不输入权限则只返回管理员信息
+                    if (isset($params[2])) {
+                        $params[2] = strtolower($params[2]);
+                        // 先查找是否有此权限
+                        if (instr($rs['purview'],$params[2])) {
+                            return $rs;
+                        }
+                        // 没有此权限，则查找是否有父权限
+                        foreach ((array)explode(',',$rs['purview']) as $p) {
+                            if (!strncasecmp($params[2],$p,strlen($p))){
+                                return $rs;
+                            }
+                        }
+                    } else {
+                        return $rs;
+                    }
+                }
+            } else {
+                // 验证是否登录
+                if ((string)$params[1] == (string)$rs['adminpass']) {
+                    return $rs;
+                }
+            }
+        }
+        return false;
+    }
+    /**
      * 输出后台尾部
      *
      */
@@ -117,6 +214,7 @@ class System{
         $GLOBALS['_endTime'] = microtime(true);
         $execTime = ($GLOBALS['_endTime']-$GLOBALS['_beginTime']);
         $hl.= sprintf('</div><div id="footer"><a href="http://www.lazycms.net" target="_blank">Copyright &copy; LazyCMS.net All Rights Reserved.</a><br/>Processed in %f second(s)</div>',$execTime);
+        $hl.= '<div id="toolbar"></div>';
         $hl.= '</body></html>'; echo $hl;
     }
     /**

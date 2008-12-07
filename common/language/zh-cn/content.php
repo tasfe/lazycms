@@ -33,6 +33,11 @@ return array(
     'Model table'   => '数据表名',
     'Model state'   => '状态',
     
+    'Model import file' => '模型文件',
+    'Model import code' => '模型代码',
+    'Model import submit'   => '导入',
+    
+    
     /* Model tip */
     'Model execute success' => '操作成功',
     'Model execute delete success'  => '执行删除成功',

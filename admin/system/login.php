@@ -25,7 +25,7 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_main() {
-    if (check_admin('system')) { redirect('main.php'); return; }
+    if (System::getAdmin()) { redirect('index.php'); return; }
     $val = new Validate();
     if ($val->method()) {
         $val->check('adminname|1|'.l('Login check name').'|2-30');
@@ -40,37 +40,36 @@ function lazy_main() {
             $language = ($language == 'default')  ? c('LANGUAGE')      : $language;
             $cookie   = isset($_POST['cookie'])   ? $_POST['cookie']   : null;
             $cookie   = empty($cookie) ? $cookie : (now() + $cookie);
-            $_USER    = check_admin($adminname,$adminpass);
+            $_USER    = System::checkAdmin($adminname,$adminpass);
             if ($_USER) {
                 // 设置登陆信息
                 Cookie::set('adminname',$_USER['adminname'],$cookie);
                 Cookie::set('adminpass',$_USER['adminpass'],$cookie);
                 Cookie::set('language',$_USER['language'],$cookie);
-                // TODO: 跳转到main.php
                 redirect('index.php');
             } else {
                 // TODO: 输出错误信息
-                echo_json('ALERT','用户名密码不正确');
+                alert('用户名密码不正确',0);
             }
             return;
         }
     }
-    $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
-    $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-    $hl.= '<title>'.l('Login title').'</title>';
-    $hl.= '<link href="images/style.css" rel="stylesheet" type="text/css" />';
-    $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.2.6"></script>';
-    $hl.= '<script type="text/javascript" src="../../common/js/lazycms.library.js?ver=1.0"></script>';
-    $hl.= '<script type="text/javascript"> $(document).ready(function(){ $("#username").focus(); $("form[method=post]:not(form[ajax=false])").ajaxSubmit(); }); </script>';
-    $hl.= '</head><body>';
-    $hl.= '<form id="login" name="login" method="post" action="'.PHP_FILE.'">';
-    $hl.= '<div class="col1">'.l('Login description').'</div>';
-    $hl.= '<dl class="col2">';
-    $hl.= '<dt>'.l('Login title').'</dt>';
-    $hl.= '<dd><label>'.l('Login name').'</label><input type="text" name="adminname" id="adminname" tabindex="1" /></dd>';
-    $hl.= '<dd><label>'.l('Login pass').'</label><input type="password" name="adminpass" id="adminpass" tabindex="2" /></dd>';
-    $hl.= '<dd><label>'.l('Cookie expire').'</label>';
-    $hl.= '<select name="cookie" id="cookie">';
+    echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
+    echo '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
+    echo '<title>'.l('Login title').'</title>';
+    echo '<link href="images/style.css" rel="stylesheet" type="text/css" />';
+    echo '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.2.6"></script>';
+    echo '<script type="text/javascript" src="../../common/js/lazycms.library.js?ver=1.0"></script>';
+    echo '<script type="text/javascript"> $(document).ready(function(){ $("#username").focus(); $("form[method=post]:not(form[ajax=false])").ajaxSubmit(); }); </script>';
+    echo '</head><body>';
+    echo '<form id="login" name="login" method="post" action="'.PHP_FILE.'">';
+    echo '<div class="col1">'.l('Login description').'</div>';
+    echo '<dl class="col2">';
+    echo '<dt>'.l('Login title').'</dt>';
+    echo '<dd><label>'.l('Login name').'</label><input type="text" name="adminname" id="adminname" tabindex="1" /></dd>';
+    echo '<dd><label>'.l('Login pass').'</label><input type="password" name="adminpass" id="adminpass" tabindex="2" /></dd>';
+    echo '<dd><label>'.l('Cookie expire').'</label>';
+    echo '<select name="cookie" id="cookie">';
     $expire = array(
         0        => 'process',
         3600     => '1 hour',
@@ -80,17 +79,17 @@ function lazy_main() {
         31536000 => 'permanent',
     );
     foreach ($expire as $v) {
-        $hl.= '<option value="'.$v.'">'.l('Cookie expire '.$v).'</option>';
+        echo '<option value="'.$v.'">'.l('Cookie expire '.$v).'</option>';
     }
-    $hl.= '</select>';
-    $hl.= '</dd>';
-    $hl.= '<dd><label>'.l('Login language').'</label>';
-    $hl.= '<select name="language" id="language">';
-    $hl.= '<option value="default">'.l('Default').'</option>';
-    $hl.= form_opts('@.language','lang','<option value="#value#"#selected#>#name#</option>');
-    $hl.= '</select>';
-    $hl.= '<dd><button type="submit" tabindex="3">'.l('Login submit').'</button> <button type="reset">'.l('Reset').'</button></dd>';
-    $hl.= '</dl>';
-    $hl.= '</form></body></html>';
+    echo '</select>';
+    echo '</dd>';
+    echo '<dd><label>'.l('Login language').'</label>';
+    echo '<select name="language" id="language">';
+    echo '<option value="default">'.l('Default').'</option>';
+    echo form_opts('@.language','lang','<option value="#value#"#selected#>#name#</option>');
+    echo '</select>';
+    echo '<dd><button type="submit" tabindex="3">'.l('Login submit').'</button> <button type="reset">'.l('Reset').'</button></dd>';
+    echo '</dl>';
+    echo '</form></body></html>';
     echo($hl);
 }

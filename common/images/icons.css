@@ -24,8 +24,8 @@
 
 /* 16x16 ICONS */
 .icon-16-cpanel     { background: url(menu-icons.png) no-repeat 0px 1px !important; }
-.icon-16-user       { background: url(menu-icons.png) no-repeat 0px -32px !important; }
-.icon-16-media      { background: url(menu-icons.png) no-repeat 0px -64px !important; }
+.icon-16-admin      { background: url(menu-icons.png) no-repeat 0px -32px !important; }
+.icon-16-files      { background: url(menu-icons.png) no-repeat 0px -64px !important; }
 .icon-16-config     { background: url(menu-icons.png) no-repeat 0px -96px !important; }
 .icon-16-logout     { background: url(menu-icons.png) no-repeat 0px -128px !important; }
 .icon-16-info       { background: url(menu-icons.png) no-repeat 0px -160px !important; }
@@ -58,3 +58,18 @@
 .icon-16-stop       { background: url(icons.png) no-repeat 0px -400px !important; }
 .icon-16-tick       { background: url(icons.png) no-repeat 0px -420px !important; }
 .icon-16-tip        { background: url(icons.png) no-repeat 0px -440px !important; }
+
+/* 32x32 ICONS */
+.icon-32-admin		{ background-image:url(link/admin.png) !important; }
+.icon-32-files		{ background-image:url(link/files.png) !important; }
+.icon-32-settings	{ background-image:url(link/settings.png) !important; }
+.icon-32-install	{ background-image:url(link/install.png) !important; }
+.icon-32-article	{ background-image:url(link/article.png) !important; }
+.icon-32-sort		{ background-image:url(link/sort.png) !important; }
+.icon-32-model		{ background-image:url(link/model.png) !important; }
+.icon-32-page		{ background-image:url(link/page.png) !important; }
+
+/* 32x32 ICONS */
+.icon-32-success	{ background: url(info_icons.png) no-repeat 0px 0px !important; }
+.icon-32-error		{ background: url(info_icons.png) no-repeat 0px -40px !important; }
+.icon-32-alert		{ background: url(info_icons.png) no-repeat 0px -80px !important; }

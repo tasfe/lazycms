@@ -76,7 +76,7 @@ function lazy_main(){
                 $config = preg_replace('/(\''.$field.'\'( |\t)*\=\>( |\t)*)((true|false|null|[-\d]+)|\'.+\'),/ie','\'\\1\'.$data.\',\'',$config);
             }
             save_file(COM_PATH.'/config.php',$config);
-            alert('MESSAGE',0);
+            success(l('System settings save success'),0);
         }
     }
     System::header(l('Settings'));

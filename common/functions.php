@@ -149,6 +149,19 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
     
 }
 /**
+ * 批量获取指定的post or get 数组
+ *
+ * @return array
+ */
+function POST(){
+    $R = array();
+    $F = func_get_args();
+    foreach ($F as $v) {
+        $R[] = $_POST[$v];
+    }
+    return $R;
+}
+/**
  * 按钮
  *
  * @param string $p1
@@ -378,7 +391,7 @@ function echo_json($p1,$p2){
     )));
 }
 /**
- * alert警告窗
+ * alert 警告
  *
  * @param string $p1    Message
  * @param string $p2    Url:可选
@@ -386,8 +399,8 @@ function echo_json($p1,$p2){
  *          0：当前url，不带 $_SERVER["QUERY_STRING"]
  *          1:来路，$_SERVER["HTTP_REFERER"]
  */
-function alert($p1,$p2=null){
-    switch ((string)$p1) {
+function alert($p1,$p2=''){
+    switch ((string)$p2) {
         case '0':
             $p2 = PHP_FILE;
             break;
@@ -396,6 +409,52 @@ function alert($p1,$p2=null){
             break;
     }
     echo_json('ALERT',array(
+        'MESSAGE' => $p1,
+        'URL'     => $p2,
+    ));
+}
+/**
+ * success 提示
+ *
+ * @param string $p1    Message
+ * @param string $p2    Url:可选
+ *          默认参数：不进行转向
+ *          0：当前url，不带 $_SERVER["QUERY_STRING"]
+ *          1:来路，$_SERVER["HTTP_REFERER"]
+ */
+function success($p1,$p2=''){
+    switch ((string)$p2) {
+        case '0':
+            $p2 = PHP_FILE;
+            break;
+        case '1':
+            $p2 = $_SERVER["HTTP_REFERER"];
+            break;
+    }
+    echo_json('SUCCESS',array(
+        'MESSAGE' => $p1,
+        'URL'     => $p2,
+    ));
+}
+/**
+ * error 提示
+ *
+ * @param string $p1    Message
+ * @param string $p2    Url:可选
+ *          默认参数：不进行转向
+ *          0：当前url，不带 $_SERVER["QUERY_STRING"]
+ *          1:来路，$_SERVER["HTTP_REFERER"]
+ */
+function error($p1,$p2=''){
+    switch ((string)$p2) {
+        case '0':
+            $p2 = PHP_FILE;
+            break;
+        case '1':
+            $p2 = $_SERVER["HTTP_REFERER"];
+            break;
+    }
+    echo_json('ERROR',array(
         'MESSAGE' => $p1,
         'URL'     => $p2,
     ));
@@ -875,82 +934,6 @@ function pagelist($p1,$p2,$p3,$p4){
         $R.= '<a href="'.str_replace('$',$p2+1,$p1).'">&raquo;</a>';
     }
     return '<div class="pages">'.$R.'</div>';
-}
-/**
- * 管理员登录验证
- *
- * @param string $p1    用户名
- * @param string $p2    密码
- */
-function check_admin($p1,$p2){
-    return get_admin($p1,$p2);
-}
-/**
- * 验证管理员权限
- *
- * @param string $p1    用户名
- * @param string $p2    权限不正确，退出地址
- */
-function check_admin_purview($p1,$p2='logout.php'){
-    $_USER = get_admin($p1);
-    if (!$_USER) {
-        // TODO: 没有权限，或没有登录，提示
-    }
-    return $_USER;
-}
-/**
- * 验证后台用户的登录和权限
- * 
- * @example 
- *  get_admin() 取得已登录管理员的信息
- *  get_admin('purview') 验证已登录管理员的权限
- *  get_admin('adminname','adminpass') 进行管理员登录验证
- */
-function get_admin(){
-    $db = get_conn(); 
-    $funcNum = func_num_args();
-    $params  = func_get_args();
-    if ((int)$funcNum <= 1) {
-        $params[2] = $params[0];
-        $params[0] = Cookie::get('adminname');
-        $params[1] = Cookie::get('adminpass');
-    }
-    // 开始验证
-    $res = $db->query("SELECT * FROM `#@_system_admin` WHERE `adminname`=? LIMIT 0,1;",$params[0]);
-    if ($rs = $db->fetch($res)) {
-        // 验证用户名密码
-        if ((int)$funcNum > 1) {
-            $md5pass = md5($params[1].$rs['adminkey']);
-            if ($md5pass == $rs['adminpass']) {
-                $newkey  = substr($md5pass,0,6);
-                $newpass = md5($params[1].$newkey);
-                // 更新数据
-                $db->update('#@_system_admin',array(
-                    'adminpass' => $newpass,
-                    'adminkey'  => $newkey,
-                ),DB::quoteInto('`adminname` = ?',$params[0]));
-                // 合并新密码和key
-                $rs = array_merge($rs,array(
-                    'adminpass' => $newpass,
-                    'adminkey'  => $newkey,
-                ));
-                return $rs;
-            }
-        } elseif ((int)$funcNum == 1) {
-            // 验证权限正确，则返回管理员信息
-            if ((string)$params[1] == (string)$rs['adminpass']) {
-                // 输入权限则进行验证，不输入权限则只返回管理员信息
-                if (isset($params[2])) {
-                    if (instr($rs['purview'],$params[2])) {
-                        return $rs;
-                    }
-                } else {
-                    return $rs;
-                }
-            }
-        }
-    }
-    return false;
 }
 /**
  * 多功能导入函数

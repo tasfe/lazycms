@@ -29,6 +29,8 @@ return array(
     'Help'  => '帮助',
     'Save'  => '保存',
     'Reset' => '重置',
+    'Lock'  => '锁定',
+    'Unlock'    => '启用',
     'Submit'    => '提交',
     'Default'   => '默认',
     'Delete'    => '删除',
@@ -42,7 +44,8 @@ return array(
     'Error invalid' => '您输入的参数有误！',
     
     /* JavaScript确认 */
-    'Confirm clear' => '确定要删除吗？',
+    'Confirm delete' => '确定要删除吗？',
+    'Confirm clear'  => '确定要清空吗？',
     'Confirm logout' => '确定要退出吗？',
     
     /* 页面异常 */
@@ -99,6 +102,7 @@ return array(
     
     /* 系统管理 */
     'Cpanel'     => '控制面板',
+    'Admins'     => '系统管理员',
     'Webftp'     => '文件管理',
     'Modules'    => '安装卸载',
     'Settings'   => '系统设置',
@@ -106,7 +110,20 @@ return array(
     'Support Forums'    => '支持论坛',
     'System manage'     => '系统管理',
     'System config'     => '配置信息',
-    
+
+
+    /* 管理员管理 */
+    'Admins add'      => '添加管理员',
+    'Admins name'     => '登录名',
+    'Admins email'    => 'Email',
+    'Admins language' => '界面语言',
+    'Admins state'    => '状态',
+
+    'Admins alert not select'   => '请选择一个管理员！',
+    'Admins execute lock success'   => '【锁定】管理员成功',
+    'Admins execute unlock success' => '【启用】管理员成功',
+    'Admins execute delete success' => '【删除】管理员成功',
+
     /* System info */
     'System info'   => '系统信息',
     'Server OS'     => '服务器系统',
@@ -167,7 +184,7 @@ return array(
     'Upload check DSN config'   => '数据库连接字符串不能为空',
     'Upload check max size is number'   => '格式错误，必须是数字。',
     'Upload check DSN config error format'  => '数据库连接字符串格式不正确',
-    
+
     /* Server settings */
     'Server settings'   => '服务器设置',
     'Server time zone'  => '时区设置',
@@ -214,5 +231,9 @@ return array(
         '12.75'=> '(UTC +12:45) 查塔姆岛',
         '13'   => '(UTC +13:00) 汤加',
         '14'   => '(UTC +14:00) 基里巴斯',
-    )
+    ),
+
+    'System settings save success' => '系统设置保存成功！',
+
+
 );

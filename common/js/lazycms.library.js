@@ -18,30 +18,30 @@
  * +---------------------------------------------------------------------------+
  */
 function dump(o){
-	if (typeof o == 'undefined') {
-		alert(o); return ;
-	}
-	for(k in o){
-		alert(k+' : '+o[k]);
-	}
+    if (typeof o == 'undefined') {
+        alert(o); return ;
+    }
+    for(k in o){
+        alert(k+' : '+o[k]);
+    }
 }
 function debug(s){ alert('debug:' + s); }
 function lock(p1){ return p1 ? icon('lock') : icon('lock-open'); }
 function cklist(p1){ return '<input name="list" id="list_'+p1+'" type="checkbox" value="'+p1+'"/>'; }
 function icon(i,a){
-	var cur = typeof a == "undefined"?' style="cursor:default;"':'';
-	var IMG = '<i class="os icon-16-'+i+'"'+cur+'></i>';
-	var HREF = '<a href="'+a+'">'+IMG+'</a>';
-	if (typeof a == "undefined") { return IMG; } else { return HREF; }
+    var cur = typeof a == "undefined"?' style="cursor:default;"':'';
+    var IMG = '<i class="os icon-16-'+i+'"'+cur+'></i>';
+    var HREF = '<a href="'+a+'">'+IMG+'</a>';
+    if (typeof a == "undefined") { return IMG; } else { return HREF; }
 }
 function getURI(){
-	var e = {};
-		e.Host = (('https:' == self.location.protocol) ? 'https://'+self.location.hostname : 'http://'+self.location.hostname);
-		e.Path = self.location.href.replace(/\?(.*)/,'').replace(e.Host,'');
-		e.File = e.Path.split('/').pop();
-		e.Path = e.Path.substr(0,e.Path.lastIndexOf('/')+1);
-		e.Url  = e.Host + e.Path + e.File;
-		return e;
+    var e = {};
+        e.Host = (('https:' == self.location.protocol) ? 'https://'+self.location.hostname : 'http://'+self.location.hostname);
+        e.Path = self.location.href.replace(/\?(.*)/,'').replace(e.Host,'');
+        e.File = e.Path.split('/').pop();
+        e.Path = e.Path.substr(0,e.Path.lastIndexOf('/')+1);
+        e.Url  = e.Host + e.Path + e.File;
+        return e;
 }
 /**
  * 动态加载脚本
@@ -77,112 +77,351 @@ function LoadScript(p,c){
             }
         }); 
     }
-    $.fn.collapsed = function(){
-		var u = getURI()
-		this.each(function(i){
-			var t = $(this); t.attr('i',i);
-			var r = $(t.attr('rel'),t.parents('fieldset'));
-			var c = $.cookie('collapse_' + u.File + '_' + i);
-			switch (c) {
-				case 'block':
-					t.removeClass('collapse').addClass('collapsed');
-					r.show();
-					break;
-				case 'none':
-					t.removeClass('collapsed').addClass('collapse');
-					r.hide();
-					break;
-				default:
-					if (t.attr('class')=='collapse') {
-						r.hide();
-					} else {
-						r.show();
-					}
-					break;
+	$.dialogUI = function(opts){
+		opts = $.extend({
+			title:'',
+			close:true,
+			opacity:0.6,
+            background:'#FFFFFF'
+        }, opts||{});
+		var width  = $('body').width();
+        var height = $('body').height();
+        if (!$('#dialogUI').is('div')) {
+            $('body').append('<div id="dialogUI"></div>');
+        }
+		// IE6 版本需要搞定 Select QJ Div 层的问题 -_-!!
+		if ($.browser.msie && $.browser.version=='6.0') {
+			if ($('#iframeCover').is('iframe') == false) {
+				$('body').append('<iframe id="iframeCover" style="filter:alpha(opacity=0);position:absolute;z-index:999;left:0;top:0;height:' + height + 'px;width:' + width + 'px;"></iframe>');
+			} else {
+				$('#iframeCover').remove();
 			}
-		});
-		return this;
+		}
+        $('#dialogUI').css({ width:width + 'px',height:height + 'px','left':0,'top':0,'position':'absolute','background':opts.background,'z-index':1000,'filter':'alpha(opacity=' + (100 * opts.opacity) + ')','-moz-opacity':opts.opacity,'opacity':opts.opacity});
+		$('body').append('<div id="dialog"></div>').find('#dialog')
+			.append('<div class="head"><strong>' + opts.title + '</strong>' + (opts.close?'<a href="#" rel="close"></a>':'') + '</div>')
+			.floatDiv({width:'400px',top:'200px',left:$(document).width()/2 - 200})
+			.find('[rel=close]').click(function(){
+				$('#dialogUI,#dialog').remove();
+				return false;
+			}).focus();
+		return $('#dialog');
+	}
+    /**
+     * ajax alert
+     */
+    $.alert = function(message,callback,type){
+		type = type||'alert';
+		$.dialogUI({title:'系统提示',close:false})
+			.append('<div class="body"><div class="icon icon-32-' + type + '"></div><div class="content"><h3>' + message + '</h3></div></div>')
+			.append('<div class="button"><button type="button" rel="submit">确定</button></div>')
+			.floatDiv({width:'400px',top:'200px',left:$(document).width()/2 - 200})
+			.find('[rel=submit]').click(function(){
+				$('#dialogUI,#dialog').remove();
+				if ($.isFunction(callback)) {callback();}
+				return false;
+			}).focus();
+    }
+	/**
+     * ajax confirm
+     */
+	$.confirm = function(message,callback){
+		$.dialogUI({title:'操作确认',close:false})
+			.append('<div class="body"><div class="icon icon-32-alert"></div><div class="content"><h3>' + message + '</h3></div></div>')
+			.append('<div class="button"><button type="button" rel="submit">确定</button><button type="button" rel="cancel">取消</button></div>')
+			.floatDiv({width:'400px',top:'200px',left:$(document).width()/2 - 200})
+			.find('[rel=submit]').click(function(){
+				$('#dialogUI,#dialog').remove();
+				callback(true);
+			}).focus().end()
+			.find('[rel=cancel]').click(function(){
+				$('#dialogUI,#dialog').remove();
+				callback(false);
+			});
+		return false;
+	}
+    /**
+     * 跳转
+     */
+    $.redirect = function(url){
+        if (typeof url != 'undefined' && url != '') {
+            self.location.href = url;
+        }
+    }
+    /**
+     * 折叠
+     *
+     */
+    $.fn.collapsed = function(){
+        var u = getURI()
+        this.each(function(i){
+            var t = $(this); t.attr('i',i);
+            var r = $(t.attr('rel'),t.parents('fieldset'));
+            var c = $.cookie('collapse_' + u.File + '_' + i);
+            switch (c) {
+                case 'block':
+                    t.removeClass('collapse').addClass('collapsed');
+                    r.show();
+                    break;
+                case 'none':
+                    t.removeClass('collapsed').addClass('collapse');
+                    r.hide();
+                    break;
+                default:
+                    if (t.attr('class')=='collapse') {
+                        r.hide();
+                    } else {
+                        r.show();
+                    }
+                    break;
+            }
+        });
+        return this;
+    }
+	$.fn.ajaxButton = function(p,u){
+		var R;
+		var f = this;
+		var u = u||f.attr('action');
+		if (p!='' || p!='-') {
+            p = escape(p);
+        }
+
+		switch (p) {
+			case 'delete':
+				$.confirm(lazy_delete,function(r){
+					r?ajaxPost(p):false;
+				});
+				break;
+			case 'clear':
+				$.confirm(lazy_clear,function(r){
+					r?ajaxPost(p):false;
+				});
+				break;
+			default:
+				ajaxPost(p);
+				break;
+		
+		}
+
+		function ajaxPost(submit){
+			var lists = '';
+            $('input:checkbox',f).each(function(){
+                if(this.checked){
+                    if(lists==''){
+                        lists = this.value;
+                    }else{
+                        lists+= ',' + this.value;
+                    }
+                }
+            });
+			$.ajax({
+				cache: false,
+				url: u,
+				type: 'POST',
+				data: {'submit':submit,'lists':lists},
+				beforeSend: function(s){
+                    s.setRequestHeader("AJAX_SUBMIT",true);
+                },
+				success: function(data){
+					if (d = $.parseJSON(data)) {
+                        switch (d.CODE) {
+                            case 'SUCCESS': // 成功提示
+                                $.alert(d.DATA.MESSAGE,function(){
+                                    $.redirect(d.DATA.URL);
+                                },'success');
+                                break;
+							case 'ERROR':	// 错误提示
+                                $.alert(d.DATA.MESSAGE,function(){
+                                    $.redirect(d.DATA.URL);
+                                },'error');
+                                break;
+							case 'ALERT':	// 警告提示
+                                $.alert(d.DATA.MESSAGE,function(){
+                                    $.redirect(d.DATA.URL);
+                                },'alert');
+                                break;
+                            case 'REDIRECT':// 跳转
+								$.redirect(d.DATA.URL);
+                                break;
+                            default:
+                                debug(data);
+                                break;
+                        }
+                    }
+				}
+			});
+		}
 	}
     /**
      * ajax Submit
      */
     $.fn.ajaxSubmit = function(){
         this.submit(function(){
-    		// 先释放绑定的所有事件，清除错误样式
-    		$('[error]').unbind().removeClass('error');
-    		// 移除所有 Tips 信息
-    		$('.jTip').remove();
+            // 先释放绑定的所有事件，清除错误样式
+            $('[error]').unbind().removeClass('error');
+            // 移除所有 Tips 信息
+            $('.jTip').remove();
             var t = $(this);
             var b = $('button[type=submit]',this);
             // 取得 action 地址
-    		var u = t.attr('action'); if (u==''||typeof u=='undefined') { u = self.location.href; }
-    		// 设置登录按钮
+            var u = t.attr('action'); if (u==''||typeof u=='undefined') { u = self.location.href; }
+            // 设置登录按钮
                 b.attr('disabled',true);
             // 设置编辑器内容
             if (typeof tinyMCE!='undefined') {
-    			var editor = tinyMCE.editors;
-    			for (e in editor) {
-    				$('#'+editor[e].id).val(editor[e].getContent());
-    			}
-    		}
-    		// ajax submit
-    		$.ajax({
-    			cache: false,
-    			url: u,
-    			type: t.attr('method').toUpperCase(),
-    			data: t.serializeArray(),
-    			beforeSend: function(s){
-    				s.setRequestHeader("AJAX_SUBMIT",true);
-    			},
-    			error: function(e,s){
-    				debug(s);
-    			},
-    			success: function(data){
-    				if (d = $.parseJSON(data)) {
-    					switch (d.CODE)	{
-    						case 'VALIDATE':
-    							var c = d.DATA.length;
-    							for (var i=0;i<c;i++) {
-    								$('[name='+d.DATA[i].id+']').unbind().attr('error',d.DATA[i].text).addClass('error');
-    							}
-    							$('[error]').jTips();
-    							break;
-    						case 'ALERT':
-    							alert(d.DATA.MESSAGE);
-    							self.location.href = d.DATA.URL;
-    							break;
-    						case 'REDIRECT' :
-    							self.location.href = d.DATA.URL;
-    							break;
-    						default:
-    							debug(data);
-    							break;
-    					}
-    				}
-    			},
-    			complete: function(){
-    				b.attr('disabled',false);
-    			}
-    		});
+                var editor = tinyMCE.editors;
+                for (e in editor) {
+                    $('#'+editor[e].id).val(editor[e].getContent());
+                }
+            }
+            // ajax submit
+            $.ajax({
+                cache: false,
+                url: u,
+                type: t.attr('method').toUpperCase(),
+                data: t.serializeArray(),
+                beforeSend: function(s){
+                    s.setRequestHeader("AJAX_SUBMIT",true);
+                },
+                error: function(e,s){
+                    debug('error-'+s);
+                },
+                success: function(data){
+                    if (d = $.parseJSON(data)) {
+                        switch (d.CODE) {
+                            case 'VALIDATE':// 显示错误消息
+                                var c = d.DATA.length;
+                                for (var i=0;i<c;i++) {
+                                    $('[name='+d.DATA[i].id+']').unbind().attr('error',d.DATA[i].text).addClass('error');
+                                }
+                                $('[error]').jTips();
+                                break;
+							case 'SUCCESS': // 成功提示
+                                $.alert(d.DATA.MESSAGE,function(){
+                                    $.redirect(d.DATA.URL);
+                                },'success');
+                                break;
+							case 'ERROR':	// 错误提示
+                                $.alert(d.DATA.MESSAGE,function(){
+                                    $.redirect(d.DATA.URL);
+                                },'error');
+                                break;
+							case 'ALERT':	// 警告提示
+                                $.alert(d.DATA.MESSAGE,function(){
+                                    $.redirect(d.DATA.URL);
+                                },'alert');
+                                break;
+                            case 'REDIRECT':// 跳转
+								$.redirect(d.DATA.URL);
+                                break;
+                            default:
+                                debug(data);
+                                break;
+                        }
+                    }
+                },
+                complete: function(){
+                    b.attr('disabled',false);
+                }
+            });
             return false;
         });
+        return this;
     },
     /**
      * 气泡提示
      */
-	$.fn.jTips = function(){
-		$('body').append('<div class="jTip"><div class="jTip-body"></div><div class="jTip-foot"></div></div>');
-		var jTip = $('.jTip');
-		var jHeight = jTip.height();
-		this.mousemove(function(e){
-			jTip.css({'top':(e.clientY - jHeight - 20 ) + 'px','left':(e.clientX + 5) + 'px'});
-		});
-		this.hover(function(){
-			jTip.fadeIn('fast').find('.jTip-body').html($(this).attr('error'));
-		},function(){
-			jTip.hide();
-		});
-	}
+    $.fn.jTips = function(){
+        $('body').append('<div class="jTip"><div class="jTip-body"></div><div class="jTip-foot"></div></div>');
+        var jTip = $('.jTip');
+        var jHeight = jTip.height();
+        this.mousemove(function(e){
+            jTip.css({'top':(e.clientY - jHeight - 20 ) + 'px','left':(e.clientX + 5) + 'px'});
+        });
+        this.hover(function(){
+            jTip.fadeIn('fast').find('.jTip-body').html($(this).attr('error'));
+        },function(){
+            jTip.hide();
+        });
+    }
+    /**
+     * 任意位置浮动
+     *
+     * 兼容IE6、IE7、Firefox
+     *
+     * @params: string   position(可选，默认右下角)
+     *          RB: 右下角
+     *          RT: 右上角
+     *          LB: 左下角
+     *          LT: 左上角
+     *          M:  居中
+     *          object: {left:'',top:'',right:'',buttom:''}
+     *
+     * @example:    $(element).floatDiv(position);
+     */
+    $.fn.floatDiv = function(position){
+        var isIE6  = $.browser.msie && $.browser.version=='6.0'?true:false;
+        var width  = $(document).width();
+        var height = $(document).height();      
+        if (isIE6) {
+            var $this = this;
+            function doFloatDIV(){
+				var pos = $.extend({},position);
+				var top = document.documentElement.scrollTop;
+				var gao = document.documentElement.clientHeight;
+                $this.each(function(){
+                    var loc;
+                    if (typeof position == 'undefined' || typeof position == 'string'){
+                        switch (position) {
+                            case 'RB' : loc = { right:'0px',top:(top + gao - $(this).height()) + 'px' }; break;
+                            case 'LB' : loc = { left :'0px',top:(top + gao - $(this).height()) + 'px' }; break;
+                            case 'LT' : loc = { left :'0px',top:top + 'px' }; break;
+                            case 'RT' : loc = { right:'0px',top:top + 'px' }; break;
+                            case 'M'  : 
+                                var l = width / 2 -  $(this).width() / 2;
+                                var t = top + gao / 2 - $(this).height() / 2;
+                                    loc = {left:l + 'px',top:t + 'px'};
+                                break;
+                            default: loc = {right:'0px',top:(top + gao - $(this).height()) + 'px'}; break;
+                        }
+                    } else {
+						var topUnit = position.top.replace(/[^a-z]+/ig,'');
+							topUnit = topUnit=='' ? 'px' : topUnit;
+						var topNum  = position.top.replace(/[^0-9]+/ig,'');
+							topNum  = topNum=='' ? 0 : topNum;
+                        loc = $.extend(pos,{top:parseInt(top) + parseInt(topNum) + topUnit});
+                    }
+                    $(this).css('z-index','9999').css(loc).css('position','absolute');
+                });
+				setTimeout(function(){
+					doFloatDIV();
+				},20);
+				return $this;
+			}			
+            return doFloatDIV();
+        } else {
+            return this.each(function(){
+                var loc;
+                if (typeof position == 'undefined' || typeof position == 'string'){
+                    switch (position) {
+                        case 'RB' : loc = { right:'0px',bottom:'0px' }; break;
+                        case 'LB' : loc = { left :'0px',bottom:'0px' }; break;
+                        case 'LT' : loc = { left :'0px',top   :'0px' }; break;
+                        case 'RT' : loc = { right:'0px',top   :'0px' }; break;
+                        case 'M'  : 
+                            var l = width / 2 -  $(this).width() / 2;
+                            var t = height / 2 - $(this).height() / 2;
+                                loc = {left:l + 'px',top:t + 'px'};
+                            break;
+                        default: loc = {right:'0px',bottom:'0px'}; break;
+                    }
+                } else {
+                    loc = position;
+                }
+                $(this).css('z-index','9999').css(loc).css('position','fixed');
+            });
+        }
+    };
 })(jQuery);
 /*
  * JSON  - JSON for jQuery
@@ -195,38 +434,38 @@ function LoadScript(p,c){
  * $.parseJSON(String);
  */
 (function ($) {
-	$.toJSON = function(o){
-		var i, v, s = $.toJSON, t;
-		if (o == null) return 'null';
-		t = typeof o;
-		if (t == 'string') {
-			v = '\bb\tt\nn\ff\rr\""\'\'\\\\';
-			return '"' + o.replace(/([\u0080-\uFFFF\x00-\x1f\"])/g, function(a, b) {
-				i = v.indexOf(b);
-				if (i + 1) return '\\' + v.charAt(i + 1);
-				a = b.charCodeAt().toString(16);
-				return '\\u' + '0000'.substring(a.length) + a;
-			}) + '"';
-		}
-		if (t == 'object') {
-			if (o instanceof Array) {
-				for (i=0, v = '['; i<o.length; i++) v += (i > 0 ? ',' : '') + s(o[i]);
-				return v + ']';
-			}
-			v = '{';
-			for (i in o) v += typeof o[i] != 'function' ? (v.length > 1 ? ',"' : '"') + i + '":' + s(o[i]) : '';
-			return v + '}';
-		}
-		return '' + o;
-	},
-	$.parseJSON = function(s){
-		try {
-			return eval('(' + s + ')');
-		} catch (ex) {
-			// Ignore
-			return false;
-		}
-	}
+    $.toJSON = function(o){
+        var i, v, s = $.toJSON, t;
+        if (o == null) return 'null';
+        t = typeof o;
+        if (t == 'string') {
+            v = '\bb\tt\nn\ff\rr\""\'\'\\\\';
+            return '"' + o.replace(/([\u0080-\uFFFF\x00-\x1f\"])/g, function(a, b) {
+                i = v.indexOf(b);
+                if (i + 1) return '\\' + v.charAt(i + 1);
+                a = b.charCodeAt().toString(16);
+                return '\\u' + '0000'.substring(a.length) + a;
+            }) + '"';
+        }
+        if (t == 'object') {
+            if (o instanceof Array) {
+                for (i=0, v = '['; i<o.length; i++) v += (i > 0 ? ',' : '') + s(o[i]);
+                return v + ']';
+            }
+            v = '{';
+            for (i in o) v += typeof o[i] != 'function' ? (v.length > 1 ? ',"' : '"') + i + '":' + s(o[i]) : '';
+            return v + '}';
+        }
+        return '' + o;
+    },
+    $.parseJSON = function(s){
+        try {
+            return eval('(' + s + ')');
+        } catch (ex) {
+            // Ignore
+            return false;
+        }
+    }
 })(jQuery);
 
 /**
@@ -337,54 +576,54 @@ jQuery.cookie = function(name, value, options) {
  */
 
 (function($){
-	$.fn.jqDrag   = function(h){return i(this,h,'d');};
-	$.fn.jqResize = function(h){return i(this,h,'r');};
-	$.jqDnR = {
-		dnr:{},e:0,
-		drag:function(v){
-			if(M.k == 'd') {
-				E.css({left:M.X+v.pageX-M.pX,top:M.Y+v.pageY-M.pY});
-			} else {
-				E.css({width:Math.max(v.pageX-M.pX+M.W,0),height:Math.max(v.pageY-M.pY+M.H,0)});
-			}
-			return false;
-		},
-		stop:function(){
-			E.css('opacity',M.o);
-			$().unbind('mousemove',J.drag).unbind('mouseup',J.stop);
-		}
-	};
-	var J = $.jqDnR,
-		M = J.dnr,
-		E = J.e,
-		f = function(k){ return parseInt(E.css(k))||false; },
-		i = function(e,h,k){
-			return e.each(function(){
-				h = (h) ? $(h,e) : e;
-				h.bind('mousedown',{e:e,k:k},function(v){
-					var d = v.data,p = {}; E = d.e;
-					// attempt utilization of dimensions plugin to fix IE issues
-					if (E.css('position') != 'relative'){
-						try{
-							E.position(p);
-						} catch(e){}
-					}
-					M = {
-						X:p.left||f('left')||0,
-						Y:p.top||f('top')||0,
-						W:f('width')||E[0].scrollWidth||0,
-						H:f('height')||E[0].scrollHeight||0,
-						pX:v.pageX,
-						pY:v.pageY,
-						k:d.k,
-						o:E.css('opacity')
-					};
-					E.css({opacity:0.8});
-					$().mousemove($.jqDnR.drag).mouseup($.jqDnR.stop);
-					return false;
-				});
-			});
-		};
+    $.fn.jqDrag   = function(h){return i(this,h,'d');};
+    $.fn.jqResize = function(h){return i(this,h,'r');};
+    $.jqDnR = {
+        dnr:{},e:0,
+        drag:function(v){
+            if(M.k == 'd') {
+                E.css({left:M.X+v.pageX-M.pX,top:M.Y+v.pageY-M.pY});
+            } else {
+                E.css({width:Math.max(v.pageX-M.pX+M.W,0),height:Math.max(v.pageY-M.pY+M.H,0)});
+            }
+            return false;
+        },
+        stop:function(){
+            E.css('opacity',M.o);
+            $().unbind('mousemove',J.drag).unbind('mouseup',J.stop);
+        }
+    };
+    var J = $.jqDnR,
+        M = J.dnr,
+        E = J.e,
+        f = function(k){ return parseInt(E.css(k))||false; },
+        i = function(e,h,k){
+            return e.each(function(){
+                h = (h) ? $(h,e) : e;
+                h.bind('mousedown',{e:e,k:k},function(v){
+                    var d = v.data,p = {}; E = d.e;
+                    // attempt utilization of dimensions plugin to fix IE issues
+                    if (E.css('position') != 'relative'){
+                        try{
+                            E.position(p);
+                        } catch(e){}
+                    }
+                    M = {
+                        X:p.left||f('left')||0,
+                        Y:p.top||f('top')||0,
+                        W:f('width')||E[0].scrollWidth||0,
+                        H:f('height')||E[0].scrollHeight||0,
+                        pX:v.pageX,
+                        pY:v.pageY,
+                        k:d.k,
+                        o:E.css('opacity')
+                    };
+                    E.css({opacity:0.8});
+                    $().mousemove($.jqDnR.drag).mouseup($.jqDnR.stop);
+                    return false;
+                });
+            });
+        };
 })(jQuery);
 
 
@@ -485,13 +724,13 @@ jQuery.tableDnD = {
             this.tableDnDConfig = jQuery.extend({
                 onDragStyle: null,
                 onDropStyle: null,
-				// Add in the default class for whileDragging
-				onDragClass: "tDnD_whileDrag",
+                // Add in the default class for whileDragging
+                onDragClass: "tDnD_whileDrag",
                 onDrop: null,
                 onDragStart: null,
                 scrollAmount: 5,
-				serializeRegexp: /[^\-]*$/, // The regular expression to use to trim row IDs
-				serializeParamName: null, // If you want to specify another parameter name instead of the table ID
+                serializeRegexp: /[^\-]*$/, // The regular expression to use to trim row IDs
+                serializeParamName: null, // If you want to specify another parameter name instead of the table ID
                 dragHandle: null // If you give the name of a class here, then only Cells with this class will be draggable
             }, options || {});
             // Now make the rows draggable
@@ -511,11 +750,11 @@ jQuery.tableDnD = {
     /** This function makes all the rows on the table draggable apart from those marked as "NoDrag" */
     makeDraggable: function(table) {
         var config = table.tableDnDConfig;
-		if (table.tableDnDConfig.dragHandle) {
-			// We only need to add the event to the specified cells
-			var cells = jQuery("td."+table.tableDnDConfig.dragHandle, table);
-			cells.each(function() {
-				// The cell is bound to "this"
+        if (table.tableDnDConfig.dragHandle) {
+            // We only need to add the event to the specified cells
+            var cells = jQuery("td."+table.tableDnDConfig.dragHandle, table);
+            cells.each(function() {
+                // The cell is bound to "this"
                 jQuery(this).mousedown(function(ev) {
                     jQuery.tableDnD.dragObject = this.parentNode;
                     jQuery.tableDnD.currentTable = table;
@@ -526,39 +765,39 @@ jQuery.tableDnD = {
                     }
                     return false;
                 });
-			})
-		} else {
-			// For backwards compatibility, we add the event to the whole row
-	        var rows = jQuery("tr", table); // get all the rows as a wrapped set
-	        rows.each(function() {
-				// Iterate through each row, the row is bound to "this"
-				var row = jQuery(this);
-				if (! row.hasClass("nodrag")) {
-	                row.mousedown(function(ev) {
-	                    if (ev.target.tagName == "TD") {
-	                        jQuery.tableDnD.dragObject = this;
-	                        jQuery.tableDnD.currentTable = table;
-	                        jQuery.tableDnD.mouseOffset = jQuery.tableDnD.getMouseOffset(this, ev);
-	                        if (config.onDragStart) {
-	                            // Call the onDrop method if there is one
-	                            config.onDragStart(table, this);
-	                        }
-	                        return false;
-	                    }
-	                }).css("cursor", "move"); // Store the tableDnD object
-				}
-			});
-		}
-	},
+            })
+        } else {
+            // For backwards compatibility, we add the event to the whole row
+            var rows = jQuery("tr", table); // get all the rows as a wrapped set
+            rows.each(function() {
+                // Iterate through each row, the row is bound to "this"
+                var row = jQuery(this);
+                if (! row.hasClass("nodrag")) {
+                    row.mousedown(function(ev) {
+                        if (ev.target.tagName == "TD") {
+                            jQuery.tableDnD.dragObject = this;
+                            jQuery.tableDnD.currentTable = table;
+                            jQuery.tableDnD.mouseOffset = jQuery.tableDnD.getMouseOffset(this, ev);
+                            if (config.onDragStart) {
+                                // Call the onDrop method if there is one
+                                config.onDragStart(table, this);
+                            }
+                            return false;
+                        }
+                    }).css("cursor", "move"); // Store the tableDnD object
+                }
+            });
+        }
+    },
 
-	updateTables: function() {
-		this.each(function() {
-			// this is now bound to each matching table
-			if (this.tableDnDConfig) {
-				jQuery.tableDnD.makeDraggable(this);
-			}
-		})
-	},
+    updateTables: function() {
+        this.each(function() {
+            // this is now bound to each matching table
+            if (this.tableDnDConfig) {
+                jQuery.tableDnD.makeDraggable(this);
+            }
+        })
+    },
 
     /** Get the mouse coordinates from the event (allowing for browser differences) */
     mouseCoords: function(ev){
@@ -618,23 +857,23 @@ jQuery.tableDnD = {
         var mousePos = jQuery.tableDnD.mouseCoords(ev);
         var y = mousePos.y - jQuery.tableDnD.mouseOffset.y;
         //auto scroll the window
-	    var yOffset = window.pageYOffset;
-	 	if (document.all) {
-	        // Windows version
-	        //yOffset=document.body.scrollTop;
-	        if (typeof document.compatMode != 'undefined' &&
-	             document.compatMode != 'BackCompat') {
-	           yOffset = document.documentElement.scrollTop;
-	        }
-	        else if (typeof document.body != 'undefined') {
-	           yOffset=document.body.scrollTop;
-	        }
+        var yOffset = window.pageYOffset;
+        if (document.all) {
+            // Windows version
+            //yOffset=document.body.scrollTop;
+            if (typeof document.compatMode != 'undefined' &&
+                 document.compatMode != 'BackCompat') {
+               yOffset = document.documentElement.scrollTop;
+            }
+            else if (typeof document.body != 'undefined') {
+               yOffset=document.body.scrollTop;
+            }
 
-	    }
-		    
-		if (mousePos.y-yOffset < config.scrollAmount) {
-	    	window.scrollBy(0, -config.scrollAmount);
-	    } else {
+        }
+            
+        if (mousePos.y-yOffset < config.scrollAmount) {
+            window.scrollBy(0, -config.scrollAmount);
+        } else {
             var windowHeight = window.innerHeight ? window.innerHeight
                     : document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight;
             if (windowHeight-(mousePos.y-yOffset) < config.scrollAmount) {
@@ -649,11 +888,11 @@ jQuery.tableDnD = {
             // update the old value
             jQuery.tableDnD.oldY = y;
             // update the style to show we're dragging
-			if (config.onDragClass) {
-				dragObj.addClass(config.onDragClass);
-			} else {
-	            dragObj.css(config.onDragStyle);
-			}
+            if (config.onDragClass) {
+                dragObj.addClass(config.onDragClass);
+            } else {
+                dragObj.css(config.onDragStyle);
+            }
             // If we're over a row then move the dragged row to there so that the user sees the
             // effect dynamically
             var currentRow = jQuery.tableDnD.findDropTargetRow(dragObj, y);
@@ -684,8 +923,8 @@ jQuery.tableDnD = {
             // Because we always have to insert before, we need to offset the height a bit
             if ((y > rowY - rowHeight) && (y < (rowY + rowHeight))) {
                 // that's the row we're over
-				// If it's the same as the current row, ignore it
-				if (row == draggedRow) {return null;}
+                // If it's the same as the current row, ignore it
+                if (row == draggedRow) {return null;}
                 var config = jQuery.tableDnD.currentTable.tableDnDConfig;
                 if (config.onAllowDrop) {
                     if (config.onAllowDrop(draggedRow, row)) {
@@ -694,7 +933,7 @@ jQuery.tableDnD = {
                         return null;
                     }
                 } else {
-					// If a row has nodrop class, then don't allow dropping (inspired by John Tarr and Famic)
+                    // If a row has nodrop class, then don't allow dropping (inspired by John Tarr and Famic)
                     var nodrop = jQuery(row).hasClass("nodrop");
                     if (! nodrop) {
                         return row;
@@ -714,11 +953,11 @@ jQuery.tableDnD = {
             var config = jQuery.tableDnD.currentTable.tableDnDConfig;
             // If we have a dragObject, then we need to release it,
             // The row will already have been moved to the right place so we just reset stuff
-			if (config.onDragClass) {
-	            jQuery(droppedRow).removeClass(config.onDragClass);
-			} else {
-	            jQuery(droppedRow).css(config.onDropStyle);
-			}
+            if (config.onDragClass) {
+                jQuery(droppedRow).removeClass(config.onDragClass);
+            } else {
+                jQuery(droppedRow).css(config.onDropStyle);
+            }
             jQuery.tableDnD.dragObject   = null;
             if (config.onDrop) {
                 // Call the onDrop method if there is one
@@ -736,7 +975,7 @@ jQuery.tableDnD = {
         }
     },
 
-	serializeTable: function(table) {
+    serializeTable: function(table) {
         var result = "";
         var tableId = table.id;
         var rows = table.rows;
@@ -750,23 +989,23 @@ jQuery.tableDnD = {
             result += tableId + '[]=' + rowId;
         }
         return result;
-	},
+    },
 
-	serializeTables: function() {
+    serializeTables: function() {
         var result = "";
         this.each(function() {
-			// this is now bound to each matching table
-			result += jQuery.tableDnD.serializeTable(this);
-		});
+            // this is now bound to each matching table
+            result += jQuery.tableDnD.serializeTable(this);
+        });
         return result;
     }
 
 }
 
 jQuery.fn.extend(
-	{
-		tableDnD : jQuery.tableDnD.build,
-		tableDnDUpdate : jQuery.tableDnD.updateTables,
-		tableDnDSerialize: jQuery.tableDnD.serializeTables
-	}
+    {
+        tableDnD : jQuery.tableDnD.build,
+        tableDnDUpdate : jQuery.tableDnD.updateTables,
+        tableDnDSerialize: jQuery.tableDnD.serializeTables
+    }
 );
