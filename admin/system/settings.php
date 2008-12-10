@@ -25,6 +25,7 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
+    System::purview('System.Settings');
     System::tabs(
         l('Settings').':settings.php;'.
         l('System info').':sysinfo.php;'.
@@ -81,9 +82,9 @@ function lazy_main(){
     }
     System::header(l('Settings'));
     echo '<form id="form1" name="form1" method="post" action="">';
-    echo '<fieldset><legend><a class="collapsed" rel=".show">'.l('Site settings').'</a></legend>';
+    echo '<fieldset><legend><a rel=".show"><img class="a2 os" src="../system/images/white.gif" />'.l('Site settings').'</a></legend>';
     echo '<div class="show">';
-    echo '<p><label>'.l('Site name').':</label><input class="in2" type="text" name="SITE_NAME" id="SITE_NAME" value="'.c('SITE_NAME').'"></p>';
+    echo '<p><label>'.l('Site name').':</label><input class="in w200" type="text" name="SITE_NAME" id="SITE_NAME" value="'.c('SITE_NAME').'"></p>';
 
     echo '<p><label>'.l('Language').':</label>';
     echo '<select name="LANGUAGE" id="LANGUAGE">';
@@ -105,16 +106,16 @@ function lazy_main(){
 
     echo '</div></fieldset>';
 
-    echo '<fieldset><legend><a class="collapsed" rel=".show">'.l('Upload settings').'</a></legend>';
+    echo '<fieldset><legend><a rel=".show"><img class="a2 os" src="../system/images/white.gif" />'.l('Upload settings').'</a></legend>';
     echo '<div class="show">';
-    echo '<p><label>'.l('Upload allow ext').':</label><input class="in3" type="text" name="UPLOAD_ALLOW_EXT" id="UPLOAD_ALLOW_EXT" value="'.c('UPLOAD_ALLOW_EXT').'"></p>';
-    echo '<p><label>'.l('Upload max size').':</label><input class="in1" type="text" name="UPLOAD_MAX_SIZE" id="UPLOAD_MAX_SIZE" value="'.c('UPLOAD_MAX_SIZE').'"></p>';
-    echo '<p><label>'.l('Upload file path').':</label><input class="in2" type="text" name="UPLOAD_FILE_PATH" id="UPLOAD_FILE_PATH" value="'.c('UPLOAD_FILE_PATH').'"></p>';
-    echo '<p><label>'.l('Upload image path').':</label><input class="in2" type="text" name="UPLOAD_IMAGE_PATH" id="UPLOAD_IMAGE_PATH" value="'.c('UPLOAD_IMAGE_PATH').'"></p>';
-    echo '<p><label>'.l('Upload image ext').':</label><input class="in2" type="text" name="UPLOAD_IMAGE_EXT" id="UPLOAD_IMAGE_EXT" value="'.c('UPLOAD_IMAGE_EXT').'"></p>';
+    echo '<p><label>'.l('Upload allow ext').':</label><input class="in w300" type="text" name="UPLOAD_ALLOW_EXT" id="UPLOAD_ALLOW_EXT" value="'.c('UPLOAD_ALLOW_EXT').'"></p>';
+    echo '<p><label>'.l('Upload max size').':</label><input class="in w100" type="text" name="UPLOAD_MAX_SIZE" id="UPLOAD_MAX_SIZE" value="'.c('UPLOAD_MAX_SIZE').'"></p>';
+    echo '<p><label>'.l('Upload file path').':</label><input class="in w200" type="text" name="UPLOAD_FILE_PATH" id="UPLOAD_FILE_PATH" value="'.c('UPLOAD_FILE_PATH').'"></p>';
+    echo '<p><label>'.l('Upload image path').':</label><input class="in w200" type="text" name="UPLOAD_IMAGE_PATH" id="UPLOAD_IMAGE_PATH" value="'.c('UPLOAD_IMAGE_PATH').'"></p>';
+    echo '<p><label>'.l('Upload image ext').':</label><input class="in w200" type="text" name="UPLOAD_IMAGE_EXT" id="UPLOAD_IMAGE_EXT" value="'.c('UPLOAD_IMAGE_EXT').'"></p>';
     echo '</div></fieldset>';
     
-    echo '<fieldset><legend><a class="collapse" rel=".show">'.l('Server settings').'</a></legend>';
+    echo '<fieldset><legend><a rel=".show"><img class="a1 os" src="../system/images/white.gif" />'.l('Server settings').'</a></legend>';
     echo '<div class="show">';
     echo '<p><label>'.l('Server time zone').':</label>';
     echo '<select name="TIME_ZONE" id="TIME_ZONE">';
@@ -124,7 +125,7 @@ function lazy_main(){
     }
     echo '</select></p>';
 
-    echo '<p><label>'.l('Server DSN config').':</label><input class="in4" type="text" name="DSN_CONFIG" id="DSN_CONFIG" value="'.c('DSN_CONFIG').'"></p>';
+    echo '<p><label>'.l('Server DSN config').':</label><input class="in w400" type="text" name="DSN_CONFIG" id="DSN_CONFIG" value="'.c('DSN_CONFIG').'"></p>';
 
     echo '</div></fieldset>';
 

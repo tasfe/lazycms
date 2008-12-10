@@ -17,21 +17,13 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-function dump(o){
-    if (typeof o == 'undefined') {
-        alert(o); return ;
-    }
-    for(k in o){
-        alert(k+' : '+o[k]);
-    }
-}
 function debug(s){ alert('debug:' + s); }
-function lock(p1){ return p1 ? icon('lock') : icon('lock-open'); }
+function common(){ return $("script[src*=js/jquery.js]").attr("src").replace(/(\/js\/jquery\.js\?(.*))/i,'');}
+function lock(p1){ return p1 ? icon('a3') : icon('a4'); }
 function cklist(p1){ return '<input name="list" id="list_'+p1+'" type="checkbox" value="'+p1+'"/>'; }
-function icon(i,a){
-    var cur = typeof a == "undefined"?' style="cursor:default;"':'';
-    var IMG = '<i class="os icon-16-'+i+'"'+cur+'></i>';
-    var HREF = '<a href="'+a+'">'+IMG+'</a>';
+function icon(n,a){
+    var IMG = '<img class="os ' + n +'" src="' + common() + '/images/white.gif" />';
+    var HREF = '<a href="' + a + '">' + IMG + '</a>';
     if (typeof a == "undefined") { return IMG; } else { return HREF; }
 }
 function getURI(){
@@ -50,8 +42,7 @@ function getURI(){
  * @param function  c   回调函数
  */
 function LoadScript(p,c){
-    var u = $("script[src*=lazycms.library]").attr("src").replace(/\?(.*)/,'').replace("lazycms.library.js",p + ".js");
-    document.write('<scr' + 'ipt type="text/javascript" src="' + u + '"><\/scr' + 'ipt>'); if ($.isFunction(c)) { $.getScript(u,c); }
+    document.write('<scr' + 'ipt type="text/javascript" src="' + common() + '/js/' + p + '.js"><\/scr' + 'ipt>'); if ($.isFunction(c)) { $.getScript(u,c); }
 }
 /*
  * LazyCMS JS library for jQuery
@@ -76,6 +67,46 @@ function LoadScript(p,c){
                 this.checked = !this.checked; 
             }
         }); 
+    }
+    $.setStyle = function(){
+        var u = common();
+        var C = "a";//bcdefghijklmnopqrstuvwxyz
+        var style = '<style type="text/css">\n';
+            style += 'img.os{ width:16px; height:16px; vertical-align:middle; background-image:url(' + u + '/images/icons.png); padding:0px; margin:2px; }\n';
+            for(var i=0;i<C.length;i++){
+        		for(var j=1;j<=9;j++){
+        			style += 'img.' + C.charAt(i) + j + '{background-position:-' + (16*i+16) + 'px -' + 16*(j) + 'px;}\n';
+        		}
+        	}
+        	/* 错误信息 */
+        	style += '.error{ border:solid 1px #FF0000 !important; background:url(' + u + '/images/invalid-line.gif) repeat-x left bottom !important;}\n';
+        	/* 按钮样式 */
+        	style += 'button{ letter-spacing:1px; padding:2px 4px; border:1px solid #c6d9e7; height:23px; color:#333333; background:url(' + u + '/images/buttons-bg.png) repeat-x;line-height:100%; vertical-align:middle; margin-right:6px; }\n';
+        	style += 'textarea{ font-size:12px; }\n';
+        	/* 宽度定义 */
+            style += '.w0{ width: 100%; }\n';
+            style += '.w1 { width: 5%; }\n';
+            style += '.w2 { width: 10%; }\n';
+            style += '.w3 { width: 15%; }\n';
+            style += '.w4 { width: 20%; }\n';
+            style += '.w5 { width: 50%; }\n';
+            for(var i=1;i<=16;i++){
+                style += '.w' + (i*50) + ' { width: ' + (i*50) + 'px; }\n';
+            }
+        	/* 表单长度设置 */
+            style += '.in{ border:solid 1px #7F9DB9; padding:2px; }\n';
+        	/* 对齐样式 */
+            style += '.tl{ text-align:left; }\n';
+            style += '.tr{ text-align:right; }\n';
+            style += '.tc{ text-align:center; }\n';
+        	/* 左右浮动 */
+        	style += '.fl{float:left; display:block;}\n';
+            style += '.fr{float:right; display:block;}\n';
+        	/* 显示隐藏 */
+        	style += '.hide{display:none;}\n';
+            style += '.show{display:block;}\n';
+            style += '</style>';
+            document.write(style);
     }
 	$.dialogUI = function(opts){
 		opts = $.extend({
@@ -112,8 +143,20 @@ function LoadScript(p,c){
      */
     $.alert = function(message,callback,type){
 		type = type||'alert';
+		var position;
+		switch (type) {
+		    case 'success':
+    		    position = 'background-position:0px 0px;';
+    		    break;
+    		case 'error':
+    		    position = 'background-position:0px -40px;';
+    		    break;
+    		default:
+    		    position = 'background-position:0px -80px;';
+    		    break;
+		}
 		$.dialogUI({title:'系统提示',close:false})
-			.append('<div class="body"><div class="icon icon-32-' + type + '"></div><div class="content"><h3>' + message + '</h3></div></div>')
+			.append('<div class="body"><div class="icon" style="' + position + '"></div><div class="content"><h3>' + message + '</h3></div></div>')
 			.append('<div class="button"><button type="button" rel="submit">确定</button></div>')
 			.floatDiv({width:'400px',top:'200px',left:$(document).width()/2 - 200})
 			.find('[rel=submit]').click(function(){
@@ -127,7 +170,7 @@ function LoadScript(p,c){
      */
 	$.confirm = function(message,callback){
 		$.dialogUI({title:'操作确认',close:false})
-			.append('<div class="body"><div class="icon icon-32-alert"></div><div class="content"><h3>' + message + '</h3></div></div>')
+			.append('<div class="body"><div class="icon" style="background-position:0px -80px;"></div><div class="content"><h3>' + message + '</h3></div></div>')
 			.append('<div class="button"><button type="button" rel="submit">确定</button><button type="button" rel="cancel">取消</button></div>')
 			.floatDiv({width:'400px',top:'200px',left:$(document).width()/2 - 200})
 			.find('[rel=submit]').click(function(){
@@ -155,20 +198,20 @@ function LoadScript(p,c){
     $.fn.collapsed = function(){
         var u = getURI()
         this.each(function(i){
-            var t = $(this); t.attr('i',i);
+            var t = $(this).parent(); t.attr('i',i);
             var r = $(t.attr('rel'),t.parents('fieldset'));
             var c = $.cookie('collapse_' + u.File + '_' + i);
             switch (c) {
                 case 'block':
-                    t.removeClass('collapse').addClass('collapsed');
+                    t.find('img').removeClass('a1').addClass('a2');
                     r.show();
                     break;
                 case 'none':
-                    t.removeClass('collapsed').addClass('collapse');
+                    t.find('img').removeClass('a2').addClass('a1');
                     r.hide();
                     break;
                 default:
-                    if (t.attr('class')=='collapse') {
+                    if (t.attr('class')=='a1') {
                         r.hide();
                     } else {
                         r.show();
@@ -1009,3 +1052,5 @@ jQuery.fn.extend(
         tableDnDSerialize: jQuery.tableDnD.serializeTables
     }
 );
+
+$.setStyle();

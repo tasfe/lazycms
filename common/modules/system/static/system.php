@@ -46,7 +46,7 @@ class System{
         $hl.= '<div class="logo"><a href="../system/index.php"><img src="../system/images/logo.png" alt="LazyCMS '.LAZY_VERSION.'" /></a></div>';
         $hl.= '<div id="version" version="'.LAZY_VERSION.'">'.l('Last Version').': <span>Loading...</span></div>';
         $hl.= '<ul id="menu">';
-        $hl.= '<li><span>'.l('System manage').'<b class="down-arrow"></b></span><ul>';
+        $hl.= '<li><div>'.l('System manage').'<img class="a2 os" src="../system/images/white.gif" /></div><ul>';
         $hl.= '    <li><a href="../system/index.php" class="icon-16-cpanel">'.l('Cpanel').'</a></li>';
         $hl.= '    <li class="hr"></li>';
         $hl.= '    <li><a href="../system/admin.php" class="icon-16-admin">'.l('Admins').'</a></li>';
@@ -58,7 +58,7 @@ class System{
         $hl.= '    <li><a href="javascript:;" class="icon-16-logout" onclick="return $.confirm(\''.l('Confirm logout').'\',function(r){ r ? $.redirect(\'../system/logout.php\') : false; })">'.l('Logout').'</a></li>';
         $hl.= '</ul></li>';
         $hl.= '
-            <li><span>内容管理<b class="down-arrow"></b></span>
+            <li><div>内容管理<img class="a2 os" src="../system/images/white.gif" /></div>
                 <ul>
                     <li><a href="../content/label.php" class="icon-16-label">标签中心</a></li>
                     <li><a href="../content/create.php" class="icon-16-create">生成中心</a></li>
@@ -70,7 +70,7 @@ class System{
                     <li><a href="../content/model.php" class="icon-16-model">模型管理</a></li>
                 </ul>
             </li>';
-        $hl.= '<li><span>'.l('Help').'<b class="down-arrow"></b></span><ul>';
+        $hl.= '<li><div>'.l('Help').'<img class="a2 os" src="../system/images/white.gif" /></div><ul>';
         $hl.= '    <li><a href="http://www.lazycms.net/" class="icon-16-home" target="_blank">'.l('Official Website').'</a></li>';
         $hl.= '    <li><a href="http://forums.lazycms.net/" class="icon-16-help" target="_blank">'.l('Support Forums').'</a></li>';
         $hl.= '    <li class="hr"></li>';
@@ -122,14 +122,14 @@ class System{
      * @param string $p1    用户名
      * @param string $p2    权限不正确，退出地址
      */
-    function purview($p1){
+    function purview($p1='System',$p2='../system/logout.php'){
         $_USER = System::getAdmin($p1);
         if (!$_USER) {
             // TODO: 没有权限，或没有登录，提示
             if ($_SERVER['HTTP_AJAX_SUBMIT']) {
                 alert('你没有权限查看此页');
             } else {
-                die('你没有权限查看此页!');
+                redirect($p2);
             }
         }
         return $_USER;
@@ -182,12 +182,6 @@ class System{
                         // 先查找是否有此权限
                         if (instr($rs['purview'],$params[2])) {
                             return $rs;
-                        }
-                        // 没有此权限，则查找是否有父权限
-                        foreach ((array)explode(',',$rs['purview']) as $p) {
-                            if (!strncasecmp($params[2],$p,strlen($p))){
-                                return $rs;
-                            }
                         }
                     } else {
                         return $rs;

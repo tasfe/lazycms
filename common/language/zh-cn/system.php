@@ -102,7 +102,7 @@ return array(
     
     /* 系统管理 */
     'Cpanel'     => '控制面板',
-    'Admins'     => '系统管理员',
+    'Admins'     => '管理员',
     'Webftp'     => '文件管理',
     'Modules'    => '安装卸载',
     'Settings'   => '系统设置',

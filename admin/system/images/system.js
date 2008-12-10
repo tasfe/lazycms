@@ -25,35 +25,30 @@ $(document).ready(function(){
         $(this).width($(this).parent().width());
     });
     // Bind the mouse event
-    $('#menu li span').mouseover(function(){ $(this).addClass('active'); });
+    $('#menu li div').mouseover(function(){ $(this).addClass('active'); });
     // Drop-down menu
-    $('#menu li').hover(function(){ $('ul',this).fadeIn(); },function(){ $('ul',this).hide(); $('span',this).removeClass('active'); });
+    $('#menu li').hover(function(){ $('ul',this).fadeIn(); },function(){ $('ul',this).hide(); $('div',this).removeClass('active'); });
     // Config Mouse over effect
-    $('#menu li li').not('li.hr').hover(function(){
-        $(this).width($(this).parent().width()-4)
-			.height($(this).height()-2)
-			.css({'background':'#F4FBE1','border':'solid 1px #A5D11F'});
-    },function(){
-        $(this).height($(this).height()+2)
-			.css({'background':'transparent','border':'none'});
+    $('#menu li li:not(.hr)').mouseover(function(){
+        $(this).width($(this).parent().width()-($.browser.msie && $.browser.version=='6.0'?4:2));
     });
 	// 批量去除连接虚线
 	$('a').focus(function(){ this.blur(); });
 	// 绑定展开事件
-	$('a.collapse,a.collapsed')
+	$('a .a1,a .a2').parent()
 		.attr('href','javascript:;')
 		.click(function(){
 		    var u = getURI();
 			var t = $(this);
 			var c = (t.attr('cookie')!=='false')?true:false;
 			var e = $(t.attr('rel'),t.parents('fieldset')).toggle();
-				t.toggleClass('collapse').toggleClass('collapsed');
+				t.find('img').toggleClass('a1').toggleClass('a2');
 			if (c) {
 				$.cookie('collapse_' + u.File + '_' + t.attr('i'),e.css('display'),{expires:365,path:u.Path});
 			}
 		});
 	// 执行半记忆操作
-	$('a.collapse:not(a[cookie=false]),a.collapsed:not(a[cookie=false])').collapsed();
+	$('a:not(a[cookie=false]) .a1,a:not(a[cookie=false]) .a2').collapsed();
 	// Get last version
 	$.getJSON("http://lazycms.net/ver/index.php?host=" + self.location.host + "&callback=?",function(d){
 		var localVersion = $('#version').attr('version').replace(/\./g,'');

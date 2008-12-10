@@ -27,10 +27,7 @@ body,td,th,p,div { color: #333333; line-height: 130%; font-family: Verdana; font
 dl,dt,dd,form{ margin:0; padding:0;}
 img,input,button,select{ vertical-align:middle; }
 img{ border:none; }
-	img.os{ width:16px; height:16px; vertical-align:middle; margin:0px 2px; }
-i.os{ width:16px; height:16px; vertical-align:middle; margin:0px 2px; float:left; display:block; overflow:hidden; cursor:pointer; }
-a img{ border:none; vertical-align:middle;}
-
+	
 /* 连接样式 */
 a:link    { color: #0B55C4; text-decoration: none; }
 a:visited { color: #0B55C4; text-decoration: none; }
@@ -62,15 +59,15 @@ a:hover   { text-decoration: underline; }
 	#menu, #menu ul, #menu li { list-style: none; margin: 0; padding: 0; }
 	#menu { display:table; zoom:1; float:left; margin:24px 0 0 5px; }
 	#menu li { position:relative; z-index:100; float:left; line-height:25px; white-space: nowrap; margin-right:5px; }
-	#menu li span { border:solid 1px #c6d9e7; border-bottom:none; display:block; background:url(../../../common/images/buttons-bg.png) repeat-x 0 -1px; padding:0 20px 0 10px; cursor:default;}
-	#menu li span.active { background:#f6f6f6; }
-	#menu li span.gray{ color:#999999; }
-	#menu li span a{ text-decoration:none; }
-	#menu li b.down-arrow{ position:absolute; top:0px; right:5px; display:block; background:url(../../../common/images/icons.png) no-repeat center -115px; height:25px; width:16px;}
-	#menu ul { display:none; position:absolute; border:solid 1px #c6d9e7; background: #f6f6f6 url(bg-menu.gif) repeat-y left; padding-top:1px; }
+	#menu li div { padding:3px 3px 2px 10px; border:solid 1px #c6d9e7; border-bottom:none; display:block; background:url(../../../common/images/buttons-bg.png) repeat-x 0 -1px; cursor:default;}
+	#menu li div.active { background:#f6f6f6; }
+	#menu li div.gray{ color:#999999; }
+	#menu li div a{ text-decoration:none; }
+	#menu ul { display:none; position:absolute; border:solid 1px #c6d9e7; background:#f6f6f6; padding-top:1px; }
 	#menu li li { clear:both; margin:0 1px; }
-	#menu li li.hr { background: #DDE1E6 url(bg-menu.gif);  height:1px; width:auto; overflow:hidden; margin:1px 0; }
-	#menu ul a { background:url(../../../common/images/menu-icons.png) no-repeat 0px -256px; display:block; line-height:20px; white-space: nowrap; text-decoration:none; padding:0 20px 0 25px; cursor: default; color: #333333; }
+	#menu li li.hr { background:#DDE1E6; height:1px; width:auto; overflow:hidden; margin:1px 0; }
+	#menu ul a { border:solid 1px #f6f6f6; display:block; line-height:20px; white-space: nowrap; text-decoration:none; padding:0 20px; cursor: default; color: #333333; }
+	#menu ul a:hover{ background-image:url(bg-menu.gif); background-repeat:repeat-x; border:solid 1px #A5C0FC; }
 	
 	/* TopMenu */
 	#top .menu{ position:absolute; top:24px; right:0px; list-style: none; margin: 0; padding: 0; }
@@ -139,9 +136,10 @@ a:hover   { text-decoration: underline; }
 	#box div.pages{float:right;}
 	#box .tip{ display:table; margin:10px 0 10px 60px; padding:5px;  line-height:140%; color:#FF0000; }
 	#box .tip i.os{cursor:default;}
-
+    /*
 	#box a.collapse{padding-left:18px; background:url(../../../common/images/icons.png) no-repeat 0px -220px;}
 	#box a.collapsed{padding-left:18px; background:url(../../../common/images/icons.png) no-repeat 0px -120px;}
+	*/
 
 /* footer */
 #footer{ padding:10px; text-align:center; }

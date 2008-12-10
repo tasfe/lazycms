@@ -25,6 +25,7 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
+    System::purview('System.Sysinfo');
     System::tabs(
         l('Settings').':settings.php;'.
         l('System info').':sysinfo.php;'.
@@ -41,10 +42,10 @@ function lazy_main(){
     System::header(l('System info'));
     
     /* System settings */
-    echo '<fieldset><legend><a class="collapsed" rel=".table">'.l('System info').'</a></legend>';
+    echo '<fieldset><legend><a rel=".table"><img class="a2 os" src="../system/images/white.gif" />'.l('System info').'</a></legend>';
     echo '<table class="table" cellspacing="0">';
     echo '<tbody>';
-    echo '<tr><td class="width-30">'.l('Server OS').'</td><td>'.php_uname().'</td></tr>';
+    echo '<tr><td class="w4">'.l('Server OS').'</td><td>'.php_uname().'</td></tr>';
     echo '<tr><td>'.l('GD version').'</td><td>'.$gdInfo['GD Version'].'</td></tr>';
     echo '<tr><td>'.l('PHP version').'</td><td>'.PHP_VERSION.'</td></tr>';
     echo '<tr><td>'.l('PHP SAPI name').'</td><td>'.php_sapi_name().'</td></tr>';
@@ -55,9 +56,9 @@ function lazy_main(){
     echo '</tbody></table></fieldset>';
     
     /* PHP settings */
-    echo '<fieldset><legend><a class="collapsed" rel=".table">'.l('PHP Settings').'</a></legend>';
+    echo '<fieldset><legend><a rel=".table"><img class="a2 os" src="../system/images/white.gif" />'.l('PHP Settings').'</a></legend>';
     echo '<table class="table" cellspacing="0"><tbody>';
-    echo '<tr><td class="width-30">'.l('PHP safe mode').'</td><td>'.get_php_setting('safe_mode').'</td></tr>';
+    echo '<tr><td class="w4">'.l('PHP safe mode').'</td><td>'.get_php_setting('safe_mode').'</td></tr>';
     echo '<tr><td>'.l('PHP display errors').'</td><td>'.get_php_setting('display_errors').'</td></tr>';
     echo '<tr><td>'.l('PHP file uploads').'</td><td>'.get_php_setting('file_uploads').'</td></tr>';
     echo '<tr><td>'.l('PHP magic quotes gpc').'</td><td>'.get_php_setting('magic_quotes_gpc').'</td></tr>';

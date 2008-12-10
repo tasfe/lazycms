@@ -23,14 +23,9 @@
  */
 
 /* 错误信息 */
-.error{ border:solid 1px #FF0000 !important; background:url(invalid-line.gif) repeat-x left bottom !important;}
 div.jTip { width:auto; display:none; position:absolute; z-index:100; color:#000; text-align:left; }
 div.jTip-body { border:solid 1px #D4D5AA; padding:5px 5px 2px 5px; background:#FFFFCC; word-wrap: break-word; word-break: break-all; }
 div.jTip-foot { width:10px; height:10px; position:relative; top:-1px; float:left; margin-left:0px; background:url(tip-foot.gif) no-repeat left top; }
-
-/* 按钮样式 */
-button{ letter-spacing:1px; padding:2px 4px; border:1px solid #c6d9e7; height:23px; color:#333333; background:url(buttons-bg.png) repeat-x;line-height:100%; vertical-align:middle; margin-right:6px; }
-textarea{ font-size:12px; }
 
 /* 分页样式 */
 .pages { display:table; }
@@ -46,43 +41,8 @@ textarea{ font-size:12px; }
 #dialog .head a{ width:11px; height:11px; margin-top:6px; float:right; display:block; background:url(close.png) no-repeat left top; }
 #dialog .head a:hover{ background-position:0 -22px;}
 #dialog .body{ display:table; zoom:1; padding:5px; clear:both; }
-#dialog .body .icon{ width:32px; height:32px; float:left; margin:10px 10px 0 10px; }
+#dialog .body .icon{ width:32px; height:32px; float:left; margin:10px 10px 0 10px; background-image:url(info_icons.png); background-repeat:no-repeat; }
 #dialog .body .content{ float:left; }
 #dialog .body .content h3{ line-height:130%; margin-top:13px; }
 #dialog .button{ padding:3px; text-align:right; }
 #dialog .button button{ margin:0 0 0 6px;}
-
-/* 宽度定义 */
-.width-30 { width: 30%; }
-.width-40 { width: 40%; }
-.width-45 { width: 45%; }
-.width-55 { width: 55%; }
-.width-50 { width: 50%; }
-.width-60 { width: 60%; }
-.width-70 { width: 70%; }
-
-/* 表单长度设置 */
-.in0 ,.in1, .in2, .in3, .in4, .in5, .in6{border:solid 1px #7F9DB9;padding:2px;}
-
-.in0{ width:50px;}
-.in1{ width:100px;}
-.in2{ width:200px;}
-.in3{ width:300px;}
-.in4{ width:400px;}
-.in5{ width:500px;}
-.in6{ width:600px;}
-.in7{ width:700px;}
-.in8{ width:800px;}
-
-/* 对齐样式 */
-.tl{ text-align:left; }
-.tr{ text-align:right; }
-.tc{ text-align:center; }
-
-/* 左右浮动 */
-.fl{float:left; display:block;}
-.fr{float:right; display:block;}
-
-/* 显示隐藏 */
-.hide{ display:none; }
-.show{ display:block; }

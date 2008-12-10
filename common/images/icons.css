@@ -21,44 +21,6 @@
 /**
  * 系统图标样式
  */
-
-/* 16x16 ICONS */
-.icon-16-cpanel     { background: url(menu-icons.png) no-repeat 0px 1px !important; }
-.icon-16-admin      { background: url(menu-icons.png) no-repeat 0px -32px !important; }
-.icon-16-files      { background: url(menu-icons.png) no-repeat 0px -64px !important; }
-.icon-16-config     { background: url(menu-icons.png) no-repeat 0px -96px !important; }
-.icon-16-logout     { background: url(menu-icons.png) no-repeat 0px -128px !important; }
-.icon-16-info       { background: url(menu-icons.png) no-repeat 0px -160px !important; }
-.icon-16-home       { background: url(menu-icons.png) no-repeat 0px -192px !important; }
-.icon-16-help       { background: url(menu-icons.png) no-repeat 0px -224px !important; }
-.icon-16-sort       { background: url(menu-icons.png) no-repeat 0px -288px !important; }
-.icon-16-page       { background: url(menu-icons.png) no-repeat 0px -320px !important; }
-.icon-16-article    { background: url(menu-icons.png) no-repeat 0px -352px !important; }
-.icon-16-model      { background: url(menu-icons.png) no-repeat 0px -384px !important; }
-.icon-16-install    { background: url(menu-icons.png) no-repeat 0px -416px !important; }
-.icon-16-create     { background: url(menu-icons.png) no-repeat 0px -448px !important; }
-.icon-16-label      { background: url(menu-icons.png) no-repeat 0px -480px !important; }
-.icon-16-add        { background: url(icons.png) no-repeat 0px 0px !important; }
-.icon-16-cut        { background: url(icons.png) no-repeat 0px -20px !important; }
-.icon-16-cut-off    { background: url(icons.png) no-repeat 0px -40px !important; }
-.icon-16-dir0       { background: url(icons.png) no-repeat 0px -60px !important; }
-.icon-16-dir1       { background: url(icons.png) no-repeat 0px -80px !important; }
-.icon-16-dir2       { background: url(icons.png) no-repeat 0px -100px !important; }
-.icon-16-edit       { background: url(icons.png) no-repeat 0px -140px !important; }
-.icon-16-export     { background: url(icons.png) no-repeat 0px -160px !important; }
-.icon-16-fav        { background: url(icons.png) no-repeat 0px -180px !important; }
-.icon-16-fav-add    { background: url(icons.png) no-repeat 0px -200px !important; }
-.icon-16-light      { background: url(icons.png) no-repeat 0px -260px !important; }
-.icon-16-light-off  { background: url(icons.png) no-repeat 0px -280px !important; }
-.icon-16-link       { background: url(icons.png) no-repeat 0px -300px !important; }
-.icon-16-link-error { background: url(icons.png) no-repeat 0px -320px !important; }
-.icon-16-lock       { background: url(icons.png) no-repeat 0px -340px !important; }
-.icon-16-lock-open  { background: url(icons.png) no-repeat 0px -360px !important; }
-.icon-16-reduce     { background: url(icons.png) no-repeat 0px -380px !important; }
-.icon-16-stop       { background: url(icons.png) no-repeat 0px -400px !important; }
-.icon-16-tick       { background: url(icons.png) no-repeat 0px -420px !important; }
-.icon-16-tip        { background: url(icons.png) no-repeat 0px -440px !important; }
-
 /* 32x32 ICONS */
 .icon-32-admin		{ background-image:url(link/admin.png) !important; }
 .icon-32-files		{ background-image:url(link/files.png) !important; }
@@ -68,8 +30,3 @@
 .icon-32-sort		{ background-image:url(link/sort.png) !important; }
 .icon-32-model		{ background-image:url(link/model.png) !important; }
 .icon-32-page		{ background-image:url(link/page.png) !important; }
-
-/* 32x32 ICONS */
-.icon-32-success	{ background: url(info_icons.png) no-repeat 0px 0px !important; }
-.icon-32-error		{ background: url(info_icons.png) no-repeat 0px -40px !important; }
-.icon-32-alert		{ background: url(info_icons.png) no-repeat 0px -80px !important; }
