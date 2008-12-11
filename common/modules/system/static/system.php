@@ -122,7 +122,7 @@ class System{
      * @param string $p1    用户名
      * @param string $p2    权限不正确，退出地址
      */
-    function purview($p1='System',$p2='../system/logout.php'){
+    function purview($p1,$p2='../system/logout.php'){
         $_USER = System::getAdmin($p1);
         if (!$_USER) {
             // TODO: 没有权限，或没有登录，提示

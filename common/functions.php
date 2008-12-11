@@ -34,7 +34,7 @@ function lazycms_run() {
     c(include_file(COM_PATH.'/config.php'));
     // 设置错误级别
     ini_set('display_errors',true);
-    error_reporting(E_ALL & ~E_NOTICE);
+    error_reporting(E_ALL &~ E_NOTICE);
     // 解析魔术引号
     set_magic_quotes_runtime(0);
     if (get_magic_quotes_gpc()) {

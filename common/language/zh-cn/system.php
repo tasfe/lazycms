@@ -99,10 +99,11 @@ return array(
     /* 登录错误验证 */
     'Login check name'  => '管理员名称不能为空或过长',
     'Login check pass'  => '管理员密码不能为空或过长',
+    'Login check username or password error' => '用户名或者密码错误',
     
     /* 系统管理 */
     'Cpanel'     => '控制面板',
-    'Admins'     => '管理员',
+    'Admins'     => '后台管理员',
     'Webftp'     => '文件管理',
     'Modules'    => '安装卸载',
     'Settings'   => '系统设置',
@@ -115,6 +116,8 @@ return array(
     /* 管理员管理 */
     'Admins add'      => '添加管理员',
     'Admins name'     => '登录名',
+    'Admins password' => '密码',
+    'Admins repeat password' => '确认密码',
     'Admins email'    => 'Email',
     'Admins language' => '界面语言',
     'Admins state'    => '状态',

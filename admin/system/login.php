@@ -48,8 +48,8 @@ function lazy_main() {
                 Cookie::set('language',$_USER['language'],$cookie);
                 redirect('index.php');
             } else {
-                // TODO: 输出错误信息
-                alert('用户名密码不正确',0);
+                // 输出错误信息
+                alert(l('Login check username or password error'),0);
             }
             return;
         }

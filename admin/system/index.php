@@ -27,7 +27,7 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_main(){
-    System::purview();
+    System::purview('System.System');
     System::header();
     $db = get_conn();
     $gdInfo = function_exists('gd_info') ? gd_info() : array('GD Version'=>'none');

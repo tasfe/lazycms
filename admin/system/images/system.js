@@ -32,6 +32,8 @@ $(document).ready(function(){
     $('#menu li li:not(.hr)').mouseover(function(){
         $(this).width($(this).parent().width()-($.browser.msie && $.browser.version=='6.0'?4:2));
     });
+    // 自动设置tab
+    var t = $('#box fieldset legend[rel=tab]').text(); if (t!=='') { $('#tabs li.active a').text(t); }
 	// 批量去除连接虚线
 	$('a').focus(function(){ this.blur(); });
 	// 绑定展开事件
