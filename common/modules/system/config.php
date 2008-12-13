@@ -25,10 +25,10 @@ defined('COM_PATH') or die('Restricted access!');
 return array(
     /* 权限列表 */
     'purview' => array(
-        'System',
-        'Admins',
-        'Install',
-        'Settings',
-        'Sysinfo',
+        'system',
+        'admins',
+        'modules',
+        'settings',
+        'sysinfo',
     )
 );

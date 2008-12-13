@@ -27,26 +27,25 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_main(){
-    System::purview('System.System');
     System::header();
     $db = get_conn();
     $gdInfo = function_exists('gd_info') ? gd_info() : array('GD Version'=>'none');
     echo '<div id="sysinfo" class="panel"><div class="body">';
-    echo '<dl><dt>'.l('System info').'</dt><dd>';
-    echo '<p><label>'.l('Server OS').':</label>'.php_uname().'</p>';
-    echo '<p><label>'.l('Database version').':</label>'.$db->config('scheme').' '.$db->version().'</p>';
-    echo '<p><label>'.l('PHP version').':</label>'.PHP_VERSION.'</p>';
-    echo '<p><label>'.l('GD version').':</label>'.$gdInfo['GD Version'].'</p>';
+    echo '<dl><dt>'.t('System info').'</dt><dd>';
+    echo '<p><label>'.t('Server OS').':</label>'.php_uname().'</p>';
+    echo '<p><label>'.t('Database version').':</label>'.$db->config('scheme').' '.$db->version().'</p>';
+    echo '<p><label>'.t('PHP version').':</label>'.PHP_VERSION.'</p>';
+    echo '<p><label>'.t('GD version').':</label>'.$gdInfo['GD Version'].'</p>';
     echo '<p><label>LazyCMS:</label>'.LAZY_VERSION.'</p>';
     echo '</dd></dl>';
-    echo '<dl><dt>'.l('PHP Settings').'</dt><dd>';
-    echo '<p><label>'.l('PHP allow url fopen').':</label>'.isok((function_exists('fsockopen') || function_exists('curl_exec'))).'</p>';
-    echo '<p><label>'.l('PHP file uploads').':</label>'.get_php_setting('file_uploads').'</p>';
-    echo '<p><label>'.l('PHP zlib').':</label>'.isok(extension_loaded('zlib')).'</p>';
-    echo '<p><label>'.l('PHP iconv').':</label>'.isok(function_exists('iconv')).'</p>';
-    echo '<p><label>'.l('PHP mbstring').':</label>'.isok(extension_loaded('mbstring')).'</p>';
-    echo '<p><label>'.l('PHP upload max file size').':</label>'.get_cfg_var('upload_max_filesize').'</p>';
-    echo '<p><label>'.l('PHP post max size').':</label>'.get_cfg_var('post_max_size').'</p>';
+    echo '<dl><dt>'.t('PHP Settings').'</dt><dd>';
+    echo '<p><label>'.t('PHP allow url fopen').':</label>'.isok((function_exists('fsockopen') || function_exists('curl_exec'))).'</p>';
+    echo '<p><label>'.t('PHP file uploads').':</label>'.get_php_setting('file_uploads').'</p>';
+    echo '<p><label>'.t('PHP zlib').':</label>'.isok(extension_loaded('zlib')).'</p>';
+    echo '<p><label>'.t('PHP iconv').':</label>'.isok(function_exists('iconv')).'</p>';
+    echo '<p><label>'.t('PHP mbstring').':</label>'.isok(extension_loaded('mbstring')).'</p>';
+    echo '<p><label>'.t('PHP upload max file size').':</label>'.get_cfg_var('upload_max_filesize').'</p>';
+    echo '<p><label>'.t('PHP post max size').':</label>'.get_cfg_var('post_max_size').'</p>';
     echo '</dd></dl>';
     echo '</div></div>';
 

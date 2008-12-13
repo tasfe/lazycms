@@ -108,15 +108,20 @@ function LoadScript(p,c){
             style += '</style>';
             document.write(style);
     }
+    $.undialogUI = function(){
+        $('#dialogUI,#dialog,#iframeCover').remove();
+        $(document).data('dialogUI',false);
+    }
 	$.dialogUI = function(opts){
-		opts = $.extend({
+		if ($(document).data('dialogUI')) { return ; } $(document).data('dialogUI',true);
+	    opts = $.extend({
 			title:'',
 			close:true,
 			opacity:0.6,
             background:'#FFFFFF'
         }, opts||{});
-		var width  = $('body').width();
-        var height = $('body').height();
+		var width  = $(document).width();
+        var height = $(document).height();
         if (!$('#dialogUI').is('div')) {
             $('body').append('<div id="dialogUI"></div>');
         }
@@ -124,18 +129,18 @@ function LoadScript(p,c){
 		if ($.browser.msie && $.browser.version=='6.0') {
 			if ($('#iframeCover').is('iframe') == false) {
 				$('body').append('<iframe id="iframeCover" style="filter:alpha(opacity=0);position:absolute;z-index:999;left:0;top:0;height:' + height + 'px;width:' + width + 'px;"></iframe>');
-			} else {
-				$('#iframeCover').remove();
 			}
 		}
         $('#dialogUI').css({ width:width + 'px',height:height + 'px','left':0,'top':0,'position':'absolute','background':opts.background,'z-index':1000,'filter':'alpha(opacity=' + (100 * opts.opacity) + ')','-moz-opacity':opts.opacity,'opacity':opts.opacity});
-		$('body').append('<div id="dialog"></div>').find('#dialog')
-			.append('<div class="head"><strong>' + opts.title + '</strong>' + (opts.close?'<a href="#" rel="close"></a>':'') + '</div>')
-			.floatDiv({width:'400px',top:'200px',left:$(document).width()/2 - 200})
-			.find('[rel=close]').click(function(){
-				$('#dialogUI,#dialog').remove();
-				return false;
-			}).focus();
+        if (!$('#dialog').is('div')) {
+    		$('body').append('<div id="dialog"></div>').find('#dialog')
+    			.append('<div class="head"><strong>' + opts.title + '</strong>' + (opts.close?'<a href="#" rel="close"></a>':'') + '</div>')
+    			.floatDiv({width:'400px',top:'200px',left:$(document).width()/2 - 200})
+    			.find('[rel=close]').click(function(){
+    				$.undialogUI();
+    				return false;
+    			}).focus();
+        }
 		return $('#dialog');
 	}
     /**
@@ -160,7 +165,7 @@ function LoadScript(p,c){
 			.append('<div class="button"><button type="button" rel="submit">确定</button></div>')
 			.floatDiv({width:'400px',top:'200px',left:$(document).width()/2 - 200})
 			.find('[rel=submit]').click(function(){
-				$('#dialogUI,#dialog').remove();
+				$.undialogUI();
 				if ($.isFunction(callback)) {callback();}
 				return false;
 			}).focus();
@@ -174,11 +179,11 @@ function LoadScript(p,c){
 			.append('<div class="button"><button type="button" rel="submit">确定</button><button type="button" rel="cancel">取消</button></div>')
 			.floatDiv({width:'400px',top:'200px',left:$(document).width()/2 - 200})
 			.find('[rel=submit]').click(function(){
-				$('#dialogUI,#dialog').remove();
+				$.undialogUI();
 				callback(true);
 			}).focus().end()
 			.find('[rel=cancel]').click(function(){
-				$('#dialogUI,#dialog').remove();
+				$.undialogUI();
 				callback(false);
 			});
 		return false;
@@ -375,17 +380,19 @@ function LoadScript(p,c){
      * 气泡提示
      */
     $.fn.jTips = function(){
-        $('body').append('<div class="jTip"><div class="jTip-body"></div><div class="jTip-foot"></div></div>');
-        var jTip = $('.jTip');
-        var jHeight = jTip.height();
-        this.mousemove(function(e){
-            jTip.css({'top':(e.clientY - jHeight - 20 ) + 'px','left':(e.clientX + 5) + 'px'});
-        });
+        var $this = $(this);        
         this.hover(function(){
+            var jTip = $('body').append('<div class="jTip"><div class="jTip-body"></div><div class="jTip-foot"></div></div>').find('.jTip');
+            var jHeight = jTip.height();
+            $this.mousemove(function(e){
+                jTip.css({'top':((e.clientY+document.documentElement.scrollTop) - jHeight - 20 ) + 'px','left':(e.clientX + 5) + 'px'});
+            });
             jTip.fadeIn('fast').find('.jTip-body').html($(this).attr('error'));
         },function(){
-            jTip.hide();
+            $('.jTip').remove();
         });
+        
+        
     }
     /**
      * 任意位置浮动
@@ -502,6 +509,7 @@ function LoadScript(p,c){
         return '' + o;
     },
     $.parseJSON = function(s){
+        if (!/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/.test(s)) { return false; }
         try {
             return eval('(' + s + ')');
         } catch (ex) {

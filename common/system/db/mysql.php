@@ -58,7 +58,7 @@ class lazy_mysql extends DB {
         }
         // 验证连接是否正确
         if (!$this->_conn) {
-            trigger_error(l('Database no link'));
+            trigger_error(t('system::database/nolink'));
         }
         return $this->_conn;
     }
@@ -80,11 +80,11 @@ class lazy_mysql extends DB {
         }
         // 选择数据库
         if (!$select) {
-            trigger_error(l('No select Database'));
+            trigger_error(t('system::database/noselectdb'));
         }
         mysql_query("SET character_set_connection=".$this->config('lang').", character_set_results=".$this->config('lang').", character_set_client=binary;");
         if (version_compare($this->version(), '4.1', '<' )) {
-            trigger_error(l('Database version lower',array($this->config('scheme'),'4.1')));
+            trigger_error(t('system::database/versionlower',array($this->config('scheme'),'4.1')));
         }
         if(version_compare($this->version(), '5.0.1', '>' )) {
             mysql_query("SET sql_mode='';");

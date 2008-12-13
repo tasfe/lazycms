@@ -25,13 +25,13 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
-    System::purview('System.Settings');
+    System::purview('system::settings');
     System::tabs(
-        l('Settings').':settings.php;'.
-        l('System info').':sysinfo.php;'.
-        l('System config').':sysinfo.php?action=config;'.
-        l('Directory').':sysinfo.php?action=directory;'.
-        l('PHP Settings').':sysinfo.php?action=phpinfo'
+        t('settings').':settings.php;'.
+        t('sysinfo').':sysinfo.php;'.
+        t('sysinfo/config').':sysinfo.php?action=config;'.
+        t('sysinfo/directory').':sysinfo.php?action=directory;'.
+        t('sysinfo/phpinfo').':sysinfo.php?action=phpinfo'
     );
 }
 // *** *** www.LazyCMS.net *** *** //
@@ -39,13 +39,13 @@ function lazy_main(){
     $val = new Validate();
     if ($val->method()) {
         $DSN_CONFIG = isset($_POST['DSN_CONFIG']) ? $_POST['DSN_CONFIG'] : null;
-        $val->check('SITE_NAME|0|'.l('Site check name'));
-        $val->check('UPLOAD_ALLOW_EXT|0|'.l('Upload check allow ext').';UPLOAD_ALLOW_EXT|validate|'.l('Upload check error ext').'|^[\w\,]+$');
-        $val->check('UPLOAD_MAX_SIZE|0|'.l('Upload check max size').';UPLOAD_MAX_SIZE|validate|'.l('Upload check max size is number').'|2');
-        $val->check('UPLOAD_FILE_PATH|0|'.l('Upload check file path').';UPLOAD_FILE_PATH|5|'.l('Upload check error path'));
-        $val->check('UPLOAD_IMAGE_PATH|0|'.l('Upload check image path').';UPLOAD_IMAGE_PATH|5|'.l('Upload check error path'));
-        $val->check('UPLOAD_IMAGE_EXT|0|'.l('Upload check image ext').';UPLOAD_IMAGE_EXT|validate|'.l('Upload check error ext').'|^[\w\,]+$');
-        $val->check('DSN_CONFIG|0|'.l('Upload check DSN config').';DSN_CONFIG|3|'.l('Upload check DSN config error format').'|'.validate($DSN_CONFIG,'^((\w+):\/\/path\=(.+)$)|(^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@(\w+)(:(\d+))?(\/(\w+)\/(\w+)|\/(\w+))$)'));
+        $val->check('SITE_NAME|0|'.t('settings/check/sitename'));
+        $val->check('UPLOAD_ALLOW_EXT|0|'.t('settings/check/allowext').';UPLOAD_ALLOW_EXT|validate|'.t('settings/check/errorext').'|^[\w\,]+$');
+        $val->check('UPLOAD_MAX_SIZE|0|'.t('settings/check/maxsize').';UPLOAD_MAX_SIZE|validate|'.t('settings/check/maxsize1').'|2');
+        $val->check('UPLOAD_FILE_PATH|0|'.t('settings/check/filepath').';UPLOAD_FILE_PATH|5|'.t('settings/check/errorpath'));
+        $val->check('UPLOAD_IMAGE_PATH|0|'.t('settings/check/imagepath').';UPLOAD_IMAGE_PATH|5|'.t('settings/check/errorpath'));
+        $val->check('UPLOAD_IMAGE_EXT|0|'.t('settings/check/imageext').';UPLOAD_IMAGE_EXT|validate|'.t('settings/check/errorext').'|^[\w\,]+$');
+        $val->check('DSN_CONFIG|0|'.t('settings/check/DSNconfig').';DSN_CONFIG|3|'.t('settings/check/DSNformat').'|'.validate($DSN_CONFIG,'^((\w+):\/\/path\=(.+)$)|(^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@(\w+)(:(\d+))?(\/(\w+)\/(\w+)|\/(\w+))$)'));
         if ($val->isVal()) {
             $val->out();
         } else {
@@ -77,21 +77,21 @@ function lazy_main(){
                 $config = preg_replace('/(\''.$field.'\'( |\t)*\=\>( |\t)*)((true|false|null|[-\d]+)|\'.+\'),/ie','\'\\1\'.$data.\',\'',$config);
             }
             save_file(COM_PATH.'/config.php',$config);
-            success(l('System settings save success'),0);
+            success(t('settings/alert/save'),0);
         }
     }
-    System::header(l('Settings'));
+    System::header(t('settings'));
     echo '<form id="form1" name="form1" method="post" action="">';
-    echo '<fieldset><legend><a rel=".show"><img class="a2 os" src="../system/images/white.gif" />'.l('Site settings').'</a></legend>';
+    echo '<fieldset><legend><a rel=".show"><img class="a2 os" src="../system/images/white.gif" />'.t('settings/site').'</a></legend>';
     echo '<div class="show">';
-    echo '<p><label>'.l('Site name').':</label><input class="in w200" type="text" name="SITE_NAME" id="SITE_NAME" value="'.c('SITE_NAME').'"></p>';
+    echo '<p><label>'.t('settings/sitename').':</label><input class="in w200" type="text" name="SITE_NAME" id="SITE_NAME" value="'.c('SITE_NAME').'"></p>';
 
-    echo '<p><label>'.l('Language').':</label>';
+    echo '<p><label>'.t('settings/language').':</label>';
     echo '<select name="LANGUAGE" id="LANGUAGE">';
     echo form_opts('@.language','lang','<option value="#value#"#selected#>#name#</option>',c('LANGUAGE'));
     echo '</select></p>';
 
-    echo '<p><label>'.l('RSS number').':</label>';
+    echo '<p><label>'.t('settings/RSS_number').':</label>';
     echo '<select name="RSS_NUMBER" id="RSS_NUMBER">';
     foreach (array(5,10,15,20,25,30,35,50,100) as $number) {
         $selected = c('RSS_NUMBER') == $number ? ' selected="selected"' : null;
@@ -99,33 +99,33 @@ function lazy_main(){
     }
     echo '</select></p>';
     
-    echo '<p><label>'.l('Related keywords').':</label><span>';
-    echo '<input type="radio" name="GET_RELATED_KEY" id="GET_RELATED_KEY[1]" value="true"'.((c('GET_RELATED_KEY') == 1) ? ' checked="checked"':null).'/><label for="GET_RELATED_KEY[1]">'.l('True').'</label> ';
-    echo '<input type="radio" name="GET_RELATED_KEY" id="GET_RELATED_KEY[0]" value="false"'.((c('GET_RELATED_KEY') == 0) ? ' checked="checked"':null).'/><label for="GET_RELATED_KEY[0]">'.l('False').'</label>';
+    echo '<p><label>'.t('settings/Related_keywords').':</label><span>';
+    echo '<input type="radio" name="GET_RELATED_KEY" id="GET_RELATED_KEY[1]" value="true"'.((c('GET_RELATED_KEY') == 1) ? ' checked="checked"':null).'/><label for="GET_RELATED_KEY[1]">'.t('True').'</label> ';
+    echo '<input type="radio" name="GET_RELATED_KEY" id="GET_RELATED_KEY[0]" value="false"'.((c('GET_RELATED_KEY') == 0) ? ' checked="checked"':null).'/><label for="GET_RELATED_KEY[0]">'.t('False').'</label>';
     echo '</span></p>';
 
     echo '</div></fieldset>';
 
-    echo '<fieldset><legend><a rel=".show"><img class="a2 os" src="../system/images/white.gif" />'.l('Upload settings').'</a></legend>';
+    echo '<fieldset><legend><a rel=".show"><img class="a2 os" src="../system/images/white.gif" />'.t('settings/upload').'</a></legend>';
     echo '<div class="show">';
-    echo '<p><label>'.l('Upload allow ext').':</label><input class="in w300" type="text" name="UPLOAD_ALLOW_EXT" id="UPLOAD_ALLOW_EXT" value="'.c('UPLOAD_ALLOW_EXT').'"></p>';
-    echo '<p><label>'.l('Upload max size').':</label><input class="in w100" type="text" name="UPLOAD_MAX_SIZE" id="UPLOAD_MAX_SIZE" value="'.c('UPLOAD_MAX_SIZE').'"></p>';
-    echo '<p><label>'.l('Upload file path').':</label><input class="in w200" type="text" name="UPLOAD_FILE_PATH" id="UPLOAD_FILE_PATH" value="'.c('UPLOAD_FILE_PATH').'"></p>';
-    echo '<p><label>'.l('Upload image path').':</label><input class="in w200" type="text" name="UPLOAD_IMAGE_PATH" id="UPLOAD_IMAGE_PATH" value="'.c('UPLOAD_IMAGE_PATH').'"></p>';
-    echo '<p><label>'.l('Upload image ext').':</label><input class="in w200" type="text" name="UPLOAD_IMAGE_EXT" id="UPLOAD_IMAGE_EXT" value="'.c('UPLOAD_IMAGE_EXT').'"></p>';
+    echo '<p><label>'.t('settings/upload/allowext').':</label><input class="in w300" type="text" name="UPLOAD_ALLOW_EXT" id="UPLOAD_ALLOW_EXT" value="'.c('UPLOAD_ALLOW_EXT').'"></p>';
+    echo '<p><label>'.t('settings/upload/maxsize').':</label><input class="in w100" type="text" name="UPLOAD_MAX_SIZE" id="UPLOAD_MAX_SIZE" value="'.c('UPLOAD_MAX_SIZE').'"></p>';
+    echo '<p><label>'.t('settings/upload/filepath').':</label><input class="in w200" type="text" name="UPLOAD_FILE_PATH" id="UPLOAD_FILE_PATH" value="'.c('UPLOAD_FILE_PATH').'"></p>';
+    echo '<p><label>'.t('settings/upload/imagepath').':</label><input class="in w200" type="text" name="UPLOAD_IMAGE_PATH" id="UPLOAD_IMAGE_PATH" value="'.c('UPLOAD_IMAGE_PATH').'"></p>';
+    echo '<p><label>'.t('settings/upload/imageext').':</label><input class="in w200" type="text" name="UPLOAD_IMAGE_EXT" id="UPLOAD_IMAGE_EXT" value="'.c('UPLOAD_IMAGE_EXT').'"></p>';
     echo '</div></fieldset>';
     
-    echo '<fieldset><legend><a rel=".show"><img class="a1 os" src="../system/images/white.gif" />'.l('Server settings').'</a></legend>';
+    echo '<fieldset><legend><a rel=".show"><img class="a1 os" src="../system/images/white.gif" />'.t('settings/server').'</a></legend>';
     echo '<div class="show">';
-    echo '<p><label>'.l('Server time zone').':</label>';
+    echo '<p><label>'.t('settings/server/timezone').':</label>';
     echo '<select name="TIME_ZONE" id="TIME_ZONE">';
-    foreach (l('Time zone') as $hour => $zone) {
+    foreach (t('timezone') as $hour => $zone) {
         $selected = (c('TIME_ZONE')==(string)$hour) ? 'selected="selected"' : null;
         echo '<option value="'.$hour.'"'.$selected.'>'.$zone.'</option>';
     }
     echo '</select></p>';
 
-    echo '<p><label>'.l('Server DSN config').':</label><input class="in w400" type="text" name="DSN_CONFIG" id="DSN_CONFIG" value="'.c('DSN_CONFIG').'"></p>';
+    echo '<p><label>'.t('settings/server/DSN_config').':</label><input class="in w400" type="text" name="DSN_CONFIG" id="DSN_CONFIG" value="'.c('DSN_CONFIG').'"></p>';
 
     echo '</div></fieldset>';
 

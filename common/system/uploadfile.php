@@ -138,9 +138,9 @@ class UpLoadFile{
     function getError(){
         if ($this->_error==0) { return ; }
         if ($this->_error==10) {
-            return l('Upload error '.$this->_error,array(get_cfg_var('post_max_size')));
+            return t('system::upload/error'.$this->_error,array(get_cfg_var('post_max_size')));
         } else {
-            return l('Upload error '.$this->_error);
+            return t('system::upload/error'.$this->_error);
         }
     }
     /**

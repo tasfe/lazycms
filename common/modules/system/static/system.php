@@ -28,9 +28,10 @@ class System{
      *
      * @param string $title
      */
-    function header($title=null,$selected=null){
+    function header($title=null,$purview=null,$selected=null){
+        $_USER    = System::purview($purview);
         $selected = !empty($selected) ? $selected.'|' : null;
-        $title = empty($title) ? l('System manage') : $title.' - '.l('System manage');
+        $title = empty($title) ? t('system::system') : $title.' - '.t('system::system');
         $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
         $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
         $hl.= '<title>'.$title.'</title>';
@@ -44,40 +45,40 @@ class System{
         $hl.= '</head><body>';
         $hl.= '<div id="top">';
         $hl.= '<div class="logo"><a href="../system/index.php"><img src="../system/images/logo.png" alt="LazyCMS '.LAZY_VERSION.'" /></a></div>';
-        $hl.= '<div id="version" version="'.LAZY_VERSION.'">'.l('Last Version').': <span>Loading...</span></div>';
+        $hl.= '<div id="version" version="'.LAZY_VERSION.'">'.t('system::system/lastversion').': <span>Loading...</span></div>';
         $hl.= '<ul id="menu">';
-        $hl.= '<li><div>'.l('System manage').'<img class="a2 os" src="../system/images/white.gif" /></div><ul>';
-        $hl.= '    <li><a href="../system/index.php" class="icon-16-cpanel">'.l('Cpanel').'</a></li>';
+        $hl.= '<li><div>'.t('system::system/manage').'<img class="a2 os" src="../system/images/white.gif" /></div><ul>';
+        $hl.= '    <li><a href="../system/index.php">'.t('system::system/cpanel').'</a></li>';
         $hl.= '    <li class="hr"></li>';
-        $hl.= '    <li><a href="../system/admin.php" class="icon-16-admin">'.l('Admins').'</a></li>';
-        $hl.= '    <li><a href="../system/files.php" class="icon-16-files">'.l('Webftp').'</a></li>';
+        $hl.= '    <li><a href="../system/admins.php">'.t('system::system/admins').'</a></li>';
+        $hl.= '    <li><a href="../system/files.php">'.t('system::system/files').'</a></li>';
         $hl.= '    <li class="hr"></li>';
-        $hl.= '    <li><a href="../system/install.php" class="icon-16-install">'.l('Modules').'</a></li>';
-        $hl.= '    <li><a href="../system/settings.php" class="icon-16-config">'.l('Settings').'</a></li>';
+        $hl.= '    <li><a href="../system/modules.php">'.t('system::system/modules').'</a></li>';
+        $hl.= '    <li><a href="../system/settings.php">'.t('system::system/settings').'</a></li>';
         $hl.= '    <li class="hr"></li>';
-        $hl.= '    <li><a href="javascript:;" class="icon-16-logout" onclick="return $.confirm(\''.l('Confirm logout').'\',function(r){ r ? $.redirect(\'../system/logout.php\') : false; })">'.l('Logout').'</a></li>';
+        $hl.= '    <li><a href="javascript:;" onclick="$.confirm(\''.t('system::confirm/logout').'\',function(r){ r ? $.redirect(\'../system/logout.php\') : false; })">'.t('system::system/logout').'</a></li>';
         $hl.= '</ul></li>';
         $hl.= '
             <li><div>内容管理<img class="a2 os" src="../system/images/white.gif" /></div>
                 <ul>
-                    <li><a href="../content/label.php" class="icon-16-label">标签中心</a></li>
-                    <li><a href="../content/create.php" class="icon-16-create">生成中心</a></li>
+                    <li><a href="../content/label.php">标签中心</a></li>
+                    <li><a href="../content/create.php">生成中心</a></li>
                     <li class="hr"></li>
-                    <li><a href="../content/onepage.php" class="icon-16-page">单页管理</a></li>
-                    <li><a href="../content/article.php" class="icon-16-article">文档管理</a></li>
+                    <li><a href="../content/onepage.php">单页管理</a></li>
+                    <li><a href="../content/article.php">文档管理</a></li>
                     <li class="hr"></li>
-                    <li><a href="../content/sort.php" class="icon-16-sort">分类管理</a></li>
-                    <li><a href="../content/model.php" class="icon-16-model">模型管理</a></li>
+                    <li><a href="../content/sort.php">分类管理</a></li>
+                    <li><a href="../content/model.php">模型管理</a></li>
                 </ul>
             </li>';
-        $hl.= '<li><div>'.l('Help').'<img class="a2 os" src="../system/images/white.gif" /></div><ul>';
-        $hl.= '    <li><a href="http://www.lazycms.net/" class="icon-16-home" target="_blank">'.l('Official Website').'</a></li>';
-        $hl.= '    <li><a href="http://forums.lazycms.net/" class="icon-16-help" target="_blank">'.l('Support Forums').'</a></li>';
+        $hl.= '<li><div>'.t('system::help').'<img class="a2 os" src="../system/images/white.gif" /></div><ul>';
+        $hl.= '    <li><a href="http://www.lazycms.net/" target="_blank">'.t('system::official/site').'</a></li>';
+        $hl.= '    <li><a href="http://forums.lazycms.net/" target="_blank">'.t('system::official/forums').'</a></li>';
         $hl.= '    <li class="hr"></li>';
-        $hl.= '    <li><a href="../system/sysinfo.php" class="icon-16-info">'.l('System info').'</a></li>';
+        $hl.= '    <li><a href="../system/sysinfo.php">'.t('system::system/sysinfo').'</a></li>';
         $hl.= '    </ul>';
         $hl.= '</li></ul>';
-        $hl.= '<ul class="menu"><li><a href="'.SITE_BASE.'" target="_blank">'.l('Preview').'</a></li><li><a href="#">'.l('修改密码').'</a></li><li><a href="javascript:;" onclick="return $.confirm(\''.l('Confirm logout').'\',function(r){ r ? $.redirect(\'../system/logout.php\') : false; })">'.l('Logout').'</a></li></ul>';
+        $hl.= '<ul class="menu"><li><a href="'.SITE_BASE.'" target="_blank">'.t('system::system/preview').'</a></li><li><a href="#">'.t('修改密码').'</a></li><li><a href="javascript:;" onclick="$.confirm(\''.t('system::confirm/logout').'\',function(r){ r ? $.redirect(\'../system/logout.php\') : false; })">'.t('system::system/logout').'</a></li></ul>';
         $hl.= '</div><div id="main">';
         if ($tabs = g('TABS')) { 
             $hl.= menu($selected.$tabs); 
@@ -122,7 +123,7 @@ class System{
      * @param string $p1    用户名
      * @param string $p2    权限不正确，退出地址
      */
-    function purview($p1,$p2='../system/logout.php'){
+    function purview($p1=null,$p2='../system/logout.php'){
         $_USER = System::getAdmin($p1);
         if (!$_USER) {
             // TODO: 没有权限，或没有登录，提示
@@ -156,7 +157,7 @@ class System{
         $res = $db->query("SELECT * FROM `#@_system_admin` WHERE `adminname`=? LIMIT 0,1;",$params[0]);
         if ($rs = $db->fetch($res)) {
             // 验证用户名密码
-            if ((int)$funcNum > 1) {
+            if ((int)$funcNum > 1 && !empty($params[0]) && !empty($params[1])) {
                 $md5pass = md5($params[1].$rs['adminkey']);
                 if ($md5pass == $rs['adminpass']) {
                     $newkey  = substr($md5pass,0,6);
@@ -173,7 +174,7 @@ class System{
                     ));
                     return $rs;
                 }
-            } elseif ((int)$funcNum == 1) {
+            } elseif ((int)$funcNum == 1 && !empty($params[2])) {
                 // 验证权限正确，则返回管理员信息
                 if ((string)$params[1] == (string)$rs['adminpass']) {
                     // 输入权限则进行验证，不输入权限则只返回管理员信息

@@ -25,13 +25,12 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
-    System::purview('System.Sysinfo');
     System::tabs(
-        l('Settings').':settings.php;'.
-        l('System info').':sysinfo.php;'.
-        l('System config').':sysinfo.php?action=config;'.
-        l('Directory').':sysinfo.php?action=directory;'.
-        l('PHP Settings').':sysinfo.php?action=phpinfo'
+        t('settings').':settings.php;'.
+        t('sysinfo').':sysinfo.php;'.
+        t('sysinfo/config').':sysinfo.php?action=config;'.
+        t('sysinfo/directory').':sysinfo.php?action=directory;'.
+        t('sysinfo/phpinfo').':sysinfo.php?action=phpinfo'
     );
 }
 // *** *** www.LazyCMS.net *** *** //
@@ -39,43 +38,43 @@ function lazy_main(){
     $db = get_conn();
     $gdInfo = function_exists('gd_info') ? gd_info() : array('GD Version'=>'none');
     
-    System::header(l('System info'));
+    System::header(t('sysinfo'));
     
     /* System settings */
-    echo '<fieldset><legend><a rel=".table"><img class="a2 os" src="../system/images/white.gif" />'.l('System info').'</a></legend>';
+    echo '<fieldset><legend><a rel=".table"><img class="a2 os" src="../system/images/white.gif" />'.t('sysinfo').'</a></legend>';
     echo '<table class="table" cellspacing="0">';
     echo '<tbody>';
-    echo '<tr><td class="w4">'.l('Server OS').'</td><td>'.php_uname().'</td></tr>';
-    echo '<tr><td>'.l('GD version').'</td><td>'.$gdInfo['GD Version'].'</td></tr>';
-    echo '<tr><td>'.l('PHP version').'</td><td>'.PHP_VERSION.'</td></tr>';
-    echo '<tr><td>'.l('PHP SAPI name').'</td><td>'.php_sapi_name().'</td></tr>';
-    echo '<tr><td>'.l('Database version').'</td><td>'.$db->config('scheme').' '.$db->version().'</td></tr>';
-    echo '<tr><td>'.l('System version').'</td><td>'.LAZY_VERSION.'</td></tr>';
-    echo '<tr><td>'.l('WebServer').'</td><td>'.$_SERVER['SERVER_SOFTWARE'].'</td></tr>';
-    echo '<tr><td>'.l('User agent').'</td><td>'.$_SERVER['HTTP_USER_AGENT'].'</td></tr>';
+    echo '<tr><td class="w4">'.t('sysinfo/server_OS').'</td><td>'.php_uname().'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/GD_version').'</td><td>'.$gdInfo['GD Version'].'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/PHP_version').'</td><td>'.PHP_VERSION.'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/PHP_SAPI_name').'</td><td>'.php_sapi_name().'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/DB_version').'</td><td>'.$db->config('scheme').' '.$db->version().'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/version').'</td><td>'.LAZY_VERSION.'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/software').'</td><td>'.$_SERVER['SERVER_SOFTWARE'].'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/useragent').'</td><td>'.$_SERVER['HTTP_USER_AGENT'].'</td></tr>';
     echo '</tbody></table></fieldset>';
     
     /* PHP settings */
-    echo '<fieldset><legend><a rel=".table"><img class="a2 os" src="../system/images/white.gif" />'.l('PHP Settings').'</a></legend>';
+    echo '<fieldset><legend><a rel=".table"><img class="a2 os" src="../system/images/white.gif" />'.t('sysinfo/phpinfo').'</a></legend>';
     echo '<table class="table" cellspacing="0"><tbody>';
-    echo '<tr><td class="w4">'.l('PHP safe mode').'</td><td>'.get_php_setting('safe_mode').'</td></tr>';
-    echo '<tr><td>'.l('PHP display errors').'</td><td>'.get_php_setting('display_errors').'</td></tr>';
-    echo '<tr><td>'.l('PHP file uploads').'</td><td>'.get_php_setting('file_uploads').'</td></tr>';
-    echo '<tr><td>'.l('PHP magic quotes gpc').'</td><td>'.get_php_setting('magic_quotes_gpc').'</td></tr>';
-    echo '<tr><td>'.l('PHP zlib').'</td><td>'.isok(extension_loaded('zlib')).'</td></tr>';
-    echo '<tr><td>'.l('PHP iconv').'</td><td>'.isok(function_exists('iconv')).'</td></tr>';
-    echo '<tr><td>'.l('PHP allow url fopen').'</td><td>'.isok((function_exists('fsockopen') || function_exists('curl_exec'))).'</td></tr>';
-    echo '<tr><td>'.l('PHP mbstring').'</td><td>'.isok(extension_loaded('mbstring')).'</td></tr>';
-    echo '<tr><td>'.l('PHP open base dir').'</td><td>'.(($ob = ini_get('open_basedir')) ? $ob : 'none').'</td></tr>';
-    echo '<tr><td>'.l('PHP disable functions').'</td><td>'.(($df = ini_get('disable_functions')) ? $df : 'none').'</td></tr>';
-    echo '<tr><td>'.l('PHP upload max file size').'</td><td>'.get_cfg_var('upload_max_filesize').'</td></tr>';
-    echo '<tr><td>'.l('PHP post max size').'</td><td>'.get_cfg_var('post_max_size').'</td></tr>';
+    echo '<tr><td class="w4">'.t('sysinfo/safe_mode').'</td><td>'.get_php_setting('safe_mode').'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/display_errors').'</td><td>'.get_php_setting('display_errors').'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/file_uploads').'</td><td>'.get_php_setting('file_uploads').'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/magic_quotes_gpc').'</td><td>'.get_php_setting('magic_quotes_gpc').'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/zlib').'</td><td>'.isok(extension_loaded('zlib')).'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/iconv').'</td><td>'.isok(function_exists('iconv')).'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/allow_url_fopen').'</td><td>'.isok((function_exists('fsockopen') || function_exists('curl_exec'))).'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/mbstring').'</td><td>'.isok(extension_loaded('mbstring')).'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/open_base_dir').'</td><td>'.(($ob = ini_get('open_basedir')) ? $ob : 'none').'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/disable_functions').'</td><td>'.(($df = ini_get('disable_functions')) ? $df : 'none').'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/upload_max_filesize').'</td><td>'.get_cfg_var('upload_max_filesize').'</td></tr>';
+    echo '<tr><td>'.t('sysinfo/post_max_size').'</td><td>'.get_cfg_var('post_max_size').'</td></tr>';
     echo '</tbody></table></fieldset>';
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_config(){
-    System::header(l('Settings'));
-    echo '<fieldset><legend>'.l('Settings').'</legend>';
+    System::header(t('Settings'));
+    echo '<fieldset><legend>'.t('settings').'</legend>';
     echo '<table class="table" cellspacing="0"><tbody>';
     $fp = file(COM_PATH.'/config.php');
     $config = null;
@@ -107,7 +106,7 @@ function lazy_config(){
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_directory(){
-    System::header(l('Directory'));
+    System::header(t('sysinfo/directory'));
     $paths = array(
         '/',
         '/common/js/',
@@ -117,9 +116,9 @@ function lazy_directory(){
         '/common/config.php',
         '/common/images/icons.css',
     );
-    echo '<fieldset><legend>'.l('Directory').'</legend>';
+    echo '<fieldset><legend>'.t('sysinfo/directory').'</legend>';
     echo '<table class="table" cellspacing="0"><tbody>';
-    echo '<tr><th>'.l('Directory path').'</th><th>'.l('Directory read').'</th><th>'.l('Directory write').'</th></tr>';
+    echo '<tr><th>'.t('sysinfo/directory/path').'</th><th>'.t('sysinfo/directory/read').'</th><th>'.t('sysinfo/directory/write').'</th></tr>';
     foreach ($paths as $path) {
         echo '<tr><td>'.$path.'</td><td>'.isok(is_readable(LAZY_PATH.$path)).'</td><td>'.isok(is_writable(LAZY_PATH.$path)).'</td></tr>';
     }
@@ -132,7 +131,7 @@ function lazy_PHPInfo(){
     $phpinfo = ob_get_contents();
     ob_end_clean();
     
-    System::header(l('PHP Settings'));
+    System::header(t('sysinfo/phpinfo'));
     
     preg_match_all('#<body[^>]*>(.*)</body>#siU', $phpinfo, $output);
     $output = preg_replace('#<table#', '<table class="table" align="center"', $output[1][0]);

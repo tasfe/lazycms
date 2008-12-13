@@ -3,3 +3,6 @@
 后台IM通讯
 先确定提示模式 
 添加管理员
+t('system::admin.title');
+t('system.title');
+t('ON');

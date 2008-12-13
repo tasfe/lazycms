@@ -40,7 +40,7 @@ function lazycms_run() {
     if (get_magic_quotes_gpc()) {
         $R = array(& $_GET, & $_POST, & $_COOKIE, & $_REQUEST);
         while (list($k,$v) = each($R)) {
-            $R[$k] = stripslashes_deep($R[$k]);
+            $R[$k] = recursive_deep($R[$k],'stripslashes');
         }
         unset($R,$k,$v);
     }
@@ -66,14 +66,14 @@ function lazycms_run() {
             $function();
         } else {
             // 输出错误信息
-            trigger_error(l('No function',array($function,PHP_FILE,$function)));
+            trigger_error(t('system::error/nofunc',array($function,PHP_FILE,$function)));
         }
     } else {
         if (function_exists('lazy_main')) {
             lazy_main();
         } else {
             // 输出错误信息，提示用户定义lazy_def()函数
-            trigger_error(l('No main'));
+            trigger_error(t('system::error/nomain'));
         }
     }
     // 在动作之后执行的函数
@@ -121,7 +121,7 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
     $RE = isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:PHP_FILE;
     $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
     $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-    $hl.= '<title>'.l('System error').'</title><style type="text/css">';
+    $hl.= '<title>'.t('system::error').'</title><style type="text/css">';
     $hl.= 'body{ font-family: Verdana; font-size:14px; }';
     $hl.= 'a{text-decoration:none;color:#174B73;}';
     $hl.= 'a:hover{ text-decoration:none;color:#FF6600;}';
@@ -136,10 +136,10 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
     $hl.= '#footer sup{color:gray;font-size:9pt;}';
     $hl.= '#footer span{color:silver;}';
     $hl.= '</style></head><body>';
-    $hl.= '<div class="notice"><h2>'.l('System error').'</h2>';
-    $hl.= '<div>You can choose to [ <a href="javascript:self.location.reload();">'.l('Try again').'</a> ] [ <a href="'.$RE.'">'.l('Back').'</a> ] or [ <a href="'.SITE_BASE.'">'.l('Back home').'</a> ]</div>';
-    $hl.= '<p><strong>'.l('Error position').':</strong>　FILE: <strong class="red">'.$error['file'].'</strong>　LINE: <strong class="red">'.$error['line'].'</strong></p>';
-    $hl.= '<p class="title">[ '.l('Error message').' ]</p>';
+    $hl.= '<div class="notice"><h2>'.t('system::error').'</h2>';
+    $hl.= '<div>You can choose to [ <a href="javascript:self.location.reload();">'.t('system::try').'</a> ] [ <a href="'.$RE.'">'.t('system::back').'</a> ] or [ <a href="'.SITE_BASE.'">'.t('system::home').'</a> ]</div>';
+    $hl.= '<p><strong>'.t('system::error/position').':</strong>　FILE: <strong class="red">'.$error['file'].'</strong>　LINE: <strong class="red">'.$error['line'].'</strong></p>';
+    $hl.= '<p class="title">[ '.t('system::error/message').' ]</p>';
     $hl.= '<p class="message">'.$error['message'].'</p>';
     $hl.= '<p class="title">[ TRACE ]</p>';
     $hl.= '<p class="trace">'.nl2br($error['trace']).'</p></div>';
@@ -168,9 +168,9 @@ function POST(){
  * @return string
  */
 function but($p1){
-    $R = '<p class="button"><button type="submit">'.l($p1).'</button>';
-    $R.= '<button type="reset" onclick="return confirm(\''.l('Confirm reset').'\')">'.l('Reset').'</button>';
-    $R.= '<button type="button" onclick="self.history.back();">'.l('Back').'</button></p>';
+    $R = '<p class="button"><button type="submit">'.t($p1).'</button>';
+    $R.= '<button type="reset" onclick="return $.confirm(\''.t('Confirm reset').'\',function(r){ r?$(\'button[type=reset]\').parents(\'form\').get(0).reset():false; })">'.t('Reset').'</button>';
+    $R.= '<button type="button" onclick="self.history.back();">'.t('Back').'</button></p>';
     return $R;
 }
 /**
@@ -197,8 +197,8 @@ function get_php_setting($p1){
  * @return string
  */
 function isok($p1){
-    return $p1 ? '<strong style="color:#009900;">'.l('ON').'</strong>' :
-                    '<strong style="color:#FF0000;">'.l('OFF').'</strong>';
+    return $p1 ? '<strong style="color:#009900;">'.t('ON').'</strong>' :
+                    '<strong style="color:#FF0000;">'.t('OFF').'</strong>';
 }
 /**
  * 替换文件路径以网站根目录开始，防止暴露文件的真实地址
@@ -219,14 +219,23 @@ function h2c($p1){
     return empty($p1)?null:htmlspecialchars($p1);
 }
 /**
- * 扩展 stripslashes 处理多维数组
+ * 深度递归处理
  *
  * @param   array     $p1     要处理的数组
  * @param   string    $p2     函数名：可以使用其他函数进行递归转义
  * @return  array
  */
-function stripslashes_deep($p1,$p2='stripslashes') {
-    return is_array($p1) ? array_map('stripslashes_deep', $p1) : $p2($p1);
+function recursive_deep($p1,$p2='stripslashes') {
+    return is_array($p1) ? array_map('recursive_deep', $p1) : $p2($p1);
+}
+/**
+ * 转换多维数组所有的key为小写
+ *
+ * @param array $p1
+ * @return array
+ */
+function array_change_key_case_deep($p1){
+    return is_array($p1) ? array_change_key_case(array_map('array_change_key_case_deep', $p1)) : $p1;
 }
 /**
  * 转换字符串以js语法输出
@@ -1103,56 +1112,71 @@ function g($p1=null,$p2=null){
 /**
  * 多语言调用
  *
- * @param string $p1    key
- * @param string $p2    模块名
- * @param array  $p3    需要被替换的变量参数，以数组形式传入
+ * @param string $p1    module::key.key
+ * @param array  $p2    需要被替换的变量参数，以数组形式传入
  * @return string
  */
-function translate($p1,$p2,$p3=array()){
+function t($p1,$p2=array()){
     static $T = array(); 
-    $p4 = strtolower($p1);
-    if (!isset($T[$p2])) {
+    $p3 = strtolower($p1);
+    // 取得模块名
+    if (($i = strpos($p3,'::'))!==false) {
+        $p4 = substr($p3,0,$i);
+        $p3 = substr($p3,($i+2));
+    } else {
+        $p4 = MODULE;
+    }
+
+    if (!isset($T[$p4])) {
         $p5 = sprintf('%s/language/%s',COM_PATH,language());
         if (!file_exists($p5)) {
             $p5 = sprintf('%s/language/%s',COM_PATH,c('LANGUAGE'));
         }
         // 加载系统模块语言包
-        if ($M = include_file($p5.'/'.strtolower($p2).'.php')) {
-            $T[$p2] = array_merge(array(),$M);
+        if ($M = include_file($p5.'/'.strtolower($p4).'.php')) {
+            $T[$p4] = array_merge(array(),$M);
         }
         // key 全部转换成小写
-        $T[$p2] = array_change_key_case($T[$p2]);
+        $T[$p4] = array_change_key_case_deep($T[$p4]);
     }
-    if (isset($T[$p2][$p4])) {
-        if (!empty($p3) && is_array($p3)) {
-            $R = call_user_func_array('sprintf',array_merge(array($T[$p2][$p4]),$p3));
-        } else {
-            $R = $T[$p2][$p4];
+    
+    if (strpos($p3,'/')!==false) {
+        $p5 = explode('/',$p3);
+        $R  = array();
+        foreach ($p5 as $f) {
+            if (empty($R)) {
+                if (isset($T[$p4][$f])) {
+                    $R = $T[$p4][$f];
+                } else {
+                    $R = $p1;
+                    break;
+                }
+            } else {
+                if (is_array($R) && !empty($R)) {
+                    if (isset($R[$f])) {
+                        $R = $R[$f];
+                    } else {
+                        $R = $p1;
+                        break;
+                    }
+                } else {
+                    $R = $p1;
+                }
+            }
         }
+        
     } else {
-        $R = $p1;
+        $R = isset($T[$p4][$p3])?$T[$p4][$p3]:$p1;
+    }
+    
+    if (is_array($R)) {
+        $R = isset($R['title'])?$R['title']:$R;
+    }
+    
+    if (!empty($p2) && is_array($p2)) {
+        $R = call_user_func_array('sprintf',array_merge(array((string)$R),$p2));
     }
     return $R;
-}
-/**
- * 系统使用的语言输出
- *
- * @param string $p1    key
- * @param array  $p2    需要被替换的变量参数，以数组形式传入
- * @return string
- */
-function l($p1,$p2=array()){
-    return translate($p1,'system',$p2);
-}
-/**
- * 模块使用的语言输出
- *
- * @param string $p1    key
- * @param array  $p2    需要被替换的变量参数，以数组形式传入
- * @return string
- */
-function t($p1,$p2=array()) {
-    return translate($p1,MODULE,$p2);
 }
 
 // property_exists *** *** www.LazyCMS.net *** ***

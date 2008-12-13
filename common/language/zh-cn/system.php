@@ -23,178 +23,213 @@ defined('COM_PATH') or die('Restricted access!');
  * 系统语言包
  */
 return array(
+    /* 模块名称 */
+    'name' => '系统管理',
+    
     /* 公用语言 */
     'ON'    => '√',
     'OFF'   => '×',
-    'Help'  => '帮助',
-    'Save'  => '保存',
-    'Reset' => '重置',
-    'Lock'  => '锁定',
-    'Unlock'    => '启用',
-    'Submit'    => '提交',
-    'Default'   => '默认',
-    'Delete'    => '删除',
-    'Manage'    => '管理',
-    'Logout'    => '退出登录',
-    'Preview'   => '预览网站',
-    'Select all'    => '全选',
-    'Reset select'  => '反选',
-    
-    /* Error */
-    'Error invalid' => '您输入的参数有误！',
+    'try'   => '重试',
+    'back'  => '返回',
+    'home'  => '首页',
+    'lock'  => '锁定',
+    'help'  => '帮助',
+    'save'  => '保存',
+    'reset' => '重置',
+    'delete'    => '删除',
+    'manage'    => '管理',
+    'unlock'    => '启用',
+    'submit'    => '提交',
+    'default'   => '默认',
+    'reselect'  => '反选',
+    'selectall' => '全选',
     
     /* JavaScript确认 */
-    'Confirm delete' => '确定要删除吗？',
-    'Confirm clear'  => '确定要清空吗？',
-    'Confirm logout' => '确定要退出吗？',
-    
-    /* 页面异常 */
-    'Back'      => '返回',
-    'Back home' => '回首页',
-    'Try again' => '重试',
-    'System error'      => '系统发生错误',
-    'Error message'     => '错误信息',
-    'Error position'    => '错误位置',
+    'confirm'   => array(
+        'delete'    => '确定要删除吗？',
+        'clear'     => '确定要清空吗？',
+        'logout'    => '确定要退出吗？',
+        'reset'     => '确定要重置吗？',
+    ),
     
     /* 数据库异常 */
-    'Parse DSN error'   => '数据库连接字符串，设置错误。',
-    'Database no link'  => '数据库链接出错，请检查数据库设置！',
-    'No select Database'    => '没有找到指定的数据库！',
-    'Database no extension' => '-_-!!请先开启%s扩展支持！',
-    'Database version lower'    => '%s数据库版本低于%s，请升级数据库版本！',
+    'database'  => array(
+        'parseDSN'  => '数据库连接字符串，设置错误。',
+        'nolink'    => '数据库链接出错，请检查数据库设置！',
+        'noselectdb'    => '没有找到指定的数据库！',
+        'noextension'   => '-_-!!请先开启%s扩展支持！',
+        'versionlower'  => '%s数据库版本低于%s，请升级数据库版本！',
+    ),
     
     /* 上传错误信息 */
-    'Upload error 1' => '上传的文件超过了 php.ini 中 upload_max_filesize 选项限制的值',
-    'Upload error 2' => '上传文件的大小超过了 HTML 表单中 MAX_FILE_SIZE 选项指定的值',
-    'Upload error 3' => '文件只有部分被上传',
-    'Upload error 4' => '没有文件被上传',
-    'Upload error 5' => '上传的文件太大',
-    'Upload error 6' => '找不到临时文件夹',
-    'Upload error 7' => '文件写入失败',
-    'Upload error 8' => '上传的文件类型不允许',
-    'Upload error 9' => '非法提交',
-    'Upload error 10' => 'POST值超过了 post_max_size(%s)',
+    'upload'    => array(
+        'error1'  => '上传的文件超过了 php.ini 中 upload_max_filesize 选项限制的值',
+        'error2'  => '上传文件的大小超过了 HTML 表单中 MAX_FILE_SIZE 选项指定的值',
+        'error3'  => '文件只有部分被上传',
+        'error4'  => '没有文件被上传',
+        'error5'  => '上传的文件太大',
+        'error6'  => '找不到临时文件夹',
+        'error7'  => '文件写入失败',
+        'error8'  => '上传的文件类型不允许',
+        'error9'  => '非法提交',
+        'error10' => 'POST值超过了 post_max_size(%s)',
+    ),
     
-    /* 其他 */
-    'No Main'       => '没有定义默认函数：lazy_main()',
-    'No function'   => '执行的函数不存在：%s<br/>请在 %s 定义一个 %s 函数',
-    'Auto keywords' => '自动获取关键词',
-    'Last Version'  => '最新版本',
+    /* 错误信息 */
+    'error' => array(
+        'title'     => '系统发生错误',
+        'invalid'   => '您输入的参数有误！',
+        'nofunc'    => '执行的函数不存在：%s<br/>请在 %s 定义一个 %s 函数',
+        'nomain'    => '没有定义默认函数：lazy_main()',
+        'message'   => '错误信息',
+        'position'  => '错误位置',
+    ),
     
     /* 登录页面 */
-    'Login title'    => '管理后台登录',
-    'Login name'     => '用户名',
-    'Login pass'     => '密&nbsp; &nbsp;码',
-    'Login language' => '语&nbsp; &nbsp;言',
-    'Login submit'   => '登录',
-    'Login description' => '<p>请使用有效的用户名和密码登录后台。</p><p>运行环境：PHP 4.3.3+、MySQL 4.1+</p><p><a href="../">返回网站首页</a></p>',
-    'Cookie expire'     => '有效期',
-    'Cookie expire process'   => '浏览器进程',
-    'Cookie expire 1 hour'    => '一小时',
-    'Cookie expire 1 day'     => '一天',
-    'Cookie expire 1 week'    => '一周',
-    'Cookie expire 1 month'   => '一个月',
-    'Cookie expire permanent' => '永久',
-    
-    /* 登录错误验证 */
-    'Login check name'  => '管理员名称不能为空或过长',
-    'Login check pass'  => '管理员密码不能为空或过长',
-    'Login check username or password error' => '用户名或者密码错误',
+    'login' => array(
+        'title' => '管理后台登录',
+        'name'  => '用户名',
+        'submit'   => '登录',
+        'password' => '密&nbsp; &nbsp;码',
+        'language' => '语&nbsp; &nbsp;言',
+        'description' => '<p>请使用有效的用户名和密码登录后台。</p><p>运行环境：PHP 4.3.3+、MySQL 4.1+</p><p><a href="../">返回网站首页</a></p>',
+        'cookie'      => array(
+            'expire'    => '有效期',
+            'process'   => '浏览器进程',
+            'hour'      => '一小时',
+            'day'       => '一天',
+            'week'      => '一周',
+            'month'     => '一个月',
+            'permanent' => '永久'
+        ),
+        'check' => array(
+            'name'  => '管理员名称不能为空或过长',
+            'error' => '用户名或者密码错误',
+            'password' => '管理员密码不能为空或过长'
+        )
+    ),
     
     /* 系统管理 */
-    'Cpanel'     => '控制面板',
-    'Admins'     => '后台管理员',
-    'Webftp'     => '文件管理',
-    'Modules'    => '安装卸载',
-    'Settings'   => '系统设置',
-    'Official Website'  => '官方网站',
-    'Support Forums'    => '支持论坛',
-    'System manage'     => '系统管理',
-    'System config'     => '配置信息',
-
+    'system'    => array(
+        'title' => '后台管理',
+        'preview'   => '预览网站',
+        'logout'    => '退出登录',
+        'manage'    => '系统管理',
+        'cpanel'    => '控制面板',
+        'admins'    => '后台管理员',
+        'files'     => '文件管理',
+        'modules'   => '安装卸载',
+        'settings'  => '系统设置',
+        'sysinfo'   => '系统信息',
+        'lastversion'   => '最新版本',
+    ),
+    
+    /* 官方信息 */
+    'official'  => array(
+        'site'  => '官方网站',
+        'forums'=> '支持论坛',
+    ),
 
     /* 管理员管理 */
-    'Admins add'      => '添加管理员',
-    'Admins name'     => '登录名',
-    'Admins password' => '密码',
-    'Admins repeat password' => '确认密码',
-    'Admins email'    => 'Email',
-    'Admins language' => '界面语言',
-    'Admins state'    => '状态',
+    'admins'    => array(
+        'title' => '后台管理员',
+        'add'   => '添加管理员',
+        'name'  => '登录名',
+        'email' => 'Email',
+        'state' => '状态',
+        'purview'    => '管理员权限',
+        'language'   => '界面语言',
+        'password'   => '密码',
+        'repassword' => '确认密码',
+        'alert' => array(
+            'noselect'  => '请选择一个管理员！',
+            'lock'      => '【锁定】管理员成功',
+            'unlock'    => '【启用】管理员成功',
+            'delete'    => '【删除】管理员成功',
+        )
+    ),
+    
+    /* 模块管理 */
+    'modules'   => array(
+        'title' => '安装卸载',
+    ),
+    
+    /* 系统设置 */
+    'settings'  => array(
+        'title' => '系统设置',
+        'site'  => '网站设置',
+        'sitename'  => '网站名称',
+        'language'  => '界面语言',
+        'RSS_number'    => 'RSS Feed',
+        'Related_keywords'  => '获取长尾关键词',
+        'upload'    => array(
+            'title' => '上传设置',
+            'allowext'  => '允许的文件类型',
+            'maxsize'   => '最大上传尺寸',
+            'filepath'  => '上传文件路径',
+            'imagepath' => '上传图片路径',
+            'imageext'  => '允许的图片类型',
+        ),
+        'server'    => array(
+            'title' => '服务器设置',
+            'timezone'  => '时区设置',
+            'DSN_config'=> '数据库设置',
+        ),
+        'check' => array(
+            /* 验证信息 */
+            'sitename'    => '网站名称不能为空',
+            'allowext'    => '必须填写允许上传的文件类型',
+            'errorext'    => '格式错误，以英文“,”逗号分隔。',
+            'maxsize'     => '不能为空，如不限制，则填“0”。',
+            'maxsize1'    => '格式错误，必须是数字。',
+            'filepath'    => '上传的文件路径不能为空',
+            'errorpath'   => '路径格式错误，不支持特殊符号，不能以/开始或结束',
+            'imagepath'   => '上传的图片路径不能为空',
+            'imageext'    => '必须填写允许上传的图片类型',
+            'DSNconfig'   => '数据库连接字符串不能为空',
+            'DSNformat'   => '数据库连接字符串格式不正确',
+        ),
+        'alert' => array(
+            'save'  => '系统设置保存成功'
+        )
+    ),
+    
+    /* 系统信息 */
+    'sysinfo'   => array(
+        'title' => '系统信息',
+        'config'    => '配置信息',
+        'directory' => array(
+            'title' => '目录属性',
+            'path'  => '路径',
+            'read'  => '可读',
+            'write' => '可写',
+        ),
+        'phpinfo'   => 'PHP设置',
+        'zlib'      => 'Zlib开启',
+        'iconv'     => 'Zlib开启',
+        'mbstring'  => 'mbstring启用',
+        'server_OS'     => '服务器系统',
+        'GD_version'    => 'GD版本',
+        'PHP_version'   => 'PHP版本',
+        'PHP_SAPI_name' => 'PHP接口',
+        'DB_version'    => '数据库版本',
+        'version'       => 'LazyCMS版本',
+        'software'      => '服务器解译引擎',
+        'useragent'     => '浏览器类型',
+        'safe_mode'     => '安全模式',
+        'file_uploads'      => '文件上传',
+        'post_max_size'     => '最大POST数据',
+        'open_base_dir'     => '开放根目录',
+        'display_errors'    => '显示错误',
+        'magic_quotes_gpc'  => '魔术引用',
+        'allow_url_fopen'   => '打开远程连接',
+        'disable_functions' => '已关闭的功能',
+        'upload_max_filesize'   => '最大上传文件',
+        
+    ),
 
-    'Admins alert not select'   => '请选择一个管理员！',
-    'Admins execute lock success'   => '【锁定】管理员成功',
-    'Admins execute unlock success' => '【启用】管理员成功',
-    'Admins execute delete success' => '【删除】管理员成功',
-
-    /* System info */
-    'System info'   => '系统信息',
-    'Server OS'     => '服务器系统',
-    'WebServer'     => '服务器解译引擎',
-    'User agent'    => '浏览器类型',
-    'GD version'    => 'GD版本',
-    'PHP version'   => 'PHP版本',
-    'PHP SAPI name' => 'PHP接口',
-    'System version'    => 'LazyCMS版本',
-    'Database version'  => '数据库版本',
-    
-    
-    /* PHP Settings */
-    'PHP Settings'  => 'PHP设置',
-    'PHP zlib'      => 'Zlib开启',
-    'PHP iconv'     => 'iconv可用',
-    'PHP mbstring'  => 'mbstring启用',
-    'PHP safe mode' => '安全模式',
-    'PHP file uploads'      => '文件上传',
-    'PHP open base dir'     => '开放根目录',
-    'PHP post max size'     => '最大POST数据',
-    'PHP display errors'    => '显示错误',
-    'PHP allow url fopen'       => '打开远程连接',
-    'PHP magic quotes gpc'      => '魔术引用',
-    'PHP disable functions'     => '已关闭的功能',
-    'PHP upload max file size'  => '最大上传文件',
-    
-    /* Directory */
-    'Directory'         => '目录属性',
-    'Directory path'    => '路径',
-    'Directory read'    => '可读',
-    'Directory write'   => '可写',
-    
-    /* Site settings */
-    'Site settings' => '网站设置',
-    'Site name'     => '网站名称',
-    'Language'      => '界面语言',
-    'RSS number'    => 'RSS Feed',
-    'Related keywords'  => '获取长尾关键词',
-    
-    /* Upload settings */
-    'Upload settings'   => '上传设置',
-    'Upload allow ext'  => '允许的文件类型',
-    'Upload max size'   => '最大上传尺寸',
-    'Upload file path'  => '上传文件路径',
-    'Upload image path' => '上传图片路径',
-    'Upload image ext'  => '允许的图片类型',
-    
-    /* 验证信息 */
-    'Site check name'    => '网站名称不能为空',
-    'Upload check allow ext'    => '必须填写允许上传的文件类型',
-    'Upload check error ext'    => '格式错误，以英文“,”逗号分隔。',
-    'Upload check max size'     => '不能为空，如不限制，则填“0”。',
-    'Upload check file path'    => '上传的文件路径不能为空',
-    'Upload check error path'   => '路径格式错误，不支持特殊符号，不能以/开始或结束',
-    'Upload check image path'   => '上传的图片路径不能为空',
-    'Upload check image ext'    => '必须填写允许上传的图片类型',
-    'Upload check DSN config'   => '数据库连接字符串不能为空',
-    'Upload check max size is number'   => '格式错误，必须是数字。',
-    'Upload check DSN config error format'  => '数据库连接字符串格式不正确',
-
-    /* Server settings */
-    'Server settings'   => '服务器设置',
-    'Server time zone'  => '时区设置',
-    'Server DSN config' => '数据库设置',
-    
     /* Time zone */
-    'Time zone' => array (
+    'timezone' => array (
         '-12'  => '(UTC -12:00) 西部国际日期变更线，艾尼威多克，夸贾林环礁',
         '-11'  => '(UTC -11:00) 中途岛，萨摩亚群岛',
         '-10'  => '(UTC -10:00) 夏威夷',
@@ -235,8 +270,5 @@ return array(
         '13'   => '(UTC +13:00) 汤加',
         '14'   => '(UTC +14:00) 基里巴斯',
     ),
-
-    'System settings save success' => '系统设置保存成功！',
-
 
 );
