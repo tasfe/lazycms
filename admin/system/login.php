@@ -42,6 +42,10 @@ function lazy_main() {
             $cookie   = empty($cookie) ? $cookie : (now() + $cookie);
             $_USER    = System::checkAdmin($adminname,$adminpass);
             if ($_USER) {
+                // 验证管理员是否被锁定
+                if ($_USER['islocked']) {
+                    alert(t('login/check/locked'),0);
+                }
                 // 设置登陆信息
                 Cookie::set('adminname',$_USER['adminname'],$cookie);
                 Cookie::set('adminpass',$_USER['adminpass'],$cookie);
@@ -51,7 +55,7 @@ function lazy_main() {
                 // 输出错误信息
                 alert(t('login/check/error'),0);
             }
-            return;
+            return ;
         }
     }
     echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';

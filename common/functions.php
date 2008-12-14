@@ -49,10 +49,12 @@ function lazycms_run() {
     if(function_exists('date_default_timezone_set')) { date_default_timezone_set('UTC'); } ob_start();
     // 定义处理错误的函数
     set_error_handler('lazycms_error'); $PHP_DIR = dirname(PHP_FILE);
-    // 设置当前模块的常量
-    define('MODULE',substr($PHP_DIR,strrpos($PHP_DIR,'/')+1));
     // 获取当前动作
     $action = isset($_REQUEST['action']) ? strtolower($_REQUEST['action']) : null;
+    // 设置当前模块常量
+    define('MODULE',substr($PHP_DIR,strrpos($PHP_DIR,'/')+1));
+    // 设置当前动作常量
+    define('ACTION',$action);
     // 导入模块配置
     import('modules.*.static.*');
     // 在动作之前执行的函数
@@ -169,8 +171,8 @@ function POST(){
  */
 function but($p1){
     $R = '<p class="button"><button type="submit">'.t($p1).'</button>';
-    $R.= '<button type="reset" onclick="return $.confirm(\''.t('Confirm reset').'\',function(r){ r?$(\'button[type=reset]\').parents(\'form\').get(0).reset():false; })">'.t('Reset').'</button>';
-    $R.= '<button type="button" onclick="self.history.back();">'.t('Back').'</button></p>';
+    $R.= '<button type="reset" onclick="return $.confirm(\''.t('system::confirm/reset').'\',function(r){ r?$(\'button[type=reset]\').parents(\'form\').get(0).reset():false; })">'.t('system::reset').'</button>';
+    $R.= '<button type="button" onclick="self.history.back();">'.t('system::back').'</button></p>';
     return $R;
 }
 /**
@@ -197,8 +199,8 @@ function get_php_setting($p1){
  * @return string
  */
 function isok($p1){
-    return $p1 ? '<strong style="color:#009900;">'.t('ON').'</strong>' :
-                    '<strong style="color:#FF0000;">'.t('OFF').'</strong>';
+    return $p1 ? '<strong style="color:#009900;">'.t('system::ON').'</strong>' :
+                    '<strong style="color:#FF0000;">'.t('system::OFF').'</strong>';
 }
 /**
  * 替换文件路径以网站根目录开始，防止暴露文件的真实地址

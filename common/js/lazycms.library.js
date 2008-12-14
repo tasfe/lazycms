@@ -70,7 +70,7 @@ function LoadScript(p,c){
     }
     $.setStyle = function(){
         var u = common();
-        var C = "a";//bcdefghijklmnopqrstuvwxyz
+        var C = "abcdefgh";//ijklmnopqrstuvwxyz
         var style = '<style type="text/css">\n';
             style += 'img.os{ width:16px; height:16px; vertical-align:middle; background-image:url(' + u + '/images/icons.png); padding:0px; margin:2px; }\n';
             for(var i=0;i<C.length;i++){

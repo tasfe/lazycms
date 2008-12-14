@@ -25,11 +25,11 @@ defined('COM_PATH') or die('Restricted access!');
 return array(
     /* 权限列表 */
     'purview' => array(
-        'Label',
-        'Create',
-        'Onepage',
-        'Article',
-        'Sort',
-        'Model',
+        'label',
+        'create',
+        'onepage',
+        'article',
+        'sort',
+        'model',
     )
 );

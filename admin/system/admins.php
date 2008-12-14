@@ -25,7 +25,7 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
-    System::purview('admins');
+    System::purview('system::admins');
     System::tabs(
         t('admins').':admins.php;'.
         t('admins/add').':admins.php?action=edit;'
@@ -54,20 +54,21 @@ function lazy_main(){
 // *** *** www.LazyCMS.net *** *** //
 function lazy_set(){
     $db = get_conn();
+    $_USER  = System::getAdmin();
     $submit = isset($_POST['submit']) ? strtolower($_POST['submit']) : null;
     $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
     empty($lists) ? alert(t('admins/alert/noselect')) : null ;
     switch($submit){
         case 'lock':
-            $db->update('#@_system_admin',array('islocked'=>1),"`adminid` IN({$lists})");
+            $db->update('#@_system_admin',array('islocked'=>1),array("`adminid`<>{$_USER['adminid']}","`adminid` IN({$lists})"));
             success(t('admins/alert/lock'),1);
             break;
         case 'unlock':
-            $db->update('#@_system_admin',array('islocked'=>0),"`adminid` IN({$lists})");
+            $db->update('#@_system_admin',array('islocked'=>0),array("`adminid`<>{$_USER['adminid']}","`adminid` IN({$lists})"));
             success(t('admins/alert/unlock'),1);
             break;
         case 'delete':
-            $db->delete('#@_system_admin',"`adminid` IN({$lists})");
+            $db->delete('#@_system_admin',array("`adminid`<>{$_USER['adminid']}","`adminid` IN({$lists})"));
             success(t('admins/alert/delete'),1);
             break;
         default :
@@ -83,6 +84,7 @@ function lazy_edit(){
     $adminpass = isset($_POST['adminpass']) ? $_POST['adminpass'] : null;
     $adminmail = isset($_POST['adminmail']) ? $_POST['adminmail'] : null;
     $purview   = isset($_POST['purview']) ? $_POST['purview'] : null;
+    $purview   = is_array($purview) ? implode(',',$purview) : null;
     $language  = isset($_POST['language']) ? $_POST['language'] : null;
     $title     = empty($adminid) ? t('admins/add') : t('admins/edit');
     $val = new Validate();
@@ -104,7 +106,6 @@ function lazy_edit(){
                     'adminmail' => $adminmail,
                     'purview'   => $purview,
                     'language' => $language,
-                    'regdate'  => now(),
                 ));
                 $text = t('admins/alert/add');
             } else {
@@ -137,6 +138,7 @@ function lazy_edit(){
         }
     }
     
+    System::script('LoadScript("system.admins");');
     System::header($title);
     
     echo '<form id="form1" name="form1" method="post" action="">';
@@ -157,8 +159,8 @@ function lazy_edit(){
         if (isset($v['purview'])) {
             echo '<input type="checkbox" name="'.$k.'" id="'.$k.'" class="__bigP" onclick="var checked = this.checked;$.each($(\'input.__'.$k.'\'),function(){ this.checked = checked; });" /><label for="'.$k.'"><strong>'.t("{$k}::name").'</strong></label><br/>';
             foreach ($v['purview'] as $i=>$p) {
-                //$checked = instr($purview,"{$k}/{$p}") ? ' checked="checked"' : null;
-                echo '<input type="checkbox" name="purview[]" id="'.$k.'['.$i.']" class="__'.$k.'" onclick="$.Purview();" value="'.$k.'/'.$p.'"'.$checked.' /><label for="'.$k.'['.$i.']">'.t("{$k}::{$p}").'</label>';    
+                $checked = instr($purview,"{$k}::{$p}") ? ' checked="checked"' : null;
+                echo '<input type="checkbox" name="purview[]" id="'.$k.'['.$i.']" class="__'.$k.'" onclick="$.Purview();" value="'.$k.'::'.$p.'"'.$checked.' /><label for="'.$k.'['.$i.']">'.t("{$k}::{$p}").'</label>';    
             }
             echo '<br/>';
         }
@@ -172,6 +174,7 @@ function lazy_edit(){
     echo '</fieldset>';
     
     echo but('save').'<input name="adminid" type="hidden" value="'.$adminid.'" /></form>';
+    echo '<script type="text/javascript">$.Purview();</script>';
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_after(){

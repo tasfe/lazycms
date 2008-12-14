@@ -33,6 +33,9 @@ a:link    { color: #0B55C4; text-decoration: none; }
 a:visited { color: #0B55C4; text-decoration: none; }
 a:hover   { text-decoration: underline; }
 
+/* help button */
+#help { position:absolute; top:55px;right:10px }
+
 /* 登陆界面 */
 #login { width: 600px; height: 300px; margin: 10% auto 0 auto; background: url(bg-line.gif) no-repeat 40% top; text-align:left; }
     #login .col1 { width:40%; padding-top:70px; margin:70px auto; float:left; background:url(login-logo.png) no-repeat left top; }

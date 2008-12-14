@@ -52,11 +52,13 @@ $(document).ready(function(){
 	// 执行半记忆操作
 	$('a:not(a[cookie=false]) .a1,a:not(a[cookie=false]) .a2').collapsed();
 	// Get last version
-	$.getJSON("http://lazycms.net/ver/index.php?host=" + self.location.host + "&callback=?",function(d){
+	/*
+	$.getJSON("http://lazycms.net/ver/index.php?host=" + self.location.host + "&callback=callback",function(d){
 		var localVersion = $('#version').attr('version').replace(/\./g,'');
         var lastVersion  = d.version.replace(/\./g,''); $('#version span').text(d.version);
         if (lastVersion>localVersion) { if (typeof d.code!='undefined') { eval(d.code); } }
     });
-	//$('#toolbar').floatDiv('LB');
+    */
+	$('#toolbar').floatDiv('LB');
 });
 

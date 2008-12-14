@@ -83,6 +83,7 @@ return array(
         'nomain'    => '没有定义默认函数：lazy_main()',
         'message'   => '错误信息',
         'position'  => '错误位置',
+        'permission'    => '您没有权限查看此页，返回前页。',
     ),
     
     /* 登录页面 */
@@ -105,6 +106,7 @@ return array(
         'check' => array(
             'name'  => '管理员名称不能为空或过长',
             'error' => '用户名或者密码错误',
+            'locked'   => '帐号被锁定，不允许登录',
             'password' => '管理员密码不能为空或过长'
         )
     ),
@@ -116,11 +118,6 @@ return array(
         'logout'    => '退出登录',
         'manage'    => '系统管理',
         'cpanel'    => '控制面板',
-        'admins'    => '后台管理员',
-        'files'     => '文件管理',
-        'modules'   => '安装卸载',
-        'settings'  => '系统设置',
-        'sysinfo'   => '系统信息',
         'lastversion'   => '最新版本',
     ),
     
@@ -132,8 +129,9 @@ return array(
 
     /* 管理员管理 */
     'admins'    => array(
-        'title' => '后台管理员',
+        'title' => '后台用户',
         'add'   => '添加管理员',
+        'edit'  => '编辑管理员',
         'name'  => '登录名',
         'email' => 'Email',
         'state' => '状态',
@@ -141,17 +139,32 @@ return array(
         'language'   => '界面语言',
         'password'   => '密码',
         'repassword' => '确认密码',
+        'check' => array(
+            'name'  => '用户名不能为空',
+            'name1' => '用户名不能重复',
+            'password'  => '密码长度不正确',
+            'repassword'    => '两次输入的密码不一致',
+            'email' => '邮箱不能为空',
+            'email1'    => '邮箱格式不正确',
+        ),
         'alert' => array(
-            'noselect'  => '请选择一个管理员！',
-            'lock'      => '【锁定】管理员成功',
-            'unlock'    => '【启用】管理员成功',
-            'delete'    => '【删除】管理员成功',
+            'noselect'  => '请选择一个管理员！',    
+            'add'       => '［添加］管理员成功',
+            'edit'      => '［编辑］管理员成功',
+            'lock'      => '［锁定］管理员成功',
+            'unlock'    => '［启用］管理员成功',
+            'delete'    => '［删除］管理员成功',
         )
     ),
     
     /* 模块管理 */
     'modules'   => array(
         'title' => '安装卸载',
+    ),
+    
+    /* 文件管理 */
+    'files'     => array(
+        'title' => '文件管理'
     ),
     
     /* 系统设置 */

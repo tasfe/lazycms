@@ -45,16 +45,16 @@ class System{
         $hl.= '</head><body>';
         $hl.= '<div id="top">';
         $hl.= '<div class="logo"><a href="../system/index.php"><img src="../system/images/logo.png" alt="LazyCMS '.LAZY_VERSION.'" /></a></div>';
-        $hl.= '<div id="version" version="'.LAZY_VERSION.'">'.t('system::system/lastversion').': <span>Loading...</span></div>';
+        $hl.= '<div id="version" version="'.LAZY_VERSION.'"><strong>Hi,'.$_USER['adminname'].'</strong>&nbsp; '.t('system::system/lastversion').': <span>Loading...</span></div>';
         $hl.= '<ul id="menu">';
         $hl.= '<li><div>'.t('system::system/manage').'<img class="a2 os" src="../system/images/white.gif" /></div><ul>';
         $hl.= '    <li><a href="../system/index.php">'.t('system::system/cpanel').'</a></li>';
         $hl.= '    <li class="hr"></li>';
-        $hl.= '    <li><a href="../system/admins.php">'.t('system::system/admins').'</a></li>';
-        $hl.= '    <li><a href="../system/files.php">'.t('system::system/files').'</a></li>';
+        $hl.= '    <li><a href="../system/admins.php">'.t('system::admins').'</a></li>';
+        $hl.= '    <li><a href="../system/files.php">'.t('system::files').'</a></li>';
         $hl.= '    <li class="hr"></li>';
-        $hl.= '    <li><a href="../system/modules.php">'.t('system::system/modules').'</a></li>';
-        $hl.= '    <li><a href="../system/settings.php">'.t('system::system/settings').'</a></li>';
+        $hl.= '    <li><a href="../system/modules.php">'.t('system::modules').'</a></li>';
+        $hl.= '    <li><a href="../system/settings.php">'.t('system::settings').'</a></li>';
         $hl.= '    <li class="hr"></li>';
         $hl.= '    <li><a href="javascript:;" onclick="$.confirm(\''.t('system::confirm/logout').'\',function(r){ r ? $.redirect(\'../system/logout.php\') : false; })">'.t('system::system/logout').'</a></li>';
         $hl.= '</ul></li>';
@@ -75,7 +75,7 @@ class System{
         $hl.= '    <li><a href="http://www.lazycms.net/" target="_blank">'.t('system::official/site').'</a></li>';
         $hl.= '    <li><a href="http://forums.lazycms.net/" target="_blank">'.t('system::official/forums').'</a></li>';
         $hl.= '    <li class="hr"></li>';
-        $hl.= '    <li><a href="../system/sysinfo.php">'.t('system::system/sysinfo').'</a></li>';
+        $hl.= '    <li><a href="../system/sysinfo.php">'.t('system::sysinfo').'</a></li>';
         $hl.= '    </ul>';
         $hl.= '</li></ul>';
         $hl.= '<ul class="menu"><li><a href="'.SITE_BASE.'" target="_blank">'.t('system::system/preview').'</a></li><li><a href="#">'.t('修改密码').'</a></li><li><a href="javascript:;" onclick="$.confirm(\''.t('system::confirm/logout').'\',function(r){ r ? $.redirect(\'../system/logout.php\') : false; })">'.t('system::system/logout').'</a></li></ul>';
@@ -83,6 +83,8 @@ class System{
         if ($tabs = g('TABS')) { 
             $hl.= menu($selected.$tabs); 
             $hl.= '<div id="box">';
+            $help = MODULE.'::help/'.basename(PHP_FILE,'.php').(ACTION==''?'':'/'.ACTION);
+            $hl.= '<div id="help"><a href="javascript:alert(\''.$help.'\');"><img class="h5 os" src="../system/images/white.gif" /></a></div>';
         }
         echo $hl;
     }
@@ -128,9 +130,20 @@ class System{
         if (!$_USER) {
             // TODO: 没有权限，或没有登录，提示
             if ($_SERVER['HTTP_AJAX_SUBMIT']) {
-                alert('你没有权限查看此页');
+                alert(t('system::error/permission'));
             } else {
-                redirect($p2);
+                if (!headers_sent()) { header("Content-Type:text/html; charset=utf-8"); }
+                echo '<script type="text/javascript" charset="utf-8">alert("'.t2js(t('system::error/permission')).'");self.history.back();</script>';
+            }
+        } else {
+            // 验证管理员是否被锁定
+            if ($_USER['islocked']) {
+                if ($_SERVER['HTTP_AJAX_SUBMIT']) {
+                    alert(t('system::login/check/locked'));
+                } else {
+                    if (!headers_sent()) { header("Content-Type:text/html; charset=utf-8"); }
+                    echo '<script type="text/javascript" charset="utf-8">alert("'.t2js(t('system::login/check/locked')).'");self.location.href="../system/logout.php";</script>';
+                }
             }
         }
         return $_USER;
