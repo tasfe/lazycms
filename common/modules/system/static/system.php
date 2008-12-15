@@ -84,7 +84,9 @@ class System{
             $hl.= menu($selected.$tabs); 
             $hl.= '<div id="box">';
             $help = MODULE.'::help/'.basename(PHP_FILE,'.php').(ACTION==''?'':'/'.ACTION);
-            $hl.= '<div id="help"><a href="javascript:alert(\''.$help.'\');"><img class="h5 os" src="../system/images/white.gif" /></a></div>';
+            if ($help!=t($help)) {
+                $hl.= '<div id="help"><a href="javascript:;" onclick="$.blockUI(\'帮助\',\''.t($help).'\');"><img class="h5 os" src="../system/images/white.gif" /></a></div>';
+            }
         }
         echo $hl;
     }

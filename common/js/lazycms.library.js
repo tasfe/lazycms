@@ -68,6 +68,7 @@ function LoadScript(p,c){
             }
         }); 
     }
+	// 固定公用CSS
     $.setStyle = function(){
         var u = common();
         var C = "abcdefgh";//ijklmnopqrstuvwxyz
@@ -108,10 +109,12 @@ function LoadScript(p,c){
             style += '</style>';
             document.write(style);
     }
+	// 关闭遮罩层
     $.undialogUI = function(){
         $('#dialogUI,#dialog,#iframeCover').remove();
         $(document).data('dialogUI',false);
     }
+	// 弹出遮罩层
 	$.dialogUI = function(opts){
 		if ($(document).data('dialogUI')) { return ; } $(document).data('dialogUI',true);
 	    opts = $.extend({
@@ -143,9 +146,13 @@ function LoadScript(p,c){
         }
 		return $('#dialog');
 	}
-    /**
-     * ajax alert
-     */
+	// 显示层
+	$.blockUI = function(title,body){
+		$.dialogUI({title:title})
+			.append('<div class="body"><div class="content">' + body + '</div>')
+			.floatDiv({width:'500px',top:'200px',left:$(document).width()/2 - 200});
+	}
+	// alert
     $.alert = function(message,callback,type){
 		type = type||'alert';
 		var position;
@@ -170,9 +177,7 @@ function LoadScript(p,c){
 				return false;
 			}).focus();
     }
-	/**
-     * ajax confirm
-     */
+	// confirm
 	$.confirm = function(message,callback){
 		$.dialogUI({title:'操作确认',close:false})
 			.append('<div class="body"><div class="icon" style="background-position:0px -80px;"></div><div class="content"><h3>' + message + '</h3></div></div>')
@@ -188,18 +193,13 @@ function LoadScript(p,c){
 			});
 		return false;
 	}
-    /**
-     * 跳转
-     */
+	// 跳转
     $.redirect = function(url){
         if (typeof url != 'undefined' && url != '') {
             self.location.href = url;
         }
     }
-    /**
-     * 折叠
-     *
-     */
+	// 折叠
     $.fn.collapsed = function(){
         var u = getURI()
         this.each(function(i){
@@ -226,6 +226,7 @@ function LoadScript(p,c){
         });
         return this;
     }
+	// ajax按钮
 	$.fn.ajaxButton = function(p,u){
 		var R;
 		var f = this;

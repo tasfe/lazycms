@@ -33,7 +33,6 @@ return array(
     'back'  => '返回',
     'home'  => '首页',
     'lock'  => '锁定',
-    'help'  => '帮助',
     'save'  => '保存',
     'reset' => '重置',
     'delete'    => '删除',
@@ -283,5 +282,11 @@ return array(
         '13'   => '(UTC +13:00) 汤加',
         '14'   => '(UTC +14:00) 基里巴斯',
     ),
+
+    /* 帮助信息 */
+    'help'  => array(
+        'title'     => '帮助',
+        'settings'  => '设置帮助',
+    )
 
 );
