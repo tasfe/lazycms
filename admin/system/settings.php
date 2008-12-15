@@ -92,7 +92,7 @@ function lazy_main(){
     echo '</select></p>';
 
     echo '<p><label>'.t('settings/RSS_number').':</label>';
-    echo '<select name="RSS_NUMBER" id="RSS_NUMBER">';
+    echo '<select name="RSS_NUMBER" id="RSS_NUMBER" edit="true" default="'.c('RSS_NUMBER').'">';
     foreach (array(5,10,15,20,25,30,35,50,100) as $number) {
         $selected = c('RSS_NUMBER') == $number ? ' selected="selected"' : null;
         echo '<option value="'.$number.'"'.$selected.'>'.$number.'</option>';

@@ -18,33 +18,16 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-defined('COM_PATH') or die('Restricted access!');
+require '../../global.php';
 /**
- * LazyCMS 配置文件
- * 
- * 配置定义 变量名大小写任意，都会统一转换成小写
- * 所有配置参数都可以在生效前动态改变
+ * 退出登录
+ *
  */
-return array(
-    /* 网站设置 */
-    'SITE_NAME'  => 'LazyCMS v2.0 演示站',
-    'LANGUAGE'   => 'zh-cn',
-    'RSS_NUMBER' => 30,
-    'TEMPLATE'   => 'themes',
-    'GET_RELATED_KEY' => false,
-
-    /* 上传设置 */
-    'UPLOAD_ALLOW_EXT' => 'bmp,png,gif,jpg,jpeg,zip,rar,doc,xls',
-    'UPLOAD_MAX_SIZE'  => 10000000,
-    'UPLOAD_FILE_PATH' => 'images',
-    'UPLOAD_IMAGE_PATH'=> 'images/stories',
-    'UPLOAD_IMAGE_EXT' => 'bmp,png,gif,jpg,jpeg',
-
-    /* 服务器设置 */
-    'TIME_ZONE'  => 8,
-    'DSN_CONFIG' => 'mysql://root@localhost/lazy/lazy2',
-
-    /* Cookie设置 */
-    'COOKIE_DOMAIN' => '',
-    'COOKIE_PREFIX' => 'LAZY_',
-);
+// *** *** www.LazyCMS.net *** *** //
+function lazy_main(){ 
+    $path = isset($_POST['path'])?$_POST['path']:null;
+    echo json_encode(array(
+        'TITLE' => t('help'),
+        'BODY'  => t($path),
+    ));
+}

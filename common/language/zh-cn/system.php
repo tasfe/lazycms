@@ -82,7 +82,9 @@ return array(
         'nomain'    => '没有定义默认函数：lazy_main()',
         'message'   => '错误信息',
         'position'  => '错误位置',
+        'overtime'  => '您的登录已经超时，请重新登录！',
         'permission'    => '您没有权限查看此页，返回前页。',
+        
     ),
     
     /* 登录页面 */
@@ -124,6 +126,28 @@ return array(
     'official'  => array(
         'site'  => '官方网站',
         'forums'=> '支持论坛',
+    ),
+    
+    /* 我的帐户 */
+    'myaccount' => array(
+        'title' => '修改密码',
+        'name'  => '登录名',
+        'email' => 'Email',
+        'language'  => '界面语言',
+        'oldpass'   => '旧密码',
+        'newpass'   => '新密码',
+        'renewpass' => '确认密码',
+        'check' => array(
+            'oldpass'  => '旧密码长度不正确(6-30)',
+            'oldpass1' => '旧密码不正确',
+            'password' => '密码长度不正确(6-30)',
+            'repassword'    => '两次输入的密码不一致',
+            'email' => '邮箱不能为空',
+            'email1'    => '邮箱格式不正确',
+        ),
+        'alert' => array(
+            'success'   => '资料修改成功'
+        )
     ),
 
     /* 管理员管理 */
@@ -287,6 +311,11 @@ return array(
     'help'  => array(
         'title'     => '帮助',
         'settings'  => '设置帮助',
+        'myaccount' => '
+            密码：6-30位<br/>
+            邮箱地址：请按照规则填写正确的邮箱地址
+        
+        ',
     )
 
 );

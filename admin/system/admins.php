@@ -124,7 +124,7 @@ function lazy_edit(){
                 $db->update('#@_system_admin',$row,DB::quoteInto('`adminid` = ?',$adminid));
                 $text = t('admins/alert/edit');
             }
-            alert($text,0);
+            success($text,0);
         }
     } else {
         if (!empty($adminid)) {

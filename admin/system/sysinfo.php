@@ -25,6 +25,7 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
+    System::purview();
     System::tabs(
         t('settings').':settings.php;'.
         t('sysinfo').':sysinfo.php;'.

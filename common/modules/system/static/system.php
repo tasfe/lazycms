@@ -28,8 +28,8 @@ class System{
      *
      * @param string $title
      */
-    function header($title=null,$purview=null,$selected=null){
-        $_USER    = System::purview($purview);
+    function header($title=null,$selected=null){
+        $_USER    = System::getAdmin();
         $selected = !empty($selected) ? $selected.'|' : null;
         $title = empty($title) ? t('system::system') : $title.' - '.t('system::system');
         $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
@@ -78,14 +78,14 @@ class System{
         $hl.= '    <li><a href="../system/sysinfo.php">'.t('system::sysinfo').'</a></li>';
         $hl.= '    </ul>';
         $hl.= '</li></ul>';
-        $hl.= '<ul class="menu"><li><a href="'.SITE_BASE.'" target="_blank">'.t('system::system/preview').'</a></li><li><a href="#">'.t('修改密码').'</a></li><li><a href="javascript:;" onclick="$.confirm(\''.t('system::confirm/logout').'\',function(r){ r ? $.redirect(\'../system/logout.php\') : false; })">'.t('system::system/logout').'</a></li></ul>';
+        $hl.= '<ul class="menu"><li><a href="'.SITE_BASE.'" target="_blank">'.t('system::system/preview').'</a></li><li><a href="../system/myaccount.php">'.t('system::myaccount').'</a></li><li><a href="javascript:;" onclick="$.confirm(\''.t('system::confirm/logout').'\',function(r){ r ? $.redirect(\'../system/logout.php\') : false; })">'.t('system::system/logout').'</a></li></ul>';
         $hl.= '</div><div id="main">';
         if ($tabs = g('TABS')) { 
             $hl.= menu($selected.$tabs); 
             $hl.= '<div id="box">';
             $help = MODULE.'::help/'.basename(PHP_FILE,'.php').(ACTION==''?'':'/'.ACTION);
             if ($help!=t($help)) {
-                $hl.= '<div id="help"><a href="javascript:;" onclick="$.blockUI(\'帮助\',\''.t($help).'\');"><img class="h5 os" src="../system/images/white.gif" /></a></div>';
+                $hl.= '<div id="help"><a href="javascript:;" onclick="$(this).help(\''.$help.'\');"><img class="h5 os" src="../system/images/white.gif" /></a></div>';
             }
         }
         echo $hl;
@@ -136,6 +136,14 @@ class System{
             } else {
                 if (!headers_sent()) { header("Content-Type:text/html; charset=utf-8"); }
                 echo '<script type="text/javascript" charset="utf-8">alert("'.t2js(t('system::error/permission')).'");self.history.back();</script>';
+            }
+        } elseif ($_USER==-1) {
+            // 登录超时
+            if ($_SERVER['HTTP_AJAX_SUBMIT']) {
+                alert(t('system::error/overtime'),'../system/logout.php');
+            } else {
+                if (!headers_sent()) { header("Content-Type:text/html; charset=utf-8"); }
+                echo '<script type="text/javascript" charset="utf-8">alert("'.t2js(t('system::error/overtime')).'");self.location.href="../system/logout.php";</script>';
             }
         } else {
             // 验证管理员是否被锁定
@@ -188,6 +196,8 @@ class System{
                         'adminkey'  => $newkey,
                     ));
                     return $rs;
+                } else {
+                    return -1;
                 }
             } elseif ((int)$funcNum == 1 && !empty($params[2])) {
                 // 验证权限正确，则返回管理员信息
@@ -199,14 +209,16 @@ class System{
                         if (instr($rs['purview'],$params[2])) {
                             return $rs;
                         }
-                    } else {
-                        return $rs;
                     }
+                } else {
+                    return -1;
                 }
             } else {
                 // 验证是否登录
                 if ((string)$params[1] == (string)$rs['adminpass']) {
                     return $rs;
+                } else {
+                    return -1;
                 }
             }
         }

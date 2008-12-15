@@ -17,6 +17,7 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
+$(function(){ $.selectEdit(); });
 function debug(s){ alert('debug:' + s); }
 function common(){ return $("script[src*=js/jquery.js]").attr("src").replace(/(\/js\/jquery\.js\?(.*))/i,'');}
 function lock(p1){ return p1 ? icon('a3') : icon('a4'); }
@@ -53,6 +54,24 @@ function LoadScript(p,c){
  * See LICENSE.txt for copyright notices and details.
  */
 (function ($) {
+	/**
+	 * 可编辑下拉框
+	 *
+	 * @example: <select edit="true" default="value"></select>
+	 */
+	$.selectEdit = function(){
+		var s = $('select[edit=true]'); if (s.is('select')==false) { return ; }
+		var v = s.attr('default')!=''?s.attr('default'):s.val();
+		var i = $('<input type="text" name="' + s.attr('name') + '" value="' + v + '" />')
+				.css({width:(s.width() - 18) + 'px',height:(s.height() - 2) + 'px',position:'absolute',border:'none',margin:'1px 0 0 1px',padding:'2px 0 0 2px'})
+				.insertBefore(s);
+		var c = $('<select name="edit_select_' + s.attr('name') + '">' + s.html() + '</select>').change(function(){ $(this).prev().val(this.value);});
+				if (s.attr('id')!=='') c.attr('id',s.attr('id'));
+				i.blur(function(){
+					c.val(this.value);
+				});
+				s.replaceWith(c);
+	}
     /**
      * 全选/反选
      *
@@ -68,6 +87,15 @@ function LoadScript(p,c){
             }
         }); 
     }
+	// 帮助
+	$.fn.help = function(path){
+		var t = this;
+		$('img',t).attr('src',common() + '/images/loading.gif').removeClass('h5');
+		$.post('../system/help.php',{path:path},function(data){
+			$.blockUI(data.TITLE,data.BODY);
+			$('img',t).attr('src',common() + '/images/white.gif').addClass('h5');
+		},'json');
+	}
 	// 固定公用CSS
     $.setStyle = function(){
         var u = common();
@@ -142,7 +170,7 @@ function LoadScript(p,c){
     			.find('[rel=close]').click(function(){
     				$.undialogUI();
     				return false;
-    			}).focus();
+    			});
         }
 		return $('#dialog');
 	}
@@ -307,9 +335,7 @@ function LoadScript(p,c){
     $.fn.ajaxSubmit = function(){
         this.submit(function(){
             // 先释放绑定的所有事件，清除错误样式
-            $('[error]').unbind().removeClass('error');
-            // 移除所有 Tips 信息
-            $('.jTip').remove();
+            $('[error]').unbind().removeAttr('error').removeClass('error');
             var t = $(this);
             var b = $('button[type=submit]',this);
             // 取得 action 地址
