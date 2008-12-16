@@ -23,19 +23,30 @@ defined('COM_PATH') or die('Restricted access!');
  * 内容模块语言包
  */
 return array(
-    /* Model */
-    'Model manage'  => '模型管理',
-    'Model import'  => '模型导入',
-    'Model add list'    => '添加列表模型',
-    'Model add page'    => '添加单页模型',
-    'Model name'    => '模型名称',
-    'Model ename'   => '模型标识',
-    'Model table'   => '数据表名',
-    'Model state'   => '状态',
-    
-    'Model import file' => '模型文件',
-    'Model import code' => '模型代码',
-    'Model import submit'   => '导入',
+    'name'  => '内容管理',
+
+    /* 模型管理 */
+    'model' => array(
+        'title' => '模型管理',
+        'import'    => array(
+            'title' => '模型导入',
+            'file'  => '模型文件',
+            'code'  => '模型代码',
+            'submit'=> '导入',
+        ),
+        'addlist'   => '添加列表模型',
+        'addpage'   => '添加单页模型',
+        'name'  => '模型名称',
+        'ename' => '模型标识',
+        'table' => '数据表名',
+        'state' => '状态',
+        'alert' => array(
+            'noselect'  => '请选择一个模型',
+            'delete'    => '删除模型成功',
+            'lock'      => '锁定模型成功',
+            'unlock'    => '启用模型成功',
+        )
+    ),
     
     
     /* Model tip */

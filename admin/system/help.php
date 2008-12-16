@@ -26,8 +26,11 @@ require '../../global.php';
 // *** *** www.LazyCMS.net *** *** //
 function lazy_main(){ 
     $path = isset($_POST['path'])?$_POST['path']:null;
+    if (strpos($path,'::')===false) {
+        $path = 'help/'.$path;
+    }
     echo json_encode(array(
         'TITLE' => t('help'),
-        'BODY'  => t($path),
+        'BODY'  => ubbencode(t($path),false),
     ));
 }

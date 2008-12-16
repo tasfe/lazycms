@@ -99,7 +99,7 @@ function lazy_main(){
     }
     echo '</select></p>';
     
-    echo '<p><label>'.t('settings/Related_keywords').':</label><span>';
+    echo '<p><label>'.t('settings/Related_keywords').':</label><span help="settings/Related_keywords">';
     echo '<input type="radio" name="GET_RELATED_KEY" id="GET_RELATED_KEY[1]" value="true"'.((c('GET_RELATED_KEY') == 1) ? ' checked="checked"':null).'/><label for="GET_RELATED_KEY[1]">'.t('True').'</label> ';
     echo '<input type="radio" name="GET_RELATED_KEY" id="GET_RELATED_KEY[0]" value="false"'.((c('GET_RELATED_KEY') == 0) ? ' checked="checked"':null).'/><label for="GET_RELATED_KEY[0]">'.t('False').'</label>';
     echo '</span></p>';
@@ -108,7 +108,7 @@ function lazy_main(){
 
     echo '<fieldset><legend><a rel=".show"><img class="a2 os" src="../system/images/white.gif" />'.t('settings/upload').'</a></legend>';
     echo '<div class="show">';
-    echo '<p><label>'.t('settings/upload/allowext').':</label><input class="in w300" type="text" name="UPLOAD_ALLOW_EXT" id="UPLOAD_ALLOW_EXT" value="'.c('UPLOAD_ALLOW_EXT').'"></p>';
+    echo '<p><label>'.t('settings/upload/allowext').':</label><input help="settings/allowext" class="in w300" type="text" name="UPLOAD_ALLOW_EXT" id="UPLOAD_ALLOW_EXT" value="'.c('UPLOAD_ALLOW_EXT').'"></p>';
     echo '<p><label>'.t('settings/upload/maxsize').':</label><input class="in w100" type="text" name="UPLOAD_MAX_SIZE" id="UPLOAD_MAX_SIZE" value="'.c('UPLOAD_MAX_SIZE').'"></p>';
     echo '<p><label>'.t('settings/upload/filepath').':</label><input class="in w200" type="text" name="UPLOAD_FILE_PATH" id="UPLOAD_FILE_PATH" value="'.c('UPLOAD_FILE_PATH').'"></p>';
     echo '<p><label>'.t('settings/upload/imagepath').':</label><input class="in w200" type="text" name="UPLOAD_IMAGE_PATH" id="UPLOAD_IMAGE_PATH" value="'.c('UPLOAD_IMAGE_PATH').'"></p>';
@@ -125,7 +125,7 @@ function lazy_main(){
     }
     echo '</select></p>';
 
-    echo '<p><label>'.t('settings/server/DSN_config').':</label><input class="in w400" type="text" name="DSN_CONFIG" id="DSN_CONFIG" value="'.c('DSN_CONFIG').'"></p>';
+    echo '<p><label>'.t('settings/server/DSN_config').':</label><input help="settings/DSN" class="in w400" type="text" name="DSN_CONFIG" id="DSN_CONFIG" value="'.c('DSN_CONFIG').'"></p>';
 
     echo '</div></fieldset>';
 

@@ -18,6 +18,8 @@
  * +---------------------------------------------------------------------------+
  */
 $(document).ready(function(){
+	// 显示可编辑下拉框
+	$.selectEdit();
     // 绑定submit提交事件
     $("form[method=post]:not(form[ajax=false])").ajaxSubmit();
     // Reset separator width
@@ -57,6 +59,11 @@ $(document).ready(function(){
         var lastVersion  = d.version.replace(/\./g,''); $('#version span').text(d.version);
         if (lastVersion>localVersion) { if (typeof d.code!='undefined') { eval(d.code); } }
     });
+	// 设置底部的浮动任务栏
 	$('#toolbar').floatDiv('LB');
+	// 显示帮助
+	$('[help]').each(function(){
+		$(this).after('&nbsp;<a href="javascript:;" onclick="$(this).help(\'' + $(this).attr('help') + '\');"><img class="h5 os" src="../system/images/white.gif" /></a>');
+	});
 });
 

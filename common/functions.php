@@ -852,9 +852,11 @@ function validate($p1,$p2){
  */
 function ubbencode($p1){
     if (strlen($p1)==0) {return ;}
-    $R = h2c($p1);
-    if (strpos($R,' ')!==false) { $R = str_replace(' ','&nbsp;',$R); }
-    $R = preg_replace(array(
+    $T = h2c($p1);
+    if (!strncasecmp($R,"\n",1)) {
+        $T = substr($R,1);
+    }
+    $T = preg_replace(array(
         '/\r\n|\n|\r/s',
         '/\[url\](.+?)\[\/url]/i',
         '/\[url\=([^\]]+)](.+?)\[\/url]/i',
@@ -896,9 +898,25 @@ function ubbencode($p1){
         '<div>$1</div>',
         '<pre>$1</pre>',
         '<address>$1</address>',
-    ),$R);
+    ),$T);
     for ($i=1; $i<7; $i++) {
-        $R = preg_replace('/\[h'.$i.'\](.+?)\[\/h'.$i.']/i','<h'.$i.'>$1</h'.$i.'>',$R);
+        $T = preg_replace('/\[h'.$i.'\](.+?)\[\/h'.$i.']/i','<h'.$i.'>$1</h'.$i.'>',$T);
+    }
+    
+    if (strpos($T,'<br/>')!==false) {
+        $R = array();
+        foreach (explode('<br/>',$T) as $v) {
+            if (($n=strpos($v,' |'))!==false) {
+                $R[] = substr($v,$n+2);
+            }
+        }
+        $R = implode('<br/>',$R);
+    } else {
+        $R = $T;
+    }
+
+    if (strpos($R,' ')!==false) {
+        $R = str_replace(' ','&nbsp;',$R); 
     }
     return $R;
 }

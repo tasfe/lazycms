@@ -26,28 +26,28 @@ require '../../global.php';
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
     System::tabs(
-        t('Model manage').':model.php;'.
-        t('Model import').':model.php?action=import;'.
-        t('Model add list').':model.php?action=edit&type=list;'.
-        t('Model add page').':model.php?action=edit&type=page;'
+        t('model').':model.php;'.
+        t('model/import').':model.php?action=import;'.
+        t('model/addlist').':model.php?action=edit&type=list;'.
+        t('model/addpage').':model.php?action=edit&type=page;'
     );
     System::script('LoadScript("content.model");');
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_main(){
-    System::header(t('Model manage'));
+    System::header(t('model'));
     $db = get_conn();
     $ds = new Recordset();
     $ds->create("SELECT * FROM `#@_content_model` ORDER BY `modelid` ASC");
     $ds->action = PHP_FILE."?action=set";
-    $ds->but = $ds->button('unlock:'.l('Unlock').'|lock:'.l('Lock').'');
+    $ds->but = $ds->button('unlock:'.t('system::unlock').'|lock:'.t('system::lock').'');
     $ds->td("cklist(K[0]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&modelid=' + K[0] + '\">' + K[1] + '</a>'");
     $ds->td("K[2]");
     $ds->td("K[3]");
     $ds->td("(K[4]?icon('tick'):icon('stop'))");
     $ds->td("icon('edit','".PHP_FILE."?action=edit&modelid=' + K[0]) + icon('export','".PHP_FILE."?action=export&model=' + K[2])");
     $ds->open();
-    $ds->thead = '<tr><th>ID) '.t('Model name').'</th><th>'.t('Model ename').'</th><th>'.t('Model table').'</th><th>'.t('Model state').'</th><th>'.l('Manage').'</th></tr>';
+    $ds->thead = '<tr><th>ID) '.t('model/name').'</th><th>'.t('model/ename').'</th><th>'.t('model/table').'</th><th>'.t('model/state').'</th><th>'.t('system::Manage').'</th></tr>';
     while ($rs = $ds->result()) {
         $ds->tbody = "E(".$rs['modelid'].",'".t2js(h2c($rs['modelname']))."','".t2js(h2c($rs['modelename']))."','".t2js(h2c(Content_Model::getDataTableName($rs['modelename'])))."',".$rs['modelstate'].");";
     }
@@ -59,7 +59,7 @@ function lazy_set(){
     $db = get_conn();
     $submit = isset($_POST['submit']) ? strtolower($_POST['submit']) : null;
     $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
-    empty($lists) ? alert(t('Model alert not select')) : null ;
+    empty($lists) ? alert(t('model/alert/notselect')) : null ;
     switch($submit){
         case 'delete':
             $res = $db->query("SELECT `modelename` FROM `#@_content_model` WHERE `modelid` IN({$lists});");
@@ -71,15 +71,15 @@ function lazy_set(){
             $db->delete('#@_content_model',"`modelid` IN({$lists})");
             // 删除模型和分类的关联关系
             $db->delete('#@_content_sort_model',"`modelid` IN({$lists})");
-            alert(t('Model execute delete success'),1);
+            success(t('model/alert/delete'),1);
             break;
         case 'lock': case 'unlock':
             $state = ($submit=='lock') ? 0 : 1;
             $db->update('#@_content_model',array('modelstate' => $state),"`modelid` IN({$lists})");
-            alert(t('Model execute success'),0);
+            success(t('model/alert/'.$submit),0);
             break;
         default :
-            alert(l('Error invalid'));
+            error(t('system::error/invalid'));
             break;
     }
 }
@@ -100,7 +100,7 @@ function lazy_import(){
     $modelcode = isset($_POST['modelcode']) ? $_POST['modelcode'] : null;
     $val = new Validate();
     if ($val->method()) {
-        $val->check('modelcode|0|'.t('Model check code'));
+        $val->check('modelcode|0|'.t('model/check/code'));
         if ($val->isVal()) {
             $val->out();
         } else {
@@ -109,25 +109,25 @@ function lazy_import(){
             $data = (array) json_decode($modelcode);
             $number = $db->result("SELECT COUNT(*) FROM `#@_content_model` WHERE `modelename`=".DB::quote($data['modelename']).";");
             $isexist= $number > 0 ? false : true;
-            $val->check('modelcode|3|'.t('Model check is exist').'|'.$isexist);
+            $val->check('modelcode|3|'.t('model/check/exist').'|'.$isexist);
             if ($val->isVal()) {
                 $val->out();
             } else {
                 // 创建模型
                 Content_Model::addModel($data);
-                alert(t('Model import success'),0);
+                success(t('model/alert/import'),0);
             }
         }
     }
-    System::header(t('Model import'));
-    echo '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.t('Model import').'</a></legend>';
+    System::header(t('model/import'));
+    echo '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.t('model/import').'</a></legend>';
     echo '<div class="show">';
     echo '<form id="form1" name="form1" method="post" ajax="false" enctype="multipart/form-data" action="'.PHP_FILE.'?action=upmodel" target="tempform">';
-    echo '<p><label>'.t('Model import file').':</label><input type="file" name="modelfile" id="modelfile" onchange="$(this).autoUpFile();" class="in4" /></p>';
+    echo '<p><label>'.t('model/import/file').':</label><input type="file" name="modelfile" id="modelfile" onchange="$(this).autoUpFile();" class="in4" /></p>';
     echo '</form>';
     echo '<form id="form2" name="form2" method="post" action="'.PHP_FILE.'?action=import">';
-    echo '<p><label>'.t('Model import code').':</label><textarea name="modelcode" id="modelcode" rows="20" class="in6"></textarea></p>';
-    echo '<p><label>&nbsp;</label><button type="submit">'.t('Model import submit').'</button></p>';
+    echo '<p><label>'.t('model/import/code').':</label><textarea name="modelcode" id="modelcode" rows="20" class="in w600"></textarea></p>';
+    echo '<p><label>&nbsp;</label><button type="submit">'.t('model/import/submit').'</button></p>';
     echo '</form>';
     echo '</div></fieldset>';
 }

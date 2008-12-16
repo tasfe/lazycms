@@ -17,7 +17,6 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-$(function(){ $.selectEdit(); });
 function debug(s){ alert('debug:' + s); }
 function common(){ return $("script[src*=js/jquery.js]").attr("src").replace(/(\/js\/jquery\.js\?(.*))/i,'');}
 function lock(p1){ return p1 ? icon('a3') : icon('a4'); }
@@ -165,8 +164,8 @@ function LoadScript(p,c){
         $('#dialogUI').css({ width:width + 'px',height:height + 'px','left':0,'top':0,'position':'absolute','background':opts.background,'z-index':1000,'filter':'alpha(opacity=' + (100 * opts.opacity) + ')','-moz-opacity':opts.opacity,'opacity':opts.opacity});
         if (!$('#dialog').is('div')) {
     		$('body').append('<div id="dialog"></div>').find('#dialog')
-    			.append('<div class="head"><strong>' + opts.title + '</strong>' + (opts.close?'<a href="#" rel="close"></a>':'') + '</div>')
-    			.floatDiv({width:'400px',top:'200px',left:$(document).width()/2 - 200})
+    			.append('<div class="head"><strong>' + opts.title + '</strong>' + (opts.close?'<a href="javascript:;" rel="close"></a>':'') + '</div>')
+    			.floatDiv({width:'400px',top:$(document).height()/4,left:$(document).width()/2 - 200})
     			.find('[rel=close]').click(function(){
     				$.undialogUI();
     				return false;
@@ -178,7 +177,7 @@ function LoadScript(p,c){
 	$.blockUI = function(title,body){
 		$.dialogUI({title:title})
 			.append('<div class="body"><div class="content">' + body + '</div>')
-			.floatDiv({width:'500px',top:'200px',left:$(document).width()/2 - 200});
+			.floatDiv({width:'500px',top:$(document).height()/4,left:$(document).width()/2 - 250});
 	}
 	// alert
     $.alert = function(message,callback,type){
@@ -198,7 +197,7 @@ function LoadScript(p,c){
 		$.dialogUI({title:'系统提示',close:false})
 			.append('<div class="body"><div class="icon" style="' + position + '"></div><div class="content"><h3>' + message + '</h3></div></div>')
 			.append('<div class="button"><button type="button" rel="submit">确定</button></div>')
-			.floatDiv({width:'400px',top:'200px',left:$(document).width()/2 - 200})
+			.floatDiv({width:'400px',top:$(document).height()/4,left:$(document).width()/2 - 200})
 			.find('[rel=submit]').click(function(){
 				$.undialogUI();
 				if ($.isFunction(callback)) {callback();}
@@ -210,7 +209,7 @@ function LoadScript(p,c){
 		$.dialogUI({title:'操作确认',close:false})
 			.append('<div class="body"><div class="icon" style="background-position:0px -80px;"></div><div class="content"><h3>' + message + '</h3></div></div>')
 			.append('<div class="button"><button type="button" rel="submit">确定</button><button type="button" rel="cancel">取消</button></div>')
-			.floatDiv({width:'400px',top:'200px',left:$(document).width()/2 - 200})
+			.floatDiv({width:'400px',top:$(document).height()/4,left:$(document).width()/2 - 200})
 			.find('[rel=submit]').click(function(){
 				$.undialogUI();
 				callback(true);
@@ -418,8 +417,6 @@ function LoadScript(p,c){
         },function(){
             $('.jTip').remove();
         });
-        
-        
     }
     /**
      * 任意位置浮动
