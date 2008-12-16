@@ -100,7 +100,7 @@ function lazy_main(){
 
     echo '</fieldset>';
     
-    echo but('save').'</form>';
+    echo but('system::save').'</form>';
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_after(){

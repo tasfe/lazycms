@@ -17,6 +17,24 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
+
+// 设置全局 AJAX 默认选项
+$.ajaxSetup({
+    cache: false,
+	beforeSend: function(s){
+		s.setRequestHeader("AJAX_SUBMIT",true);
+	    var N = Math.floor(Math.random()*100000); $(this).data('N',N);
+		var load = $('<div id="loading' + N + '" class="loading"><img class="os" src="' + common() + '/images/loading.gif" />Loading...</div>');
+			load.floatDiv({top:'5px',right:'5px'}).appendTo('body');
+	},
+    error: function(){
+        if (debug) { alert('HTTP ERROR!'); }
+    },
+	complete: function(){
+		$('#loading' + $(this).data('N')).remove();
+	}
+});
+
 $(document).ready(function(){
 	// 显示可编辑下拉框
 	$.selectEdit();
@@ -66,4 +84,5 @@ $(document).ready(function(){
 		$(this).after('&nbsp;<a href="javascript:;" onclick="$(this).help(\'' + $(this).attr('help') + '\');"><img class="h5 os" src="../system/images/white.gif" /></a>');
 	});
 });
+
 

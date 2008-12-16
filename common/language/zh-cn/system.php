@@ -42,6 +42,13 @@ return array(
     'default'   => '默认',
     'reselect'  => '反选',
     'selectall' => '全选',
+
+    'ajax'  => array(
+        'alert'     => '系统提示',
+        'confirm'   => '操作确认',
+        'submit'    => '确认',
+        'cancel'    => '取消',
+    ),
     
     /* JavaScript确认 */
     'confirm'   => array(

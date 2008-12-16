@@ -53,6 +53,18 @@ function LoadScript(p,c){
  * See LICENSE.txt for copyright notices and details.
  */
 (function ($) {
+	// 调用语言包
+	$.t = function(p1){
+		var R;
+		var lang = $(document).data('language');
+		try	{
+			R = eval('lang.' + p1 + ';');
+		} catch (e) {
+			R = p1;
+		}
+		R = typeof R=='undefined'?p1:R;
+		return R;
+	}
 	/**
 	 * 可编辑下拉框
 	 *
@@ -106,6 +118,8 @@ function LoadScript(p,c){
         			style += 'img.' + C.charAt(i) + j + '{background-position:-' + (16*i+16) + 'px -' + 16*(j) + 'px;}\n';
         		}
         	}
+			/* loading图片 */
+			style += '.loading{ border:solid 1px #666666; background:#FFFFDF; padding:1px; padding-right:10px;}\n';
         	/* 错误信息 */
         	style += '.error{ border:solid 1px #FF0000 !important; background:url(' + u + '/images/invalid-line.gif) repeat-x left bottom !important;}\n';
         	/* 按钮样式 */
@@ -176,7 +190,7 @@ function LoadScript(p,c){
 	// 显示层
 	$.blockUI = function(title,body){
 		$.dialogUI({title:title})
-			.append('<div class="body"><div class="content">' + body + '</div>')
+			.append('<div class="body"><div class="content">' + body + '</div></div>')
 			.floatDiv({width:'500px',top:$(document).height()/4,left:$(document).width()/2 - 250});
 	}
 	// alert
@@ -194,9 +208,9 @@ function LoadScript(p,c){
     		    position = 'background-position:0px -80px;';
     		    break;
 		}
-		$.dialogUI({title:'系统提示',close:false})
+		$.dialogUI({title:$.t('alert'),close:false})
 			.append('<div class="body"><div class="icon" style="' + position + '"></div><div class="content"><h3>' + message + '</h3></div></div>')
-			.append('<div class="button"><button type="button" rel="submit">确定</button></div>')
+			.append('<div class="button"><button type="button" rel="submit">' + $.t('submit') + '</button></div>')
 			.floatDiv({width:'400px',top:$(document).height()/4,left:$(document).width()/2 - 200})
 			.find('[rel=submit]').click(function(){
 				$.undialogUI();
@@ -206,9 +220,9 @@ function LoadScript(p,c){
     }
 	// confirm
 	$.confirm = function(message,callback){
-		$.dialogUI({title:'操作确认',close:false})
+		$.dialogUI({title:$.t('confirm'),close:false})
 			.append('<div class="body"><div class="icon" style="background-position:0px -80px;"></div><div class="content"><h3>' + message + '</h3></div></div>')
-			.append('<div class="button"><button type="button" rel="submit">确定</button><button type="button" rel="cancel">取消</button></div>')
+			.append('<div class="button"><button type="button" rel="submit">' + $.t('submit') + '</button><button type="button" rel="cancel">' + $.t('cancel') + '</button></div>')
 			.floatDiv({width:'400px',top:$(document).height()/4,left:$(document).width()/2 - 200})
 			.find('[rel=submit]').click(function(){
 				$.undialogUI();
@@ -295,9 +309,6 @@ function LoadScript(p,c){
 				url: u,
 				type: 'POST',
 				data: {'submit':submit,'lists':lists},
-				beforeSend: function(s){
-                    s.setRequestHeader("AJAX_SUBMIT",true);
-                },
 				success: function(data){
 					if (d = $.parseJSON(data)) {
                         switch (d.CODE) {
@@ -356,9 +367,9 @@ function LoadScript(p,c){
                 data: t.serializeArray(),
                 beforeSend: function(s){
                     s.setRequestHeader("AJAX_SUBMIT",true);
-                },
-                error: function(e,s){
-                    debug('error-'+s);
+					var N = Math.floor(Math.random()*100000); $(this).data('N',N);
+					var load = $('<div id="loading' + N + '" class="loading"><img class="os" src="' + common() + '/images/loading.gif" />Loading...</div>');
+						load.floatDiv({top:'5px',right:'5px'}).appendTo('body');
                 },
                 success: function(data){
                     if (d = $.parseJSON(data)) {
@@ -396,6 +407,7 @@ function LoadScript(p,c){
                 },
                 complete: function(){
                     b.attr('disabled',false);
+					$('#loading' + $(this).data('N')).remove();
                 }
             });
             return false;

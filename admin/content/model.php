@@ -31,7 +31,6 @@ function lazy_before(){
         t('model/addlist').':model.php?action=edit&type=list;'.
         t('model/addpage').':model.php?action=edit&type=page;'
     );
-    System::script('LoadScript("content.model");');
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_main(){
@@ -119,11 +118,12 @@ function lazy_import(){
             }
         }
     }
+    System::script('LoadScript("content.model");');
     System::header(t('model/import'));
-    echo '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.t('model/import').'</a></legend>';
+    echo '<fieldset><legend><a rel=".show" cookie="false"><img class="a2 os" src="../system/images/white.gif" />'.t('model/import').'</a></legend>';
     echo '<div class="show">';
     echo '<form id="form1" name="form1" method="post" ajax="false" enctype="multipart/form-data" action="'.PHP_FILE.'?action=upmodel" target="tempform">';
-    echo '<p><label>'.t('model/import/file').':</label><input type="file" name="modelfile" id="modelfile" onchange="$(this).autoUpFile();" class="in4" /></p>';
+    echo '<p><label>'.t('model/import/file').':</label><input type="file" name="modelfile" id="modelfile" onchange="$(this).autoUpFile();" class="in w400" /></p>';
     echo '</form>';
     echo '<form id="form2" name="form2" method="post" action="'.PHP_FILE.'?action=import">';
     echo '<p><label>'.t('model/import/code').':</label><textarea name="modelcode" id="modelcode" rows="20" class="in w600"></textarea></p>';
@@ -151,7 +151,7 @@ function lazy_upmodel(){
     header('Content-Type:text/html;'.str_replace('"','',$charset));
     echo '<script type="text/javascript"'.$charset.'>';
     echo 'parent.$(\'input.uploading\').remove();';
-    echo 'parent.$(\'#modelfile\').replaceWith(\'<input type="file" name="modelfile" id="modelfile" onchange="$(this).autoUpFile();" class="in4" />\');';
+    echo 'parent.$(\'#modelfile\').replaceWith(\'<input type="file" name="modelfile" id="modelfile" onchange="$(this).autoUpFile();" class="in w400" />\');';
     echo $msg;
     echo 'parent.$(\'iframe[@name=tempform]\').remove();';
     echo '</script>';
@@ -162,17 +162,17 @@ function lazy_edit(){
     $db = get_conn();
     $modelid   = isset($_REQUEST['modelid']) ? $_REQUEST['modelid'] : 0;
     $oldename  = isset($_POST['oldename']) ? strtolower($_POST['oldename']) : null;
-    $delFields = isset($_POST['delFields']) ? $_POST['delFields'] : null;
+    $delfields = isset($_POST['delfields']) ? $_POST['delfields'] : null;
     $modeltype = isset($_REQUEST['type']) ? strtolower($_REQUEST['type']) : 'list';
-    $post = POST('modelname','modelename','modelpath','modeltype','modelfields','setkeyword','description','sortemplate','pagetemplate');
+    $post = POST('modelname','modelename','modelpath','modeltype','modelfields','iskeyword','description','sortemplate','pagetemplate');
     $modeltype = empty($post[3]) ? $modeltype : $post[3];
     if (is_array($post[4])) {
         $post[4] = '['.implode(',',$post[4]).']';
     }
     $val = new Validate();
     if ($val->method()) {
-        $val->check('modelname|1|'.t('Model check name').'|1-50');
-        $val->check('modelename|1|'.t('Model check ename').'|1-50;modelename|validate|'.t('Model check ename is Special characters').'|3;modelename|4|'.t('Model check ename is repeat')."|SELECT COUNT(`modelid`) FROM `#@_content_model` WHERE `modelename`='#pro#'".(empty($modelid)?null:" AND `modelid` <> {$modelid}"));
+        $val->check('modelname|1|'.t('model/check/name').'|1-50');
+        $val->check('modelename|1|'.t('model/check/ename').'|1-50;modelename|validate|'.t('model/check/ename1').'|3;modelename|4|'.t('model/check/ename2')."|SELECT COUNT(`modelid`) FROM `#@_content_model` WHERE `modelename`='#pro#'".(empty($modelid)?null:" AND `modelid` <> {$modelid}"));
         if ($val->isVal()) {
             $val->out();
         } else {
@@ -183,12 +183,12 @@ function lazy_edit(){
                     'modelpath'   => $post[2],
                     'modeltype'   => $post[3],
                     'modelfields' => $post[4],
-                    'setkeyword'  => $post[5],
+                    'iskeyword'   => $post[5],
                     'description' => $post[6],
                     'sortemplate' => $post[7],
                     'pagetemplate'=> $post[8],
                 ));
-                $text = t('Model alert add success');
+                $text = t('model/alert/add');
             } else {
                 // 数据表名
                 $table  = Content_Model::getDataTableName($post[1]);
@@ -204,8 +204,8 @@ function lazy_edit(){
                     $db->exec("RENAME TABLE `{$ojtable}` TO `{$jtable}`;");
                 }
                 // 删除不需要的字段
-                if (!empty($delFields)) {
-                    $arrFields = explode(',',$delFields); $sute = null;
+                if (!empty($delfields)) {
+                    $arrFields = explode(',',$delfields); $sute = null;
                     foreach ($arrFields as $field) {
                         if ($db->isField($table,$field)) {
                             $sute.= " DROP `{$field}`,";
@@ -252,12 +252,12 @@ function lazy_edit(){
                     'modelpath'   => $post[2],
                     'modeltype'   => $post[3],
                     'modelfields' => json_encode($post[4]),
-                    'setkeyword'  => $post[5],
+                    'iskeyword'   => $post[5],
                     'description' => $post[6],
                     'sortemplate' => $post[7],
                     'pagetemplate'=> $post[8],
                 ),DB::quoteInto('`modelid` = ?',$modelid));
-                $text = t('Model alert edit success');
+                $text = t('model/alert/edit');
             }
             // 输出执行结果
             alert($text,0);
@@ -271,14 +271,14 @@ function lazy_edit(){
                 $post[2] = $rs['modelpath'];
                 $post[3] = $rs['modeltype'];
                 $post[4] = empty($rs['modelfields'])?array():json_decode($rs['modelfields']);
-                $post[5] = h2c($rs['setkeyword']);
+                $post[5] = h2c($rs['iskeyword']);
                 $post[6] = h2c($rs['description']);
                 $post[7] = h2c($rs['sortemplate']);
                 $post[8] = h2c($rs['pagetemplate']);
             }
         }
     }
-    $title = empty($modelid) ? t('Model add '.$modeltype) : t('Model edit '.$modeltype);
+    $title = empty($modelid) ? t('model/add'.$modeltype) : t('model/edit'.$modeltype);
     // 判断tab显示
     switch ($modeltype) {
         case 'page':
@@ -288,60 +288,64 @@ function lazy_edit(){
             $post[2] = empty($post[2])?'%Y%m%d/%I.html':$post[2];
             $n = 3; break;
     }
+
+    System::script('LoadScript("content.model");');
     System::header($title,$n);
-    $hl = '<form id="form1" name="form1" method="post" action="">';
-    $hl.= '<fieldset><legend rel="tab"><a class="collapsed" rel=".show" cookie="false">'.$title.'</a></legend>';
-    $hl.= '<div class="show">';
-    $hl.= '<p><label>'.t('Model name').':</label><input class="in2" type="text" name="modelname" id="modelname" value="'.$post[0].'" /></p>';
-    $hl.= '<p><label>'.t('Model ename').':</label><input class="in3" type="text" name="modelename" id="modelename" value="'.$post[1].'" /></p>';
-    $hl.= '<p><label>'.t('Model path').':</label><input class="in3" type="text" name="modelpath" id="modelpath" value="'.$post[2].'" /></p>';
+
+    echo '<form id="form1" name="form1" method="post" action="">';
+    echo '<fieldset><legend rel="tab"><a rel=".show" cookie="false"><img class="a2 os" src="../system/images/white.gif" />'.$title.'</a></legend>';
+    echo '<div class="show">';
+    echo '<p><label>'.t('model/name').':</label><input class="in2" type="text" name="modelname" id="modelname" value="'.$post[0].'" /></p>';
+    echo '<p><label>'.t('model/ename').':</label><input class="in3" type="text" name="modelename" id="modelename" value="'.$post[1].'" /></p>';
+    echo '<p><label>'.t('model/path').':</label><input class="in3" type="text" name="modelpath" id="modelpath" value="'.$post[2].'" /></p>';
     
     if ($modeltype=='list') {
-        $hl.= '<p><label>'.t('Model sort template').':</label>';
-        $hl.= '<select name="sortemplate" id="sortemplate">';
-        $hl.= form_opts(c('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$post[7]);
-        $hl.= '</select></p>';
+        echo '<p><label>'.t('model/template/sort').':</label>';
+        echo '<select name="sortemplate" id="sortemplate">';
+        echo form_opts(c('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$post[7]);
+        echo '</select></p>';
     }
     
-    $hl.= '<p><label>'.t('Model page template').':</label>';
-    $hl.= '<select name="pagetemplate" id="pagetemplate">';
-    $hl.= form_opts(c('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$post[8]);
-    $hl.= '</select></p>';
-    $hl.= '</div></fieldset>';
+    echo '<p><label>'.t('model/template/page').':</label>';
+    echo '<select name="pagetemplate" id="pagetemplate">';
+    echo form_opts(c('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$post[8]);
+    echo '</select></p>';
+    echo '</div></fieldset>';
 
-    $hl.= '<fieldset><legend><a class="collapsed" rel=".fields">'.t('Model fields').'</a></legend>';
-    $hl.= '<div class="fields">';
-    $hl.= '<table id="Fields" action="'.PHP_FILE.'?action=fields" class="table" cellspacing="0">';
-    $hl.= '<thead><tr class="nodrop"><th>'.t('Model fields text').'</th><th>'.t('Model fields ename').'</th><th>'.t('Model fields input').'</th><th>'.t('Model fields default').'</th><th>'.l('Manage').'</th></tr></thead><tbody>';
-    foreach ($post[4] as $v) {
-        $data = (array) $v; $i = $data['id'];
-        $tip = empty($data['tip'])?null:' tip="'.$data['label'].'::'.ubbencode(h2encode($data['tip'])).'"';
-        $len = empty($data['length'])?null:'('.$data['length'].')';
-        $hl.= '<tr id="TR_'.$i.'"><td'.$tip.'><input type="checkbox" name="list_'.$i.'" value="'.$data['oname'].'" /> '.$data['label'].'</td>';
-        $hl.= '<td>'.$data['ename'].'</td><td>'.t('model/type/'.$data['intype']).$len.'</td><td>'.(empty($data['default'])?'NULL':$data['default']).'</td>';
-        $hl.= '<td><a href="javascript:;" onclick="$(this).getFields(\'#Fields\',$(\'#TR_Field_'.$i.'\').val());"><i class="os icon-16-edit"></i></a>';
-        if ($data['intype']=='input') {
-            $selected = ($setKeyword==$data['ename']) ? null : '-off';
-            $hl.= '<a href="javascript:;" rel="light" tip="::120::'.t('model/add/fields/autokeywords').'" onclick="$(this).autoKeywords(\'#setKeyword\',\''.$data['ename'].'\');"><i class="os icon-16-light'.$selected.'"></i></a>';
-        }
-        if (instr('basic,editor',$data['intype'])) {
-            $selected = ($description==$data['ename']) ? null : '-off';
-            $hl.= '<a href="javascript:;" rel="cut" tip="::120::'.t('model/add/fields/autodescription').'" onclick="$(this).autoKeywords(\'#description\',\''.$data['ename'].'\');"><i class="os icon-16-cut'.$selected.'"></i></a>';
-        }
-        $hl.= '<textarea class="hide" name="modelfields['.$i.']" id="TR_Field_'.$i.'">'.json_encode($data).'</textarea></td></tr>';
-    }
-    $hl.= '</tbody></table>';
-    $hl.= '<div class="but"><button onclick="checkALt(\'#Fields\',\'all\');" type="button">'.t('common/selectall','system').'</button>';
-    $hl.= '<button onclick="checkALL(\'#Fields\');" type="button">'.t('common/reselect','system').'</button>';
-    $hl.= '<button type="button" onclick="$(\'#Fields\').delFields(\'#delFields\',\''.t('confirm/delete','system').'\');">'.t('common/delete','system').'</button>';
-    $hl.= '<button type="button" onclick="$(this).getFields(\'#Fields\',{\'method\':\'get\'});">'.t('model/add/fields/add').'</button></div>';
-    $hl.= '</div>';
-    $hl.= '</fieldset>';
+    echo '<fieldset><legend><a rel=".fields"><img class="a2 os" src="../system/images/white.gif" />'.t('model/fields').'</a></legend>';
+    echo '<div class="fields">';
 
-    $hl.= but('save').'<input name="modelid" type="hidden" value="'.$modelid.'" /><input id="oldename" name="oldename" type="hidden" value="'.$modelename.'" />';
-    $hl.= '<input id="delFields" name="delFields" type="hidden" value="" /><input id="setKeyword" name="setKeyword" type="hidden" value="'.$setKeyword.'" />';
-    $hl.= '<input id="description" name="description" type="hidden" value="'.$description.'" /><input name="type" type="hidden" value="'.$modeltype.'" /></form>';
-    print_x($title,$hl,$n);
+    echo '<table id="tableFields" action="'.PHP_FILE.'?action=fields" class="table" cellspacing="0">';
+    echo '<thead><tr class="nodrop"><th>'.t('model/fields/text').'</th><th>'.t('model/fields/ename').'</th><th>'.t('model/fields/input').'</th><th>'.t('model/fields/default').'</th><th>'.t('system::manage').'</th></tr></thead><tbody>';
+    
+    echo '<tr>';
+    echo '<td><input type="checkbox" name="list" value="" /> 标题</td>';
+    echo '<td>title</td>';
+    echo '<td>输入框(50)</td>';
+    echo '<td>NULL</td>';
+    echo '<td><a href="javascript:;" onclick="$(this).editFields();"><img class="a5 os" src="../system/images/white.gif" /></a></td>';
+    echo '</tr>';
+
+    echo '</tbody></table>';
+
+    echo '<div class="but">';
+    echo '<button type="button" onclick="$(\'#tableFields\').checkALL(true);">'.t('system::selectall').'</button>';
+    echo '<button type="button" onclick="$(\'#tableFields\').checkALL(false);">'.t('system::reselect').'</button>';
+    echo '<button type="button" onclick="$.confirm(\''.t('system::confirm/delete').'\',function(r){r?$(\'#tableFields\').delFields():false;})">'.t('system::delete').'</button>';
+    echo '<button type="button" onclick="$(\'#tableFields\').addFields();">'.t('model/fields/add').'</button>';
+    echo '</div>';
+
+    echo '</fieldset>';
+
+    echo but('system::save').'<input name="modelid" type="hidden" value="'.$modelid.'" /></form>';
+}
+// *** *** www.LazyCMS.net *** *** //
+function lazy_fields(){
+    echo json_encode(array(
+        'TITLE' => '添加字段',
+        'BODY'  => '内容'
+    ));
+    exit();
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_after(){

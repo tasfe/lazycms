@@ -39,9 +39,16 @@ class System{
         $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.2.6"></script>';
         $hl.= '<script type="text/javascript" src="../../common/js/lazycms.library.js?ver=1.0"></script>';
         $hl.= '<script type="text/javascript" src="../system/images/system.js?ver=1.0"></script>';
-        if ($script = g('SCRIPT')) { 
-            $hl.= '<script type="text/javascript">'.$script.'</script>';
-        }
+        $hl.= '<script type="text/javascript">';
+        $js = array(
+            'alert'     => t('system::ajax/alert'),
+            'confirm'   => t('system::ajax/confirm'),
+            'submit'    => t('system::ajax/submit'),
+            'cancel'    => t('system::ajax/cancel'),
+        );
+        $hl.= '$(document).data("language",'.json_encode($js).');';
+        $hl.= g('SCRIPT');
+        $hl.= '</script>';
         $hl.= '</head><body>';
         $hl.= '<div id="top">';
         $hl.= '<div class="logo"><a href="../system/index.php"><img src="../system/images/logo.png" alt="LazyCMS '.LAZY_VERSION.'" /></a></div>';

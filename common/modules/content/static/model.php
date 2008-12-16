@@ -70,14 +70,14 @@ class Content_Model{
      */
     function getValidate(){
         return array(
-            'empty'  => '%s|0|'.t('Validate empty error'),
-            'limit'  => '%s|1|'.t('Validate limit error').'|1-100',
-            'equal'  => '%s|2|'.t('Validate equal error').'|[field]',
-            'email'  => '%s|validate|'.t('Validate email error').'|4',
-            'letter' => '%s|validate|'.t('Validate letter error').'|1',
-            'number' => '%s|validate|'.t('Validate number error').'|2',
-            'url'    => '%s|validate|'.t('Validate url error').'|5',
-            'custom' => '%s|validate|'.t('Validate custom error').'|'.t('Validate custom regular'),
+            'empty'  => '%s|0|'.t('validate/error/empty'),
+            'limit'  => '%s|1|'.t('validate/error/limit').'|1-100',
+            'equal'  => '%s|2|'.t('validate/error/equal').'|[field]',
+            'email'  => '%s|validate|'.t('validate/error/email').'|4',
+            'letter' => '%s|validate|'.t('validate/error/letter').'|1',
+            'number' => '%s|validate|'.t('validate/error/number').'|2',
+            'url'    => '%s|validate|'.t('validate/error/url').'|5',
+            'custom' => '%s|validate|'.t('validate/error/custom').'|'.t('validate/error/regular'),
         );
     }
     /**

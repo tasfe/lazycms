@@ -40,34 +40,51 @@ return array(
         'ename' => '模型标识',
         'table' => '数据表名',
         'state' => '状态',
+        'path'  => '生成规则',
+        'template'  => array(
+            'sort'  => '列表模板',
+            'page'  => '内容模板',
+        ),
+        'fields'    => array(
+            'title' => '字段管理',
+            'add'   => '添加字段',
+            'text'  => '表单文字',
+            'ename' => '字段名',
+            'input' => '输入类型',
+            'default'   => '默认值',
+        ),
+        'check' => array(
+            'code'  => '模型代码不能为空',
+            'exist' => '模型标识(modelename)重复，请修改模型标识',
+        ),
         'alert' => array(
             'noselect'  => '请选择一个模型',
             'delete'    => '删除模型成功',
             'lock'      => '锁定模型成功',
             'unlock'    => '启用模型成功',
+            'import'    => '导入模型成功',
         )
     ),
     
-    
-    /* Model tip */
-    'Model execute success' => '操作成功',
-    'Model execute delete success'  => '执行删除成功',
-    
-    'Validate url'      => '匹配网址',    
-    'Validate empty'    => '不能为空',
-    'Validate limit'    => '限制长度',
-    'Validate equal'    => '对比两个值相等',
-    'Validate email'    => '电子邮箱',
-    'Validate letter'   => '英文字母',
-    'Validate number'   => '必须是数字',
-    'Validate custom'   => '自定义验证',
-    'Validate url error'      => '输入的网址格式不正确',
-    'Validate empty error'    => '必填项，不能为空',
-    'Validate limit error'    => '内容长度必须是1-100个字符',
-    'Validate equal error'    => '两个值的内容不相等',
-    'Validate email error'    => '邮箱格式不正确',
-    'Validate letter error'   => '必须是英文字母',
-    'Validate number error'   => '必须是数字',
-    'Validate custom error'   => '这里是错误提示',
-    'Validate custom regular' => '这里是正则表达式',
+    'validate'  => array(
+        'url'   => '匹配网址',
+        'empty' => '不能为空',
+        'limit' => '限制长度',
+        'equal' => '对比两个值相等',
+        'email' => '电子邮箱',
+        'letter'    => '英文字母',
+        'number'    => '必须是数字',
+        'custom'    => '自定义验证',
+        'error'     => array(
+            'url'   => '输入的网址格式不正确',
+            'empty' => '必填项，不能为空',
+            'limit' => '内容长度必须是1-100个字符',
+            'equal' => '两个值的内容不相等',
+            'email' => '邮箱格式不正确',
+            'letter'    => '必须是英文字母',
+            'number'    => '必须是数字',
+            'custom'    => '这里是错误提示',
+            'regular'   => '这里是正则表达式',
+        )
+    ),
 );

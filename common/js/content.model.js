@@ -18,12 +18,34 @@
  * +---------------------------------------------------------------------------+
  */
 (function($) {
-    /**
+	/**
+     * 添加字段
+     */
+	$.fn.addFields = function(){
+		var fields = $('#tableFields');
+		var params = {width:'500px',top:$(document).height()/4,left:$(document).width()/2 - 250};
+		$.getJSON(fields.attr('action'),function(data){
+			$.dialogUI({title:data.TITLE}).append('<div class="body"><div class="content"></div></div>').floatDiv(params).find('.content').html(data.BODY);
+		});
+	}
+	/**
+     * 修改字段
+     */
+	$.fn.editFields = function(){
+	
+	}
+	/**
+     * 删除字段
+     */
+	$.fn.delFields = function(){
+	
+	}
+	/**
      * 自动上传
      */
 	$.fn.autoUpFile = function(){
 		var f = this.parents('form');
-			this.hide().after('<input type="text" value="UpLoading..." class="in4 uploading" />');
+			this.hide().after('<input type="text" value="UpLoading..." class="in w400 uploading" />');
 			f.parents('fieldset').after('<iframe src="about:blank" id="tempform" name="tempform" style="display:none;width:0px;height:0px;border:none;"></iframe>');
 			f.submit();
 	}

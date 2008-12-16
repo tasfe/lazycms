@@ -173,7 +173,7 @@ function lazy_edit(){
 
     echo '</fieldset>';
     
-    echo but('save').'<input name="adminid" type="hidden" value="'.$adminid.'" /></form>';
+    echo but('system::save').'<input name="adminid" type="hidden" value="'.$adminid.'" /></form>';
     echo '<script type="text/javascript">$.Purview();</script>';
 }
 // *** *** www.LazyCMS.net *** *** //

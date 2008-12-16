@@ -129,7 +129,7 @@ function lazy_main(){
 
     echo '</div></fieldset>';
 
-    echo but('Save');
+    echo but('system::save');
     echo '</form>';
 }
 // *** *** www.LazyCMS.net *** *** //
