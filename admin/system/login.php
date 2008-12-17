@@ -64,7 +64,10 @@ function lazy_main() {
     echo '<link href="images/style.css" rel="stylesheet" type="text/css" />';
     echo '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.2.6"></script>';
     echo '<script type="text/javascript" src="../../common/js/lazycms.library.js?ver=1.0"></script>';
-    echo '<script type="text/javascript"> $(document).ready(function(){ $("#username").focus(); $("form[method=post]:not(form[ajax=false])").ajaxSubmit(); }); </script>';
+    echo '<script type="text/javascript">'.js_lang();
+    echo '$(document).ready(function(){';
+    echo '$("#username").focus(); $("form[method=post]:not(form[ajax=false])").ajaxSubmit();';
+    echo '}); </script>';
     echo '</head><body>';
     echo '<form id="login" name="login" method="post" action="'.PHP_FILE.'">';
     echo '<div class="col1">'.t('login/description').'</div>';

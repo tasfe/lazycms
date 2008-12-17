@@ -285,6 +285,18 @@ function mkdirs($p1, $p2 = 0777){
     return true;
 }
 /**
+ * 前台js语言包
+ */
+function js_lang(){
+    $js = array(
+        'alert'     => t('system::ajax/alert'),
+        'confirm'   => t('system::ajax/confirm'),
+        'submit'    => t('system::ajax/submit'),
+        'cancel'    => t('system::ajax/cancel'),
+    );
+    return '$(document).data("language",'.json_encode($js).');';
+}
+/**
  * 在数组或字符串中查找
  *
  * @param mixed  $p1 被搜索的数据，字符串用英文“逗号”分割
