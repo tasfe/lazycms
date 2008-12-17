@@ -51,7 +51,20 @@ return array(
             'text'  => '表单文字',
             'ename' => '字段名',
             'input' => '输入类型',
+            'width' => '宽',
+            'length'    => '最大长度',
             'default'   => '默认值',
+            'type'  => array(
+                'input'     => '输入框',
+                'textarea'	=> '文本框',
+                'select'	=> '下拉列表框',
+                'radio'	    => '单选框',
+                'checkbox'	=> '复选框',
+                'basic'	    => '简易编辑器',
+                'editor'	=> '内容编辑器',
+                'date'      => '日期选择器',
+                'upfile'	=> '文件上传框',
+            )
         ),
         'check' => array(
             'code'  => '模型代码不能为空',

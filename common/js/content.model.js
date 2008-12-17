@@ -23,9 +23,16 @@
      */
 	$.fn.addFields = function(){
 		var fields = $('#tableFields');
-		var params = {width:'500px',top:$(document).height()/4,left:$(document).width()/2 - 250};
+		var params = {width:'400px',top:$(document).height()/6,left:$(document).width()/2 - 200};
 		$.getJSON(fields.attr('action'),function(data){
-			$.dialogUI({title:data.TITLE}).append('<div class="body"><div class="content"></div></div>').floatDiv(params).find('.content').html(data.BODY);
+			$.dialogUI({title:data.TITLE}).append('<div class="body"></div>').floatDiv(params).find('.body').html(data.BODY).end()
+			.find('[type=submit]').click(function(){
+				$.undialogUI();
+			}).focus().end()
+			.find('[rel=cancel]').click(function(){
+				$.undialogUI();
+			});
+			$.selectEdit();
 		});
 	}
 	/**

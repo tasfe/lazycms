@@ -71,17 +71,21 @@ function LoadScript(p,c){
 	 * @example: <select edit="true" default="value"></select>
 	 */
 	$.selectEdit = function(){
-		var s = $('select[edit=true]'); if (s.is('select')==false) { return ; }
-		var v = s.attr('default')!=''?s.attr('default'):s.val();
-		var i = $('<input type="text" name="' + s.attr('name') + '" value="' + v + '" />')
-				.css({width:(s.width() - 18) + 'px',height:(s.height() - 2) + 'px',position:'absolute',border:'none',margin:'1px 0 0 1px',padding:'2px 0 0 2px'})
+		$('select[edit=true]').each(function(){
+		    var s = $(this); if (s.is('select')==false) { return ; }
+		    var v = (s.attr('default')!='' && (typeof s.attr('default'))!='undefined')?s.attr('default'):s.val();
+    		var i = $('<input type="text" name="' + s.attr('name') + '" value="' + v + '" />')
+				.css({width:(s.width() - 18) + 'px',height:(s.height() - 2) + 'px',position:'absolute',top:s.position().top+'px',border:'none',margin:'1px 0 0 1px',padding:($.browser.msie?2:0)+'px 0 0 2px'})
 				.insertBefore(s);
-		var c = $('<select name="edit_select_' + s.attr('name') + '">' + s.html() + '</select>').change(function(){ $(this).prev().val(this.value);});
+    		var c = $('<select name="edit_select_' + s.attr('name') + '">' + s.html() + '</select>')
+    		    .change(function(){ $(this).prev().val(this.value);})
+    		    .mouseover(function(){ $(this).prev().select(); });
 				if (s.attr('id')!=='') c.attr('id',s.attr('id'));
 				i.blur(function(){
 					c.val(this.value);
 				});
 				s.replaceWith(c);
+		});
 	}
     /**
      * 全选/反选
@@ -164,7 +168,6 @@ function LoadScript(p,c){
 			opacity:0.6,
             background:'#FFFFFF'
         }, opts||{});
-		var width  = $(document).width();
         var height = $(document).height();
         if (!$('#dialogUI').is('div')) {
             $('body').append('<div id="dialogUI"></div>');
@@ -172,10 +175,10 @@ function LoadScript(p,c){
 		// IE6 版本需要搞定 Select QJ Div 层的问题 -_-!!
 		if ($.browser.msie && $.browser.version=='6.0') {
 			if ($('#iframeCover').is('iframe') == false) {
-				$('body').append('<iframe id="iframeCover" style="filter:alpha(opacity=0);position:absolute;z-index:999;left:0;top:0;height:' + height + 'px;width:' + width + 'px;"></iframe>');
+				$('body').append('<iframe id="iframeCover" style="filter:alpha(opacity=0);position:absolute;z-index:999;left:0;top:0;height:' + height + 'px;width:100%;"></iframe>');
 			}
 		}
-        $('#dialogUI').css({ width:width + 'px',height:height + 'px','left':0,'top':0,'position':'absolute','background':opts.background,'z-index':1000,'filter':'alpha(opacity=' + (100 * opts.opacity) + ')','-moz-opacity':opts.opacity,'opacity':opts.opacity});
+        $('#dialogUI').css({ width:'100%',height:height + 'px','left':0,'top':0,'position':'absolute','background':opts.background,'z-index':1000,'filter':'alpha(opacity=' + (100 * opts.opacity) + ')','-moz-opacity':opts.opacity,'opacity':opts.opacity});
         if (!$('#dialog').is('div')) {
     		$('body').append('<div id="dialog"></div>').find('#dialog')
     			.append('<div class="head"><strong>' + opts.title + '</strong>' + (opts.close?'<a href="javascript:;" rel="close"></a>':'') + '</div>')
@@ -190,7 +193,7 @@ function LoadScript(p,c){
 	// 显示层
 	$.blockUI = function(title,body){
 		$.dialogUI({title:title})
-			.append('<div class="body"><div class="content">' + body + '</div></div>')
+			.append('<div class="body">' + body + '</div>')
 			.floatDiv({width:'500px',top:$(document).height()/4,left:$(document).width()/2 - 250});
 	}
 	// alert
@@ -430,6 +433,45 @@ function LoadScript(p,c){
             $('.jTip').remove();
         });
     }
+    // 兼容的窗口改变大小事件
+	$.fn.wresize = function(f){
+	    var version = '1.1';
+		var wresize = {fired: false, width: 0};
+		function resizeOnce(){
+			if ($.browser.msie) {
+                if (!wresize.fired) {
+                    wresize.fired = true;
+                } else {
+					var version = parseInt($.browser.version,10);
+						wresize.fired = false;
+					if (version<7) {
+						return false;
+					} else if (version==7) {
+						//a vertical resize is fired once, an horizontal resize twice
+						var width = $( window ).width();
+						if ( width != wresize.width ) {
+							wresize.width = width;
+							return false;
+						}
+					}
+				}
+			}
+			return true;
+		}
+		function handleWResize(e){
+			if (resizeOnce()) {
+				return f.apply(this, [e]);
+			}
+		}
+		this.each(function(){
+			if (this == window) {
+				$(this).resize(handleWResize);
+			} else {
+				$(this).resize(f);
+			}
+		});
+		return this;
+	}
     /**
      * 任意位置浮动
      *
@@ -448,65 +490,34 @@ function LoadScript(p,c){
     $.fn.floatDiv = function(position){
         var isIE6  = $.browser.msie && $.browser.version=='6.0'?true:false;
         var width  = $(document).width();
-        var height = $(document).height();      
-        if (isIE6) {
-            var $this = this;
-            function doFloatDIV(){
-				var pos = $.extend({},position);
-				var top = document.documentElement.scrollTop;
-				var gao = document.documentElement.clientHeight;
-                $this.each(function(){
-                    var loc;
-                    if (typeof position == 'undefined' || typeof position == 'string'){
-                        switch (position) {
-                            case 'RB' : loc = { right:'0px',top:(top + gao - $(this).height()) + 'px' }; break;
-                            case 'LB' : loc = { left :'0px',top:(top + gao - $(this).height()) + 'px' }; break;
-                            case 'LT' : loc = { left :'0px',top:top + 'px' }; break;
-                            case 'RT' : loc = { right:'0px',top:top + 'px' }; break;
-                            case 'M'  : 
-                                var l = width / 2 -  $(this).width() / 2;
-                                var t = top + gao / 2 - $(this).height() / 2;
-                                    loc = {left:l + 'px',top:t + 'px'};
-                                break;
-                            default: loc = {right:'0px',top:(top + gao - $(this).height()) + 'px'}; break;
-                        }
-                    } else {
-						var topUnit = position.top.replace(/[^a-z]+/ig,'');
-							topUnit = topUnit=='' ? 'px' : topUnit;
-						var topNum  = position.top.replace(/[^0-9]+/ig,'');
-							topNum  = topNum=='' ? 0 : topNum;
-                        loc = $.extend(pos,{top:parseInt(top) + parseInt(topNum) + topUnit});
-                    }
-                    $(this).css('z-index','9999').css(loc).css('position','absolute');
-                });
-				setTimeout(function(){
-					doFloatDIV();
-				},20);
-				return $this;
-			}			
-            return doFloatDIV();
-        } else {
-            return this.each(function(){
-                var loc;
-                if (typeof position == 'undefined' || typeof position == 'string'){
-                    switch (position) {
-                        case 'RB' : loc = { right:'0px',bottom:'0px' }; break;
-                        case 'LB' : loc = { left :'0px',bottom:'0px' }; break;
-                        case 'LT' : loc = { left :'0px',top   :'0px' }; break;
-                        case 'RT' : loc = { right:'0px',top   :'0px' }; break;
-                        case 'M'  : 
-                            var l = width / 2 -  $(this).width() / 2;
-                            var t = height / 2 - $(this).height() / 2;
-                                loc = {left:l + 'px',top:t + 'px'};
-                            break;
-                        default: loc = {right:'0px',bottom:'0px'}; break;
-                    }
-                } else {
-                    loc = position;
+        var height = $(document).height();
+        return this.each(function(){
+            var loc;
+            if (typeof position == 'undefined' || typeof position == 'string'){
+                switch (position) {
+                    case 'RB' : loc = { right:'0px',bottom:'0px' }; break;
+                    case 'LB' : loc = { left :'0px',bottom:'0px' }; break;
+                    case 'LT' : loc = { left :'0px',top   :'0px' }; break;
+                    case 'RT' : loc = { right:'0px',top   :'0px' }; break;
+                    case 'M'  : 
+                        var l = width / 2 -  $(this).width() / 2;
+                        var t = height / 2 - $(this).height() / 2;
+                            loc = {left:l + 'px',top:t + 'px'};
+                        break;
+                    default: loc = {right:'0px',bottom:'0px'}; break;
                 }
-                $(this).css('z-index','9999').css(loc).css('position','fixed');
+            } else {
+                loc = position;
+            }
+            $(this).css('z-index','9999').css(loc).css('position','fixed');
+            if (isIE6) {
+				$(this).css('position','absolute');
+			}
+			var $this = $(this);
+            $(window).wresize(function(){
+                $this.css('left',$(document).width()/2 - $this.width()/2);
             });
-        }
+        });
     };
 })(jQuery);
 /*

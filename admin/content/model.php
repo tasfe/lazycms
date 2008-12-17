@@ -25,6 +25,7 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
+    System::purview('content::model');
     System::tabs(
         t('model').':model.php;'.
         t('model/import').':model.php?action=import;'.
@@ -295,9 +296,9 @@ function lazy_edit(){
     echo '<form id="form1" name="form1" method="post" action="">';
     echo '<fieldset><legend rel="tab"><a rel=".show" cookie="false"><img class="a2 os" src="../system/images/white.gif" />'.$title.'</a></legend>';
     echo '<div class="show">';
-    echo '<p><label>'.t('model/name').':</label><input class="in2" type="text" name="modelname" id="modelname" value="'.$post[0].'" /></p>';
-    echo '<p><label>'.t('model/ename').':</label><input class="in3" type="text" name="modelename" id="modelename" value="'.$post[1].'" /></p>';
-    echo '<p><label>'.t('model/path').':</label><input class="in3" type="text" name="modelpath" id="modelpath" value="'.$post[2].'" /></p>';
+    echo '<p><label>'.t('model/name').':</label><input class="in w200" type="text" name="modelname" id="modelname" value="'.$post[0].'" /></p>';
+    echo '<p><label>'.t('model/ename').':</label><input class="in w300" type="text" name="modelename" id="modelename" value="'.$post[1].'" /></p>';
+    echo '<p><label>'.t('model/path').':</label><input class="in w300" type="text" name="modelpath" id="modelpath" value="'.$post[2].'" /></p>';
     
     if ($modeltype=='list') {
         echo '<p><label>'.t('model/template/sort').':</label>';
@@ -341,9 +342,29 @@ function lazy_edit(){
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_fields(){
+    $hl = '<form id="form1" name="form1" method="post" action="'.PHP_FILE.'?action=fields">';
+    $hl.= '<p><label>'.t('model/fields/text').':</label><input class="in w200" type="text" name="fieldtext" id="fieldtext" value="" /></p>';
+    $hl.= '<p><label>'.t('model/fields/ename').':</label><input class="in w200" type="text" name="fieldename" id="fieldename" value="" /></p>';
+    $hl.= '<p><label>'.t('model/fields/input').':</label><select name="fieldintype" id="fieldintype">';
+    foreach (Content_Model::getType() as $k=>$v) {
+        $hl.= '<option value="'.$k.'">'.t('model/fields/type/'.$k).'</option>';
+    }
+    $hl.= '</select> '.t('model/fields/width').':<select name="fieldwidth" id="fieldwidth" edit="true">';
+    for($i=1;$i<=16;$i++){
+       $hl.= '<option value="'.($i*50).'px">'.($i*50).'px</option>';
+    }
+    $hl.= '</select><span><input type="checkbox" name="isValidate" id="isValidate" /><label for="isValidate">需要验证</label></span></p>';
+    $hl.= '<p><label>'.t('model/fields/length').':</label><select name="fieldlength" id="fieldlength" edit="true">';
+    foreach (array(10,20,30,50,100,255) as $v) {
+        $hl.= '<option value="'.$v.'">'.$v.'</option>';
+    }
+    $hl.= '</select></p>';
+    $hl.= '<p><label>'.t('model/fields/default').':</label><input class="in w300" type="text" name="fielddefault" id="fielddefault" value="" /></p>';
+    $hl.= '<div class="tr"><button type="submit">'.t('system::save').'</button><button type="button" rel="cancel">'.t('system::ajax/cancel').'</button></div>';
+    $hl.= '</form>';
     echo json_encode(array(
         'TITLE' => '添加字段',
-        'BODY'  => '内容'
+        'BODY'  => $hl
     ));
     exit();
 }

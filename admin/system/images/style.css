@@ -22,7 +22,7 @@
 @import url("../../../common/images/global.css");
 @import url("../../../common/images/icons.css");
 /* 全局样式 */
-body { height:100%; margin:0 0 25px 0; background: #FFF; text-align:left; }
+body { height:100%; margin:0; background: #FFF; text-align:left; }
 body,td,th,p,div { color: #333333; line-height: 130%; font-family: Verdana; font-size: 12px;}
 dl,dt,dd,form{ margin:0; padding:0;}
 img,input,button,select{ vertical-align:middle; }

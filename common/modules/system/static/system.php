@@ -129,21 +129,20 @@ class System{
      */
     function purview($p1=null,$p2='../system/logout.php'){
         $_USER = System::getAdmin($p1);
-        if (!$_USER) {
+        if ($_USER===0) {
+            // 登录超时
+            if ($_SERVER['HTTP_AJAX_SUBMIT']) {
+                alert(t('system::error/overtime'),'../system/logout.php');
+            } else {
+                redirect('../system/logout.php');
+            }
+        } elseif (!$_USER) {
             // TODO: 没有权限，或没有登录，提示
             if ($_SERVER['HTTP_AJAX_SUBMIT']) {
                 alert(t('system::error/permission'));
             } else {
                 if (!headers_sent()) { header("Content-Type:text/html; charset=utf-8"); }
                 echo '<script type="text/javascript" charset="utf-8">alert("'.t2js(t('system::error/permission')).'");self.history.back();</script>';
-            }
-        } elseif ($_USER==-1) {
-            // 登录超时
-            if ($_SERVER['HTTP_AJAX_SUBMIT']) {
-                alert(t('system::error/overtime'),'../system/logout.php');
-            } else {
-                if (!headers_sent()) { header("Content-Type:text/html; charset=utf-8"); }
-                echo '<script type="text/javascript" charset="utf-8">alert("'.t2js(t('system::error/overtime')).'");self.location.href="../system/logout.php";</script>';
             }
         } else {
             // 验证管理员是否被锁定
@@ -175,7 +174,8 @@ class System{
             $params[0] = Cookie::get('adminname');
             $params[1] = Cookie::get('adminpass');
         }
-        if (empty($params[0]) || empty($params[0])) { return false; }
+        // 登录超时
+        if (empty($params[0]) || empty($params[0])) { return 0; }
         // 开始验证
         $res = $db->query("SELECT * FROM `#@_system_admin` WHERE `adminname`=? LIMIT 0,1;",$params[0]);
         if ($rs = $db->fetch($res)) {
@@ -196,8 +196,6 @@ class System{
                         'adminkey'  => $newkey,
                     ));
                     return $rs;
-                } else {
-                    return -1;
                 }
             } elseif ((int)$funcNum == 1 && !empty($params[2])) {
                 // 验证权限正确，则返回管理员信息
@@ -211,14 +209,16 @@ class System{
                         }
                     }
                 } else {
-                    return -1;
+                    // 登录超时
+                    return 0;
                 }
             } else {
                 // 验证是否登录
                 if ((string)$params[1] == (string)$rs['adminpass']) {
                     return $rs;
                 } else {
-                    return -1;
+                    // 登录超时
+                    return 0;
                 }
             }
         }
@@ -236,7 +236,6 @@ class System{
         $GLOBALS['_endTime'] = microtime(true);
         $execTime = ($GLOBALS['_endTime']-$GLOBALS['_beginTime']);
         $hl.= sprintf('</div><div id="footer"><a href="http://www.lazycms.net" target="_blank">Copyright &copy; LazyCMS.net All Rights Reserved.</a><br/>Processed in %f second(s)</div>',$execTime);
-        $hl.= '<div id="toolbar"></div>';
         $hl.= '</body></html>'; echo $hl;
     }
     /**
