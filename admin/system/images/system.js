@@ -78,9 +78,7 @@ $(document).ready(function(){
         if (lastVersion>localVersion) { if (typeof d.code!='undefined') { eval(d.code); } }
     });
 	// 显示帮助
-	$('[help]').each(function(){
-		$(this).after('&nbsp;<a href="javascript:;" onclick="$(this).help(\'' + $(this).attr('help') + '\');"><img class="h5 os" src="../system/images/white.gif" /></a>');
-	});
+	$('[help]').help();
 });
 
 

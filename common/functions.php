@@ -437,6 +437,18 @@ function alert($p1,$p2=''){
     ));
 }
 /**
+ * 返回结果
+ *
+ * @param string $p1    标题
+ * @param string $p2    内容
+ */
+function result($p1,$p2) {
+    echo_json('RESULT',array(
+        'TITLE' => $p1,
+        'BODY'  => $p2,
+    ));
+}
+/**
  * success 提示
  *
  * @param string $p1    Message

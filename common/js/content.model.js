@@ -25,14 +25,22 @@
 		var fields = $('#tableFields');
 		var params = {width:'400px',top:$(document).height()/6,left:$(document).width()/2 - 200};
 		$.getJSON(fields.attr('action'),function(data){
-			$.dialogUI({title:data.TITLE}).append('<div class="body"></div>').floatDiv(params).find('.body').html(data.BODY).end()
-			.find('[type=submit]').click(function(){
-				$.undialogUI();
-			}).focus().end()
-			.find('[rel=cancel]').click(function(){
-				$.undialogUI();
-			});
-			$.selectEdit();
+			if (data = $.result(data)) {
+				$.dialogUI({title:data.TITLE})
+					.append('<div class="body"></div>')
+					.floatDiv(params)
+					.find('.body')
+					.html(data.BODY)
+					.end()
+					.find('[type=submit]').click(function(){
+						$.undialogUI();
+					}).focus().end()
+					.find('[rel=cancel]').click(function(){
+						$.undialogUI();
+					});
+				$('[help]').help();
+				$.selectEdit();
+			}
 		});
 	}
 	/**

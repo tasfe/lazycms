@@ -354,6 +354,9 @@ function lazy_fields(){
        $hl.= '<option value="'.($i*50).'px">'.($i*50).'px</option>';
     }
     $hl.= '</select><span><input type="checkbox" name="isValidate" id="isValidate" /><label for="isValidate">需要验证</label></span></p>';
+    
+    $hl.= '<p><label>'.t('model/fields/value').':</label><textarea help="help" name="fieldvalue" id="fieldvalue" rows="5" class="in w250"></textarea></p>';
+
     $hl.= '<p><label>'.t('model/fields/length').':</label><select name="fieldlength" id="fieldlength" edit="true">';
     foreach (array(10,20,30,50,100,255) as $v) {
         $hl.= '<option value="'.$v.'">'.$v.'</option>';
@@ -362,11 +365,7 @@ function lazy_fields(){
     $hl.= '<p><label>'.t('model/fields/default').':</label><input class="in w300" type="text" name="fielddefault" id="fielddefault" value="" /></p>';
     $hl.= '<div class="tr"><button type="submit">'.t('system::save').'</button><button type="button" rel="cancel">'.t('system::ajax/cancel').'</button></div>';
     $hl.= '</form>';
-    echo json_encode(array(
-        'TITLE' => '添加字段',
-        'BODY'  => $hl
-    ));
-    exit();
+    result(t('model/fields/add'),$hl);
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_after(){

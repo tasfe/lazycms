@@ -102,15 +102,6 @@ function LoadScript(p,c){
             }
         }); 
     }
-	// 帮助
-	$.fn.help = function(path){
-		var t = this;
-		$('img',t).attr('src',common() + '/images/loading.gif').removeClass('h5');
-		$.post('../system/help.php',{path:path},function(data){
-			$.blockUI(data.TITLE,data.BODY);
-			$('img',t).attr('src',common() + '/images/white.gif').addClass('h5');
-		},'json');
-	}
 	// 固定公用CSS
     $.setStyle = function(){
         var u = common();
@@ -156,12 +147,10 @@ function LoadScript(p,c){
     }
 	// 关闭遮罩层
     $.undialogUI = function(){
-        $('#dialogUI,#dialog,#iframeCover').remove();
-        $(document).data('dialogUI',false);
+        $('#dialogUI,#dialogBox,#iframeCover').remove();
     }
 	// 弹出遮罩层
 	$.dialogUI = function(opts){
-		if ($(document).data('dialogUI')) { return ; } $(document).data('dialogUI',true);
 	    opts = $.extend({
 			title:'',
 			close:true,
@@ -169,9 +158,8 @@ function LoadScript(p,c){
             background:'#FFFFFF'
         }, opts||{});
         var height = $(document).height();
-        if (!$('#dialogUI').is('div')) {
-            $('body').append('<div id="dialogUI"></div>');
-        }
+        if ($('#dialogUI').is('div')) { $('#dialogUI').remove(); }; $('body').append('<div id="dialogUI"></div>');
+		
 		// IE6 版本需要搞定 Select QJ Div 层的问题 -_-!!
 		if ($.browser.msie && $.browser.version=='6.0') {
 			if ($('#iframeCover').is('iframe') == false) {
@@ -179,16 +167,14 @@ function LoadScript(p,c){
 			}
 		}
         $('#dialogUI').css({ width:'100%',height:height + 'px','left':0,'top':0,'position':'absolute','background':opts.background,'z-index':1000,'filter':'alpha(opacity=' + (100 * opts.opacity) + ')','-moz-opacity':opts.opacity,'opacity':opts.opacity});
-        if (!$('#dialog').is('div')) {
-    		$('body').append('<div id="dialog"></div>').find('#dialog')
-    			.append('<div class="head"><strong>' + opts.title + '</strong>' + (opts.close?'<a href="javascript:;" rel="close"></a>':'') + '</div>')
-    			.floatDiv({width:'400px',top:$(document).height()/4,left:$(document).width()/2 - 200})
-    			.find('[rel=close]').click(function(){
-    				$.undialogUI();
-    				return false;
-    			});
-        }
-		return $('#dialog');
+        if ($('#dialogBox').is('div')) { $('#dialogBox').remove(); }
+		$('body').append('<div id="dialogBox" class="dialog"><div class="head"><strong>' + opts.title + '</strong>' + (opts.close?'<a href="javascript:;" rel="close"></a>':'') + '</div></div>').find('#dialogBox')
+			.floatDiv({width:'400px',top:$(document).height()/4,left:$(document).width()/2 - 200})
+			.find('[rel=close]').click(function(){
+				$.undialogUI();
+				return false;
+			});
+		return $('#dialogBox');
 	}
 	// 显示层
 	$.blockUI = function(title,body){
@@ -314,33 +300,47 @@ function LoadScript(p,c){
 				data: {'submit':submit,'lists':lists},
 				success: function(data){
 					if (d = $.parseJSON(data)) {
-                        switch (d.CODE) {
-                            case 'SUCCESS': // 成功提示
-                                $.alert(d.DATA.MESSAGE,function(){
-                                    $.redirect(d.DATA.URL);
-                                },'success');
-                                break;
-							case 'ERROR':	// 错误提示
-                                $.alert(d.DATA.MESSAGE,function(){
-                                    $.redirect(d.DATA.URL);
-                                },'error');
-                                break;
-							case 'ALERT':	// 警告提示
-                                $.alert(d.DATA.MESSAGE,function(){
-                                    $.redirect(d.DATA.URL);
-                                },'alert');
-                                break;
-                            case 'REDIRECT':// 跳转
-								$.redirect(d.DATA.URL);
-                                break;
-                            default:
-                                debug(data);
-                                break;
-                        }
+                        $.result(d);
                     }
 				}
 			});
 		}
+	}
+	// 错误处理
+	$.result = function(d){
+		switch (d.CODE) {
+			case 'RESULT':// 返回结果
+				return {TITLE:d.DATA.TITLE,BODY:d.DATA.BODY};
+			case 'VALIDATE':// 显示错误消息
+				var c = d.DATA.length;
+				for (var i=0;i<c;i++) {
+					$('[name='+d.DATA[i].id+']').unbind().attr('error',d.DATA[i].text).addClass('error');
+				}
+				$('[error]').jTips();
+				break;
+			case 'SUCCESS': // 成功提示
+				$.alert(d.DATA.MESSAGE,function(){
+					$.redirect(d.DATA.URL);
+				},'success');
+				break;
+			case 'ERROR':	// 错误提示
+				$.alert(d.DATA.MESSAGE,function(){
+					$.redirect(d.DATA.URL);
+				},'error');
+				break;
+			case 'ALERT':	// 警告提示
+				$.alert(d.DATA.MESSAGE,function(){
+					$.redirect(d.DATA.URL);
+				},'alert');
+				break;
+			case 'REDIRECT':// 跳转
+				$.redirect(d.DATA.URL);
+				break;
+			default:
+				debug(data);
+				break;
+		}
+		return false;
 	}
     /**
      * ajax Submit
@@ -376,36 +376,7 @@ function LoadScript(p,c){
                 },
                 success: function(data){
                     if (d = $.parseJSON(data)) {
-                        switch (d.CODE) {
-                            case 'VALIDATE':// 显示错误消息
-                                var c = d.DATA.length;
-                                for (var i=0;i<c;i++) {
-                                    $('[name='+d.DATA[i].id+']').unbind().attr('error',d.DATA[i].text).addClass('error');
-                                }
-                                $('[error]').jTips();
-                                break;
-							case 'SUCCESS': // 成功提示
-                                $.alert(d.DATA.MESSAGE,function(){
-                                    $.redirect(d.DATA.URL);
-                                },'success');
-                                break;
-							case 'ERROR':	// 错误提示
-                                $.alert(d.DATA.MESSAGE,function(){
-                                    $.redirect(d.DATA.URL);
-                                },'error');
-                                break;
-							case 'ALERT':	// 警告提示
-                                $.alert(d.DATA.MESSAGE,function(){
-                                    $.redirect(d.DATA.URL);
-                                },'alert');
-                                break;
-                            case 'REDIRECT':// 跳转
-								$.redirect(d.DATA.URL);
-                                break;
-                            default:
-                                debug(data);
-                                break;
-                        }
+						$.result(d);
                     }
                 },
                 complete: function(){
@@ -433,6 +404,47 @@ function LoadScript(p,c){
             $('.jTip').remove();
         });
     }
+	// 帮助提示
+	$.fn.help = function(path){
+		if (typeof path != 'undefined')	{
+			var t = this;
+			$('img',t).attr('src',common() + '/images/loading.gif').removeClass('h5');
+			$.post('../system/help.php',{path:path},function(data){
+				if (data = $.result(data)) {
+					$.blockUI(data.TITLE,data.BODY);
+				}
+				$('img',t).attr('src',common() + '/images/white.gif').addClass('h5');
+			},'json');
+		} else {
+			return this.each(function(){
+				var p = $(this).attr('help');
+				$('<a href="javascript:;"><img class="h5 os" src="../system/images/white.gif" /></a>').click(function(){
+					var img = $('img',this).attr('src',common() + '/images/loading.gif').removeClass('h5');
+					$.post('../system/help.php',{path:p},function(data){
+						if (data = $.result(data)) {
+							img.attr('src',common() + '/images/white.gif').addClass('h5');
+							var pos = img.position();
+								if ((img.offset().left + 20 + 400)>$(document).width()) {
+									pos.left = pos.left - 2 - 400;
+								} else {
+									pos.left = pos.left + 20;
+								}
+							if ($('#dialogHelp').is('div'))	{ $('#dialogHelp').remove(); }
+							var help = $('<div id="dialogHelp" class="dialog"><div class="head"><strong>' + data.TITLE + '</strong><a href="javascript:;" rel="close"></a></div><div class="body"></div></div>')
+								.find('[rel=close]').click(function(){
+									$('#dialogHelp').remove();
+									return false;
+								}).end()
+								.find('.body').html(data.BODY).end()
+								.css({width:'400px',position:'absolute','z-index':1000,top:pos.top + 8,left:pos.left})
+								.insertAfter(img.parent());
+						}
+					},'json');
+				}).insertAfter(this);
+				$('a').focus(function(){ this.blur(); });
+			});
+		}
+	}
     // 兼容的窗口改变大小事件
 	$.fn.wresize = function(f){
 	    var version = '1.1';

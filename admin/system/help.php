@@ -29,8 +29,5 @@ function lazy_main(){
     if (strpos($path,'::')===false) {
         $path = 'help/'.$path;
     }
-    echo json_encode(array(
-        'TITLE' => t('help'),
-        'BODY'  => ubbencode(t($path),false),
-    ));
+    result(t('help'),ubbencode(t($path)));    
 }

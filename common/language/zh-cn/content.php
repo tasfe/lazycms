@@ -52,8 +52,10 @@ return array(
             'ename' => '字段名',
             'input' => '输入类型',
             'width' => '宽',
+            'value' => '序列值',
             'length'    => '最大长度',
             'default'   => '默认值',
+            
             'type'  => array(
                 'input'     => '输入框',
                 'textarea'	=> '文本框',
@@ -100,4 +102,8 @@ return array(
             'regular'   => '这里是正则表达式',
         )
     ),
+    /* 帮助信息 */
+    'help'  => array(
+        'title'     => '帮助',
+    )
 );

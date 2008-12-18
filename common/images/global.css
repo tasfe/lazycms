@@ -35,17 +35,17 @@ div.jTip-foot { width:10px; height:10px; position:relative; top:-1px; float:left
 .pages span.active{ color:#990000 !important; font-weight:bold; }
 
 /* 浮动对话框 */
-#dialog{ background:#FFFFFF; border:solid 1px #c6d9e7;}
-#dialog .head{ height:23px; display:block; clear:both; padding:0 5px; line-height:23px; border-bottom:1px solid #c6d9e7; background:url(buttons-bg.png) repeat-x 0 -2px; }
-#dialog .head strong{ float:left; }
-#dialog .head a{ width:11px; height:11px; margin-top:6px; float:right; display:block; background:url(close.png) no-repeat left top; }
-#dialog .head a:hover{ background-position:0 -22px;}
-#dialog .body{ display:table; zoom:1; padding:5px; clear:both; }
-#dialog .body .icon{ width:32px; height:32px; float:left; margin:10px 10px 0 10px; background-image:url(info_icons.png); background-repeat:no-repeat; }
-#dialog .body .content{ float:left; }
-#dialog .body .content h3{ line-height:130%; margin-top:13px; }
-#dialog .body p{ margin:5px 0 5px 0; clear:both; }
-#dialog .body p label{ width:60px; text-align:right; display:block; float:left; color:#0000FF; line-height:200%; font-size:12px; margin:0 5px 3px 0;}
-#dialog .body span label{ width:auto; margin:0px; text-align:left; float:none; display:inline; color:#666666;}
-#dialog .button{ padding:3px; text-align:right; }
-#dialog .button button{ margin:0 0 0 6px;}
+.dialog{ background:#FFFFFF; border:solid 1px #c6d9e7;}
+.dialog .head{ height:23px; display:block; clear:both; padding:0 5px; line-height:23px; border-bottom:1px solid #c6d9e7; background:url(buttons-bg.png) repeat-x 0 -2px; }
+.dialog .head strong{ float:left; }
+.dialog .head a{ width:11px; height:11px; margin-top:6px; float:right; display:block; background:url(close.png) no-repeat left top; }
+.dialog .head a:hover{ background-position:0 -22px;}
+.dialog .body{ display:table; zoom:1; padding:5px; clear:both; }
+.dialog .body .icon{ width:32px; height:32px; float:left; margin:10px 10px 0 10px; background-image:url(info_icons.png); background-repeat:no-repeat; }
+.dialog .body .content{ float:left; }
+.dialog .body .content h3{ line-height:130%; margin-top:13px; }
+.dialog .body p{ margin:5px 0 5px 0; clear:both; }
+.dialog .body p label{ width:60px; text-align:right; display:block; float:left; color:#0000FF; line-height:200%; font-size:12px; margin:0 5px 3px 0;}
+.dialog .body span label{ width:auto; margin:0px; text-align:left; float:none; display:inline; color:#666666;}
+.dialog .button{ padding:3px; text-align:right; }
+.dialog .button button{ margin:0 0 0 6px;}
