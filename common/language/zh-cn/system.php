@@ -134,7 +134,18 @@ return array(
         'site'  => '官方网站',
         'forums'=> '支持论坛',
     ),
-    
+
+    /* 编辑器 */
+    'editor'    => array(
+        'upfile'    => '上传文件',
+        'upimg'     => '上传图片',
+        'break'     => '插入分页符',
+        'snapimg'   => '下载远程图片',
+        'dellink'   => '删除站外链接',
+        'setimg'    => '设第一幅图为缩略图',
+        'resize'    => '可调整大小'
+    ),
+
     /* 我的帐户 */
     'myaccount' => array(
         'title' => '修改密码',

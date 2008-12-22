@@ -71,21 +71,32 @@ function LoadScript(p,c){
 	 * @example: <select edit="true" default="value"></select>
 	 */
 	$.selectEdit = function(){
-		$('select[edit=true]').each(function(){
-		    var s = $(this); if (s.is('select')==false) { return ; }
-		    var v = (s.attr('default')!='' && (typeof s.attr('default'))!='undefined')?s.attr('default'):s.val();
-    		var i = $('<input type="text" name="' + s.attr('name') + '" value="' + v + '" />')
-				.css({width:(s.width() - 18) + 'px',height:(s.height() - 2) + 'px',position:'absolute',top:s.position().top+'px',border:'none',margin:'1px 0 0 1px',padding:($.browser.msie?2:0)+'px 0 0 2px'})
-				.insertBefore(s);
-    		var c = $('<select name="edit_select_' + s.attr('name') + '">' + s.html() + '</select>')
-    		    .change(function(){ $(this).prev().val(this.value);})
-    		    .mouseover(function(){ $(this).prev().select(); });
-				if (s.attr('id')!=='') c.attr('id',s.attr('id'));
-				i.blur(function(){
-					c.val(this.value);
-				});
-				s.replaceWith(c);
+		// 重新调整位置
+		$('select[edit=yes]').each(function(){
+			try	{
+				var s = $(this); if (s.is('select')==false) { return ; };
+				$(this).prev().css({top:s.position().top+'px'});
+			} catch (e) {}
 		});
+		// 替换控件
+		$('select[edit=true]').each(function(){
+			try	{
+				var s = $(this); if (s.is('select')==false) { return ; };
+				var v = (s.attr('default')!='' && (typeof s.attr('default'))!='undefined')?s.attr('default'):s.val();
+				var i = $('<input type="text" name="' + s.attr('name') + '" value="' + v + '" />')
+					.mouseover(function(){ $(this).select(); })
+					.css({width:(s.width() - 18) + 'px',height:(s.height() - 2) + 'px',position:'absolute',top:s.position().top+'px',border:'none',margin:($.browser.msie?1:2)+'px 0 0 1px',padding:($.browser.msie?2:0)+'px 0 0 2px'})
+					.insertBefore(s);
+				var c = $('<select name="edit_select_' + s.attr('name') + '" edit="yes">' + s.html() + '</select>')
+					.change(function(){ $(this).prev().val(this.value);})
+					if (s.attr('id')!=='') c.attr('id',s.attr('id'));
+					i.blur(function(){
+						c.val(this.value);
+					});
+					s.replaceWith(c);
+			} catch (e) {}
+		});
+		
 	}
     /**
      * 全选/反选
@@ -151,6 +162,7 @@ function LoadScript(p,c){
     }
 	// 弹出遮罩层
 	$.dialogUI = function(opts){
+		$.undialogUI();
 	    opts = $.extend({
 			title:'',
 			close:true,
@@ -409,7 +421,7 @@ function LoadScript(p,c){
 		if (typeof path != 'undefined')	{
 			var t = this;
 			$('img',t).attr('src',common() + '/images/loading.gif').removeClass('h5');
-			$.post('../system/help.php',{path:path},function(data){
+			$.post('../system/help.php',{module:MODULE,path:path},function(data){
 				if (data = $.result(data)) {
 					$.blockUI(data.TITLE,data.BODY);
 				}
@@ -418,9 +430,10 @@ function LoadScript(p,c){
 		} else {
 			return this.each(function(){
 				var p = $(this).attr('help');
-				$('<a href="javascript:;"><img class="h5 os" src="../system/images/white.gif" /></a>').click(function(){
+				$(this).siblings('a[rel=help]').remove();
+				$('<a href="javascript:;" rel="help"><img class="h5 os" src="../system/images/white.gif" /></a>').click(function(){
 					var img = $('img',this).attr('src',common() + '/images/loading.gif').removeClass('h5');
-					$.post('../system/help.php',{path:p},function(data){
+					$.post('../system/help.php',{module:MODULE,path:p},function(data){
 						if (data = $.result(data)) {
 							img.attr('src',common() + '/images/white.gif').addClass('h5');
 							var pos = img.position();

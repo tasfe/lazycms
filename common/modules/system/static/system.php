@@ -36,6 +36,7 @@ class System{
         $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
         $hl.= '<title>'.$title.'</title>';
         $hl.= '<link href="../system/images/style.css" rel="stylesheet" type="text/css" />';
+        $hl.= '<script type="text/javascript">var MODULE = \''.MODULE.'\';var ACTION = \''.ACTION.'\';</script>';
         $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.2.6"></script>';
         $hl.= '<script type="text/javascript" src="../../common/js/lazycms.library.js?ver=1.0"></script>';
         $hl.= '<script type="text/javascript" src="../system/images/system.js?ver=1.0"></script>';
@@ -83,7 +84,7 @@ class System{
         if ($tabs = g('TABS')) { 
             $hl.= menu($selected.$tabs); 
             $hl.= '<div id="box">';
-            $help = MODULE.'::help/'.basename(PHP_FILE,'.php').(ACTION==''?'':'/'.ACTION);
+            $help = basename(PHP_FILE,'.php').(ACTION==''?'':'/'.ACTION);
             if ($help!=t($help)) {
                 $hl.= '<div id="help"><a href="javascript:;" onclick="$(this).help(\''.$help.'\');"><img class="h5 os" src="../system/images/white.gif" /></a></div>';
             }

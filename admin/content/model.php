@@ -345,7 +345,7 @@ function lazy_fields(){
     $hl = '<form id="form1" name="form1" method="post" action="'.PHP_FILE.'?action=fields">';
     $hl.= '<p><label>'.t('model/fields/text').':</label><input class="in w200" type="text" name="fieldtext" id="fieldtext" value="" /></p>';
     $hl.= '<p><label>'.t('model/fields/ename').':</label><input class="in w200" type="text" name="fieldename" id="fieldename" value="" /></p>';
-    $hl.= '<p><label>'.t('model/fields/input').':</label><select name="fieldintype" id="fieldintype">';
+    $hl.= '<p><label>'.t('model/fields/input').':</label><select name="fieldintype" id="fieldintype" rel="change">';
     foreach (Content_Model::getType() as $k=>$v) {
         $hl.= '<option value="'.$k.'">'.t('model/fields/type/'.$k).'</option>';
     }
@@ -355,9 +355,19 @@ function lazy_fields(){
     }
     $hl.= '</select><span><input type="checkbox" name="isValidate" id="isValidate" /><label for="isValidate">需要验证</label></span></p>';
     
-    $hl.= '<p><label>'.t('model/fields/value').':</label><textarea help="help" name="fieldvalue" id="fieldvalue" rows="5" class="in w250"></textarea></p>';
+    $hl.= '<p class="hide"><label>'.t('model/fields/value').':</label><textarea help="model/fields/value" name="fieldvalue" id="fieldvalue" rows="4" class="in w250"></textarea></p>';
 
-    $hl.= '<p><label>'.t('model/fields/length').':</label><select name="fieldlength" id="fieldlength" edit="true">';
+    $hl.= '<p class="hide"><label>'.t('model/fields/option').':</label><span id="fieldoption">';
+    $hl.= '<input type="checkbox" name="fieldoption[upimg]" id="upimg" value="1" /><label for="upimg">'.t('system::editor/upimg').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[upfile]" id="upfile" value="1" /><label for="upfile">'.t('system::editor/upfile').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[break]" id="break" value="1" /><label for="break">'.t('system::editor/break').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[snapimg]" id="snapimg" value="1" /><label for="snapimg">'.t('system::editor/snapimg').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[dellink]" id="dellink" value="1" /><label for="dellink">'.t('system::editor/dellink').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[setimg]" id="setimg" value="1" /><label for="setimg">'.t('system::editor/setimg').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[resize]" id="resize" value="1" /><label for="resize">'.t('system::editor/resize').'</label>';
+    $hl.= '</span></p>';
+
+    $hl.= '<p class="hide"><label>'.t('model/fields/length').':</label><select name="fieldlength" id="fieldlength" edit="true">';
     foreach (array(10,20,30,50,100,255) as $v) {
         $hl.= '<option value="'.$v.'">'.$v.'</option>';
     }

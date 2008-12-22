@@ -44,6 +44,7 @@ div.jTip-foot { width:10px; height:10px; position:relative; top:-1px; float:left
 .dialog .body .icon{ width:32px; height:32px; float:left; margin:10px 10px 0 10px; background-image:url(info_icons.png); background-repeat:no-repeat; }
 .dialog .body .content{ float:left; }
 .dialog .body .content h3{ line-height:130%; margin-top:13px; }
+.dialog .body pre{ margin:0; }
 .dialog .body p{ margin:5px 0 5px 0; clear:both; }
 .dialog .body p label{ width:60px; text-align:right; display:block; float:left; color:#0000FF; line-height:200%; font-size:12px; margin:0 5px 3px 0;}
 .dialog .body span label{ width:auto; margin:0px; text-align:left; float:none; display:inline; color:#666666;}

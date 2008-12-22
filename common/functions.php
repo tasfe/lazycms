@@ -1170,7 +1170,6 @@ function t($p1,$p2=array()){
     } else {
         $p4 = MODULE;
     }
-
     if (!isset($T[$p4])) {
         $p5 = sprintf('%s/language/%s',COM_PATH,language());
         if (!file_exists($p5)) {

@@ -55,7 +55,7 @@ return array(
             'value' => '序列值',
             'length'    => '最大长度',
             'default'   => '默认值',
-            
+            'option'    => '更多属性',
             'type'  => array(
                 'input'     => '输入框',
                 'textarea'	=> '文本框',
@@ -105,5 +105,14 @@ return array(
     /* 帮助信息 */
     'help'  => array(
         'title'     => '帮助',
+        'model'     => array(
+            'fields'    => array(
+                'value' => '
+                    |[pre]例：name:value
+                    |    name1:value1
+                    |    name2:value2[/pre]
+                ',
+            ),
+        ),
     )
 );

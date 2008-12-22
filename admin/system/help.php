@@ -25,9 +25,10 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_main(){ 
-    $path = isset($_POST['path'])?$_POST['path']:null;
+    $path   = isset($_POST['path'])?$_POST['path']:null;
     if (strpos($path,'::')===false) {
-        $path = 'help/'.$path;
+        $module = isset($_POST['module'])?$_POST['module']:MODULE;
+        $path   = $module.'::help/'.$path;
     }
     result(t('help'),ubbencode(t($path)));    
 }
