@@ -422,7 +422,7 @@ function echo_json($p1,$p2){
  *          0：当前url，不带 $_SERVER["QUERY_STRING"]
  *          1:来路，$_SERVER["HTTP_REFERER"]
  */
-function alert($p1,$p2=''){
+function ajax_alert($p1,$p2=''){
     switch ((string)$p2) {
         case '0':
             $p2 = PHP_FILE;
@@ -439,14 +439,10 @@ function alert($p1,$p2=''){
 /**
  * 返回结果
  *
- * @param string $p1    标题
- * @param string $p2    内容
+ * @param string $p1
  */
-function result($p1,$p2) {
-    echo_json('RESULT',array(
-        'TITLE' => $p1,
-        'BODY'  => $p2,
-    ));
+function ajax_result($p1=array()) {
+    echo_json('RESULT',$p1);
 }
 /**
  * success 提示
@@ -457,7 +453,7 @@ function result($p1,$p2) {
  *          0：当前url，不带 $_SERVER["QUERY_STRING"]
  *          1:来路，$_SERVER["HTTP_REFERER"]
  */
-function success($p1,$p2=''){
+function ajax_success($p1,$p2=''){
     switch ((string)$p2) {
         case '0':
             $p2 = PHP_FILE;
@@ -480,7 +476,7 @@ function success($p1,$p2=''){
  *          0：当前url，不带 $_SERVER["QUERY_STRING"]
  *          1:来路，$_SERVER["HTTP_REFERER"]
  */
-function error($p1,$p2=''){
+function ajax_error($p1,$p2=''){
     switch ((string)$p2) {
         case '0':
             $p2 = PHP_FILE;

@@ -84,19 +84,18 @@ function LoadScript(p,c){
 				var s = $(this); if (s.is('select')==false) { return ; };
 				var v = (s.attr('default')!='' && (typeof s.attr('default'))!='undefined')?s.attr('default'):s.val();
 				var i = $('<input type="text" name="' + s.attr('name') + '" value="' + v + '" />')
-					.mouseover(function(){ $(this).select(); })
+					.click(function(){ $(this).select(); })
 					.css({width:(s.width() - 18) + 'px',height:(s.height() - 2) + 'px',position:'absolute',top:s.position().top+'px',border:'none',margin:($.browser.msie?1:2)+'px 0 0 1px',padding:($.browser.msie?2:0)+'px 0 0 2px'})
 					.insertBefore(s);
 				var c = $('<select name="edit_select_' + s.attr('name') + '" edit="yes">' + s.html() + '</select>')
-					.change(function(){ $(this).prev().val(this.value);})
-					if (s.attr('id')!=='') c.attr('id',s.attr('id'));
+					.change(function(){ $(this).prev().val(this.value);}).val(i.val());
+					if (s.attr('id')!=='') { c.attr('id',s.attr('id')); }
 					i.blur(function(){
 						c.val(this.value);
 					});
 					s.replaceWith(c);
 			} catch (e) {}
 		});
-		
 	}
     /**
      * 全选/反选
@@ -169,8 +168,9 @@ function LoadScript(p,c){
 			opacity:0.6,
             background:'#FFFFFF'
         }, opts||{});
-        var height = $(document).height();
-        if ($('#dialogUI').is('div')) { $('#dialogUI').remove(); }; $('body').append('<div id="dialogUI"></div>');
+        var height = $(document).height(); $('#dialogHelp').remove();
+        if ($('#dialogUI').is('div')) { $('#dialogUI').remove(); };
+		$('body').append('<div id="dialogUI"></div>');
 		
 		// IE6 版本需要搞定 Select QJ Div 层的问题 -_-!!
 		if ($.browser.msie && $.browser.version=='6.0') {
@@ -178,7 +178,7 @@ function LoadScript(p,c){
 				$('body').append('<iframe id="iframeCover" style="filter:alpha(opacity=0);position:absolute;z-index:999;left:0;top:0;height:' + height + 'px;width:100%;"></iframe>');
 			}
 		}
-        $('#dialogUI').css({ width:'100%',height:height + 'px','left':0,'top':0,'position':'absolute','background':opts.background,'z-index':1000,'filter':'alpha(opacity=' + (100 * opts.opacity) + ')','-moz-opacity':opts.opacity,'opacity':opts.opacity});
+        $('#dialogUI').css({ width:'100%',height:height + 'px','left':0,'top':0,'position':'absolute','background':opts.background,'z-index':100,'filter':'alpha(opacity=' + (100 * opts.opacity) + ')','-moz-opacity':opts.opacity,'opacity':opts.opacity});
         if ($('#dialogBox').is('div')) { $('#dialogBox').remove(); }
 		$('body').append('<div id="dialogBox" class="dialog"><div class="head"><strong>' + opts.title + '</strong>' + (opts.close?'<a href="javascript:;" rel="close"></a>':'') + '</div></div>').find('#dialogBox')
 			.floatDiv({width:'400px',top:$(document).height()/4,left:$(document).width()/2 - 200})
@@ -322,7 +322,7 @@ function LoadScript(p,c){
 	$.result = function(d){
 		switch (d.CODE) {
 			case 'RESULT':// 返回结果
-				return {TITLE:d.DATA.TITLE,BODY:d.DATA.BODY};
+				return d.DATA;
 			case 'VALIDATE':// 显示错误消息
 				var c = d.DATA.length;
 				for (var i=0;i<c;i++) {
@@ -349,7 +349,7 @@ function LoadScript(p,c){
 				$.redirect(d.DATA.URL);
 				break;
 			default:
-				debug(data);
+				debug(d);
 				break;
 		}
 		return false;
@@ -357,8 +357,9 @@ function LoadScript(p,c){
     /**
      * ajax Submit
      */
-    $.fn.ajaxSubmit = function(){
-        this.submit(function(){
+    $.fn.ajaxSubmit = function(callback){
+		callback = callback||function(){};
+        this.unbind('submit').submit(function(){
             // 先释放绑定的所有事件，清除错误样式
             $('[error]').unbind().removeAttr('error').removeClass('error');
             var t = $(this);
@@ -388,7 +389,9 @@ function LoadScript(p,c){
                 },
                 success: function(data){
                     if (d = $.parseJSON(data)) {
-						$.result(d);
+						if (d = $.result(d)) {
+							callback(d);
+						}
                     }
                 },
                 complete: function(){
@@ -409,7 +412,7 @@ function LoadScript(p,c){
             var jTip = $('body').append('<div class="jTip"><div class="jTip-body"></div><div class="jTip-foot"></div></div>').find('.jTip');
             var jHeight = jTip.height();
             $this.mousemove(function(e){
-                jTip.css({'top':((e.clientY+document.documentElement.scrollTop) - jHeight - 20 ) + 'px','left':(e.clientX + 5) + 'px'});
+                jTip.css({'top':((e.clientY+document.documentElement.scrollTop) - jHeight - 20 ) + 'px','left':(e.clientX + 5) + 'px','z-index':300});
             });
             jTip.fadeIn('fast').find('.jTip-body').html($(this).attr('error'));
         },function(){
@@ -436,12 +439,6 @@ function LoadScript(p,c){
 					$.post('../system/help.php',{module:MODULE,path:p},function(data){
 						if (data = $.result(data)) {
 							img.attr('src',common() + '/images/white.gif').addClass('h5');
-							var pos = img.position();
-								if ((img.offset().left + 20 + 400)>$(document).width()) {
-									pos.left = pos.left - 2 - 400;
-								} else {
-									pos.left = pos.left + 20;
-								}
 							if ($('#dialogHelp').is('div'))	{ $('#dialogHelp').remove(); }
 							var help = $('<div id="dialogHelp" class="dialog"><div class="head"><strong>' + data.TITLE + '</strong><a href="javascript:;" rel="close"></a></div><div class="body"></div></div>')
 								.find('[rel=close]').click(function(){
@@ -449,8 +446,22 @@ function LoadScript(p,c){
 									return false;
 								}).end()
 								.find('.body').html(data.BODY).end()
-								.css({width:'400px',position:'absolute','z-index':1000,top:pos.top + 8,left:pos.left})
+								.css({position:'absolute','z-index':1000})
 								.insertAfter(img.parent());
+							var help = $('#dialogHelp');
+							var body = $('.body',help);
+								body.width(body.width() + 10);
+							var width= body.width() + 10;
+								help.width(width>350?350:width);
+								body.width((width>350?350:width)-10);
+								
+							var pos = img.position();
+								if ((img.offset().left + 20 + help.width())>$(document).width()) {
+									pos.left = pos.left - 2 - help.width();
+								} else {
+									pos.left = pos.left + 20;
+								}
+								help.css({top:pos.top + 8,left:pos.left});
 						}
 					},'json');
 				}).insertAfter(this);
@@ -534,7 +545,7 @@ function LoadScript(p,c){
             } else {
                 loc = position;
             }
-            $(this).css('z-index','9999').css(loc).css('position','fixed');
+            $(this).css('z-index',200).css(loc).css('position','fixed');
             if (isIE6) {
 				$(this).css('position','absolute');
 			}

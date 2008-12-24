@@ -59,7 +59,7 @@ function lazy_set(){
     $db = get_conn();
     $submit = isset($_POST['submit']) ? strtolower($_POST['submit']) : null;
     $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
-    empty($lists) ? alert(t('model/alert/notselect')) : null ;
+    empty($lists) ? ajax_alert(t('model/alert/notselect')) : null ;
     switch($submit){
         case 'delete':
             $res = $db->query("SELECT `modelename` FROM `#@_content_model` WHERE `modelid` IN({$lists});");
@@ -71,15 +71,15 @@ function lazy_set(){
             $db->delete('#@_content_model',"`modelid` IN({$lists})");
             // 删除模型和分类的关联关系
             $db->delete('#@_content_sort_model',"`modelid` IN({$lists})");
-            success(t('model/alert/delete'),1);
+            ajax_success(t('model/alert/delete'),1);
             break;
         case 'lock': case 'unlock':
             $state = ($submit=='lock') ? 0 : 1;
             $db->update('#@_content_model',array('modelstate' => $state),"`modelid` IN({$lists})");
-            success(t('model/alert/'.$submit),0);
+            ajax_success(t('model/alert/'.$submit),0);
             break;
         default :
-            error(t('system::error/invalid'));
+            ajax_error(t('system::error/invalid'));
             break;
     }
 }
@@ -115,7 +115,7 @@ function lazy_import(){
             } else {
                 // 创建模型
                 Content_Model::addModel($data);
-                success(t('model/alert/import'),0);
+                ajax_success(t('model/alert/import'),0);
             }
         }
     }
@@ -261,7 +261,7 @@ function lazy_edit(){
                 $text = t('model/alert/edit');
             }
             // 输出执行结果
-            alert($text,0);
+            ajax_alert($text,0);
         }
     } else {
         if (!empty($modelid)) {
@@ -297,8 +297,8 @@ function lazy_edit(){
     echo '<fieldset><legend rel="tab"><a rel=".show" cookie="false"><img class="a2 os" src="../system/images/white.gif" />'.$title.'</a></legend>';
     echo '<div class="show">';
     echo '<p><label>'.t('model/name').':</label><input class="in w200" type="text" name="modelname" id="modelname" value="'.$post[0].'" /></p>';
-    echo '<p><label>'.t('model/ename').':</label><input class="in w300" type="text" name="modelename" id="modelename" value="'.$post[1].'" /></p>';
-    echo '<p><label>'.t('model/path').':</label><input class="in w300" type="text" name="modelpath" id="modelpath" value="'.$post[2].'" /></p>';
+    echo '<p><label>'.t('model/ename').':</label><input help="model/ename" class="in w250" type="text" name="modelename" id="modelename" value="'.$post[1].'" /></p>';
+    echo '<p><label>'.t('model/path').':</label><input help="model/path" class="in w300" type="text" name="modelpath" id="modelpath" value="'.$post[2].'" /></p>';
     
     if ($modeltype=='list') {
         echo '<p><label>'.t('model/template/sort').':</label>';
@@ -319,12 +319,12 @@ function lazy_edit(){
     echo '<table id="tableFields" action="'.PHP_FILE.'?action=fields" class="table" cellspacing="0">';
     echo '<thead><tr class="nodrop"><th>'.t('model/fields/text').'</th><th>'.t('model/fields/ename').'</th><th>'.t('model/fields/input').'</th><th>'.t('model/fields/default').'</th><th>'.t('system::manage').'</th></tr></thead><tbody>';
     
-    echo '<tr>';
+    echo '<tr n="1">';
     echo '<td><input type="checkbox" name="list" value="" /> 标题</td>';
     echo '<td>title</td>';
     echo '<td>输入框(50)</td>';
     echo '<td>NULL</td>';
-    echo '<td><a href="javascript:;" onclick="$(this).editFields();"><img class="a5 os" src="../system/images/white.gif" /></a></td>';
+    echo '<td><a href="javascript:;" onclick="$(\'#tableFields\').editFields(1);"><img class="a5 os" src="../system/images/white.gif" /></a></td>';
     echo '</tr>';
 
     echo '</tbody></table>';
@@ -342,20 +342,54 @@ function lazy_edit(){
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_fields(){
-    $hl = '<form id="form1" name="form1" method="post" action="'.PHP_FILE.'?action=fields">';
-    $hl.= '<p><label>'.t('model/fields/text').':</label><input class="in w200" type="text" name="fieldtext" id="fieldtext" value="" /></p>';
-    $hl.= '<p><label>'.t('model/fields/ename').':</label><input class="in w200" type="text" name="fieldename" id="fieldename" value="" /></p>';
+    $post   = array();
+    $fields = "id,label,ename,intype,width,validate,value,length,default,option";//9
+    $eField = explode(',',$fields);
+    $val = new Validate();
+    if ($val->method()) {
+        foreach ($eField as $field) {
+            $post[] = isset($_POST['field'.$field]) ? $_POST['field'.$field] : null;
+        }
+        $isField = !instr('id,order,date,hits,digg,path,description,isdel',$post[2]);
+        $val->check('fieldlabel|0|'.t('model/fields/check/label'));
+        $val->check('fieldename|0|'.t('model/fields/check/ename').';fieldename|validate|'.t('model/fields/check/ename1').'|3;fieldename|3|'.t('model/fields/check/restrict').'|'.$isField);
+        if (instr('input',$post[3])) {
+            $val->check('fieldlength|0|'.t('model/fields/check/length').';fieldlength|validate|'.t('model/fields/check/length1').'|2');
+        }
+        if ($val->isVal()) {
+            $val->out();
+        } else {
+            $R = array();
+            foreach ($eField as $k=>$field){
+                $R[$field] = $post[$k];
+            }
+            ajax_result($R);
+        }
+    } else {
+        
+    }
+    $hl = '<form id="formFields" name="formFields" method="post" action="'.PHP_FILE.'?action=fields">';
+    $hl.= '<p><label>'.t('model/fields/text').':</label><input class="in w200" type="text" name="fieldlabel" id="fieldlabel" value="'.h2c($post[1]).'" /></p>';
+    $hl.= '<p><label>'.t('model/fields/ename').':</label><input help="model/fields/ename" class="in w200" type="text" name="fieldename" id="fieldename" value="'.h2c($post[2]).'" /></p>';
     $hl.= '<p><label>'.t('model/fields/input').':</label><select name="fieldintype" id="fieldintype" rel="change">';
     foreach (Content_Model::getType() as $k=>$v) {
-        $hl.= '<option value="'.$k.'">'.t('model/fields/type/'.$k).'</option>';
+        $selected = $post[3]==$k?' selected="selected"':'';
+        $hl.= '<option value="'.$k.'"'.$selected.'>'.t('model/fields/type/'.$k).'</option>';
     }
-    $hl.= '</select> '.t('model/fields/width').':<select name="fieldwidth" id="fieldwidth" edit="true">';
+    $hl.= '</select> <span>'.t('model/fields/width').':<select name="fieldwidth" id="fieldwidth" edit="true" default="'.h2c($post[4]?$post[4]:'150px').'">';
     for($i=1;$i<=16;$i++){
-       $hl.= '<option value="'.($i*50).'px">'.($i*50).'px</option>';
+        $hl.= '<option value="'.($i*50).'px">'.($i*50).'px</option>';
     }
-    $hl.= '</select><span><input type="checkbox" name="isValidate" id="isValidate" /><label for="isValidate">需要验证</label></span></p>';
+    $hl.= '</select></span><span><input type="checkbox" name="isValidate" id="isValidate"'.(empty($post[5])?null:' checked="checked"').' /><label for="isValidate">需要验证</label></span></p>';
+
+    $hl.= '<p class="hide"><label>'.t('model/fields/rules').':</label><select name="fieldrules" id="fieldrules">';
+    foreach (Content_Model::getValidate() as $k=>$v) {
+        $hl.= '<option value="'.$v.'">'.t('validate/'.$k).'</option>';
+    }
+    $hl.= '</select>&nbsp;<a href="javascript:;" rule="+"><img class="a6 os" src="../system/images/white.gif" /></a><a href="javascript:;" rule="-"><img class="a7 os" src="../system/images/white.gif" /></a>';
+    $hl.= '<textarea help="model/fields/rules" name="fieldvalidate" id="fieldvalidate" rows="3" class="in w250">'.h2c($post[5]).'</textarea></p>';
     
-    $hl.= '<p class="hide"><label>'.t('model/fields/value').':</label><textarea help="model/fields/value" name="fieldvalue" id="fieldvalue" rows="4" class="in w250"></textarea></p>';
+    $hl.= '<p class="hide"><label>'.t('model/fields/value').':</label><textarea help="model/fields/value" name="fieldvalue" id="fieldvalue" rows="4" class="in w250">'.h2c($post[6]).'</textarea></p>';
 
     $hl.= '<p class="hide"><label>'.t('model/fields/option').':</label><span id="fieldoption">';
     $hl.= '<input type="checkbox" name="fieldoption[upimg]" id="upimg" value="1" /><label for="upimg">'.t('system::editor/upimg').'</label>';
@@ -367,15 +401,18 @@ function lazy_fields(){
     $hl.= '<input type="checkbox" name="fieldoption[resize]" id="resize" value="1" /><label for="resize">'.t('system::editor/resize').'</label>';
     $hl.= '</span></p>';
 
-    $hl.= '<p class="hide"><label>'.t('model/fields/length').':</label><select name="fieldlength" id="fieldlength" edit="true">';
+    $hl.= '<p class="hide"><label>'.t('model/fields/length').':</label><select name="fieldlength" id="fieldlength" edit="true" default="'.h2c(empty($post[7])?255:$post[7]).'">';
     foreach (array(10,20,30,50,100,255) as $v) {
         $hl.= '<option value="'.$v.'">'.$v.'</option>';
     }
     $hl.= '</select></p>';
-    $hl.= '<p><label>'.t('model/fields/default').':</label><input class="in w300" type="text" name="fielddefault" id="fielddefault" value="" /></p>';
+    $hl.= '<p><label>'.t('model/fields/default').':</label><input class="in w300" type="text" name="fielddefault" id="fielddefault" value="'.h2c($post[8]).'" /></p>';
     $hl.= '<div class="tr"><button type="submit">'.t('system::save').'</button><button type="button" rel="cancel">'.t('system::ajax/cancel').'</button></div>';
-    $hl.= '</form>';
-    result(t('model/fields/add'),$hl);
+    $hl.= '<input id="fieldid" name="fieldid" type="hidden" value="'.$post[0].'" /></form>';
+    ajax_result(array(
+        'TITLE' => t('model/fields/add'),
+        'BODY'  => $hl,
+    ));
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_after(){

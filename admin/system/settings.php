@@ -77,7 +77,7 @@ function lazy_main(){
                 $config = preg_replace('/(\''.$field.'\'( |\t)*\=\>( |\t)*)((true|false|null|[-\d]+)|\'.+\'),/ie','\'\\1\'.$data.\',\'',$config);
             }
             save_file(COM_PATH.'/config.php',$config);
-            success(t('settings/alert/save'),0);
+            ajax_success(t('settings/alert/save'),0);
         }
     }
     System::header(t('settings'));

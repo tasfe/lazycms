@@ -30,5 +30,8 @@ function lazy_main(){
         $module = isset($_POST['module'])?$_POST['module']:MODULE;
         $path   = $module.'::help/'.$path;
     }
-    result(t('help'),ubbencode(t($path)));    
+    ajax_result(array(
+        'TITLE' => t('help'),
+        'BODY'  => ubbencode(t($path))
+    ));
 }

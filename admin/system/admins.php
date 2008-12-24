@@ -57,22 +57,22 @@ function lazy_set(){
     $_USER  = System::getAdmin();
     $submit = isset($_POST['submit']) ? strtolower($_POST['submit']) : null;
     $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
-    empty($lists) ? alert(t('admins/alert/noselect')) : null ;
+    empty($lists) ? ajax_alert(t('admins/alert/noselect')) : null ;
     switch($submit){
         case 'lock':
             $db->update('#@_system_admin',array('islocked'=>1),array("`adminid`<>{$_USER['adminid']}","`adminid` IN({$lists})"));
-            success(t('admins/alert/lock'),1);
+            ajax_success(t('admins/alert/lock'),1);
             break;
         case 'unlock':
             $db->update('#@_system_admin',array('islocked'=>0),array("`adminid`<>{$_USER['adminid']}","`adminid` IN({$lists})"));
-            success(t('admins/alert/unlock'),1);
+            ajax_success(t('admins/alert/unlock'),1);
             break;
         case 'delete':
             $db->delete('#@_system_admin',array("`adminid`<>{$_USER['adminid']}","`adminid` IN({$lists})"));
-            success(t('admins/alert/delete'),1);
+            ajax_success(t('admins/alert/delete'),1);
             break;
         default :
-            error(t('system::error/invalid'));
+            ajax_error(t('system::error/invalid'));
             break;
     }
 }
@@ -124,7 +124,7 @@ function lazy_edit(){
                 $db->update('#@_system_admin',$row,DB::quoteInto('`adminid` = ?',$adminid));
                 $text = t('admins/alert/edit');
             }
-            success($text,0);
+            ajax_success($text,0);
         }
     } else {
         if (!empty($adminid)) {

@@ -17,83 +17,161 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
+
 (function($) {
+    $.fn.__Fields = function(method,data){
+        data = data||{};
+		var $this  = this;
+        var params = {width:'400px',top:$(document).height()/6,left:$(document).width()/2 - 200};
+        $.ajax({
+            url: this.attr('action'),
+            type: 'GET',
+            data: data,
+            dataType: 'json',
+            success: function(data){
+                if (data = $.result(data)) {
+                    var dialog = $.dialogUI({title:data.TITLE})
+                        .append('<div class="body"></div>')
+                        .floatDiv(params)
+                        .find('.body').html(data.BODY).end()
+                        .find('[type=submit]').click(function(){
+                            $(this.form).ajaxSubmit(function(data){
+								$this.appendFields(data); $.undialogUI();
+                            });
+                        }).focus().end()
+                        .find('[rel=cancel]').click(function(){
+                            $.undialogUI();
+                        }).end()
+                        .__FieldTypeChange()
+                        .__IsValidate();
+                    $('select[rel=change]',dialog).change(function(){
+                        dialog.__FieldTypeChange();
+                    });
+                    $('[help]').help();
+                    $.selectEdit();
+                }
+            }
+        });
+    }
 	/**
+     * 追加字段
+     */
+    $.fn.appendFields = function(data){
+		alert($.toJSON(data));
+	}
+    /**
      * 添加字段
      */
-	$.fn.addFields = function(){
-		var fields = $('#tableFields');
-		var params = {width:'400px',top:$(document).height()/6,left:$(document).width()/2 - 200};
-		$.getJSON(fields.attr('action'),function(data){
-			if (data = $.result(data)) {
-				$.dialogUI({title:data.TITLE})
-					.append('<div class="body"></div>')
-					.floatDiv(params)
-					.find('.body')
-					.html(data.BODY)
-					.end()
-					.find('[type=submit]').click(function(){
-						$.undialogUI();
-					}).focus().end()
-					.find('[rel=cancel]').click(function(){
-						$.undialogUI();
-					});
-				$('select[rel=change]').change(function(){
-					$.__FieldTypeChange(this.value);
-				});
-				$.__FieldTypeChange($('select[rel=change]').val());
-				$('[help]').help();
-				$.selectEdit();
-			}
-		});
-	}
-	/**
+    $.fn.addFields = function(){
+        this.__Fields('GET');
+    }
+    /**
      * 修改字段
      */
-	$.fn.editFields = function(){
-	
-	}
-	/**
+    $.fn.editFields = function(){
+        this.__Fields(this.attr('data'));
+    }
+    /**
      * 删除字段
      */
-	$.fn.delFields = function(){
-	
-	}
-	/**
-	 * 更改字段类型触发的事件
-	 */
-	$.__FieldTypeChange = function(s){
-		switch (s) {
-			case 'input':
-				$('#fieldvalue,#fieldoption').parents('p').slideUp('fast');
-				$('#fieldlength').parents('p').slideDown('fast',function(){
-					$('[help]').help(); $.selectEdit();
-				});
-				break;
-			case 'radio': case 'checkbox': case 'select':
-				$('#fieldlength,#fieldoption').parents('p').slideUp('fast');
-				$('#fieldvalue').parents('p').slideDown('fast',function(){
-					$('[help]').help(); $.selectEdit();
-				});
-				break;
-			case 'basic': case 'editor':
-				$('#fieldlength,#fieldvalue').parents('p').slideUp('fast');
-				$('#fieldoption').parents('p').slideDown('fast',function(){
-					$('[help]').help(); $.selectEdit();
-				});
-				break;
-			default:
-				$('#fieldlength,#fieldoption,#fieldvalue').parents('p').slideUp('fast');
-				break;
-		}
-	}
-	/**
+    $.fn.delFields = function(){
+    
+    }
+    $.fn.__IsValidate = function(){
+        // 判断是否显示提示说明
+        if ($('#isValidate').attr('checked')) {
+            $('#fieldrules').parents('p').slideDown('fast',function(){
+                $('[help]').help(); $.selectEdit();
+            });
+        } else {
+            $('#fieldrules').parents('p').slideUp('fast',function(){
+                $.selectEdit();
+            });
+        }
+        // 绑定需要验证规则
+        $('#isValidate').click(function(){
+            if (this.checked) {
+                $('#fieldrules').parents('p').slideDown('fast',function(){
+                    $('[help]').help(); $.selectEdit();
+                });
+            } else {
+                $('#fieldrules').parents('p').slideUp('fast',function(){
+                    $.selectEdit();
+                });
+            }
+			$('#fieldvalidate').val('');
+        });
+        // 绑定增加、减少事件
+        $('[rule=+]',this).click(function(){
+            setRules(true);
+        });
+        $('[rule=-]',this).click(function(){
+            setRules(false);
+        });
+        // 增加减少函数
+        function setRules(p){
+            var v = $('#fieldvalidate');
+            var s = $('#fieldrules').val();
+                if (p) {
+                    v.val(v.val() + s + ';\n');
+                } else {
+                    v.val(v.val().replace( s +';\n',''));
+                }
+        }
+        return this;
+    }
+    /**
+     * 更改字段类型触发的事件
+     */
+    $.fn.__FieldTypeChange = function(){
+        var s = $('select[rel=change]',this).val();
+        switch (s) {
+            case 'input':
+                $('#fieldvalue,#fieldoption').parents('p').slideUp('fast');
+                $('#fieldlength,#fielddefault').parents('p').slideDown('fast',function(){
+                    $('[help]').help(); $.selectEdit();
+                });
+                break;
+            case 'radio': case 'checkbox': case 'select':
+                $('#fieldlength,#fieldoption').parents('p').slideUp('fast');
+                $('#fieldvalue,#fielddefault').parents('p').slideDown('fast',function(){
+                    $('[help]').help(); $.selectEdit();
+                });
+                break;
+            case 'basic': case 'editor':
+                $('#fieldlength,#fieldvalue').parents('p').slideUp('fast');
+                if (s=='basic') {
+                    $('#break,#setimg').each(function(){
+                        $(this).attr('checked',false).hide().next().hide();
+                    });
+                } else {
+                    $('#break,#setimg').each(function(){
+                        $(this).attr('checked',false).show().next().show();
+                    });
+                }
+                $('#fieldoption').parents('p').slideDown('fast',function(){
+                    $('[help]').help(); $.selectEdit();
+                });
+                break;
+            case 'upfile':
+                $('#fieldlength,#fieldoption,#fieldvalue,#fielddefault').parents('p').slideUp('fast');
+                break;
+            default:
+                $('#fieldlength,#fieldoption,#fieldvalue').parents('p').slideUp('fast');
+                $('#fielddefault').parents('p').slideDown('fast',function(){
+                    $('[help]').help(); $.selectEdit();
+                });
+                break;
+        }
+        return this;
+    }
+    /**
      * 自动上传
      */
-	$.fn.autoUpFile = function(){
-		var f = this.parents('form');
-			this.hide().after('<input type="text" value="UpLoading..." class="in w400 uploading" />');
-			f.parents('fieldset').after('<iframe src="about:blank" id="tempform" name="tempform" style="display:none;width:0px;height:0px;border:none;"></iframe>');
-			f.submit();
-	}
+    $.fn.autoUpFile = function(){
+        var f = this.parents('form');
+            this.hide().after('<input type="text" value="UpLoading..." class="in w400 uploading" />');
+            f.parents('fieldset').after('<iframe src="about:blank" id="tempform" name="tempform" style="display:none;width:0px;height:0px;border:none;"></iframe>');
+            f.submit();
+    }
 })(jQuery);

@@ -44,7 +44,7 @@ function lazy_main() {
             if ($_USER) {
                 // 验证管理员是否被锁定
                 if ($_USER['islocked']) {
-                    alert(t('login/check/locked'),0);
+                    ajax_alert(t('login/check/locked'),0);
                 }
                 // 设置登陆信息
                 Cookie::set('adminname',$_USER['adminname'],$cookie);
@@ -53,7 +53,7 @@ function lazy_main() {
                 redirect('index.php');
             } else {
                 // 输出错误信息
-                alert(t('login/check/error'),0);
+                ajax_alert(t('login/check/error'),0);
             }
             return ;
         }

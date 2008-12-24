@@ -74,7 +74,7 @@ function lazy_main(){
             }
             Cookie::set('language',$language);
             $db->update('#@_system_admin',$row,DB::quoteInto('`adminid` = ?',$adminid));
-            success(t('myaccount/alert/success'),0);
+            ajax_success(t('myaccount/alert/success'),0);
         }
     } else {
         $adminname = h2c($_USER['adminname']);

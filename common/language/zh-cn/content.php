@@ -52,6 +52,7 @@ return array(
             'ename' => '字段名',
             'input' => '输入类型',
             'width' => '宽',
+            'rules' => '验证规则',
             'value' => '序列值',
             'length'    => '最大长度',
             'default'   => '默认值',
@@ -66,6 +67,14 @@ return array(
                 'editor'	=> '内容编辑器',
                 'date'      => '日期选择器',
                 'upfile'	=> '文件上传框',
+            ),
+            'check' => array(
+                'label' => '表单文字不能为空',
+                'ename' => '此项不能为空',
+                'ename1'=> '此项只能使用：字母、数字、下划线、中杠',
+                'restrict'  => '此字段名已被系统使用',
+                'length'    => '最大长度不能为空',
+                'length1'   => '最大长度必须为数字',
             )
         ),
         'check' => array(
@@ -106,7 +115,26 @@ return array(
     'help'  => array(
         'title'     => '帮助',
         'model'     => array(
+            'ename' => '模型英文名称，用来作为模板标签的一部分',
+            'path'  => '
+                |[b]生成文件的命名规则：[/b]
+                |%I=ID编号
+                |%M=MD5值
+                |%P=标题拼音
+                |%Y=4位数字表示的年份：1999 或 2008
+                |%y=2位数字表示的年份：99 或 08
+                |%m=数字表示的月份，01 到 12
+                |%d=月份中的第几天，01 到 31
+            ',
             'fields'    => array(
+                'ename' => '
+                    |必填，用处很多了，以下字段名已被系统使用：
+                    |(id,order,date,hits,digg,path,description,isdel)
+                ',
+                'rules' => '
+                    |可以有多个规则，使用“分号”分割。
+                    |规则：字段名|类型|错误提示|其它
+                ',
                 'value' => '
                     |[pre]例：name:value
                     |    name1:value1
