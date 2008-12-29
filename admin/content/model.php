@@ -318,14 +318,16 @@ function lazy_edit(){
 
     echo '<table id="tableFields" action="'.PHP_FILE.'?action=fields" class="table" cellspacing="0">';
     echo '<thead><tr class="nodrop"><th>'.t('model/fields/text').'</th><th>'.t('model/fields/ename').'</th><th>'.t('model/fields/input').'</th><th>'.t('model/fields/default').'</th><th>'.t('system::manage').'</th></tr></thead><tbody>';
-    
+    /*
     echo '<tr n="1">';
     echo '<td><input type="checkbox" name="list" value="" /> 标题</td>';
     echo '<td>title</td>';
     echo '<td>输入框(50)</td>';
     echo '<td>NULL</td>';
-    echo '<td><a href="javascript:;" onclick="$(\'#tableFields\').editFields(1);"><img class="a5 os" src="../system/images/white.gif" /></a></td>';
+    echo '<td><a href="javascript:;" onclick="$(\'#tableFields\').editFields(1);"><img class="a5 os" src="../system/images/white.gif" /></a>';
+    echo '<textarea name="fieldData[1]" class="hide"></textarea></td>';
     echo '</tr>';
+    */
 
     echo '</tbody></table>';
 
@@ -346,14 +348,14 @@ function lazy_fields(){
     $fields = "id,label,ename,intype,width,validate,value,length,default,option";//9
     $eField = explode(',',$fields);
     $val = new Validate();
-    if ($val->method()) {
+    if ($val->method() && !isset($_POST['JSON'])) {
         foreach ($eField as $field) {
-            $post[] = isset($_POST['field'.$field]) ? $_POST['field'.$field] : null;
+            $rq[] = isset($_POST['field'.$field]) ? $_POST['field'.$field] : null;
         }
-        $isField = !instr('id,order,date,hits,digg,path,description,isdel',$post[2]);
+        $isField = !instr('id,order,date,hits,digg,path,description,isdel',$rq[2]);
         $val->check('fieldlabel|0|'.t('model/fields/check/label'));
         $val->check('fieldename|0|'.t('model/fields/check/ename').';fieldename|validate|'.t('model/fields/check/ename1').'|3;fieldename|3|'.t('model/fields/check/restrict').'|'.$isField);
-        if (instr('input',$post[3])) {
+        if (instr('input',$rq[3])) {
             $val->check('fieldlength|0|'.t('model/fields/check/length').';fieldlength|validate|'.t('model/fields/check/length1').'|2');
         }
         if ($val->isVal()) {
@@ -361,54 +363,70 @@ function lazy_fields(){
         } else {
             $R = array();
             foreach ($eField as $k=>$field){
-                $R[$field] = $post[$k];
+                $R[$field] = $rq[$k];
             }
-            ajax_result($R);
+            $len = empty($R['length'])?null:'('.$R['length'].')';
+            $s = '<tr n="'.$R['id'].'">';
+            $s.= '<td><input type="checkbox" name="list['.$R['id'].']" value="'.$R['id'].'" /> '.$R['label'].'</td>';
+            $s.= '<td>'.$R['ename'].'</td>';
+            $s.= '<td>'.t('model/fields/type/'.$R['intype']).$len.'</td>';
+            $s.= '<td>'.(empty($R['default'])?'NULL':$R['default']).'</td>';
+            $s.= '<td><a href="javascript:;" onclick="$(\'#tableFields\').editFields('.$R['id'].');"><img class="a5 os" src="../system/images/white.gif" /></a>';
+            $s.= '<textarea name="modelfields['.$R['id'].']" fieldid="'.$R['id'].'" class="hide">'.json_encode($R).'</textarea>';
+            $s.= '</td></tr>';
+            ajax_result($s);
         }
     } else {
-        
+        $_JSON = isset($_POST['JSON']) ? json_decode($_POST['JSON']) : array();
+        if (empty($_JSON)) {
+            $rq[0] = isset($_GET['fieldid']) ? $_GET['fieldid'] : 0;
+        } else {
+            foreach ($eField as $field) {
+                $rq[] = isset($_JSON->$field) ? $_JSON->$field : null;
+            }
+        }
     }
     $hl = '<form id="formFields" name="formFields" method="post" action="'.PHP_FILE.'?action=fields">';
-    $hl.= '<p><label>'.t('model/fields/text').':</label><input class="in w200" type="text" name="fieldlabel" id="fieldlabel" value="'.h2c($post[1]).'" /></p>';
-    $hl.= '<p><label>'.t('model/fields/ename').':</label><input help="model/fields/ename" class="in w200" type="text" name="fieldename" id="fieldename" value="'.h2c($post[2]).'" /></p>';
+    $hl.= '<p><label>'.t('model/fields/text').':</label><input class="in w200" type="text" name="fieldlabel" id="fieldlabel" value="'.h2c($rq[1]).'" /></p>';
+    $hl.= '<p><label>'.t('model/fields/ename').':</label><input help="model/fields/ename" class="in w200" type="text" name="fieldename" id="fieldename" value="'.h2c($rq[2]).'" /></p>';
     $hl.= '<p><label>'.t('model/fields/input').':</label><select name="fieldintype" id="fieldintype" rel="change">';
     foreach (Content_Model::getType() as $k=>$v) {
-        $selected = $post[3]==$k?' selected="selected"':'';
+        $selected = $rq[3]==$k?' selected="selected"':'';
         $hl.= '<option value="'.$k.'"'.$selected.'>'.t('model/fields/type/'.$k).'</option>';
     }
-    $hl.= '</select> <span>'.t('model/fields/width').':<select name="fieldwidth" id="fieldwidth" edit="true" default="'.h2c($post[4]?$post[4]:'150px').'">';
+    $hl.= '</select> <span>'.t('model/fields/width').':<select name="fieldwidth" id="fieldwidth" edit="true" default="'.h2c($rq[4]?$rq[4]:'150px').'">';
     for($i=1;$i<=16;$i++){
         $hl.= '<option value="'.($i*50).'px">'.($i*50).'px</option>';
     }
-    $hl.= '</select></span><span><input type="checkbox" name="isValidate" id="isValidate"'.(empty($post[5])?null:' checked="checked"').' /><label for="isValidate">需要验证</label></span></p>';
+    $hl.= '</select></span><span><input type="checkbox" name="isValidate" id="isValidate"'.(empty($rq[5])?null:' checked="checked"').' /><label for="isValidate">需要验证</label></span></p>';
 
     $hl.= '<p class="hide"><label>'.t('model/fields/rules').':</label><select name="fieldrules" id="fieldrules">';
     foreach (Content_Model::getValidate() as $k=>$v) {
         $hl.= '<option value="'.$v.'">'.t('validate/'.$k).'</option>';
     }
     $hl.= '</select>&nbsp;<a href="javascript:;" rule="+"><img class="a6 os" src="../system/images/white.gif" /></a><a href="javascript:;" rule="-"><img class="a7 os" src="../system/images/white.gif" /></a>';
-    $hl.= '<textarea help="model/fields/rules" name="fieldvalidate" id="fieldvalidate" rows="3" class="in w250">'.h2c($post[5]).'</textarea></p>';
+    $hl.= '<textarea help="model/fields/rules" name="fieldvalidate" id="fieldvalidate" rows="3" class="in w250">'.h2c($rq[5]).'</textarea></p>';
     
-    $hl.= '<p class="hide"><label>'.t('model/fields/value').':</label><textarea help="model/fields/value" name="fieldvalue" id="fieldvalue" rows="4" class="in w250">'.h2c($post[6]).'</textarea></p>';
+    $hl.= '<p class="hide"><label>'.t('model/fields/value').':</label><textarea help="model/fields/value" name="fieldvalue" id="fieldvalue" rows="4" class="in w250">'.h2c($rq[6]).'</textarea></p>';
 
     $hl.= '<p class="hide"><label>'.t('model/fields/option').':</label><span id="fieldoption">';
-    $hl.= '<input type="checkbox" name="fieldoption[upimg]" id="upimg" value="1" /><label for="upimg">'.t('system::editor/upimg').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[upfile]" id="upfile" value="1" /><label for="upfile">'.t('system::editor/upfile').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[break]" id="break" value="1" /><label for="break">'.t('system::editor/break').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[snapimg]" id="snapimg" value="1" /><label for="snapimg">'.t('system::editor/snapimg').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[dellink]" id="dellink" value="1" /><label for="dellink">'.t('system::editor/dellink').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[setimg]" id="setimg" value="1" /><label for="setimg">'.t('system::editor/setimg').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[resize]" id="resize" value="1" /><label for="resize">'.t('system::editor/resize').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[upimg]" id="upimg" value="1"'.($rq[9]->upimg?' checked="checked"':null).' /><label for="upimg">'.t('system::editor/upimg').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[upfile]" id="upfile" value="1"'.($rq[9]->upfile?' checked="checked"':null).' /><label for="upfile">'.t('system::editor/upfile').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[break]" id="break" value="1"'.($rq[9]->break?' checked="checked"':null).' /><label for="break">'.t('system::editor/break').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[snapimg]" id="snapimg" value="1"'.($rq[9]->snapimg?' checked="checked"':null).' /><label for="snapimg">'.t('system::editor/snapimg').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[dellink]" id="dellink" value="1"'.($rq[9]->dellink?' checked="checked"':null).' /><label for="dellink">'.t('system::editor/dellink').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[setimg]" id="setimg" value="1"'.($rq[9]->setimg?' checked="checked"':null).' /><label for="setimg">'.t('system::editor/setimg').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[resize]" id="resize" value="1"'.($rq[9]->resize?' checked="checked"':null).' /><label for="resize">'.t('system::editor/resize').'</label>';
     $hl.= '</span></p>';
 
-    $hl.= '<p class="hide"><label>'.t('model/fields/length').':</label><select name="fieldlength" id="fieldlength" edit="true" default="'.h2c(empty($post[7])?255:$post[7]).'">';
+    $hl.= '<p class="hide"><label>'.t('model/fields/length').':</label><select name="fieldlength" id="fieldlength" edit="true" default="'.h2c(empty($rq[7])?255:$rq[7]).'">';
     foreach (array(10,20,30,50,100,255) as $v) {
         $hl.= '<option value="'.$v.'">'.$v.'</option>';
     }
     $hl.= '</select></p>';
-    $hl.= '<p><label>'.t('model/fields/default').':</label><input class="in w300" type="text" name="fielddefault" id="fielddefault" value="'.h2c($post[8]).'" /></p>';
+    $hl.= '<p><label>'.t('model/fields/default').':</label><input class="in w300" type="text" name="fielddefault" id="fielddefault" value="'.h2c($rq[8]).'" /></p>';
     $hl.= '<div class="tr"><button type="submit">'.t('system::save').'</button><button type="button" rel="cancel">'.t('system::ajax/cancel').'</button></div>';
-    $hl.= '<input id="fieldid" name="fieldid" type="hidden" value="'.$post[0].'" /></form>';
+    $hl.= '<input id="fieldid" name="fieldid" type="hidden" value="'.$rq[0].'" /></form>';
     ajax_result(array(
         'TITLE' => t('model/fields/add'),
         'BODY'  => $hl,

@@ -20,12 +20,12 @@
 
 (function($) {
     $.fn.__Fields = function(method,data){
-        data = data||{};
+		data = data||{};
 		var $this  = this;
         var params = {width:'400px',top:$(document).height()/6,left:$(document).width()/2 - 200};
         $.ajax({
             url: this.attr('action'),
-            type: 'GET',
+            type: method,
             data: data,
             dataType: 'json',
             success: function(data){
@@ -57,25 +57,26 @@
      * 追加字段
      */
     $.fn.appendFields = function(data){
-		alert($.toJSON(data));
+		$('tr[n=' + $(data).attr('n') + ']',this).remove();
+		$('tbody',this).append(data);
 	}
     /**
      * 添加字段
      */
     $.fn.addFields = function(){
-        this.__Fields('GET');
+        this.__Fields('GET',{fieldid:$('tr',this).length});
     }
     /**
      * 修改字段
      */
-    $.fn.editFields = function(){
-        this.__Fields(this.attr('data'));
+    $.fn.editFields = function(id){
+        this.__Fields('POST',{JSON:$('textarea[fieldid=' + id + ']').val()});
     }
     /**
      * 删除字段
      */
     $.fn.delFields = function(){
-    
+		$('input:checked',this).parents('tr').remove();
     }
     $.fn.__IsValidate = function(){
         // 判断是否显示提示说明
