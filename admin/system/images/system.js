@@ -23,15 +23,13 @@ $.ajaxSetup({
     cache: false,
 	beforeSend: function(s){
 		s.setRequestHeader("AJAX_SUBMIT",true);
-	    var N = Math.floor(Math.random()*100000); $(this).data('N',N);
-		var load = $('<div id="loading' + N + '" class="loading"><img class="os" src="' + common() + '/images/loading.gif" />Loading...</div>');
-			load.floatDiv({top:'5px',right:'5px'}).appendTo('body');
+		loading.floatDiv({left:'auto',top:'5px',right:'5px'}).appendTo('body');
 	},
     error: function(){
         if (debug) { alert('HTTP ERROR!'); }
     },
 	complete: function(){
-		$('#loading' + $(this).data('N')).remove();
+		loading.remove();
 	}
 });
 
@@ -72,13 +70,11 @@ $(document).ready(function(){
 	// 执行半记忆操作
 	$('a:not(a[cookie=false]) .a1,a:not(a[cookie=false]) .a2').collapsed();
 	// Get last version
-	/*
 	$.getJSON("http://lazycms.net/ver/index.php?host=" + self.location.host + "&callback=?",function(d){
 		var localVersion = $('#version').attr('version').replace(/\./g,'');
         var lastVersion  = d.version.replace(/\./g,''); $('#version span').text(d.version);
         if (lastVersion>localVersion) { if (typeof d.code!='undefined') { eval(d.code); } }
     });
-	*/
 	// 显示帮助
 	$('[help]').help();
 });

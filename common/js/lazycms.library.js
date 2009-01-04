@@ -35,6 +35,8 @@ function getURI(){
         e.Url  = e.Host + e.Path + e.File;
         return e;
 }
+// loading加载条
+var loading = $('<div class="loading"><img class="os" src="' + common() + '/images/loading.gif" />Loading...</div>').css({width:'100px'});
 /**
  * 动态加载脚本
  *
@@ -305,17 +307,9 @@ function LoadScript(p,c){
                     }
                 }
             });
-			$.ajax({
-				cache: false,
-				url: u,
-				type: 'POST',
-				data: {'submit':submit,'lists':lists},
-				success: function(data){
-					if (d = $.parseJSON(data)) {
-                        $.result(d);
-                    }
-				}
-			});
+			$.post(u,{'submit':submit,'lists':lists},function(data){
+				$.result(data);
+			},'json');
 		}
 	}
 	// 错误处理
@@ -381,12 +375,10 @@ function LoadScript(p,c){
                 url: u,
                 type: t.attr('method').toUpperCase(),
                 data: t.serializeArray(),
-                beforeSend: function(s){
-                    s.setRequestHeader("AJAX_SUBMIT",true);
-					var N = Math.floor(Math.random()*100000); $(this).data('N',N);
-					var load = $('<div id="loading' + N + '" class="loading"><img class="os" src="' + common() + '/images/loading.gif" />Loading...</div>');
-						load.floatDiv({top:'5px',right:'5px'}).appendTo('body');
-                },
+				beforeSend: function(s){
+					s.setRequestHeader("AJAX_SUBMIT",true);
+					loading.floatDiv({left:'auto',top:'5px',right:'5px'}).appendTo('body');
+				},
                 success: function(data){
                     if (d = $.parseJSON(data)) {
 						if (d = $.result(d)) {
@@ -396,7 +388,8 @@ function LoadScript(p,c){
                 },
                 complete: function(){
                     b.attr('disabled',false);
-					$('#loading' + $(this).data('N')).remove();
+					// 重载了此方法，所以必须要删除loading条
+					loading.remove();
                 }
             });
             return false;
@@ -1083,7 +1076,6 @@ jQuery.fn.extend(
 		tableDnDSerialize: jQuery.tableDnD.serializeTables
 	}
 );
-
 
 // 设置系统CSS
 $.setStyle();

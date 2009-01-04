@@ -62,8 +62,10 @@ function lazy_main(){
                 '".(empty($model)?'&nbsp;':$model)."',
                 {$count}
             );
-            $('#list_".$rs['sortid']."').addSub(".$rs['sortid'].",1,{$isSub});"
-        );
+            $(document).ready(function(){
+                $('#list_".$rs['sortid']."').addSub(".$rs['sortid'].",1,{$isSub});
+            });
+        ");
     }
     $ds->close();
     $ds->display();

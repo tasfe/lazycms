@@ -29,7 +29,7 @@
 		if (p3==0||p3==false) { return ; }
 		var tr = this.parents('tr');
 		var td = $('td:first',tr);
-		var os = $('img.os',td).css('cursor','pointer').unbind().click(function(){ 
+		var os = $('img.d2,img.d3',td).css('cursor','pointer').unbind().click(function(){ 
 				$.cookie('getSub_' + e.File + '_' + p1,true,{expires:365,path:e.Path}); $('#list_' + p1).addSub(p1,p2,p3); 
 				return false;
 			});
@@ -43,24 +43,16 @@
 		if ($('tr[path^=' + path + p1 + ']:visible',tb).is("tr")==false) {
 			os.hide();
 			$('<img src="' + common() + '/images/loading.gif" class="os" />').insertBefore(os);
-			$.ajax({
-				cache: false,
-				url:fm.attr('action'),
-				type: 'POST',
-				data: {submit:'getsub',lists:p1,space:p2},
-				success: function(data){
-					if (d = $.parseJSON(data)) {
-						if (d = $.result(d)) {
-							os.prev().remove();os.show();
-							$(d).each(function(){
-								os.removeClass('d1').removeClass('d2').addClass('d3');
-								tr.after($("td:first input",eval(this.code)).before(nbsp).end().attr('path',path + p1 + '/').show());
-								$('#list_' + this.id).addSub(this.id,p2 + 1,this.sub);
-							});
-						}
-                    }
+			$.post(fm.attr('action'),{submit:'getsub',lists:p1,space:p2},function(data){
+				if (d = $.result(data)) {
+					os.prev().remove();os.show();
+					$(d).each(function(){
+						os.removeClass('d1').removeClass('d2').addClass('d3');
+						tr.after($("td:first input",eval(this.code)).before(nbsp).end().attr('path',path + p1 + '/').show());
+						$('#list_' + this.id).addSub(this.id,p2 + 1,this.sub);
+					});
 				}
-			});
+			},'json');
 		} else {
 			// 当前对象存在
 			os.removeClass('d1').removeClass('d3').addClass('d2');
