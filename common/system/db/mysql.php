@@ -133,6 +133,22 @@ class lazy_mysql extends DB {
         return false;
     }
     /**
+     * 列出表里的所有字段
+     *
+     * @param string $p1    表名
+     */
+    function listFields($p1){
+        $result  = array();
+        $table   = str_replace('#@_',$this->config('prefix'),$p1);
+        $fields  = mysql_list_fields($this->config('name'), $table, $this->_conn);
+        $columns = mysql_num_fields($fields);
+        for ($i=0; $i<$columns; $i++) {
+            $result[] = mysql_field_name($fields, $i);
+        }
+        $this->free($fields);
+        return $result;
+    }
+    /**
      * 判断列名是否存在
      *
      * @param string $p1    table
@@ -140,18 +156,7 @@ class lazy_mysql extends DB {
      * @return bool
      */
     function isField($p1,$p2){
-        $table   = str_replace('#@_',$this->config('prefix'),$p1);
-        $fields  = mysql_list_fields($this->config('name'), $table, $this->_conn);
-        $columns = mysql_num_fields($fields);
-        for ($i=0; $i<$columns; $i++) {
-            $field = mysql_field_name($fields, $i);
-            if (strtolower($field)==strtolower($p2)) {
-                $this->free($fields);
-                return true;
-            }
-        }
-        $this->free($fields);
-        return false;
+        return in_array($p2,$this->listFields($p1));
     }
     /**
      * 批量执行SQL

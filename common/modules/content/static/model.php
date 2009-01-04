@@ -53,13 +53,13 @@ class Content_Model{
         $R = array(
             'input'    => 'varchar',        // 输入框
             'textarea' => 'text',           // 文本框
-            'radio'    => 'varchar(255)',   // 单选框
-            'checkbox' => 'varchar(255)',   // 复选框
-            'select'   => 'varchar(255)',   // 下拉菜单
+            'radio'    => 'varchar',   // 单选框
+            'checkbox' => 'varchar',   // 复选框
+            'select'   => 'varchar',   // 下拉菜单
             'basic'    => 'text',           // 简易编辑器
             'editor'   => 'mediumtext',     // 内容编辑器
             'date'     => 'int(11)',        // 日期选择器
-            'upfile'   => 'varchar(255)',   // 文件上传框
+            'upfile'   => 'varchar',   // 文件上传框
         );
         return empty($p1) ? $R : $R[$p1];
     }
@@ -79,6 +79,25 @@ class Content_Model{
             'url'    => '%s|validate|'.t('validate/error/url').'|5',
             'custom' => '%s|validate|'.t('validate/error/custom').'|'.t('validate/error/regular'),
         );
+    }
+    /**
+     * 取得需要删除的列名
+     *
+     * @param array $p1     当前数据库的列数组
+     * @param array $p2     字段数组
+     * @param string $p3    模型类型
+     * @return array
+     */
+    function diffFields($p1,$p2,$p3){
+        $fields = array();
+        foreach ($p2 as $field) {
+            $fields[] = $field->ename;
+        }
+        $fields = array_merge($fields,array('id','order','date','hits','path','description'));
+        if ($p3=='list') {
+            $fields = array_merge($fields,array('img','digg','passed','userid'));
+        }
+        return array_diff($p1,$fields);
     }
     /**
      * 取得单个模型的所有信息

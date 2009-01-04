@@ -44,12 +44,12 @@ function lazy_main(){
     $ds->td("cklist(K[0]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&modelid=' + K[0] + '\">' + K[1] + '</a>'");
     $ds->td("K[2]");
     $ds->td("K[3]");
-    $ds->td("(K[4]?icon('tick'):icon('stop'))");
-    $ds->td("icon('edit','".PHP_FILE."?action=edit&modelid=' + K[0]) + icon('export','".PHP_FILE."?action=export&model=' + K[2])");
+    $ds->td("(K[4]?icon('b2'):icon('b1'))");
+    $ds->td("icon('a5','".PHP_FILE."?action=edit&modelid=' + K[0]) + icon('a8','".PHP_FILE."?action=export&model=' + K[2])");
     $ds->open();
     $ds->thead = '<tr><th>ID) '.t('model/name').'</th><th>'.t('model/ename').'</th><th>'.t('model/table').'</th><th>'.t('model/state').'</th><th>'.t('system::Manage').'</th></tr>';
     while ($rs = $ds->result()) {
-        $ds->tbody = "E(".$rs['modelid'].",'".t2js(h2c($rs['modelname']))."','".t2js(h2c($rs['modelename']))."','".t2js(h2c(Content_Model::getDataTableName($rs['modelename'])))."',".$rs['modelstate'].");";
+        $ds->tbody("E(".$rs['modelid'].",'".t2js(h2c($rs['modelname']))."','".t2js(h2c($rs['modelename']))."','".t2js(h2c(Content_Model::getDataTableName($rs['modelename'])))."',".$rs['modelstate'].");");
     }
     $ds->close();
     $ds->display();
@@ -94,6 +94,7 @@ function lazy_export(){
         unset($data['modelid'],$data['modelstate']);
         echo json_encode($data);
     }
+    exit();
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_import(){
@@ -163,7 +164,6 @@ function lazy_edit(){
     $db = get_conn();
     $modelid   = isset($_REQUEST['modelid']) ? $_REQUEST['modelid'] : 0;
     $oldename  = isset($_POST['oldename']) ? strtolower($_POST['oldename']) : null;
-    $delfields = isset($_POST['delfields']) ? $_POST['delfields'] : null;
     $modeltype = isset($_REQUEST['type']) ? strtolower($_REQUEST['type']) : 'list';
     $post = POST('modelname','modelename','modelpath','modeltype','modelfields','iskeyword','description','sortemplate','pagetemplate');
     $modeltype = empty($post[3]) ? $modeltype : $post[3];
@@ -204,30 +204,24 @@ function lazy_edit(){
                     $db->exec("RENAME TABLE `{$otable}` TO `{$table}`;");
                     $db->exec("RENAME TABLE `{$ojtable}` TO `{$jtable}`;");
                 }
-                // 删除不需要的字段
-                if (!empty($delfields)) {
-                    $arrFields = explode(',',$delfields); $sute = null;
-                    foreach ($arrFields as $field) {
-                        if ($db->isField($table,$field)) {
-                            $sute.= " DROP `{$field}`,";
-                        }
-                    }
-                    $sute = rtrim($sute,',');
-                    $db->exec("ALTER TABLE `{$table}` {$sute};");
-                }
                 // 组成修改数据结构的SQL
                 $post[4] = $sute = array();
                 $chang = $add = array();
                 foreach ($fields as $v) {
                     $data = (array) $v; $k = $data['ename'];
                     $type = Content_Model::getType($data['intype']);
-                    $sute[$k]['len']  = empty($data['length'])?null:'('.$data['length'].')';
+                    $sute[$k]['len']  = instr('input,radio,checkbox,select,upfile',$data['intype'])?'('.$data['length'].')':null;
                     $sute[$k]['type'] = strpos($type,')')===false ? $type.$sute[$k]['len'] : $type;
                     $sute[$k]['def']  = empty($data['default'])?null:" DEFAULT '".$data['default']."'";
-                    $sute[$k]['add'] = " ADD `".$data['ename']."` ".$sute[$k]['type']." ".$sute[$k]['def'];
-                    if ($data['ename']!==$data['oname']) {
+                    // 只改变结构
+                    if ($data['ename'] == $data['oname'] && $db->isField($table,$data['oname'])) {
+                        $chang[] = " CHANGE `".$data['ename']."` `".$data['ename']."` ".$sute[$k]['type']." ".$sute[$k]['def'];
+                    } elseif ($db->isField($table,$data['oname'])) {
+                        $data['oname'] = empty($data['oname'])?$data['ename']:$data['oname'];
                         $chang[] = " CHANGE `".$data['oname']."` `".$data['ename']."` ".$sute[$k]['type']." ".$sute[$k]['def'];
                         $data['oname'] = $data['ename'];
+                    } else {
+                        $add[] = " ADD `".$data['ename']."` ".$sute[$k]['type']." ".$sute[$k]['def'];
                     }
                     $post[4][] = $data;
                 }
@@ -237,14 +231,21 @@ function lazy_edit(){
                     $db->exec("ALTER TABLE `{$table}` {$chang};");
                 }
                 // 添加新增的字段
-                foreach ($post[4] as $data) {
-                    if (!$db->isField($table,$data['ename'])) {
-                        $add[] = $sute[$data['ename']]['add'];
-                    }
-                }
                 if (!empty($add)) {
                     $add = implode(',',$add);
                     $db->exec("ALTER TABLE `{$table}` {$add};");
+                }
+                $delfields = Content_Model::diffFields($db->listFields($table),$fields,$modeltype);
+                // 删除不需要的字段
+                if (!empty($delfields)) {
+                    $sute = null;
+                    foreach ($delfields as $field) {
+                        if ($db->isField($table,$field)) {
+                            $sute.= " DROP `{$field}`,";
+                        }
+                    }
+                    $sute = rtrim($sute,',');
+                    $db->exec("ALTER TABLE `{$table}` {$sute};");
                 }
                 // 更新数据
                 $db->update('#@_content_model',array(
@@ -261,7 +262,7 @@ function lazy_edit(){
                 $text = t('model/alert/edit');
             }
             // 输出执行结果
-            ajax_alert($text,0);
+            ajax_success($text,0);
         }
     } else {
         if (!empty($modelid)) {
@@ -291,7 +292,18 @@ function lazy_edit(){
     }
 
     System::script('LoadScript("content.model");');
+    System::script('
+        $(document).ready(function() {
+            $("#tableFields").__tableDnD();
+        });
+    ');
     System::header($title,$n);
+
+    echo '<style type="text/css">';
+    echo '#tableFields thead tr,#tableFields td input{ cursor:default !important; }';
+    echo '#tableFields tr.Drag td{ color:#0000FF !important; background-color:#FFFFCC; }';
+    echo '#tableFields tr.Over td{ background-color:#FFFFCC; }';
+    echo '</style>';
 
     echo '<form id="form1" name="form1" method="post" action="">';
     echo '<fieldset><legend rel="tab"><a rel=".show" cookie="false"><img class="a2 os" src="../system/images/white.gif" />'.$title.'</a></legend>';
@@ -318,16 +330,19 @@ function lazy_edit(){
 
     echo '<table id="tableFields" action="'.PHP_FILE.'?action=fields" class="table" cellspacing="0">';
     echo '<thead><tr class="nodrop"><th>'.t('model/fields/text').'</th><th>'.t('model/fields/ename').'</th><th>'.t('model/fields/input').'</th><th>'.t('model/fields/default').'</th><th>'.t('system::manage').'</th></tr></thead><tbody>';
-    /*
-    echo '<tr n="1">';
-    echo '<td><input type="checkbox" name="list" value="" /> 标题</td>';
-    echo '<td>title</td>';
-    echo '<td>输入框(50)</td>';
-    echo '<td>NULL</td>';
-    echo '<td><a href="javascript:;" onclick="$(\'#tableFields\').editFields(1);"><img class="a5 os" src="../system/images/white.gif" /></a>';
-    echo '<textarea name="fieldData[1]" class="hide"></textarea></td>';
-    echo '</tr>';
-    */
+    
+    foreach ($post[4] as $row) {
+        $row = (array) $row;
+        $len = instr('input,radio,checkbox,select,upfile',$row['intype'])?'('.$row['length'].')':null;
+        echo '<tr n="'.$row['id'].'">';
+        echo '<td><input type="checkbox" name="list['.$row['id'].']" value="'.$row['id'].'" /> '.$row['label'].'</td>';
+        echo '<td>'.$row['ename'].'</td>';
+        echo '<td>'.t('model/fields/type/'.$row['intype']).$len.'</td>';
+        echo '<td>'.(empty($row['default'])?'NULL':$row['default']).'</td>';
+        echo '<td><a href="javascript:;" onclick="$(\'#tableFields\').editFields('.$row['id'].');"><img class="a5 os" src="../system/images/white.gif" /></a>';
+        echo '<textarea name="modelfields['.$row['id'].']" fieldid="'.$row['id'].'" class="hide">'.json_encode($row).'</textarea>';
+        echo '</td></tr>';
+    }
 
     echo '</tbody></table>';
 
@@ -340,12 +355,16 @@ function lazy_edit(){
 
     echo '</fieldset>';
 
-    echo but('system::save').'<input name="modelid" type="hidden" value="'.$modelid.'" /></form>';
+    echo but('system::save');
+    echo '<input name="modelid" type="hidden" value="'.$modelid.'" />';
+    echo '<input name="modeltype" type="hidden" value="'.$modeltype.'" />';
+    echo '<input name="oldename" type="hidden" value="'.$post[1].'" />';
+    echo '</form>';
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_fields(){
     $post   = array();
-    $fields = "id,label,ename,intype,width,validate,value,length,default,option";//9
+    $fields = "id,label,ename,intype,width,validate,value,length,default,option,oname";//10
     $eField = explode(',',$fields);
     $val = new Validate();
     if ($val->method() && !isset($_POST['JSON'])) {
@@ -365,7 +384,7 @@ function lazy_fields(){
             foreach ($eField as $k=>$field){
                 $R[$field] = $rq[$k];
             }
-            $len = empty($R['length'])?null:'('.$R['length'].')';
+            $len = instr('input,radio,checkbox,select,upfile',$R['intype'])?'('.$R['length'].')':null;
             $s = '<tr n="'.$R['id'].'">';
             $s.= '<td><input type="checkbox" name="list['.$R['id'].']" value="'.$R['id'].'" /> '.$R['label'].'</td>';
             $s.= '<td>'.$R['ename'].'</td>';
@@ -398,7 +417,7 @@ function lazy_fields(){
     for($i=1;$i<=16;$i++){
         $hl.= '<option value="'.($i*50).'px">'.($i*50).'px</option>';
     }
-    $hl.= '</select></span><span><input type="checkbox" name="isValidate" id="isValidate"'.(empty($rq[5])?null:' checked="checked"').' /><label for="isValidate">需要验证</label></span></p>';
+    $hl.= '</select></span><span><input type="checkbox" name="isValidate" id="isValidate"'.(empty($rq[5])?null:' checked="checked"').' /><label for="isValidate">'.t('model/fields/validate').'</label></span></p>';
 
     $hl.= '<p class="hide"><label>'.t('model/fields/rules').':</label><select name="fieldrules" id="fieldrules">';
     foreach (Content_Model::getValidate() as $k=>$v) {
@@ -408,15 +427,15 @@ function lazy_fields(){
     $hl.= '<textarea help="model/fields/rules" name="fieldvalidate" id="fieldvalidate" rows="3" class="in w250">'.h2c($rq[5]).'</textarea></p>';
     
     $hl.= '<p class="hide"><label>'.t('model/fields/value').':</label><textarea help="model/fields/value" name="fieldvalue" id="fieldvalue" rows="4" class="in w250">'.h2c($rq[6]).'</textarea></p>';
-
+    
     $hl.= '<p class="hide"><label>'.t('model/fields/option').':</label><span id="fieldoption">';
-    $hl.= '<input type="checkbox" name="fieldoption[upimg]" id="upimg" value="1"'.($rq[9]->upimg?' checked="checked"':null).' /><label for="upimg">'.t('system::editor/upimg').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[upfile]" id="upfile" value="1"'.($rq[9]->upfile?' checked="checked"':null).' /><label for="upfile">'.t('system::editor/upfile').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[break]" id="break" value="1"'.($rq[9]->break?' checked="checked"':null).' /><label for="break">'.t('system::editor/break').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[snapimg]" id="snapimg" value="1"'.($rq[9]->snapimg?' checked="checked"':null).' /><label for="snapimg">'.t('system::editor/snapimg').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[dellink]" id="dellink" value="1"'.($rq[9]->dellink?' checked="checked"':null).' /><label for="dellink">'.t('system::editor/dellink').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[setimg]" id="setimg" value="1"'.($rq[9]->setimg?' checked="checked"':null).' /><label for="setimg">'.t('system::editor/setimg').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[resize]" id="resize" value="1"'.($rq[9]->resize?' checked="checked"':null).' /><label for="resize">'.t('system::editor/resize').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[upimg]" id="option_upimg" value="1"'.($rq[9]->upimg?' checked="checked"':null).' /><label for="option_upimg">'.t('system::editor/upimg').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[upfile]" id="option_upfile" value="1"'.($rq[9]->upfile?' checked="checked"':null).' /><label for="option_upfile">'.t('system::editor/upfile').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[break]" id="option_break" value="1"'.($rq[9]->break?' checked="checked"':null).' /><label for="option_break">'.t('system::editor/break').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[snapimg]" id="option_snapimg" value="1"'.($rq[9]->snapimg?' checked="checked"':null).' /><label for="option_snapimg">'.t('system::editor/snapimg').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[dellink]" id="option_dellink" value="1"'.($rq[9]->dellink?' checked="checked"':null).' /><label for="option_dellink">'.t('system::editor/dellink').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[setimg]" id="option_setimg" value="1"'.($rq[9]->setimg?' checked="checked"':null).' /><label for="option_setimg">'.t('system::editor/setimg').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[resize]" id="option_resize" value="1"'.($rq[9]->resize?' checked="checked"':null).' /><label for="option_resize">'.t('system::editor/resize').'</label>';
     $hl.= '</span></p>';
 
     $hl.= '<p class="hide"><label>'.t('model/fields/length').':</label><select name="fieldlength" id="fieldlength" edit="true" default="'.h2c(empty($rq[7])?255:$rq[7]).'">';
@@ -426,7 +445,9 @@ function lazy_fields(){
     $hl.= '</select></p>';
     $hl.= '<p><label>'.t('model/fields/default').':</label><input class="in w300" type="text" name="fielddefault" id="fielddefault" value="'.h2c($rq[8]).'" /></p>';
     $hl.= '<div class="tr"><button type="submit">'.t('system::save').'</button><button type="button" rel="cancel">'.t('system::ajax/cancel').'</button></div>';
-    $hl.= '<input id="fieldid" name="fieldid" type="hidden" value="'.$rq[0].'" /></form>';
+    $hl.= '<input name="fieldid" type="hidden" value="'.$rq[0].'" />';
+    $hl.= '<input name="fieldoname" type="hidden" value="'.(empty($rq[10])?$rq[2]:$rq[10]).'" />';
+    $hl.= '</form>';
     ajax_result(array(
         'TITLE' => t('model/fields/add'),
         'BODY'  => $hl,

@@ -85,7 +85,8 @@ class System{
             $hl.= menu($selected.$tabs); 
             $hl.= '<div id="box">';
             $help = basename(PHP_FILE,'.php').(ACTION==''?'':'/'.ACTION);
-            if ($help!=t($help)) {
+            $path = 'help/'.$help;
+            if (!is_array(t($path)) && $path != t($path)) {
                 $hl.= '<div id="help"><a href="javascript:;" onclick="$(this).help(\''.$help.'\');"><img class="h5 os" src="../system/images/white.gif" /></a></div>';
             }
         }

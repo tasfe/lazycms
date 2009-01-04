@@ -57,14 +57,18 @@
      * 追加字段
      */
     $.fn.appendFields = function(data){
-		$('tr[n=' + $(data).attr('n') + ']',this).remove();
-		$('tbody',this).append(data);
+		$('tr[n=' + $(data).attr('n') + ']',this).replaceWith(data);
+		$("#tableFields").__tableDnD();
 	}
     /**
      * 添加字段
      */
     $.fn.addFields = function(){
-        this.__Fields('GET',{fieldid:$('tr',this).length});
+		var n = 0;
+		$('tr[n]',this).each(function(){
+			n = Math.max(n,$(this).attr('n'));
+		});
+        this.__Fields('GET',{fieldid:n+1});
     }
     /**
      * 修改字段
@@ -142,12 +146,12 @@
             case 'basic': case 'editor':
                 $('#fieldlength,#fieldvalue').parents('p').slideUp('fast');
                 if (s=='basic') {
-                    $('#break,#setimg').each(function(){
+                    $('#option_break,#option_setimg').each(function(){
                         $(this).attr('checked',false).hide().next().hide();
                     });
                 } else {
-                    $('#break,#setimg').each(function(){
-                        $(this).attr('checked',false).show().next().show();
+                    $('#option_break,#option_setimg').each(function(){
+                        $(this).show().next().show();
                     });
                 }
                 $('#fieldoption').parents('p').slideDown('fast',function(){
@@ -166,6 +170,18 @@
         }
         return this;
     }
+	/**
+     * 表格移动
+     */
+	$.fn.__tableDnD = function(){
+		return this.tableDnD({
+			onDragClass: 'Drag'
+		}).find('tr').hover(function(){
+			$(this).addClass('Over');
+		},function(){
+			$(this).removeClass('Over');
+		});
+	}
     /**
      * 自动上传
      */

@@ -42,6 +42,7 @@ return array(
     'default'   => '默认',
     'reselect'  => '反选',
     'selectall' => '全选',
+    'moreattr'  => '更多属性',
 
     'ajax'  => array(
         'alert'     => '系统提示',
@@ -348,5 +349,4 @@ return array(
             
         ),
     )
-
 );

@@ -36,6 +36,8 @@ return array(
         ),
         'addlist'   => '添加列表模型',
         'addpage'   => '添加单页模型',
+        'editlist'  => '编辑列表模型',
+        'editpage'  => '编辑单页模型',
         'name'  => '模型名称',
         'ename' => '模型标识',
         'table' => '数据表名',
@@ -57,6 +59,7 @@ return array(
             'length'    => '最大长度',
             'default'   => '默认值',
             'option'    => '更多属性',
+            'validate'  => '需要验证',
             'type'  => array(
                 'input'     => '输入框',
                 'textarea'	=> '文本框',
@@ -82,6 +85,8 @@ return array(
             'exist' => '模型标识(modelename)重复，请修改模型标识',
         ),
         'alert' => array(
+            'add'       => '添加模型成功',
+            'edit'      => '编辑模型成功',
             'noselect'  => '请选择一个模型',
             'delete'    => '删除模型成功',
             'lock'      => '锁定模型成功',
@@ -89,7 +94,39 @@ return array(
             'import'    => '导入模型成功',
         )
     ),
+
+    /* 分类管理 */
+    'sort'  => array(
+        'title' => '分类管理',
+        'add'   => '添加分类',
+        'edit'  => '编辑分类',
+        'belong'    => '所属分类',
+        'topsort'   => '顶级分类',
+        'name'      => '分类名称',
+        'count'     => '文档数',
+        'path'      => '分类目录',
+        'model'     => '内容类型',
+        'defaultemplate'    => '使用模型设置',
+        'sortemplate'       => '列表模板',
+        'pagetemplate'      => '内容模板',
+        'check' => array(
+            'name'  => '分类名称不能为空',
+            'path'  => '分类目录不能为空',
+            'path1' => '路径错误',
+            'path2' => '路径重复',
+        ),
+        'alert' => array(
+            'add'   => '添加分类成功',
+            'edit'  => '编辑分类成功',
+        )
+    ),
     
+    /* 文档管理 */
+    'article'   => array(
+        'title' => '文档管理',
+    ),
+
+    /* 验证信息 */
     'validate'  => array(
         'url'   => '匹配网址',
         'empty' => '不能为空',
@@ -142,5 +179,9 @@ return array(
                 ',
             ),
         ),
+        'sort'  => array(
+            'path'  => '不支持 <\:*?"|,> 字符，不能以/开始或结束',
+            'model' => '选择哪些内容类型使用此分类',
+        )
     )
 );

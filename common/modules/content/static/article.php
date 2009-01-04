@@ -89,7 +89,7 @@ class Content_Article{
         $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` ASC;",$p1);
         while ($rs = $db->fetch($res,0)) {
             if ((int)$p3 != (int)$rs[0]) {
-                $model = is_bool($p3)?null:' models="'.implode(',',getSorts::getModels($rs[0],'modelid')).'"';
+                $model = is_bool($p3)?null:' models="'.implode(',',Content_Article::getModels($rs[0],'modelid')).'"';
                 $selected = ((int)$p4 == (int)$rs[0]) ? ' selected="selected"' : null;
                 $R.= '<option'.$model.' value="'.$rs[0].'"'.$selected.'>'.$nbsp.'├'.$rs[1].'</option>';
                 if ((int)$db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
@@ -108,7 +108,7 @@ class Content_Article{
     function isSub($p1){
         $db  = get_conn();
         $num = $db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($p1).";");
-        return ((int)$num>0)?'1':'0';
+        return ((int)$num>0)?'2':'1';
     }
     /**
      * 根据分类ID取得关联模型的数据
