@@ -49,7 +49,7 @@ class Field2Tag{
      * @return object
      */
     function getVal(){
-        return $this->val;
+        return $this->_val;
     }
     /**
      * 取得POST数据
@@ -122,18 +122,17 @@ class Field2Tag{
         $name    = $f->ename;
         $length  = $f->length;
         $default = ($p2===false) ? $f->default : $p2;
+        $width   = $f->width;
         $opts    = isset($f->option)?$f->option:null;
         switch ($f->intype) {
             case 'input':
-                $class   = $f->width!='auto'?' class="'.$f->width.'"':' class="in2"';
-                $R = "<input{$tip}{$class} type=\"text\" name=\"{$name}\" id=\"{$name}\" maxlength=\"{$length}\" value=\"{$default}\" />";
+                $R = "<input{$tip} style=\"width:{$width}\" type=\"text\" name=\"{$name}\" id=\"{$name}\" maxlength=\"{$length}\" value=\"{$default}\" />";
                 if ($this->_model['setkeyword']==$name) {
                     $R.= '<span><input type="checkbox" name="autokeywords" id="autokeywords" value="1" checked="checked" cookie="true" /><label for="autokeywords">'.t('system::Auto keywords').'</label></span></p>';
                 }
                 break;
             case 'textarea':
-                $class   = $f->width!='auto'?' class="'.$f->width.'"':' class="in4"';
-                $R = "<textarea{$tip}{$class} name=\"{$name}\" id=\"{$name}\" rows=\"5\">{$default}</textarea>";
+                $R = "<textarea{$tip} style=\"width:{$width}\" name=\"{$name}\" id=\"{$name}\" rows=\"5\">{$default}</textarea>";
                 break;
             case 'select':
                 $R = "<select name=\"{$name}\" id=\"{$name}\">";
@@ -164,7 +163,6 @@ class Field2Tag{
                 $R.= '</span>';
                 break;
             case 'editor': case 'basic':
-                $width   = $this->_class2px($f->width);
                 $setting = array(
                     'upimg'     => $opts->upimg,
                     'upfile'    => $opts->upfile,
@@ -181,7 +179,7 @@ class Field2Tag{
                     $setting['height']  = "80px";
                 }
                 $setting['height'] = isset($setting['height'])?$setting['height']:"250px";
-                $R = '<div class="box">'.editor($name,$setting).'</div>';
+                //$R = '<div class="box">'.editor($name,$setting).'</div>';
                 break;
             case 'date':
 
@@ -205,23 +203,5 @@ class Field2Tag{
             $R.= str_replace(array('{label}','{object}'),array($field->label,$this->tag($field,$p2[$field->ename])),$p1);
         }
         return $R;
-    }
-    /**
-     * 将CSS类名转换成像素值
-     *
-     * @param string $p1
-     * @return string
-     */
-    function _class2px($p1){
-        $style = COM_PATH.'/images/style.css';
-        if (is_file($style)) {
-            if (preg_match_all('/\.(in(\d+)) *\{.*(width\:(.*))\;.*\}/iU',read_file($style),$ins)) {
-                foreach ($ins[1] as $k=>$v) {
-                    if ($p1==$v) {
-                        return $ins[4][$k];
-                    }
-                }
-            }
-        }
     }
 }

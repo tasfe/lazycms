@@ -145,7 +145,7 @@ class Content_Model{
         $sute   = null;
         foreach ($fields as $v) {
             $data = (array) $v;
-            $len  = empty($data['length'])?null:'('.$data['length'].')';
+            $len  = instr('input,radio,checkbox,select,upfile',$data['intype'])?'('.$data['length'].')':null;
             $type = Content_Model::getType($data['intype']);
             $type = strpos($type,')')===false ? $type.$len : $type;
             $def  = empty($data['default'])?null:" DEFAULT '".$data['default']."'";
@@ -159,7 +159,7 @@ class Content_Model{
         $SQL.= "    `order` INT(11) DEFAULT '0',";
         $SQL.= "    `date` INT(11) DEFAULT '0',";
         $SQL.= "    `hits` INT(11) DEFAULT '0',";
-        if ($model[8]=='list') {
+        if ($model['modeltype']=='list') {
             $SQL.= "`img` VARCHAR(255),";
             $SQL.= "`digg` INT(11) DEFAULT '0',";
             $SQL.= "`passed` TINYINT(1) DEFAULT '0',";

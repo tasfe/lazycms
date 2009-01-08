@@ -25,6 +25,8 @@ defined('COM_PATH') or die('Restricted access!');
 return array(
     'name'  => '内容管理',
 
+    'nomodel' => '请先创建并启用一个模型',
+
     /* 模型管理 */
     'model' => array(
         'title' => '模型管理',
@@ -118,12 +120,32 @@ return array(
         'alert' => array(
             'add'   => '添加分类成功',
             'edit'  => '编辑分类成功',
+            'delete'=> '删除分类成功',
+            'noselect'  => '请选择一个分类',
         )
     ),
     
     /* 文档管理 */
     'article'   => array(
         'title' => '文档管理',
+        'model' => '模型',
+        'sort'  => '分类',
+        'path'  => '路径',
+        'hits'  => '点击量',
+        'digg'  => 'Digg',
+        'date'  => '日期',
+        'size'  => '每页条数',
+        'sortall'   => '所有分类',
+        'keyword'   => '关键词',
+        'fields'    => '列表字段',
+        'view'      => '显示',
+        'submit'    => '提交',
+        'cancel'    => '取消',
+        'select'    => '请选择分类...',
+        'alert'     => array(
+            'noselect'  => '请选择一个文档',
+            'delete'    => '删除文档成功',
+        ),
     ),
 
     /* 验证信息 */

@@ -145,11 +145,11 @@ function lazy_edit(){
     
     echo '<fieldset><legend rel="tab">'.$title.'</legend>';
 
-    echo '<p><label>'.t('admins/name').':</label><input class="in w200" type="text" name="adminname" id="adminname" value="'.$adminname.'" /></p>';
-    echo '<p><label>'.t('admins/password').':</label><input class="in w200" type="password" name="adminpass" id="adminpass" /></p>';
-    echo '<p><label>'.t('admins/repassword').':</label><input class="in w200" type="password" name="adminpass1" id="adminpass1" /></p>';
-    echo '<p><label>'.t('admins/email').':</label><input class="in w300" type="text" name="adminmail" id="adminmail" value="'.$adminmail.'" /></p>';
-    echo '<p><label>'.t('admins/purview').':</label><div class="box purview">';
+    echo '<div class="block"><label>'.t('admins/name').':</label><input class="in w200" type="text" name="adminname" id="adminname" value="'.$adminname.'" /></div>';
+    echo '<div class="block"><label>'.t('admins/password').':</label><input class="in w200" type="password" name="adminpass" id="adminpass" /></div>';
+    echo '<div class="block"><label>'.t('admins/repassword').':</label><input class="in w200" type="password" name="adminpass1" id="adminpass1" /></div>';
+    echo '<div class="block"><label>'.t('admins/email').':</label><input class="in w300" type="text" name="adminmail" id="adminmail" value="'.$adminmail.'" /></div>';
+    echo '<div class="block"><label>'.t('admins/purview').':</label><div class="box purview">';
     // 导入权限列表
     $config = array();
     $modules= glob(COM_PATH.'/modules/*',GLOB_ONLYDIR);
@@ -165,11 +165,11 @@ function lazy_edit(){
             echo '<br/>';
         }
     }
-    echo '</div></p>';
-    echo '<p><label>'.t('admins/language').':</label>';
+    echo '</div></div>';
+    echo '<div class="block"><label>'.t('admins/language').':</label>';
     echo '<select name="language" id="language">';
     echo form_opts('@.language','lang','<option value="#value#"#selected#>#name#</option>',$language);
-    echo '</select></p>';
+    echo '</select></div>';
 
     echo '</fieldset>';
     

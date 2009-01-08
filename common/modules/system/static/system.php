@@ -43,6 +43,9 @@ class System{
         $hl.= '<script type="text/javascript">'.js_lang();
         $hl.= g('SCRIPT');
         $hl.= '</script>';
+        if ($style = g('STYLE')) {
+            $hl.= '<style type="text/css">'.$style.'</style>';
+        }
         $hl.= '</head><body>';
         $hl.= '<div id="top">';
         $hl.= '<div class="logo"><a href="../system/index.php"><img src="../system/images/logo.png" alt="LazyCMS '.LAZY_VERSION.'" /></a></div>';
@@ -115,6 +118,20 @@ class System{
         g('SCRIPT',$R);
     }
     /**
+     * 设置style
+     *
+     * @param string $p1
+     */
+    function style($p1){
+        static $R = null;
+        if (empty($R)) {
+            $R = $p1;
+        } else {
+            $R.= $p1;
+        }
+        g('STYLE',$R);
+    }
+    /**
      * 管理员登录验证
      *
      * @param string $p1    用户名
@@ -134,14 +151,14 @@ class System{
         if ($_USER===0) {
             // 登录超时
             if ($_SERVER['HTTP_AJAX_SUBMIT']) {
-                alert(t('system::error/overtime'),'../system/logout.php');
+                ajax_alert(t('system::error/overtime'),'../system/logout.php');
             } else {
                 redirect('../system/logout.php');
             }
         } elseif (!$_USER) {
             // TODO: 没有权限，或没有登录，提示
             if ($_SERVER['HTTP_AJAX_SUBMIT']) {
-                alert(t('system::error/permission'));
+                ajax_alert(t('system::error/permission'));
             } else {
                 if (!headers_sent()) { header("Content-Type:text/html; charset=utf-8"); }
                 echo '<script type="text/javascript" charset="utf-8">alert("'.t2js(t('system::error/permission')).'");self.history.back();</script>';

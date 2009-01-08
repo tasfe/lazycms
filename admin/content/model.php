@@ -59,7 +59,7 @@ function lazy_set(){
     $db = get_conn();
     $submit = isset($_POST['submit']) ? strtolower($_POST['submit']) : null;
     $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
-    empty($lists) ? ajax_alert(t('model/alert/notselect')) : null ;
+    empty($lists) ? ajax_alert(t('model/alert/noselect')) : null ;
     switch($submit){
         case 'delete':
             $res = $db->query("SELECT `modelename` FROM `#@_content_model` WHERE `modelid` IN({$lists});");

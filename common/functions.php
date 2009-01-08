@@ -587,6 +587,20 @@ function require_file($p1){
     return false;
 }
 /**
+ * 清除空格
+ *
+ * @param string $p1
+ * @return string
+ */
+function clear_blank($p1){
+    if (strlen($p1)==0) { return ;} { $R = $p1; }
+    $R = str_replace(array(chr(9),chr(10),chr(13)),'',$R);
+    while (strpos($R,chr(32).chr(32))!==false || strpos($R,'&nbsp;')!==false) {
+        $R = str_replace(chr(32).chr(32),chr(32),str_replace('&nbsp;',chr(32),$R));
+    }
+    return $R;
+}
+/**
  * 统计字符串的长度，支持中文
  *
  * @param string $p1
@@ -600,6 +614,20 @@ function len($p1){
     } else {
         preg_match_all(g('CN_PATTERN'),$p1,$R1);
         return count($R1[0]);
+    }
+}
+/**
+ * 从左边截取，支持中文
+ *
+ * @param  string   $p1    要截取的字符串
+ * @param  integer  $p2    截取多少个字
+ * @return string
+ */
+function left($p1,$p2){
+    if ((int)len($p1)>(int)$p2) {
+        return cnsubstr($p1,$p2).'...';
+    } else{
+        return $p1;
     }
 }
 /**

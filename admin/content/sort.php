@@ -27,10 +27,16 @@ require '../../global.php';
 function lazy_before(){
     System::purview('content::sort');
     // 设置公共菜单
+    $menus = array(); $model = array();
+    foreach (Content_Model::getModels('list') as $v) {
+        $model[] = $v['modelename'];
+        $menus[] = t('system::add').$v['modelname'].':article.php?action=edit&model='.$v['modelename'];
+    }
+    // 设置公共菜单
     System::tabs(
         t('sort').':sort.php;'.
         t('article').':article.php;'.
-        t('sort/add').':sort.php?action=edit'
+        t('sort/add').':sort.php?action=edit;'.implode(';',$menus)
     );
 }
 // *** *** www.LazyCMS.net *** *** //
@@ -77,12 +83,12 @@ function lazy_set(){
     $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
     switch($submit){
         case 'delete':
-            empty($lists) ? alert(t('sort/alert/select')) : null ;
+            empty($lists) ? ajax_alert(t('sort/alert/noselect')) : null ;
             // 取得要删除分类的所有子类，进行删除
             $db->update('#@_content_sort',array('parentid'=>0),"`parentid` IN({$lists})");
             $db->delete('#@_content_sort',"`sortid` IN({$lists})");
             $db->delete('#@_content_sort_model',"`sortid` IN({$lists})");
-            ajax_success(t('sort/alert/delete'),1);
+            ajax_success(t('sort/alert/delete'),0);
             break;
         case 'getsub':
             $space  = isset($_POST['space']) ? $_POST['space'] : 1;
