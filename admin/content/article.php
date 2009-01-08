@@ -269,15 +269,9 @@ function lazy_edit(){
             }
         }
     }
-    
     System::style('
-        #toggleSorts{ display:none; width:500px; left:140px; top:55px; z-index:100; }
-        #toggleSorts .head{ width:495px;}
-        #toggleSorts .body{ padding:5px;}
-        #toggleSorts ul{margin:0 0 0 20px;padding:0;}
-        #sortView{ width:300px; height:23px; cursor:default; line-height:23px; letter-spacing:1px; padding:0px 4px; border:1px solid #c6d9e7; color:#333333; background:url(../../common/images/buttons-bg.png) repeat-x; }
+        #sortView{ width:300px; height:23px; display:block; cursor:default; line-height:23px; letter-spacing:1px; padding:0px 4px; border:1px solid #c6d9e7; color:#333333; background:url(../../common/images/buttons-bg.png) repeat-x; }
     ');
-
     System::script('LoadScript("content.article");');
     System::header($title,$selTab);
 
@@ -286,12 +280,12 @@ function lazy_edit(){
     echo '<div class="show">';
 
     if ($sorts > 0) {
-        echo '<p><label>'.t('article/sort').':</label><div class="box"><div id="sortView" onclick="$.toggleSorts();" empty="'.t('article/select').'">'.t('article/select').'</div></div></p>';
-        echo '<div id="toggleSorts" class="panel">';
-        echo '<div class="head"><strong>'.t('article/select').'</strong><a href="javascript:;" onclick="$.toggleSorts();">×</a></div><div class="body">';
+        echo '<p><label>'.t('article/sort').':</label><span class="box"><div id="sortView" onclick="$(this).toggleSorts();" empty="'.t('article/select').'">'.t('article/select').'</div>';
+        echo '<div id="sorts" class="panel" style="display:none;">';
+        echo '<div class="head"><strong>'.t('article/select').'</strong><a href="javascript:;" onclick="$(\'#sorts\').slideToggle(\'fast\');">×</a></div><div class="body">';
         echo Content_Article::sort($model['modelid'],$sortids);
-        echo '<p class="tr"><button type="button" onclick="$(\'#sortView\').setSorts();">'.t('article/submit').'</button>&nbsp;<button type="button" onclick="$.toggleSorts();">'.t('article/cancel').'</button></p>';
-        echo '</div></div><script type="text/javascript">$("#sortView").selectSorts();</script>';
+        echo '<p class="tr"><button type="button" onclick="$(\'#sortView\').setSorts();">'.t('article/submit').'</button>&nbsp;<button type="button" onclick="$(\'#sorts\').slideToggle(\'fast\');">'.t('article/cancel').'</button></p>';
+        echo '</div></div><script type="text/javascript">$("#sortView").selectSorts();</script></span></p>';
     }
 
     echo $tag->fetch('<p><label>{label}:</label>{object}</p>',$data);

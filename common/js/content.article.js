@@ -35,18 +35,21 @@
 				$('#fields').parents('p').show().end().html(inputs);
 			}
 	};
-	$.toggleSorts = function(){
-		$('#toggleSorts').slideToggle('fast');
+	$.fn.toggleSorts = function(){
+		var sorts = $('#sorts').css({width:'500px',left:this.offset().left,top:this.offset().top,'z-index':100,position:'absolute'}).slideToggle('fast');
+			$('.head',sorts).css({width:'495px'});
+			$('.body',sorts).css({padding:'5px'});
+			$('ul',sorts).css({margin:'0 0 0 20px',padding:0});
 		return this;
 	};
 	$.fn.setSorts = function(){
 		this.selectSorts();
-	    $('#toggleSorts').slideToggle('fast');
+	    $('#sorts').slideToggle('fast');
 		return this;
 	};
 	$.fn.selectSorts = function(){
 	    var sorts = new Array();
-	    $('#toggleSorts input:checked').each(function(i){
+	    $('#sorts input:checked').each(function(i){
             sorts[i] = $(this).next().text();
 	    });
 	    var text = sorts.join(',');
