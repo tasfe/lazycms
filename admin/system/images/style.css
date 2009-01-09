@@ -52,7 +52,7 @@ a:hover   { text-decoration: underline; }
 /* 顶部样式 */
 #top {width:100%; margin:0; display:table; clear:both; background:#eff8ff url(lazyadmin-bgs.png) repeat-x 0 -5px;border-bottom:1px solid #c6d9e7; color:#333333; text-align:left;}
     #top a{ color:#333333;}
-    #top .logo{ width:170px; padding:4px 10px 5px 5px; float:left; text-align:left;}
+    #top .logo{ width:170px; padding:0 10px 0 5px; float:left; text-align:left;}
     #top .logo a { display:block; text-align:center;}
     
 	/* 顶部右上角菜单 */

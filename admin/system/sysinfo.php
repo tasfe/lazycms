@@ -27,7 +27,6 @@ require '../../global.php';
 function lazy_before(){
     System::purview();
     System::tabs(
-        t('settings').':settings.php;'.
         t('sysinfo').':sysinfo.php;'.
         t('sysinfo/config').':sysinfo.php?action=config;'.
         t('sysinfo/directory').':sysinfo.php?action=directory;'.

@@ -36,6 +36,7 @@ class System{
         $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
         $hl.= '<title>'.$title.'</title>';
         $hl.= '<link href="../system/images/style.css" rel="stylesheet" type="text/css" />';
+        $hl.= '<link rel="shortcut icon" href="http://www.lazycms.net/favicon.ico" />';
         $hl.= '<script type="text/javascript">var MODULE = \''.MODULE.'\';var ACTION = \''.ACTION.'\';</script>';
         $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.2.6"></script>';
         $hl.= '<script type="text/javascript" src="../../common/js/lazycms.library.js?ver=1.0"></script>';
