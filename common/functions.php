@@ -968,6 +968,61 @@ function ubbencode($p1){
     }
     return $R;
 }
+function editor($p1,$p2=array()){
+    static $isLoadJs = false;
+    $A1 = array(); $p3 = null; $R = null;
+    if (is_array($p2) && !empty($p2)) {
+        $A1 = $p2;
+        $p2 = isset($A1['value']) ? $A1['value'] : null;
+    }
+    $A1['upimg'] = isset($A1['upimg']) ? $A1['upimg'] : false;
+    $A1['upfile'] = isset($A1['upfile']) ? $A1['upfile'] : false;
+    $A1['pagebreak'] = isset($A1['pagebreak']) ? $A1['pagebreak'] : false;
+    $A1['snapimg'] = isset($A1['snapimg']) ? $A1['snapimg'] : array(0,0);
+    $A1['dellink'] = isset($A1['dellink']) ? $A1['dellink'] : array(0,0);
+    $A1['setimg'] = isset($A1['setimg']) ? $A1['setimg'] : array(0,0);
+    $A1['resize'] = isset($A1['resize']) ? 'true' : 'false';
+    $css = '<style type="text/css">';
+    $css.= '.'.$p1.'_editor_button{ width:'.$A1['width'].'; display:table; zoom:100%; margin:3px 0 5px 0;}';
+    $css.= '.'.$p1.'_editor_button .fr a{margin-left:8px;}';
+    $css.= '</style>';
+    $div = $css; $but = $size = null;
+    if ($A1['upimg']) { $but.= '<button type="button">'.t('system::editor/upimg').'</button>'; }
+    if ($A1['upfile']) { $but.= '<button type="button">'.t('system::editor/upfile').'</button>'; }
+    if ($A1['pagebreak']) { $but.= '<button type="button" onclick="tinyMCE.get(\''.$p1.'\').execCommand(\'mcePageBreak\',false);">'.t('system::editor/pagebreak').'</button>'; }
+    if ($A1['snapimg'][0]) {
+        $but.= '<input type="checkbox" name="'.$p1.'_attr[snapimg]" id="'.$p1.'_attr[snapimg]" value="1"'.($A1['snapimg'][1]?' checked="checked"':null).' cookie="true" /><label for="'.$p1.'_attr[snapimg]">'.t('system::editor/snapimg').'</label>&nbsp; ';
+    }
+    if ($A1['dellink'][0]) {
+        $but.= '<input type="checkbox" name="'.$p1.'_attr[dellink]" id="'.$p1.'_attr[dellink]" value="1"'.($A1['dellink'][1]?' checked="checked"':null).' cookie="true" /><label for="'.$p1.'_attr[dellink]">'.t('system::editor/dellink').'</label>&nbsp; ';
+    }
+    if ($A1['setimg'][0]) {
+        $but.= '<input type="checkbox" name="'.$p1.'_attr[setimg]" id="'.$p1.'_attr[setimg]" value="1"'.($A1['setimg'][1]?' checked="checked"':null).' cookie="true" /><label for="'.$p1.'_attr[setimg]">'.t('system::editor/setimg').'</label>';
+    }
+    if (!empty($but)) {
+        $div.= '<div class="'.$p1.'_editor_button">'.$but.'</div>';
+    }
+    $hl = '<!-- tinyMCE include script -->';
+    if (!$isLoadJs) {
+        $isLoadJs = true;
+        $hl.= '<script src="'.SITE_BASE.'common/editor/tiny_mce/tiny_mce.js" type="text/javascript"></script>';
+    }
+    $hl.= '<script type="text/javascript">';
+    $hl.= 'tinyMCE.init({';
+    $hl.= 'mode:"exact",elements:"'.$p1.'",theme:"advanced",relative_urls:false,tab_focus:":prev,:next",language:"'.language().'",';
+    if ($A1['toolbar']=='Basic') {
+        $hl.= 'plugins:"safari,pagebreak,inlinepopups,noneditable,emotions",';
+        $hl.= 'theme_advanced_buttons1:"bold,italic,underline,strikethrough,|,numlist,bullist,|,outdent,indent,blockquote,|,fontselect,|,forecolor,backcolor,|,link,unlink,image,emotions,|,help",theme_advanced_buttons2:"",';
+    } else {
+        $hl.= 'plugins:"safari,pagebreak,table,inlinepopups,searchreplace,media,fullscreen,noneditable,emotions",';
+    }
+    $hl.= 'theme_advanced_toolbar_location:"top",theme_advanced_toolbar_align:"left",theme_advanced_statusbar_location:"bottom",theme_advanced_resizing:'.$A1['resize'].',';
+    $hl.= 'setup : function(ed) {ed.onInit.add(function(ed) {});}';
+    $hl.= '});</script>';
+    $hl.= '<textarea style="width:'.$A1['width'].';height:'.$A1['height'].';" id="'.$p1.'" name="'.$p1.'">'.h2c($p2).'</textarea>';
+    $R = $hl.$div;
+    unset($A1); return $R;
+}
 /**
  * 分页函数
  *

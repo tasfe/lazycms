@@ -179,7 +179,7 @@ class Field2Tag{
                     $setting['height']  = "80px";
                 }
                 $setting['height'] = isset($setting['height'])?$setting['height']:"250px";
-                //$R = '<div class="box">'.editor($name,$setting).'</div>';
+                $R = '<span class="box">'.editor($name,$setting).'</span>';
                 break;
             case 'date':
 

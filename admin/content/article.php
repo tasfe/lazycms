@@ -282,7 +282,7 @@ function lazy_edit(){
     if ($sorts > 0) {
         echo '<p><label>'.t('article/sort').':</label><span class="box"><div id="sortView" onclick="$(this).toggleSorts();" empty="'.t('article/select').'">'.t('article/select').'</div>';
         echo '<div id="sorts" class="panel" style="display:none;">';
-        echo '<div class="head"><strong>'.t('article/select').'</strong><a href="javascript:;" onclick="$(\'#sorts\').slideToggle(\'fast\');">×</a></div><div class="body">';
+        echo '<div class="head"><strong>'.t('article/select').'</strong><a href="javascript:;" onclick="$(\'#sorts\').slideToggle(\'fast\');"></a></div><div class="body">';
         echo Content_Article::sort($model['modelid'],$sortids);
         echo '<p class="tr"><button type="button" onclick="$(\'#sortView\').setSorts();">'.t('article/submit').'</button>&nbsp;<button type="button" onclick="$(\'#sorts\').slideToggle(\'fast\');">'.t('article/cancel').'</button></p>';
         echo '</div></div><script type="text/javascript">$("#sortView").selectSorts();</script></span></p>';
