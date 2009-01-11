@@ -53,7 +53,7 @@ $(document).ready(function(){
     // 自动设置tab
     var t = $('#box fieldset legend[rel=tab]').text(); if (t!=='') { $('#tabs li.active a').text(t); }
 	// 批量去除连接虚线
-	$('a').focus(function(){ this.blur(); });
+	$('a').focus(function(){ this.blur(); });	
 	// 绑定展开事件
 	$('a .a1,a .a2').parent()
 		.attr('href','javascript:;')
@@ -68,6 +68,7 @@ $(document).ready(function(){
 			}
 		});
 	// 执行半记忆操作
+	$(document).SemiMemory();
 	$('a:not(a[cookie=false]) .a1,a:not(a[cookie=false]) .a2').collapsed();
 	// Get last version
 	$.getJSON("http://lazycms.net/ver/index.php?host=" + self.location.host + "&callback=?",function(d){

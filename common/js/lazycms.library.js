@@ -245,7 +245,7 @@ function LoadScript(p,c){
     }
 	// 折叠
     $.fn.collapsed = function(){
-        var u = getURI()
+        var u = getURI();
         this.each(function(i){
             var t = $(this).parent(); t.attr('i',i);
             var r = $(t.attr('rel'),t.parents('fieldset'));
@@ -270,6 +270,20 @@ function LoadScript(p,c){
         });
         return this;
     }
+	// 半记忆操作
+	$.fn.SemiMemory = function(){
+		var u = getURI();
+		// checkbox
+		$('input:checkbox[@cookie=true]',this).each(function(i){
+			var c = $.cookie('checkbox_' + u.File + '_' + $(this).attr('id'));
+			if (c!==null) {
+				this.checked = (c=='true') ? true : false;
+			}
+		}).click(function(){
+			$.cookie('checkbox_' + u.File + '_' + $(this).attr('id'),this.checked,{expires:365,path:u.Path});
+		});
+		return this;
+	}
 	// ajax按钮
 	$.fn.ajaxButton = function(p,u){
 		var R;

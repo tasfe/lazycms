@@ -417,7 +417,7 @@ function lazy_fields(){
     for($i=1;$i<=16;$i++){
         $hl.= '<option value="'.($i*50).'px">'.($i*50).'px</option>';
     }
-    $hl.= '</select></span><span><input type="checkbox" name="isValidate" id="isValidate"'.(empty($rq[5])?null:' checked="checked"').' /><label for="isValidate">'.t('model/fields/validate').'</label></span></p>';
+    $hl.= '</select></span><span><input type="checkbox" name="isValidate" id="isValidate"'.(empty($rq[5])?null:' checked="checked"').' cookie="true" /><label for="isValidate">'.t('model/fields/validate').'</label></span></p>';
 
     $hl.= '<p class="hide"><label>'.t('model/fields/rules').':</label><select name="fieldrules" id="fieldrules">';
     foreach (Content_Model::getValidate() as $k=>$v) {

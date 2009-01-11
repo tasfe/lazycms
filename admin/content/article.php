@@ -110,7 +110,7 @@ function lazy_main(){
         if ($length==0) {
             $ds->td("'<div class=\"fl\">' + cklist(K[0]) + K[0] + ') </div><div class=\"dir\">' + (K[3]?icon('link',K[2]):icon('link-error','javascript:alert(\'create\');')) + '<a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[2] + '</a></div>'");
         } else {
-            $ds->td("(K[3]?icon('link',K[2]):icon('link-error','javascript:alert(\'create\');')) + K[2]");
+            $ds->td("(K[3]?icon('b3',K[2]):icon('b4','javascript:alert(\'create\');')) + K[2]");
         }
         $ds->td("K[4]");
         $ds->td("K[5]");
@@ -125,7 +125,7 @@ function lazy_main(){
         while ($rs = $ds->result()) {
             $K = null;
             foreach ($fields as $field=>$label) {
-                $K.= ",'".t2js(h2encode($rs[$field]))."'";
+                $K.= ",'".t2js(h2c($rs[$field]))."'";
             }
             $ds->tbody("E(".$rs['id'].",'".$rs['img']."','".SITE_BASE.$rs['path']."',".(is_file(LAZY_PATH.$rs['path'])?1:0).",".$rs['hits'].",".$rs['digg'].",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});");
         }
@@ -155,7 +155,7 @@ function lazy_set(){
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_edit(){
-    $db = get_conn(); $data = array();// $_USER = get_user();
+    $db = get_conn(); $data = array(); $_USER = System::getAdmin();
     $mName  = isset($_REQUEST['model']) ? strtolower($_REQUEST['model']) : null;
     $docId  = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
     $selTab = array_search($mName,g('MODEL'))+4;
@@ -167,7 +167,7 @@ function lazy_edit(){
     $jtable = Content_Model::getJoinTableName($model['modelename']);
     $sortids = isset($_POST['sortids']) ? $_POST['sortids'] : null;
     $description = isset($_POST['description']) ? $_POST['description'] : null;
-    
+
     // 加载字段解析类
     import('system.field2tag');
     import('system.keywords');
@@ -213,18 +213,19 @@ function lazy_edit(){
                     'order'     => $maxid,
                     'date'      => now(),
                     'path'      => $path,
-                    //'userid'    => $_USER['userid'],
+                    'userid'    => $_USER['adminid'],
                     'description'   => $description,
                 );
                 if (!empty($data)) {
                     $row = array_merge($row,$data);
                 }
                 $db->insert($table,$row);
-                $id = $db->lastId();
+                $docId = $db->lastId();
                 $text = t('article/alert/add');
             } else {
                 $row = array(
                     'path' => $path,
+                    'userid'  => $_USER['adminid'],
                     'description' => $description,
                 );
                 if (!empty($data)) {
@@ -257,10 +258,10 @@ function lazy_edit(){
             ajax_success($text,PHP_FILE."?model={$m}{$query}");
         }
     } else {
-        if (!empty($id)) {
+        if (!empty($docId)) {
             $res = $db->query("SELECT * FROM `{$table}` WHERE `id`=?",$docId);
             if ($data = $db->fetch($res)) {
-                $path   = h2encode($data['path']);
+                $path   = h2c($data['path']);
                 if (!empty($model['setkeyword'])) {
                     $keywords = $key->get($docId);
                 }
@@ -289,7 +290,7 @@ function lazy_edit(){
     }
 
     echo $tag->fetch('<p><label>{label}:</label>{object}</p>',$data);
-    echo '<p><label>'.t('article/path').':</label><input class="in w400" type="text" name="path" id="path" value="'.(empty($path)?$model['modelpath']:$path).'" /></p>';
+    echo '<p><label>'.t('article/path').':</label><input help="article/path" class="in w400" type="text" name="path" id="path" value="'.(empty($path)?$model['modelpath']:$path).'" /></p>';
     echo '</div></fieldset>';
 
     echo '<fieldset><legend><a rel=".more-attr"><img class="a2 os" src="../system/images/white.gif" />'.t('system::moreattr').'</a></legend>';

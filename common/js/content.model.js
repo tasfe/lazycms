@@ -33,7 +33,7 @@
                     var dialog = $.dialogUI({title:data.TITLE})
                         .append('<div class="body"></div>')
                         .floatDiv(params)
-                        .find('.body').html(data.BODY).end()
+                        .find('.body').html(data.BODY).SemiMemory().end()
                         .find('[type=submit]').click(function(){
                             $(this.form).ajaxSubmit(function(data){
 								$this.appendFields(data); $.undialogUI();
@@ -42,7 +42,7 @@
                         .find('[rel=cancel]').click(function(){
                             $.undialogUI();
                         }).end()
-                        .__FieldTypeChange()
+						.__FieldTypeChange()
                         .__IsValidate();
                     $('select[rel=change]',dialog).change(function(){
                         dialog.__FieldTypeChange();
@@ -57,7 +57,11 @@
      * 追加字段
      */
     $.fn.appendFields = function(data){
-		$('tr[n=' + $(data).attr('n') + ']',this).replaceWith(data);
+		if ($('tr[n=' + $(data).attr('n') + ']',this).is('tr')) {
+			$('tr[n=' + $(data).attr('n') + ']',this).replaceWith(data);
+		} else {
+			$('tbody',this).append(data);
+		}
 		$("#tableFields").__tableDnD();
 	}
     /**

@@ -104,7 +104,7 @@ return array(
         'submit'   => '登录',
         'password' => '密&nbsp; &nbsp;码',
         'language' => '语&nbsp; &nbsp;言',
-        'description' => '<p>请使用有效的用户名和密码登录后台。</p><p>运行环境：PHP 4.3.3+、MySQL 4.1+</p><p><a href="../">返回网站首页</a></p>',
+        'description' => '<p>请使用有效的用户名和密码登录后台。</p><p>运行环境：PHP 4.3.3+、MySQL 4.1+</p><p><a href="../../">返回网站首页</a></p>',
         'cookie'      => array(
             'expire'    => '有效期',
             'process'   => '浏览器进程',
