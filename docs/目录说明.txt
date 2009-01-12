@@ -1,0 +1,72 @@
+/
+  |-- admin				# 后台管理目录
+    |-- content				# 内容管理模块
+      |-- article.php			# 文档管理
+      |-- model.php			# 模型管理
+      |-- sort.php			# 分类管理
+    |-- system				# 系统管理模块
+      |-- admins.php			# 管理员管理
+      |-- help.php			# 显示帮助信息
+      |-- images			# 后台图片/js/css目录
+        |-- style.css			# 后台全局CSS
+        |-- system.js			# 后台调用JS
+      |-- index.php			# 后台管理首页
+      |-- login.php			# 登录文件
+      |-- logout.php			# 退出登录
+      |-- myaccount.php			# 我的帐户
+      |-- settings.php			# 系统设置
+      |-- sysinfo.php			# 系统信息
+    |-- index.php
+  |-- common				# 系统核心
+    |-- dicts				# 词库目录
+      |-- High-frequency-words.hfw	# 高频词表
+    |-- editor				# 编辑器目录
+      |-- tiny_mce			# 支持的编辑器
+    |-- images				# 公用图片目录
+    |-- js				# 公用JS目录
+      |-- content.article.js		# 内容模型->文档管理JS
+      |-- content.model.js		# 内容模型->模型管理JS
+      |-- content.sort.js		# 内容模型->分类管理JS
+      |-- jquery.js			# jQuery类库
+      |-- lazycms.library.js		# LazyCMS JS类库
+      |-- system.admins.js		# 系统管理->后台用户管理
+    |-- language			# 语言包文件夹
+      |-- zh-cn				# 简体中文语言包
+        |-- content.php			# 对应内容管理模块
+        |-- system.php			# 对应系统管理模块
+    |-- modules				# 模块目录
+      |-- content			# 内容管理模块
+        |-- config.php			# 内容管理模块设置
+        |-- static			# 内容管理模块的静态函数库
+          |-- article.php
+          |-- model.php
+      |-- system			# 系统模块
+        |-- config
+          |-- pinyin.php		# 拼音代码表
+        |-- config.php
+        |-- static
+          |-- system.php
+    |-- system				# 系统所有类库
+      |-- cookie.php			# cookie 操作库
+      |-- db				# 数据库操作类
+        |-- mysql.php			# mysql操作类
+      |-- db.php			# 数据库公用类
+      |-- field2tag.php			# 字段转HTML对象类
+      |-- httplib.php			# http下载类
+      |-- json.php			# json解析库
+      |-- keywords.php			# 关键词操作类
+      |-- parsetags.php			# 模板标签解析类
+      |-- recordset.php			# 数据库记录集读取类
+      |-- splitword.php			# 中文分词类
+      |-- uploadfile.php		# 文件上传类
+      |-- validate.php			# 系统验证类
+    |-- config.php			# 系统全局设置
+    |-- defines.php			# 系统全局常量定义
+    |-- functions.php			# 系统公用函数库
+  |-- themes				# 前台模板
+  |-- docs
+  |-- favicon.ico
+  |-- global.php			# 系统公用文件，必须引用
+  |-- lazy2.sql				# 数据库表结构
+  |-- LICENSE.txt			# 授权协议
+  |-- TODO				# 需要实现的功能
