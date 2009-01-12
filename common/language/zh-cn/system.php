@@ -47,6 +47,7 @@ return array(
     'moreattr'  => '更多属性',
 
     'ajax'  => array(
+        'error'     => '系统错误',
         'alert'     => '系统提示',
         'confirm'   => '操作确认',
         'submit'    => '确认',

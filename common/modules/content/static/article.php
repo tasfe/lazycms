@@ -50,7 +50,7 @@ class Content_Article{
      * @param  integer  $p3     上级分类ID
      * @return string
      */
-    function sort($p1,$p2=null,$p3=0){
+    function getSortListByParentId($p1,$p2=null,$p3=0){
         $R = null; $db = get_conn();
         $oby = $p3==0?'ASC':'DESC';
         $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` {$oby};",$p3);
@@ -65,7 +65,7 @@ class Content_Article{
             $checked = instr($p2,$rs[0])?' checked="checked"':null;
             $R.= '<li><input type="checkbox" name="sortids[]" id="sortids['.$rs[0].']" value="'.$rs[0].'"'.$checked.$disabled.'><label for="sortids['.$rs[0].']">'.$sortname.'</label>';
             if ((int)$db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
-                $R.= Content_Article::sort($p1,$p2,$rs[0]);
+                $R.= Content_Article::getSortListByParentId($p1,$p2,$rs[0]);
             }
             $R.= '</li>';
             
@@ -81,7 +81,7 @@ class Content_Article{
      * @param  integer  $p4     选中分类的ID
      * @return string
      */
-    function getSorts($p1=0,$p2=0,$p3=0,$p4=null){
+    function getSortOptionByParentId($p1=0,$p2=0,$p3=0,$p4=null){
         $R = $nbsp = null; $db = get_conn(); 
         for ($i=0;$i<$p2;$i++) {
             $nbsp.= "&nbsp; &nbsp;";
@@ -89,11 +89,11 @@ class Content_Article{
         $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` ASC;",$p1);
         while ($rs = $db->fetch($res,0)) {
             if ((int)$p3 != (int)$rs[0]) {
-                $model = is_bool($p3)?null:' models="'.implode(',',Content_Article::getModels($rs[0],'modelid')).'"';
+                $model = is_bool($p3)?null:' models="'.implode(',',Content_Article::getModelsBySortId($rs[0],'modelid')).'"';
                 $selected = ((int)$p4 == (int)$rs[0]) ? ' selected="selected"' : null;
                 $R.= '<option'.$model.' value="'.$rs[0].'"'.$selected.'>'.$nbsp.'├'.$rs[1].'</option>';
                 if ((int)$db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
-                    $R.= Content_Article::getSorts($rs[0],$p2+1,$p3,$p4);
+                    $R.= Content_Article::getSortOptionByParentId($rs[0],$p2+1,$p3,$p4);
                 }
             }
         }
@@ -105,7 +105,7 @@ class Content_Article{
      * @param  integer  $p1     分类ID
      * @return string
      */
-    function isSub($p1){
+    function isSubSort($p1){
         $db  = get_conn();
         $num = $db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($p1).";");
         return ((int)$num>0)?'2':'1';
@@ -117,7 +117,7 @@ class Content_Article{
      * @param  string   $p2     数据库字段
      * @return array
      */
-    function getModels($p1,$p2='modelid'){
+    function getModelsBySortId($p1,$p2='modelid'){
         $db = get_conn(); $R = array();
         $res = $db->query("SELECT * FROM `#@_content_sort_model` AS `csm` LEFT JOIN `#@_content_model` AS `cm` ON `csm`.`modelid`=`cm`.`modelid` WHERE `cm`.`modelstate`=1 AND `csm`.`sortid`=?;",$p1);
         while ($rs = $db->fetch($res)) {
@@ -133,7 +133,7 @@ class Content_Article{
      * @param  integer  $p3     分类ID
      * @return bool
      */
-    function join($p1,$p2,$p3){
+    function joinSort($p1,$p2,$p3){
         $db = get_conn();
         $N  = $db->count("SELECT * FROM `{$p1}` WHERE `tid`=".DB::quote($p2)." AND `type`=1 AND `sid`=".DB::quote($p3).";");
         return ((int)$N>0) ? true : $db->insert($p1,array(
@@ -149,13 +149,30 @@ class Content_Article{
      * @param  integer  $p2     文档ID
      * @return array
      */
-    function getSortIds($p1,$p2){
+    function getSortIdsByDocId($p1,$p2){
         $db = get_conn(); $R = array();
-        $res = $db->query("SELECT * FROM `{$p1}` WHERE `tid`=".DB::quote($p2)." AND `type`=1;");
+        $res = $db->query("SELECT * FROM `{$p1}` WHERE `tid`=? AND `type`=1;",$p2);
         while ($rs = $db->fetch($res)) {
             $R[] = $rs['sid'];
         }
         return $R;
+    }
+    /**
+     * 取得指定分类下的所有小类ID
+     *
+     * @param int $p1
+     */
+    function getSortIdsBySortIds($p1){
+        $db = get_conn(); $R = array();
+        $res = $db->query("SELECT `sortid` FROM `#@_content_sort` WHERE `sortid` IN({$p1})");
+        while ($rs = $db->fetch($res,0)) {
+            $R[] = $rs[0];
+            $res1 = $db->query("SELECT `sortid` FROM `#@_content_sort` WHERE `parentid`=?",$rs[0]);
+            while ($rs1 = $db->fetch($res1,0)) {
+                $R = array_merge($R,Content_Article::getSortIdsBySortIds($rs1[0]));
+            }
+        }
+        return array_unique($R);
     }
     /**
      * 统计分类和指定模型下的文档数量

@@ -25,9 +25,6 @@ $.ajaxSetup({
 		s.setRequestHeader("AJAX_SUBMIT",true);
 		loading.floatDiv({left:'auto',top:'5px',right:'5px'}).appendTo('body');
 	},
-    error: function(){
-        if (debug) { alert('HTTP ERROR!'); }
-    },
 	complete: function(){
 		loading.remove();
 	}
@@ -37,9 +34,7 @@ $(document).ready(function(){
 	// 显示可编辑下拉框
 	$.selectEdit();
     // 绑定submit提交事件
-    $("form[method=post]:not(form[ajax=false])").ajaxSubmit(function(data){
-		$.blockUI(data.TITLE,data.BODY);
-	});
+    $("form[method=post]:not(form[ajax=false])").ajaxSubmit();
     // Reset separator width
     $('#menu li.hr').each(function(){
         $(this).width($(this).parent().width());

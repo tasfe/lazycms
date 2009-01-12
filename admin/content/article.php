@@ -27,7 +27,7 @@ require '../../global.php';
 function lazy_before(){
     System::purview('content::article');
     $menus = array(); $model = array();
-    foreach (Content_Model::getModels('list') as $v) {
+    foreach (Content_Model::getModelsByType('list') as $v) {
         $model[] = $v['modelename'];
         $menus[] = t('system::add').$v['modelname'].':article.php?action=edit&model='.$v['modelename'];
     }
@@ -50,7 +50,7 @@ function lazy_main(){
     $fields  = isset($_GET['fields'])?$_GET['fields']:null;
     if (empty($model)) {
         $textarea = null;
-        $models   = Content_Model::getModels('list');
+        $models   = Content_Model::getModelsByType('list');
         echo '<form id="form1" name="form1" method="get" action="'.PHP_FILE.'">';
         echo '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.t('article').'</a></legend>';
         echo '<div class="show">';
@@ -61,7 +61,7 @@ function lazy_main(){
                 echo '<option value="'.$v['modelename'].'">'.$v['modelname'].'</option>';
             }
             echo '</select></p>';
-            echo '<p><label>'.t('article/sort').':</label><select name="sortid"><option value="0">'.t('article/sortall').'</option>'.Content_Article::getSorts(0,0,false).'</select></p>';
+            echo '<p><label>'.t('article/sort').':</label><select name="sortid"><option value="0">'.t('article/sortall').'</option>'.Content_Article::getSortOptionByParentId(0,0,false).'</select></p>';
             echo '<p><label>'.t('article/keyword').':</label><input class="in2" type="text" name="keyword" id="keyword" value="" /></p>';
             echo '<p><label>'.t('article/size').':</label><select name="size" edit="true">';
             foreach (array(10,15,20,25,30,40,50) as $i) {
@@ -78,7 +78,7 @@ function lazy_main(){
         echo '</form>'.$textarea;
         echo '<script type="text/javascript">$(\'#model\').viewFields();</script>';
     } else {
-        $model  = Content_Model::getModel($model);
+        $model  = Content_Model::getModelByEname($model);
         $table  = Content_Model::getDataTableName($model['modelename']);
         $jtable = Content_Model::getJoinTableName($model['modelename']);
         $length = count($fields);
@@ -159,7 +159,7 @@ function lazy_edit(){
     $mName  = isset($_REQUEST['model']) ? strtolower($_REQUEST['model']) : null;
     $docId  = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
     $selTab = array_search($mName,g('MODEL'))+4;
-    $model  = Content_Model::getModel($mName); if (!$model) { trigger_error(t('system::error/invalid')); }
+    $model  = Content_Model::getModelByEname($mName); if (!$model) { trigger_error(t('system::error/invalid')); }
     $sorts  = $db->count("SELECT * FROM `#@_content_sort_model` WHERE `modelid`=".DB::quote($model['modelid']).";");
     $title  = (empty($docId) ? t('system::add') : t('system::edit')).$model['modelname'];
     $path   = isset($_POST['path']) ? $_POST['path'] : null;
@@ -233,7 +233,7 @@ function lazy_edit(){
                 }
                 $db->update($table,$row,DB::quoteInto('`id` = ?',$docId));
                 // 删除未选中的分类
-                $sortDiff = array_diff(Content_Article::getSortIds($jtable,$docId),$sortids);
+                $sortDiff = array_diff(Content_Article::getSortIdsByDocId($jtable,$docId),$sortids);
                 if (!empty($sortDiff)) {
                     $db->delete($jtable,array("`type`=1","`sid` IN(".implode(',',$sortDiff).")"));
                 }
@@ -241,7 +241,7 @@ function lazy_edit(){
             }
             // 写分类关系
             foreach ($sortids as $sortid) {
-                Content_Article::join($jtable,$docId,$sortid);
+                Content_Article::joinSort($jtable,$docId,$sortid);
             }
             // 自动获取关键词
             if (!empty($model['setkeyword'])) {
@@ -266,7 +266,7 @@ function lazy_edit(){
                     $keywords = $key->get($docId);
                 }
                 $description = $data['description'];
-                $sortids = Content_Article::getSortIds($jtable,$docId);
+                $sortids = Content_Article::getSortIdsByDocId($jtable,$docId);
             }
         }
     }
@@ -284,7 +284,7 @@ function lazy_edit(){
         echo '<p><label>'.t('article/sort').':</label><span class="box"><div id="sortView" onclick="$(this).toggleSorts();" empty="'.t('article/select').'">'.t('article/select').'</div>';
         echo '<div id="sorts" class="panel" style="display:none;">';
         echo '<div class="head"><strong>'.t('article/select').'</strong><a href="javascript:;" onclick="$(\'#sorts\').slideToggle(\'fast\');"></a></div><div class="body">';
-        echo Content_Article::sort($model['modelid'],$sortids);
+        echo Content_Article::getSortListByParentId($model['modelid'],$sortids);
         echo '<p class="tr"><button type="button" onclick="$(\'#sortView\').setSorts();">'.t('article/submit').'</button>&nbsp;<button type="button" onclick="$(\'#sorts\').slideToggle(\'fast\');">'.t('article/cancel').'</button></p>';
         echo '</div></div><script type="text/javascript">$("#sortView").selectSorts();</script></span></p>';
     }

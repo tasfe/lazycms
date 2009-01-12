@@ -324,8 +324,14 @@ function LoadScript(p,c){
                 }
             });
 			$.post(u,{'submit':submit,'lists':lists},function(data){
-				$.result(data);
-			},'json');
+				if (d = $.parseJSON(data)) {
+					if (d = $.result(d)) {
+						$.blockUI(d.TITLE,d.BODY);
+					}
+				} else {
+					$.blockUI($.t('error'),data);
+				}
+			});
 		}
 	}
 	// 错误处理
@@ -400,7 +406,9 @@ function LoadScript(p,c){
 						if (d = $.result(d)) {
 							callback(d);
 						}
-                    }
+                    } else {
+						$.blockUI($.t('error'),data);
+					}
                 },
                 complete: function(){
                     b.attr('disabled',false);
@@ -434,11 +442,15 @@ function LoadScript(p,c){
 			var t = this;
 			$('img',t).attr('src',common() + '/images/loading.gif').removeClass('h5');
 			$.post('../system/help.php',{module:MODULE,path:path},function(data){
-				if (data = $.result(data)) {
-					$.blockUI(data.TITLE,data.BODY);
+				if (d = $.parseJSON(data)) {
+					if (d = $.result(d)) {
+						$.blockUI(d.TITLE,d.BODY);
+					}
+				} else {
+					$.blockUI($.t('error'),data);
 				}
 				$('img',t).attr('src',common() + '/images/white.gif').addClass('h5');
-			},'json');
+			});
 		} else {
 			return this.each(function(){
 				var p = $(this).attr('help');
@@ -446,15 +458,18 @@ function LoadScript(p,c){
 				$('<a href="javascript:;" rel="help"><img class="h5 os" src="../system/images/white.gif" /></a>').click(function(){
 					var img = $('img',this).attr('src',common() + '/images/loading.gif').removeClass('h5');
 					$.post('../system/help.php',{module:MODULE,path:p},function(data){
-						if (data = $.result(data)) {
-							img.attr('src',common() + '/images/white.gif').addClass('h5');
+						img.attr('src',common() + '/images/white.gif').addClass('h5');
+						if (!(d = $.parseJSON(data))) {
+							$.blockUI($.t('error'),data); return ;
+						}
+						if (d = $.result(d)) {
 							if ($('#dialogHelp').is('div'))	{ $('#dialogHelp').remove(); }
-							var help = $('<div id="dialogHelp" class="dialog"><div class="head"><strong>' + data.TITLE + '</strong><a href="javascript:;" rel="close"></a></div><div class="body"></div></div>')
+							var help = $('<div id="dialogHelp" class="dialog"><div class="head"><strong>' + d.TITLE + '</strong><a href="javascript:;" rel="close"></a></div><div class="body"></div></div>')
 								.find('[rel=close]').click(function(){
 									$('#dialogHelp').remove();
 									return false;
 								}).end()
-								.find('.body').html(data.BODY).end()
+								.find('.body').html(d.BODY).end()
 								.css({position:'absolute','z-index':1000})
 								.insertAfter(img.parent());
 							var help = $('#dialogHelp');
@@ -472,7 +487,7 @@ function LoadScript(p,c){
 								}
 								help.css({top:pos.top + 8,left:pos.left});
 						}
-					},'json');
+					});
 				}).insertAfter(this);
 				$('a').focus(function(){ this.blur(); });
 			});

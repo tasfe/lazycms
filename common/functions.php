@@ -137,10 +137,6 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
         $hl.= '<p class="message">'.$error['message'].'</p>';
         $hl.= '<p class="title">[ TRACE ]</p>';
         $hl.= '<p class="trace">'.nl2br($error['trace']).'</p></div>';
-        ajax_result(array(
-            'TITLE' => t('system::error'),
-            'BODY'  => $hl
-        ));
     } else {
         $RE = isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:PHP_FILE;
         $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
@@ -169,8 +165,8 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
         $hl.= '<p class="trace">'.nl2br($error['trace']).'</p></div>';
         $hl.= '<div id="footer">LazyCMS <sup>'.LAZY_VERSION.'</sup></div>';
         $hl.= '</body></html>';
-        exit($hl);
     }
+    exit($hl);
 }
 /**
  * 批量获取指定的post or get 数组
@@ -310,13 +306,8 @@ function mkdirs($p1, $p2 = 0777){
  * 前台js语言包
  */
 function js_lang(){
-    $js = array(
-        'alert'     => t('system::ajax/alert'),
-        'confirm'   => t('system::ajax/confirm'),
-        'submit'    => t('system::ajax/submit'),
-        'cancel'    => t('system::ajax/cancel'),
-    );
-    return '$(document).data("language",'.json_encode($js).');';
+    $lang = t('system::ajax');
+    return '$(document).data("language",'.json_encode($lang).');';
 }
 /**
  * 在数组或字符串中查找

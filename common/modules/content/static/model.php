@@ -105,13 +105,27 @@ class Content_Model{
      * @param string $p1    模型标识
      * @return array
      */
-    function getModel($p1){
-        $db = get_conn(); $R = array();
+    function getModelByEname($p1){
+        $db = get_conn();
         $res = $db->query("SELECT * FROM `#@_content_model` WHERE `modelstate`=1 AND `modelename`=?;",$p1);
         if ($rs = $db->fetch($res)) {
             return $rs;
         }
-        return empty($R)?false:$R;
+        return array();
+    }
+    /**
+     * 取得单个模型的所有信息
+     *
+     * @param string $p1    模型ID
+     * @return array
+     */
+    function getModelById($p1){
+        $db = get_conn();
+        $res = $db->query("SELECT * FROM `#@_content_model` WHERE `modelstate`=1 AND `modelid`=?;",$p1);
+        if ($rs = $db->fetch($res)) {
+            return $rs;
+        }
+        return array();
     }
     /**
      * 根据模型类型，取得多个模型的数据
@@ -119,7 +133,7 @@ class Content_Model{
      * @param array $p1 (optional)  为空则取得所有模型信息
      * @return array
      */
-    function getModels($p1=null){
+    function getModelsByType($p1=null){
         $db = get_conn(); $R = array();
         $in = empty($p1) ? null : DB::quoteInto('AND `modeltype` IN(?)',(is_array($p1)?implode("','",$p1):$p1));
         $res = $db->query("SELECT * FROM `#@_content_model` WHERE `modelstate`=1 {$in} ORDER BY `modelid` ASC");

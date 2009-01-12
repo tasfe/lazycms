@@ -28,7 +28,7 @@ function lazy_before(){
     System::purview('content::sort');
     // 设置公共菜单
     $menus = array(); $model = array();
-    foreach (Content_Model::getModels('list') as $v) {
+    foreach (Content_Model::getModelsByType('list') as $v) {
         $model[] = $v['modelename'];
         $menus[] = t('system::add').$v['modelname'].':article.php?action=edit&model='.$v['modelename'];
     }
@@ -56,9 +56,9 @@ function lazy_main(){
     $ds->open();
     $ds->thead = '<tr><th>ID) '.t('sort/name').'</th><th>'.t('sort/model').'</th><th>'.t('sort/count').'</th><th>'.t('sort/path').'</th><th>'.t('system::Manage').'</th></tr>';
     while ($rs = $ds->result()) {
-        $isSub = Content_Article::isSub($rs['sortid']);
-        $model = implode(',',Content_Article::getModels($rs['sortid'],'modelname'));
-        $count = Content_Article::count($rs['sortid'],implode(',',Content_Article::getModels($rs['sortid'],'modelename')));
+        $isSub = Content_Article::isSubSort($rs['sortid']);
+        $model = implode(',',Content_Article::getModelsBySortId($rs['sortid'],'modelname'));
+        $count = Content_Article::count($rs['sortid'],implode(',',Content_Article::getModelsBySortId($rs['sortid'],'modelename')));
         $ds->tbody("E(
                 ".$rs['sortid'].",
                 '".t2js(h2c($rs['sortname']))."',
@@ -85,9 +85,23 @@ function lazy_set(){
         case 'delete':
             empty($lists) ? ajax_alert(t('sort/alert/noselect')) : null ;
             // 取得要删除分类的所有子类，进行删除
-            $db->update('#@_content_sort',array('parentid'=>0),"`parentid` IN({$lists})");
-            $db->delete('#@_content_sort',"`sortid` IN({$lists})");
-            $db->delete('#@_content_sort_model',"`sortid` IN({$lists})");
+            $sortids = implode(',',Content_Article::getSortIdsBySortIds($lists));
+            // 删除文章
+            $res = $db->query("SELECT `modelid`,`sortid` FROM `#@_content_sort_model` WHERE `sortid` IN({$sortids});");
+            while ($rs = $db->fetch($res,0)) {
+                $model  = Content_Model::getModelById($rs[0]);
+                $table  = Content_Model::getDataTableName($model['modelename']);
+                $jtable = Content_Model::getJoinTableName($model['modelename']);
+                $res1 = $db->query("SELECT `tid`,`sid` FROM `{$jtable}` WHERE `type`=1 AND `sid`=?;",$rs[1]);
+                while ($rs1 = $db->fetch($res1,0)) {
+                    $db->delete($table,"`id`='".$rs1[0]."'");
+                }
+                $db->delete($jtable,array("`type`=1","`sid`='".$rs[1]."'"));
+            }
+            // 删除分类与模型之间的关联关系
+            $db->delete('#@_content_sort_model',"`sortid` IN({$sortids})");
+            // 删除分类
+            $db->delete('#@_content_sort',"`sortid` IN({$sortids})");
             ajax_success(t('sort/alert/delete'),0);
             break;
         case 'getsub':
@@ -95,9 +109,9 @@ function lazy_set(){
             $result = $db->query("SELECT * FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` ASC",$lists);
             $array  = array();
             while ($rs = $db->fetch($result)) {
-                $isSub = Content_Article::isSub($rs['sortid']);
-                $model = implode(',',Content_Article::getModels($rs['sortid'],'modelname'));
-                $count = Content_Article::count($rs['sortid'],implode(',',Content_Article::getModels($rs['sortid'],'modelename')));
+                $isSub = Content_Article::isSubSort($rs['sortid']);
+                $model = implode(',',Content_Article::getModelsBySortId($rs['sortid'],'modelname'));
+                $count = Content_Article::count($rs['sortid'],implode(',',Content_Article::getModelsBySortId($rs['sortid'],'modelename')));
                 $array[] = array(
                     'id'    => $rs['sortid'],
                     'sub'   => $isSub,
@@ -114,7 +128,7 @@ function lazy_set(){
 // *** *** www.LazyCMS.net *** *** //
 function lazy_edit(){
     $db = get_conn();
-    $models   = Content_Model::getModels('list');
+    $models   = Content_Model::getModelsByType('list');
     $sortid   = isset($_REQUEST['sortid']) ? $_REQUEST['sortid'] : 0;
     $title    = empty($sortid) ? t('sort/add') : t('sort/edit');
     $parentid = isset($_POST['parentid']) ? $_POST['parentid'] : 0;
@@ -181,7 +195,7 @@ function lazy_edit(){
                 $sortpath = h2c($rs['sortpath']);
                 $sortemplate  = h2c($rs['sortemplate']);
                 $pagetemplate = h2c($rs['pagetemplate']);
-                $getModels    = Content_Article::getModels($sortid);
+                $getModels    = Content_Article::getModelsBySortId($sortid);
             }
         }
     }
@@ -193,7 +207,7 @@ function lazy_edit(){
     echo '<p><label>'.t('sort/belong').':</label>';
     echo '<select name="parentid" id="parentid" onchange="$(this).selectModels();">';
     echo '<option models="" value="0">--- '.t('sort/topsort').' ---</option>';
-    echo Content_Article::getSorts(0,0,$sortid,$parentid);
+    echo Content_Article::getSortOptionByParentId(0,0,$sortid,$parentid);
     echo '</select></p>';
     echo '<p><label>'.t('sort/name').':</label><input class="in w200" type="text" name="sortname" id="sortname" value="'.$sortname.'" /></p>';
     echo '<p><label>'.t('sort/path').':</label><input help="sort/path" class="in w400" type="text" name="sortpath" id="sortpath" value="'.$sortpath.'" /></p>';
