@@ -214,10 +214,10 @@ function lazy_edit(){
                     $sute[$k]['type'] = strpos($type,')')===false ? $type.$sute[$k]['len'] : $type;
                     $sute[$k]['def']  = empty($data['default'])?null:" DEFAULT '".$data['default']."'";
                     // 只改变结构
+                    $data['oname'] = empty($data['oname'])?$data['ename']:$data['oname'];
                     if ($data['ename'] == $data['oname'] && $db->isField($table,$data['oname'])) {
                         $chang[] = " CHANGE `".$data['ename']."` `".$data['ename']."` ".$sute[$k]['type']." ".$sute[$k]['def'];
                     } elseif ($db->isField($table,$data['oname'])) {
-                        $data['oname'] = empty($data['oname'])?$data['ename']:$data['oname'];
                         $chang[] = " CHANGE `".$data['oname']."` `".$data['ename']."` ".$sute[$k]['type']." ".$sute[$k]['def'];
                         $data['oname'] = $data['ename'];
                     } else {

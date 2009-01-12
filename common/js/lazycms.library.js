@@ -191,10 +191,12 @@ function LoadScript(p,c){
 		return $('#dialogBox');
 	}
 	// 显示层
-	$.blockUI = function(title,body){
+	$.blockUI = function(title,body,style){
+		style = $.extend({width:600}, style||{});
+		style = $.extend({top:$(document).height()/5,left:$(document).width()/2 - style.width/2}, style||{});
 		$.dialogUI({title:title})
 			.append('<div class="body">' + body + '</div>')
-			.floatDiv({width:'500px',top:$(document).height()/4,left:$(document).width()/2 - 250});
+			.floatDiv(style);
 	}
 	// alert
     $.alert = function(message,callback,type){

@@ -119,36 +119,58 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
         }
         $traceInfo.=")\n";
     }
-    $error['trace'] = replace_root($traceInfo);
-    $RE = isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:PHP_FILE;
-    $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
-    $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-    $hl.= '<title>'.t('system::error').'</title><style type="text/css">';
-    $hl.= 'body{ font-family: Verdana; font-size:14px; }';
-    $hl.= 'a{text-decoration:none;color:#174B73;}';
-    $hl.= 'a:hover{ text-decoration:none;color:#FF6600;}';
-    $hl.= '.red{ color:red; }';
-    $hl.= '.notice{ padding:10px; margin:5px; color:#666; background:#FCFCFC; border:1px solid #E0E0E0;}';
-    $hl.= '.notice h2{ border-bottom:1px solid #DDD; font-size:25px; margin-top:0; padding:8px 0;}';
-    $hl.= '.title{ margin:4px 0; color:#F60; font-weight:bold;}';
-    $hl.= '.message, .trace{ padding:1em; border:solid 1px #000; margin:10px 0; background:#FFD; line-height:150%;}';
-    $hl.= '.message{ background:#FFD; color:#2E2E2E; border:1px solid #E0E0E0; }';
-    $hl.= '.trace{ background:#E7F7FF; border:1px solid #E0E0E0; color:#535353;}';
-    $hl.= '#footer{ color:#FF3300; margin:5pt auto; font-weight:bold; text-align:center;}';
-    $hl.= '#footer sup{color:gray;font-size:9pt;}';
-    $hl.= '#footer span{color:silver;}';
-    $hl.= '</style></head><body>';
-    $hl.= '<div class="notice"><h2>'.t('system::error').'</h2>';
-    $hl.= '<div>You can choose to [ <a href="javascript:self.location.reload();">'.t('system::try').'</a> ] [ <a href="'.$RE.'">'.t('system::back').'</a> ] or [ <a href="'.SITE_BASE.'">'.t('system::home').'</a> ]</div>';
-    $hl.= '<p><strong>'.t('system::error/position').':</strong>　FILE: <strong class="red">'.$error['file'].'</strong>　LINE: <strong class="red">'.$error['line'].'</strong></p>';
-    $hl.= '<p class="title">[ '.t('system::error/message').' ]</p>';
-    $hl.= '<p class="message">'.$error['message'].'</p>';
-    $hl.= '<p class="title">[ TRACE ]</p>';
-    $hl.= '<p class="trace">'.nl2br($error['trace']).'</p></div>';
-    $hl.= '<div id="footer">LazyCMS <sup>'.LAZY_VERSION.'</sup></div>';
-    $hl.= '</body></html>';
-    ob_end_clean(); exit($hl);
-    
+    $error['trace'] = replace_root($traceInfo); ob_end_clean();
+    // ajax 提交模式
+    if ($_SERVER['HTTP_AJAX_SUBMIT']) {
+        $hl = '<style type="text/css">';
+        $hl.= '.ErrorMessage .red{ color:red; }';
+        $hl.= '.ErrorMessage{ padding:10px; margin:5px; color:#666; background:#FCFCFC; border:1px solid #E0E0E0;}';
+        $hl.= '.ErrorMessage h2{ border-bottom:1px solid #DDD; font-size:25px; margin-top:0; padding:8px 0;}';
+        $hl.= '.ErrorMessage .title{ margin:4px 0; color:#F60; font-weight:bold;}';
+        $hl.= '.ErrorMessage .message, .ErrorMessage .trace{ padding:1em; border:solid 1px #000; margin:10px 0; background:#FFD; line-height:150%;}';
+        $hl.= '.ErrorMessage .message{ background:#FFD; color:#2E2E2E; border:1px solid #E0E0E0; }';
+        $hl.= '.ErrorMessage .trace{ background:#E7F7FF; border:1px solid #E0E0E0; color:#535353;}';
+        $hl.= '</style>';
+        $hl.= '<div class="ErrorMessage"><h2>'.t('system::error').'</h2>';
+        $hl.= '<p><strong>'.t('system::error/position').':</strong>　FILE: <strong class="red">'.$error['file'].'</strong>　LINE: <strong class="red">'.$error['line'].'</strong></p>';
+        $hl.= '<p class="title">[ '.t('system::error/message').' ]</p>';
+        $hl.= '<p class="message">'.$error['message'].'</p>';
+        $hl.= '<p class="title">[ TRACE ]</p>';
+        $hl.= '<p class="trace">'.nl2br($error['trace']).'</p></div>';
+        ajax_result(array(
+            'TITLE' => t('system::error'),
+            'BODY'  => $hl
+        ));
+    } else {
+        $RE = isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:PHP_FILE;
+        $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
+        $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
+        $hl.= '<title>'.t('system::error').'</title><style type="text/css">';
+        $hl.= 'body{ font-family: Verdana; font-size:14px; }';
+        $hl.= 'a{text-decoration:none;color:#174B73;}';
+        $hl.= 'a:hover{ text-decoration:none;color:#FF6600;}';
+        $hl.= '.red{ color:red; }';
+        $hl.= '.notice{ padding:10px; margin:5px; color:#666; background:#FCFCFC; border:1px solid #E0E0E0;}';
+        $hl.= '.notice h2{ border-bottom:1px solid #DDD; font-size:25px; margin-top:0; padding:8px 0;}';
+        $hl.= '.title{ margin:4px 0; color:#F60; font-weight:bold;}';
+        $hl.= '.message, .trace{ padding:1em; border:solid 1px #000; margin:10px 0; background:#FFD; line-height:150%;}';
+        $hl.= '.message{ background:#FFD; color:#2E2E2E; border:1px solid #E0E0E0; }';
+        $hl.= '.trace{ background:#E7F7FF; border:1px solid #E0E0E0; color:#535353;}';
+        $hl.= '#footer{ color:#FF3300; margin:5pt auto; font-weight:bold; text-align:center;}';
+        $hl.= '#footer sup{color:gray;font-size:9pt;}';
+        $hl.= '#footer span{color:silver;}';
+        $hl.= '</style></head><body>';
+        $hl.= '<div class="notice"><h2>'.t('system::error').'</h2>';
+        $hl.= '<div>You can choose to [ <a href="javascript:self.location.reload();">'.t('system::try').'</a> ] [ <a href="'.$RE.'">'.t('system::back').'</a> ] or [ <a href="'.SITE_BASE.'">'.t('system::home').'</a> ]</div>';
+        $hl.= '<p><strong>'.t('system::error/position').':</strong>　FILE: <strong class="red">'.$error['file'].'</strong>　LINE: <strong class="red">'.$error['line'].'</strong></p>';
+        $hl.= '<p class="title">[ '.t('system::error/message').' ]</p>';
+        $hl.= '<p class="message">'.$error['message'].'</p>';
+        $hl.= '<p class="title">[ TRACE ]</p>';
+        $hl.= '<p class="trace">'.nl2br($error['trace']).'</p></div>';
+        $hl.= '<div id="footer">LazyCMS <sup>'.LAZY_VERSION.'</sup></div>';
+        $hl.= '</body></html>';
+        exit($hl);
+    }
 }
 /**
  * 批量获取指定的post or get 数组

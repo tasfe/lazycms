@@ -37,7 +37,9 @@ $(document).ready(function(){
 	// 显示可编辑下拉框
 	$.selectEdit();
     // 绑定submit提交事件
-    $("form[method=post]:not(form[ajax=false])").ajaxSubmit();
+    $("form[method=post]:not(form[ajax=false])").ajaxSubmit(function(data){
+		$.blockUI(data.TITLE,data.BODY);
+	});
     // Reset separator width
     $('#menu li.hr').each(function(){
         $(this).width($(this).parent().width());

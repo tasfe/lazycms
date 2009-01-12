@@ -198,9 +198,9 @@ return array(
                     |规则：字段名|类型|错误提示|其它
                 ',
                 'value' => '
-                    |[pre]例：name:value
-                    |    name1:value1
-                    |    name2:value2[/pre]
+                    |[pre]例：value:name
+                    |    value1:name1
+                    |    value2:name2[/pre]
                 ',
             ),
         ),

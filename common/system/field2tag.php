@@ -142,8 +142,8 @@ class Field2Tag{
                     if ($v!='') {
                         $R2 = explode(':',$v);
                         $R2 = array_map('h2c',$R2);
-                        $selected = !empty($default) ? ((string)$default==(string)$R2[1] ? ' selected="selected"' : null) : null;
-                        $R.= '<option value="'.$R2[1].'"'.$selected.'>'.$R2[0].'</option>';
+                        $selected = !empty($default) ? ((string)$default==(string)$R2[0] ? ' selected="selected"' : null) : null;
+                        $R.= '<option value="'.$R2[0].'"'.$selected.'>'.$R2[1].'</option>';
                     }
                 }
                 $R.= '</select>';
@@ -156,8 +156,8 @@ class Field2Tag{
                     if ($v!='') {
                         $R2 = explode(':',$v);
                         $R2 = array_map('h2c',$R2);
-                        $checked = !empty($default) ? (instr($default,$R2[1]) ? ' checked="checked"' : null) : null;
-                        $R.= "<input name=\"{$name}".($f->intype=="checkbox"?"[]":null)."\" id=\"{$name}[{$k}]\" type=\"".$f->intype."\" value=\"{$R2[1]}\"{$checked} /><label for=\"{$name}[{$k}]\">{$R2[0]}</label>";
+                        $checked = !empty($default) ? (instr($default,$R2[0]) ? ' checked="checked"' : null) : null;
+                        $R.= "<input name=\"{$name}".($f->intype=="checkbox"?"[{$k}]":null)."\" id=\"{$name}[{$k}]\" type=\"".$f->intype."\" value=\"{$R2[0]}\"{$checked} /><label for=\"{$name}[{$k}]\">{$R2[1]}</label>";
                     }
                 }
                 $R.= '</span>';
