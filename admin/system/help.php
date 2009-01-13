@@ -25,13 +25,18 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_main(){ 
-    $path   = isset($_POST['path'])?$_POST['path']:null;
-    if (strpos($path,'::')===false) {
-        $module = isset($_POST['module'])?$_POST['module']:MODULE;
-        $path   = $module.'::help/'.$path;
+    $path = isset($_POST['path'])?$_POST['path']:null;
+    if (!strncasecmp($path,'HTML::',6)) {
+        $help = substr($path,6);
+    } else {
+        if (strpos($path,'::')===false) {
+            $module = isset($_POST['module'])?$_POST['module']:MODULE;
+            $path  = $module.'::help/'.$path;
+        }
+        $help = t($path);
     }
     ajax_result(array(
         'TITLE' => t('help'),
-        'BODY'  => ubbencode(t($path))
+        'BODY'  => ubbencode($help)
     ));
 }

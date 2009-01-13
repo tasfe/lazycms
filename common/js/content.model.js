@@ -43,6 +43,7 @@
                             $.undialogUI();
                         }).end()
 						.__FieldTypeChange()
+						.__IsHelp()
                         .__IsValidate();
                     $('select[rel=change]',dialog).change(function(){
                         dialog.__FieldTypeChange();
@@ -93,6 +94,34 @@
     $.fn.delFields = function(){
 		$('input:checked',this).parents('tr').remove();
     }
+	/**
+     * 是否需要帮助判断
+     */
+	$.fn.__IsHelp = function(){
+        if ($('#isHelp').attr('checked')) {
+            $('#fieldhelp').parents('p').slideDown('fast',function(){
+                $('[help]').help(); $.selectEdit();
+            });
+        } else {
+            $('#fieldhelp').parents('p').slideUp('fast',function(){
+                $.selectEdit();
+            });
+        }
+        $('#isHelp').click(function(){
+            if (this.checked) {
+                $('#fieldhelp').parents('p').slideDown('fast',function(){
+                    $('[help]').help(); $.selectEdit();
+                });
+            } else {
+                $('#fieldhelp').parents('p').slideUp('fast',function(){
+                    $.selectEdit();
+                });
+				$('#fieldhelp').val('');
+            }
+        });
+		return this;
+	}
+	// 绑定是否验证事件
     $.fn.__IsValidate = function(){
         // 判断是否显示提示说明
         if ($('#isValidate').attr('checked')) {

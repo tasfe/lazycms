@@ -91,7 +91,7 @@ class Httplib{
                 CURLOPT_USERAGENT => $this->_SEND_USER_AGENT,
                 CURLOPT_REFERER => $this->_referer,
             ));
-            if ($this->method=='GET') {
+            if ($this->_method=='GET') {
                 curl_setopt($ch,CURLOPT_HTTPGET,true);
             } else {
                 if (is_array($params)) {
@@ -153,7 +153,7 @@ class Httplib{
                 $response.= fread($fp,4096);
             }
             fclose($fp);
-        }
+        } 
         $this->_header   = $header;
         $this->_response = $response;
         return true;

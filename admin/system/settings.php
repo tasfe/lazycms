@@ -41,7 +41,7 @@ function lazy_main(){
         $val->check('UPLOAD_FILE_PATH|0|'.t('settings/check/filepath').';UPLOAD_FILE_PATH|5|'.t('settings/check/errorpath'));
         $val->check('UPLOAD_IMAGE_PATH|0|'.t('settings/check/imagepath').';UPLOAD_IMAGE_PATH|5|'.t('settings/check/errorpath'));
         $val->check('UPLOAD_IMAGE_EXT|0|'.t('settings/check/imageext').';UPLOAD_IMAGE_EXT|validate|'.t('settings/check/errorext').'|^[\w\,]+$');
-        $val->check('DSN_CONFIG|0|'.t('settings/check/DSNconfig').';DSN_CONFIG|3|'.t('settings/check/DSNformat').'|'.validate($DSN_CONFIG,'^((\w+):\/\/path\=(.+)$)|(^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@(\w+)(:(\d+))?(\/(\w+)\/(\w+)|\/(\w+))$)'));
+        $val->check('DSN_CONFIG|0|'.t('settings/check/DSNconfig').';DSN_CONFIG|3|'.t('settings/check/DSNformat').'|'.validate($DSN_CONFIG,'^((\w+):\/\/path\=(.+)$)|(^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@(\w+)(:(\d+))?(\/([\w\-]+)\/([\w\-]+)|\/([\w\-]+))$)'));
         if ($val->isVal()) {
             $val->out();
         } else {

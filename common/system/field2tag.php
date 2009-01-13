@@ -123,19 +123,20 @@ class Field2Tag{
         $length  = $f->length;
         $default = ($p2===false) ? $f->default : $p2;
         $width   = $f->width;
+        $help    = empty($f->help)?'':' help="HTML::'.str_replace(array("\r\n","\n"),'&#10;',h2c($f->help)).'"';
         $opts    = isset($f->option)?$f->option:null;
         switch ($f->intype) {
             case 'input':
-                $R = "<input{$tip} style=\"width:{$width}\" type=\"text\" name=\"{$name}\" id=\"{$name}\" maxlength=\"{$length}\" value=\"{$default}\" />";
+                $R = "<input{$help} style=\"width:{$width}\" type=\"text\" name=\"{$name}\" id=\"{$name}\" maxlength=\"{$length}\" value=\"{$default}\" />";
                 if ($this->_model['iskeyword']==$name) {
                     $R.= '<span><input type="checkbox" name="autokeys" id="autokeys" value="1" checked="checked" cookie="true" /><label for="autokeys">'.t('system::autokeys').'</label></span></p>';
                 }
                 break;
             case 'textarea':
-                $R = "<textarea{$tip} style=\"width:{$width}\" name=\"{$name}\" id=\"{$name}\" rows=\"5\">{$default}</textarea>";
+                $R = "<textarea{$help} style=\"width:{$width}\" name=\"{$name}\" id=\"{$name}\" rows=\"5\">{$default}</textarea>";
                 break;
             case 'select':
-                $R = "<select name=\"{$name}\" id=\"{$name}\">";
+                $R = "<select{$help} name=\"{$name}\" id=\"{$name}\">";
                 $R1 = explode("\n",$f->value);
                 foreach ($R1 as $v) {
                     $v = trim($v);
@@ -149,7 +150,7 @@ class Field2Tag{
                 $R.= '</select>';
                 break;
             case 'radio': case 'checkbox':
-                $R = '<span>';
+                $R = "<span{$help} style=\"width:{$width}\">";
                 $R1 = explode("\n",$f->value);
                 foreach ($R1 as $k=>$v) {
                     $v = trim($v);
@@ -160,7 +161,7 @@ class Field2Tag{
                         $R.= "<input name=\"{$name}".($f->intype=="checkbox"?"[{$k}]":null)."\" id=\"{$name}[{$k}]\" type=\"".$f->intype."\" value=\"{$R2[0]}\"{$checked} /><label for=\"{$name}[{$k}]\">{$R2[1]}</label>";
                     }
                 }
-                $R.= '</span>';
+                $R.= "</span>";
                 break;
             case 'editor': case 'basic':
                 $setting = array(
@@ -169,7 +170,6 @@ class Field2Tag{
                     'pagebreak' => $opts->break,
                     'snapimg'   => array($opts->snapimg,1),
                     'dellink'   => array($opts->dellink,1),
-                    'setimg'    => array($opts->setimg,1),
                     'resize'    => $opts->resize,
                     'value'     => $default,
                     'width'     => $width,
@@ -178,14 +178,14 @@ class Field2Tag{
                     $setting['toolbar'] = 'Basic';
                     $setting['height']  = "80px";
                 }
-                $setting['height'] = isset($setting['height'])?$setting['height']:"250px";
-                $R = '<span class="box">'.editor($name,$setting).'</span>';
+                $setting['height'] = isset($setting['height'])?$setting['height']:"300px";
+                $R = "<span{$help} style=\"width:{$width}\" class=\"box\">".editor($name,$setting)."</span>";
                 break;
             case 'date':
 
                 break;
             case 'upfile':
-
+                $R = "<input style=\"width:{$width}\" type=\"text\" name=\"{$name}\" id=\"{$name}\" />&nbsp;<button{$help} type=\"button\">浏览...</button>";
                 break;
         }
         return $R;

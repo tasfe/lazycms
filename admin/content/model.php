@@ -373,17 +373,17 @@ function lazy_edit(){
 // *** *** www.LazyCMS.net *** *** //
 function lazy_fields(){
     $post   = array();
-    $fields = "id,label,ename,intype,width,validate,value,length,default,option,oname";//10
+    $fields = "id,label,help,ename,intype,width,validate,value,length,default,option,oname";//11
     $eField = explode(',',$fields);
     $val = new Validate();
     if ($val->method() && !isset($_POST['JSON'])) {
         foreach ($eField as $field) {
             $rq[] = isset($_POST['field'.$field]) ? $_POST['field'.$field] : null;
         }
-        $isField = !instr('id,order,date,hits,digg,path,description,isdel',$rq[2]);
+        $isField = !instr('id,order,date,hits,digg,passed,userid,path,description,isdel',$rq[3]);
         $val->check('fieldlabel|0|'.t('model/fields/check/label'));
         $val->check('fieldename|0|'.t('model/fields/check/ename').';fieldename|validate|'.t('model/fields/check/ename1').'|3;fieldename|3|'.t('model/fields/check/restrict').'|'.$isField);
-        if (instr('input',$rq[3])) {
+        if (instr('input',$rq[4])) {
             $val->check('fieldlength|0|'.t('model/fields/check/length').';fieldlength|validate|'.t('model/fields/check/length1').'|2');
         }
         if ($val->isVal()) {
@@ -420,47 +420,47 @@ function lazy_fields(){
         }
     }
     $hl = '<form id="formFields" name="formFields" method="post" action="'.PHP_FILE.'?action=fields">';
-    $hl.= '<p><label>'.t('model/fields/text').':</label><input class="in w200" type="text" name="fieldlabel" id="fieldlabel" value="'.h2c($rq[1]).'" /></p>';
-    $hl.= '<p><label>'.t('model/fields/ename').':</label><input help="model/fields/ename" class="in w200" type="text" name="fieldename" id="fieldename" value="'.h2c($rq[2]).'" /></p>';
+    $hl.= '<p><label>'.t('model/fields/text').':</label><input class="in w200" type="text" name="fieldlabel" id="fieldlabel" value="'.h2c($rq[1]).'" /><span><input type="checkbox" name="isHelp" id="isHelp"'.(empty($rq[2])?' cookie="true"':' checked="checked"').' /><label for="isHelp">'.t('model/fields/ishelp').'</label></span></p>';
+    $hl.= '<p class="hide"><label>'.t('model/fields/help').':</label><textarea help="model/fields/help" name="fieldhelp" id="fieldhelp" rows="3" class="in w250">'.h2c($rq[2]).'</textarea></p>';
+    $hl.= '<p><label>'.t('model/fields/ename').':</label><input help="model/fields/ename" class="in w200" type="text" name="fieldename" id="fieldename" value="'.h2c($rq[3]).'" /></p>';
     $hl.= '<p><label>'.t('model/fields/input').':</label><select name="fieldintype" id="fieldintype" rel="change">';
     foreach (Content_Model::getType() as $k=>$v) {
-        $selected = $rq[3]==$k?' selected="selected"':'';
+        $selected = $rq[4]==$k?' selected="selected"':'';
         $hl.= '<option value="'.$k.'"'.$selected.'>'.t('model/fields/type/'.$k).'</option>';
     }
-    $hl.= '</select> <span>'.t('model/fields/width').':<select name="fieldwidth" id="fieldwidth" edit="true" default="'.h2c($rq[4]?$rq[4]:'150px').'">';
+    $hl.= '</select> <span>'.t('model/fields/width').':<select name="fieldwidth" id="fieldwidth" edit="true" default="'.h2c($rq[5]?$rq[5]:'150px').'">';
     for($i=1;$i<=16;$i++){
         $hl.= '<option value="'.($i*50).'px">'.($i*50).'px</option>';
     }
-    $hl.= '</select></span><span><input type="checkbox" name="isValidate" id="isValidate"'.(empty($rq[5])?null:' checked="checked"').' cookie="true" /><label for="isValidate">'.t('model/fields/validate').'</label></span></p>';
+    $hl.= '</select><input type="checkbox" name="isValidate" id="isValidate"'.(empty($rq[6])?' cookie="true"':' checked="checked"').' /><label for="isValidate">'.t('model/fields/validate').'</label></span></p>';
 
     $hl.= '<p class="hide"><label>'.t('model/fields/rules').':</label><select name="fieldrules" id="fieldrules">';
     foreach (Content_Model::getValidate() as $k=>$v) {
         $hl.= '<option value="'.$v.'">'.t('validate/'.$k).'</option>';
     }
     $hl.= '</select>&nbsp;<a href="javascript:;" rule="+"><img class="a6 os" src="../system/images/white.gif" /></a><a href="javascript:;" rule="-"><img class="a7 os" src="../system/images/white.gif" /></a>';
-    $hl.= '<textarea help="model/fields/rules" name="fieldvalidate" id="fieldvalidate" rows="3" class="in w250">'.h2c($rq[5]).'</textarea></p>';
+    $hl.= '<textarea help="model/fields/rules" name="fieldvalidate" id="fieldvalidate" rows="3" class="in w250">'.h2c($rq[6]).'</textarea></p>';
     
-    $hl.= '<p class="hide"><label>'.t('model/fields/value').':</label><textarea help="model/fields/value" name="fieldvalue" id="fieldvalue" rows="4" class="in w250">'.h2c($rq[6]).'</textarea></p>';
+    $hl.= '<p class="hide"><label>'.t('model/fields/value').':</label><textarea help="model/fields/value" name="fieldvalue" id="fieldvalue" rows="4" class="in w250">'.h2c($rq[7]).'</textarea></p>';
     
     $hl.= '<p class="hide"><label>'.t('model/fields/option').':</label><span id="fieldoption">';
-    $hl.= '<input type="checkbox" name="fieldoption[upimg]" id="option_upimg" value="1"'.($rq[9]->upimg?' checked="checked"':null).' /><label for="option_upimg">'.t('system::editor/upimg').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[upfile]" id="option_upfile" value="1"'.($rq[9]->upfile?' checked="checked"':null).' /><label for="option_upfile">'.t('system::editor/upfile').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[break]" id="option_break" value="1"'.($rq[9]->break?' checked="checked"':null).' /><label for="option_break">'.t('system::editor/break').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[snapimg]" id="option_snapimg" value="1"'.($rq[9]->snapimg?' checked="checked"':null).' /><label for="option_snapimg">'.t('system::editor/snapimg').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[dellink]" id="option_dellink" value="1"'.($rq[9]->dellink?' checked="checked"':null).' /><label for="option_dellink">'.t('system::editor/dellink').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[setimg]" id="option_setimg" value="1"'.($rq[9]->setimg?' checked="checked"':null).' /><label for="option_setimg">'.t('system::editor/setimg').'</label>';
-    $hl.= '<input type="checkbox" name="fieldoption[resize]" id="option_resize" value="1"'.($rq[9]->resize?' checked="checked"':null).' /><label for="option_resize">'.t('system::editor/resize').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[upimg]" id="option_upimg" value="1"'.($rq[10]->upimg?' checked="checked"':null).' /><label for="option_upimg">'.t('system::editor/upimg').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[upfile]" id="option_upfile" value="1"'.($rq[10]->upfile?' checked="checked"':null).' /><label for="option_upfile">'.t('system::editor/upfile').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[break]" id="option_break" value="1"'.($rq[10]->break?' checked="checked"':null).' /><label for="option_break">'.t('system::editor/break').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[snapimg]" id="option_snapimg" value="1"'.($rq[10]->snapimg?' checked="checked"':null).' /><label for="option_snapimg">'.t('system::editor/snapimg').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[dellink]" id="option_dellink" value="1"'.($rq[10]->dellink?' checked="checked"':null).' /><label for="option_dellink">'.t('system::editor/dellink').'</label>';
+    $hl.= '<input type="checkbox" name="fieldoption[resize]" id="option_resize" value="1"'.($rq[10]->resize?' checked="checked"':null).' /><label for="option_resize">'.t('system::editor/resize').'</label>';
     $hl.= '</span></p>';
 
-    $hl.= '<p class="hide"><label>'.t('model/fields/length').':</label><select name="fieldlength" id="fieldlength" edit="true" default="'.h2c(empty($rq[7])?255:$rq[7]).'">';
+    $hl.= '<p class="hide"><label>'.t('model/fields/length').':</label><select name="fieldlength" id="fieldlength" edit="true" default="'.h2c(empty($rq[8])?255:$rq[8]).'">';
     foreach (array(10,20,30,50,100,255) as $v) {
         $hl.= '<option value="'.$v.'">'.$v.'</option>';
     }
     $hl.= '</select></p>';
-    $hl.= '<p><label>'.t('model/fields/default').':</label><input class="in w300" type="text" name="fielddefault" id="fielddefault" value="'.h2c($rq[8]).'" /></p>';
+    $hl.= '<p><label>'.t('model/fields/default').':</label><input class="in w300" type="text" name="fielddefault" id="fielddefault" value="'.h2c($rq[9]).'" /></p>';
     $hl.= '<div class="tr"><button type="submit">'.t('system::save').'</button><button type="button" rel="cancel">'.t('system::ajax/cancel').'</button></div>';
     $hl.= '<input name="fieldid" type="hidden" value="'.$rq[0].'" />';
-    $hl.= '<input name="fieldoname" type="hidden" value="'.(empty($rq[10])?$rq[2]:$rq[10]).'" />';
+    $hl.= '<input name="fieldoname" type="hidden" value="'.(empty($rq[11])?$rq[3]:$rq[11]).'" />';
     $hl.= '</form>';
     ajax_result(array(
         'TITLE' => t('model/fields/add'),

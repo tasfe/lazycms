@@ -530,7 +530,7 @@ function snap_img($p1){
         foreach ($imgs[1] as $img) {
             $img = trim($img,'"\'');
             if ($downImg = down_img($img)) {
-                if (validate($img,5)) {
+                if (validate($img,5) && $img!=$downImg) {
                     $R = str_replace($img,SITE_BASE.ltrim($downImg,'/'),$R);
                 }
             }
@@ -574,7 +574,7 @@ function down_img($p1,$p2=null){
                 $fileName = $imgInfo['basename'];
             }
             mkdirs(LAZY_PATH.SEPARATOR.$imgPath);
-            save_file(LAZY_PATH.SEPARATOR.$imgPath.$fileName,$http->body());
+            save_file(LAZY_PATH.SEPARATOR.$imgPath.$fileName,$http->response());
             return str_replace(SEPARATOR,'/',$imgPath).$fileName;
         } else {
             return $p1;
@@ -1028,8 +1028,7 @@ function ubbencode($p1){
     for ($i=1; $i<7; $i++) {
         $T = preg_replace('/\[h'.$i.'\](.+?)\[\/h'.$i.']/i','<h'.$i.'>$1</h'.$i.'>',$T);
     }
-    
-    if (strpos($T,'<br/>')!==false) {
+    if (strpos($T,'<br/>')!==false && strpos($T,' |')!==false) {
         $R = array();
         foreach (explode('<br/>',$T) as $v) {
             if (($n=strpos($v,' |'))!==false) {
@@ -1058,7 +1057,6 @@ function editor($p1,$p2=array()){
     $A1['pagebreak'] = isset($A1['pagebreak']) ? $A1['pagebreak'] : false;
     $A1['snapimg'] = isset($A1['snapimg']) ? $A1['snapimg'] : array(0,0);
     $A1['dellink'] = isset($A1['dellink']) ? $A1['dellink'] : array(0,0);
-    $A1['setimg'] = isset($A1['setimg']) ? $A1['setimg'] : array(0,0);
     $A1['resize'] = isset($A1['resize']) ? 'true' : 'false';
     $css = '<style type="text/css">';
     $css.= '.'.$p1.'_editor_button{ width:'.$A1['width'].'; display:table; zoom:100%; margin:3px 0 5px 0;}';
@@ -1073,9 +1071,6 @@ function editor($p1,$p2=array()){
     }
     if ($A1['dellink'][0]) {
         $but.= '<input type="checkbox" name="'.$p1.'_attr[dellink]" id="'.$p1.'_attr[dellink]" value="1"'.($A1['dellink'][1]?' checked="checked"':null).' cookie="true" /><label for="'.$p1.'_attr[dellink]">'.t('system::editor/dellink').'</label>&nbsp; ';
-    }
-    if ($A1['setimg'][0]) {
-        $but.= '<input type="checkbox" name="'.$p1.'_attr[setimg]" id="'.$p1.'_attr[setimg]" value="1"'.($A1['setimg'][1]?' checked="checked"':null).' cookie="true" /><label for="'.$p1.'_attr[setimg]">'.t('system::editor/setimg').'</label>';
     }
     if (!empty($but)) {
         $div.= '<div class="'.$p1.'_editor_button">'.$but.'</div>';

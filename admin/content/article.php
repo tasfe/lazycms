@@ -256,9 +256,9 @@ function lazy_edit(){
                 }
                 $key->save($docId,$keywords,c('GET_RELATED_KEY'));
             }
-            $query = empty($model['iskeyword'])?null:'&'.rawurlencode('fields['.$model['iskeyword'].']').'='.rawurlencode($fields[$model['iskeyword']]->label);
+            $referer = isset($_POST['__referer'])?$_POST['__referer']:PHP_FILE;
             // 输出执行结果
-            ajax_success($text,PHP_FILE."?model={$m}{$query}");
+            ajax_success($text,$referer);
         }
     } else {
         if (!empty($docId)) {
@@ -303,7 +303,7 @@ function lazy_edit(){
     }
     echo '<p><label>'.t('article/description').':</label><textarea name="description" id="description" rows="5" class="in w400">'.$description.'</textarea></p>';
     echo '</div></fieldset>';
-    echo but('system::save').'<input name="id" type="hidden" value="'.$docId.'" /></form>';
+    echo but('system::save').'<input name="id" type="hidden" value="'.$docId.'" /><input name="__referer" type="hidden" value="'.$_SERVER['HTTP_REFERER'].'" /></form>';
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_keywords(){

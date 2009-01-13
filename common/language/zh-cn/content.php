@@ -53,6 +53,7 @@ return array(
             'title' => '字段管理',
             'add'   => '添加字段',
             'text'  => '表单文字',
+            'help'  => '帮助信息',
             'ename' => '字段名',
             'input' => '输入类型',
             'width' => '宽',
@@ -61,6 +62,7 @@ return array(
             'length'    => '最大长度',
             'default'   => '默认值',
             'option'    => '更多属性',
+            'ishelp'    => '需要帮助',
             'validate'  => '需要验证',
             'iskeyword' => '点亮自动获取关键词',
             'description'=> '点亮自动获取简述',
@@ -191,9 +193,10 @@ return array(
                 |%d=月份中的第几天，01 到 31
             ',
             'fields'    => array(
+                'help'  => '帮助信息，可以使用UBB标签',
                 'ename' => '
                     |必填，用处很多了，以下字段名已被系统使用：
-                    |(id,order,date,hits,digg,path,description,isdel)
+                    |(id,order,date,hits,digg,passed,userid,path,description,isdel)
                 ',
                 'rules' => '
                     |可以有多个规则，使用“分号”分割。
