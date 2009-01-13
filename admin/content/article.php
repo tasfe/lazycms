@@ -41,7 +41,7 @@ function lazy_before(){
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_main(){
-    System::script('LoadScript("content.article");');
+    System::loadScript('content.article');
     System::header(t('article'));
     $size    = isset($_GET['size'])?$_GET['size']:15;
     $model   = isset($_GET['model'])?$_GET['model']:null;
@@ -194,8 +194,7 @@ function lazy_edit(){
                 if ($e->snapimg) {
                     $snapimg = isset($_POST[$k.'_attr']['snapimg']) ? $_POST[$k.'_attr']['snapimg'] : false;
                     if ($snapimg) {
-                        // TODO: 下载图片
-                        //$data[$k] = snapImg($data[$k]);
+                        $data[$k] = snap_img($data[$k]);
                     }
                 }
                 // 删除站外连接
@@ -240,20 +239,24 @@ function lazy_edit(){
                 $text = t('article/alert/edit');
             }
             // 写分类关系
-            foreach ($sortids as $sortid) {
-                Content_Article::joinSort($jtable,$docId,$sortid);
+            if (empty($sortids)) {
+                Content_Article::joinSort($jtable,$docId,0);
+            } else {
+                foreach ($sortids as $sortid) {
+                    Content_Article::joinSort($jtable,$docId,$sortid);
+                }
             }
             // 自动获取关键词
-            if (!empty($model['setkeyword'])) {
+            if (!empty($model['iskeyword'])) {
                 $keywords = isset($_POST['keywords']) ? $_POST['keywords'] : null;
-                $autokeys = isset($_POST['autokeywords']) ? $_POST['autokeywords'] : null;
+                $autokeys = isset($_POST['autokeys']) ? $_POST['autokeys'] : null;
                 if ($autokeys && empty($keywords)) {
-                    $keywords = System::getKeywords($data[$model['setkeyword']]);
+                    $keywords = System::getKeywords($data[$model['iskeyword']]);
                     $keywords = implode(',',$keywords);
                 }
                 $key->save($docId,$keywords,c('GET_RELATED_KEY'));
             }
-            $query = empty($model['setkeyword'])?null:'&'.rawurlencode('fields['.$model['setkeyword'].']').'='.rawurlencode($fields[$model['setkeyword']]->label);
+            $query = empty($model['iskeyword'])?null:'&'.rawurlencode('fields['.$model['iskeyword'].']').'='.rawurlencode($fields[$model['iskeyword']]->label);
             // 输出执行结果
             ajax_success($text,PHP_FILE."?model={$m}{$query}");
         }
@@ -262,7 +265,7 @@ function lazy_edit(){
             $res = $db->query("SELECT * FROM `{$table}` WHERE `id`=?",$docId);
             if ($data = $db->fetch($res)) {
                 $path   = h2c($data['path']);
-                if (!empty($model['setkeyword'])) {
+                if (!empty($model['iskeyword'])) {
                     $keywords = $key->get($docId);
                 }
                 $description = $data['description'];
@@ -273,7 +276,7 @@ function lazy_edit(){
     System::style('
         #sortView{ width:300px; height:23px; display:block; cursor:default; line-height:23px; letter-spacing:1px; padding:0px 4px; border:1px solid #c6d9e7; color:#333333; background:url(../../common/images/buttons-bg.png) repeat-x; }
     ');
-    System::script('LoadScript("content.article");');
+    System::loadScript('content.article');
     System::header($title,$selTab);
 
     echo '<form id="form1" name="form1" method="post" action="">';
@@ -295,12 +298,22 @@ function lazy_edit(){
 
     echo '<fieldset><legend><a rel=".more-attr"><img class="a2 os" src="../system/images/white.gif" />'.t('system::moreattr').'</a></legend>';
     echo '<div class="more-attr">';
-    if (!empty($model['setkeyword'])) {
-        echo '<p><label>'.t('article/keywords').':</label><input class="in w400" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" onclick="$(\'#keywords\').getKeywords(\'#'.$model['setkeyword'].'\')" tip="'.t('common/get/@tip','system').'">'.t('common/get','system').'</button></p>';
+    if (!empty($model['iskeyword'])) {
+        echo '<p><label>'.t('article/keyword').':</label><input class="in w400" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" onclick="$(\'#keywords\').getKeywords(\'#'.$model['iskeyword'].'\')">'.t('system::get').'</button></p>';
     }
     echo '<p><label>'.t('article/description').':</label><textarea name="description" id="description" rows="5" class="in w400">'.$description.'</textarea></p>';
     echo '</div></fieldset>';
     echo but('system::save').'<input name="id" type="hidden" value="'.$docId.'" /></form>';
+}
+// *** *** www.LazyCMS.net *** *** //
+function lazy_keywords(){
+    $result = null;
+    $title  = isset($_POST['title']) ? $_POST['title'] : null;
+    if (!empty($title)) {
+        $keywords = System::getKeywords($title);
+        $result = implode(',',$keywords);
+    }
+    exit($result);
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_after(){

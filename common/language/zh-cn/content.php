@@ -62,6 +62,8 @@ return array(
             'default'   => '默认值',
             'option'    => '更多属性',
             'validate'  => '需要验证',
+            'iskeyword' => '点亮自动获取关键词',
+            'description'=> '点亮自动获取简述',
             'type'  => array(
                 'input'     => '输入框',
                 'textarea'	=> '文本框',
@@ -137,7 +139,7 @@ return array(
         'size'  => '每页条数',
         'sortall'   => '所有分类',
         'keyword'   => '关键词',
-        'description'   => '简述',
+        'description'   => 'Meta简述',
         'fields'    => '列表字段',
         'view'      => '显示',
         'submit'    => '提交',

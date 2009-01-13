@@ -30,6 +30,7 @@ return array(
     'ON'    => '√',
     'OFF'   => '×',
     'add'   => '添加',
+    'get'   => '获取',
     'try'   => '重试',
     'edit'  => '编辑',
     'back'  => '返回',
@@ -45,6 +46,7 @@ return array(
     'reselect'  => '反选',
     'selectall' => '全选',
     'moreattr'  => '更多属性',
+    'autokeys'  => '自动获取关键词',
 
     'ajax'  => array(
         'error'     => '系统错误',

@@ -120,7 +120,7 @@ function lazy_import(){
             }
         }
     }
-    System::script('LoadScript("content.model");');
+    System::loadScript('content.model');
     System::header(t('model/import'));
     echo '<fieldset><legend><a rel=".show" cookie="false"><img class="a2 os" src="../system/images/white.gif" />'.t('model/import').'</a></legend>';
     echo '<div class="show">';
@@ -291,7 +291,7 @@ function lazy_edit(){
             $n = 3; break;
     }
 
-    System::script('LoadScript("content.model");');
+    System::loadScript('content.model');
     System::script('
         $(document).ready(function() {
             $("#tableFields").__tableDnD();
@@ -338,9 +338,16 @@ function lazy_edit(){
         echo '<td><input type="checkbox" name="list['.$row['id'].']" value="'.$row['id'].'" /> '.$row['label'].'</td>';
         echo '<td>'.$row['ename'].'</td>';
         echo '<td>'.t('model/fields/type/'.$row['intype']).$len.'</td>';
-        echo '<td>'.(empty($row['default'])?'NULL':$row['default']).'</td>';
+        echo '<td>'.(empty($row['default'])?'NULL':$row['default']).'<textarea name="modelfields['.$row['id'].']" fieldid="'.$row['id'].'" class="hide">'.json_encode($row).'</textarea></td>';
         echo '<td><a href="javascript:;" onclick="$(\'#tableFields\').editFields('.$row['id'].');"><img class="a5 os" src="../system/images/white.gif" /></a>';
-        echo '<textarea name="modelfields['.$row['id'].']" fieldid="'.$row['id'].'" class="hide">'.json_encode($row).'</textarea>';
+        if ($row['intype']=='input') {
+            $selected = ($post[5]==$row['ename']) ? 'b5' : 'b6';
+            echo '<a href="javascript:;" onclick="$(this).isKeyword('.$row['id'].');" title="'.t('model/fields/iskeyword').'"><img class="'.$selected.' os" src="../system/images/white.gif" /></a>';
+        }
+        if (instr('basic,editor',$row['intype'])) {
+            $selected = ($post[6]==$row['ename']) ? 'b7' : 'b8';
+            echo '<a href="javascript:;" onclick="$(this).Description('.$row['id'].');" title="'.t('model/fields/description').'"><img class="'.$selected.' os" src="../system/images/white.gif" /></a>';
+        }
         echo '</td></tr>';
     }
 
@@ -359,6 +366,8 @@ function lazy_edit(){
     echo '<input name="modelid" type="hidden" value="'.$modelid.'" />';
     echo '<input name="modeltype" type="hidden" value="'.$modeltype.'" />';
     echo '<input name="oldename" type="hidden" value="'.$post[1].'" />';
+    echo '<input name="iskeyword" type="hidden" value="'.$post[5].'" />';
+    echo '<input name="description" type="hidden" value="'.$post[6].'" />';
     echo '</form>';
 }
 // *** *** www.LazyCMS.net *** *** //
@@ -380,18 +389,23 @@ function lazy_fields(){
         if ($val->isVal()) {
             $val->out();
         } else {
-            $R = array();
+            $row = array();
             foreach ($eField as $k=>$field){
-                $R[$field] = $rq[$k];
+                $row[$field] = $rq[$k];
             }
-            $len = instr('input,radio,checkbox,select,upfile',$R['intype'])?'('.$R['length'].')':null;
-            $s = '<tr n="'.$R['id'].'">';
-            $s.= '<td><input type="checkbox" name="list['.$R['id'].']" value="'.$R['id'].'" /> '.$R['label'].'</td>';
-            $s.= '<td>'.$R['ename'].'</td>';
-            $s.= '<td>'.t('model/fields/type/'.$R['intype']).$len.'</td>';
-            $s.= '<td>'.(empty($R['default'])?'NULL':$R['default']).'</td>';
-            $s.= '<td><a href="javascript:;" onclick="$(\'#tableFields\').editFields('.$R['id'].');"><img class="a5 os" src="../system/images/white.gif" /></a>';
-            $s.= '<textarea name="modelfields['.$R['id'].']" fieldid="'.$R['id'].'" class="hide">'.json_encode($R).'</textarea>';
+            $len = instr('input,radio,checkbox,select,upfile',$row['intype'])?'('.$row['length'].')':null;
+            $s = '<tr n="'.$row['id'].'">';
+            $s.= '<td><input type="checkbox" name="list['.$row['id'].']" value="'.$row['id'].'" /> '.$row['label'].'</td>';
+            $s.= '<td>'.$row['ename'].'</td>';
+            $s.= '<td>'.t('model/fields/type/'.$row['intype']).$len.'</td>';
+            $s.= '<td>'.(empty($row['default'])?'NULL':$row['default']).'<textarea name="modelfields['.$row['id'].']" fieldid="'.$row['id'].'" class="hide">'.json_encode($row).'</textarea></td>';
+            $s.= '<td><a href="javascript:;" onclick="$(\'#tableFields\').editFields('.$row['id'].');"><img class="a5 os" src="../system/images/white.gif" /></a>';
+            if ($row['intype']=='input') {
+                $s.= '<a href="javascript:;" onclick="$(this).isKeyword('.$row['id'].');" title="'.t('model/fields/iskeyword').'"><img class="b6 os" src="../system/images/white.gif" /></a>';
+            }
+            if (instr('basic,editor',$row['intype'])) {
+                $s.= '<a href="javascript:;" onclick="$(this).Description('.$row['id'].');" title="'.t('model/fields/description').'"><img class="b8 os" src="../system/images/white.gif" /></a>';
+            }
             $s.= '</td></tr>';
             ajax_result($s);
         }

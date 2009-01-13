@@ -518,6 +518,71 @@ function ob_zip($p1){
     return $p1;
 }
 /**
+ * 抓取图片
+ *
+ * @param string $p1
+ * @return string
+ */
+function snap_img($p1){
+    $R = $p1;
+    if (preg_match_all('/<img[^>]*src=("([^"]+)"|\'([^\']+)\')[^>]*>/isU',$R,$imgs)) {
+        $imgs[1] = array_unique($imgs[1]);
+        foreach ($imgs[1] as $img) {
+            $img = trim($img,'"\'');
+            if ($downImg = down_img($img)) {
+                if (validate($img,5)) {
+                    $R = str_replace($img,SITE_BASE.ltrim($downImg,'/'),$R);
+                }
+            }
+        }
+    }
+    return $R;
+}
+/**
+ * 下载图片
+ *
+ * @param string $p1    要下载的文件路径
+ * @param string $p2    指定保存地址
+ * @return string
+ */
+function down_img($p1,$p2=null){
+    static $http = null;
+    if (validate($p1,5)) {
+        if (!is_object($d)) {
+            import("system.httplib");
+            $http = new Httplib();
+        }
+        $http->connect($p1,'GET',100)->send();
+        if ($http->status() == 200) {
+            if (empty($p2)) {
+                $imgInfo = pathinfo($p1);
+                $imgPath = c('UPLOAD_IMAGE_PATH').date('/Y/m/d/',now());
+                $imgPath = str_replace('/',SEPARATOR,$imgPath);
+                if (isset($imgInfo['extension']) && isset($imgInfo['filename'])) {
+                    $fileName = $imgInfo['filename'].'.'.$imgInfo['extension'];
+                    if (is_file(LAZY_PATH.SEPARATOR.$imgPath.$fileName)) {
+                        $fileName = str_replace('.','',microtime(true)).'.'.$imgInfo['extension'];
+                    }
+                } else {
+                    if(preg_match("/Content-Type\:(.+)\r\n/i",$http->header(),$imgInfo)){
+                        $fileName = str_replace('.','',microtime(true)).'.'.substr($imgInfo[1],strrpos($imgInfo[1],'/')+1);
+                    }
+                }
+            } else {
+                $imgInfo = pathinfo($p2);
+                $imgPath  = $imgInfo['dirname'];
+                $fileName = $imgInfo['basename'];
+            }
+            mkdirs(LAZY_PATH.SEPARATOR.$imgPath);
+            save_file(LAZY_PATH.SEPARATOR.$imgPath.$fileName,$http->body());
+            return str_replace(SEPARATOR,'/',$imgPath).$fileName;
+        } else {
+            return $p1;
+        }
+    }
+    return $p1;
+}
+/**
  * UTF-8转换成其他任何编码
  * 
  * @param  string   $p1    要转换的内容

@@ -119,6 +119,14 @@ class System{
         g('SCRIPT',$R);
     }
     /**
+     * 加载脚本
+     *
+     * @param string $p1
+     */
+    function loadScript($p1){
+        System::script('LoadScript("'.$p1.'");');
+    }
+    /**
      * 设置style
      *
      * @param string $p1
@@ -257,24 +265,6 @@ class System{
         $execTime = ($GLOBALS['_endTime']-$GLOBALS['_beginTime']);
         $hl.= sprintf('</div><div id="footer"><a href="http://www.lazycms.net" target="_blank">Copyright &copy; LazyCMS.net All Rights Reserved.</a><br/>Processed in %f second(s)</div>',$execTime);
         $hl.= '</body></html>'; echo $hl;
-    }
-    /**
-     * 取得用户组下拉列表
-     *
-     * @param int $p1   groupid
-     * @param int $p2   selected
-     * @return string
-     */
-    function getGroups($p1,$p2=null){
-        $R = null; $db = get_conn();
-        $res = $db->query("SELECT `groupid`,`groupname` FROM `#@_system_group` WHERE 1=1 ORDER BY `groupid` DESC;");
-        while ($rs = $db->fetch($res,0)) {
-            if ($p1 != $rs[0]) {
-                $selected = ((int)$p2 == (int)$rs[0]) ? ' selected="selected"' : null;
-                $R.= '<option value="'.$rs[0].'"'.$selected.'>'.$rs[1].'</option>';
-            }
-        }
-        return $R;
     }
     /**
      * 中文分词

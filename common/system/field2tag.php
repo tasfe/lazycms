@@ -127,8 +127,8 @@ class Field2Tag{
         switch ($f->intype) {
             case 'input':
                 $R = "<input{$tip} style=\"width:{$width}\" type=\"text\" name=\"{$name}\" id=\"{$name}\" maxlength=\"{$length}\" value=\"{$default}\" />";
-                if ($this->_model['setkeyword']==$name) {
-                    $R.= '<span><input type="checkbox" name="autokeywords" id="autokeywords" value="1" checked="checked" cookie="true" /><label for="autokeywords">'.t('system::Auto keywords').'</label></span></p>';
+                if ($this->_model['iskeyword']==$name) {
+                    $R.= '<span><input type="checkbox" name="autokeys" id="autokeys" value="1" checked="checked" cookie="true" /><label for="autokeys">'.t('system::autokeys').'</label></span></p>';
                 }
                 break;
             case 'textarea':

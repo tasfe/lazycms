@@ -57,8 +57,15 @@
      * 追加字段
      */
     $.fn.appendFields = function(data){
-		if ($('tr[n=' + $(data).attr('n') + ']',this).is('tr')) {
-			$('tr[n=' + $(data).attr('n') + ']',this).replaceWith(data);
+		var tr = $('tr[n=' + $(data).attr('n') + ']',this);
+		if (tr.is('tr')) {
+			var dataVal = $.parseJSON($('textarea',data).val());
+			var trtdVal = $.parseJSON($('textarea',tr).val());
+			var isReplace = ($.inArray(dataVal.intype,['input','basic','editor']) || dataVal.intype != trtdVal.intype) ? true : false;
+			$('td',tr).each(function(i){
+				if (!isReplace && i>=4) { return ; }
+				$('td:eq(' + i + ')',data).replaceAll(this);
+			});
 		} else {
 			$('tbody',this).append(data);
 		}
@@ -185,6 +192,24 @@
 		},function(){
 			$(this).removeClass('Over');
 		});
+	}
+	/**
+     * 设置自动获取关键词
+     */
+	$.fn.isKeyword = function(id){
+		var name = $('#tableFields tbody tr[n=' + id + '] td:eq(1)').text();
+		$('#tableFields > tbody .b5').removeClass('b5').addClass('b6');
+		$('img',this).removeClass('b6').addClass('b5');
+		$('input[name=iskeyword]').val(name);
+	}
+	/**
+     * 设置自动获取简述
+     */
+	$.fn.Description = function(id){
+		var name = $('#tableFields tbody tr[n=' + id + '] td:eq(1)').text();
+		$('#tableFields > tbody .b7').removeClass('b7').addClass('b8');
+		$('img',this).removeClass('b8').addClass('b7');
+		$('input[name=description]').val(name);
 	}
     /**
      * 自动上传

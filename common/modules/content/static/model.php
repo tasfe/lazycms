@@ -173,12 +173,10 @@ class Content_Model{
         $SQL.= "    `order` INT(11) DEFAULT '0',";
         $SQL.= "    `date` INT(11) DEFAULT '0',";
         $SQL.= "    `hits` INT(11) DEFAULT '0',";
-        if ($model['modeltype']=='list') {
-            $SQL.= "`img` VARCHAR(255),";
-            $SQL.= "`digg` INT(11) DEFAULT '0',";
-            $SQL.= "`passed` TINYINT(1) DEFAULT '0',";
-            $SQL.= "`userid` INT(11) DEFAULT '0',";
-        }
+        $SQL.= "    `img` VARCHAR(255),";
+        $SQL.= "    `digg` INT(11) DEFAULT '0',";
+        $SQL.= "    `passed` TINYINT(1) DEFAULT '0',";
+        $SQL.= "    `userid` INT(11) DEFAULT '0',";
         $SQL.= "    `path` VARCHAR(255),";
         $SQL.= "    `description` VARCHAR(255){$sute}";
         $SQL.= ") ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;";

@@ -138,7 +138,7 @@ function lazy_edit(){
         }
     }
     
-    System::script('LoadScript("system.admins");');
+    System::loadScript('system.admins');
     System::header($title);
     
     echo '<form id="form1" name="form1" method="post" action="">';
