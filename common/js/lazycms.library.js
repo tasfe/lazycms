@@ -17,7 +17,15 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-function debug(s){ alert('debug:' + s); }
+// 对象dump函数
+function dump(o){
+    if (typeof o == 'undefined') {
+        alert(o); return ;
+    }
+    for(k in o){
+        alert(k+' : '+o[k]);
+    }
+}
 function common(){ return $("script[src*=js/jquery.js]").attr("src").replace(/(\/js\/jquery\.js\?(.*))/i,'');}
 function lock(p1){ return p1 ? icon('a3') : icon('a4'); }
 function cklist(p1){ return '<input name="list['+p1+']" id="list_'+p1+'" type="checkbox" value="'+p1+'"/>'; }
@@ -342,7 +350,17 @@ function LoadScript(p,c){
 			case 'VALIDATE':// 显示错误消息
 				var c = d.DATA.length;
 				for (var i=0;i<c;i++) {
-					$('[name='+d.DATA[i].id+']').unbind().attr('error',d.DATA[i].text).addClass('error');
+					if (typeof(tinyMCE) != 'undefined') {
+						if (typeof(tinyMCE.get(d.DATA[i].id)) != 'undefined') {
+							$('#' + d.DATA[i].id + '_ifr')
+								.unbind().attr('error',d.DATA[i].text)
+								.after('<div style="width:100%;height:3px; background:#FFFFFF url(' + common() + '/images/invalid-line.gif) repeat-x left bottom !important;">&nbsp;</div>');
+						} else {
+							$('[name=' + d.DATA[i].id + ']').unbind().attr('error',d.DATA[i].text).addClass('error');
+						}
+					} else {
+						$('[name=' + d.DATA[i].id + ']').unbind().attr('error',d.DATA[i].text).addClass('error');
+					}
 				}
 				$('[error]').jTips();
 				break;
@@ -385,11 +403,10 @@ function LoadScript(p,c){
             // 设置登录按钮
                 b.attr('disabled',true);
             // 设置编辑器内容
-            if (typeof tinyMCE!='undefined') {
-                var editor = tinyMCE.editors;
-                for (e in editor) {
-                    $('#'+editor[e].id).val(editor[e].getContent());
-                }
+            if (typeof(tinyMCE) != 'undefined') {
+				$(tinyMCE.editors).each(function(){
+					$('#' + this.content.id).val(this.content.getContent());
+				});
             }
             // ajax submit
             $.ajax({
@@ -424,17 +441,24 @@ function LoadScript(p,c){
      * 气泡提示
      */
     $.fn.jTips = function(){
-        var $this = $(this);        
-        this.hover(function(){
-            var jTip = $('body').append('<div class="jTip"><div class="jTip-body"></div><div class="jTip-foot"></div></div>').find('.jTip');
-            var jHeight = jTip.height();
-            $this.mousemove(function(e){
-                jTip.css({'top':((e.clientY+document.documentElement.scrollTop) - jHeight - 20 ) + 'px','left':(e.clientX + 5) + 'px','z-index':300});
-            });
-            jTip.fadeIn('fast').find('.jTip-body').html($(this).attr('error'));
-        },function(){
-            $('.jTip').remove();
-        });
+		return this.each(function(){
+			$(this).hover(function(){
+				var jTip = $('body').append('<div class="jTip"><div class="jTip-body"></div><div class="jTip-foot"></div></div>').find('.jTip');
+				var jHeight = jTip.height();
+				var jObject = $(this);
+				var jOffset = {left:0,top:document.documentElement.scrollTop};
+				if ($(this).is('iframe')) {
+					jOffset = $(this).offset();
+					jObject = $(this).contents();
+				}
+				jObject.mousemove(function(e){
+					jTip.css({'top':((e.clientY + jOffset.top) - jHeight - 20 ) + 'px','left':(e.clientX + jOffset.left + 10) + 'px','z-index':300});
+				});
+				jTip.fadeIn('fast').find('.jTip-body').html($(this).attr('error'));
+			},function(){
+				$('.jTip').remove();
+			});
+		});
     }
 	// 帮助提示
 	$.fn.help = function(path){

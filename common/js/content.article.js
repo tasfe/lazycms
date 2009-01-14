@@ -60,7 +60,12 @@
 	// ªÒ»°∑÷¥ 
 	$.fn.getKeywords = function(id){
 		var t = this; t.val('Loading...');
-		$.post('article.php?action=keywords',{title:$(id).val()},function(d){
+		var v = $(id).val();
+		if (v=='') {
+			t.val('');
+			return this;
+		}
+		$.post('article.php?action=keywords',{title:v},function(d){
 			t.val(d);
 		});
 		return this;
