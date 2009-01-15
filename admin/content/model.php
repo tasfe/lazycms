@@ -165,8 +165,8 @@ function lazy_edit(){
     $modelid   = isset($_REQUEST['modelid']) ? $_REQUEST['modelid'] : 0;
     $oldename  = isset($_POST['oldename']) ? strtolower($_POST['oldename']) : null;
     $modeltype = isset($_REQUEST['type']) ? strtolower($_REQUEST['type']) : 'list';
-    $post = POST('modelname','modelename','modelpath','modeltype','modelfields','iskeyword','description','sortemplate','pagetemplate');
-    $modeltype = empty($post[3]) ? $modeltype : $post[3];
+    $post      = POST('modelname','modelename','modelpath','modeltype','modelfields','iskeyword','description','sortemplate','pagetemplate');
+    $post[3]   = empty($post[3]) ? $modeltype : $post[3];
     if (is_array($post[4])) {
         $post[4] = '['.implode(',',$post[4]).']';
     }
@@ -235,7 +235,7 @@ function lazy_edit(){
                     $add = implode(',',$add);
                     $db->exec("ALTER TABLE `{$table}` {$add};");
                 }
-                $delfields = Content_Model::diffFields($db->listFields($table),$fields,$modeltype);
+                $delfields = Content_Model::diffFields($db->listFields($table),$fields);
                 // 删除不需要的字段
                 if (!empty($delfields)) {
                     $sute = null;
@@ -280,9 +280,9 @@ function lazy_edit(){
             }
         }
     }
-    $title = empty($modelid) ? t('model/add'.$modeltype) : t('model/edit'.$modeltype);
+    $title = empty($modelid) ? t('model/add'.$post[3]) : t('model/edit'.$post[3]);
     // 判断tab显示
-    switch ($modeltype) {
+    switch ($post[3]) {
         case 'page':
             $post[2] = empty($post[2])?'%P.html':$post[2];
             $n = 4; break;
@@ -312,7 +312,7 @@ function lazy_edit(){
     echo '<p><label>'.t('model/ename').':</label><input help="model/ename" class="in w250" type="text" name="modelename" id="modelename" value="'.$post[1].'" /></p>';
     echo '<p><label>'.t('model/path').':</label><input help="model/path" class="in w300" type="text" name="modelpath" id="modelpath" value="'.$post[2].'" /></p>';
     
-    if ($modeltype=='list') {
+    if ($post[3]=='list') {
         echo '<p><label>'.t('model/template/sort').':</label>';
         echo '<select name="sortemplate" id="sortemplate">';
         echo form_opts(c('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$post[7]);
@@ -364,7 +364,7 @@ function lazy_edit(){
 
     echo but('system::save');
     echo '<input name="modelid" type="hidden" value="'.$modelid.'" />';
-    echo '<input name="modeltype" type="hidden" value="'.$modeltype.'" />';
+    echo '<input name="modeltype" type="hidden" value="'.$post[3].'" />';
     echo '<input name="oldename" type="hidden" value="'.$post[1].'" />';
     echo '<input name="iskeyword" type="hidden" value="'.$post[5].'" />';
     echo '<input name="description" type="hidden" value="'.$post[6].'" />';

@@ -147,6 +147,38 @@ return array(
         'submit'    => '提交',
         'cancel'    => '取消',
         'select'    => '请选择分类...',
+        'check'     => array(
+            'path'  => '路径不能为空',
+            'path1' => '路径错误',
+            'path2' => '路径重复',
+            'description'   => '简述内容不要超过250个字符',
+        ),
+        'alert'     => array(
+            'noselect'  => '请选择一个文档',
+            'delete'    => '删除文档成功',
+            'add'       => '添加文档成功',
+            'edit'      => '编辑文档成功',
+        ),
+    ),
+
+    /* 单页管理 */
+    'onepage'   => array(
+        'title' => '单页管理',
+        'model' => '模型',
+        'path'  => '路径',
+        'hits'  => '点击量',
+        'digg'  => 'Digg',
+        'date'  => '日期',
+        'keyword'   => '关键词',
+        'description'   => 'Meta简述',
+        'fields'    => '列表字段',
+        'view'      => '显示',
+        'check'     => array(
+            'path'  => '路径不能为空',
+            'path1' => '路径错误',
+            'path2' => '路径重复',
+            'description'   => '简述内容不要超过250个字符',
+        ),
         'alert'     => array(
             'noselect'  => '请选择一个文档',
             'delete'    => '删除文档成功',
@@ -214,6 +246,18 @@ return array(
             'model' => '选择哪些内容类型使用此分类',
         ),
         'article'   => array(
+            'path'  => '
+                |[b]生成文件的命名规则：[/b]
+                |%I=ID编号
+                |%M=MD5值
+                |%P=标题拼音
+                |%Y=4位数字表示的年份：1999 或 2008
+                |%y=2位数字表示的年份：99 或 08
+                |%m=数字表示的月份，01 到 12
+                |%d=月份中的第几天，01 到 31
+            '
+        ),
+        'onepage'   => array(
             'path'  => '
                 |[b]生成文件的命名规则：[/b]
                 |%I=ID编号

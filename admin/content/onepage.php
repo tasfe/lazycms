@@ -20,57 +20,44 @@
  */
 require '../../global.php';
 /**
- * 分类管理
+ * 单页管理
  * 
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
-    System::purview('content::article');
+    System::purview('content::onepage');
     $menus = array(); $model = array();
-    foreach (Content_Model::getModelsByType('list') as $v) {
+    foreach (Content_Model::getModelsByType('page') as $v) {
         $model[] = $v['modelename'];
-        $menus[] = t('system::add').$v['modelname'].':article.php?action=edit&model='.$v['modelename'];
+        $menus[] = t('system::add').$v['modelname'].':onepage.php?action=edit&model='.$v['modelename'];
     }
     g('MODEL',$model);
     // 设置公共菜单
     System::tabs(
-        t('sort').':sort.php;'.
-        t('article').':article.php;'.
-        t('sort/add').':sort.php?action=edit;'.implode(';',$menus)
+        t('onepage').':onepage.php;'.implode(';',$menus)
     );
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_main(){
-    System::loadScript('content.article');
-    System::header(t('article'));
-    $size    = isset($_GET['size'])?$_GET['size']:15;
+    System::loadScript('content.onepage');
+    System::header(t('onepage'));
     $model   = isset($_GET['model'])?$_GET['model']:null;
-    $sortid  = isset($_GET['sortid'])?$_GET['sortid']:0;
-    $keyword = isset($_GET['keyword'])?$_GET['keyword']:null;
     $fields  = isset($_GET['fields'])?$_GET['fields']:null;
     if (empty($model)) {
         $textarea = null;
-        $models   = Content_Model::getModelsByType('list');
+        $models   = Content_Model::getModelsByType('page');
         echo '<form id="form1" name="form1" method="get" action="'.PHP_FILE.'">';
-        echo '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.t('article').'</a></legend>';
+        echo '<fieldset><legend><a class="collapsed" rel=".show" cookie="false">'.t('onepage').'</a></legend>';
         echo '<div class="show">';
         if ($models) {
-            echo '<p><label>'.t('article/model').':</label><select name="model" id="model" onchange="$(this).viewFields();">';
+            echo '<p><label>'.t('onepage/model').':</label><select name="model" id="model" onchange="$(this).viewFields();">';
             foreach ($models as $v) {
                 $textarea.= '<textarea class="hide" checked="'.$v['setkeyword'].'" id="fields_'.$v['modelename'].'">'.$v['modelfields'].'</textarea>';
                 echo '<option value="'.$v['modelename'].'">'.$v['modelname'].'</option>';
             }
             echo '</select></p>';
-            echo '<p><label>'.t('article/sort').':</label><select name="sortid"><option value="0">'.t('article/sortall').'</option>'.Content_Article::getSortOptionByParentId(0,0,false).'</select></p>';
-            echo '<p><label>'.t('article/keyword').':</label><input class="in2" type="text" name="keyword" id="keyword" value="" /></p>';
-            echo '<p><label>'.t('article/size').':</label><select name="size" edit="true">';
-            foreach (array(10,15,20,25,30,40,50) as $i) {
-                $selected = $i==$size?' selected="selected"':null;
-                echo '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
-            }
-            echo '</select></p>';
-            echo '<p><label>'.t('article/fields').':</label><span id="fields"></span></p>';
-            echo '<p><label>&nbsp;</label><button type="submit">'.t('article/view').'</button></p>';
+            echo '<p><label>'.t('onepage/fields').':</label><span id="fields"></span></p>';
+            echo '<p><label>&nbsp;</label><button type="submit">'.t('onepage/view').'</button></p>';
         } else {
             echo '<p class="empty"><strong>'.t('nomodel').'</strong> <a href="model.php">&gt;&gt;&gt;</a></p>';
         }
@@ -82,23 +69,17 @@ function lazy_main(){
         $table  = Content_Model::getDataTableName($model['modelename']);
         $jtable = Content_Model::getJoinTableName($model['modelename']);
         $length = count($fields);
-        $query  = null; $inSQL = null;
-        $inLike = empty($keyword)?null:"BINARY UCASE(`a`.`description`) LIKE UCASE('%{$keyword}%')";
+        $query  = null;
         foreach ($fields as $k=>$v) {
             $query .= '&fields'.rawurlencode("[{$k}]").'='.rawurlencode($v);
-            if ($keyword!='') {
-                $inLike.= (empty($inLike)?null:" OR ")."BINARY UCASE(`a`.`{$k}`) LIKE UCASE('%{$keyword}%')";
-            }
         }
-        $inSQL.= empty($inLike)?null:' AND ('.$inLike.')';
-        $inSQL.= ($sortid==0?null:" AND `b`.`sid`=".DB::quote($sortid));
-
+        
         $db = get_conn();
         $ds = new Recordset();
-        $ds->create("SELECT * FROM `{$table}` AS `a` LEFT JOIN `{$jtable}` AS `b` ON `a`.`id`=`b`.`tid` WHERE `b`.`type`=1 AND `a`.`passed`=0 {$inSQL} GROUP BY `a`.`path` ORDER BY `a`.`order` DESC,`a`.`id` DESC");
+        $ds->create("SELECT * FROM `{$table}` ORDER BY `order` DESC,`id` DESC");
         $ds->action = PHP_FILE.'?action=set&model='.$model['modelename'];
-        $ds->url = PHP_FILE.'?model='.$model['modelename'].'&sortid='.$sortid.'&keyword='.$keyword.'&size='.$size.$query.'&page=$';
-        $ds->but = $ds->button('create:生成|move:移动').$ds->plist();
+        $ds->url = PHP_FILE.'?model='.$model['modelename'].$query.'&page=$';
+        $ds->but = $ds->button('create:生成').$ds->plist();
         // 循环自定义显示字段
         for ($i=0; $i<$length; $i++) {
             if ($i==0) {
@@ -121,7 +102,7 @@ function lazy_main(){
         foreach ($fields as $field=>$label) {
             $ds->thead.= '<th>'.($i==0?'ID) ':null).$label.'</th>'; $i++;
         }
-        $ds->thead.= '<th>'.($length==0?'ID) ':null).t('article/path').'</th><th>'.t('article/hits').'</th><th>'.t('article/digg').'</th><th>'.t('article/date').'</th><th>'.t('system::Manage').'</th></tr>';
+        $ds->thead.= '<th>'.($length==0?'ID) ':null).t('onepage/path').'</th><th>'.t('onepage/hits').'</th><th>'.t('onepage/digg').'</th><th>'.t('onepage/date').'</th><th>'.t('system::Manage').'</th></tr>';
         while ($rs = $ds->result()) {
             $K = null;
             foreach ($fields as $field=>$label) {
@@ -141,12 +122,12 @@ function lazy_set(){
     $model  = isset($_GET['model'])?$_GET['model']:null;
     switch($submit){
         case 'delete':
-            empty($lists) ? ajax_alert(t('article/alert/noselect')) : null ;
+            empty($lists) ? ajax_alert(t('onepage/alert/noselect')) : null ;
             $table  = Content_Model::getDataTableName($model);
             $jtable = Content_Model::getJoinTableName($model);
             $db->delete($table,"`id` IN({$lists})");
             $db->delete($jtable,array("`tid` IN({$lists})"));
-            ajax_success(t('article/alert/delete'),1);
+            ajax_success(t('onepage/alert/delete'),1);
             break;
         default :
             ajax_error(t('system::error/invalid'));
@@ -158,7 +139,7 @@ function lazy_edit(){
     $db = get_conn(); $data = array(); $_USER = System::getAdmin();
     $mName  = isset($_REQUEST['model']) ? strtolower($_REQUEST['model']) : null;
     $docId  = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
-    $selTab = array_search($mName,g('MODEL'))+4;
+    $selTab = array_search($mName,g('MODEL')) + 2;
     $model  = Content_Model::getModelByEname($mName); if (!$model) { trigger_error(t('system::error/invalid')); }
     $sorts  = $db->count("SELECT * FROM `#@_content_sort_model` WHERE `modelid`=".DB::quote($model['modelid']).";");
     $title  = (empty($docId) ? t('system::add') : t('system::edit')).$model['modelname'];
@@ -183,8 +164,8 @@ function lazy_edit(){
         $maxid = $db->max('id',$table);
         $path  = Content_Article::formatPath($maxid,$path,$data[$model['iskeyword']]);
         // 验证路径不能重复
-        $val->check('path|0|'.t('article/check/path').';path|5|'.t('article/check/path1').';path|4|'.t('article/check/path2')."|SELECT COUNT(*) FROM `{$table}` WHERE `path`=".DB::quote($path).(empty($docId)?null:" AND `id` <> {$docId}"));
-        $val->check('description|1|'.t('article/check/description').'|0-250');
+        $val->check('path|0|'.t('onepage/check/path').';path|5|'.t('onepage/check/path1').';path|4|'.t('onepage/check/path2')."|SELECT COUNT(*) FROM `{$table}` WHERE `path`=".DB::quote($path).(empty($docId)?null:" AND `id` <> {$docId}"));
+        $val->check('description|1|'.t('onepage/check/description').'|0-250');
         if ($val->isVal()) {
             $val->out();
         } else {
@@ -220,7 +201,7 @@ function lazy_edit(){
                 }
                 $db->insert($table,$row);
                 $docId = $db->lastId();
-                $text = t('article/alert/add');
+                $text = t('onepage/alert/add');
             } else {
                 $row = array(
                     'path' => $path,
@@ -231,20 +212,7 @@ function lazy_edit(){
                     $row = array_merge($row,$data);
                 }
                 $db->update($table,$row,DB::quoteInto('`id` = ?',$docId));
-                // 删除未选中的分类
-                $sortDiff = array_diff(Content_Article::getSortIdsByDocId($jtable,$docId),$sortids);
-                if (!empty($sortDiff)) {
-                    $db->delete($jtable,array("`type`=1","`sid` IN(".implode(',',$sortDiff).")"));
-                }
-                $text = t('article/alert/edit');
-            }
-            // 写分类关系
-            if (empty($sortids)) {
-                Content_Article::joinSort($jtable,$docId,0);
-            } else {
-                foreach ($sortids as $sortid) {
-                    Content_Article::joinSort($jtable,$docId,$sortid);
-                }
+                $text = t('onepage/alert/edit');
             }
             // 自动获取关键词
             if (!empty($model['iskeyword'])) {
@@ -269,39 +237,27 @@ function lazy_edit(){
                     $keywords = $key->get($docId);
                 }
                 $description = $data['description'];
-                $sortids = Content_Article::getSortIdsByDocId($jtable,$docId);
             }
         }
     }
-    System::style('
-        #sortView{ width:300px; height:23px; display:block; cursor:default; line-height:23px; letter-spacing:1px; padding:0px 4px; border:1px solid #c6d9e7; color:#333333; background:url(../../common/images/buttons-bg.png) repeat-x; }
-    ');
-    System::loadScript('content.article');
+    
+    System::loadScript('content.onepage');
     System::header($title,$selTab);
 
     echo '<form id="form1" name="form1" method="post" action="">';
     echo '<fieldset><legend rel="tab"><a rel=".show" cookie="false"><img class="a2 os" src="../system/images/white.gif" />'.$title.'</a></legend>';
     echo '<div class="show">';
 
-    if ($sorts > 0) {
-        echo '<p><label>'.t('article/sort').':</label><span class="box"><div id="sortView" onclick="$(this).toggleSorts();" empty="'.t('article/select').'">'.t('article/select').'</div>';
-        echo '<div id="sorts" class="panel" style="display:none;">';
-        echo '<div class="head"><strong>'.t('article/select').'</strong><a href="javascript:;" onclick="$(\'#sorts\').slideToggle(\'fast\');"></a></div><div class="body">';
-        echo Content_Article::getSortListByParentId($model['modelid'],$sortids);
-        echo '<p class="tr"><button type="button" onclick="$(\'#sortView\').setSorts();">'.t('article/submit').'</button>&nbsp;<button type="button" onclick="$(\'#sorts\').slideToggle(\'fast\');">'.t('article/cancel').'</button></p>';
-        echo '</div></div><script type="text/javascript">$("#sortView").selectSorts();</script></span></p>';
-    }
-
     echo $tag->fetch('<p><label>{label}:</label>{object}</p>',$data);
-    echo '<p><label>'.t('article/path').':</label><input help="article/path" class="in w500" type="text" name="path" id="path" value="'.(empty($path)?$model['modelpath']:$path).'" /></p>';
+    echo '<p><label>'.t('onepage/path').':</label><input help="onepage/path" class="in w500" type="text" name="path" id="path" value="'.(empty($path)?$model['modelpath']:$path).'" /></p>';
     echo '</div></fieldset>';
 
     echo '<fieldset><legend><a rel=".more-attr"><img class="a2 os" src="../system/images/white.gif" />'.t('system::moreattr').'</a></legend>';
     echo '<div class="more-attr">';
     if (!empty($model['iskeyword'])) {
-        echo '<p><label>'.t('article/keyword').':</label><input class="in w400" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" onclick="$(\'#keywords\').getKeywords(\'#'.$model['iskeyword'].'\')">'.t('system::get').'</button></p>';
+        echo '<p><label>'.t('onepage/keyword').':</label><input class="in w400" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" onclick="$(\'#keywords\').getKeywords(\'#'.$model['iskeyword'].'\')">'.t('system::get').'</button></p>';
     }
-    echo '<p><label>'.t('article/description').':</label><textarea name="description" id="description" rows="5" class="in w400">'.$description.'</textarea></p>';
+    echo '<p><label>'.t('onepage/description').':</label><textarea name="description" id="description" rows="5" class="in w400">'.$description.'</textarea></p>';
     echo '</div></fieldset>';
     echo but('system::save').'<input name="id" type="hidden" value="'.$docId.'" /><input name="__referer" type="hidden" value="'.$_SERVER['HTTP_REFERER'].'" /></form>';
 }

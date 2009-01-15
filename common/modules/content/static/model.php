@@ -85,18 +85,14 @@ class Content_Model{
      *
      * @param array $p1     当前数据库的列数组
      * @param array $p2     字段数组
-     * @param string $p3    模型类型
      * @return array
      */
-    function diffFields($p1,$p2,$p3){
+    function diffFields($p1,$p2){
         $fields = array();
         foreach ($p2 as $field) {
             $fields[] = $field->ename;
         }
-        $fields = array_merge($fields,array('id','order','date','hits','path','description'));
-        if ($p3=='list') {
-            $fields = array_merge($fields,array('img','digg','passed','userid'));
-        }
+        $fields = array_merge($fields,array('id','order','date','hits','path','digg','passed','userid','description'));
         return array_diff($p1,$fields);
     }
     /**
