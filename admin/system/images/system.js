@@ -34,7 +34,7 @@ $(document).ready(function(){
 	// 显示可编辑下拉框
 	$.selectEdit();
     // 绑定submit提交事件
-    $("form[method=post]:not(form[ajax=false])").ajaxSubmit();
+    $("form[method=post]:not([ajax=false])").ajaxSubmit();
     // Reset separator width
     $('#menu li.hr').each(function(){
         $(this).width($(this).parent().width());
@@ -52,7 +52,7 @@ $(document).ready(function(){
 	// 批量去除连接虚线
 	$('a').focus(function(){ this.blur(); });	
 	// 绑定展开事件
-	$('a .a1,a .a2').parent()
+	$('a > .a1,a > .a2').parent()
 		.attr('href','javascript:;')
 		.click(function(){
 		    var u = getURI();
@@ -66,7 +66,7 @@ $(document).ready(function(){
 		});
 	// 执行半记忆操作
 	$(document).SemiMemory();
-	$('a:not(a[cookie=false]) .a1,a:not(a[cookie=false]) .a2').collapsed();
+	$('a:not([cookie=false]) > .a1,a:not([cookie=false]) > .a2').collapsed();
 	// Get last version
 	$.getJSON("http://lazycms.net/ver/index.php?host=" + self.location.host + "&callback=?",function(d){
 		var localVersion = $('#version').attr('version').replace(/\./g,'');
@@ -75,6 +75,7 @@ $(document).ready(function(){
     });
 	// 显示帮助
 	$('[help]').help();
+	
 });
 
 
