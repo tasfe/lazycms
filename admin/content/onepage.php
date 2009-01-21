@@ -79,7 +79,7 @@ function lazy_main(){
         $ds->create("SELECT * FROM `{$table}` ORDER BY `order` DESC,`id` DESC");
         $ds->action = PHP_FILE.'?action=set&model='.$model['modelename'];
         $ds->url = PHP_FILE.'?model='.$model['modelename'].$query.'&page=$';
-        $ds->but = $ds->button('create:生成').$ds->plist();
+        $ds->but = $ds->button('create:'.t('system::create')).$ds->plist();
         // 循环自定义显示字段
         for ($i=0; $i<$length; $i++) {
             if ($i==0) {
@@ -260,16 +260,6 @@ function lazy_edit(){
     echo '<p><label>'.t('onepage/description').':</label><textarea name="description" id="description" rows="5" class="in w400">'.$description.'</textarea></p>';
     echo '</div></fieldset>';
     echo but('system::save').'<input name="id" type="hidden" value="'.$docId.'" /><input name="__referer" type="hidden" value="'.$_SERVER['HTTP_REFERER'].'" /></form>';
-}
-// *** *** www.LazyCMS.net *** *** //
-function lazy_keywords(){
-    $result = null;
-    $title  = isset($_POST['title']) ? $_POST['title'] : null;
-    if (!empty($title)) {
-        $keywords = System::getKeywords($title);
-        $result = implode(',',$keywords);
-    }
-    exit($result);
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_after(){

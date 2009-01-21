@@ -62,13 +62,13 @@ function lazycms_run() {
     // 执行动作调度
     if (!empty($action)) {
         // 组合出需要执行的函数
-        $function = 'lazy_'.$action;
+        $func = 'lazy_'.$action;
         // 判断函数是否存在
-        if (function_exists($function)) {
-            $function();
+        if (function_exists($func)) {
+            $func();
         } else {
             // 输出错误信息
-            trigger_error(t('system::error/nofunc',array($function,PHP_FILE,$function)));
+            trigger_error(t('system::error/nofunc',array($func,PHP_FILE,$func)));
         }
     } else {
         if (function_exists('lazy_main')) {
@@ -1045,6 +1045,7 @@ function ubbencode($p1){
     }
     return $R;
 }
+// 编辑器
 function editor($p1,$p2=array()){
     static $isLoadJs = false;
     $A1 = array(); $p3 = null; $R = null;
@@ -1062,8 +1063,8 @@ function editor($p1,$p2=array()){
     $css.= '.'.$p1.'_editor_button{ width:'.$A1['width'].'; display:table; zoom:100%; margin:3px 0 5px 0;}';
     $css.= '.'.$p1.'_editor_button .fr a{margin-left:8px;}';
     $css.= '</style>';
-    $div = $css; $but = $size = null;
-    if ($A1['upimg']) { $but.= '<button type="button">'.t('system::editor/upimg').'</button>'; }
+    $div = $css; $but = $size = null;//tinyMCE.get(\''.$p1.'\').execCommand(\'mceInsertContent\', false, \'插入内容\');
+    if ($A1['upimg']) { $but.= '<button type="button" onclick="$(\'#'.$p1.'\').Explorer(\'/'.c('UPLOAD_IMAGE_PATH').'\');">'.t('system::editor/upimg').'</button>'; }
     if ($A1['upfile']) { $but.= '<button type="button">'.t('system::editor/upfile').'</button>'; }
     if ($A1['pagebreak']) { $but.= '<button type="button" onclick="tinyMCE.get(\''.$p1.'\').execCommand(\'mcePageBreak\',false);">'.t('system::editor/break').'</button>'; }
     if ($A1['snapimg'][0]) {

@@ -35,7 +35,7 @@ div.jTip-foot { width:10px; height:10px; position:relative; top:-1px; float:left
 .pages span.active{ color:#990000 !important; font-weight:bold; }
 
 /* 浮动对话框 */
-.dialog{ min-width:250px; display:block; zoom:1; background:#FFFFFF; border:solid 1px #c6d9e7;}
+.dialog{ min-width:250px; margin:3px; display:block; zoom:1; background:#FFFFFF; border:solid 1px #c6d9e7;}
 .dialog .head{ height:23px; display:block; clear:both; padding:0 5px; line-height:23px; border-bottom:1px solid #c6d9e7; background:url(buttons-bg.png) repeat-x 0 -2px; }
 .dialog .head strong{ background:url(dialog-icon.png) no-repeat left 3px; padding-left:20px; float:left; color:#0B5B98; letter-spacing:1px; }
 .dialog .head a{ width:35px; height:17px; float:right; display:block; background:url(close.png) no-repeat left top; }

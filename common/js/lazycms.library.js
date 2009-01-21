@@ -175,8 +175,8 @@ function LoadScript(p,c){
 	    opts = $.extend({
 			title:'',
 			close:true,
-			opacity:0.6,
-            background:'#FFFFFF'
+			opacity:0.3,
+            background:'#000'
         }, opts||{});
         var height = $(document).height(); $('#dialogHelp').remove();
         if ($('#dialogUI').is('div')) { $('#dialogUI').remove(); };
@@ -460,12 +460,39 @@ function LoadScript(p,c){
 			});
 		});
     }
+	// Explorer
+	$.fn.Explorer = function(path){
+		path = path || '/';
+		$.post(common() + '/modules/system/gateway.php',{action:'explorer',path:path},function(data){
+			if (d = $.parseJSON(data)) {
+				if (d = $.result(d)) {
+					$.blockUI(d.TITLE,d.BODY,{top:$(document).height()/10});
+				}
+			} else {
+				$.blockUI($.t('error'),data);
+			}
+		});
+		return this;
+	}
+	// 获取分词
+	$.fn.getKeywords = function(id){
+		var t = this; t.val('Loading...');
+		var v = $(id).val();
+		if (v=='') {
+			t.val('');
+			return this;
+		}
+		$.post(common() + '/modules/system/gateway.php',{action:'keywords',title:v},function(d){
+			t.val(d);
+		});
+		return this;
+	};
 	// 帮助提示
 	$.fn.help = function(path){
 		if (typeof path != 'undefined')	{
 			var t = this;
 			$('img',t).attr('src',common() + '/images/loading.gif').removeClass('h5');
-			$.post('../system/help.php',{module:MODULE,path:path},function(data){
+			$.post(common() + '/modules/system/gateway.php',{action:'help',module:MODULE,path:path},function(data){
 				if (d = $.parseJSON(data)) {
 					if (d = $.result(d)) {
 						$.blockUI(d.TITLE,d.BODY);
@@ -481,7 +508,7 @@ function LoadScript(p,c){
 				$(this).siblings('a[rel=help]').remove();
 				$('<a href="javascript:;" rel="help"><img class="h5 os" src="../system/images/white.gif" /></a>').click(function(){
 					var img = $('img',this).attr('src',common() + '/images/loading.gif').removeClass('h5');
-					$.post('../system/help.php',{module:MODULE,path:p},function(data){
+					$.post(common() + '/modules/system/gateway.php',{action:'help',module:MODULE,path:p},function(data){
 						img.attr('src',common() + '/images/white.gif').addClass('h5');
 						if (!(d = $.parseJSON(data))) {
 							$.blockUI($.t('error'),data); return ;

@@ -31,7 +31,7 @@ return array(
     'LANGUAGE'   => 'zh-cn',
     'RSS_NUMBER' => 30,
     'TEMPLATE'   => 'themes',
-    'GET_RELATED_KEY' => false,
+    'GET_RELATED_KEY' => '',
 
     /* 上传设置 */
     'UPLOAD_ALLOW_EXT' => 'bmp,png,gif,jpg,jpeg,zip,rar,doc,xls',

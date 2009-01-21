@@ -139,6 +139,14 @@ a:hover   { text-decoration: underline; }
 	#box div.button{ float:left; display:block; padding-bottom:1px;}
 	#box div.pages{float:right;}
 
+/* 资源管理器 */
+#explorer{}
+#explorer a,#explorer a:link{ color:#333333; }
+#explorer .left{ width:30%; height:400px; border:solid 1px #c6d9e7; overflow-y:scroll; padding:0 0 5px 0; }
+#explorer .left div{ widows:90%; line-height:23px; height:23px; padding:0 5%; background:url(title.png) repeat-x left top; border-bottom:solid 1px #C6D9E7; margin-bottom:3px; }
+#explorer .left p{ padding:0; margin:0; }
+#explorer .right{ width:66%; height:400px; border:solid 1px #c6d9e7; overflow-y:scroll; padding:5px 1%; }
+
 /* footer */
 #footer{ padding:10px; text-align:center; }
 

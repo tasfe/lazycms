@@ -57,17 +57,4 @@
 	    this.text(text==''?this.attr('empty'):text);
 		return this;
 	};
-	// ªÒ»°∑÷¥ 
-	$.fn.getKeywords = function(id){
-		var t = this; t.val('Loading...');
-		var v = $(id).val();
-		if (v=='') {
-			t.val('');
-			return this;
-		}
-		$.post('article.php?action=keywords',{title:v},function(d){
-			t.val(d);
-		});
-		return this;
-	};
 })(jQuery);

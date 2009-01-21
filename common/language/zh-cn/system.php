@@ -37,7 +37,9 @@ return array(
     'home'  => '首页',
     'lock'  => '锁定',
     'save'  => '保存',
+    'move'  => '移动',
     'reset' => '重置',
+    'create'    => '生成',
     'delete'    => '删除',
     'manage'    => '管理',
     'unlock'    => '启用',
@@ -48,6 +50,7 @@ return array(
     'moreattr'  => '更多属性',
     'autokeys'  => '自动获取关键词',
 
+    /* AJAX */
     'ajax'  => array(
         'error'     => '系统错误',
         'alert'     => '系统提示',

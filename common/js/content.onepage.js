@@ -35,17 +35,4 @@
 				$('#fields').parents('p').show().end().html(inputs);
 			}
 	};
-	// ªÒ»°∑÷¥ 
-	$.fn.getKeywords = function(id){
-		var t = this; t.val('Loading...');
-		var v = $(id).val();
-		if (v=='') {
-			t.val('');
-			return this;
-		}
-		$.post('onepage.php?action=keywords',{title:v},function(d){
-			t.val(d);
-		});
-		return this;
-	};
 })(jQuery);
