@@ -34,6 +34,9 @@
 						style:{width:'400px',overflow:'hidden'}
 					},function(s){
 						var t = this;
+						$('[rel=cancel]',s).click(function(){
+							$('.dialogUI').remove(); t.remove();
+						});
 						s.__FieldTypeChange();
 						s.__IsHelp();
                         s.__IsValidate();

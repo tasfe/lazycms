@@ -505,7 +505,7 @@ function LoadScript(p,c){
                         img.attr('src',common() + '/images/white.gif').addClass('h5');
 						var JSON = $.result(data);
 						if (JSON) {
-							var pos = img.position();
+							var pos = img.offset();
 								if ((img.offset().left + 20 + 350) > $(document).width()) {
                                     pos.left = pos.left - 2 - 350;
                                 } else {
