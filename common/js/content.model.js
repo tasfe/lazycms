@@ -21,14 +21,21 @@
 (function($) {
     $.fn.__Fields = function(method,data){
 		data = data||{};
-		var $this  = this;
-        var params = {width:'400px',top:$(document).height()/6,left:$(document).width()/2 - 200};
+		var This = this;
         $.ajax({
             url: this.attr('action'),
             type: method,
             data: data,
-            dataType: 'json',
             success: function(data){
+				var JSON = $.result(data);
+				if (JSON) {
+					var dialog = $.dialogUI({
+						name:'fields',style:{width:'400px'}, title:JSON.TITLE, body:JSON.BODY
+					});
+					dialog.SemiMemory().end()
+					;
+				}
+				/*
                 if (data = $.result(data)) {
                     var dialog = $.dialogUI({title:data.TITLE})
                         .append('<div class="body"></div>')
@@ -36,7 +43,7 @@
                         .find('.body').html(data.BODY).SemiMemory().end()
                         .find('[type=submit]').click(function(){
                             $(this.form).ajaxSubmit(function(data){
-								$this.appendFields(data); $.undialogUI();
+								This.appendFields(data); $.undialogUI();
                             });
                         }).focus().end()
                         .find('[rel=cancel]').click(function(){
@@ -51,6 +58,7 @@
                     $('[help]').help();
                     $.selectEdit();
                 }
+				*/
             }
         });
     }

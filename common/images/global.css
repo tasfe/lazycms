@@ -35,18 +35,19 @@ div.jTip-foot { width:10px; height:10px; position:relative; top:-1px; float:left
 .pages span.active{ color:#990000 !important; font-weight:bold; }
 
 /* 浮动对话框 */
-.dialog{ min-width:250px; margin:3px; display:block; zoom:1; background:#FFFFFF; border:solid 1px #c6d9e7;}
-.dialog .head{ height:23px; display:block; clear:both; padding:0 5px; line-height:23px; border-bottom:1px solid #c6d9e7; background:url(buttons-bg.png) repeat-x 0 -2px; }
-.dialog .head strong{ background:url(dialog-icon.png) no-repeat left 3px; padding-left:20px; float:left; color:#0B5B98; letter-spacing:1px; }
-.dialog .head a{ width:35px; height:17px; float:right; display:block; background:url(close.png) no-repeat left top; }
-.dialog .head a:hover{ background-position:0 -24px;}
-.dialog .body{ display:block; zoom:1; padding:5px; clear:both; overflow:auto; word-wrap: break-word; word-break: normal; word-break:break-all; }
-.dialog .body .icon{ width:32px; height:32px; float:left; margin:10px 10px 0 10px; background-image:url(info_icons.png); background-repeat:no-repeat; }
-.dialog .body .content{ float:left; }
-.dialog .body .content h3{ line-height:130%; margin-top:13px; }
-.dialog .body pre{ margin:0; }
-.dialog .body p{ margin:5px 0 5px 0; clear:both; }
-.dialog .body p label{ width:60px; text-align:right; display:block; float:left; color:#0000FF; line-height:200%; font-size:12px; margin:0 5px 3px 0;}
-.dialog .body span label{ width:auto; margin:0px; text-align:left; float:none; display:inline; color:#666666;}
-.dialog .button{ clear:both; padding:3px; text-align:right; }
-.dialog .button button{ margin:0 0 0 6px;}
+.dialogUI{ display:block; zoom:1; background:#FFFFFF;}
+.dialogUI .dialogBox{ display:block; zoom:1; border:solid 1px #c6d9e7; }
+.dialogUI .dialogBox .head{ height:23px; line-height:23px; zoom:1; overflow:auto; display:block; clear:both; padding:0 5px; border-bottom:1px solid #c6d9e7; background:url(buttons-bg.png) repeat-x 0 -2px; }
+.dialogUI .dialogBox .head strong{ background:url(dialog-icon.png) no-repeat left 3px; padding-left:20px; float:left; color:#0B5B98; letter-spacing:1px; }
+.dialogUI .dialogBox .head a{ width:35px; height:17px; float:right; display:block; background:url(close.png) no-repeat left top; }
+.dialogUI .dialogBox .head a:hover{ background-position:0 -24px; }
+.dialogUI .dialogBox .body{ width:auto; display:block; zoom:1; padding:5px; clear:both; overflow:auto; word-wrap: break-word; word-break: normal; word-break:break-all; }
+.dialogUI .dialogBox .body .icon{ width:32px; height:32px; float:left; margin:10px 10px 0 10px; background-image:url(info_icons.png); background-repeat:no-repeat; }
+.dialogUI .dialogBox .body .content{ float:left; }
+.dialogUI .dialogBox .body .content h3{ line-height:130%; margin-top:13px; }
+.dialogUI .dialogBox .body pre{ margin:0; }
+.dialogUI .dialogBox .body p{ margin:5px 0 5px 0; clear:both; }
+.dialogUI .dialogBox .body p label{ width:60px; text-align:right; display:block; float:left; color:#0000FF; line-height:200%; font-size:12px; margin:0 5px 3px 0;}
+.dialogUI .dialogBox .body span label{ width:auto; margin:0px; text-align:left; float:none; display:inline; color:#666666;}
+.dialogUI .dialogBox .buttons{ clear:both; padding:3px; text-align:right; }
+.dialogUI .dialogBox .buttons button{ margin:0 0 0 6px;}
