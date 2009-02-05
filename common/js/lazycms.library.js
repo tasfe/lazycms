@@ -139,7 +139,7 @@ function LoadScript(p,c){
         var z = $.getMaxzIndex();
         // 默认设置
         style = $.extend({
-            width:Math.max(s.width(),$(document).width()) + 'px',
+            width:'100%',//Math.max(s.width(),$(document).width()) + 'px',
             height:Math.max(s.height(),$(document).height()) + 'px',
             left:s.position().left + 'px',
             top:s.position().top + 'px',
@@ -375,7 +375,7 @@ function LoadScript(p,c){
                         data: This.serializeArray(),
                         beforeSend: function(s){
                             s.setRequestHeader("AJAX_SUBMIT",true);
-                            window.loading.css({position:'fixed',top:'5px',right:'5px'});
+                            window.loading.css({position:'absolute',top:'5px',right:'5px'});
                         },
                         success: function(data){
 							var JSON = $.result(data);
@@ -438,7 +438,7 @@ function LoadScript(p,c){
      */
     $.fn.jTips = function(){
         return this.each(function(){
-            $(this).hover(function(){
+            $(this).hover(function(el){
                 var jTip = $('body').append('<div class="jTip"><div class="jTip-body"></div><div class="jTip-foot"></div></div>').find('.jTip');
                 var jHeight = jTip.height();
                 var jObject = $(this);
@@ -447,8 +447,9 @@ function LoadScript(p,c){
                     jOffset = $(this).offset();
                     jObject = $(this).contents();
                 }
+				jTip.css({'top':((el.clientY + jOffset.top) - jHeight - 20 ) + 'px','left':(el.clientX + jOffset.left + 10) + 'px','z-index':$.getMaxzIndex() + 1});
                 jObject.mousemove(function(e){
-                    jTip.css({'top':((e.clientY + jOffset.top) - jHeight - 20 ) + 'px','left':(e.clientX + jOffset.left + 10) + 'px','z-index':300});
+                    jTip.css({'top':((e.clientY + jOffset.top) - jHeight - 20 ) + 'px','left':(e.clientX + jOffset.left + 10) + 'px','z-index':$.getMaxzIndex() + 1});
                 });
                 jTip.fadeIn('fast').find('.jTip-body').html($(this).attr('error'));
             },function(){
@@ -460,13 +461,10 @@ function LoadScript(p,c){
     $.fn.Explorer = function(path){
         path = path || '/';
         $.post(common() + '/modules/system/gateway.php',{action:'explorer',path:path},function(data){
-            if (d = $.parseJSON(data)) {
-                if (d = $.result(d)) {
-                    $.blockUI(d.TITLE,d.BODY,{top:$(document).height()/10});
-                }
-            } else {
-                $.blockUI($.t('error'),data);
-            }
+			var JSON = $.result(data);
+			if (JSON) {
+				$.dialogUI({name:'explorer',style:{width:'600px'},title:JSON.TITLE, body:JSON.BODY});
+			}
         });
         return this;
     }

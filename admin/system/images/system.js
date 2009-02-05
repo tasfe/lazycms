@@ -23,7 +23,7 @@ $.ajaxSetup({
     cache: false,
 	beforeSend: function(s){
 		s.setRequestHeader("AJAX_SUBMIT",true);
-		window.loading.css({position:'fixed',top:'5px',right:'5px'}).appendTo('body');
+		window.loading.css({position:'absolute',top:'5px',right:'5px'}).appendTo('body');
 	},
 	complete: function(){
 		window.loading.remove();

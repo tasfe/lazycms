@@ -55,8 +55,9 @@ return array(
         'error'     => '系统错误',
         'alert'     => '系统提示',
         'confirm'   => '操作确认',
-        'submit'    => '确认',
         'save'      => '保存',
+        'close'     => '关闭',
+        'submit'    => '确认',
         'cancel'    => '取消',
     ),
     
