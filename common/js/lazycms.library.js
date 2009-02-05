@@ -24,7 +24,9 @@ function dump(o){
     }
     for(k in o){
         alert(k+' : '+o[k]);
+		//s += k+' : '+o[k]+'\n';
     }
+	//document.write(s);
 }
 function common(){ return $("script[src*=js/jquery.js]").attr("src").replace(/(\/js\/jquery\.js\?(.*))/i,'');}
 function lock(p1){ return p1 ? icon('a3') : icon('a4'); }
@@ -157,10 +159,10 @@ function LoadScript(p,c){
     }
     /*
     */
-	$.dialogUI = function(opts){
-		return $(document).dialogUI(opts);
+	$.dialogUI = function(opts,callback){
+		return $(document).dialogUI(opts,callback);
 	};
-    $.fn.dialogUI = function(opts){
+    $.fn.dialogUI = function(opts,callback){
         var s = this.selector==''?$('body'):this;
         // 默认设置
         opts = $.extend({
@@ -170,7 +172,7 @@ function LoadScript(p,c){
             name:null,
 			mask:true,
             remove:function(){
-                this.remove();
+				dialog.remove();
                 if ($('.dialogUI',s).size()==0) {
                     $('[rel=mask]',s).remove();
                 } else {
@@ -207,13 +209,16 @@ function LoadScript(p,c){
         }
 		
         // 重新调整CSS
-        var style = $.extend({'z-index':$.getMaxzIndex() + 1,background:'#FFFFFF',height:'auto'},opts.style); dialog.css(style);
+        var style = $.extend({overflow:'auto','z-index':$.getMaxzIndex() + 1,background:'#FFFFFF',height:'auto'},opts.style); dialog.css(style);
 
 		// 设置标题
         $('.dialogBox > .head > strong',dialog).text(opts.title);
         // 设置内容
         $('.dialogBox > .body',dialog).html(opts.body);
-		$('.dialogBox > .body',dialog).css({height:parseInt(dialog.height() - 35) + 'px'});
+		if (style.overflow=='auto') {
+			$('.dialogBox > .body',dialog).css({height:parseInt(dialog.height() - 35) + 'px'});
+		}
+		
 
         dialog.css({
             top:(typeof(style.top)=='undefined'?parseInt(Math.max($('[rel=mask]',s).height(),$(document).height())/2.5 - dialog.height()/2):style.top) + 'px',
@@ -231,17 +236,21 @@ function LoadScript(p,c){
                 var button = $('<button type="button">' + opts.buttons[i].text + '</button>');
                     (function(i){
                         button.click(function(){
-                            opts.buttons[i].handler.call(opts.remove.call(dialog));
+                            opts.buttons[i].handler.call(opts);
                             return false;
-                        });  
+                        });
                     })(i);
                     button.appendTo($('.dialogBox > .buttons',dialog));
-					if (typeof opts.buttons[i].focus != 'undefined') {
-						opts.buttons[i].focus?button.focus():null;
-					}
+					typeof(opts.buttons[i].type) != 'undefined'?button.attr('type',opts.buttons[i].type):null;
+					typeof(opts.buttons[i].focus) != 'undefined'?
+						opts.buttons[i].focus?button.focus():null:
+						null;
             }
         }
-        return dialog;
+		if ($.isFunction(callback)) {
+			callback.call(opts,dialog);
+		}
+        return this;
     }
     // alert
     $.alert = function(message,callback,type){
@@ -343,7 +352,7 @@ function LoadScript(p,c){
     /**
      * ajax Submit
      */
-    $.fn.ajaxSubmit = function(){
+    $.fn.ajaxSubmit = function(callback){
         return this.each(function(){
             var This = $(this);
                 This.unbind('submit').submit(function(){
@@ -369,7 +378,10 @@ function LoadScript(p,c){
                             window.loading.css({position:'fixed',top:'5px',right:'5px'});
                         },
                         success: function(data){
-                            $.result(data);
+							var JSON = $.result(data);
+                            if (JSON) {
+								if ($.isFunction(callback)) { callback(JSON); }
+                            }
                         },
                         complete: function(){
                             button.attr('disabled',false);
@@ -411,12 +423,15 @@ function LoadScript(p,c){
                 case 'REDIRECT':// 跳转
                     $.redirect(JSON.DATA.URL);
                     break;
+				default:
+					return JSON.DATA;
+					break;
             }
-            return JSON.DATA;
         } else {
             // 格式不符合，则出现错误
-			$.dialogUI({name:'error',style:{width:'750px',height:'400px'}, title:$.t('error'), body:data}); return false;
+			$.dialogUI({name:'error',style:{width:'750px',height:'400px'}, title:$.t('error'), body:data});
         }
+		return false;
     }
     /**
      * 气泡提示

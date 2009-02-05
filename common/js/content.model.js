@@ -29,36 +29,24 @@
             success: function(data){
 				var JSON = $.result(data);
 				if (JSON) {
-					var dialog = $.dialogUI({
-						name:'fields',style:{width:'400px'}, title:JSON.TITLE, body:JSON.BODY
+					$.dialogUI({
+						name:'fields', title:JSON.TITLE, body:JSON.BODY,
+						style:{width:'400px',overflow:'hidden'}
+					},function(s){
+						var t = this;
+						s.__FieldTypeChange();
+						s.__IsHelp();
+                        s.__IsValidate();
+						$('select[rel=change]',s).change(function(){
+							s.__FieldTypeChange();
+						});
+						$('[help]').help();
+						$.selectEdit();
+						$('#formFields').ajaxSubmit(function(data){
+							This.appendFields(data); t.remove();
+						});
 					});
-					dialog.SemiMemory().end()
-					;
 				}
-				/*
-                if (data = $.result(data)) {
-                    var dialog = $.dialogUI({title:data.TITLE})
-                        .append('<div class="body"></div>')
-                        .floatDiv(params)
-                        .find('.body').html(data.BODY).SemiMemory().end()
-                        .find('[type=submit]').click(function(){
-                            $(this.form).ajaxSubmit(function(data){
-								This.appendFields(data); $.undialogUI();
-                            });
-                        }).focus().end()
-                        .find('[rel=cancel]').click(function(){
-                            $.undialogUI();
-                        }).end()
-						.__FieldTypeChange()
-						.__IsHelp()
-                        .__IsValidate();
-                    $('select[rel=change]',dialog).change(function(){
-                        dialog.__FieldTypeChange();
-                    });
-                    $('[help]').help();
-                    $.selectEdit();
-                }
-				*/
             }
         });
     }
