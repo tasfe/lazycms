@@ -53,7 +53,7 @@ function lazy_main() {
                 redirect('index.php');
             } else {
                 // 输出错误信息
-                ajax_alert(t('login/check/error'),0);
+                ajax_error(t('login/check/error'),0);
             }
             return ;
         }

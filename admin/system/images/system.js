@@ -87,18 +87,6 @@ $(document).ready(function(){
  * See LICENSE.txt for copyright notices and details.
  */
 (function($) {
-	// 调用语言包
-	$.t = function(p1){
-		var R;
-		var lang = $(document).data('language');
-		try	{
-			R = eval('lang.' + p1 + ';');
-		} catch (e) {
-			R = p1;
-		}
-		R = typeof R=='undefined'?p1:R;
-		return R;
-	}
 	// 折叠
     $.fn.collapsed = function(){
         var u = getURI();
