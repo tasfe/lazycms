@@ -1,4 +1,3 @@
-JS弹出层需要重构
 上传文件
 上传图片
 文件管理
@@ -8,24 +7,3 @@ JS弹出层需要重构
 标签中心
 快捷图标的添加，修改，排序
 系统安装向导
-
-
-弹出层需求：
-1.点击关闭按钮，从 HTML DOM 中移除
-2.重载内容，只进行标题、内容、CSS(高宽，位置)进行重载
-3.允许内容加载完毕执行回调函数
-4.允许挂载按钮：
-    $.dialogUI({
-        title:'标题',
-        body:'大段的HTML',
-        style:{},
-        close:function(){},// false
-        buttons:{
-            submit:function(){
-                return '<button type="submit">提交</button>';
-            },
-            submit:'<button type="submit">提交</button>',
-            reset:'<button type="reset">重置</button>',
-            close:'<button type="button">关闭</button>'
-        }
-    });

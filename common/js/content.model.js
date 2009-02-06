@@ -31,11 +31,14 @@
 				if (JSON) {
 					$.dialogUI({
 						name:'fields', title:JSON.TITLE, body:JSON.BODY,
-						style:{width:'400px',overflow:'hidden'}
+						style:{width:'400px',overflow:'hidden'},
+						close:function(){
+							$('.dialogUI,[rel=mask]').remove();
+						}
 					},function(s){
 						var t = this;
 						$('[rel=cancel]',s).click(function(){
-							$('.dialogUI').remove(); t.remove();
+							$('.dialogUI').remove(); t.close();
 						});
 						s.__FieldTypeChange();
 						s.__IsHelp();
@@ -46,7 +49,7 @@
 						$('[help]').help();
 						$.selectEdit();
 						$('#formFields').ajaxSubmit(function(data){
-							This.appendFields(data); t.remove();
+							This.appendFields(data); t.close();
 						});
 					});
 				}

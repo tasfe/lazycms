@@ -154,7 +154,10 @@ function LoadScript(p,c){
         m.css(style);
         // 添加遮罩层
         m.appendTo(s);
-		
+		// 窗口改变大小
+		$(window).resize(function(){
+			m.css({ height:Math.max(s.height(),$(document).height()) + 'px' });
+		});
         return this;
     }
     /*
@@ -171,7 +174,7 @@ function LoadScript(p,c){
             style:{},
             name:null,
 			mask:true,
-            remove:function(){
+            close:function(){
 				dialog.remove();
                 if ($('.dialogUI',s).size()==0) {
                     $('[rel=mask]',s).remove();
@@ -199,13 +202,13 @@ function LoadScript(p,c){
 		}
 		
         // 添加关闭按钮
-        $('.dialogBox > .head > a[rel=remove]',dialog).remove();
-        if ($.isFunction(opts.remove)) {
-            var remove = $('<a href="javascript:;" rel="remove"></a>').click(function(){
-                opts.remove.call(dialog);
+        $('.dialogBox > .head > a[rel=close]',dialog).remove();
+        if ($.isFunction(opts.close)) {
+            var close = $('<a href="javascript:;" rel="close"></a>').click(function(){
+                opts.close.call(dialog);
                 return false;
             });
-            remove.insertAfter($('.dialogBox > .head > strong',dialog));
+            close.insertAfter($('.dialogBox > .head > strong',dialog));
         }
 		
         // 重新调整CSS
@@ -218,11 +221,17 @@ function LoadScript(p,c){
 		if (style.overflow=='auto') {
 			$('.dialogBox > .body',dialog).css({height:parseInt(dialog.height() - 35) + 'px'});
 		}
-		
-
-        dialog.css({
+		// 窗口改变大小，调整位置
+		$(window).resize(function(){
+			dialog.css({
+				top:(typeof(style.top)=='undefined'?parseInt(Math.max($('[rel=mask]',s).height(),$(document).height())/2.5 - dialog.height()/2):style.top) + 'px',
+				left:(typeof(style.left)=='undefined'?parseInt($('[rel=mask]',s).width()/2 - dialog.width()/2):style.left) + 'px'
+			});
+		});
+		// 设置位置
+        dialog.css({ overflow:'',
             top:(typeof(style.top)=='undefined'?parseInt(Math.max($('[rel=mask]',s).height(),$(document).height())/2.5 - dialog.height()/2):style.top) + 'px',
-            left:(typeof(style.left)=='undefined'?parseInt(Math.max($('[rel=mask]',s).width(),$(document).width())/2 - dialog.width()/2):style.left) + 'px'
+            left:(typeof(style.left)=='undefined'?parseInt($('[rel=mask]',s).width()/2 - dialog.width()/2):style.left) + 'px'
         });
 
         // 显示弹出层
@@ -275,7 +284,7 @@ function LoadScript(p,c){
                 text:$.t('submit'),
                 handler:function(){
 					if ($.isFunction(callback)) {callback();}
-					this.remove(); return false;
+					this.close(); return false;
                 }
             }]
         });
@@ -289,12 +298,12 @@ function LoadScript(p,c){
                 focus:true,
                 text:$.t('submit'),
                 handler:function(){
-                    callback(true);this.remove();
+                    callback(true);this.close();
                 }
             },{
                 text:$.t('cancel'),
                 handler:function(){
-                    callback(false);this.remove();
+                    callback(false);this.close();
                 }
             }]
         });
@@ -357,7 +366,7 @@ function LoadScript(p,c){
             var This = $(this);
                 This.unbind('submit').submit(function(){
                     // 先释放绑定的所有事件，清除错误样式
-                    $('[error]').unbind().removeAttr('error').removeClass('error');
+                    $('[rel=editerror]').remove();$('[error]').unbind().removeAttr('error').removeClass('error');
                     var button = $('button[type=submit]',this);
                         button.attr('disabled',true);
                     // 取得 action 地址
@@ -375,7 +384,7 @@ function LoadScript(p,c){
                         data: This.serializeArray(),
                         beforeSend: function(s){
                             s.setRequestHeader("AJAX_SUBMIT",true);
-                            window.loading.css({position:'absolute',top:'5px',right:'5px'});
+                            window.loading.css({position:'absolute',top:'5px',right:'5px'}).appendTo('body');
                         },
                         success: function(data){
 							var JSON = $.result(data);
@@ -405,7 +414,7 @@ function LoadScript(p,c){
                             if (typeof tinyMCE.get(JSON.DATA[i].id) != 'undefined') {
                                 $('#' + JSON.DATA[i].id + '_ifr')
                                     .unbind().attr('error',JSON.DATA[i].text)
-                                    .after('<div style="width:100%;height:3px; background:#FFFFFF url(' + common() + '/images/invalid-line.gif) repeat-x left bottom !important;">&nbsp;</div>');
+                                    .after('<div rel="editerror" style="width:100%;height:3px; background:#FFFFFF url(' + common() + '/images/invalid-line.gif) repeat-x left bottom !important;">&nbsp;</div>');
                             } else {
                                 $('[name=' + JSON.DATA[i].id + ']').unbind().attr('error',JSON.DATA[i].text).addClass('error');
                             }
@@ -429,7 +438,7 @@ function LoadScript(p,c){
             }
         } else {
             // 格式不符合，则出现错误
-			$.dialogUI({name:'error',style:{width:'750px',height:'400px'}, title:$.t('error'), body:data});
+			$.dialogUI({name:'error',style:{width:'750px',height:'400px',overflow:'auto'}, title:$.t('error'), body:data});
         }
 		return false;
     }
@@ -463,7 +472,7 @@ function LoadScript(p,c){
         $.post(common() + '/modules/system/gateway.php',{action:'explorer',path:path},function(data){
 			var JSON = $.result(data);
 			if (JSON) {
-				$.dialogUI({name:'explorer',style:{width:'600px'},title:JSON.TITLE, body:JSON.BODY});
+				$.dialogUI({name:'explorer',style:{width:'600px',overflow:'hidden'},title:JSON.TITLE, body:JSON.BODY});
 			}
         });
         return this;
@@ -489,7 +498,7 @@ function LoadScript(p,c){
             $.post(common() + '/modules/system/gateway.php',{action:'help',module:MODULE,path:path},function(data){
 				var JSON = $.result(data);
 				if (JSON) {
-					$.dialogUI({name:'help',style:{width:'600px'}, title:JSON.TITLE, body:JSON.BODY});
+					$.dialogUI({name:'help',style:{width:'600px',overflow:'hidden'}, title:JSON.TITLE, body:JSON.BODY});
 				}
                 $('img',t).attr('src',common() + '/images/white.gif').addClass('h5');
             });
@@ -513,7 +522,7 @@ function LoadScript(p,c){
 							$.dialogUI({
 								mask:false, name:'help',
 								title:JSON.TITLE, body:JSON.BODY,
-								style:$.extend({width:'350px'},{top:pos.top + 8,left:pos.left})
+								style:$.extend({width:'350px',overflow:'hidden'},{top:pos.top + 8,left:pos.left})
 							});
 						} else {
 							return ;
