@@ -827,7 +827,7 @@ function menu($p1){
  * @param string $p2    读取类型
  * @return array
  */
-function get_dir_array($p1,$p2){
+function get_dir_array($p1,$p2='*'){
     $p1 = str_replace(array('.','[',']'),array(SEPARATOR,'*','*'),$p1);
     if (substr($p1,0,1)=='@') {
         $p1 = str_replace('@',COM_PATH,$p1);

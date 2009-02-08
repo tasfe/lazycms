@@ -481,7 +481,7 @@ function LoadScript(p,c){
     // Explorer
     $.fn.Explorer = function(path){
         path = path || '/';
-        $.post(common() + '/modules/system/gateway.php',{action:'explorer',path:path},function(data){
+        $.post(common() + '/modules/system/gateway.php',{action:'explorer',path:path,field:this.selector},function(data){
 			var JSON = $.result(data);
 			if (JSON) {
 				$.dialogUI({name:'explorer',style:{width:'600px',overflow:'hidden'},title:JSON.TITLE, body:JSON.BODY});

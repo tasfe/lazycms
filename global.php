@@ -22,7 +22,7 @@
 $GLOBALS['_beginTime'] = microtime(true);
 
 // 判断PHP版本不能低于5.0
-!version_compare(PHP_VERSION, '4.3.0', '<') or die('PHP version lower than 5.0, upgrade PHP!<br/>&lt;<a href="http://php.net/downloads.php" target="_blank">http://php.net/downloads.php</a>&gt;');
+!version_compare(PHP_VERSION, '4.3.0', '<') or die('PHP version lower than 4.3.0, upgrade PHP!<br/>&lt;<a href="http://php.net/downloads.php" target="_blank">http://php.net/downloads.php</a>&gt;');
 
 if (str_replace('\\','/',__FILE__) === $_SERVER["SCRIPT_FILENAME"]) { die('Restricted access!'); }
 
