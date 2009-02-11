@@ -73,7 +73,7 @@ return array(
     'database'  => array(
         'parseDSN'  => '数据库连接字符串，设置错误。',
         'nolink'    => '数据库链接出错，请检查数据库设置！',
-        'noselectdb'    => '没有找到指定的数据库！',
+        'noselectdb'    => '没有找到 %s 数据库！',
         'noextension'   => '-_-!!请先开启%s扩展支持！',
         'versionlower'  => '%s数据库版本低于%s，请升级数据库版本！',
     ),

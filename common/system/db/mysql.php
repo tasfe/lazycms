@@ -54,7 +54,7 @@ class lazy_mysql extends DB {
         if (function_exists('mysql_connect')) {
             $this->_conn = @mysql_connect($this->config('host').':'.$this->config('port'),$this->config('user'),$this->config('pwd'));
         } else {
-            trigger_error(l('Database no extension',array($this->config('scheme'))));
+            trigger_error(t('system::database/noextension',array($this->config('scheme'))));
         }
         // 验证连接是否正确
         if (!$this->_conn) {
@@ -80,7 +80,7 @@ class lazy_mysql extends DB {
         }
         // 选择数据库
         if (!$select) {
-            trigger_error(t('system::database/noselectdb'));
+            trigger_error(t('system::database/noselectdb',array($this->config('name'))));
         }
         mysql_query("SET character_set_connection=".$this->config('lang').", character_set_results=".$this->config('lang').", character_set_client=binary;");
         if (version_compare($this->version(), '4.1', '<' )) {
@@ -102,7 +102,7 @@ class lazy_mysql extends DB {
     function _execute($sql,$func,$type=''){
         $this->connect();
         $sql = preg_replace('/\#\~(.+)\~\#/e','$this->config(\'\\1\')',$sql);
-        $sql = preg_replace('/`(#@_)(\w+)`/i','`'.$this->config('prefix').'$2`',$sql);
+        $sql = preg_replace('/`(#@_)(\w+)`/i','`'.$this->config('prefix').'$2`',$sql,1);
         $this->_sql = $sql;
         if(!($R= $func($sql,$this->_conn))){
             if(in_array($this->errno(),array(2006,2013)) && substr($type,0,5) != 'RETRY') {
@@ -166,7 +166,7 @@ class lazy_mysql extends DB {
     function batQuery($p1){
         if (empty($p1)) { return ; }
         $p1 = preg_replace('/\#\~(.+)\~\#/e','$this->config(\'\\1\')',$p1);
-        $p1 = preg_replace('/`(#@_)(\w+)`/i','`'.$this->config('prefix').'$2`',$p1);
+        $p1 = preg_replace('/`(#@_)(\w+)`/i','`'.$this->config('prefix').'$2`',$p1,1);
         $p1 = str_replace(chr(10).chr(10),chr(10),str_replace(chr(13),chr(10),$p1));
         $R1 = explode(chr(10),$p1);
         $R2 = create_function('&$p1,$p2','$p1=trim($p1);');array_walk($R1,$R2);

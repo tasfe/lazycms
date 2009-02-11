@@ -89,8 +89,15 @@ function lazy_explorer(){
     }
     $hl.= ' </div>';
     $hl.= ' <div class="right fr">';
-    foreach ($files as $k=>$v) {
-        $hl.= '<p>'.$v.'</p>';
+    if (!empty($files)) {
+        $hl.= '     <table cellspacing="0" border="0"><thead><tr><td>文件名</td><td>大小</td><td>操作</td></tr></thead><tbody>';
+        $folder = LAZY_PATH.($path=='/'?'':$path).'/';
+        foreach ($files as $k=>$v) {
+            $uf = ansi2utf($v);
+            $fz = file_size(filesize($folder.$v));
+            $hl.= '     <tr><td>'.icon($v).$uf.'</td><td>'.$fz.'</td><td><a href="'.HTTP_HOST.$path.'/'.$uf.'" target="_blank">下载</a></td></tr>';
+        }
+        $hl.= '     </tbody></table>';
     }
     $hl.= ' </div>';
     $hl.= '</div>';

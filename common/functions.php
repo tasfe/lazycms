@@ -322,6 +322,21 @@ function instr($p1,$p2){
     return in_array($p2,$p1) ? true : false;
 }
 /**
+ * 返回文件大小，自动设置适合于大小的单位
+ *
+ * @param int $p1   文件的大小，单位：字节
+ * @return string
+ */
+function file_size($p1) {
+	$R = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+	$n = 0;
+	while ($p1 >= 1024) {
+		$p1 /= 1024;
+		$n++;
+	}
+	return round($p1,2).' '.$R[$n];
+}
+/**
  * 取得数据库连接对象
  *
  * @return object
@@ -590,10 +605,10 @@ function down_img($p1,$p2=null){
  * @return string
  */
 function utf2ansi($p1,$p2='GB2312'){
-    if (function_exists('mb_convert_encoding')){
-        return mb_convert_encoding($p1,$p2,'UTF-8');
-    } elseif (function_exists('iconv')) {
+    if (function_exists('iconv')) {
         return iconv('UTF-8',"{$charset}//IGNORE",$p1);
+    } elseif (function_exists('mb_convert_encoding')){
+        return mb_convert_encoding($p1,$p2,'UTF-8');
     } else {
         return $p1;
     }
@@ -624,10 +639,10 @@ function is_utf8($p1){
 function ansi2utf($p1){
     if (strlen($p1)==0) { return ;}
     if (is_utf8($p1)) { return $p1; }
-    if (function_exists('mb_convert_encoding')){
-        return mb_convert_encoding($p1,'UTF-8','auto');
-    } elseif (function_exists('iconv')) {
+    if (function_exists('iconv')) {
         return iconv('',"UTF-8//IGNORE",$p1);
+    } elseif (function_exists('mb_convert_encoding')){
+        return mb_convert_encoding($p1,'UTF-8','GBK,ASCII');
     } else {
         return $p1;
     }
@@ -778,6 +793,48 @@ function cnsubstr($p1,$p2){
         }
         return implode('',array_slice($R1[0],$p3,$p4));
     }
+}
+/**
+ * 根据文件扩展名返回文件的图标
+ *
+ * @param string $p1    文件名
+ * @return string
+ */
+function icon($p1){
+    $ext = strtolower(pathinfo($p1,PATHINFO_EXTENSION));
+    switch ($ext) {
+        case 'doc': case 'docx':
+            $R = 'a9'; break;
+		case 'htm': case 'html':
+		    $R = 'b9'; break;
+		case 'js':
+		    $R = 'c4'; break;
+		case 'mid': case 'wma': case 'mp3':
+		    $R = 'c5'; break;
+		case 'pdf':
+		    $R = 'c6'; break;
+		case 'php':
+		    $R = 'c7'; break;
+		case 'jpg': case 'gif': case 'bmp': case 'png':
+		    $R = 'c8'; break;
+		case 'swf':
+		    $R = 'c9'; break;
+		case 'txt': case 'sql':
+		    $R = 'd4'; break;
+		case 'xls':
+		    $R = 'd5'; break;
+        case 'ppt': case 'pptx':
+		    $R = 'd6'; break;
+		case 'zip': case 'rar':
+		    $R = 'd7'; break;
+        case 'db': case 'mdb':
+		    $R = 'd9'; break;
+        case 'css': case 'xml':
+		    $R = 'e1'; break;
+		default:
+		    $R = 'd8'; break;
+    }
+    return '<img class="'.$R.' os" src="'.SITE_BASE.'common/images/white.gif" />';
 }
 /**
  * 输出tabs菜单
@@ -1065,7 +1122,7 @@ function editor($p1,$p2=array()){
     $css.= '</style>';
     $div = $css; $but = $size = null;//tinyMCE.get(\''.$p1.'\').execCommand(\'mceInsertContent\', false, \'插入内容\');
     if ($A1['upimg']) { $but.= '<button type="button" onclick="$(\'#'.$p1.'\').Explorer(\'/'.c('UPLOAD_IMAGE_PATH').'\');">'.t('system::editor/upimg').'</button>'; }
-    if ($A1['upfile']) { $but.= '<button type="button">'.t('system::editor/upfile').'</button>'; }
+    if ($A1['upfile']) { $but.= '<button type="button" onclick="$(\'#'.$p1.'\').Explorer(\'/'.c('UPLOAD_FILE_PATH').'\');">'.t('system::editor/upfile').'</button>'; }
     if ($A1['pagebreak']) { $but.= '<button type="button" onclick="tinyMCE.get(\''.$p1.'\').execCommand(\'mcePageBreak\',false);">'.t('system::editor/break').'</button>'; }
     if ($A1['snapimg'][0]) {
         $but.= '<input type="checkbox" name="'.$p1.'_attr[snapimg]" id="'.$p1.'_attr[snapimg]" value="1"'.($A1['snapimg'][1]?' checked="checked"':null).' cookie="true" /><label for="'.$p1.'_attr[snapimg]">'.t('system::editor/snapimg').'</label>&nbsp; ';
