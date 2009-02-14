@@ -210,7 +210,11 @@ function lazy_edit(){
                 foreach ($fields as $v) {
                     $data = (array) $v; $k = $data['ename'];
                     $type = Content_Model::getType($data['intype']);
-                    $sute[$k]['len']  = instr('input,radio,checkbox,select,upfile',$data['intype'])?'('.$data['length'].')':null;
+                    if ('input' == $data['intype']) {
+                        $sute[$k]['len'] = '('.$data['length'].')';
+                    } elseif (instr('radio,checkbox,select,upfile',$data['intype'])) {
+                        $sute[$k]['len'] = '(255)';
+                    }
                     $sute[$k]['type'] = strpos($type,')')===false ? $type.$sute[$k]['len'] : $type;
                     $sute[$k]['def']  = empty($data['default'])?null:" DEFAULT '".$data['default']."'";
                     // 只改变结构
@@ -393,7 +397,7 @@ function lazy_fields(){
             foreach ($eField as $k=>$field){
                 $row[$field] = $rq[$k];
             }
-            $len = instr('input,radio,checkbox,select,upfile',$row['intype'])?'('.$row['length'].')':null;
+            $len = 'input' == $row['intype']?'('.$row['length'].')':null;
             $s = '<tr n="'.$row['id'].'">';
             $s.= '<td><input type="checkbox" name="list['.$row['id'].']" value="'.$row['id'].'" /> '.$row['label'].'</td>';
             $s.= '<td>'.$row['ename'].'</td>';

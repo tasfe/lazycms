@@ -94,18 +94,21 @@ function lazy_explorer(){
         $hl.= '<table class="table" cellspacing="0"><thead><tr><td>文件名</td><td>大小</td><td>操作</td></tr></thead><tbody>';
         $folder = LAZY_PATH.($path=='/'?'':$path).'/';
         if ($exts == c('UPLOAD_IMAGE_EXT')) {
-            $hl.= '<tr><td colspan="3"><ul>';
+            $hl.= '<tr><td colspan="3"><ul class="thum">';
             foreach ($files as $k=>$v) {
                 $uf = ansi2utf($v);
                 $fz = file_size(filesize($folder.$v));
-                $hl.= '<li><table border="0" cellpadding="0" cellspacing="0"><tr><td class="picture"><img src="'.$path.'/'.$uf.'" width="70" alt="" /></td></tr><tr><td><div class="name">'.$uf.'</div></td></tr></table></li>';
+                $hl.= '<li><table border="0" cellpadding="0" cellspacing="0">';
+                $hl.= '<tr><td class="picture"><img src="'.$path.'/'.$uf.'" alt="" onload="$(this).bbimg(70,60);" /></td></tr>';
+                $hl.= '<tr><td><div class="name"><a href="javascript:;" src="'.$path.'/'.$uf.'"><img class="e3 os" src="../system/images/white.gif" /></a>'.$uf.'</div></td></tr>';
+                $hl.= '</table></li>';
             }
             $hl.= '</ul></td></tr>';
         } else {
             foreach ($files as $k=>$v) {
                 $uf = ansi2utf($v);
                 $fz = file_size(filesize($folder.$v));
-                $hl.= '<tr><td>'.icon($v).$uf.'</td><td>'.$fz.'</td><td><a href="'.HTTP_HOST.$path.'/'.$uf.'" target="_blank">下载</a></td></tr>';
+                $hl.= '<tr><td>'.icon($v).$uf.'</td><td>'.$fz.'</td><td><a href="'.$path.'/'.$uf.'" target="_blank">下载</a></td></tr>';
             }    
         }        
         $hl.= '</tbody></table>';

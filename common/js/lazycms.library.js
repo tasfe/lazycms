@@ -77,6 +77,16 @@ function LoadScript(p,c){
 		R = typeof R=='undefined'?p1:R;
 		return R;
 	}
+	// 缩放图片
+	$.fn.bbimg = function(w,h){
+		if (this.width() > w) {
+			this.width(w);
+		}
+		if (this.height() > h) {
+			this.height(h);
+		}
+		return this;
+	}
     /**
      * 全选/反选
      *
@@ -480,12 +490,34 @@ function LoadScript(p,c){
     }
     // Explorer
     $.fn.Explorer = function(path,exts){
-        path = path || '/';
-		exts = exts || '*';
-        $.post(common() + '/modules/system/gateway.php',{action:'explorer',path:path,field:this.selector,exts:exts},function(data){
+        var This = this; var field = this.selector; path = path || '/'; exts = exts || '*';
+        $.post(common() + '/modules/system/gateway.php',{action:'explorer',path:path,field:field,exts:exts},function(data){
 			var JSON = $.result(data);
 			if (JSON) {
-				$.dialogUI({name:'explorer',style:{width:'600px',overflow:'hidden'},title:JSON.TITLE, body:JSON.BODY});
+				$.dialogUI({name:'explorer',style:{width:'600px',overflow:'hidden'},title:JSON.TITLE, body:JSON.BODY},function(s){
+					var dialog = this;
+					$('td.picture',s).hover(function(){
+						$(this).css({background:'#4646FF',filter:'alpha(opacity=80)','-moz-opacity':0.8});
+					},function(){
+						$(this).css({background:'none',filter:'alpha(opacity=100)','-moz-opacity':1});
+					}).each(function(){
+						$('img',this).click(function(){
+							alert(this.src);
+						});
+					});
+					$('td > div.name',s).each(function(){
+						$('a',this).click(function(){
+							var src = $(this).attr('src');
+							var id  = field.replace('#','');
+							if (typeof tinyMCE != 'undefined' && typeof tinyMCE.get(id) != 'undefined') {
+								tinyMCE.get(id).execCommand('mceInsertContent', false, '<img src="' + src + '" />'); dialog.close();
+							} else {
+								This.val(src); dialog.close();
+							}
+							return false;
+						});
+					});
+				});
 			}
         });
         return this;
