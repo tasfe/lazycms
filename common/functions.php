@@ -832,7 +832,7 @@ function icon($p1){
         case 'css': case 'xml':
 		    $R = 'e1'; break;
 		default:
-		    $R = 'd8'; break;
+		    $R = 'e2'; break;
     }
     return '<img class="'.$R.' os" src="'.SITE_BASE.'common/images/white.gif" />';
 }
@@ -1121,8 +1121,8 @@ function editor($p1,$p2=array()){
     $css.= '.'.$p1.'_editor_button .fr a{margin-left:8px;}';
     $css.= '</style>';
     $div = $css; $but = $size = null;//tinyMCE.get(\''.$p1.'\').execCommand(\'mceInsertContent\', false, \'插入内容\');
-    if ($A1['upimg']) { $but.= '<button type="button" onclick="$(\'#'.$p1.'\').Explorer(\'/'.c('UPLOAD_IMAGE_PATH').'\');">'.t('system::editor/upimg').'</button>'; }
-    if ($A1['upfile']) { $but.= '<button type="button" onclick="$(\'#'.$p1.'\').Explorer(\'/'.c('UPLOAD_FILE_PATH').'\');">'.t('system::editor/upfile').'</button>'; }
+    if ($A1['upimg']) { $but.= '<button type="button" onclick="$(\'#'.$p1.'\').Explorer(\'/'.c('UPLOAD_IMAGE_PATH').'\',\''.c('UPLOAD_IMAGE_EXT').'\');">'.t('system::editor/upimg').'</button>'; }
+    if ($A1['upfile']) { $but.= '<button type="button" onclick="$(\'#'.$p1.'\').Explorer(\'/'.c('UPLOAD_FILE_PATH').'\',\''.c('UPLOAD_ALLOW_EXT').'\');">'.t('system::editor/upfile').'</button>'; }
     if ($A1['pagebreak']) { $but.= '<button type="button" onclick="tinyMCE.get(\''.$p1.'\').execCommand(\'mcePageBreak\',false);">'.t('system::editor/break').'</button>'; }
     if ($A1['snapimg'][0]) {
         $but.= '<input type="checkbox" name="'.$p1.'_attr[snapimg]" id="'.$p1.'_attr[snapimg]" value="1"'.($A1['snapimg'][1]?' checked="checked"':null).' cookie="true" /><label for="'.$p1.'_attr[snapimg]">'.t('system::editor/snapimg').'</label>&nbsp; ';

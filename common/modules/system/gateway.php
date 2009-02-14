@@ -57,49 +57,60 @@ function lazy_explorer(){
     System::purview();
     $path  = isset($_POST['path']) ? $_POST['path'] : '/';
     $field = isset($_POST['field']) ? $_POST['field'] : null;
+    $exts  = isset($_POST['exts']) ? $_POST['exts'] : '*';
     // 文件夹不存在，则创建
     if (!file_exists(LAZY_PATH.$path)) {
         mkdirs(LAZY_PATH.$path);
     }
     $dirs   = get_dir_array($path,'dir');
-    $files  = get_dir_array($path,'*');
+    $files  = get_dir_array($path,$exts);
     $paths  = $path=='/'?array(0=>''):explode('/',$path);
     $length = count($paths)-1;
     $hl = '<div id="explorer">';
-    $hl.= ' <div class="left fl">';
-    $hl.= '     <div>文件夹</div>';
+    $hl.= '<div class="left fl">';
+    $hl.= '<div>文件夹</div>';
     $pt = null;
     foreach ($paths as $i=>$v) {
         $pt.= $v.'/';
         $vt = rtrim($pt,'/');
-        $hl.= ' <p style="padding-left:'.($i*10).'px;">';
+        $hl.= '<p style="padding-left:'.($i*10).'px;">';
         if ($i==0 && empty($v)) {
-            $hl.= '<img class="c1 os" src="../system/images/white.gif" /><a href="javascript:;" onclick="$(\''.$field.'\').Explorer(\'/\');">'.($path=='/'?'<strong>ROOT</strong>':'ROOT').'</a>';
+            $hl.= '<img class="c1 os" src="../system/images/white.gif" /><a href="javascript:;" onclick="$(\''.$field.'\').Explorer(\'/\',\''.$exts.'\');">'.($path=='/'?'<strong>ROOT</strong>':'ROOT').'</a>';
         } elseif ($length == $i) {
-            $hl.= '<img class="c3 os" src="../system/images/white.gif" /><a href="javascript:;" onclick="$(\''.$field.'\').Explorer(\''.$vt.'\');"><strong>'.$v.'</strong></a>';
+            $hl.= '<img class="c3 os" src="../system/images/white.gif" /><a href="javascript:;" onclick="$(\''.$field.'\').Explorer(\''.$vt.'\',\''.$exts.'\');"><strong>'.$v.'</strong></a>';
         } else {
-            $hl.= '<img class="c2 os" src="../system/images/white.gif" /><a href="javascript:;" onclick="$(\''.$field.'\').Explorer(\''.$vt.'\');">'.$v.'</a>';
+            $hl.= '<img class="c2 os" src="../system/images/white.gif" /><a href="javascript:;" onclick="$(\''.$field.'\').Explorer(\''.$vt.'\',\''.$exts.'\');">'.$v.'</a>';
         }
-        $hl.= ' </p>';
+        $hl.= '</p>';
     }
     
     foreach ($dirs as $v) {
         $spt = $vt.'/'.$v;
-        $hl.= ' <p style="padding-left:'.(($i+1)*10).'px;"><img class="c2 os" src="../system/images/white.gif" /><a href="javascript:;" onclick="$(\''.$field.'\').Explorer(\''.$spt.'\');">'.$v.'</a></p>';
+        $hl.= '<p style="padding-left:'.(($i+1)*10).'px;"><img class="c2 os" src="../system/images/white.gif" /><a href="javascript:;" onclick="$(\''.$field.'\').Explorer(\''.$spt.'\',\''.$exts.'\');">'.$v.'</a></p>';
     }
-    $hl.= ' </div>';
-    $hl.= ' <div class="right fr">';
+    $hl.= '</div>';
+    $hl.= '<div class="right fr">';
     if (!empty($files)) {
-        $hl.= '     <table cellspacing="0" border="0"><thead><tr><td>文件名</td><td>大小</td><td>操作</td></tr></thead><tbody>';
+        $hl.= '<table class="table" cellspacing="0"><thead><tr><td>文件名</td><td>大小</td><td>操作</td></tr></thead><tbody>';
         $folder = LAZY_PATH.($path=='/'?'':$path).'/';
-        foreach ($files as $k=>$v) {
-            $uf = ansi2utf($v);
-            $fz = file_size(filesize($folder.$v));
-            $hl.= '     <tr><td>'.icon($v).$uf.'</td><td>'.$fz.'</td><td><a href="'.HTTP_HOST.$path.'/'.$uf.'" target="_blank">下载</a></td></tr>';
-        }
-        $hl.= '     </tbody></table>';
+        if ($exts == c('UPLOAD_IMAGE_EXT')) {
+            $hl.= '<tr><td colspan="3"><ul>';
+            foreach ($files as $k=>$v) {
+                $uf = ansi2utf($v);
+                $fz = file_size(filesize($folder.$v));
+                $hl.= '<li><table border="0" cellpadding="0" cellspacing="0"><tr><td class="picture"><img src="'.$path.'/'.$uf.'" width="70" alt="" /></td></tr><tr><td><div class="name">'.$uf.'</div></td></tr></table></li>';
+            }
+            $hl.= '</ul></td></tr>';
+        } else {
+            foreach ($files as $k=>$v) {
+                $uf = ansi2utf($v);
+                $fz = file_size(filesize($folder.$v));
+                $hl.= '<tr><td>'.icon($v).$uf.'</td><td>'.$fz.'</td><td><a href="'.HTTP_HOST.$path.'/'.$uf.'" target="_blank">下载</a></td></tr>';
+            }    
+        }        
+        $hl.= '</tbody></table>';
     }
-    $hl.= ' </div>';
+    $hl.= '</div>';
     $hl.= '</div>';
     ajax_result(array(
         'TITLE' => '资源管理器',

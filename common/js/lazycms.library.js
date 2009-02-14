@@ -479,9 +479,10 @@ function LoadScript(p,c){
         });
     }
     // Explorer
-    $.fn.Explorer = function(path){
+    $.fn.Explorer = function(path,exts){
         path = path || '/';
-        $.post(common() + '/modules/system/gateway.php',{action:'explorer',path:path,field:this.selector},function(data){
+		exts = exts || '*';
+        $.post(common() + '/modules/system/gateway.php',{action:'explorer',path:path,field:this.selector,exts:exts},function(data){
 			var JSON = $.result(data);
 			if (JSON) {
 				$.dialogUI({name:'explorer',style:{width:'600px',overflow:'hidden'},title:JSON.TITLE, body:JSON.BODY});
