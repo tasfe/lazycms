@@ -17,17 +17,6 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-// 对象dump函数
-function dump(o){
-    if (typeof o == 'undefined') {
-        alert(o); return ;
-    }
-    for(k in o){
-        alert(k+' : '+o[k]);
-		//s += k+' : '+o[k]+'\n';
-    }
-	//document.write(s);
-}
 function common(){ return $("script[src*=js/jquery.js]").attr("src").replace(/(\/js\/jquery\.js\?(.*))/i,'');}
 function lock(p1){ return p1 ? icon('a3') : icon('a4'); }
 function cklist(p1){ return '<input name="list['+p1+']" id="list_'+p1+'" type="checkbox" value="'+p1+'"/>'; }
@@ -243,17 +232,23 @@ function LoadScript(p,c){
 		if (style.overflow=='auto') {
 			$('.dialogBox > .body',dialog).css({height:parseInt(dialog.height() - 35) + 'px'});
 		}
+		// 设置CSS
+		var CSS = {
+			left:parseInt($('[rel=mask]',s).width()/2 - dialog.width()/2),
+			top:parseInt(Math.max($('[rel=mask]',s).height(),$(document).height())/2.5 - dialog.height()/2)
+		};
+		CSS.top = CSS.top<=0?10:CSS.top;
 		// 窗口改变大小，调整位置
 		$(window).resize(function(){
 			dialog.css({
-				top:(typeof(style.top)=='undefined'?parseInt(Math.max($('[rel=mask]',s).height(),$(document).height())/2.5 - dialog.height()/2):style.top) + 'px',
-				left:(typeof(style.left)=='undefined'?parseInt($('[rel=mask]',s).width()/2 - dialog.width()/2):style.left) + 'px'
+				top:(typeof(style.top)=='undefined'?CSS.top:style.top) + 'px',
+				left:(typeof(style.left)=='undefined'?CSS.left:style.left) + 'px'
 			});
 		});
 		// 设置位置
         dialog.css({ overflow:'',
-            top:(typeof(style.top)=='undefined'?parseInt(Math.max($('[rel=mask]',s).height(),$(document).height())/2.5 - dialog.height()/2):style.top) + 'px',
-            left:(typeof(style.left)=='undefined'?parseInt($('[rel=mask]',s).width()/2 - dialog.width()/2):style.left) + 'px'
+            top:(typeof(style.top)=='undefined'?CSS.top:style.top) + 'px',
+            left:(typeof(style.left)=='undefined'?CSS.left:style.left) + 'px'
         });
 
         // 显示弹出层
@@ -501,8 +496,14 @@ function LoadScript(p,c){
 					},function(){
 						$(this).css({background:'none',filter:'alpha(opacity=100)','-moz-opacity':1});
 					}).each(function(){
-						$('img',this).click(function(){
-							alert(this.src);
+						$(this).click(function(){
+							var src = $('img',this).attr('src');
+							$.dialogUI({ name:'view',style:{'max-width':$(document).width()*0.9},title:'Preview',body:'<img src="' + src + '" />'},function(s){
+								var dialog = this;
+								$('div.body',s).css({'text-align':'center'}).click(function(){
+									dialog.close();
+								});
+							});
 						});
 					});
 					$('td > div.name',s).each(function(){

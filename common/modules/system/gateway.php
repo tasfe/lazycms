@@ -99,7 +99,7 @@ function lazy_explorer(){
                 $uf = ansi2utf($v);
                 $fz = file_size(filesize($folder.$v));
                 $hl.= '<li><table border="0" cellpadding="0" cellspacing="0">';
-                $hl.= '<tr><td class="picture"><img src="'.$path.'/'.$uf.'" alt="" onload="$(this).bbimg(70,60);" /></td></tr>';
+                $hl.= '<tr><td class="picture"><img src="'.$path.'/'.$uf.'" onload="$(this).bbimg(70,60);" /></td></tr>';
                 $hl.= '<tr><td><div class="name"><a href="javascript:;" src="'.$path.'/'.$uf.'"><img class="e3 os" src="../system/images/white.gif" /></a>'.$uf.'</div></td></tr>';
                 $hl.= '</table></li>';
             }
