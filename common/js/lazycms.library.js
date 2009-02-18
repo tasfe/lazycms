@@ -54,25 +54,14 @@ function LoadScript(p,c){
  * See LICENSE.txt for copyright notices and details.
  */
 (function ($) {
-	// 调用语言包
-	$.t = function(p1){
-		var R;
-		var lang = $(document).data('language');
-		try	{
-			R = eval('lang.' + p1 + ';');
-		} catch (e) {
-			R = p1;
-		}
-		R = typeof R=='undefined'?p1:R;
-		return R;
-	}
 	// 缩放图片
 	$.fn.bbimg = function(w,h){
+		var scale = Math.min(w/this.width(),h/this.height());
 		if (this.width() > w) {
-			this.width(w);
+			this.width(this.width()*scale);
 		}
 		if (this.height() > h) {
-			this.height(h);
+			this.height(this.height()*scale);
 		}
 		return this;
 	}
@@ -135,19 +124,18 @@ function LoadScript(p,c){
             document.write(style);
     }
     // 取得最大的zIndex
-    $.getMaxzIndex = function(){
-        var els = document.getElementsByTagName("*");
-        var max = 0;
-        for(var i=0;i<els.length;i++){
-            max = Math.max(max,els[i].style.zIndex);
-        }
-        return max;
+    $.fn.getMaxzIndex = function(){
+		var max = 0;
+		this.each(function(){
+			max = Math.max(max,this.style.zIndex);
+		});
+		return max;
     }
     // 创建遮罩层
     $.fn.mask = function(style){
         var s = this.selector==''?$('body'):this;
         var m = $('<div class="mask" rel="mask"></div>');
-        var z = $.getMaxzIndex();
+        var z = $('.mask,.dialogUI').getMaxzIndex();
         // 默认设置
         style = $.extend({
             width:'100%',//Math.max(s.width(),$(document).width()) + 'px',
@@ -190,7 +178,7 @@ function LoadScript(p,c){
                 if ($('.dialogUI',s).size()==0) {
                     $('[rel=mask]',s).remove();
                 } else {
-                    $('[rel=mask]',s).css('z-index',$.getMaxzIndex() - 1);
+                    $('[rel=mask]',s).css('z-index',$('.mask,.dialogUI').getMaxzIndex() - 1);
                 }
             },
             buttons:[]
@@ -208,7 +196,7 @@ function LoadScript(p,c){
 			if ($('[rel=mask]',s).size()==0) {
 				$(this).mask();
 			} else {
-				$('[rel=mask]',s).css('z-index',$.getMaxzIndex());
+				$('[rel=mask]',s).css('z-index',$('.mask,.dialogUI').getMaxzIndex());
 			}
 		}
 		
@@ -223,7 +211,7 @@ function LoadScript(p,c){
         }
 		
         // 重新调整CSS
-        var style = $.extend({overflow:'auto','z-index':$.getMaxzIndex() + 1,background:'#FFFFFF',height:'auto'},opts.style); dialog.css(style);
+        var style = $.extend({overflow:'auto','z-index':$('.mask,.dialogUI').getMaxzIndex() + 1,background:'#FFFFFF',height:'auto'},opts.style); dialog.css(style);
 
 		// 设置标题
         $('.dialogBox > .head > strong',dialog).text(opts.title);
@@ -308,6 +296,7 @@ function LoadScript(p,c){
     }
     // confirm
     $.confirm = function(message,callback){
+		callback = callback||function(){};
         $.dialogUI({
             name:'confirm', title:$.t('confirm'),style:{width:'400px'},
             body:'<div class="icon" style="background-position:0px -80px;"></div><div class="content"><h3>' + message + '</h3></div>',
@@ -315,12 +304,12 @@ function LoadScript(p,c){
                 focus:true,
                 text:$.t('submit'),
                 handler:function(){
-                    callback(true);this.close();
+                    callback(true); this.close();
                 }
             },{
                 text:$.t('cancel'),
                 handler:function(){
-                    callback(false);this.close();
+                    callback(false); this.close();
                 }
             }]
         });
@@ -473,55 +462,15 @@ function LoadScript(p,c){
                     jOffset = $(this).offset();
                     jObject = $(this).contents();
                 }
-				jTip.css({'top':((el.clientY + jOffset.top) - jHeight - 20 ) + 'px','left':(el.clientX + jOffset.left + 10) + 'px','z-index':$.getMaxzIndex() + 1});
+				jTip.css({'top':((el.clientY + jOffset.top) - jHeight - 20 ) + 'px','left':(el.clientX + jOffset.left + 10) + 'px','z-index':$('.mask,.dialogUI').getMaxzIndex() + 1});
                 jObject.mousemove(function(e){
-                    jTip.css({'top':((e.clientY + jOffset.top) - jHeight - 20 ) + 'px','left':(e.clientX + jOffset.left + 10) + 'px','z-index':$.getMaxzIndex() + 1});
+                    jTip.css({'top':((e.clientY + jOffset.top) - jHeight - 20 ) + 'px','left':(e.clientX + jOffset.left + 10) + 'px','z-index':$('.mask,.dialogUI').getMaxzIndex() + 1});
                 });
                 jTip.fadeIn('fast').find('.jTip-body').html($(this).attr('error'));
             },function(){
                 $('.jTip').remove();
             });
         });
-    }
-    // Explorer
-    $.fn.Explorer = function(path,exts){
-        var This = this; var field = this.selector; path = path || '/'; exts = exts || '*';
-        $.post(common() + '/modules/system/gateway.php',{action:'explorer',path:path,field:field,exts:exts},function(data){
-			var JSON = $.result(data);
-			if (JSON) {
-				$.dialogUI({name:'explorer',style:{width:'600px',overflow:'hidden'},title:JSON.TITLE, body:JSON.BODY},function(s){
-					var dialog = this;
-					$('td.picture',s).hover(function(){
-						$(this).css({background:'#4646FF',filter:'alpha(opacity=80)','-moz-opacity':0.8});
-					},function(){
-						$(this).css({background:'none',filter:'alpha(opacity=100)','-moz-opacity':1});
-					}).each(function(){
-						$(this).click(function(){
-							var src = $('img',this).attr('src');
-							$.dialogUI({ name:'view',style:{'max-width':$(document).width()*0.9},title:'Preview',body:'<img src="' + src + '" />'},function(s){
-								var dialog = this;
-								$('div.body',s).css({'text-align':'center'}).click(function(){
-									dialog.close();
-								});
-							});
-						});
-					});
-					$('td > div.name',s).each(function(){
-						$('a',this).click(function(){
-							var src = $(this).attr('src');
-							var id  = field.replace('#','');
-							if (typeof tinyMCE != 'undefined' && typeof tinyMCE.get(id) != 'undefined') {
-								tinyMCE.get(id).execCommand('mceInsertContent', false, '<img src="' + src + '" />'); dialog.close();
-							} else {
-								This.val(src); dialog.close();
-							}
-							return false;
-						});
-					});
-				});
-			}
-        });
-        return this;
     }
     // 获取分词
     $.fn.getKeywords = function(id){
@@ -536,49 +485,7 @@ function LoadScript(p,c){
         });
         return this;
     };
-    // 帮助提示
-    $.fn.help = function(path){
-        if (typeof path != 'undefined') {
-            var t = this;
-            $('img',t).attr('src',common() + '/images/loading.gif').removeClass('h5');
-            $.post(common() + '/modules/system/gateway.php',{action:'help',module:MODULE,path:path},function(data){
-				var JSON = $.result(data);
-				if (JSON) {
-					$.dialogUI({name:'help',style:{width:'600px',overflow:'hidden'}, title:JSON.TITLE, body:JSON.BODY});
-				}
-                $('img',t).attr('src',common() + '/images/white.gif').addClass('h5');
-            });
-        } else {
-            return this.each(function(){
-                var p = $(this).attr('help');
-                $(this).siblings('a[rel=help]').remove();
-                $('<a href="javascript:;" rel="help"><img class="h5 os" src="../system/images/white.gif" /></a>').click(function(){
-                    var img = $('img',this).attr('src',common() + '/images/loading.gif').removeClass('h5');
-                    $.post(common() + '/modules/system/gateway.php',{action:'help',module:MODULE,path:p},function(data){
-                        img.attr('src',common() + '/images/white.gif').addClass('h5');
-						var JSON = $.result(data);
-						if (JSON) {
-							var pos = img.offset();
-								if ((img.offset().left + 20 + 350) > $(document).width()) {
-                                    pos.left = pos.left - 2 - 350;
-                                } else {
-                                    pos.left = pos.left + 20;
-                                }
-							$('.dialogUI[name=help]').remove();
-							$.dialogUI({
-								mask:false, name:'help',
-								title:JSON.TITLE, body:JSON.BODY,
-								style:$.extend({width:'350px',overflow:'hidden'},{top:pos.top + 8,left:pos.left})
-							});
-						} else {
-							return ;
-						}
-                    });
-                }).insertAfter(this);
-                $('a').focus(function(){ this.blur(); });
-            });
-        }
-    }
+    
 })(jQuery);
 /*
  * JSON  - JSON for jQuery

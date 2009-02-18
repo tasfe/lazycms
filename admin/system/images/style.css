@@ -150,11 +150,13 @@ a:hover   { text-decoration: underline; }
 	#explorer .right .table thead{ background:url(title.png) repeat-x left center; }
 	#explorer .right .table thead td{ padding:0 5px; height:23px; line-height:22px; border-bottom:solid 1px #C6D9E7; border-right:solid 1px #C6D9E7; }
 	#explorer .right .table tbody td{ padding:0 5px; border-bottom:solid 1px #F3F7F9; border-right:solid 1px #E8EFF4; }
+	#explorer .right .table tbody div.filename{ width:230px; height:22px; line-height:150%; text-align:left; white-space:nowrap; -o-text-overflow:ellipsis; text-overflow:ellipsis; overflow:hidden; }
 	#explorer .right .table tbody ul.thum{ width:100%; margin:0; padding:5px; list-style:none; }
 	#explorer .right .table tbody ul.thum li{ width:25%; height:85px; float:left; display:block; text-align:center; }
 	#explorer .right .table tbody ul.thum li td{ padding:0; border:none; }
 	#explorer .right .table tbody ul.thum li .picture{ width:70px; height:60px; border:solid 1px #999999; padding:1px; vertical-align:middle; }
-	#explorer .right .table tbody ul.thum li .name{ width:70px; height:22px; line-height:150%; text-align:left; white-space:nowrap; -o-text-overflow:ellipsis; text-overflow:ellipsis; /*-moz-binding: url('ellipsis.xml#ellipsis');*/ overflow:hidden; }
+	#explorer .right .table tbody ul.thum li .name{ width:70px; height:22px; line-height:150%; text-align:left; white-space:nowrap; -o-text-overflow:ellipsis; text-overflow:ellipsis; overflow:hidden; }
+
 
 /* footer */
 #footer{ padding:10px; text-align:center; }

@@ -41,7 +41,7 @@ div.jTip-foot { width:10px; height:10px; position:relative; top:-1px; float:left
 .dialogUI .dialogBox .head strong{ background:url(dialog-icon.png) no-repeat left 3px; padding-left:20px; float:left; color:#0B5B98; letter-spacing:1px; }
 .dialogUI .dialogBox .head a{ width:35px; height:17px; float:right; display:block; background:url(close.png) no-repeat left top; }
 .dialogUI .dialogBox .head a:hover{ background-position:0 -24px; }
-.dialogUI .dialogBox .body{ width:auto; display:block; zoom:1; padding:5px; clear:both; overflow:auto; word-wrap: break-word; word-break: normal; word-break:break-all; }
+.dialogUI .dialogBox .body{ width:98%; margin:0 auto; display:block; zoom:1; padding:5px 1%; clear:both; overflow:auto; word-wrap: break-word; word-break: normal; word-break:break-all; }
 .dialogUI .dialogBox .body .icon{ width:32px; height:32px; float:left; margin:10px 10px 0 10px; background-image:url(info_icons.png); background-repeat:no-repeat; }
 .dialogUI .dialogBox .body .content{ float:left; }
 .dialogUI .dialogBox .body .content h3{ line-height:130%; margin-top:13px; }

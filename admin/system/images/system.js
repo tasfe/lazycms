@@ -23,7 +23,7 @@ $.ajaxSetup({
     cache: false,
 	beforeSend: function(s){
 		s.setRequestHeader("AJAX_SUBMIT",true);
-		window.loading.css({position:'absolute',top:'5px',right:'5px','z-index':$.getMaxzIndex() + 1}).appendTo('body');
+		window.loading.css({position:'absolute',top:'5px',right:'5px','z-index':$('.mask,.dialogUI').getMaxzIndex() + 1}).appendTo('body');
 	},
 	complete: function(){
 		window.loading.remove();
@@ -160,6 +160,103 @@ $(document).ready(function(){
 			} catch (e) {}
 		});
 	}
+	// Explorer
+    $.fn.Explorer = function(path,exts){
+        var This = this; var field = this.selector; path = path || '/'; exts = exts || '*';
+        $.post(common() + '/modules/system/gateway.php',{action:'explorer',path:path,field:field,exts:exts},function(data){
+			var JSON = $.result(data);
+			if (JSON) {
+				$.dialogUI({name:'explorer',style:{width:'600px',overflow:'hidden'},title:JSON.TITLE, body:JSON.BODY},function(s){
+					var dialog = this;
+					$('td.picture',s).hover(function(){
+						$(this).css({background:'#4646FF',filter:'alpha(opacity=80)','-moz-opacity':0.8});
+					},function(){
+						$(this).css({background:'none',filter:'alpha(opacity=100)','-moz-opacity':1});
+					}).click(function(){
+						var src   = $('img',this).attr('src'); var img = new Image();img.src = src;
+						var width = Math.min($(document).width()*0.9,img.width);
+						$.dialogUI({ name:'view',style:{width:Math.max(150,width+25)},title:'Preview',body:'<img src="' + src + '" width="' + width + '" alt="' + src + '" />'},function(s){
+							var dialog = this;
+							$('div.body',s).css({'text-align':'center'}).click(function(){
+								dialog.close();
+							});
+						});
+					});
+					$('td a[rel=insert]',s).click(function(){
+						var src = $(this).attr('src');
+						var id  = field.replace('#','');
+						if (typeof tinyMCE != 'undefined' && typeof tinyMCE.get(id) != 'undefined') {
+							tinyMCE.get(id).execCommand('mceInsertContent', false, '<img src="' + src + '" />'); dialog.close();
+						} else {
+							This.val(src); dialog.close();
+						}
+						return false;
+					});
+					$('td a[rel=delete]',s).click(function(){
+						var src = $(this).attr('src');
+						$.confirm($.t('confirm/delete'),function(r){
+							if (r) {
+								// 删除图片
+								$.post(common() + '/modules/system/gateway.php',{action:'explorer_delete',file:src},function(data){
+									if ($.result(data)) {
+										This.Explorer(path,exts);
+									};
+								});
+							}
+						});
+					});
+				});
+			}
+        });
+        return this;
+    }
+	// 创建文件夹
+	$.fn.CreateFolder = function(){
+		alert('CreateFolder');
+	}
+	// 帮助提示
+    $.fn.help = function(path){
+        if (typeof path != 'undefined') {
+            var t = this;
+            $('img',t).attr('src',common() + '/images/loading.gif').removeClass('h5');
+            $.post(common() + '/modules/system/gateway.php',{action:'help',module:MODULE,path:path},function(data){
+				var JSON = $.result(data);
+				if (JSON) {
+					$.dialogUI({name:'help',style:{width:'600px',overflow:'hidden'}, title:JSON.TITLE, body:JSON.BODY});
+				}
+                $('img',t).attr('src',common() + '/images/white.gif').addClass('h5');
+            });
+        } else {
+            return this.each(function(){
+                var p = $(this).attr('help');
+                $(this).siblings('a[rel=help]').remove();
+                $('<a href="javascript:;" rel="help"><img class="h5 os" src="../system/images/white.gif" /></a>').click(function(){
+                    var img = $('img',this).attr('src',common() + '/images/loading.gif').removeClass('h5');
+                    $.post(common() + '/modules/system/gateway.php',{action:'help',module:MODULE,path:p},function(data){
+                        img.attr('src',common() + '/images/white.gif').addClass('h5');
+						var JSON = $.result(data);
+						if (JSON) {
+							var pos = img.offset();
+								if ((img.offset().left + 20 + 350) > $(document).width()) {
+                                    pos.left = pos.left - 2 - 350;
+                                } else {
+                                    pos.left = pos.left + 20;
+                                }
+							$('.dialogUI[name=help]').remove();
+							$.dialogUI({
+								mask:false, name:'help',
+								title:JSON.TITLE, body:JSON.BODY,
+								style:$.extend({width:'350px',overflow:'hidden'},{top:pos.top + 8,left:pos.left})
+							});
+						} else {
+							return ;
+						}
+                    });
+                }).insertAfter(this);
+                $('a').focus(function(){ this.blur(); });
+            });
+        }
+    }
 })(jQuery);
 
 

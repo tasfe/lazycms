@@ -53,6 +53,17 @@ function lazy_keywords(){
     exit($result);
 }
 // *** *** www.LazyCMS.net *** *** //
+function lazy_explorer_delete(){
+    System::purview();
+    $file = isset($_POST['file']) ? $_POST['file'] : null;
+    if (!empty($file)) {
+        if (is_file(LAZY_PATH.$file)) {
+            unlink(LAZY_PATH.$file);
+        }
+    }
+    ajax_result(true);
+}
+// *** *** www.LazyCMS.net *** *** //
 function lazy_explorer(){
     System::purview();
     $path  = isset($_POST['path']) ? $_POST['path'] : '/';
@@ -68,7 +79,7 @@ function lazy_explorer(){
     $length = count($paths)-1;
     $hl = '<div id="explorer">';
     $hl.= '<div class="left fl">';
-    $hl.= '<div>文件夹</div>';
+    $hl.= '<div>'.t('files/folder').'</div>';
     $pt = null;
     foreach ($paths as $i=>$v) {
         $pt.= $v.'/';
@@ -91,16 +102,17 @@ function lazy_explorer(){
     $hl.= '</div>';
     $hl.= '<div class="right fr">';
     if (!empty($files)) {
-        $hl.= '<table class="table" cellspacing="0"><thead><tr><td>文件名</td><td>大小</td><td>操作</td></tr></thead><tbody>';
+        $hl.= '<table class="table" cellspacing="0"><thead><tr><td>'.t('files/name').'</td><td>'.t('files/size').'</td>';
+        $hl.= '<td class="tr"><a href="#"><img class="e5 os" src="../system/images/white.gif" /></a><a href="javascript:;" onclick="$(\''.$field.'\').CreateFolder();"><img class="e4 os" src="../system/images/white.gif" /></a></td></tr></thead><tbody>';
         $folder = LAZY_PATH.($path=='/'?'':$path).'/';
         if ($exts == c('UPLOAD_IMAGE_EXT')) {
             $hl.= '<tr><td colspan="3"><ul class="thum">';
             foreach ($files as $k=>$v) {
                 $uf = ansi2utf($v);
                 $fz = file_size(filesize($folder.$v));
-                $hl.= '<li><table border="0" cellpadding="0" cellspacing="0">';
-                $hl.= '<tr><td class="picture"><img src="'.$path.'/'.$uf.'" onload="$(this).bbimg(70,60);" /></td></tr>';
-                $hl.= '<tr><td><div class="name"><a href="javascript:;" src="'.$path.'/'.$uf.'"><img class="e3 os" src="../system/images/white.gif" /></a>'.$uf.'</div></td></tr>';
+                $hl.= '<li><table border="0" cellpadding="0" cellspacing="0" title="'.$uf.'">';
+                $hl.= '<tr><td class="picture"><img src="'.$path.'/'.$uf.'" onload="$(this).bbimg(70,60);" alt="'.$uf.'" /></td></tr>';
+                $hl.= '<tr><td><div class="name"><a href="javascript:;" src="'.$path.'/'.$uf.'" rel="insert"><img class="e3 os" src="../system/images/white.gif" /></a>'.$uf.'</div></td></tr>';
                 $hl.= '</table></li>';
             }
             $hl.= '</ul></td></tr>';
@@ -108,7 +120,9 @@ function lazy_explorer(){
             foreach ($files as $k=>$v) {
                 $uf = ansi2utf($v);
                 $fz = file_size(filesize($folder.$v));
-                $hl.= '<tr><td>'.icon($v).$uf.'</td><td>'.$fz.'</td><td><a href="'.$path.'/'.$uf.'" target="_blank">下载</a></td></tr>';
+                $hl.= '<tr><td title="'.$uf.'"><div class="filename">'.icon($v).$uf.'</div></td><td>'.$fz.'</td>';
+                $hl.= '<td><a href="javascript:;" src="'.$path.'/'.$uf.'" rel="insert"><img class="e3 os" src="../system/images/white.gif" /></a>';
+                $hl.= '<a href="javascript:;" src="'.$path.'/'.$uf.'" rel="delete"><img class="e7 os" src="../system/images/white.gif" /></a></td></tr>';
             }    
         }        
         $hl.= '</tbody></table>';
@@ -116,7 +130,7 @@ function lazy_explorer(){
     $hl.= '</div>';
     $hl.= '</div>';
     ajax_result(array(
-        'TITLE' => '资源管理器',
+        'TITLE' => t('files'),
         'BODY'  => $hl
     ));
 }

@@ -49,17 +49,6 @@ return array(
     'selectall' => '全选',
     'moreattr'  => '更多属性',
     'autokeys'  => '自动获取关键词',
-
-    /* AJAX */
-    'ajax'  => array(
-        'error'     => '系统错误',
-        'alert'     => '系统提示',
-        'confirm'   => '操作确认',
-        'save'      => '保存',
-        'close'     => '关闭',
-        'submit'    => '确认',
-        'cancel'    => '取消',
-    ),
     
     /* JavaScript确认 */
     'confirm'   => array(
@@ -216,7 +205,10 @@ return array(
     
     /* 文件管理 */
     'files'     => array(
-        'title' => '文件管理'
+        'title' => '文件管理',
+        'folder'=> '文件夹',
+        'name'  => '文件名',
+        'size'  => '大小',
     ),
     
     /* 系统设置 */

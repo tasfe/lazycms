@@ -303,13 +303,6 @@ function mkdirs($p1, $p2 = 0777){
     return true;
 }
 /**
- * 前台js语言包
- */
-function js_lang(){
-    $lang = t('system::ajax');
-    return '$(document).data("language",'.json_encode($lang).');';
-}
-/**
  * 在数组或字符串中查找
  *
  * @param mixed  $p1 被搜索的数据，字符串用英文“逗号”分割
@@ -829,7 +822,9 @@ function icon($p1){
 		    $R = 'd7'; break;
         case 'db': case 'mdb':
 		    $R = 'd9'; break;
-        case 'css': case 'xml':
+        case 'css':
+            $R = 'e6'; break;
+        case 'xml':
 		    $R = 'e1'; break;
 		default:
 		    $R = 'e2'; break;

@@ -38,10 +38,11 @@ class System{
         $hl.= '<link href="../system/images/style.css" rel="stylesheet" type="text/css" />';
         $hl.= '<link rel="shortcut icon" href="'.SITE_BASE.'favicon.ico" />';
         $hl.= '<script type="text/javascript">var MODULE = \''.MODULE.'\';var ACTION = \''.ACTION.'\';</script>';
-        $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.2.6"></script>';
+        $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.3"></script>';
         $hl.= '<script type="text/javascript" src="../../common/js/lazycms.library.js?ver=1.0"></script>';
+        $hl.= '<script type="text/javascript" src="../../common/language/'.language().'/lang.js"></script>';
         $hl.= '<script type="text/javascript" src="../system/images/system.js?ver=1.0"></script>';
-        $hl.= '<script type="text/javascript">'.js_lang();
+        $hl.= '<script type="text/javascript">';
         $hl.= g('SCRIPT');
         $hl.= '</script>';
         if ($style = g('STYLE')) {

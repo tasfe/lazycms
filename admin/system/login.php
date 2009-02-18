@@ -62,11 +62,12 @@ function lazy_main() {
     echo '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
     echo '<title>'.t('login').'</title>';
     echo '<link href="images/style.css" rel="stylesheet" type="text/css" />';
-    echo '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.2.6"></script>';
+    echo '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.3"></script>';
     echo '<script type="text/javascript" src="../../common/js/lazycms.library.js?ver=1.0"></script>';
-    echo '<script type="text/javascript">'.js_lang();
+    echo '<script type="text/javascript" src="../../common/language/'.language().'/lang.js"></script>';
+    echo '<script type="text/javascript">';
     echo '$(document).ready(function(){';
-    echo '  $("#username").focus(); $("form[method=post]:not([ajax=false])").ajaxSubmit();';
+    echo '  $("#adminname").focus(); $("form[method=post]:not([ajax=false])").ajaxSubmit();';
     echo '}); </script>';
     echo '</head><body>';
     echo '<form id="login" name="login" method="post" action="'.PHP_FILE.'">';
