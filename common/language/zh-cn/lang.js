@@ -9,6 +9,7 @@
 			L['close']		= '关闭';
 			L['submit']		= '确认';
 			L['cancel']		= '取消';
+			L['picture/preview']	= '图片预览';
 			L['confirm/delete']		= '确定要删除吗？';
 		try	{
 			R = L[p1];

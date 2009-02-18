@@ -162,10 +162,10 @@ function LoadScript(p,c){
     /*
     */
 	$.dialogUI = function(opts,callback){
-		return $(document).dialogUI(opts,callback);
+		return $('body').dialogUI(opts,callback);
 	};
     $.fn.dialogUI = function(opts,callback){
-        var s = this.selector==''?$('body'):this;
+        var s = this;
         // 默认设置
         opts = $.extend({
             title:'',
@@ -174,7 +174,7 @@ function LoadScript(p,c){
             name:null,
 			mask:true,
             close:function(){
-				dialog.remove();
+				dialog.remove(); $('.dialogUI[name=help]').remove();
                 if ($('.dialogUI',s).size()==0) {
                     $('[rel=mask]',s).remove();
                 } else {
@@ -393,8 +393,7 @@ function LoadScript(p,c){
                             window.loading.css({position:'absolute',top:'5px',right:'5px'}).appendTo('body');
                         },
                         success: function(data){
-							var JSON = $.result(data);
-                            if (JSON) {
+                            if (JSON = $.result(data)) {
 								if ($.isFunction(callback)) { callback(JSON); }
                             }
                         },

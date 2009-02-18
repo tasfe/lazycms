@@ -64,6 +64,32 @@ function lazy_explorer_delete(){
     ajax_result(true);
 }
 // *** *** www.LazyCMS.net *** *** //
+function lazy_explorer_create(){
+    System::purview();
+    $path   = isset($_REQUEST['path']) ? $_REQUEST['path'] : '/';
+    $folder = isset($_POST['folder']) ? $_POST['folder'] : null;
+    $rPath  = LAZY_PATH.$path.'/'.$folder;
+    $val = new Validate();
+    if ($val->method()) {
+        $val->check('folder|0|'.t('files/check/folder').';folder|5|'.t('files/check/folder1').';folder|3|'.t('files/check/folder2').'|'.!file_exists($rPath));
+        if ($val->isVal()) {
+            $val->out();
+        } else {
+            mkdirs($rPath);
+            ajax_result(true);
+        }
+    }
+    $hl = '<form id="CreateFolder" name="CreateFolder" method="post" action="'.PHP_FILE.'?action=explorer_create">';
+    $hl.= '<p><label>'.t('files/folder').':</label><input class="in w200" help="system::help/files/folder" type="text" name="folder" id="folder" value="" /></p>';
+    $hl.= '<input name="path" type="hidden" value="'.$path.'" />';
+    $hl.= '<div class="tr"><button type="submit">'.t('system::save').'</button><button type="button" rel="cancel">'.t('system::cancel').'</button></div>';
+    $hl.= '</form>';
+    ajax_result(array(
+        'TITLE' => t('files/create/folder'),
+        'BODY'  => $hl
+    ));
+}
+// *** *** www.LazyCMS.net *** *** //
 function lazy_explorer(){
     System::purview();
     $path  = isset($_POST['path']) ? $_POST['path'] : '/';
@@ -103,7 +129,7 @@ function lazy_explorer(){
     $hl.= '<div class="right fr">';
     if (!empty($files)) {
         $hl.= '<table class="table" cellspacing="0"><thead><tr><td>'.t('files/name').'</td><td>'.t('files/size').'</td>';
-        $hl.= '<td class="tr"><a href="#"><img class="e5 os" src="../system/images/white.gif" /></a><a href="javascript:;" onclick="$(\''.$field.'\').CreateFolder();"><img class="e4 os" src="../system/images/white.gif" /></a></td></tr></thead><tbody>';
+        $hl.= '<td class="tr"><a href="#"><img class="e5 os" src="../system/images/white.gif" /></a><a href="javascript:;" onclick="$(\''.$field.'\').CreateFolder(\''.$path.'\',\''.$exts.'\');"><img class="e4 os" src="../system/images/white.gif" /></a></td></tr></thead><tbody>';
         $folder = LAZY_PATH.($path=='/'?'':$path).'/';
         if ($exts == c('UPLOAD_IMAGE_EXT')) {
             $hl.= '<tr><td colspan="3"><ul class="thum">';

@@ -175,7 +175,7 @@ $(document).ready(function(){
 					}).click(function(){
 						var src   = $('img',this).attr('src'); var img = new Image();img.src = src;
 						var width = Math.min($(document).width()*0.9,img.width);
-						$.dialogUI({ name:'view',style:{width:Math.max(150,width+25)},title:'Preview',body:'<img src="' + src + '" width="' + width + '" alt="' + src + '" />'},function(s){
+						$.dialogUI({ name:'preview',style:{width:Math.max(150,width+25)},title:$.t('picture/preview'),body:'<img src="' + src + '" width="' + width + '" alt="' + src + '" />'},function(s){
 							var dialog = this;
 							$('div.body',s).css({'text-align':'center'}).click(function(){
 								dialog.close();
@@ -211,17 +211,35 @@ $(document).ready(function(){
         return this;
     }
 	// 创建文件夹
-	$.fn.CreateFolder = function(){
-		alert('CreateFolder');
+	$.fn.CreateFolder = function(p,e){
+		var This = this;
+		$.get(common() + '/modules/system/gateway.php',{action:'explorer_create',path:p},function(data){
+			if (JSON = $.result(data)) {
+				$.dialogUI({
+					name:'CreateFolder',title:JSON.TITLE, body:JSON.BODY,
+					style:{width:'350px',overflow:'hidden'}
+				},function(s){
+					var t = this;
+					$('[rel=cancel]',s).click(function(){
+						t.close();
+					});
+					$('[help]').help();
+					$('form',s).ajaxSubmit(function(r){
+						if (r) {
+							This.Explorer(p,e);
+						}
+					});
+				});
+			}
+		});
 	}
 	// 帮助提示
-    $.fn.help = function(path){
-        if (typeof path != 'undefined') {
+    $.fn.help = function(s){
+        if (typeof s != 'undefined') {
             var t = this;
             $('img',t).attr('src',common() + '/images/loading.gif').removeClass('h5');
-            $.post(common() + '/modules/system/gateway.php',{action:'help',module:MODULE,path:path},function(data){
-				var JSON = $.result(data);
-				if (JSON) {
+            $.post(common() + '/modules/system/gateway.php',{action:'help',module:MODULE,path:s},function(data){
+				if (JSON = $.result(data)) {
 					$.dialogUI({name:'help',style:{width:'600px',overflow:'hidden'}, title:JSON.TITLE, body:JSON.BODY});
 				}
                 $('img',t).attr('src',common() + '/images/white.gif').addClass('h5');
@@ -234,8 +252,7 @@ $(document).ready(function(){
                     var img = $('img',this).attr('src',common() + '/images/loading.gif').removeClass('h5');
                     $.post(common() + '/modules/system/gateway.php',{action:'help',module:MODULE,path:p},function(data){
                         img.attr('src',common() + '/images/white.gif').addClass('h5');
-						var JSON = $.result(data);
-						if (JSON) {
+						if (JSON = $.result(data)) {
 							var pos = img.offset();
 								if ((img.offset().left + 20 + 350) > $(document).width()) {
                                     pos.left = pos.left - 2 - 350;

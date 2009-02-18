@@ -39,6 +39,7 @@ return array(
     'save'  => '保存',
     'move'  => '移动',
     'reset' => '重置',
+    'cancel'    => '取消',
     'create'    => '生成',
     'delete'    => '删除',
     'manage'    => '管理',
@@ -209,6 +210,14 @@ return array(
         'folder'=> '文件夹',
         'name'  => '文件名',
         'size'  => '大小',
+        'create'=> array(
+            'folder'    => '创建文件夹'
+        ),
+        'check' => array(
+            'folder'    => '文件夹名称不能为空',
+            'folder1'   => '文件夹名称不能包含特殊字符',
+            'folder2'   => '文件夹已经存在',
+        ),
     ),
     
     /* 系统设置 */
@@ -348,7 +357,9 @@ return array(
                 |[b]可选项：[/b]
                 |   密码，端口（默认3306），数据库前缀
             ',
-            
         ),
+        'files'     => array(
+            'folder'    => '要创建的文件夹名称(必须为 字母、数字和下划线 构成)',
+        )
     )
 );

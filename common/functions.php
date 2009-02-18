@@ -1080,10 +1080,10 @@ function ubbencode($p1){
     for ($i=1; $i<7; $i++) {
         $T = preg_replace('/\[h'.$i.'\](.+?)\[\/h'.$i.']/i','<h'.$i.'>$1</h'.$i.'>',$T);
     }
-    if (strpos($T,'<br/>')!==false && strpos($T,' |')!==false) {
+    if (strpos($T,'<br/>')!==false && strpos($T,'  |')!==false) {
         $R = array();
         foreach (explode('<br/>',$T) as $v) {
-            if (($n=strpos($v,' |'))!==false) {
+            if (($n=strpos($v,'  |'))!==false) {
                 $R[] = substr($v,$n+2);
             }
         }

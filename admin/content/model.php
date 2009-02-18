@@ -462,7 +462,7 @@ function lazy_fields(){
     }
     $hl.= '</select></p>';
     $hl.= '<p><label>'.t('model/fields/default').':</label><input class="in w300" type="text" name="fielddefault" id="fielddefault" value="'.h2c($rq[9]).'" /></p>';
-    $hl.= '<div class="tr"><button type="submit">'.t('system::save').'</button><button type="button" rel="cancel">'.t('system::ajax/cancel').'</button></div>';
+    $hl.= '<div class="tr"><button type="submit">'.t('system::save').'</button><button type="button" rel="cancel">'.t('system::cancel').'</button></div>';
     $hl.= '<input name="fieldid" type="hidden" value="'.$rq[0].'" />';
     $hl.= '<input name="fieldoname" type="hidden" value="'.(empty($rq[11])?$rq[3]:$rq[11]).'" />';
     $hl.= '</form>';

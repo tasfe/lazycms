@@ -27,18 +27,14 @@
             type: method,
             data: data,
             success: function(data){
-				var JSON = $.result(data);
-				if (JSON) {
+				if (JSON = $.result(data)) {
 					$.dialogUI({
 						name:'fields', title:JSON.TITLE, body:JSON.BODY,
-						style:{width:'400px',overflow:'hidden'},
-						close:function(){
-							$('.dialogUI,[rel=mask]').remove();
-						}
+						style:{width:'400px',overflow:'hidden'}
 					},function(s){
 						var t = this;
 						$('[rel=cancel]',s).click(function(){
-							$('.dialogUI').remove(); t.close();
+							t.close();
 						});
 						s.__FieldTypeChange();
 						s.__IsHelp();
@@ -48,7 +44,7 @@
 						});
 						$('[help]').help();
 						$.selectEdit();
-						$('#formFields').ajaxSubmit(function(data){
+						$('form',s).ajaxSubmit(function(data){
 							This.appendFields(data); t.close();
 						});
 					});
