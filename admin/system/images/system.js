@@ -164,8 +164,7 @@ $(document).ready(function(){
     $.fn.Explorer = function(path,exts){
         var This = this; var field = this.selector; path = path || '/'; exts = exts || '*';
         $.post(common() + '/modules/system/gateway.php',{action:'explorer',path:path,field:field,exts:exts},function(data){
-			var JSON = $.result(data);
-			if (JSON) {
+			if (JSON = $.result(data)) {
 				$.dialogUI({name:'explorer',style:{width:'600px',overflow:'hidden'},title:JSON.TITLE, body:JSON.BODY},function(s){
 					var dialog = this;
 					$('td.picture',s).hover(function(){
@@ -230,6 +229,15 @@ $(document).ready(function(){
 						}
 					});
 				});
+			}
+		});
+	}
+	// 上传文件
+	$.fn.UpLoadFile = function(p,e){
+		var field = this.selector;
+		$.post(common() + '/modules/system/gateway.php',{action:'explorer',path:p,field:field,exts:e,CMD:'upload'},function(data){
+			if (JSON = $.result(data)) {
+				$.dialogUI({name:'explorer',style:{width:'600px',overflow:'hidden'},title:JSON.TITLE, body:JSON.BODY});
 			}
 		});
 	}

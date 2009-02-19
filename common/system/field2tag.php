@@ -186,7 +186,7 @@ class Field2Tag{
                 break;
             case 'upfile':
                 $P = empty($default)?'/'.c('UPLOAD_IMAGE_PATH'):dirname($default);
-                $R = "<input style=\"width:{$width}\" type=\"text\" name=\"{$name}\" id=\"{$name}\" value=\"{$default}\" />&nbsp;<button{$help} type=\"button\" onclick=\"$('#{$name}').Explorer('{$P}','".c('UPLOAD_IMAGE_EXT')."');\">浏览...</button>";
+                $R = "<input style=\"width:{$width}\" type=\"text\" name=\"{$name}\" id=\"{$name}\" value=\"{$default}\" />&nbsp;<button{$help} type=\"button\" onclick=\"$('#{$name}').Explorer('{$P}','UPLOAD_IMAGE_EXT');\">".t('system::browse')."</button>";
                 break;
         }
         return $R;

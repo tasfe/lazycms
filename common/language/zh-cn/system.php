@@ -46,6 +46,7 @@ return array(
     'unlock'    => '启用',
     'submit'    => '提交',
     'default'   => '默认',
+    'browse'    => '浏览...',
     'reselect'  => '反选',
     'selectall' => '全选',
     'moreattr'  => '更多属性',
@@ -70,6 +71,7 @@ return array(
     
     /* 上传错误信息 */
     'upload'    => array(
+        'title'   => '上传文件',
         'error1'  => '上传的文件超过了 php.ini 中 upload_max_filesize 选项限制的值',
         'error2'  => '上传文件的大小超过了 HTML 表单中 MAX_FILE_SIZE 选项指定的值',
         'error3'  => '文件只有部分被上传',
@@ -207,6 +209,7 @@ return array(
     /* 文件管理 */
     'files'     => array(
         'title' => '文件管理',
+        'file'  => '文件',
         'folder'=> '文件夹',
         'name'  => '文件名',
         'size'  => '大小',
