@@ -172,14 +172,20 @@ $(document).ready(function(){
 					},function(){
 						$(this).css({background:'none',filter:'alpha(opacity=100)','-moz-opacity':1});
 					}).click(function(){
-						var src   = $('img',this).attr('src'); var img = new Image();img.src = src;
-						var width = Math.min($(document).width()*0.9,img.width);
-						$.dialogUI({ name:'preview',style:{width:Math.max(150,width+25)},title:$.t('picture/preview'),body:'<img src="' + src + '" width="' + width + '" alt="' + src + '" />'},function(s){
-							var dialog = this;
-							$('div.body',s).css({'text-align':'center'}).click(function(){
-								dialog.close();
-							});
-						});
+						// 显示加载图片
+						window.loading.css({position:'absolute',top:'5px',right:'5px','z-index':$('.mask,.dialogUI').getMaxzIndex() + 1}).appendTo('body');
+						var src = $(this).attr('src');
+						var img = new Image();
+							img.src = src;
+							img.onload = function(){
+								var width = Math.min($(document).width()*0.9,img.width);
+								$.dialogUI({ name:'preview',style:{width:Math.max(150,width+25)},title:$.t('picture/preview'),body:'<img src="' + src + '" width="' + width + '" alt="' + src + '" />'},function(s){
+									var dialog = this; window.loading.remove();
+									$('div.body',s).css({'text-align':'center'}).click(function(){
+										dialog.close();
+									});
+								});	
+							}
 					});
 					$('td a[rel=insert]',s).click(function(){
 						var src = $(this).attr('src');

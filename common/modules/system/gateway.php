@@ -96,6 +96,21 @@ function lazy_explorer_uploadfile(){
     print_r($_REQUEST);
 }
 // *** *** www.LazyCMS.net *** *** //
+function lazy_explorer_image(){
+    $file = isset($_REQUEST['file']) ? $_REQUEST['file'] : null;
+    if (!empty($file)) {
+        $file  = LAZY_PATH.utf2ansi($file);
+        $thumb = dirname($file).'/.thumb/'.pathinfo($file,PATHINFO_BASENAME);
+        if (!is_file($thumb) || (filemtime($file) != filemtime($thumb))) {
+            import('system.images');
+            Images::thumb($file,$thumb,70,60);
+            $time = filemtime($file); touch($file,$time); touch($thumb,$time);
+        }
+        header('Content-Type: application/octet-stream');
+        readfile($thumb);
+    }
+}
+// *** *** www.LazyCMS.net *** *** //
 function lazy_explorer(){
     System::purview();
     $path  = isset($_POST['path']) ? $_POST['path'] : '/';
@@ -150,8 +165,10 @@ function lazy_explorer(){
                 foreach ($files as $k=>$v) {
                     $uf = ansi2utf($v);
                     $fz = file_size(filesize($folder.$v));
+                    $thumb = LAZY_PATH.$path.'/.thumb/'.$uf;
+                    $src= (is_file($thumb) && filemtime(LAZY_PATH.$path.'/'.$uf) == filemtime($thumb)) ? $path.'/.thumb/'.$uf : PHP_FILE.'?action=explorer_image&file='.rawurlencode($path.'/'.$uf).'&rand='.now();
                     $hl.= '<li><table border="0" cellpadding="0" cellspacing="0" title="'.$uf.'">';
-                    $hl.= '<tr><td class="picture"><img src="'.$path.'/'.$uf.'" onload="$(this).bbimg(70,60);" alt="'.$uf.'" /></td></tr>';
+                    $hl.= '<tr><td class="picture" src="'.$path.'/'.$uf.'"><img src="'.$src.'" alt="'.$uf.'" /></td></tr>';
                     $hl.= '<tr><td><div class="name"><a href="javascript:;" src="'.$path.'/'.$uf.'" rel="insert"><img class="e3 os" src="../system/images/white.gif" /></a>'.$uf.'</div></td></tr>';
                     $hl.= '</table></li>';
                 }
