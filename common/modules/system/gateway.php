@@ -91,9 +91,40 @@ function lazy_explorer_create(){
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_explorer_uploadfile(){
-    System::purview();
-    print_r($_FILES);
-    print_r($_REQUEST);
+    System::purview(); $success = true;
+    $path  = isset($_POST['path']) ? $_POST['path'] : '/';
+    $field = isset($_POST['field']) ? $_POST['field'] : null;
+    $type  = isset($_POST['exts']) ? $_POST['exts'] : '*';
+    $exts  = $type=='*' ? '*' : c($type);
+    import('system.uploadfile');
+    $upload = new UpLoadFile();
+    $upload->allowExts = $exts;
+    $upload->maxSize   = c('UPLOAD_MAX_SIZE') * 1024;// 单位KB
+    $upload->savePath  = $path;
+    $result = $upload->saves();
+    header('Content-Type:text/html; charset="utf-8";');
+    $error = null;
+    foreach ($result as $k=>$v) {
+        if (!is_array($v)) {
+            $success = false;
+            $error.= '<p><label>'.t('files/file').' '.substr($k,-1).':</label><div class="in fl">'.$v.'</div></p>';
+        }
+    }
+    $back = 'parent.$(\''.$field.'\').Explorer(\''.$path.'\',\''.$type.'\');';
+    if ($success) {
+        $msg = $back;
+    } else {
+        $msg = 'parent.$.dialogUI({';
+        $msg.= '    style:{width:"400px"},close:false,name:"upresult",';
+        $msg.= '    title:"'.t('upload').'",body:"'.t2js($error).'",buttons:[{';
+        $msg.= '        text:"'.t('ok').'",';
+        $msg.= '        handler:function(){';
+        $msg.= '            this.remove();'.$back;
+        $msg.= '        }';
+        $msg.= '    }]';
+        $msg.= '});';
+    }
+    echo '<script type="text/javascript" charset="utf-8">'.$msg.'</script>';
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_explorer_image(){
@@ -168,7 +199,7 @@ function lazy_explorer(){
                     $thumb = LAZY_PATH.$path.'/.thumb/'.$uf;
                     $src= (is_file($thumb) && filemtime(LAZY_PATH.$path.'/'.$uf) == filemtime($thumb)) ? $path.'/.thumb/'.$uf : PHP_FILE.'?action=explorer_image&file='.rawurlencode($path.'/'.$uf).'&rand='.now();
                     $hl.= '<li><table border="0" cellpadding="0" cellspacing="0" title="'.$uf.'">';
-                    $hl.= '<tr><td class="picture" src="'.$path.'/'.$uf.'"><img src="'.$src.'" alt="'.$uf.'" /></td></tr>';
+                    $hl.= '<tr><td class="picture" rel="preview" src="'.$path.'/'.$uf.'"><img src="'.$src.'" alt="'.$uf.'" /></td></tr>';
                     $hl.= '<tr><td><div class="name"><a href="javascript:;" src="'.$path.'/'.$uf.'" rel="insert"><img class="e3 os" src="../system/images/white.gif" /></a>'.$uf.'</div></td></tr>';
                     $hl.= '</table></li>';
                 }
@@ -177,7 +208,7 @@ function lazy_explorer(){
                 foreach ($files as $k=>$v) {
                     $uf = ansi2utf($v);
                     $fz = file_size(filesize($folder.$v));
-                    $hl.= '<tr><td title="'.$uf.'"><div class="filename">'.icon($v).$uf.'</div></td><td>'.$fz.'</td>';
+                    $hl.= '<tr><td rel="preview" src="'.$path.'/'.$uf.'" title="'.$uf.'"><div class="filename">'.icon($v).$uf.'</div></td><td>'.$fz.'</td>';
                     $hl.= '<td><a href="javascript:;" src="'.$path.'/'.$uf.'" rel="insert"><img class="e3 os" src="../system/images/white.gif" /></a>';
                     $hl.= '<a href="javascript:;" src="'.$path.'/'.$uf.'" rel="delete"><img class="e7 os" src="../system/images/white.gif" /></a></td></tr>';
                 }    
@@ -186,7 +217,7 @@ function lazy_explorer(){
     } else {
         $hl.= '<tr><td><form action="'.PHP_FILE.'?action=explorer_uploadfile" method="post" enctype="multipart/form-data" name="form1" target="UpLoadFile" id="form1">';
         for ($i=1; $i<=5; $i++) {
-            $hl.= '<p><label>'.t('files/file').' '.$i.':</label><input class="in w250" type="file" name="files[]" /></p>';
+            $hl.= '<p><label>'.t('files/file').' '.$i.':</label><input class="in w250" type="file" name="files_'.$i.'" /></p>';
         }
         $hl.= '<p class="buttons"><button type="submit"> '.t('system::upload').' </button><button type="button" onclick="$(\''.$field.'\').Explorer(\''.$path.'\',\''.$type.'\');"> '.t('system::back').' </button></p>';
         $hl.= '<iframe src="about:blank" name="UpLoadFile" width="0" height="0" marginwidth="0" marginheight="0" align="middle" scrolling="no" frameborder="0"></iframe>';

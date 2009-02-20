@@ -34,7 +34,7 @@
 					},function(s){
 						var t = this;
 						$('[rel=cancel]',s).click(function(){
-							t.close();
+							t.remove();
 						});
 						s.__FieldTypeChange();
 						s.__IsHelp();
@@ -45,7 +45,7 @@
 						$('[help]').help();
 						$.selectEdit();
 						$('form',s).ajaxSubmit(function(data){
-							This.appendFields(data); t.close();
+							This.appendFields(data); t.remove();
 						});
 					});
 				}

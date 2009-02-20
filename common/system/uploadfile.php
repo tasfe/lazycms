@@ -56,29 +56,30 @@ class UpLoadFile{
      * 保存上传的文件
      *
      * @param string $p1    field
-     * @param string $p2    savePath
+     * @param string $p2    NewName
      * @return bool
      */
     function save($p1,$p2=null){
         if (!isset($_FILES[$p1])) { return false; }
         $Info = $_FILES[$p1];
-        $Info['ext'] = $this->_getExt($Info['name']);
+        $Info['ext']  = $this->_getExt($Info['name']);
         // 返回错误信息
         if ((int)$Info['error'] > 0){
             $this->_error = $Info['error'];
             return false;
         }
-        if (empty($p2)){
-            $p3 = $this->savePath.microtime(true).salt().'.'.$Info['ext'];
-            $p2 = LAZY_PATH.$p3;
-            $Info['path'] = SITE_BASE.$p3;
-        } else {
-            if (file_exists($p2)) {
-                $p2 = substr($p2,0,strrpos($p2,'/')).'/'.basename($p2,'.'.$Info['ext']).salt().'.'.$Info['ext'];
+        //$p3 = (substr($this->savePath,-1)=='/' ? $this->savePath : $this->savePath.'/').(microtime(true)*100).salt().'.'.$Info['ext'];
+        $p2 = empty($p2) ? $Info['name'] : $p2; $p2 = utf2ansi(substr($p2,0,strrpos($p2,'.'))); // 转换编码，支持中文
+        $p3 = (substr($this->savePath,-1)=='/' ? $this->savePath : $this->savePath.'/');
+        $p4 = $p2.'.'.$Info['ext']; $n  = 1;
+        do {
+            if ($isfile = is_file(LAZY_PATH.$p3.$p4)) {
+                $p4 = $p2.'('.$n.').'.$Info['ext'];
             }
-            $p2 = substr($p2,0,strrpos($p2,'/')).'/'.pinyin(basename($p2,'.'.$Info['ext'])).'.'.$Info['ext'];
-            $Info['path'] = $p2;
-        }
+            $n++;
+        } while ($isfile);
+        $Info['path'] = $p3.$p4;
+
         if (is_uploaded_file($Info['tmp_name'])){
             // 检查文件大小
             if ($this->_checkSize($Info['size'])){
@@ -89,8 +90,7 @@ class UpLoadFile{
                 $this->_error = $this->_UPLOAD_ERR_FORBID_EXT;
                 return false;
             }
-            
-            if (move_uploaded_file($Info['tmp_name'],$p2)){
+            if (move_uploaded_file($Info['tmp_name'],LAZY_PATH.$Info['path'])){
                 unset($Info['tmp_name'],$Info['error']);
                 return $Info;
             } else {

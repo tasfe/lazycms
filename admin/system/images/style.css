@@ -152,7 +152,7 @@ a:hover   { text-decoration: underline; }
 	#explorer .right .table tbody td{ padding:0 5px; border-bottom:solid 1px #F3F7F9; border-right:solid 1px #E8EFF4; }
 	#explorer .right .table tbody td p{ padding:10px 0; }
 	#explorer .right .table tbody td p.buttons{ padding-left:10px; text-align:left; }
-	#explorer .right .table tbody div.filename{ width:230px; height:22px; line-height:150%; text-align:left; white-space:nowrap; -o-text-overflow:ellipsis; text-overflow:ellipsis; overflow:hidden; }
+	#explorer .right .table tbody div.filename{ width:230px; height:22px; line-height:150%; cursor:default; text-align:left; white-space:nowrap; -o-text-overflow:ellipsis; text-overflow:ellipsis; overflow:hidden; }
 	#explorer .right .table tbody ul.thum{ width:100%; margin:0; padding:5px; list-style:none; }
 	#explorer .right .table tbody ul.thum li{ width:25%; height:85px; float:left; display:block; text-align:center; }
 	#explorer .right .table tbody ul.thum li td{ padding:0; border:none; }

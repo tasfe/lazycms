@@ -34,11 +34,11 @@ return array(
     'GET_RELATED_KEY' => '',
 
     /* 上传设置 */
-    'UPLOAD_ALLOW_EXT' => 'bmp,png,gif,jpg,jpeg,zip,rar,doc,xls',
-    'UPLOAD_MAX_SIZE'  => 10000000,
+    'UPLOAD_ALLOW_EXT' => 'png,gif,jpg,jpeg,zip,rar,doc,xls',
+    'UPLOAD_MAX_SIZE'  => 1000,
     'UPLOAD_FILE_PATH' => 'images',
     'UPLOAD_IMAGE_PATH'=> 'images/stories',
-    'UPLOAD_IMAGE_EXT' => 'bmp,png,gif,jpg,jpeg',
+    'UPLOAD_IMAGE_EXT' => 'png,gif,jpg,jpeg',
 
     /* 服务器设置 */
     'TIME_ZONE'  => 8,

@@ -35,7 +35,7 @@ function getURI(){
         return e;
 }
 // loading加载条
-window.loading = $('<div class="loading"><img class="os" src="' + common() + '/images/loading.gif" />Loading...</div>').css({width:'100px'});
+window.loading = $('<div class="loading"><img class="os" src="' + common() + '/images/loading.gif" />Loading...</div>').css({width:'100px',position:'fixed',top:'5px',right:'5px'});
 /**
  * 动态加载脚本
  *
@@ -173,7 +173,8 @@ function LoadScript(p,c){
             style:{},
             name:null,
 			mask:true,
-            close:function(){
+			close:true,
+            remove:function(){
 				dialog.remove(); $('.dialogUI[name=help]').remove();
                 if ($('.dialogUI',s).size()==0) {
                     $('[rel=mask]',s).remove();
@@ -202,9 +203,9 @@ function LoadScript(p,c){
 		
         // 添加关闭按钮
         $('.dialogBox > .head > a[rel=close]',dialog).remove();
-        if ($.isFunction(opts.close)) {
+        if (opts.close) {
             var close = $('<a href="javascript:;" rel="close"></a>').click(function(){
-                opts.close.call(dialog);
+                opts.remove.call(dialog);
                 return false;
             });
             close.insertAfter($('.dialogBox > .head > strong',dialog));
@@ -289,7 +290,7 @@ function LoadScript(p,c){
                 text:$.t('submit'),
                 handler:function(){
 					if ($.isFunction(callback)) {callback();}
-					this.close(); return false;
+					this.remove(); return false;
                 }
             }]
         });
@@ -304,12 +305,12 @@ function LoadScript(p,c){
                 focus:true,
                 text:$.t('submit'),
                 handler:function(){
-                    callback(true); this.close();
+                    callback(true); this.remove();
                 }
             },{
                 text:$.t('cancel'),
                 handler:function(){
-                    callback(false); this.close();
+                    callback(false); this.remove();
                 }
             }]
         });
@@ -390,7 +391,7 @@ function LoadScript(p,c){
                         data: This.serializeArray(),
                         beforeSend: function(s){
                             s.setRequestHeader("AJAX_SUBMIT",true);
-                            window.loading.css({position:'absolute',top:'5px',right:'5px'}).appendTo('body');
+                            window.loading.css({'z-index':$('.mask,.dialogUI').getMaxzIndex() + 1}).appendTo('body');
                         },
                         success: function(data){
                             if (JSON = $.result(data)) {

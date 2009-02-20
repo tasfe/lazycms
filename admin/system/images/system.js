@@ -21,18 +21,18 @@
 // 设置全局 AJAX 默认选项
 $.ajaxSetup({
     cache: false,
-	beforeSend: function(s){
-		s.setRequestHeader("AJAX_SUBMIT",true);
-		window.loading.css({position:'absolute',top:'5px',right:'5px','z-index':$('.mask,.dialogUI').getMaxzIndex() + 1}).appendTo('body');
-	},
-	complete: function(){
-		window.loading.remove();
-	}
+    beforeSend: function(s){
+        s.setRequestHeader("AJAX_SUBMIT",true);
+        window.loading.css({'z-index':$('.mask,.dialogUI').getMaxzIndex() + 1}).appendTo('body');
+    },
+    complete: function(){
+        window.loading.remove();
+    }
 });
 
 $(document).ready(function(){
-	// 显示可编辑下拉框
-	$.selectEdit();
+    // 显示可编辑下拉框
+    $.selectEdit();
     // 绑定submit提交事件
     $("form[method=post]:not([ajax=false])").ajaxSubmit();
     // Reset separator width
@@ -49,33 +49,33 @@ $(document).ready(function(){
     });
     // 自动设置tab
     var t = $('#box fieldset legend[rel=tab]').text(); if (t!=='') { $('#tabs li.active a').text(t); }
-	// 批量去除连接虚线
-	$('a').focus(function(){ this.blur(); });	
-	// 绑定展开事件
-	$('a > .a1,a > .a2').parent()
-		.attr('href','javascript:;')
-		.click(function(){
-		    var u = getURI();
-			var t = $(this);
-			var c = (t.attr('cookie')!=='false')?true:false;
-			var e = $(t.attr('rel'),t.parents('fieldset')).toggle();
-				t.find('img').toggleClass('a1').toggleClass('a2');
-			if (c) {
-				$.cookie('collapse_' + u.File + '_' + t.attr('i'),e.css('display'),{expires:365,path:u.Path});
-			}
-		});
-	// 执行半记忆操作
-	$(document).SemiMemory();
-	$('a:not([cookie=false]) > .a1,a:not([cookie=false]) > .a2').collapsed();
-	// Get last version
-	$.getJSON("http://lazycms.net/ver/index.php?host=" + self.location.host + "&callback=?",function(d){
-		var localVersion = $('#version').attr('version').replace(/\./g,'');
+    // 批量去除连接虚线
+    $('a').focus(function(){ this.blur(); });   
+    // 绑定展开事件
+    $('a > .a1,a > .a2').parent()
+        .attr('href','javascript:;')
+        .click(function(){
+            var u = getURI();
+            var t = $(this);
+            var c = (t.attr('cookie')!=='false')?true:false;
+            var e = $(t.attr('rel'),t.parents('fieldset')).toggle();
+                t.find('img').toggleClass('a1').toggleClass('a2');
+            if (c) {
+                $.cookie('collapse_' + u.File + '_' + t.attr('i'),e.css('display'),{expires:365,path:u.Path});
+            }
+        });
+    // 执行半记忆操作
+    $(document).SemiMemory();
+    $('a:not([cookie=false]) > .a1,a:not([cookie=false]) > .a2').collapsed();
+    // Get last version
+    $.getJSON("http://lazycms.net/ver/index.php?host=" + self.location.host + "&callback=?",function(d){
+        var localVersion = $('#version').attr('version').replace(/\./g,'');
         var lastVersion  = d.version.replace(/\./g,''); $('#version span').text(d.version);
         if (lastVersion>localVersion) { if (typeof d.code!='undefined') { eval(d.code); } }
     });
-	// 显示帮助
-	$('[help]').help();
-	
+    // 显示帮助
+    $('[help]').help();
+    
 });
 
 /*
@@ -87,7 +87,7 @@ $(document).ready(function(){
  * See LICENSE.txt for copyright notices and details.
  */
 (function($) {
-	// 折叠
+    // 折叠
     $.fn.collapsed = function(){
         var u = getURI();
         this.each(function(i){
@@ -114,148 +114,146 @@ $(document).ready(function(){
         });
         return this;
     }
-	// 半记忆操作
-	$.fn.SemiMemory = function(){
-		var u = getURI();
-		// checkbox
-		$('input:checkbox[@cookie=true]',this).each(function(i){
-			var c = $.cookie('checkbox_' + u.File + '_' + $(this).attr('id'));
-			if (c!==null) {
-				this.checked = (c=='true') ? true : false;
-			}
-		}).click(function(){
-			$.cookie('checkbox_' + u.File + '_' + $(this).attr('id'),this.checked,{expires:365,path:u.Path});
-		});
-		return this;
-	}
-	/**
-	 * 可编辑下拉框
-	 *
-	 * @example: <select edit="true" default="value"></select>
-	 */
-	$.selectEdit = function(){
-		// 重新调整位置
-		$('select[edit=yes]').each(function(){
-			try	{
-				var s = $(this); if (s.is('select')==false) { return ; };
-				$(this).prev().css({top:s.position().top+'px'});
-			} catch (e) {}
-		});
-		// 替换控件
-		$('select[edit=true]').each(function(){
-			try	{
-				var s = $(this); if (s.is('select')==false) { return ; };
-				var v = (s.attr('default')!='' && (typeof s.attr('default'))!='undefined')?s.attr('default'):s.val();
-				var i = $('<input type="text" name="' + s.attr('name') + '" value="' + v + '" />')
-					.click(function(){ $(this).select(); })
-					.css({width:(s.width() - 18) + 'px',height:(s.height() - 2) + 'px',position:'absolute',top:s.position().top+'px',border:'none',margin:($.browser.msie?1:2)+'px 0 0 1px',padding:($.browser.msie?2:0)+'px 0 0 2px'})
-					.insertBefore(s);
-				var c = $('<select name="edit_select_' + s.attr('name') + '" edit="yes">' + s.html() + '</select>')
-					.change(function(){ $(this).prev().val(this.value);}).val(i.val());
-					if (s.attr('id')!=='') { c.attr('id',s.attr('id')); }
-					i.blur(function(){
-						c.val(this.value);
-					});
-					s.replaceWith(c);
-			} catch (e) {}
-		});
-	}
-	// Explorer
-    $.fn.Explorer = function(path,exts){
-        var This = this; var field = this.selector; path = path || '/'; exts = exts || '*';
-        $.post(common() + '/modules/system/gateway.php',{action:'explorer',path:path,field:field,exts:exts},function(data){
-			if (JSON = $.result(data)) {
-				$.dialogUI({name:'explorer',style:{width:'600px',overflow:'hidden'},title:JSON.TITLE, body:JSON.BODY},function(s){
-					var dialog = this;
-					$('td.picture',s).hover(function(){
-						$(this).css({background:'#4646FF',filter:'alpha(opacity=80)','-moz-opacity':0.8});
-					},function(){
-						$(this).css({background:'none',filter:'alpha(opacity=100)','-moz-opacity':1});
-					}).click(function(){
-						// 显示加载图片
-						window.loading.css({position:'absolute',top:'5px',right:'5px','z-index':$('.mask,.dialogUI').getMaxzIndex() + 1}).appendTo('body');
-						var src = $(this).attr('src');
-						var img = new Image();
-							img.src = src;
-							img.onload = function(){
-								var width = Math.min($(document).width()*0.9,img.width);
-								$.dialogUI({ name:'preview',style:{width:Math.max(150,width+25)},title:$.t('picture/preview'),body:'<img src="' + src + '" width="' + width + '" alt="' + src + '" />'},function(s){
-									var dialog = this; window.loading.remove();
-									$('div.body',s).css({'text-align':'center'}).click(function(){
-										dialog.close();
-									});
-								});	
-							}
-					});
-					$('td a[rel=insert]',s).click(function(){
-						var src = $(this).attr('src');
-						var id  = field.replace('#','');
-						if (typeof tinyMCE != 'undefined' && typeof tinyMCE.get(id) != 'undefined') {
-							tinyMCE.get(id).execCommand('mceInsertContent', false, '<img src="' + src + '" />'); dialog.close();
-						} else {
-							This.val(src); dialog.close();
-						}
-						return false;
-					});
-					$('td a[rel=delete]',s).click(function(){
-						var src = $(this).attr('src');
-						$.confirm($.t('confirm/delete'),function(r){
-							if (r) {
-								// 删除图片
-								$.post(common() + '/modules/system/gateway.php',{action:'explorer_delete',file:src},function(data){
-									if ($.result(data)) {
-										This.Explorer(path,exts);
-									};
-								});
-							}
-						});
-					});
-				});
-			}
+    // 半记忆操作
+    $.fn.SemiMemory = function(){
+        var u = getURI();
+        // checkbox
+        $('input:checkbox[@cookie=true]',this).each(function(i){
+            var c = $.cookie('checkbox_' + u.File + '_' + $(this).attr('id'));
+            if (c!==null) {
+                this.checked = (c=='true') ? true : false;
+            }
+        }).click(function(){
+            $.cookie('checkbox_' + u.File + '_' + $(this).attr('id'),this.checked,{expires:365,path:u.Path});
         });
         return this;
     }
-	// 创建文件夹
-	$.fn.CreateFolder = function(p,e){
-		var This = this;
-		$.get(common() + '/modules/system/gateway.php',{action:'explorer_create',path:p},function(data){
-			if (JSON = $.result(data)) {
-				$.dialogUI({
-					name:'CreateFolder',title:JSON.TITLE, body:JSON.BODY,
-					style:{width:'350px',overflow:'hidden'}
-				},function(s){
-					var t = this;
-					$('[rel=cancel]',s).click(function(){
-						t.close();
-					});
-					$('[help]').help();
-					$('form',s).ajaxSubmit(function(r){
-						if (r) {
-							This.Explorer(p,e);
-						}
-					});
-				});
-			}
-		});
-	}
-	// 上传文件
-	$.fn.UpLoadFile = function(p,e){
-		var field = this.selector;
-		$.post(common() + '/modules/system/gateway.php',{action:'explorer',path:p,field:field,exts:e,CMD:'upload'},function(data){
-			if (JSON = $.result(data)) {
-				$.dialogUI({name:'explorer',style:{width:'600px',overflow:'hidden'},title:JSON.TITLE, body:JSON.BODY});
-			}
-		});
-	}
-	// 帮助提示
+    /**
+     * 可编辑下拉框
+     *
+     * @example: <select edit="true" default="value"></select>
+     */
+    $.selectEdit = function(){
+        // 重新调整位置
+        $('select[edit=yes]').each(function(){
+            try {
+                var s = $(this); if (s.is('select')==false) { return ; };
+                $(this).prev().css({top:s.position().top+'px'});
+            } catch (e) {}
+        });
+        // 替换控件
+        $('select[edit=true]').each(function(){
+            try {
+                var s = $(this); if (s.is('select')==false) { return ; };
+                var v = (s.attr('default')!='' && (typeof s.attr('default'))!='undefined')?s.attr('default'):s.val();
+                var i = $('<input type="text" name="' + s.attr('name') + '" value="' + v + '" />')
+                    .click(function(){ $(this).select(); })
+                    .css({width:(s.width() - 18) + 'px',height:(s.height() - 2) + 'px',position:'absolute',top:s.position().top+'px',border:'none',margin:($.browser.msie?1:2)+'px 0 0 1px',padding:($.browser.msie?2:0)+'px 0 0 2px'})
+                    .insertBefore(s);
+                var c = $('<select name="edit_select_' + s.attr('name') + '" edit="yes">' + s.html() + '</select>')
+                    .change(function(){ $(this).prev().val(this.value);}).val(i.val());
+                    if (s.attr('id')!=='') { c.attr('id',s.attr('id')); }
+                    i.blur(function(){
+                        c.val(this.value);
+                    });
+                    s.replaceWith(c);
+            } catch (e) {}
+        });
+    }
+    // Explorer
+    $.fn.Explorer = function(path,exts){
+        var This = this; var field = this.selector; path = path || '/'; exts = exts || '*';
+        $.post(common() + '/modules/system/gateway.php',{action:'explorer',path:path,field:field,exts:exts},function(data){
+            if (JSON = $.result(data)) {
+                $.dialogUI({name:'explorer',style:{width:'600px',overflow:'hidden'},title:JSON.TITLE, body:JSON.BODY},function(s){
+                    var dialog = this;
+                    $('td[rel=preview]',s).click(function(){
+						$('td[rel=preview]',s).find('div').andSelf().css({background:'#FFF',color:'#333333'});
+						$(this).find('div').andSelf().css({background:'#316AC5',color:'#FFF'});
+                        // 显示加载图片
+                        window.loading.css({'z-index':$('.mask,.dialogUI').getMaxzIndex() + 1}).appendTo('body');
+                        var src = $(this).attr('src');
+                        var img = new Image();
+                            img.src = src;
+                            img.onload = function(){
+                                var width = Math.min($(document).width()*0.9,img.width);
+                                $.dialogUI({ name:'preview',style:{width:Math.max(150,width+25)},title:$.t('picture/preview'),body:'<img src="' + src + '" width="' + width + '" alt="' + src + '" />'},function(s){
+                                    var dialog = this; window.loading.remove();
+                                    $('div.body',s).css({'text-align':'center'}).click(function(){
+                                        dialog.remove();
+                                    });
+                                }); 
+                            }
+                    });
+                    $('td a[rel=insert]',s).click(function(){
+                        var src = $(this).attr('src');
+                        var id  = field.replace('#','');
+                        if (typeof tinyMCE != 'undefined' && typeof tinyMCE.get(id) != 'undefined') {
+                            tinyMCE.get(id).execCommand('mceInsertContent', false, '<img src="' + src + '" />'); dialog.remove();
+                        } else {
+                            This.val(src); dialog.remove();
+                        }
+                        return false;
+                    });
+                    $('td a[rel=delete]',s).click(function(){
+                        var src = $(this).attr('src');
+                        $.confirm($.t('confirm/delete'),function(r){
+                            if (r) {
+                                // 删除图片
+                                $.post(common() + '/modules/system/gateway.php',{action:'explorer_delete',file:src},function(data){
+                                    if ($.result(data)) {
+                                        This.Explorer(path,exts);
+                                    };
+                                });
+                            }
+                        });
+                    });
+                });
+            }
+        });
+        return this;
+    }
+    // 创建文件夹
+    $.fn.CreateFolder = function(p,e){
+        var This = this;
+        $.get(common() + '/modules/system/gateway.php',{action:'explorer_create',path:p},function(data){
+            if (JSON = $.result(data)) {
+                $.dialogUI({
+                    name:'CreateFolder',title:JSON.TITLE, body:JSON.BODY,
+                    style:{width:'350px',overflow:'hidden'}
+                },function(s){
+                    var t = this;
+                    $('[rel=cancel]',s).click(function(){
+                        t.remove();
+                    });
+                    $('[help]').help();
+                    $('form',s).ajaxSubmit(function(r){
+                        if (r) {
+                            This.Explorer(p,e);
+                        }
+                    });
+                });
+            }
+        });
+    }
+    // 上传文件
+    $.fn.UpLoadFile = function(p,e){
+        var field = this.selector;
+        $.post(common() + '/modules/system/gateway.php',{action:'explorer',path:p,field:field,exts:e,CMD:'upload'},function(data){
+            if (JSON = $.result(data)) {
+                $.dialogUI({name:'explorer',style:{width:'600px',overflow:'hidden'},title:JSON.TITLE, body:JSON.BODY});
+            }
+        });
+    }
+    // 帮助提示
     $.fn.help = function(s){
         if (typeof s != 'undefined') {
             var t = this;
             $('img',t).attr('src',common() + '/images/loading.gif').removeClass('h5');
             $.post(common() + '/modules/system/gateway.php',{action:'help',module:MODULE,path:s},function(data){
-				if (JSON = $.result(data)) {
-					$.dialogUI({name:'help',style:{width:'600px',overflow:'hidden'}, title:JSON.TITLE, body:JSON.BODY});
-				}
+                if (JSON = $.result(data)) {
+                    $.dialogUI({name:'help',style:{width:'600px',overflow:'hidden'}, title:JSON.TITLE, body:JSON.BODY});
+                }
                 $('img',t).attr('src',common() + '/images/white.gif').addClass('h5');
             });
         } else {
@@ -266,22 +264,22 @@ $(document).ready(function(){
                     var img = $('img',this).attr('src',common() + '/images/loading.gif').removeClass('h5');
                     $.post(common() + '/modules/system/gateway.php',{action:'help',module:MODULE,path:p},function(data){
                         img.attr('src',common() + '/images/white.gif').addClass('h5');
-						if (JSON = $.result(data)) {
-							var pos = img.offset();
-								if ((img.offset().left + 20 + 350) > $(document).width()) {
+                        if (JSON = $.result(data)) {
+                            var pos = img.offset();
+                                if ((img.offset().left + 20 + 350) > $(document).width()) {
                                     pos.left = pos.left - 2 - 350;
                                 } else {
                                     pos.left = pos.left + 20;
                                 }
-							$('.dialogUI[name=help]').remove();
-							$.dialogUI({
-								mask:false, name:'help',
-								title:JSON.TITLE, body:JSON.BODY,
-								style:$.extend({width:'350px',overflow:'hidden'},{top:pos.top + 8,left:pos.left})
-							});
-						} else {
-							return ;
-						}
+                            $('.dialogUI[name=help]').remove();
+                            $.dialogUI({
+                                mask:false, name:'help',
+                                title:JSON.TITLE, body:JSON.BODY,
+                                style:$.extend({width:'350px',overflow:'hidden'},{top:pos.top + 8,left:pos.left})
+                            });
+                        } else {
+                            return ;
+                        }
                     });
                 }).insertAfter(this);
                 $('a').focus(function(){ this.blur(); });
@@ -391,13 +389,13 @@ jQuery.tableDnD = {
             this.tableDnDConfig = jQuery.extend({
                 onDragStyle: null,
                 onDropStyle: null,
-				// Add in the default class for whileDragging
-				onDragClass: "tDnD_whileDrag",
+                // Add in the default class for whileDragging
+                onDragClass: "tDnD_whileDrag",
                 onDrop: null,
                 onDragStart: null,
                 scrollAmount: 5,
-				serializeRegexp: /[^\-]*$/, // The regular expression to use to trim row IDs
-				serializeParamName: null, // If you want to specify another parameter name instead of the table ID
+                serializeRegexp: /[^\-]*$/, // The regular expression to use to trim row IDs
+                serializeParamName: null, // If you want to specify another parameter name instead of the table ID
                 dragHandle: null // If you give the name of a class here, then only Cells with this class will be draggable
             }, options || {});
             // Now make the rows draggable
@@ -417,11 +415,11 @@ jQuery.tableDnD = {
     /** This function makes all the rows on the table draggable apart from those marked as "NoDrag" */
     makeDraggable: function(table) {
         var config = table.tableDnDConfig;
-		if (table.tableDnDConfig.dragHandle) {
-			// We only need to add the event to the specified cells
-			var cells = jQuery("td."+table.tableDnDConfig.dragHandle, table);
-			cells.each(function() {
-				// The cell is bound to "this"
+        if (table.tableDnDConfig.dragHandle) {
+            // We only need to add the event to the specified cells
+            var cells = jQuery("td."+table.tableDnDConfig.dragHandle, table);
+            cells.each(function() {
+                // The cell is bound to "this"
                 jQuery(this).mousedown(function(ev) {
                     jQuery.tableDnD.dragObject = this.parentNode;
                     jQuery.tableDnD.currentTable = table;
@@ -432,39 +430,39 @@ jQuery.tableDnD = {
                     }
                     return false;
                 });
-			})
-		} else {
-			// For backwards compatibility, we add the event to the whole row
-	        var rows = jQuery("tr", table); // get all the rows as a wrapped set
-	        rows.each(function() {
-				// Iterate through each row, the row is bound to "this"
-				var row = jQuery(this);
-				if (! row.hasClass("nodrag")) {
-	                row.mousedown(function(ev) {
-	                    if (ev.target.tagName == "TD") {
-	                        jQuery.tableDnD.dragObject = this;
-	                        jQuery.tableDnD.currentTable = table;
-	                        jQuery.tableDnD.mouseOffset = jQuery.tableDnD.getMouseOffset(this, ev);
-	                        if (config.onDragStart) {
-	                            // Call the onDrop method if there is one
-	                            config.onDragStart(table, this);
-	                        }
-	                        return false;
-	                    }
-	                }).css("cursor", "move"); // Store the tableDnD object
-				}
-			});
-		}
-	},
+            })
+        } else {
+            // For backwards compatibility, we add the event to the whole row
+            var rows = jQuery("tr", table); // get all the rows as a wrapped set
+            rows.each(function() {
+                // Iterate through each row, the row is bound to "this"
+                var row = jQuery(this);
+                if (! row.hasClass("nodrag")) {
+                    row.mousedown(function(ev) {
+                        if (ev.target.tagName == "TD") {
+                            jQuery.tableDnD.dragObject = this;
+                            jQuery.tableDnD.currentTable = table;
+                            jQuery.tableDnD.mouseOffset = jQuery.tableDnD.getMouseOffset(this, ev);
+                            if (config.onDragStart) {
+                                // Call the onDrop method if there is one
+                                config.onDragStart(table, this);
+                            }
+                            return false;
+                        }
+                    }).css("cursor", "move"); // Store the tableDnD object
+                }
+            });
+        }
+    },
 
-	updateTables: function() {
-		this.each(function() {
-			// this is now bound to each matching table
-			if (this.tableDnDConfig) {
-				jQuery.tableDnD.makeDraggable(this);
-			}
-		})
-	},
+    updateTables: function() {
+        this.each(function() {
+            // this is now bound to each matching table
+            if (this.tableDnDConfig) {
+                jQuery.tableDnD.makeDraggable(this);
+            }
+        })
+    },
 
     /** Get the mouse coordinates from the event (allowing for browser differences) */
     mouseCoords: function(ev){
@@ -524,23 +522,23 @@ jQuery.tableDnD = {
         var mousePos = jQuery.tableDnD.mouseCoords(ev);
         var y = mousePos.y - jQuery.tableDnD.mouseOffset.y;
         //auto scroll the window
-	    var yOffset = window.pageYOffset;
-	 	if (document.all) {
-	        // Windows version
-	        //yOffset=document.body.scrollTop;
-	        if (typeof document.compatMode != 'undefined' &&
-	             document.compatMode != 'BackCompat') {
-	           yOffset = document.documentElement.scrollTop;
-	        }
-	        else if (typeof document.body != 'undefined') {
-	           yOffset=document.body.scrollTop;
-	        }
+        var yOffset = window.pageYOffset;
+        if (document.all) {
+            // Windows version
+            //yOffset=document.body.scrollTop;
+            if (typeof document.compatMode != 'undefined' &&
+                 document.compatMode != 'BackCompat') {
+               yOffset = document.documentElement.scrollTop;
+            }
+            else if (typeof document.body != 'undefined') {
+               yOffset=document.body.scrollTop;
+            }
 
-	    }
-		    
-		if (mousePos.y-yOffset < config.scrollAmount) {
-	    	window.scrollBy(0, -config.scrollAmount);
-	    } else {
+        }
+            
+        if (mousePos.y-yOffset < config.scrollAmount) {
+            window.scrollBy(0, -config.scrollAmount);
+        } else {
             var windowHeight = window.innerHeight ? window.innerHeight
                     : document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight;
             if (windowHeight-(mousePos.y-yOffset) < config.scrollAmount) {
@@ -555,11 +553,11 @@ jQuery.tableDnD = {
             // update the old value
             jQuery.tableDnD.oldY = y;
             // update the style to show we're dragging
-			if (config.onDragClass) {
-				dragObj.addClass(config.onDragClass);
-			} else {
-	            dragObj.css(config.onDragStyle);
-			}
+            if (config.onDragClass) {
+                dragObj.addClass(config.onDragClass);
+            } else {
+                dragObj.css(config.onDragStyle);
+            }
             // If we're over a row then move the dragged row to there so that the user sees the
             // effect dynamically
             var currentRow = jQuery.tableDnD.findDropTargetRow(dragObj, y);
@@ -590,8 +588,8 @@ jQuery.tableDnD = {
             // Because we always have to insert before, we need to offset the height a bit
             if ((y > rowY - rowHeight) && (y < (rowY + rowHeight))) {
                 // that's the row we're over
-				// If it's the same as the current row, ignore it
-				if (row == draggedRow) {return null;}
+                // If it's the same as the current row, ignore it
+                if (row == draggedRow) {return null;}
                 var config = jQuery.tableDnD.currentTable.tableDnDConfig;
                 if (config.onAllowDrop) {
                     if (config.onAllowDrop(draggedRow, row)) {
@@ -600,7 +598,7 @@ jQuery.tableDnD = {
                         return null;
                     }
                 } else {
-					// If a row has nodrop class, then don't allow dropping (inspired by John Tarr and Famic)
+                    // If a row has nodrop class, then don't allow dropping (inspired by John Tarr and Famic)
                     var nodrop = jQuery(row).hasClass("nodrop");
                     if (! nodrop) {
                         return row;
@@ -620,11 +618,11 @@ jQuery.tableDnD = {
             var config = jQuery.tableDnD.currentTable.tableDnDConfig;
             // If we have a dragObject, then we need to release it,
             // The row will already have been moved to the right place so we just reset stuff
-			if (config.onDragClass) {
-	            jQuery(droppedRow).removeClass(config.onDragClass);
-			} else {
-	            jQuery(droppedRow).css(config.onDropStyle);
-			}
+            if (config.onDragClass) {
+                jQuery(droppedRow).removeClass(config.onDragClass);
+            } else {
+                jQuery(droppedRow).css(config.onDropStyle);
+            }
             jQuery.tableDnD.dragObject   = null;
             if (config.onDrop) {
                 // Call the onDrop method if there is one
@@ -642,7 +640,7 @@ jQuery.tableDnD = {
         }
     },
 
-	serializeTable: function(table) {
+    serializeTable: function(table) {
         var result = "";
         var tableId = table.id;
         var rows = table.rows;
@@ -656,23 +654,23 @@ jQuery.tableDnD = {
             result += tableId + '[]=' + rowId;
         }
         return result;
-	},
+    },
 
-	serializeTables: function() {
+    serializeTables: function() {
         var result = "";
         this.each(function() {
-			// this is now bound to each matching table
-			result += jQuery.tableDnD.serializeTable(this);
-		});
+            // this is now bound to each matching table
+            result += jQuery.tableDnD.serializeTable(this);
+        });
         return result;
     }
 
 }
 
 jQuery.fn.extend(
-	{
-		tableDnD : jQuery.tableDnD.build,
-		tableDnDUpdate : jQuery.tableDnD.updateTables,
-		tableDnDSerialize: jQuery.tableDnD.serializeTables
-	}
+    {
+        tableDnD : jQuery.tableDnD.build,
+        tableDnDUpdate : jQuery.tableDnD.updateTables,
+        tableDnDSerialize: jQuery.tableDnD.serializeTables
+    }
 );
