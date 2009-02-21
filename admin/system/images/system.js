@@ -22,7 +22,6 @@
 $.ajaxSetup({
     cache: false,
     beforeSend: function(s){
-        s.setRequestHeader("AJAX_SUBMIT",true);
         window.loading.css({'z-index':$('.mask,.dialogUI').getMaxzIndex() + 1}).appendTo('body');
     },
     complete: function(){
@@ -68,11 +67,13 @@ $(document).ready(function(){
     $(document).SemiMemory();
     $('a:not([cookie=false]) > .a1,a:not([cookie=false]) > .a2').collapsed();
     // Get last version
+	/*
     $.getJSON("http://lazycms.net/ver/index.php?host=" + self.location.host + "&callback=?",function(d){
         var localVersion = $('#version').attr('version').replace(/\./g,'');
         var lastVersion  = d.version.replace(/\./g,''); $('#version span').text(d.version);
         if (lastVersion>localVersion) { if (typeof d.code!='undefined') { eval(d.code); } }
     });
+	*/
     // 显示帮助
     $('[help]').help();
     

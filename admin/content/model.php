@@ -136,26 +136,27 @@ function lazy_import(){
 // *** *** www.LazyCMS.net *** *** //
 function lazy_upmodel(){
     import('system.uploadfile');
+    $folder = SITE_BASE.C('UPLOAD_FILE_PATH');
     $upload = new UpLoadFile();
     $upload->allowExts = 'json';
     $upload->maxSize   = 500*1024;//500K
-    $folder = LAZY_PATH.SEPARATOR.C('UPLOAD_FILE_PATH');mkdirs($folder);
-    if ($file = $upload->save('modelfile',$folder.'/'.basename($_FILES['modelfile']['name']))) {
-        $modelcode = read_file($file['path']); @unlink($file['path']);
+    $upload->savePath  = $folder; mkdirs(LAZY_PATH.$folder);
+    if ($file = $upload->save('modelfile')) {
+        $modelcode = read_file(LAZY_PATH.$file['path']); @unlink(LAZY_PATH.$file['path']);
         if (is_utf8($modelcode)) {
             $charset = ' charset="utf-8"';
         }
         $msg = 'parent.$(\'#modelcode\').val(\''.t2js($modelcode).'\');';
     } else {
         $charset = ' charset="utf-8"';
-        $msg = 'alert(\''.t2js($upload->getError()).'\');';
+        $msg = 'parent.$.alert(\''.t2js($upload->getError()).'\');';
     }
     header('Content-Type:text/html;'.str_replace('"','',$charset));
     echo '<script type="text/javascript"'.$charset.'>';
     echo 'parent.$(\'input.uploading\').remove();';
     echo 'parent.$(\'#modelfile\').replaceWith(\'<input type="file" name="modelfile" id="modelfile" onchange="$(this).autoUpFile();" class="in w400" />\');';
     echo $msg;
-    echo 'parent.$(\'iframe[@name=tempform]\').remove();';
+    echo 'parent.$(\'iframe[name=tempform]\').remove();';
     echo '</script>';
     exit();
 }

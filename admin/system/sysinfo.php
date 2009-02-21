@@ -109,6 +109,7 @@ function lazy_directory(){
     System::header(t('sysinfo/directory'));
     $paths = array(
         '/',
+        '/images/',
         '/common/js/',
         '/common/dicts/',
         '/common/modules/',
