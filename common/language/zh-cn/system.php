@@ -82,7 +82,8 @@ return array(
         'error7'  => '文件写入失败',
         'error8'  => '上传的文件类型不允许',
         'error9'  => '非法提交',
-        'error10' => 'POST值超过了 post_max_size(%s)',
+        'error10' => '文件上传的路径缺少写入权限',
+        'error11' => 'POST值超过了 post_max_size(%s)',
     ),
     
     /* 错误信息 */

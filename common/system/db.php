@@ -129,7 +129,7 @@ class DB {
                 break;
             // DSN format: mysql://root:123456@localhost:3306/lazy/lazycms
             default: 
-                if (preg_match('/^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@(\w+)(:(\d+))?(\/([\w\-]+)\/([\w\-]+)|\/([\w\-]+))$/i',trim($DSN),$info)) {
+                if (preg_match('/^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@([\w\-\.]+)(:(\d+))?(\/([\w\-]+)\/([\w\-]+)|\/([\w\-]+))$/i',trim($DSN),$info)) {
                     return array(
                         'host'  => $info[5],
                         'port'  => $info[7],

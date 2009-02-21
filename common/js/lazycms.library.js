@@ -389,10 +389,6 @@ function LoadScript(p,c){
                         cache: false, url: url,
                         type: This.attr('method').toUpperCase(),
                         data: This.serializeArray(),
-                        beforeSend: function(s){
-                            s.setRequestHeader("AJAX_SUBMIT",true);
-                            window.loading.css({'z-index':$('.mask,.dialogUI').getMaxzIndex() + 1}).appendTo('body');
-                        },
                         success: function(data){
                             if (JSON = $.result(data)) {
 								if ($.isFunction(callback)) { callback(JSON); }

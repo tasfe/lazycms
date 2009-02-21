@@ -29,6 +29,8 @@ class UpLoadFile{
     var $_UPLOAD_ERR_FORBID_EXT = 8;
     // 非法提交
     var $_UPLOAD_ERR_NO_SUBMIT  = 9;
+    // 没有权限写入文件
+    var $_UPLOAD_ERR_NO_PURVIEW = 10;
 
     // 单个文件大小，0:为不限制
     var $maxSize = 0;
@@ -43,7 +45,7 @@ class UpLoadFile{
      */
     function __construct(){
         if ((int)get_cfg_var('post_max_size') < (int)$_SERVER["CONTENT_LENGTH"]/1024/1024) {
-            $this->_error = 10;
+            $this->_error = 11;
         }
     }
     /**
@@ -79,7 +81,7 @@ class UpLoadFile{
             $n++;
         } while ($isfile);
         $Info['path'] = $p3.$p4;
-
+        
         if (is_uploaded_file($Info['tmp_name'])){
             // 检查文件大小
             if ($this->_checkSize($Info['size'])){
@@ -94,6 +96,7 @@ class UpLoadFile{
                 unset($Info['tmp_name'],$Info['error']);
                 return $Info;
             } else {
+                $this->_error = $this->_UPLOAD_ERR_NO_PURVIEW;
                 return false;
             }
         } else {
@@ -137,7 +140,7 @@ class UpLoadFile{
      */
     function getError(){
         if ($this->_error==0) { return ; }
-        if ($this->_error==10) {
+        if ($this->_error==11) {
             return t('system::upload/error'.$this->_error,array(get_cfg_var('post_max_size')));
         } else {
             return t('system::upload/error'.$this->_error);

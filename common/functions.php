@@ -121,7 +121,7 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
     }
     $error['trace'] = replace_root($traceInfo); ob_end_clean();
     // ajax 提交模式
-    if ($_SERVER['HTTP_AJAX_SUBMIT']) {
+    if ($_SERVER['HTTP_X_REQUESTED_WITH']=='XMLHttpRequest') {
         $hl = '<style type="text/css">';
         $hl.= '.ErrorMessage .red{ color:red; }';
         $hl.= '.ErrorMessage{ padding:10px; margin:5px; color:#666; background:#FCFCFC; border:1px solid #E0E0E0;}';
@@ -386,7 +386,7 @@ function save_file($p1,$p2='',$p3=true){
 function redirect($p1) {
     $p1 = str_replace(array("\n", "\r"), '', $p1);
     if (!headers_sent()) { header("Content-Type:text/html; charset=utf-8"); }
-    if ($_SERVER['HTTP_AJAX_SUBMIT']) {
+    if ($_SERVER['HTTP_X_REQUESTED_WITH']=='XMLHttpRequest') {
         echo_json('REDIRECT',array('URL'=>$p1));
     } else {
         $js = '<script type="text/javascript" charset="utf-8">self.location.href="'.$p1.'";</script>';
@@ -1084,7 +1084,7 @@ function ubbencode($p1){
         $R = array();
         foreach (explode('<br/>',$T) as $v) {
             if (($n=strpos($v,'  |'))!==false) {
-                $R[] = substr($v,$n+2);
+                $R[] = substr($v,$n+3);
             }
         }
         $R = implode('<br/>',$R);
