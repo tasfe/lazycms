@@ -29,5 +29,15 @@ return array(
         'modules',
         'settings',
         'sysinfo',
+    ),
+    /* 菜单列表 */
+    'menus'   => array(
+        'system/cpanel',
+        array('admins' => 'purview.admins'),
+        '-',
+        array('modules' => 'purview.modules'),
+        array('settings' => 'purview.settings'),
+        '-',
+        'system/logout',
     )
 );

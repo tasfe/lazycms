@@ -153,15 +153,12 @@ a:hover   { text-decoration: underline; }
 	#explorer .right .table tbody td p{ padding:10px 0; }
 	#explorer .right .table tbody td p.buttons{ padding-left:10px; text-align:left; }
 	#explorer .right .table tbody div.filename{ width:230px; height:22px; line-height:150%; cursor:default; text-align:left; white-space:nowrap; -o-text-overflow:ellipsis; text-overflow:ellipsis; overflow:hidden; }
-	#explorer .right .table tbody ul.thum{ width:100%; margin:0; padding:5px; list-style:none; }
-	#explorer .right .table tbody ul.thum li{ width:25%; height:85px; float:left; display:block; text-align:center; }
-	#explorer .right .table tbody ul.thum li td{ padding:0; border:none; }
-	#explorer .right .table tbody ul.thum li .picture{ width:70px; height:60px; border:solid 1px #999999; padding:1px; vertical-align:middle; }
-	#explorer .right .table tbody ul.thum li .name{ width:70px; height:22px; line-height:150%; text-align:left; white-space:nowrap; -o-text-overflow:ellipsis; text-overflow:ellipsis; overflow:hidden; }
+	#explorer .right .table tbody ul.thumb{ width:100%; margin:0; padding:5px; list-style:none; }
+	#explorer .right .table tbody ul.thumb li{ width:25%; height:85px; float:left; display:block; text-align:center; }
+	#explorer .right .table tbody ul.thumb li td{ padding:0; border:none; }
+	#explorer .right .table tbody ul.thumb li .picture{ width:70px; height:60px; border:solid 1px #999999; padding:1px; vertical-align:middle; }
+	#explorer .right .table tbody ul.thumb li .name{ width:70px; height:22px; line-height:150%; text-align:left; white-space:nowrap; -o-text-overflow:ellipsis; text-overflow:ellipsis; overflow:hidden; }
 
 
 /* footer */
 #footer{ padding:10px; text-align:center; }
-
-/* toolbar */
-#toolbar{ width:98%; height:25px; margin:0 1%; border:solid 1px #B5B5B5; border-bottom:none; background:#E5E5E5; /*position:fixed; bottom:0; z-index:9999;*/}

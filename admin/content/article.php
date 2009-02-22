@@ -25,6 +25,7 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
+    no_cache();// 禁止缓存
     System::purview('content::article');
     $menus = array(); $model = array();
     foreach (Content_Model::getModelsByType('list') as $v) {

@@ -55,9 +55,7 @@ class System{
         $hl.= '<ul id="menu">';
         $hl.= '<li><div>'.t('system::system/manage').'<img class="a2 os" src="../system/images/white.gif" /></div><ul>';
         $hl.= '    <li><a href="../system/index.php">'.t('system::system/cpanel').'</a></li>';
-        $hl.= '    <li class="hr"></li>';
         $hl.= '    <li><a href="../system/admins.php">'.t('system::admins').'</a></li>';
-        $hl.= '    <li><a href="../system/files.php">'.t('system::files').'</a></li>';
         $hl.= '    <li class="hr"></li>';
         $hl.= '    <li><a href="../system/modules.php">'.t('system::modules').'</a></li>';
         $hl.= '    <li><a href="../system/settings.php">'.t('system::settings').'</a></li>';

@@ -25,6 +25,7 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
+    no_cache();// 禁止缓存
     System::purview('system::admins');
     System::tabs(
         t('admins').':admins.php;'.
@@ -160,7 +161,7 @@ function lazy_edit(){
             echo '<input type="checkbox" name="'.$k.'" id="'.$k.'" class="__bigP" onclick="var checked = this.checked;$.each($(\'input.__'.$k.'\'),function(){ this.checked = checked; });" /><label for="'.$k.'"><strong>'.t("{$k}::name").'</strong></label><br/>';
             foreach ($v['purview'] as $i=>$p) {
                 $checked = instr($purview,"{$k}::{$p}") ? ' checked="checked"' : null;
-                echo '<input type="checkbox" name="purview[]" id="'.$k.'['.$i.']" class="__'.$k.'" onclick="$.Purview();" value="'.$k.'::'.$p.'"'.$checked.' /><label for="'.$k.'['.$i.']">'.t("{$k}::{$p}").'</label>';    
+                echo '<input type="checkbox" name="purview[]" id="'.$k.'['.$i.']" class="__'.$k.'" onclick="$.Purview();" value="'.$k.'::'.$p.'"'.$checked.' /><label for="'.$k.'['.$i.']">'.t("{$k}::{$p}").'</label>';
             }
             echo '<br/>';
         }

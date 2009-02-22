@@ -25,6 +25,7 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
+    no_cache();// 禁止缓存
     System::purview();
     System::tabs(
         t('sysinfo').':sysinfo.php;'.

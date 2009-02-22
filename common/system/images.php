@@ -46,17 +46,17 @@ class Images{
         // 获取原图信息
         $info  = Images::getImageInfo($image); 
         if($info !== false) {
+            // 原图大小
             $srcWidth  = $info['width'];
             $srcHeight = $info['height'];
-            $pathinfo  = pathinfo($image);
-            $type = $pathinfo['extension'];
+            $type = pathinfo($image,PATHINFO_EXTENSION);
             $type = empty($type) ? $info['type'] : $type;
             $type = strtolower($type); unset($info);
             $scale = min($maxWidth/$srcWidth, $maxHeight/$srcHeight); // 计算缩放比例
 
             // 缩略图尺寸
-            $width  = (int)($srcWidth*$scale);
-            $height = (int)($srcHeight*$scale);
+            $width  = ((int)$srcWidth>(int)$maxWidth) ? (int)($srcWidth * $scale): $srcWidth;
+            $height = ((int)$srcHeight>(int)$maxHeight) ? (int)($srcHeight * $scale): $srcHeight;
 
             // 载入原图
             $createFun = 'ImageCreateFrom'.($type=='jpg'?'jpeg':$type);
@@ -90,8 +90,7 @@ class Images{
             if (empty($filename)) {
                 $filename = substr($image,0,strrpos($image, '.')).$suffix.'.'.$type;
             } else {
-                $paths = pathinfo($filename); 
-                $path  = $paths['dirname'];
+                $path = pathinfo($filename,PATHINFO_DIRNAME);
                 mkdirs($path);
             }
 

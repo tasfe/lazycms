@@ -25,6 +25,7 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
+    no_cache();// 禁止缓存
     System::purview('content::model');
     System::tabs(
         t('model').':model.php;'.
@@ -85,7 +86,7 @@ function lazy_set(){
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_export(){
-    no_cache(); $db = get_conn();
+    $db = get_conn();
     $model = isset($_GET['model'])?$_GET['model']:null;
     header("Content-type: application/octet-stream; charset=utf-8");
     header("Content-Disposition: attachment; filename=LazyCMS_{$model}.json");

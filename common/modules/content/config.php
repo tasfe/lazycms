@@ -31,5 +31,16 @@ return array(
         'article',
         'sort',
         'model',
+    ),
+    /* 菜单列表 */
+    'menus'   => array(
+        array('label' => 'purview.label'),
+        array('create' => 'purview.create'),
+        '-',
+        array('onepage' => 'purview.onepage'),
+        array('article' => 'purview.article'),
+        '-',
+        array('sort' => 'purview.sort'),
+        array('model' => 'purview.model'),
     )
 );

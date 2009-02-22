@@ -25,6 +25,7 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
+    no_cache();// 禁止缓存
     System::purview('content::sort');
     // 设置公共菜单
     $menus = array(); $model = array();

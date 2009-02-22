@@ -25,7 +25,7 @@ require '../../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_help(){
-    System::purview();
+    no_cache(); System::purview();
     $path = isset($_POST['path'])?$_POST['path']:null;
     if (!strncasecmp($path,'HTML::',6)) {
         $help = substr($path,6);
@@ -43,7 +43,7 @@ function lazy_help(){
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_keywords(){
-    System::purview();
+    no_cache(); System::purview();
     $result = null;
     $title  = isset($_POST['title']) ? $_POST['title'] : null;
     if (!empty($title)) {
@@ -54,7 +54,7 @@ function lazy_keywords(){
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_explorer_delete(){
-    System::purview();
+    no_cache(); System::purview();
     $file = isset($_POST['file']) ? $_POST['file'] : null;
     if (!empty($file)) {
         if (is_file(LAZY_PATH.$file)) {
@@ -65,7 +65,7 @@ function lazy_explorer_delete(){
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_explorer_create(){
-    System::purview();
+    no_cache(); System::purview();
     $path   = isset($_REQUEST['path']) ? $_REQUEST['path'] : '/';
     $folder = isset($_POST['folder']) ? $_POST['folder'] : null;
     $rPath  = LAZY_PATH.$path.'/'.$folder;
@@ -91,7 +91,7 @@ function lazy_explorer_create(){
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_explorer_uploadfile(){
-    System::purview(); $success = true;
+    no_cache(); System::purview(); $success = true;
     $path  = isset($_POST['path']) ? $_POST['path'] : '/';
     $field = isset($_POST['field']) ? $_POST['field'] : null;
     $type  = isset($_POST['exts']) ? $_POST['exts'] : '*';
@@ -130,20 +130,44 @@ function lazy_explorer_uploadfile(){
 function lazy_explorer_image(){
     $file = isset($_REQUEST['file']) ? $_REQUEST['file'] : null;
     if (!empty($file)) {
-        $file  = LAZY_PATH.utf2ansi($file);
-        $thumb = dirname($file).'/.thumb/'.pathinfo($file,PATHINFO_BASENAME);
+        $file = LAZY_PATH.utf2ansi($file);
+        // 判断文件类型是否合法
+        if (!instr(c('UPLOAD_IMAGE_EXT'),pathinfo($file,PATHINFO_EXTENSION))) {
+            header('Cache-Control: max-age='.(30*365*24*60*60));
+            header("Content-type: image/png");
+            $img = imagecreatetruecolor(70,60);
+            $col = imagecolorallocate($img,128,0,0);
+            imagefill($img,0,0,imagecolorallocate($img,255,255,255));
+            imagestring($img, 5, (imagesx($img)-8*2)/2, 15, "No", $col);
+            imagestring($img, 5, (imagesx($img)-8*7)/2, 30, "Access!", $col);
+            imagepng($img); imagedestroy($img);
+            return ;
+        }
+        import('system.images');
+        $Info = Images::getImageInfo($file);
+        header('Content-Type: '.$Info['mime']);
+        $thumb = dirname($file).'/.Thumbs/'.pathinfo($file,PATHINFO_BASENAME);
         if (!is_file($thumb) || (filemtime($file) != filemtime($thumb))) {
-            import('system.images');
-            Images::thumb($file,$thumb,70,60);
+            if ((int)$Info['width'] > 70 || (int)$Info['height'] > 60) {
+                Images::thumb($file,$thumb,70,60);
+            } else {
+                mkdirs(dirname($thumb)); copy($file,$thumb);
+            }
             $time = filemtime($file); touch($file,$time); touch($thumb,$time);
         }
-        header('Content-Type: application/octet-stream');
-        readfile($thumb);
+        
+        // 判断缩略图是否存在
+        if (is_file($thumb)) {
+            no_cache(); readfile($thumb);
+        } else {
+            header('Cache-Control: max-age='.(24*60*60));
+            readfile($file);
+        }
     }
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_explorer(){
-    System::purview();
+    no_cache(); System::purview();
     $path  = isset($_POST['path']) ? $_POST['path'] : '/';
     $field = isset($_POST['field']) ? $_POST['field'] : null;
     $type  = isset($_POST['exts']) ? $_POST['exts'] : '*';
@@ -192,14 +216,14 @@ function lazy_explorer(){
         if (!empty($files)) {
             $folder = LAZY_PATH.($path=='/'?'':$path).'/';
             if ($exts == c('UPLOAD_IMAGE_EXT')) {
-                $hl.= '<tr><td colspan="3"><ul class="thum">';
+                $hl.= '<tr><td colspan="3"><ul class="thumb">';
                 foreach ($files as $k=>$v) {
                     $uf = ansi2utf($v);
                     $fz = file_size(filesize($folder.$v));
-                    $thumb = LAZY_PATH.$path.'/.thumb/'.$uf;
-                    $src= (is_file($thumb) && filemtime(LAZY_PATH.$path.'/'.$uf) == filemtime($thumb)) ? $path.'/.thumb/'.$uf : PHP_FILE.'?action=explorer_image&file='.rawurlencode($path.'/'.$uf).'&rand='.now();
+                    $thumb = LAZY_PATH.$path.'/.Thumbs/'.$uf;
+                    $src= (is_file(utf2ansi($thumb)) && filemtime(LAZY_PATH.$path.'/'.$uf) == filemtime($thumb)) ? $path.'/.Thumbs/'.$uf : PHP_FILE.'?action=explorer_image&file='.rawurlencode($path.'/'.$uf);
                     $hl.= '<li><table border="0" cellpadding="0" cellspacing="0" title="'.$uf.'">';
-                    $hl.= '<tr><td class="picture" rel="preview" src="'.$path.'/'.$uf.'"><img src="'.$src.'" alt="'.$uf.'" /></td></tr>';
+                    $hl.= '<tr><td class="picture" rel="preview" src="'.$path.'/'.$uf.'"><img src="'.$src.'" onload="$(this).bbimg(70,60);" alt="'.$uf.'" /></td></tr>';
                     $hl.= '<tr><td><div class="name"><a href="javascript:;" src="'.$path.'/'.$uf.'" rel="insert"><img class="e3 os" src="../system/images/white.gif" /></a>'.$uf.'</div></td></tr>';
                     $hl.= '</table></li>';
                 }
