@@ -106,7 +106,7 @@ function lazy_main(){
     echo '<fieldset><legend><a rel=".show"><img class="a2 os" src="../system/images/white.gif" />'.t('settings/upload').'</a></legend>';
     echo '<div class="show">';
     echo '<p><label>'.t('settings/upload/allowext').':</label><input help="settings/allowext" class="in w300" type="text" name="UPLOAD_ALLOW_EXT" id="UPLOAD_ALLOW_EXT" value="'.c('UPLOAD_ALLOW_EXT').'"></p>';
-    echo '<p><label>'.t('settings/upload/maxsize').':</label><input class="in w100" type="text" name="UPLOAD_MAX_SIZE" id="UPLOAD_MAX_SIZE" value="'.c('UPLOAD_MAX_SIZE').'"></p>';
+    echo '<p><label>'.t('settings/upload/maxsize').':</label><input class="in w100" type="text" name="UPLOAD_MAX_SIZE" id="UPLOAD_MAX_SIZE" value="'.c('UPLOAD_MAX_SIZE').'"> KB</p>';
     echo '<p><label>'.t('settings/upload/filepath').':</label><input class="in w200" type="text" name="UPLOAD_FILE_PATH" id="UPLOAD_FILE_PATH" value="'.c('UPLOAD_FILE_PATH').'"></p>';
     echo '<p><label>'.t('settings/upload/imagepath').':</label><input class="in w200" type="text" name="UPLOAD_IMAGE_PATH" id="UPLOAD_IMAGE_PATH" value="'.c('UPLOAD_IMAGE_PATH').'"></p>';
     echo '<p><label>'.t('settings/upload/imageext').':</label><input class="in w200" type="text" name="UPLOAD_IMAGE_EXT" id="UPLOAD_IMAGE_EXT" value="'.c('UPLOAD_IMAGE_EXT').'"></p>';

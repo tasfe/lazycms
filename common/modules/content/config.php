@@ -34,13 +34,31 @@ return array(
     ),
     /* 菜单列表 */
     'menus'   => array(
-        array('label' => 'purview.label'),
-        array('create' => 'purview.create'),
+        array('label' => array(
+            'purview' => 'label',
+            'href'    => '../content/label.php',
+        )),
+        array('create' => array(
+            'purview' => 'create',
+            'href'    => '../content/create.php',
+        )),
         '-',
-        array('onepage' => 'purview.onepage'),
-        array('article' => 'purview.article'),
+        array('onepage' => array(
+            'purview' => 'onepage',
+            'href'    => '../content/onepage.php',
+        )),
+        array('article' => array(
+            'purview' => 'article',
+            'href'    => '../content/article.php',
+        )),
         '-',
-        array('sort' => 'purview.sort'),
-        array('model' => 'purview.model'),
+        array('sort' => array(
+            'purview' => 'sort',
+            'href'    => '../content/sort.php',
+        )),
+        array('model' => array(
+            'purview' => 'model',
+            'href'    => '../content/model.php',
+        )),
     )
 );

@@ -152,11 +152,11 @@ function lazy_edit(){
     echo '<p><label>'.t('admins/email').':</label><input class="in w300" type="text" name="adminmail" id="adminmail" value="'.$adminmail.'" /></p>';
     echo '<p><label>'.t('admins/purview').':</label><span class="box purview">';
     // 导入权限列表
-    $config = array();
-    $modules= glob(COM_PATH.'/modules/*',GLOB_ONLYDIR);
+    $config  = array();
+    $modules = get_dir_array('@.modules','dir'); $index = array_search('system',$modules);
+    $system  = $modules[$index]; unset($modules[$index]); array_unshift($modules,$system);
     foreach ($modules as $v) {
-        $k = substr($v,strrpos($v,'/')+1);
-        $v = include_file($v.'/config.php');
+        $k = $v; $v = include_file(COM_PATH.'/modules/'.$v.'/config.php');
         if (isset($v['purview'])) {
             echo '<input type="checkbox" name="'.$k.'" id="'.$k.'" class="__bigP" onclick="var checked = this.checked;$.each($(\'input.__'.$k.'\'),function(){ this.checked = checked; });" /><label for="'.$k.'"><strong>'.t("{$k}::name").'</strong></label><br/>';
             foreach ($v['purview'] as $i=>$p) {

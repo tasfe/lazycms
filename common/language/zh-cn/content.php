@@ -26,6 +26,15 @@ return array(
     'name'  => '内容管理',
 
     'nomodel' => '请先创建并启用一个模型',
+    /* 标签中心 */
+    'label' => array(
+        'title' => '标签中心',
+    ),
+
+    /* 生成中心 */
+    'create' => array(
+        'title' => '生成中心',
+    ),
 
     /* 模型管理 */
     'model' => array(

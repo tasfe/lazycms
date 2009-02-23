@@ -53,28 +53,50 @@ class System{
         $hl.= '<div class="logo"><a href="../system/index.php"><img src="../system/images/logo.png" alt="LazyCMS '.LAZY_VERSION.'" /></a></div>';
         $hl.= '<div id="version" version="'.LAZY_VERSION.'"><strong>Hi,'.$_USER['adminname'].'</strong>&nbsp; '.t('system::system/lastversion').': <span>Loading...</span></div>';
         $hl.= '<ul id="menu">';
-        $hl.= '<li><div>'.t('system::system/manage').'<img class="a2 os" src="../system/images/white.gif" /></div><ul>';
-        $hl.= '    <li><a href="../system/index.php">'.t('system::system/cpanel').'</a></li>';
-        $hl.= '    <li><a href="../system/admins.php">'.t('system::admins').'</a></li>';
-        $hl.= '    <li class="hr"></li>';
-        $hl.= '    <li><a href="../system/modules.php">'.t('system::modules').'</a></li>';
-        $hl.= '    <li><a href="../system/settings.php">'.t('system::settings').'</a></li>';
-        $hl.= '    <li class="hr"></li>';
-        $hl.= '    <li><a href="javascript:;" onclick="$.confirm(\''.t('system::confirm/logout').'\',function(r){ r ? $.redirect(\'../system/logout.php\') : false; })">'.t('system::system/logout').'</a></li>';
-        $hl.= '</ul></li>';
-        $hl.= '
-            <li><div>内容管理<img class="a2 os" src="../system/images/white.gif" /></div>
-                <ul>
-                    <li><a href="../content/label.php">标签中心</a></li>
-                    <li><a href="../content/create.php">生成中心</a></li>
-                    <li class="hr"></li>
-                    <li><a href="../content/onepage.php">单页管理</a></li>
-                    <li><a href="../content/article.php">文档管理</a></li>
-                    <li class="hr"></li>
-                    <li><a href="../content/sort.php">分类管理</a></li>
-                    <li><a href="../content/model.php">模型管理</a></li>
-                </ul>
-            </li>';
+        // 生成菜单，TODO:需要增加权限判断
+        $modules = get_dir_array('@.modules','dir'); $index = array_search('system',$modules);
+        $system  = $modules[$index]; unset($modules[$index]); array_unshift($modules,$system);
+        foreach ($modules as $module) {
+            $hl.= '<li><div>'.t($module.'::name').'<img class="a2 os" src="../system/images/white.gif" /></div>';
+            $vl = include_file(COM_PATH.'/modules/'.$module.'/config.php');
+            if (isset($vl['menus'])) {
+                $hl.= '<ul>';
+                $hr = false;
+                foreach ($vl['menus'] as $menu) {
+                    if (is_array($menu)) {
+                        foreach ($menu as $k=>$v) {
+                            $url = $v; $clik = null;
+                            if (is_array($v)) {
+                                if (instr($_USER['purview'],$module.'::'.$v['purview'])) {
+                                    $pv  = true;
+                                    $url = $v['href'];
+                                } else {
+                                    $pv  = false;
+                                }
+                            } else {
+                                $pv = true;
+                            }
+                            // 有权限
+                            if ($pv) {
+                                $hr = true;
+                                if (pathinfo($url,PATHINFO_BASENAME)=='logout.php') {
+                                    $clik = ' onclick="$.confirm(\''.t('system::confirm/logout').'\',function(r){ r ? $.redirect(\''.$url.'\') : false; })"';
+                                    $url  = 'javascript:;';
+                                }
+                                $hl.= '<li><a href="'.$url.'"'.$clik.'>'.t($module.'::'.$k).'</a></li>';
+                            }
+                        }
+                    } else {
+                        // 是否该有 hr
+                        if ($hr) {
+                            $hl.= '<li class="hr"></li>'; $hr = false;
+                        }
+                    }
+                }
+                $hl.= '</ul>';
+            }
+            $hl.= '</li>';
+        }
         $hl.= '<li><div>'.t('system::help').'<img class="a2 os" src="../system/images/white.gif" /></div><ul>';
         $hl.= '    <li><a href="http://www.lazycms.net/" target="_blank">'.t('system::official/site').'</a></li>';
         $hl.= '    <li><a href="http://forums.lazycms.net/" target="_blank">'.t('system::official/forums').'</a></li>';

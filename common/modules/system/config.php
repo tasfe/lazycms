@@ -32,12 +32,21 @@ return array(
     ),
     /* 菜单列表 */
     'menus'   => array(
-        'system/cpanel',
-        array('admins' => 'purview.admins'),
+        array('system/cpanel' => '../system/index.php'),
+        array('admins' => array(
+            'purview' => 'admins',
+            'href'    => '../system/admins.php',
+        )),
         '-',
-        array('modules' => 'purview.modules'),
-        array('settings' => 'purview.settings'),
+        array('modules' => array(
+            'purview' => 'modules',
+            'href'    => '../system/modules.php',
+        )),
+        array('settings' => array(
+            'purview' => 'settings',
+            'href'    => '../system/settings.php',
+        )),
         '-',
-        'system/logout',
+        array('system/logout' => '../system/logout.php'),
     )
 );
