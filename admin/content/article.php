@@ -210,7 +210,7 @@ function lazy_edit(){
             // 将数据写入数据库
             if (empty($docId)) {
                 $row = array(
-                    'order'     => $maxid,
+                    'order'     => now(),
                     'date'      => now(),
                     'path'      => $path,
                     'userid'    => $_USER['adminid'],

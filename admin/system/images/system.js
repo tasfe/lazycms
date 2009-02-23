@@ -190,7 +190,13 @@ $(document).ready(function(){
                         var src = $(this).attr('src');
                         var id  = field.replace('#','');
                         if (typeof tinyMCE != 'undefined' && typeof tinyMCE.get(id) != 'undefined') {
-                            tinyMCE.get(id).execCommand('mceInsertContent', false, '<img src="' + src + '" />'); dialog.remove();
+							var ext = src.substr(src.lastIndexOf('.') + 1).toLowerCase(); var html = '';
+							if ($.inArray(ext,['bmp','gif','jpg','jpeg','png'])!=-1) {
+								html = '<img src="' + src + '" />';
+							} else {
+								html = '<a href="' + src + '">' + src.substr(src.lastIndexOf('/') + 1) + '</a>';
+							}
+                            tinyMCE.get(id).execCommand('mceInsertContent', false, html); dialog.remove();
                         } else {
                             This.val(src); dialog.remove();
                         }
