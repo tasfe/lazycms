@@ -54,6 +54,16 @@ function LoadScript(p,c){
  * See LICENSE.txt for copyright notices and details.
  */
 (function ($) {
+	// 读取语言包
+	$.t = function(p1){
+		var R;
+		try	{
+			R = Language[p1];
+		} catch (e) {
+			R = p1;
+		}
+		return R;
+	}
 	// 缩放图片
 	$.fn.bbimg = function(w,h){
 		var scale = Math.min(w/this.width(),h/this.height());
@@ -626,5 +636,10 @@ jQuery.cookie = function(name, value, options) {
     }
 };
 
-// 设置系统CSS
-$.setStyle();
+// 加载语言包
+window.Language = new Array(); 
+if (typeof LangFile != 'undefined') {
+	$(LangFile).each(function(){
+		document.write('<scr' + 'ipt type="text/javascript" src="' + common() + '/language/' + LANGUAGE + '/' + this + '"><\/scr' + 'ipt>');
+	});
+}

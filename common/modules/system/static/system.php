@@ -31,20 +31,23 @@ class System{
     function header($title=null,$selected=null){
         $_USER    = System::getAdmin();
         $selected = !empty($selected) ? $selected.'|' : null;
-        $title = empty($title) ? t('system::system') : $title.' - '.t('system::system');
+        $title    = empty($title) ? t('system::system') : $title.' - '.t('system::system');
+        $language = get_dir_array('@.language.'.language(),'js');
         $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
         $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
         $hl.= '<title>'.$title.'</title>';
         $hl.= '<link href="../system/images/style.css" rel="stylesheet" type="text/css" />';
         $hl.= '<link rel="shortcut icon" href="'.SITE_BASE.'favicon.ico" />';
-        $hl.= '<script type="text/javascript">var MODULE = \''.MODULE.'\';var ACTION = \''.ACTION.'\';</script>';
-        $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.3"></script>';
-        $hl.= '<script type="text/javascript" src="../../common/js/lazycms.library.js?ver=1.0"></script>';
-        $hl.= '<script type="text/javascript" src="../../common/language/'.language().'/lang.js"></script>';
-        $hl.= '<script type="text/javascript" src="../system/images/system.js?ver=1.0"></script>';
         $hl.= '<script type="text/javascript">';
-        $hl.= g('SCRIPT');
+        $hl.= 'window.MODULE = \''.MODULE.'\';window.ACTION = \''.ACTION.'\';';
+        $hl.= 'window.LANGUAGE = \''.language().'\';window.LangFile = '.json_encode($language).';';
         $hl.= '</script>';
+        $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.3"></script>';
+        $hl.= '<script type="text/javascript" src="../../common/js/lazycms.library.js"></script>';
+        $hl.= '<script type="text/javascript" src="../system/images/system.js"></script>';
+        if ($script = g('SCRIPT')) {
+            $hl.= '<script type="text/javascript">'.$script.'</script>';
+        }        
         if ($style = g('STYLE')) {
             $hl.= '<style type="text/css">'.$style.'</style>';
         }
