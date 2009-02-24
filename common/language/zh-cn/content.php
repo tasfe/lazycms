@@ -42,6 +42,8 @@ return array(
         'import'    => array(
             'title' => '模型导入',
             'file'  => '模型文件',
+            'name'  => '模型名称',
+            'ename' => '模型标识',
             'code'  => '模型代码',
             'submit'=> '导入',
         ),
@@ -96,8 +98,10 @@ return array(
             )
         ),
         'check' => array(
+            'name'  => '请输入模型名称',
+            'ename' => '请输入模型标识',
             'code'  => '模型代码不能为空',
-            'exist' => '模型标识(modelename)重复，请修改模型标识',
+            'exist' => '模型标识重复，请修改模型标识',
         ),
         'alert' => array(
             'add'       => '添加模型成功',

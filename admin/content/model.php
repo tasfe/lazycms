@@ -89,36 +89,42 @@ function lazy_export(){
     $db = get_conn();
     $model = isset($_GET['model'])?$_GET['model']:null;
     header("Content-type: application/octet-stream; charset=utf-8");
-    header("Content-Disposition: attachment; filename=LazyCMS_{$model}.json");
+    header("Content-Disposition: attachment; filename=LazyCMS_{$model}.mod");
     $res = $db->query("SELECT * FROM `#@_content_model` WHERE `modelename`=".DB::quote($model).";");
     if ($data = $db->fetch($res)) {
-        unset($data['modelid'],$data['modelstate']);
-        echo json_encode($data);
+        $modelname = $data['modelname']; $modelename = $data['modelename'];
+        unset($data['modelid'],$data['modelstate'],$data['modelname'],$data['modelename']);
+        $data = base64_encode(serialize($data));
+        echo "Generator: LazyCMS v".LAZY_VERSION."\r\n";
+        echo "Content-Name: {$modelname}\r\n";
+        echo "Content-Model-Name: {$modelename}\r\n";
+        echo "Content-Time: ".date('Y-m-d H:i:s',now())."\r\n";
+        echo "Content-Type: text/lazycms-mod\r\n";
+        echo "Content-Transfer-Encoding: base64\r\n\r\n";
+        echo chunk_split($data);
     }
     exit();
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_import(){
-    $modelcode = isset($_POST['modelcode']) ? $_POST['modelcode'] : null;
+    $modelname  = isset($_POST['modelname']) ? $_POST['modelname'] : null;
+    $modelename = isset($_POST['modelename']) ? $_POST['modelename'] : null;
+    $modelcode  = isset($_POST['modelcode']) ? $_POST['modelcode'] : null;
     $val = new Validate();
     if ($val->method()) {
+        $val->check('modelname|0|'.t('model/check/name'));
+        $val->check('modelename|0|'.t('model/check/ename').';modelename|4|'.t('model/check/exist')."|SELECT COUNT(*) FROM `#@_content_model` WHERE `modelename`=".DB::quote($modelename));
         $val->check('modelcode|0|'.t('model/check/code'));
         if ($val->isVal()) {
             $val->out();
         } else {
-            // 解析xml数据
-            $db = get_conn();
-            $data = (array) json_decode($modelcode);
-            $number = $db->result("SELECT COUNT(*) FROM `#@_content_model` WHERE `modelename`=".DB::quote($data['modelename']).";");
-            $isexist= $number > 0 ? false : true;
-            $val->check('modelcode|3|'.t('model/check/exist').'|'.$isexist);
-            if ($val->isVal()) {
-                $val->out();
-            } else {
-                // 创建模型
-                Content_Model::addModel($data);
-                ajax_success(t('model/alert/import'),0);
-            }
+            // 解析模型数据
+            $data = unserialize(base64_decode($modelcode));
+            $data['modelname'] = $modelname;
+            $data['modelename'] = $modelename;
+            // 创建模型
+            Content_Model::addModel($data);
+            ajax_success(t('model/alert/import'),0);
         }
     }
     System::loadScript('content.model');
@@ -129,7 +135,9 @@ function lazy_import(){
     echo '<p><label>'.t('model/import/file').':</label><input type="file" name="modelfile" id="modelfile" onchange="$(this).autoUpFile();" class="in w400" /></p>';
     echo '</form>';
     echo '<form id="form2" name="form2" method="post" action="'.PHP_FILE.'?action=import">';
-    echo '<p><label>'.t('model/import/code').':</label><textarea name="modelcode" id="modelcode" rows="20" class="in w600"></textarea></p>';
+    echo '<p><label>'.t('model/import/name').':</label><input type="text" name="modelname" id="modelname" class="in w400" /></p>';
+    echo '<p><label>'.t('model/import/ename').':</label><input type="text" name="modelename" id="modelename" class="in w400" /></p>';
+    echo '<p><label>'.t('model/import/code').':</label><textarea name="modelcode" id="modelcode" rows="20" class="in w550"></textarea></p>';
     echo '<p><label>&nbsp;</label><button type="submit">'.t('model/import/submit').'</button></p>';
     echo '</form>';
     echo '</div></fieldset>';
@@ -139,15 +147,18 @@ function lazy_upmodel(){
     import('system.uploadfile');
     $folder = SITE_BASE.C('UPLOAD_FILE_PATH');
     $upload = new UpLoadFile();
-    $upload->allowExts = 'json';
+    $upload->allowExts = 'mod';
     $upload->maxSize   = 500*1024;//500K
     $upload->savePath  = $folder; mkdirs(LAZY_PATH.$folder);
     if ($file = $upload->save('modelfile')) {
-        $modelcode = read_file(LAZY_PATH.$file['path']); @unlink(LAZY_PATH.$file['path']);
-        if (is_utf8($modelcode)) {
-            $charset = ' charset="utf-8"';
-        }
-        $msg = 'parent.$(\'#modelcode\').val(\''.t2js($modelcode).'\');';
+        $modelcode  = read_file(LAZY_PATH.$file['path']); @unlink(LAZY_PATH.$file['path']);
+        if (is_utf8($modelcode)) { $charset = ' charset="utf-8"'; }
+        $modelname  = trim(sect($modelcode,'(Content\-Name\:)','(\r\n)'));
+        $modelename = trim(sect($modelcode,'(Content\-Model\-Name\:)','(\r\n)'));
+        $modelcode  = substr($modelcode,strpos($modelcode,"\r\n\r\n") + 4);
+        $msg = 'parent.$(\'#modelname\').val(\''.t2js($modelname).'\');';
+        $msg.= 'parent.$(\'#modelename\').val(\''.t2js($modelename).'\');';
+        $msg.= 'parent.$(\'#modelcode\').val(\''.t2js($modelcode).'\');';
     } else {
         $charset = ' charset="utf-8"';
         $msg = 'parent.$.alert(\''.t2js($upload->getError()).'\');';
