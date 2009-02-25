@@ -332,13 +332,13 @@ function lazy_edit(){
     if ($post[3]=='list') {
         echo '<p><label>'.t('model/template/sort').':</label>';
         echo '<select name="sortemplate" id="sortemplate">';
-        echo form_opts(c('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$post[7]);
+        echo form_opts(c('TEMPLATE'),c('TEMPLATE_EXTS'),'<option value="#value#"#selected#>#name#</option>',$post[7]);
         echo '</select></p>';
     }
     
     echo '<p><label>'.t('model/template/page').':</label>';
     echo '<select name="pagetemplate" id="pagetemplate">';
-    echo form_opts(c('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$post[8]);
+    echo form_opts(c('TEMPLATE'),c('TEMPLATE_EXTS'),'<option value="#value#"#selected#>#name#</option>',$post[8]);
     echo '</select></p>';
     echo '</div></fieldset>';
 

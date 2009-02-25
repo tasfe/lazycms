@@ -1,14 +1,28 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
- <head>
-  <title> new document </title>
-  <meta name="generator" content="editplus" />
-  <meta name="author" content="" />
-  <meta name="keywords" content="" />
-  <meta name="description" content="" />
- </head>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>LazyCMS模板标签实例</title>
+</head>
 
- <body>
-  
- </body>
+<body>
+<!-- include -->
+{system:include file="header.inc"}
+<!-- 栏目名称 -->
+{$article.sortname}
+<!-- 网站名称 -->
+{$system.sitename}
+<!-- 循环id=3的热门文章 -->
+<div class="pagelist">{article:pagelist style="normal"}</div>
+<div class="article">
+	{article:list type="hot" sortid="3,4,5" number="10"}
+	<p><a href="{$this.sortpath}&id=xxx">[{$this.sortname}]</a> <span><a href="{$this.path}">{$this.title}</a></span></p>
+	{/article}
+</div>
+<div class="pagelist">{article:pagelist style="normal"}</div>
+<!-- 自定义标签 -->
+<div name="google_ad">{system:tag type="html" name="google_ad"}</div>
+<!-- include -->
+{system:include file="footer.inc"}
+</body>
 </html>

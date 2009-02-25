@@ -68,7 +68,7 @@ function lazy_main() {
     echo '<script type="text/javascript">';
     echo '$(document).ready(function(){';
     echo '  $("#adminname").focus(); $("form[method=post]:not([ajax=false])").ajaxSubmit();';
-    echo '}); </script>';
+    echo '});$.setStyle();</script>';
     echo '</head><body>';
     echo '<form id="login" name="login" method="post" action="'.PHP_FILE.'">';
     echo '<div class="col1">'.t('login/description').'</div>';

@@ -227,12 +227,12 @@ function lazy_edit(){
     echo '<p><label>'.t('sort/sortemplate').':</label>';
     echo '<select name="sortemplate" id="sortemplate">';
     echo '<option value="">'.t('sort/defaultemplate').'</option>';
-    echo form_opts(c('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$sortemplate);
+    echo form_opts(c('TEMPLATE'),c('TEMPLATE_EXTS'),'<option value="#value#"#selected#>#name#</option>',$sortemplate);
     echo '</select></p>';
     echo '<p><label>'.t('sort/pagetemplate').':</label>';
     echo '<select name="pagetemplate" id="pagetemplate">';
     echo '<option value="">'.t('sort/defaultemplate').'</option>';
-    echo form_opts(C('TEMPLATE'),'*','<option value="#value#"#selected#>#name#</option>',$pagetemplate);
+    echo form_opts(C('TEMPLATE'),c('TEMPLATE_EXTS'),'<option value="#value#"#selected#>#name#</option>',$pagetemplate);
     echo '</select></p>';
     echo '</div></fieldset>';
     echo but('system::save').'<input name="sortid" type="hidden" value="'.$sortid.'" /></form>';

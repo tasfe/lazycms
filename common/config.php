@@ -31,6 +31,7 @@ return array(
     'LANGUAGE'   => 'zh-cn',
     'RSS_NUMBER' => 30,
     'TEMPLATE'   => 'themes',
+    'TEMPLATE_EXTS'   => 'htm,html,shtml',
     'GET_RELATED_KEY' => '',
 
     /* 上传设置 */
