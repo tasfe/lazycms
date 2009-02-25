@@ -47,4 +47,19 @@ define('HTTP_SCHEME',(($scheme=isset($_SERVER['HTTPS'])?$_SERVER['HTTPS']:null)=
 // Http host
 define('HTTP_HOST',HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
 // System version
-define('LAZY_VERSION','2.0.480');
+define('LAZY_VERSION','2.0.$WCREV$');
+
+#if $WCMIXED?true:false$
+    #if DEBUG 
+        #warning mixed update revisions founded 
+    #else 
+        #error mixed update revisions founded 
+    #endif 
+#endif 
+#if $WCMODS?true:false$ 
+    #if DEBUG 
+        #warning local modification founded 
+    #else 
+        #error local modification founded 
+    #endif 
+#endif 
