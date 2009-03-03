@@ -34,8 +34,7 @@ class ParseTags{
      * @return object
      */
     function load($p1){
-        $this->_HTML = $this->_encode($p1);
-        $this->_tags = $this->_formatTags();
+        $this->_HTML = $p1;
         return $this;
     }
     /**
@@ -48,52 +47,41 @@ class ParseTags{
         return $this->load(call_user_func_array('read_file', $args));
     }
     /**
-     * 获取标签
+     * 解析HTML模板
+     */
+    function parseHTML(){
+        $this->_include();
+    }
+    /**
+     * 取得HTML
+     */
+    function getHTML(){
+        return $this->_HTML;
+    }
+    /**
+     * 处理 include 标签
+     */
+    function _include(){
+        $tags = array(); $tp = LAZY_PATH.'/'.c('TEMPLATE').'/';
+        if (preg_match_all('#\{include[^\}]*\/\}#isU',$this->_HTML,$r)) {
+            $tags = $r[0];
+        }
+        foreach ($tags as $tag) {
+            $file = sect($tag,'file="','"');
+            $this->_HTML = str_replace($tag,read_file($tp.$file),$this->_HTML);
+        }
+    }
+    /**
+     * 取得变量标签
      *
      * @param string $p1
      * @return array
      */
-    function fetch($p1){
-        $i = 0; $R = array();
-        foreach ($this->_tags as $k=>$v) {
-            if (preg_match('#<([\w\-\:]+) [^>]*'.$p1.'="([^"]*)"[^>]*>#i',$v,$r)) { 
-                $R[$i]['rules'] = $r[2];
-                $R[$i]['tag']   = $this->_getTag($r[1],$k);
-                $i++;
-            }
+    function getVar($p1){
+        $R = array();
+        if (preg_match_all('#\{\$[^\}]*\}#',$p1,$r)) {
+            $R = $r[0];
         }
-        return $R;
-    }
-    /**
-     * 取得标签
-     *
-     * @param string $tagName
-     * @param string $p
-     * @return string
-     */
-    function _getTag($tagName,$p){
-        $len = count($this->_tags); $n = 0;
-        $pos = array();  $R = array(); $tag = array();
-        for ($i=$p; $i<$len; $i++) {
-            if (preg_match('#<'.$tagName.'[^>]*>|</'.$tagName.'[^>]*>#i',$this->_tags[$i])) {
-                if (preg_match('#</'.$tagName.'[^>]*>#i',$this->_tags[$i])) {
-                    $n = $i; break;
-                }
-                $tag[$tagName][] = $this->_tags[$i]; 
-            }
-        }
-        $j = count($tag[$tagName]); $t = 1;
-        for ($i=$n; $i<$len; $i++) {
-            if (preg_match('#</'.$tagName.'[^>]*>#i',$this->_tags[$i])) {
-                if ($t==$j) {
-                    $pos['start'] = $p;
-                    $pos['end']   = $i;
-                }
-                $t++;
-            }
-        }
-        $R['all'] = $this->_decode(implode('',array_slice($this->_tags,$pos['start'],($pos['end']-$pos['start'])+1)));
-        $R['cut'] = $this->_decode(implode('',array_slice($this->_tags,$pos['start']+1,($pos['end']-$pos['start'])-1)));
         return $R;
     }
     /**
@@ -104,48 +92,19 @@ class ParseTags{
     function _formatTags(){
         // 需要缓存此结果
         $R = array(); $tags = array();
-        if (preg_match_all('#<[^>]*>#is',$this->_HTML,$r)) {
-            $tags = $r[0];
+        // 取得块外变量
+        if (preg_match_all('#\{\$[^\}]*\}#',$this->_HTML,$r)) {
+            $tags['v'] = $r[0];
         }
-        $len = count($tags);
-        for ($i=0;$i<$len;$i++) {
-            $next = isset($tags[$i+1]) ? $tags[$i+1] : null;
-            $mid  = $this->_mid($tags[$i],$next);
-            $R[]  = $tags[$i]; if (empty($next)) { break; }
-            if (empty($mid)) { continue; }; $R[] = $mid;
+        // 取得单行标签
+        if (preg_match_all('#\{[^\}]*\/\}#isU',$this->_HTML,$r)) {
+            $tags['s'] = $r[0];
         }
+        // 取得多行标签
+        if (preg_match_all('#\{(\$this\.|[\w]+\:[\w]+|\/)[^\}]*[^\/]\}#isU',$this->_HTML,$r)) {
+            $tags['m'] = $r[0];
+        }
+        print_r($tags);
         return $R;
-    }
-    /**
-     * 截取
-     *
-     * @param string $p1
-     * @param string $p2
-     * @return string
-     */
-    function _mid($p1,$p2){
-        if (empty($p1) || empty($p2) || empty($this->_HTML)) { return ;}
-        static $R1 = null; static $R2 = 0; $R = null;
-        if (empty($R1)) { $R1 = $this->_HTML; }
-        $p4 = strpos(strtolower($R1),strtolower($p1)); if ($p4===false) { return ; }
-        $p5 = strpos(strtolower(substr($R1,-(strlen($R1)-$p4-strlen($p1)))),strtolower($p2));
-        if ($p4!==false && $p5!==false) {
-            $R  = substr($R1,$p4+strlen($p1),$p5);
-            $R1 = substr($R1,$p4+$p5+strlen($p1));
-            $R2 = strlen($p2);
-        }
-        return $R;
-    }
-    /**
-     * 编码 
-     */
-    function _encode($p1){
-        return preg_replace('#<(@[^>]*/)>#iU','&lt;\1&gt;',str_replace('&','&amp;',$p1));
-    }
-    /**
-     * 解码 
-     */
-    function _decode($p1){
-        return preg_replace('#&lt;(@.*/)&gt;#iU','<\1>',str_replace('&amp;','&',$p1));
     }
 }

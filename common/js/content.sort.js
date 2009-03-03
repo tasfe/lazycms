@@ -44,15 +44,15 @@
 			os.hide();
 			$('<img src="' + common() + '/images/loading.gif" class="os" />').insertBefore(os);
 			$.post(fm.attr('action'),{submit:'getsub',lists:p1,space:p2},function(data){
-				if (d = $.result(data)) {
+				if (JSON = $.result(data)) {
 					os.prev().remove();os.show();
-					$(d).each(function(){
+					$(JSON).each(function(){
 						os.removeClass('d1').removeClass('d2').addClass('d3');
 						tr.after($("td:first input",eval(this.code)).before(nbsp).end().attr('path',path + p1 + '/').show());
 						$('#list_' + this.id).addSub(this.id,p2 + 1,this.sub);
 					});
 				}
-			},'json');
+			});
 		} else {
 			// 当前对象存在
 			os.removeClass('d1').removeClass('d3').addClass('d2');

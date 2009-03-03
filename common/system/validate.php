@@ -56,7 +56,7 @@ class Validate{
      */
     function _check($p1){
         $R = null; $R1 = explode("|",$p1);
-        $p2 = rawurldecode(isset($_POST[$R1[0]]) ? $_POST[$R1[0]] : null); // POST值
+        $p2 = rawurldecode(isset($_POST[$R1[0]]) ? trim($_POST[$R1[0]]) : null); // POST值
         $p3 = isset($R1[1]) ? (string)$R1[1] : null; // 类型
         $p4 = isset($R1[2]) ? (string)$R1[2] : null; // 提示错误
         $p5 = isset($R1[3]) ? (string)$R1[3] : null;

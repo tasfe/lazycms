@@ -60,19 +60,7 @@ function lazy_main(){
         $isSub = Content_Article::isSubSort($rs['sortid']);
         $model = implode(',',Content_Article::getModelsBySortId($rs['sortid'],'modelname'));
         $count = Content_Article::count($rs['sortid'],implode(',',Content_Article::getModelsBySortId($rs['sortid'],'modelename')));
-        $ds->tbody("E(
-                ".$rs['sortid'].",
-                '".t2js(h2c($rs['sortname']))."',
-                '".t2js(h2c(SITE_BASE.$rs['sortpath']))."',
-                ".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",
-                {$isSub},
-                '".(empty($model)?'&nbsp;':$model)."',
-                {$count}
-            );
-            $(document).ready(function(){
-                $('#list_".$rs['sortid']."').addSub(".$rs['sortid'].",1,{$isSub});
-            });
-        ");
+        $ds->tbody("E(".$rs['sortid'].",'".t2js(h2c($rs['sortname']))."','".t2js(h2c(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($model)?'&nbsp;':$model)."',{$count});\$(function(){\$('#list_".$rs['sortid']."').addSub(".$rs['sortid'].",1,{$isSub});});");
     }
     $ds->close();
     $ds->display();
@@ -113,13 +101,13 @@ function lazy_set(){
                 $isSub = Content_Article::isSubSort($rs['sortid']);
                 $model = implode(',',Content_Article::getModelsBySortId($rs['sortid'],'modelname'));
                 $count = Content_Article::count($rs['sortid'],implode(',',Content_Article::getModelsBySortId($rs['sortid'],'modelename')));
-                $array[] = array(
+                $arr[] = array(
                     'id'    => $rs['sortid'],
                     'sub'   => $isSub,
-                    'code'  => "R(".$rs['sortid'].",'".t2js(h2c($rs['sortname']))."','".t2js(h2c(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($model)?'&nbsp;':$model)."',{$count});",
+                    'code'  => "R(".$rs['sortid'].",'".t2js(h2c($rs['sortname']))."','".t2js(h2c(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($model)?'&nbsp;':$model)."',{$count});"
                 );
             }
-            ajax_result($array);
+            ajax_result($arr);
             break;
         default :
             ajax_error(t('system::error/invalid'));

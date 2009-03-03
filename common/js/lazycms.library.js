@@ -20,9 +20,10 @@
 function common(){ return $("script[src*=js/jquery.js]").attr("src").replace(/(\/js\/jquery\.js\?(.*))/i,'');}
 function lock(p1){ return p1 ? icon('a3') : icon('a4'); }
 function cklist(p1){ return '<input name="list['+p1+']" id="list_'+p1+'" type="checkbox" value="'+p1+'"/>'; }
-function icon(n,a){
+function icon(n,a,on){
+	on = typeof(on)=='undefined'?'':' onclick="' + on + '"';
     var IMG = '<img class="os ' + n +'" src="' + common() + '/images/white.gif" />';
-    var HREF = '<a href="' + a + '">' + IMG + '</a>';
+    var HREF = '<a href="' + a + '"' + on + '>' + IMG + '</a>';
     if (typeof a == "undefined") { return IMG; } else { return HREF; }
 }
 function getURI(){
@@ -332,11 +333,15 @@ function LoadScript(p,c){
             self.location.href = url;
         }
     }
-    
+    // ajax连接
+	$.fn.ajaxLink = function(p,i){
+		$(this.parents('form')).ajaxButton(p,null,i);
+	}
     // ajax按钮
-    $.fn.ajaxButton = function(p,u){
+    $.fn.ajaxButton = function(p,u,l){
         var R;
         var f = this;
+		var l = l||'';
         var u = u||f.attr('action');
         if (p!='' || p!='-') {
             p = escape(p);
@@ -361,15 +366,19 @@ function LoadScript(p,c){
 
         function ajaxPost(submit){
             var lists = '';
-            $('input:checkbox',f).each(function(){
-                if(this.checked){
-                    if(lists==''){
-                        lists = this.value;
-                    }else{
-                        lists+= ',' + this.value;
-                    }
-                }
-            });
+			if (l=='') {
+				$('input:checkbox',f).each(function(){
+					if(this.checked){
+						if(lists==''){
+							lists = this.value;
+						}else{
+							lists+= ',' + this.value;
+						}
+					}
+				});
+			} else {
+				lists = l;
+			}
             $.post(u,{'submit':submit,'lists':lists},function(data){
 				$.result(data);
             });

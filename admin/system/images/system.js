@@ -122,7 +122,7 @@ $(document).ready(function(){
     $.fn.SemiMemory = function(){
         var u = getURI();
         // checkbox
-        $('input:checkbox[@cookie=true]',this).each(function(i){
+        $('input:checkbox[cookie=true]',this).each(function(i){
             var c = $.cookie('checkbox_' + u.File + '_' + $(this).attr('id'));
             if (c!==null) {
                 this.checked = (c=='true') ? true : false;

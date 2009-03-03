@@ -111,7 +111,7 @@ function lazy_main(){
         if ($length==0) {
             $ds->td("cklist(K[0]) + K[0] + ') ' + (K[2]?icon('b3',K[1]):icon('b4','javascript:alert(\'create\');')) + '<a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[1] + '</a>'");
         } else {
-            $ds->td("(K[2]?icon('b3',K[1]):icon('b4','javascript:alert(\'create\');')) + K[1]");
+            $ds->td("(K[2]?icon('b3',K[1]):icon('b4','javascript:;','\$(this).ajaxLink(\'create\',' + K[0] + ');')) + K[1]");
         }
         $ds->td("K[3]");
         $ds->td("K[4]");
@@ -141,6 +141,19 @@ function lazy_set(){
     $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
     $model  = isset($_GET['model'])?$_GET['model']:null;
     switch($submit){
+        case 'create':
+            $table = Content_Model::getDataTableName($model);
+            $jtable = Content_Model::getJoinTableName($model);
+            $db->query("SELECT * FROM `{$table}` AS `a` LEFT JOIN `{$jtable}` AS `b` ON `a`.`id`=`b`.`tid` WHERE `b`.`type`=1 AND `a`.`id`=?",$lists);
+            var_dump($db->getSQL());
+            /*
+            import('system.parsetags');
+            $tp = new ParseTags();
+            $tp->loadHTML(LAZY_PATH.'/'.c('TEMPLATE').'/default.html');
+            $tp->parseHTML(); $
+            */
+            exit;
+            break;
         case 'delete':
             empty($lists) ? ajax_alert(t('article/alert/noselect')) : null ;
             $table  = Content_Model::getDataTableName($model);
