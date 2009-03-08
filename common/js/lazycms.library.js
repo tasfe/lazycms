@@ -21,7 +21,12 @@ function common(){ return $("script[src*=js/jquery.js]").attr("src").replace(/(\
 function lock(p1){ return p1 ? icon('a3') : icon('a4'); }
 function cklist(p1){ return '<input name="list['+p1+']" id="list_'+p1+'" type="checkbox" value="'+p1+'"/>'; }
 function icon(n,a,on){
-	on = typeof(on)=='undefined'?'':' onclick="' + on + '"';
+	on = typeof(on)=='undefined'?'':on;
+	if (on.substring(0,1) == '_') {
+		on = ' target="' + on + '"';
+	} else {
+		on = ' onclick="' + on + '"';
+	}
     var IMG = '<img class="os ' + n +'" src="' + common() + '/images/white.gif" />';
     var HREF = '<a href="' + a + '"' + on + '>' + IMG + '</a>';
     if (typeof a == "undefined") { return IMG; } else { return HREF; }
@@ -294,7 +299,7 @@ function LoadScript(p,c){
                 break;
         }
 		$.dialogUI({
-            name:'alert', title:$.t('alert'),style:{width:'400px'},
+            name:'alert', title:$.t('alert'),close:false,style:{width:'400px'},
             body:'<div class="icon" style="' + position + '"></div><div class="content"><h3>' + message + '</h3></div>',
             buttons:[{
                 focus:true,

@@ -20,31 +20,28 @@
  */
 defined('COM_PATH') or die('Restricted access!');
 /**
- * LazyCMS 系统定义文件
+ * 模块标签处理
  */
-// 系统信息
-define('PHP_SAPI_NAME',php_sapi_name());
-define('IS_APACHE',strstr($_SERVER['SERVER_SOFTWARE'], 'Apache') || strstr($_SERVER['SERVER_SOFTWARE'], 'LiteSpeed'));
-define('IS_CGI',strncmp(PHP_SAPI_NAME,'cgi',3)==0 ? 1 : 0 );
-define('IS_IIS',PHP_SAPI_NAME =='isapi' ? 1 : 0);
-define('IIS_VER',IS_IIS ? substr($_SERVER["SERVER_SOFTWARE"],strrpos($_SERVER["SERVER_SOFTWARE"],'/')+1) :0);
-// 当前文件名
-if (!defined('PHP_FILE')) {
-    // CGI or FASTCGI 模式
-    if (IS_CGI) {
-        $R = explode('.php',$_SERVER['PHP_SELF']);
-        define('PHP_FILE',rtrim(str_replace($_SERVER['HTTP_HOST'],'',$R[0].'.php'),'/'));
-    } else {
-        define('PHP_FILE',rtrim($_SERVER['SCRIPT_NAME'],'/'));
-    } unset($R);
+class System_Tags {
+    /**
+     * 解析标签
+     *
+     * @param object $tags      执行标签解析的对象
+     * @param string $tagName   标签名称
+     * @param string $tag       标签内容
+     * @return array            通过标签解析对象的R方法返回
+     */
+    function ParseTags($tags,$tagName,$tag){
+        $R = null; $isParse = true;
+        switch ($tagName) {
+            case 'sitename':
+                $R = c('SITE_NAME'); break;
+            case 'cms': case 'lazycms':
+                $R = '<span id="lazycms">Powered by: <a href="http://www.lazycms.net" style="font-weight:bold" target="_blank">LazyCMS</a> <span>'.LAZY_VERSION.'</span></span>'; break;
+            default:
+                $isParse = false;
+                break;
+        }
+        return $tags->R($isParse,$R);
+    }
 }
-// 路径分隔符
-define('SEPARATOR',DIRECTORY_SEPARATOR);
-// 网站根目录
-define('SITE_BASE',str_replace(str_replace(str_replace(SEPARATOR,'/',LAZY_PATH.SEPARATOR),'/',str_replace(SEPARATOR,'/',$_SERVER["SCRIPT_FILENAME"])),'/',PHP_FILE));
-// Http scheme
-define('HTTP_SCHEME',(($scheme=isset($_SERVER['HTTPS'])?$_SERVER['HTTPS']:null)=='off' || empty($scheme))?'http':'https');
-// Http host
-define('HTTP_HOST',HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
-// System version
-define('LAZY_VERSION','2.0.488');

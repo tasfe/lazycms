@@ -123,7 +123,7 @@ return array(
         'topsort'   => '顶级分类',
         'name'      => '分类名称',
         'count'     => '文档数',
-        'path'      => '分类目录',
+        'path'      => '列表目录',
         'model'     => '内容类型',
         'defaultemplate'    => '使用模型设置',
         'sortemplate'       => '列表模板',
@@ -168,6 +168,7 @@ return array(
         ),
         'alert'     => array(
             'noselect'  => '请选择一个文档',
+            'create'    => '生成文档成功',
             'delete'    => '删除文档成功',
             'add'       => '添加文档成功',
             'edit'      => '编辑文档成功',

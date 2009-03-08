@@ -153,8 +153,7 @@ function lazy_edit(){
     echo '<p><label>'.t('admins/purview').':</label><span class="box purview">';
     // 导入权限列表
     $config  = array();
-    $modules = get_dir_array('@.modules','dir'); $index = array_search('system',$modules);
-    $system  = $modules[$index]; unset($modules[$index]); array_unshift($modules,$system);
+    $modules = System::getModules();
     foreach ($modules as $v) {
         $k = $v; $v = include_file(COM_PATH.'/modules/'.$v.'/config.php');
         if (isset($v['purview'])) {

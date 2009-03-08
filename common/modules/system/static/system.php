@@ -57,8 +57,7 @@ class System{
         $hl.= '<div id="version" version="'.LAZY_VERSION.'"><strong>Hi,'.$_USER['adminname'].'</strong>&nbsp; '.t('system::system/lastversion').': <span>Loading...</span></div>';
         $hl.= '<ul id="menu">';
         // 生成菜单，TODO:需要增加权限判断
-        $modules = get_dir_array('@.modules','dir'); $index = array_search('system',$modules);
-        $system  = $modules[$index]; unset($modules[$index]); array_unshift($modules,$system);
+        $modules = System::getModules();
         foreach ($modules as $module) {
             $hl.= '<li><div>'.t($module.'::name').'<img class="a2 os" src="../system/images/white.gif" /></div>';
             $vl = include_file(COM_PATH.'/modules/'.$module.'/config.php');
@@ -163,6 +162,14 @@ class System{
             $R.= $p1;
         }
         g('STYLE',$R);
+    }
+    /**
+     * 取得已安装的模块
+     */
+    function getModules(){
+        $modules = get_dir_array('@.modules','dir'); $index = array_search('system',$modules);
+        $system  = $modules[$index]; unset($modules[$index]); array_unshift($modules,$system);
+        return $modules;
     }
     /**
      * 管理员登录验证

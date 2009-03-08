@@ -2,7 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>LazyCMS模板标签实例</title>
+<title>{$title}</title>
+<link href="images/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="scripts/jquery.js?ver=1.3"></script>
 </head>
 
 <body>
@@ -17,8 +19,13 @@
 <div class="article">
 	{article:list type="list" sortid="3,4,5" number="10"}
 	<p><a href="{sortpath}&id=xxx">[{$sortname}]</a> <span><a href="{$path}">{$title}</a></span></p>
-	{/article}
+	{/article:list}
 </div>
+
+
+{$content}
+
+
 <div class="pagelist">{pagelist style="normal" /}</div>
 <!-- 大分类循环 -->
 <div class="bigclass">
@@ -27,9 +34,9 @@
 	<div class="article">
 		{article:list type="list" number="10"}
 		<p><a href="{$sortpath}&id=xxx">[{$sortname}]</a> <span><a href="{$path}">{$title}</a></span></p>
-		{/article}
+		{/article:list}
 	</div>
-	{/article}
+	{/article:class}
 </div>
 <!-- 自定义标签 -->
 <div name="google_ad">{tag type="html" name="google_ad" /}</div>

@@ -1,1 +1,3 @@
-﻿footer.inc
+{$cms}
+
+footer.inc

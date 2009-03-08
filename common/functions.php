@@ -1023,6 +1023,21 @@ function validate($p1,$p2){
     return preg_match("/{$p3}/i",$p1);
 }
 /**
+ * 格式化为XML
+ *
+ * @param string $p1
+ * @return string
+ */
+function xmlencode($p1){
+    if (strlen($p1)==0) { return ; } $R = $p1;
+    if (strpos($R,'&')!==false) { $R = str_replace('&','&amp;',$R); }
+    if (strpos($R,"'")!==false) { $R = str_replace("'",'&apos;',$R); }
+    if (strpos($R,'"')!==false) { $R = str_replace('"','&quot;',$R); }
+    if (strpos($R,'>')!==false) { $R = str_replace('>','&gt;',$R); }
+    if (strpos($R,'<')!==false) { $R = str_replace('<','&lt;',$R); }
+    return $R;
+}
+/**
  * UBB代码转换
  *
  * @param string $p1

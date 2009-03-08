@@ -174,6 +174,23 @@ class Content_Article{
         }
         return array_unique($R);
     }
+
+    function getTemplateBySortId($p1){
+        $db  = get_conn(); $R = array();
+        $res = $db->query("SELECT `sortemplate`,`pagetemplate` FROM `#@_content_sort` WHERE `sortid`=?;",$p1);
+        if ($rs = $db->fetch($res,0)) {
+            $R['sort'] = $rs[0];
+            $R['page'] = $rs[1];
+            // 使用模型设置的模板
+            if (empty($R['sort'])) {
+                $R['sort'] = $db->result("SELECT `b`.`sortemplate` FROM `#@_content_sort_model` AS `a` LEFT JOIN `#@_content_model` AS `b` ON `a`.`modelid`=`b`.`modelid` WHERE `a`.`sortid`=".DB::quote($p1)." LIMIT 0,1;");
+            }
+            if (empty($R['page'])) {
+                $R['page'] = $db->result("SELECT `b`.`pagetemplate` FROM `#@_content_sort_model` AS `a` LEFT JOIN `#@_content_model` AS `b` ON `a`.`modelid`=`b`.`modelid` WHERE `a`.`sortid`=".DB::quote($p1)." LIMIT 0,1;");
+            }
+        }
+        return $R;
+    }
     /**
      * 统计分类和指定模型下的文档数量
      *

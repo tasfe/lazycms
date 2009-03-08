@@ -111,7 +111,7 @@ function lazy_main(){
         if ($length==0) {
             $ds->td("cklist(K[0]) + K[0] + ') ' + (K[2]?icon('b3',K[1]):icon('b4','javascript:alert(\'create\');')) + '<a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[1] + '</a>'");
         } else {
-            $ds->td("(K[2]?icon('b3',K[1]):icon('b4','javascript:;','\$(this).ajaxLink(\'create\',' + K[0] + ');')) + K[1]");
+            $ds->td("(K[2]?icon('b3',K[1],'_blank'):icon('b4','javascript:;','\$(this).ajaxLink(\'create\',' + K[0] + ');')) + (K[2]?'<a href=\"' + K[1] + '\" target=\"_blank\">' + K[1] + '</a>':K[1])");
         }
         $ds->td("K[3]");
         $ds->td("K[4]");
@@ -128,7 +128,7 @@ function lazy_main(){
             foreach ($fields as $field=>$label) {
                 $K.= ",'".t2js(h2c($rs[$field]))."'";
             }
-            $ds->tbody("E(".$rs['id'].",'".SITE_BASE.$rs['path']."',".(is_file(LAZY_PATH.$rs['path'])?1:0).",".$rs['hits'].",".$rs['digg'].",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});");
+            $ds->tbody("E(".$rs['id'].",'".SITE_BASE.$rs['path']."',".(is_file(LAZY_PATH.'/'.$rs['path'])?1:0).",".$rs['hits'].",".$rs['digg'].",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});");
         }
         $ds->close();
         $ds->display();
@@ -140,22 +140,34 @@ function lazy_set(){
     $submit = isset($_POST['submit']) ? strtolower($_POST['submit']) : null;
     $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
     $model  = isset($_GET['model'])?$_GET['model']:null;
+    empty($lists) ? ajax_alert(t('article/alert/noselect')) : null ;
     switch($submit){
         case 'create':
-            $table = Content_Model::getDataTableName($model);
-            $jtable = Content_Model::getJoinTableName($model);
-            $db->query("SELECT * FROM `{$table}` AS `a` LEFT JOIN `{$jtable}` AS `b` ON `a`.`id`=`b`.`tid` WHERE `b`.`type`=1 AND `a`.`id`=?",$lists);
-            var_dump($db->getSQL());
-            /*
             import('system.parsetags');
-            $tp = new ParseTags();
-            $tp->loadHTML(LAZY_PATH.'/'.c('TEMPLATE').'/default.html');
-            $tp->parseHTML(); $
-            */
-            exit;
+            $tag    = new ParseTags(); $modelname = $model;
+            $table  = Content_Model::getDataTableName($modelname);
+            $jtable = Content_Model::getJoinTableName($modelname);
+            $model  = Content_Model::getModelByEname($modelname);
+            $fields = json_decode($model['modelfields']);
+            $result = $db->query("SELECT * FROM `{$table}` AS `a` LEFT JOIN `{$jtable}` AS `b` ON `a`.`id`=`b`.`tid` WHERE `b`.`type`=1 AND `a`.`id`=?",$lists);
+            while ($rs = $db->fetch($result)) {
+                // 取得模板地址
+                $template = Content_Article::getTemplateBySortId($rs['sid']);
+                $tmplpath = LAZY_PATH.'/'.c('TEMPLATE').'/'.$template['page'];
+                $tag->loadHTML($tmplpath);
+                // 替换模板中的标签
+                $tag->value('title',$rs['title']);
+                // 替换自定义字段标签
+                foreach ($fields as $field) {
+                    $tag->value($field->ename,$rs[$field->ename]);
+                }
+                $outHTML = $tag->parse();
+                $outFile = LAZY_PATH.'/'.$rs['path'];
+                mkdirs(dirname($outFile)); save_file($outFile,$outHTML);
+            }
+            ajax_success(t('article/alert/create'),1);
             break;
         case 'delete':
-            empty($lists) ? ajax_alert(t('article/alert/noselect')) : null ;
             $table  = Content_Model::getDataTableName($model);
             $jtable = Content_Model::getJoinTableName($model);
             $db->delete($table,"`id` IN({$lists})");
