@@ -24,7 +24,7 @@ require '../../global.php';
  *
  */
 // *** *** www.LazyCMS.net *** *** //
-function lazy_main(){ 
+function lazy_main(){
     // 清空cookie
     Cookie::delete('adminname');
     Cookie::delete('adminpass');

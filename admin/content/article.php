@@ -156,6 +156,7 @@ function lazy_set(){
                 $tmplpath = LAZY_PATH.'/'.c('TEMPLATE').'/'.$template['page'];
                 $tag->loadHTML($tmplpath);
                 // 替换模板中的标签
+                $tag->clear();
                 $tag->value('title',$rs['title']);
                 // 替换自定义字段标签
                 foreach ($fields as $field) {

@@ -243,6 +243,7 @@ return array(
         ),
         'server'    => array(
             'title' => '服务器设置',
+            'loginmode' => '登录模式',
             'timezone'  => '时区设置',
             'DSN_config'=> '数据库设置',
         ),
@@ -362,6 +363,9 @@ return array(
                 |[b]可选项：[/b]
                 |   密码，端口（默认3306），数据库前缀
             ',
+            'server'    => array(
+                'loginmode' => '登录模式'
+            )
         ),
         'files'     => array(
             'folder'    => '要创建的文件夹名称(必须为 字母、数字和下划线 构成)',

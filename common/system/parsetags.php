@@ -59,6 +59,8 @@ class ParseTags{
         return $this->load(call_user_func_array('read_file', $args));
     }
     /**
+     * 清空内部数组
+     * 
      * 清空通过$this->value()设置的内部数组
      *
      */

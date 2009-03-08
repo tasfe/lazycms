@@ -36,6 +36,16 @@ class System_Tags {
         switch ($tagName) {
             case 'sitename':
                 $R = c('SITE_NAME'); break;
+            case 'inst':
+                $R = SITE_BASE; break;
+            case 'host':
+                $R = HTTP_HOST; break;
+            case 'ver': case 'version':
+                $R = LAZY_VERSION; break;
+            case 'theme': case 'templet': case 'template':
+                $R = c('TEMPLATE'); break;
+            case 'lang': case 'language':
+                $R = c('LANGUAGE'); break;
             case 'cms': case 'lazycms':
                 $R = '<span id="lazycms">Powered by: <a href="http://www.lazycms.net" style="font-weight:bold" target="_blank">LazyCMS</a> <span>'.LAZY_VERSION.'</span></span>'; break;
             default:

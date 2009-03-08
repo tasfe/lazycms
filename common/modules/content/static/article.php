@@ -208,4 +208,8 @@ class Content_Article{
         }
         return $R;
     }
+    
+    function create(){
+        
+    }
 }
