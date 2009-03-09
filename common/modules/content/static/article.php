@@ -174,7 +174,14 @@ class Content_Article{
         }
         return array_unique($R);
     }
-
+    /**
+     * 取得模板文件
+     *
+     * 根据分类id取得模板文件
+     * 
+     * @param int $p1
+     * @return array
+     */
     function getTemplateBySortId($p1){
         $db  = get_conn(); $R = array();
         $res = $db->query("SELECT `sortemplate`,`pagetemplate` FROM `#@_content_sort` WHERE `sortid`=?;",$p1);
@@ -208,8 +215,58 @@ class Content_Article{
         }
         return $R;
     }
-    
-    function create(){
-        
+    /**
+     * 生成文章
+     *
+     * @param unknown_type $modelname
+     * @param unknown_type $ids
+     * @return unknown
+     */
+    function create($modelname,$ids){
+        import('system.parsetags');
+        $tag    = new ParseTags(); $db = get_conn();
+        $table  = Content_Model::getDataTableName($modelname);
+        $jtable = Content_Model::getJoinTableName($modelname);
+        $model  = Content_Model::getModelByEname($modelname);
+        $fields = json_decode($model['modelfields']);
+        $result = $db->query("SELECT * FROM `{$table}` WHERE `id` IN({$ids});");
+        while ($rs = $db->fetch($result)) {
+            // 查询文章是否只属于一个分类
+            $res = $db->query("SELECT * FROM `{$jtable}` AS `a` LEFT JOIN `#@_content_sort` AS `b` ON `a`.`sid`=`b`.`sortid` WHERE `a`.`tid`=? AND `a`.`TYPE`=1;",$rs['id']);
+            $num = $db->count($res);
+            while ($sRs = $db->fetch($res)) {
+                // 取得模板地址
+                $template = Content_Article::getTemplateBySortId($sRs['sid']);
+                $tmplpath = LAZY_PATH.'/'.c('TEMPLATE').'/'.$template['page'];
+                $tag->loadHTML($tmplpath);
+                // 替换模板中的标签
+                $tag->clear();
+                // 替换自定义字段标签
+                foreach ($fields as $field) {
+                    $tag->value($field->ename,$rs[$field->ename]);
+                }
+                // 不属于一个分类，则生成多个文件存放到各自的目录内
+                if ((int)$num > 1) {
+                    $path = SITE_BASE.$sRs['sortpath'].'/'.$rs['path'];
+                } else {
+                    $path = SITE_BASE.$rs['path'];
+                }
+                // 设置标签值
+                $tag->value(array(
+                    'id'        => $rs['id'],
+                    'date'      => $rs['date'],
+                    'hits'      => $rs['hits'],
+                    'digg'      => $rs['digg'],
+                    'path'      => $path,
+                    'userid'        => $rs['userid'],
+                    'description'   => $rs['description'],
+                ));
+                // 解析模板
+                $outHTML = $tag->parse();
+                $outFile = LAZY_PATH.$path;
+                mkdirs(dirname($outFile)); save_file($outFile,$outHTML);
+            }
+        }
+        return true;
     }
 }

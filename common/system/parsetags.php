@@ -73,8 +73,12 @@ class ParseTags{
      * @param string $p1    数组键名
      * @param mixed $p2     数组值
      */
-    function value($p1,$p2){
-        $this->_Value[$p1] = $p2;
+    function value($p1,$p2=null){
+        if (is_array($p1)) {
+            $this->_Value = array_merge($this->_Value,$p1);
+        } else {
+            $this->_Value[$p1] = $p2;
+        }
     }
     /**
      * 根据键名取得内部数组的值

@@ -143,30 +143,9 @@ function lazy_set(){
     empty($lists) ? ajax_alert(t('article/alert/noselect')) : null ;
     switch($submit){
         case 'create':
-            import('system.parsetags');
-            $tag    = new ParseTags(); $modelname = $model;
-            $table  = Content_Model::getDataTableName($modelname);
-            $jtable = Content_Model::getJoinTableName($modelname);
-            $model  = Content_Model::getModelByEname($modelname);
-            $fields = json_decode($model['modelfields']);
-            $result = $db->query("SELECT * FROM `{$table}` AS `a` LEFT JOIN `{$jtable}` AS `b` ON `a`.`id`=`b`.`tid` WHERE `b`.`type`=1 AND `a`.`id`=?",$lists);
-            while ($rs = $db->fetch($result)) {
-                // 取得模板地址
-                $template = Content_Article::getTemplateBySortId($rs['sid']);
-                $tmplpath = LAZY_PATH.'/'.c('TEMPLATE').'/'.$template['page'];
-                $tag->loadHTML($tmplpath);
-                // 替换模板中的标签
-                $tag->clear();
-                $tag->value('title',$rs['title']);
-                // 替换自定义字段标签
-                foreach ($fields as $field) {
-                    $tag->value($field->ename,$rs[$field->ename]);
-                }
-                $outHTML = $tag->parse();
-                $outFile = LAZY_PATH.'/'.$rs['path'];
-                mkdirs(dirname($outFile)); save_file($outFile,$outHTML);
+            if (Content_Article::create($model,$lists)) {
+                ajax_success(t('article/alert/create'),1);
             }
-            ajax_success(t('article/alert/create'),1);
             break;
         case 'delete':
             $table  = Content_Model::getDataTableName($model);
