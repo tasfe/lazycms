@@ -40,6 +40,15 @@ function getURI(){
         e.Url  = e.Host + e.Path + e.File;
         return e;
 }
+function paths(id,data){
+    var result = '';
+    var len = data.length;
+    for (var i=0;i<len;i++) {
+        var K = data[i];
+        result+= '<div>' + (K[1]?icon("b3",K[2],"_blank"):icon("b4","javascript:;","$(this).ajaxLink('create'," + K[0] + "," + id + ");")) + (K[1]?'<a href="' + K[2] + '" target="_blank">' + K[2] + '</a>':K[2]) + '</div>';
+    }
+    return result;
+}
 // loading加载条
 window.loading = $('<div class="loading"><img class="os" src="' + common() + '/images/loading.gif" />Loading...</div>').css({width:'100px',position:'fixed',top:'5px',right:'5px'});
 /**
@@ -339,52 +348,52 @@ function LoadScript(p,c){
         }
     }
     // ajax连接
-	$.fn.ajaxLink = function(p,i){
-		$(this.parents('form')).ajaxButton(p,null,i);
+	$.fn.ajaxLink = function(act,sortid,item){
+		$(this.parents('form')).ajaxButton({
+		    act:act,
+		    params:{sortid:sortid,lists:item}
+		});
 	}
-    // ajax按钮
-    $.fn.ajaxButton = function(p,u,l){
-        var R;
-        var f = this;
-		var l = l||'';
-        var u = u||f.attr('action');
-        if (p!='' || p!='-') {
-            p = escape(p);
+	// ajax按钮
+    $.fn.ajaxButton = function(opts){
+        // 默认设置
+        _opts = $.extend({
+            act:null,
+            url:null,
+            params:{}
+        }, opts||{});
+        var frm = this;
+        var act = typeof(opts)=='string'?opts:_opts.act;
+        var url = _opts.url||frm.attr('action');
+        if (act!='' || act!='-') {
+            act = escape(act);
         }
-
-        switch (p) {
+        switch (act) {
             case 'delete':
                 $.confirm(lazy_delete,function(r){
-                    r?ajaxPost(p):false;
+                    r?ajaxPost(act):false;
                 });
                 break;
             case 'clear':
                 $.confirm(lazy_clear,function(r){
-                    r?ajaxPost(p):false;
+                    r?ajaxPost(act):false;
                 });
                 break;
             default:
-                ajaxPost(p);
+                ajaxPost(act);
                 break;
-        
         }
-
-        function ajaxPost(submit){
-            var lists = '';
-			if (l=='') {
-				$('input:checkbox',f).each(function(){
-					if(this.checked){
-						if(lists==''){
-							lists = this.value;
-						}else{
-							lists+= ',' + this.value;
-						}
-					}
-				});
-			} else {
-				lists = l;
-			}
-            $.post(u,{'submit':submit,'lists':lists},function(data){
+        function ajaxPost(act){
+            var ids = '';
+            $('input:checked',frm).each(function(){
+    			if(ids==''){
+    				ids = this.value;
+    			}else{
+    				ids+= ',' + this.value;
+    			}
+    		});
+    		var params = $.extend({'submit':act,'lists':ids},_opts.params||{});
+            $.post(url,params,function(data){
 				$.result(data);
             });
         }

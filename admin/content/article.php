@@ -103,19 +103,19 @@ function lazy_main(){
         // 循环自定义显示字段
         for ($i=0; $i<$length; $i++) {
             if ($i==0) {
-                $ds->td("cklist(K[0]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[".($i+6)."] + '</a>'");
+                $ds->td("cklist(K[0]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[".($i+5)."] + '</a>'");
             } else {
-                $ds->td("K[".($i+6)."]");
+                $ds->td("K[".($i+5)."]");
             }
         }
         if ($length==0) {
-            $ds->td("cklist(K[0]) + K[0] + ') ' + (K[2]?icon('b3',K[1]):icon('b4','javascript:alert(\'create\');')) + '<a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[1] + '</a>'");
+            $ds->td("'<div class=\"fl\">' + cklist(K[0]) + K[0] + ') </div><div class=\"fl\">' + paths(K[0],K[1]) + '</div>'");
         } else {
-            $ds->td("(K[2]?icon('b3',K[1],'_blank'):icon('b4','javascript:;','\$(this).ajaxLink(\'create\',' + K[0] + ');')) + (K[2]?'<a href=\"' + K[1] + '\" target=\"_blank\">' + K[1] + '</a>':K[1])");
+            $ds->td("paths(K[0],K[1])");
         }
+        $ds->td("K[2]");
         $ds->td("K[3]");
         $ds->td("K[4]");
-        $ds->td("K[5]");
         $ds->td("icon('a5','".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0])");
         $ds->open();
         $ds->thead = '<tr>'; $i=0;
@@ -128,7 +128,8 @@ function lazy_main(){
             foreach ($fields as $field=>$label) {
                 $K.= ",'".t2js(h2c($rs[$field]))."'";
             }
-            $ds->tbody("E(".$rs['id'].",'".SITE_BASE.$rs['path']."',".(is_file(LAZY_PATH.'/'.$rs['path'])?1:0).",".$rs['hits'].",".$rs['digg'].",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});");
+            $jsonPaths = Content_Article::getJsonPaths($jtable,$rs['id'],$rs['path']);
+            $ds->tbody("E(".$rs['id'].",".json_encode($jsonPaths).",".$rs['hits'].",".$rs['digg'].",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});");
         }
         $ds->close();
         $ds->display();
@@ -143,7 +144,8 @@ function lazy_set(){
     empty($lists) ? ajax_alert(t('article/alert/noselect')) : null ;
     switch($submit){
         case 'create':
-            if (Content_Article::create($model,$lists)) {
+            $sortid = isset($_POST['sortid']) ? $_POST['sortid'] : null;
+            if (Content_Article::create($model,$lists,$sortid)) {
                 ajax_success(t('article/alert/create'),1);
             }
             break;

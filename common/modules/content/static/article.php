@@ -216,13 +216,37 @@ class Content_Article{
         return $R;
     }
     /**
+     * 取得一篇文章生成的多个路径
+     * 
+     * 一篇文章可能属于多个分类，会生成多个不同的文件，此函数就是用来取得多个文件路径的
+     *
+     * @param string $jtable    表名
+     * @param string $item      文件id
+     * @param string $path      路径
+     * @return array
+     */
+    function getJsonPaths($jtable,$item,$path){
+        $db = get_conn(); $R = array();
+        $res = $db->query("SELECT * FROM `{$jtable}` AS `a` LEFT JOIN `#@_content_sort` AS `b` ON `a`.`sid`=`b`.`sortid` WHERE `a`.`tid`=? AND `a`.`TYPE`=1;",$item);
+        $num = $db->count($res);
+        while ($rs = $db->fetch($res)) {
+            if ((int)$num > 1) {
+                $filePath = SITE_BASE.$rs['sortpath'].'/'.$path;
+            } else {
+                $filePath = SITE_BASE.$path;
+            }
+            $R[] = array((int)$rs['sid'],is_file(LAZY_PATH.$filePath)?1:0,$filePath);
+        }
+        return $R;
+    }
+    /**
      * 生成文章
      *
-     * @param unknown_type $modelname
-     * @param unknown_type $ids
-     * @return unknown
+     * @param string $modelname
+     * @param string $ids
+     * @return bool
      */
-    function create($modelname,$ids){
+    function create($modelname,$ids,$sortids=0){
         import('system.parsetags');
         $tag    = new ParseTags(); $db = get_conn();
         $table  = Content_Model::getDataTableName($modelname);
@@ -235,6 +259,8 @@ class Content_Article{
             $res = $db->query("SELECT * FROM `{$jtable}` AS `a` LEFT JOIN `#@_content_sort` AS `b` ON `a`.`sid`=`b`.`sortid` WHERE `a`.`tid`=? AND `a`.`TYPE`=1;",$rs['id']);
             $num = $db->count($res);
             while ($sRs = $db->fetch($res)) {
+                // 分类ID不为空，且当前分类不存在输入的分类ID内
+                if (!empty($sortids) && !instr($sortids,$sRs['sid'])){ continue; }
                 // 取得模板地址
                 $template = Content_Article::getTemplateBySortId($sRs['sid']);
                 $tmplpath = LAZY_PATH.'/'.c('TEMPLATE').'/'.$template['page'];
