@@ -36,27 +36,13 @@
 			}
 	};
 	$.fn.toggleSorts = function(){
-		var sorts = $('#sorts').css({width:'500px',left:this.offset().left,top:this.offset().top,'z-index':100,position:'absolute'}).slideToggle('fast');
-			$('.head',sorts).css({width:'495px'});
+		var sorts = $('#__sorts').css({width:'300px',left:this.offset().left,top:this.offset().top,'z-index':100,position:'absolute'}).toggle();
+			$('.head',sorts).css({width:'295px'});
 			$('.body',sorts).css({padding:'5px'});
-			$('ul',sorts).css({margin:'0 0 0 20px',padding:0});
 		return this;
 	};
-	$.fn.setSorts = function(){
-		this.selectSorts();
-	    $('#sorts').slideToggle('fast');
-		return this;
-	};
-	$.fn.selectSorts = function(){
-	    var sorts = new Array(); var i = 0;
-	    $('#sorts input:checkbox').each(function(){
-			if (this.checked) {
-				sorts[i] = $(this).next().text(); i++;
-			}
-	    });
-	    var text = sorts.join(',');
-	        text = text.length>25?text.substr(0,25)+'...':text;
-	    this.text(text==''?this.attr('empty'):text);
-		return this;
-	};
+	$.fn.setSortId = function(){
+		if (this.hasClass('disabled')) { return ; }
+		$('#__sorts').hide(); $('#sortid').val(this.attr('value')); $('#__sortname').text(this.attr('label')); 
+	}
 })(jQuery);

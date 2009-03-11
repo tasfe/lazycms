@@ -268,7 +268,12 @@ function lazy_edit(){
         }
     }
     System::style('
-        #sortView{ width:300px; height:23px; display:block; cursor:default; line-height:23px; letter-spacing:1px; padding:0px 4px; border:1px solid #c6d9e7; color:#333333; background:url(../../common/images/buttons-bg.png) repeat-x; }
+        #__sortname{ width:150px; height:23px; display:block; cursor:default; line-height:23px; letter-spacing:1px; padding:0px 4px; border:1px solid #c6d9e7; color:#333333; background:url(../../common/images/buttons-bg.png) repeat-x; }
+        #__sorts .body a.disabled{ color:#ccc; }
+        #__sorts .body a.disabled:hover{ background:#fff;color:#ccc; cursor:default; }
+        #__sorts .body a{ text-decoration:none; line-height:150%; display:block;}
+        #__sorts .body a:hover{background:#316AC5; color:#FFFFFF;}
+        
     ');
     System::loadScript('content.article');
     System::header($title,$selTab);
@@ -278,11 +283,12 @@ function lazy_edit(){
     echo '<div class="show">';
 
     if ($sorts > 0) {
-        echo '<p><label>'.t('article/sort').':</label>';
-        echo '<select name="sortid" id="sortid">';
-        echo '<option value="0">--- '.t('article/nosort').' ---</option>';
+        echo '<p><label>'.t('article/sort').':</label><span class="box"><div id="__sortname" onclick="$(this).toggleSorts();">'.t('article/select').'</div>';
+        echo '<div id="__sorts" class="panel" style="display:none;">';
+        echo '<div class="head"><strong>'.t('article/select').'</strong><a href="javascript:;" onclick="$(\'#__sorts\').toggle();"></a></div><div class="body">';
+        echo '<a href="javascript:;" onclick="$(this).setSortId();" value="0" label="'.t('article/select').'">--- '.t('article/nosort').' ---</a>';
         echo Content_Article::getSortListByParentId($model['modelid'],$sortid);
-        echo '</select></p>';
+        echo '</div></div><input name="sortid" type="hidden" id="sortid" value="'.$sortid.'" /><script type="text/javascript">$(\'#__sorts a[value='.$sortid.']\').setSortId();</script></span></p>';
     }
 
     echo $tag->fetch('<p><label>{label}:</label>{object}</p>',$data);
