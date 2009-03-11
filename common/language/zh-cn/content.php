@@ -243,7 +243,7 @@ return array(
                 'help'  => '帮助信息，可以使用UBB标签',
                 'ename' => '
                     |必填，用处很多了，以下字段名已被系统使用：
-                    |(id,order,date,hits,digg,passed,userid,path,
+                    |(id,sortid,order,date,hits,digg,passed,userid,path,
                     |description,isdel)
                 ',
                 'rules' => '

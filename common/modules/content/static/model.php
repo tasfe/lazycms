@@ -92,7 +92,7 @@ class Content_Model{
         foreach ($p2 as $field) {
             $fields[] = $field->ename;
         }
-        $fields = array_merge($fields,array('id','order','date','hits','path','digg','passed','userid','description'));
+        $fields = array_merge($fields,array('id','sortid','order','date','hits','path','digg','passed','userid','description'));
         return array_diff($p1,$fields);
     }
     /**

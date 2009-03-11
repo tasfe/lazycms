@@ -397,7 +397,7 @@ function lazy_fields(){
         foreach ($eField as $field) {
             $rq[] = isset($_POST['field'.$field]) ? $_POST['field'.$field] : null;
         }
-        $isField = !instr('id,order,date,hits,digg,passed,userid,path,description,isdel',$rq[3]);
+        $isField = !instr('id,sortid,order,date,hits,digg,passed,userid,path,description,isdel',$rq[3]);
         $val->check('fieldlabel|0|'.t('model/fields/check/label'));
         $val->check('fieldename|0|'.t('model/fields/check/ename').';fieldename|validate|'.t('model/fields/check/ename1').'|3;fieldename|3|'.t('model/fields/check/restrict').'|'.$isField);
         if (instr('input',$rq[4])) {

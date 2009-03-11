@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- 主机: localhost
--- 生成日期: 2008 年 12 月 16 日 16:12
+-- 生成日期: 2009 年 03 月 11 日 05:53
 -- 服务器版本: 5.0.45
 -- PHP 版本: 5.2.3
 
@@ -126,5 +126,5 @@ CREATE TABLE IF NOT EXISTS `lazy_system_admin` (
 -- 
 
 INSERT INTO `lazy_system_admin` (`adminid`, `adminname`, `adminpass`, `adminkey`, `adminmail`, `purview`, `language`, `islocked`) VALUES 
-(1, 'admin', 'df0282cc66251accfbe0495cf21ca7c0', 'f83d6c', 'mylukin@gmail.com', 'content::label,content::create,content::onepage,content::article,content::sort,content::model,system::admins,system::modules,system::settings,system::sysinfo', 'zh-cn', 0),
-(2, 'test', '3ebe9e5450644eb5b68335cec8d85956', '1f9fa1', 'lukin@sohu.com', 'system::admins,system::modules,system::settings,system::sysinfo', 'zh-cn', 1);
+(1, 'admin', '5e73b67753102a348f66dc9dba693a62', '4ef9f9', 'mylukin@gmail.com', 'system::admins,system::modules,system::settings,system::sysinfo,content::label,content::create,content::onepage,content::article,content::sort,content::model', 'zh-cn', 0),
+(2, 'test', '5ab6585a51a23ecab1af50bcde1911e4', 'd9a6e0', 'lukin@sohu.com', 'content::label,content::create,content::onepage,content::article,content::sort,content::model,system::admins,system::modules,system::settings,system::sysinfo', 'zh-cn', 0);
