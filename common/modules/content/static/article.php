@@ -43,40 +43,40 @@ class Content_Article{
         return $R;
     }
     /**
-     * 添加文章的分类HTML
+     * 添加文章的分类select->option
      *
      * @param  integer  $p1     模型ID
      * @param  string   $p2     选择的分类IDs
      * @param  integer  $p3     上级分类ID
+     * @param  integer  $p4     循环的层级
      * @return string
      */
-    function getSortListByParentId($p1,$p2=null,$p3=0){
-        $R = null; $db = get_conn();
+    function getSortListByParentId($p1,$p2,$p3=0,$p4=0){
+        $R = $nbsp = null; $db = get_conn(); 
+        for ($i=0;$i<$p4;$i++) {
+            $nbsp.= "&nbsp; ";
+        }
         $oby = $p3==0?'ASC':'DESC';
         $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` {$oby};",$p3);
         while ($rs = $db->fetch($res,0)) {
-            if ($db->count("SELECT * FROM `#@_content_sort_model` WHERE `modelid`=".DB::quote($p1)." AND `sortid`=".DB::quote($rs[0]).";") == 0) {
+            if ($db->count("SELECT * FROM `#@_content_sort_join` WHERE `modelid`=".DB::quote($p1)." AND `sortid`=".DB::quote($rs[0]).";") == 0) {
                 $disabled = ' disabled="disabled"';
-                $sortname = '<span>'.$rs[1].'</span>';
             } else {
                 $disabled = null;
-                $sortname = $rs[1];
             }
-            $checked = instr($p2,$rs[0])?' checked="checked"':null;
-            $R.= '<li><input type="checkbox" name="sortids[]" id="sortids['.$rs[0].']" value="'.$rs[0].'"'.$checked.$disabled.'><label for="sortids['.$rs[0].']">'.$sortname.'</label>';
+            $selected = (int)$p2==(int)$rs[0]?' selected="selected"':null;
+            $R.= '<option value="'.$rs[0].'"'.$selected.$disabled.'>'.$nbsp.'├'.$rs[1].'</option>';
             if ((int)$db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
-                $R.= Content_Article::getSortListByParentId($p1,$p2,$rs[0]);
+                $R.= Content_Article::getSortListByParentId($p1,$p2,$rs[0],($p4+1));
             }
-            $R.= '</li>';
-            
         }
-        return '<ul>'.$R.'</ul>';
+        return $R;
     }
     /**
      * 添加分类的select->option
      *
      * @param  integer  $p1     上级分类ID
-     * @param  integer  $p2     标识第几层分类
+     * @param  integer  $p2     循环的层级
      * @param  integer  $p3     当前分类的ID
      * @param  integer  $p4     选中分类的ID
      * @return string
@@ -84,7 +84,7 @@ class Content_Article{
     function getSortOptionByParentId($p1=0,$p2=0,$p3=0,$p4=null){
         $R = $nbsp = null; $db = get_conn(); 
         for ($i=0;$i<$p2;$i++) {
-            $nbsp.= "&nbsp; &nbsp;";
+            $nbsp.= "&nbsp; ";
         }
         $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` ASC;",$p1);
         while ($rs = $db->fetch($res,0)) {
@@ -119,41 +119,9 @@ class Content_Article{
      */
     function getModelsBySortId($p1,$p2='modelid'){
         $db = get_conn(); $R = array();
-        $res = $db->query("SELECT * FROM `#@_content_sort_model` AS `csm` LEFT JOIN `#@_content_model` AS `cm` ON `csm`.`modelid`=`cm`.`modelid` WHERE `cm`.`modelstate`=1 AND `csm`.`sortid`=?;",$p1);
+        $res = $db->query("SELECT * FROM `#@_content_sort_join` AS `csm` LEFT JOIN `#@_content_model` AS `cm` ON `csm`.`modelid`=`cm`.`modelid` WHERE `cm`.`modelstate`=1 AND `csm`.`sortid`=?;",$p1);
         while ($rs = $db->fetch($res)) {
             $R[] = $rs[$p2];
-        }
-        return $R;
-    }
-    /**
-     * 写分类关系
-     *
-     * @param  string   $p1     关联表名称
-     * @param  integer  $p2     文档ID
-     * @param  integer  $p3     分类ID
-     * @return bool
-     */
-    function joinSort($p1,$p2,$p3){
-        $db = get_conn();
-        $N  = $db->count("SELECT * FROM `{$p1}` WHERE `tid`=".DB::quote($p2)." AND `type`=1 AND `sid`=".DB::quote($p3).";");
-        return ((int)$N>0) ? true : $db->insert($p1,array(
-            'tid'  => $p2,
-            'sid'  => $p3,
-            'type' => 1,
-        ));
-    }
-    /**
-     * 取得指定文档的所述分类
-     *
-     * @param  string   $p1     关联表名称
-     * @param  integer  $p2     文档ID
-     * @return array
-     */
-    function getSortIdsByDocId($p1,$p2){
-        $db = get_conn(); $R = array();
-        $res = $db->query("SELECT * FROM `{$p1}` WHERE `tid`=? AND `type`=1;",$p2);
-        while ($rs = $db->fetch($res)) {
-            $R[] = $rs['sid'];
         }
         return $R;
     }
@@ -190,10 +158,10 @@ class Content_Article{
             $R['page'] = $rs[1];
             // 使用模型设置的模板
             if (empty($R['sort'])) {
-                $R['sort'] = $db->result("SELECT `b`.`sortemplate` FROM `#@_content_sort_model` AS `a` LEFT JOIN `#@_content_model` AS `b` ON `a`.`modelid`=`b`.`modelid` WHERE `a`.`sortid`=".DB::quote($p1)." LIMIT 0,1;");
+                $R['sort'] = $db->result("SELECT `b`.`sortemplate` FROM `#@_content_sort_join` AS `a` LEFT JOIN `#@_content_model` AS `b` ON `a`.`modelid`=`b`.`modelid` WHERE `a`.`sortid`=".DB::quote($p1)." LIMIT 0,1;");
             }
             if (empty($R['page'])) {
-                $R['page'] = $db->result("SELECT `b`.`pagetemplate` FROM `#@_content_sort_model` AS `a` LEFT JOIN `#@_content_model` AS `b` ON `a`.`modelid`=`b`.`modelid` WHERE `a`.`sortid`=".DB::quote($p1)." LIMIT 0,1;");
+                $R['page'] = $db->result("SELECT `b`.`pagetemplate` FROM `#@_content_sort_join` AS `a` LEFT JOIN `#@_content_model` AS `b` ON `a`.`modelid`=`b`.`modelid` WHERE `a`.`sortid`=".DB::quote($p1)." LIMIT 0,1;");
             }
         }
         return $R;
@@ -216,82 +184,44 @@ class Content_Article{
         return $R;
     }
     /**
-     * 取得一篇文章生成的多个路径
-     * 
-     * 一篇文章可能属于多个分类，会生成多个不同的文件，此函数就是用来取得多个文件路径的
-     *
-     * @param string $jtable    表名
-     * @param string $item      文件id
-     * @param string $path      路径
-     * @return array
-     */
-    function getJsonPaths($jtable,$item,$path){
-        $db = get_conn(); $R = array();
-        $res = $db->query("SELECT * FROM `{$jtable}` AS `a` LEFT JOIN `#@_content_sort` AS `b` ON `a`.`sid`=`b`.`sortid` WHERE `a`.`tid`=? AND `a`.`TYPE`=1;",$item);
-        $num = $db->count($res);
-        while ($rs = $db->fetch($res)) {
-            if ((int)$num > 1) {
-                $filePath = SITE_BASE.$rs['sortpath'].'/'.$path;
-            } else {
-                $filePath = SITE_BASE.$path;
-            }
-            $R[] = array((int)$rs['sid'],is_file(LAZY_PATH.$filePath)?1:0,$filePath);
-        }
-        return $R;
-    }
-    /**
      * 生成文章
      *
      * @param string $modelname
      * @param string $ids
      * @return bool
      */
-    function create($modelname,$ids,$sortids=0){
+    function create($modelname,$ids){
         import('system.parsetags');
         $tag    = new ParseTags(); $db = get_conn();
         $table  = Content_Model::getDataTableName($modelname);
-        $jtable = Content_Model::getJoinTableName($modelname);
         $model  = Content_Model::getModelByEname($modelname);
         $fields = json_decode($model['modelfields']);
         $result = $db->query("SELECT * FROM `{$table}` WHERE `id` IN({$ids});");
         while ($rs = $db->fetch($result)) {
-            // 查询文章是否只属于一个分类
-            $res = $db->query("SELECT * FROM `{$jtable}` AS `a` LEFT JOIN `#@_content_sort` AS `b` ON `a`.`sid`=`b`.`sortid` WHERE `a`.`tid`=? AND `a`.`TYPE`=1;",$rs['id']);
-            $num = $db->count($res);
-            while ($sRs = $db->fetch($res)) {
-                // 分类ID不为空，且当前分类不存在输入的分类ID内
-                if (!empty($sortids) && !instr($sortids,$sRs['sid'])){ continue; }
-                // 取得模板地址
-                $template = Content_Article::getTemplateBySortId($sRs['sid']);
-                $tmplpath = LAZY_PATH.'/'.c('TEMPLATE').'/'.$template['page'];
-                $tag->loadHTML($tmplpath);
-                // 替换模板中的标签
-                $tag->clear();
-                // 替换自定义字段标签
-                foreach ($fields as $field) {
-                    $tag->value($field->ename,$rs[$field->ename]);
-                }
-                // 不属于一个分类，则生成多个文件存放到各自的目录内
-                if ((int)$num > 1) {
-                    $path = SITE_BASE.$sRs['sortpath'].'/'.$rs['path'];
-                } else {
-                    $path = SITE_BASE.$rs['path'];
-                }
-                // 设置标签值
-                $tag->value(array(
-                    'id'        => $rs['id'],
-                    'date'      => $rs['date'],
-                    'hits'      => $rs['hits'],
-                    'digg'      => $rs['digg'],
-                    'path'      => $path,
-                    'userid'        => $rs['userid'],
-                    'description'   => $rs['description'],
-                ));
-                // 解析模板
-                $outHTML = $tag->parse();
-                $outFile = LAZY_PATH.$path;
-                mkdirs(dirname($outFile)); save_file($outFile,$outHTML);
+            // 取得模板地址
+            $template = Content_Article::getTemplateBySortId($rs['sortid']);
+            $tmplpath = LAZY_PATH.'/'.c('TEMPLATE').'/'.$template['page'];
+            $tag->loadHTML($tmplpath);
+            // 替换模板中的标签
+            $tag->clear();
+            // 替换自定义字段标签
+            foreach ($fields as $field) {
+                $tag->value($field->ename,$rs[$field->ename]);
             }
+            // 设置标签值
+            $tag->value(array(
+                'id'        => $rs['id'],
+                'date'      => $rs['date'],
+                'hits'      => $rs['hits'],
+                'digg'      => $rs['digg'],
+                'path'      => SITE_BASE.$rs['path'],
+                'userid'        => $rs['userid'],
+                'description'   => $rs['description'],
+            ));
+            // 解析模板
+            $outHTML = $tag->parse();
+            $outFile = LAZY_PATH.'/'.$rs['path'];
+            mkdirs(dirname($outFile)); save_file($outFile,$outHTML);
         }
         return true;
     }

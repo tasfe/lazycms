@@ -48,9 +48,11 @@
 		return this;
 	};
 	$.fn.selectSorts = function(){
-	    var sorts = new Array();
-	    $('#sorts input:checked').each(function(i){
-            sorts[i] = $(this).next().text();
+	    var sorts = new Array(); var i = 0;
+	    $('#sorts input:checkbox').each(function(){
+			if (this.checked) {
+				sorts[i] = $(this).next().text(); i++;
+			}
 	    });
 	    var text = sorts.join(',');
 	        text = text.length>25?text.substr(0,25)+'...':text;

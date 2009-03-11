@@ -166,6 +166,7 @@ class Content_Model{
         // 创建表
         $SQL = "CREATE TABLE IF NOT EXISTS `{$table}` (";
         $SQL.= "    `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,";
+        $SQL.= "    `sortid` INT(11) DEFAULT '0',";
         $SQL.= "    `order` INT(11) DEFAULT '0',";
         $SQL.= "    `date` INT(11) DEFAULT '0',";
         $SQL.= "    `hits` INT(11) DEFAULT '0',";

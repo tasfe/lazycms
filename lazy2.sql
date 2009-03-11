@@ -66,10 +66,10 @@ CREATE TABLE IF NOT EXISTS `lazy_content_sort` (
 -- --------------------------------------------------------
 
 -- 
--- 表的结构 `lazy_content_sort_model`
+-- 表的结构 `lazy_content_sort_join`
 -- 
 
-CREATE TABLE IF NOT EXISTS `lazy_content_sort_model` (
+CREATE TABLE IF NOT EXISTS `lazy_content_sort_join` (
   `joinid` int(11) NOT NULL auto_increment,
   `sortid` int(11) NOT NULL COMMENT '分类ID',
   `modelid` int(11) NOT NULL COMMENT '模型ID',
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `lazy_content_sort_model` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- 
--- 导出表中的数据 `lazy_content_sort_model`
+-- 导出表中的数据 `lazy_content_sort_join`
 -- 
 
 

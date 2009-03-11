@@ -84,38 +84,38 @@ function lazy_main(){
         $jtable = Content_Model::getJoinTableName($model['modelename']);
         $length = count($fields);
         $query  = null; $inSQL = null;
-        $inLike = empty($keyword)?null:"BINARY UCASE(`a`.`description`) LIKE UCASE('%{$keyword}%')";
+        $inLike = empty($keyword)?null:"BINARY UCASE(`description`) LIKE UCASE('%{$keyword}%')";
         foreach ($fields as $k=>$v) {
             $query .= '&fields'.rawurlencode("[{$k}]").'='.rawurlencode($v);
             if ($keyword!='') {
-                $inLike.= (empty($inLike)?null:" OR ")."BINARY UCASE(`a`.`{$k}`) LIKE UCASE('%{$keyword}%')";
+                $inLike.= (empty($inLike)?null:" OR ")."BINARY UCASE(`{$k}`) LIKE UCASE('%{$keyword}%')";
             }
         }
         $inSQL.= empty($inLike)?null:' AND ('.$inLike.')';
-        $inSQL.= ($sortid==0?null:" AND `b`.`sid`=".DB::quote($sortid));
+        $inSQL.= ($sortid==0?null:" AND `sortid`=".DB::quote($sortid));
 
         $db = get_conn();
         $ds = new Recordset();
-        $ds->create("SELECT * FROM `{$table}` AS `a` LEFT JOIN `{$jtable}` AS `b` ON `a`.`id`=`b`.`tid` WHERE `b`.`type`=1 AND `a`.`passed`=0 {$inSQL} GROUP BY `a`.`path` ORDER BY `a`.`order` DESC,`a`.`id` DESC");
+        $ds->create("SELECT * FROM `{$table}` WHERE `passed`=0 {$inSQL} ORDER BY `order` DESC,`id` DESC");
         $ds->action = PHP_FILE.'?action=set&model='.$model['modelename'];
         $ds->url = PHP_FILE.'?model='.$model['modelename'].'&sortid='.$sortid.'&keyword='.$keyword.'&size='.$size.$query.'&page=$';
         $ds->but = $ds->button('create:'.t('system::create').'|move:'.t('system::move')).$ds->plist();
         // 循环自定义显示字段
         for ($i=0; $i<$length; $i++) {
             if ($i==0) {
-                $ds->td("cklist(K[0]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[".($i+5)."] + '</a>'");
+                $ds->td("cklist(K[0]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[".($i+6)."] + '</a>'");
             } else {
-                $ds->td("K[".($i+5)."]");
+                $ds->td("K[".($i+6)."]");
             }
         }
         if ($length==0) {
-            $ds->td("'<div class=\"fl\">' + cklist(K[0]) + K[0] + ') </div><div class=\"fl\">' + paths(K[0],K[1]) + '</div>'");
+            $ds->td("cklist(K[0]) + K[0] + ') ' + (K[2]?icon('b3',K[1]):icon('b4','javascript:;','\$(this).ajaxLink(\'create\',' + K[0] + ');')) + '<a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[1] + '</a>'");
         } else {
-            $ds->td("paths(K[0],K[1])");
+            $ds->td("(K[2]?icon('b3',K[1],'_blank'):icon('b4','javascript:;','\$(this).ajaxLink(\'create\',' + K[0] + ');')) + (K[2]?'<a href=\"' + K[1] + '\" target=\"_blank\">' + K[1] + '</a>':K[1])");
         }
-        $ds->td("K[2]");
         $ds->td("K[3]");
         $ds->td("K[4]");
+        $ds->td("K[5]");
         $ds->td("icon('a5','".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0])");
         $ds->open();
         $ds->thead = '<tr>'; $i=0;
@@ -128,8 +128,7 @@ function lazy_main(){
             foreach ($fields as $field=>$label) {
                 $K.= ",'".t2js(h2c($rs[$field]))."'";
             }
-            $jsonPaths = Content_Article::getJsonPaths($jtable,$rs['id'],$rs['path']);
-            $ds->tbody("E(".$rs['id'].",".json_encode($jsonPaths).",".$rs['hits'].",".$rs['digg'].",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});");
+            $ds->tbody("E(".$rs['id'].",'".t2js(SITE_BASE.$rs['path'])."',".(is_file(LAZY_PATH.'/'.$rs['path'])?1:0).",".$rs['hits'].",".$rs['digg'].",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});");
         }
         $ds->close();
         $ds->display();
@@ -144,8 +143,7 @@ function lazy_set(){
     empty($lists) ? ajax_alert(t('article/alert/noselect')) : null ;
     switch($submit){
         case 'create':
-            $sortid = isset($_POST['sortid']) ? $_POST['sortid'] : null;
-            if (Content_Article::create($model,$lists,$sortid)) {
+            if (Content_Article::create($model,$lists)) {
                 ajax_success(t('article/alert/create'),1);
             }
             break;
@@ -168,12 +166,11 @@ function lazy_edit(){
     $docId  = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
     $selTab = array_search($mName,g('MODEL'))+4;
     $model  = Content_Model::getModelByEname($mName); if (!$model) { trigger_error(t('system::error/invalid')); }
-    $sorts  = $db->count("SELECT * FROM `#@_content_sort_model` WHERE `modelid`=".DB::quote($model['modelid']).";");
+    $sorts  = $db->count("SELECT * FROM `#@_content_sort_join` WHERE `modelid`=".DB::quote($model['modelid']).";");
     $title  = (empty($docId) ? t('system::add') : t('system::edit')).$model['modelname'];
     $path   = isset($_POST['path']) ? $_POST['path'] : null;
     $table  = Content_Model::getDataTableName($model['modelename']);
-    $jtable = Content_Model::getJoinTableName($model['modelename']);
-    $sortids = isset($_POST['sortids']) ? $_POST['sortids'] : null;
+    $sortid = isset($_POST['sortid']) ? $_POST['sortid'] : 0;
     $description = isset($_POST['description']) ? $_POST['description'] : null;
 
     // 加载字段解析类
@@ -217,6 +214,7 @@ function lazy_edit(){
             // 将数据写入数据库
             if (empty($docId)) {
                 $row = array(
+                    'sortid'    => $sortid,
                     'order'     => now(),
                     'date'      => now(),
                     'path'      => $path,
@@ -231,7 +229,8 @@ function lazy_edit(){
                 $text = t('article/alert/add');
             } else {
                 $row = array(
-                    'path' => $path,
+                    'sortid'  => $sortid,
+                    'path'    => $path,
                     'userid'  => $_USER['adminid'],
                     'description' => $description,
                 );
@@ -239,20 +238,7 @@ function lazy_edit(){
                     $row = array_merge($row,$data);
                 }
                 $db->update($table,$row,DB::quoteInto('`id` = ?',$docId));
-                // 删除未选中的分类
-                $sortDiff = array_diff(Content_Article::getSortIdsByDocId($jtable,$docId),$sortids);
-                if (!empty($sortDiff)) {
-                    $db->delete($jtable,array("`type`=1","`sid` IN(".implode(',',$sortDiff).")"));
-                }
                 $text = t('article/alert/edit');
-            }
-            // 写分类关系
-            if (empty($sortids)) {
-                Content_Article::joinSort($jtable,$docId,0);
-            } else {
-                foreach ($sortids as $sortid) {
-                    Content_Article::joinSort($jtable,$docId,$sortid);
-                }
             }
             // 自动获取关键词
             if (!empty($model['iskeyword'])) {
@@ -273,11 +259,11 @@ function lazy_edit(){
             $res = $db->query("SELECT * FROM `{$table}` WHERE `id`=?",$docId);
             if ($data = $db->fetch($res)) {
                 $path   = h2c($data['path']);
+                $sortid = $data['sortid'];
                 if (!empty($model['iskeyword'])) {
                     $keywords = $key->get($docId);
                 }
                 $description = $data['description'];
-                $sortids = Content_Article::getSortIdsByDocId($jtable,$docId);
             }
         }
     }
@@ -292,12 +278,11 @@ function lazy_edit(){
     echo '<div class="show">';
 
     if ($sorts > 0) {
-        echo '<p><label>'.t('article/sort').':</label><span class="box"><div id="sortView" onclick="$(this).toggleSorts();" empty="'.t('article/select').'">'.t('article/select').'</div>';
-        echo '<div id="sorts" class="panel" style="display:none;">';
-        echo '<div class="head"><strong>'.t('article/select').'</strong><a href="javascript:;" onclick="$(\'#sorts\').slideToggle(\'fast\');"></a></div><div class="body">';
-        echo Content_Article::getSortListByParentId($model['modelid'],$sortids);
-        echo '<p class="tr"><button type="button" onclick="$(\'#sortView\').setSorts();">'.t('article/submit').'</button>&nbsp;<button type="button" onclick="$(\'#sorts\').slideToggle(\'fast\');">'.t('article/cancel').'</button></p>';
-        echo '</div></div><script type="text/javascript">$("#sortView").selectSorts();</script></span></p>';
+        echo '<p><label>'.t('article/sort').':</label>';
+        echo '<select name="sortid" id="sortid">';
+        echo '<option value="0">--- '.t('article/nosort').' ---</option>';
+        echo Content_Article::getSortListByParentId($model['modelid'],$sortid);
+        echo '</select></p>';
     }
 
     echo $tag->fetch('<p><label>{label}:</label>{object}</p>',$data);

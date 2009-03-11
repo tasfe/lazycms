@@ -142,7 +142,7 @@ function lazy_edit(){
     $docId  = isset($_REQUEST['id']) ? (int)$_REQUEST['id'] : null;
     $selTab = array_search($mName,g('MODEL')) + 2;
     $model  = Content_Model::getModelByEname($mName); if (!$model) { trigger_error(t('system::error/invalid')); }
-    $sorts  = $db->count("SELECT * FROM `#@_content_sort_model` WHERE `modelid`=".DB::quote($model['modelid']).";");
+    $sorts  = $db->count("SELECT * FROM `#@_content_sort_join` WHERE `modelid`=".DB::quote($model['modelid']).";");
     $title  = (empty($docId) ? t('system::add') : t('system::edit')).$model['modelname'];
     $path   = isset($_POST['path']) ? $_POST['path'] : null;
     $table  = Content_Model::getDataTableName($model['modelename']);

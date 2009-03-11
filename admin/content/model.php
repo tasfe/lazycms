@@ -71,7 +71,7 @@ function lazy_set(){
             // 删除模型
             $db->delete('#@_content_model',"`modelid` IN({$lists})");
             // 删除模型和分类的关联关系
-            $db->delete('#@_content_sort_model',"`modelid` IN({$lists})");
+            $db->delete('#@_content_sort_join',"`modelid` IN({$lists})");
             ajax_success(t('model/alert/delete'),1);
             break;
         case 'lock': case 'unlock':

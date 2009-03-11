@@ -40,15 +40,6 @@ function getURI(){
         e.Url  = e.Host + e.Path + e.File;
         return e;
 }
-function paths(id,data){
-    var result = '';
-    var len = data.length;
-    for (var i=0;i<len;i++) {
-        var K = data[i];
-        result+= '<div>' + (K[1]?icon("b3",K[2],"_blank"):icon("b4","javascript:;","$(this).ajaxLink('create'," + K[0] + "," + id + ");")) + (K[1]?'<a href="' + K[2] + '" target="_blank">' + K[2] + '</a>':K[2]) + '</div>';
-    }
-    return result;
-}
 // loading加载条
 window.loading = $('<div class="loading"><img class="os" src="' + common() + '/images/loading.gif" />Loading...</div>').css({width:'100px',position:'fixed',top:'5px',right:'5px'});
 /**
@@ -348,10 +339,10 @@ function LoadScript(p,c){
         }
     }
     // ajax连接
-	$.fn.ajaxLink = function(act,sortid,item){
+	$.fn.ajaxLink = function(act,item){
 		$(this.parents('form')).ajaxButton({
 		    act:act,
-		    params:{sortid:sortid,lists:item}
+		    params:{lists:item}
 		});
 	}
 	// ajax按钮

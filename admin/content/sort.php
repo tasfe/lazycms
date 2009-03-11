@@ -76,7 +76,7 @@ function lazy_set(){
             // 取得要删除分类的所有子类，进行删除
             $sortids = implode(',',Content_Article::getSortIdsBySortIds($lists));
             // 删除文章
-            $res = $db->query("SELECT `modelid`,`sortid` FROM `#@_content_sort_model` WHERE `sortid` IN({$sortids});");
+            $res = $db->query("SELECT `modelid`,`sortid` FROM `#@_content_sort_join` WHERE `sortid` IN({$sortids});");
             while ($rs = $db->fetch($res,0)) {
                 $model  = Content_Model::getModelById($rs[0]);
                 $table  = Content_Model::getDataTableName($model['modelename']);
@@ -88,7 +88,7 @@ function lazy_set(){
                 $db->delete($jtable,array("`type`=1","`sid`='".$rs[1]."'"));
             }
             // 删除分类与模型之间的关联关系
-            $db->delete('#@_content_sort_model',"`sortid` IN({$sortids})");
+            $db->delete('#@_content_sort_join',"`sortid` IN({$sortids})");
             // 删除分类
             $db->delete('#@_content_sort',"`sortid` IN({$sortids})");
             ajax_success(t('sort/alert/delete'),0);
@@ -156,7 +156,7 @@ function lazy_edit(){
                 $delModels = array_diff($allModels,$model);
                 if (is_array($delModels) && !empty($delModels)) {
                     foreach ($delModels as $modelid) {
-                        $db->delete('#@_content_sort_model',array('`sortid`='.DB::quote($sortid),'`modelid`='.DB::quote($modelid)));
+                        $db->delete('#@_content_sort_join',array('`sortid`='.DB::quote($sortid),'`modelid`='.DB::quote($modelid)));
                     }
                 }
                 $text = t('sort/alert/edit');
@@ -164,8 +164,8 @@ function lazy_edit(){
             // 录入相关记录
             if (is_array($model)) {
                 foreach ($model as $modelid) {
-                    if ($db->count("SELECT * FROM `#@_content_sort_model` WHERE `sortid`=".DB::quote($sortid)." AND `modelid`=".DB::quote($modelid).";")==0) {
-                        $db->insert('#@_content_sort_model',array(
+                    if ($db->count("SELECT * FROM `#@_content_sort_join` WHERE `sortid`=".DB::quote($sortid)." AND `modelid`=".DB::quote($modelid).";")==0) {
+                        $db->insert('#@_content_sort_join',array(
                             'sortid' => $sortid,
                             'modelid' => $modelid,
                         ));

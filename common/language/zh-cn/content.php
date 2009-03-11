@@ -152,6 +152,7 @@ return array(
         'digg'  => 'Digg',
         'date'  => '日期',
         'size'  => '每页条数',
+        'nosort'    => '不属于任何分类',
         'sortall'   => '所有分类',
         'keyword'   => '关键词',
         'description'   => 'Meta简述',
