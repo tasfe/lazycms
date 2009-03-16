@@ -42,108 +42,25 @@ class Content_Article{
         $R = strftime($R,$p4);
         return $R;
     }
+    
     /**
-     * 添加文章的分类select->option
-     *
-     * @param  integer  $p1     模型ID
-     * @param  string   $p2     选择的分类IDs
-     * @param  integer  $p3     上级分类ID
-     * @param  integer  $p4     循环的层级
-     * @return string
-     */
-    function getSortListByParentId($p1,$p2,$p3=0,$p4=0){
-        $R = $nbsp = null; $db = get_conn(); 
-        for ($i=0;$i<$p4;$i++) {
-            $nbsp.= "&nbsp; ";
-        }
-        $oby = $p3==0?'ASC':'DESC';
-        $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` {$oby};",$p3);
-        while ($rs = $db->fetch($res,0)) {
-            if ($db->count("SELECT * FROM `#@_content_sort_join` WHERE `modelid`=".DB::quote($p1)." AND `sortid`=".DB::quote($rs[0]).";") == 0) {
-                $class = ' class="disabled"';
-            } elseif ((int)$p2==(int)$rs[0]) {
-                $class = ' class="selected"';
-            } else {
-                $class = null;
-            }
-            $R.= '<a href="javascript:;" onclick="$(this).setSortId();" value="'.$rs[0].'" label="'.h2c($rs[1]).'"'.$class.'>'.$nbsp.'├'.$rs[1].'</a>';
-            if ((int)$db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
-                $R.= Content_Article::getSortListByParentId($p1,$p2,$rs[0],($p4+1));
-            }
-        }
-        return $R;
-    }
-    /**
-     * 添加分类的select->option
-     *
-     * @param  integer  $p1     上级分类ID
-     * @param  integer  $p2     循环的层级
-     * @param  integer  $p3     当前分类的ID
-     * @param  integer  $p4     选中分类的ID
-     * @return string
-     */
-    function getSortOptionByParentId($p1=0,$p2=0,$p3=0,$p4=null){
-        $R = $nbsp = null; $db = get_conn(); 
-        for ($i=0;$i<$p2;$i++) {
-            $nbsp.= "&nbsp; ";
-        }
-        $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` ASC;",$p1);
-        while ($rs = $db->fetch($res,0)) {
-            if ((int)$p3 != (int)$rs[0]) {
-                $model = is_bool($p3)?null:' models="'.implode(',',Content_Article::getModelsBySortId($rs[0],'modelid')).'"';
-                $selected = ((int)$p4 == (int)$rs[0]) ? ' selected="selected"' : null;
-                $R.= '<option'.$model.' value="'.$rs[0].'"'.$selected.'>'.$nbsp.'├'.$rs[1].'</option>';
-                if ((int)$db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
-                    $R.= Content_Article::getSortOptionByParentId($rs[0],$p2+1,$p3,$p4);
-                }
-            }
-        }
-        return $R;
-    }
-    /**
-     * 判断是否有子分类
+     * 统计分类和指定模型下的文档数量
      *
      * @param  integer  $p1     分类ID
-     * @return string
+     * @param  string   $p2     模型标识，用英文逗号分隔
+     * @return integer
      */
-    function isSubSort($p1){
-        $db  = get_conn();
-        $num = $db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($p1).";");
-        return ((int)$num>0)?'2':'1';
-    }
-    /**
-     * 根据分类ID取得关联模型的数据
-     *
-     * @param  integer  $p1     分类ID
-     * @param  string   $p2     数据库字段
-     * @return array
-     */
-    function getModelsBySortId($p1,$p2='modelid'){
-        $db = get_conn(); $R = array();
-        $res = $db->query("SELECT * FROM `#@_content_sort_join` AS `csm` LEFT JOIN `#@_content_model` AS `cm` ON `csm`.`modelid`=`cm`.`modelid` WHERE `cm`.`modelstate`=1 AND `csm`.`sortid`=?;",$p1);
-        while ($rs = $db->fetch($res)) {
-            $R[] = $rs[$p2];
+    function count($p1,$p2){
+        $db = get_conn(); $R = 0;
+        if (empty($p2)) { return $R; }
+        $p3 = explode(',',$p2);
+        foreach ($p3 as $v) {
+            $table = Content_Model::getJoinTableName($v);
+            $R = $R + $db->count("SELECT * FROM `{$table}` WHERE `sid`=".DB::quote($p1)." AND `type`=1;");
         }
         return $R;
     }
-    /**
-     * 取得指定分类下的所有小类ID
-     *
-     * @param int $p1
-     */
-    function getSortIdsBySortIds($p1){
-        $db = get_conn(); $R = array();
-        $res = $db->query("SELECT `sortid` FROM `#@_content_sort` WHERE `sortid` IN({$p1})");
-        while ($rs = $db->fetch($res,0)) {
-            $R[] = $rs[0];
-            $res1 = $db->query("SELECT `sortid` FROM `#@_content_sort` WHERE `parentid`=?",$rs[0]);
-            while ($rs1 = $db->fetch($res1,0)) {
-                $R = array_merge($R,Content_Article::getSortIdsBySortIds($rs1[0]));
-            }
-        }
-        return array_unique($R);
-    }
-    /**
+	/**
      * 取得模板文件
      *
      * 根据分类id取得模板文件
@@ -168,39 +85,22 @@ class Content_Article{
         return $R;
     }
     /**
-     * 统计分类和指定模型下的文档数量
-     *
-     * @param  integer  $p1     分类ID
-     * @param  string   $p2     模型标识，用英文逗号分隔
-     * @return integer
-     */
-    function count($p1,$p2){
-        $db = get_conn(); $R = 0;
-        if (empty($p2)) { return $R; }
-        $p3 = explode(',',$p2);
-        foreach ($p3 as $v) {
-            $table = Content_Model::getJoinTableName($v);
-            $R = $R + $db->count("SELECT * FROM `{$table}` WHERE `sid`=".DB::quote($p1)." AND `type`=1;");
-        }
-        return $R;
-    }
-    /**
      * 生成文章
      *
-     * @param string $modelname
+     * @param string $modelename
      * @param string $ids
      * @return bool
      */
-    function create($modelname,$ids){
+    function create($modelename,$ids){
         import('system.parsetags');
         $tag    = new ParseTags(); $db = get_conn();
-        $table  = Content_Model::getDataTableName($modelname);
-        $model  = Content_Model::getModelByEname($modelname);
+        $table  = Content_Model::getDataTableName($modelename);
+        $model  = Content_Model::getModelByEname($modelename);
         $fields = json_decode($model['modelfields']);
         $result = $db->query("SELECT * FROM `{$table}` WHERE `id` IN({$ids});");
         while ($rs = $db->fetch($result)) {
             // 取得模板地址
-            $template = Content_Article::getTemplateBySortId($rs['sortid']);
+            $template = Content_Article::getTemplateBySortId($rs['sortid']);print_r($template);
             $tmplpath = LAZY_PATH.'/'.c('TEMPLATE').'/'.$template['page'];
             $tag->loadHTML($tmplpath);
             // 替换模板中的标签

@@ -62,7 +62,7 @@ function lazy_main(){
                 echo '<option value="'.$v['modelename'].'">'.$v['modelname'].'</option>';
             }
             echo '</select></p>';
-            echo '<p><label>'.t('article/sort').':</label><select name="sortid"><option value="0">'.t('article/sortall').'</option>'.Content_Article::getSortOptionByParentId(0,0,false).'</select></p>';
+            echo '<p><label>'.t('article/sort').':</label><select name="sortid"><option value="0">'.t('article/sortall').'</option>'.Content_Sort::getSortOptionByParentId(0,0,false).'</select></p>';
             echo '<p><label>'.t('article/keyword').':</label><input class="in2" type="text" name="keyword" id="keyword" value="" /></p>';
             echo '<p><label>'.t('article/size').':</label><select name="size" edit="true">';
             foreach (array(10,15,20,25,30,40,50) as $i) {
@@ -150,6 +150,13 @@ function lazy_set(){
         case 'delete':
             $table  = Content_Model::getDataTableName($model);
             $jtable = Content_Model::getJoinTableName($model);
+            // 删除文件
+            $result = $db->query("SELECT * FROM `{$table}` WHERE `id` IN({$lists});");
+            while ($rs = $db->fetch($result)) {
+                $file = LAZY_PATH.'/'.$rs['path'];
+                if (is_file($file)){ unlink($file); }
+            }
+            // 删除记录
             $db->delete($table,"`id` IN({$lists})");
             $db->delete($jtable,array("`tid` IN({$lists})"));
             ajax_success(t('article/alert/delete'),1);
@@ -251,8 +258,12 @@ function lazy_edit(){
                 $key->save($docId,$keywords,c('GET_RELATED_KEY'));
             }
             $referer = isset($_POST['__referer'])?$_POST['__referer']:PHP_FILE;
-            // 输出执行结果
-            ajax_success($text,$referer);
+			$referer = strpos($referer,basename(PHP_FILE))!==false?$referer:PHP_FILE;
+            // 生成页面
+			if (Content_Article::create($mName,$docId)) {
+				// 输出执行结果
+				ajax_success($text,$referer);
+			}
         }
     } else {
         if (!empty($docId)) {
@@ -287,7 +298,7 @@ function lazy_edit(){
         echo '<div id="__sorts" class="panel" style="display:none;">';
         echo '<div class="head"><strong>'.t('article/select').'</strong><a href="javascript:;" onclick="$(\'#__sorts\').toggle();"></a></div><div class="body">';
         echo '<a href="javascript:;" onclick="$(this).setSortId();" value="0" label="'.t('article/select').'">--- '.t('article/nosort').' ---</a>';
-        echo Content_Article::getSortListByParentId($model['modelid'],$sortid);
+        echo Content_Sort::getSortListByParentId($model['modelid'],$sortid);
         echo '</div></div><input name="sortid" type="hidden" id="sortid" value="'.$sortid.'" /><script type="text/javascript">$(\'#__sorts a[value='.$sortid.']\').setSortId();</script></span></p>';
     }
 

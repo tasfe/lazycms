@@ -92,7 +92,7 @@ class Content_Model{
         foreach ($p2 as $field) {
             $fields[] = $field->ename;
         }
-        $fields = array_merge($fields,array('id','sortid','order','date','hits','path','digg','passed','userid','description'));
+        $fields = array_merge($fields,array('id','sortid','order','date','hits','path','digg','passed','userid','keywords','description'));
         return array_diff($p1,$fields);
     }
     /**
@@ -122,6 +122,21 @@ class Content_Model{
             return $rs;
         }
         return array();
+    }
+	/**
+     * 根据分类ID取得关联模型的数据
+     *
+     * @param  integer  $p1     分类ID
+     * @param  string   $p2     数据库字段
+     * @return array
+     */
+    function getModelsBySortId($p1,$p2='modelid'){
+        $db = get_conn(); $R = array();
+        $res = $db->query("SELECT * FROM `#@_content_sort_join` AS `csm` LEFT JOIN `#@_content_model` AS `cm` ON `csm`.`modelid`=`cm`.`modelid` WHERE `cm`.`modelstate`=1 AND `csm`.`sortid`=?;",$p1);
+        while ($rs = $db->fetch($res)) {
+            $R[] = $rs[$p2];
+        }
+        return $R;
     }
     /**
      * 根据模型类型，取得多个模型的数据

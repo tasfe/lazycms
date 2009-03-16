@@ -90,9 +90,9 @@ function lazy_main(){
             }
         }
         if ($length==0) {
-            $ds->td("cklist(K[0]) + K[0] + ') ' + (K[2]?icon('b3',K[1]):icon('b4','javascript:alert(\'create\');')) + '<a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[1] + '</a>'");
+            $ds->td("cklist(K[0]) + K[0] + ') ' + (K[2]?icon('b3',K[1]):icon('b4','javascript:;','\$(this).ajaxLink(\'create\',' + K[0] + ');')) + '<a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[1] + '</a>'");
         } else {
-            $ds->td("(K[2]?icon('b3',K[1]):icon('b4','javascript:alert(\'create\');')) + K[1]");
+            $ds->td("(K[2]?icon('b3',K[1]):icon('b4','javascript:;','\$(this).ajaxLink(\'create\',' + K[0] + ');')) + (K[2]?'<a href=\"' + K[1] + '\" target=\"_blank\">' + K[1] + '</a>':K[1])");
         }
         $ds->td("K[3]");
         $ds->td("K[4]");
@@ -109,7 +109,7 @@ function lazy_main(){
             foreach ($fields as $field=>$label) {
                 $K.= ",'".t2js(h2c($rs[$field]))."'";
             }
-            $ds->tbody("E(".$rs['id'].",'".SITE_BASE.$rs['path']."',".(is_file(LAZY_PATH.$rs['path'])?1:0).",".$rs['hits'].",".$rs['digg'].",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});");
+            $ds->tbody("E(".$rs['id'].",'".SITE_BASE.$rs['path']."',".(is_file(LAZY_PATH.'/'.$rs['path'])?1:0).",".$rs['hits'].",".$rs['digg'].",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});");
         }
         $ds->close();
         $ds->display();
@@ -121,11 +121,23 @@ function lazy_set(){
     $submit = isset($_POST['submit']) ? strtolower($_POST['submit']) : null;
     $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
     $model  = isset($_GET['model'])?$_GET['model']:null;
+	empty($lists) ? ajax_alert(t('onepage/alert/noselect')) : null ;
     switch($submit){
+		case 'create':
+            if (Content_Onepage::create($model,$lists)) {
+                ajax_success(t('onepage/alert/create'),1);
+            }
+            break;
         case 'delete':
-            empty($lists) ? ajax_alert(t('onepage/alert/noselect')) : null ;
             $table  = Content_Model::getDataTableName($model);
             $jtable = Content_Model::getJoinTableName($model);
+            // 删除文件
+            $result = $db->query("SELECT * FROM `{$table}` WHERE `id` IN({$lists});");
+            while ($rs = $db->fetch($result)) {
+                $file = LAZY_PATH.'/'.$rs['path'];
+                if (is_file($file)){ unlink($file); }
+            }
+            // 删除记录
             $db->delete($table,"`id` IN({$lists})");
             $db->delete($jtable,array("`tid` IN({$lists})"));
             ajax_success(t('onepage/alert/delete'),1);
@@ -146,8 +158,6 @@ function lazy_edit(){
     $title  = (empty($docId) ? t('system::add') : t('system::edit')).$model['modelname'];
     $path   = isset($_POST['path']) ? $_POST['path'] : null;
     $table  = Content_Model::getDataTableName($model['modelename']);
-    $jtable = Content_Model::getJoinTableName($model['modelename']);
-    $sortids = isset($_POST['sortids']) ? $_POST['sortids'] : null;
     $description = isset($_POST['description']) ? $_POST['description'] : null;
 
     // 加载字段解析类
@@ -226,8 +236,12 @@ function lazy_edit(){
                 $key->save($docId,$keywords,c('GET_RELATED_KEY'));
             }
             $referer = isset($_POST['__referer'])?$_POST['__referer']:PHP_FILE;
-            // 输出执行结果
-            ajax_success($text,$referer);
+            $referer = strpos($referer,basename(PHP_FILE))!==false?$referer:PHP_FILE;
+            // 生成页面
+			if (Content_Onepage::create($mName,$docId)) {
+				// 输出执行结果
+				ajax_success($text,$referer);
+			}
         }
     } else {
         if (!empty($docId)) {

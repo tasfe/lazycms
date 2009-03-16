@@ -196,6 +196,7 @@ return array(
         ),
         'alert'     => array(
             'noselect'  => '请选择一个文档',
+			'create'    => '生成文档成功',
             'delete'    => '删除文档成功',
             'add'       => '添加文档成功',
             'edit'      => '编辑文档成功',
@@ -244,7 +245,7 @@ return array(
                 'ename' => '
                     |必填，用处很多了，以下字段名已被系统使用：
                     |(id,sortid,order,date,hits,digg,passed,userid,path,
-                    |description,isdel)
+                    |keywords,description,isdel)
                 ',
                 'rules' => '
                     |可以有多个规则，使用“分号”分割。
