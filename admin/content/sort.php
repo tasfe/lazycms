@@ -48,7 +48,7 @@ function lazy_main(){
     $ds = new Recordset();
     $ds->create("SELECT * FROM `#@_content_sort` WHERE `parentid`=0 ORDER BY `sortid` ASC");
     $ds->action = PHP_FILE."?action=set";
-    $ds->but = $ds->button();
+    $ds->but = $ds->button('create:生成');
     $ds->td("cklist(K[0]) + icon('d'+K[4]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&sortid=' + K[0] + '\">' + K[1] + '</a>'");
     $ds->td("K[5]");
     $ds->td("K[6]");
@@ -71,6 +71,10 @@ function lazy_set(){
     $submit = isset($_POST['submit']) ? strtolower($_POST['submit']) : null;
     $lists  = isset($_POST['lists']) ? $_POST['lists'] : null;
     switch($submit){
+        case 'create':
+            empty($lists) ? ajax_alert(t('sort/alert/noselect')) : null ;
+            var_dump($lists);exit;
+            break;
         case 'delete':
             empty($lists) ? ajax_alert(t('sort/alert/noselect')) : null ;
             // 取得要删除分类的所有子类，进行删除
@@ -95,7 +99,7 @@ function lazy_set(){
             break;
         case 'getsub':
             $space  = isset($_POST['space']) ? $_POST['space'] : 1;
-            $result = $db->query("SELECT * FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` ASC",$lists);
+            $result = $db->query("SELECT * FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` DESC",$lists);
             $array  = array();
             while ($rs = $db->fetch($result)) {
                 $isSub = Content_Sort::isSubSort($rs['sortid']);

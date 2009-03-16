@@ -33,7 +33,7 @@ class Content_Onepage{
     function create($modelname,$ids){
         import('system.keywords');  $key = new Keywords($modelname);
         import('system.parsetags'); $tag = new ParseTags();
-        $db     = get_conn(); $template = 'default.html';
+        $db     = get_conn(); $template = c('TEMPLATE_DEFAULT');
         $table  = Content_Model::getDataTableName($modelname);
         $model  = Content_Model::getModelByEname($modelname);
         $fields = json_decode($model['modelfields']);

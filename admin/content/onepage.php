@@ -60,7 +60,7 @@ function lazy_main(){
             echo '<p><label>'.t('onepage/fields').':</label><span id="fields"></span></p>';
             echo '<p><label>&nbsp;</label><button type="submit">'.t('onepage/view').'</button></p>';
         } else {
-            echo '<p class="empty"><strong>'.t('nomodel').'</strong> <a href="model.php">&gt;&gt;&gt;</a></p>';
+            echo '<p class="empty"><strong>'.t('nomodel').'</strong> <a href="model.php?action=edit&type=page">&gt;&gt;&gt;</a></p>';
         }
         echo '</div></fieldset>';
         echo '</form>'.$textarea;

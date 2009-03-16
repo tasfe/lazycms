@@ -66,23 +66,26 @@ class Content_Article{
      * 根据分类id取得模板文件
      * 
      * @param int $p1
+     * @param int $p2   取得值类型：all,sort,page
      * @return array
      */
-    function getTemplateBySortId($p1){
+    function getTemplateBySortId($p1,$p2='all'){
         $db  = get_conn(); $R = array();
         $res = $db->query("SELECT `sortemplate`,`pagetemplate` FROM `#@_content_sort` WHERE `sortid`=?;",$p1);
         if ($rs = $db->fetch($res,0)) {
             $R['sort'] = $rs[0];
             $R['page'] = $rs[1];
-            // 使用模型设置的模板
-            if (empty($R['sort'])) {
-                $R['sort'] = $db->result("SELECT `b`.`sortemplate` FROM `#@_content_sort_join` AS `a` LEFT JOIN `#@_content_model` AS `b` ON `a`.`modelid`=`b`.`modelid` WHERE `a`.`sortid`=".DB::quote($p1)." LIMIT 0,1;");
-            }
-            if (empty($R['page'])) {
-                $R['page'] = $db->result("SELECT `b`.`pagetemplate` FROM `#@_content_sort_join` AS `a` LEFT JOIN `#@_content_model` AS `b` ON `a`.`modelid`=`b`.`modelid` WHERE `a`.`sortid`=".DB::quote($p1)." LIMIT 0,1;");
-            }
         }
-        return $R;
+        // 使用模型设置的模板
+        if (empty($R['sort']) && instr('all,sort',$p2)) {
+            $sort = $db->result("SELECT `b`.`sortemplate` FROM `#@_content_sort_join` AS `a` LEFT JOIN `#@_content_model` AS `b` ON `a`.`modelid`=`b`.`modelid` WHERE `a`.`sortid`=".DB::quote($p1)." LIMIT 0,1;");
+            $R['sort'] = empty($sort)?c('TEMPLATE_DEFAULT'):$sort;
+        }
+        if (empty($R['page']) && instr('all,page',$p2)) {
+            $page = $db->result("SELECT `b`.`pagetemplate` FROM `#@_content_sort_join` AS `a` LEFT JOIN `#@_content_model` AS `b` ON `a`.`modelid`=`b`.`modelid` WHERE `a`.`sortid`=".DB::quote($p1)." LIMIT 0,1;");
+            $R['page'] = empty($page)?c('TEMPLATE_DEFAULT'):$page;
+        }
+        return $p2=='all' ? $R : (string)$R[$p2];
     }
     /**
      * 生成文章
@@ -100,8 +103,8 @@ class Content_Article{
         $result = $db->query("SELECT * FROM `{$table}` WHERE `id` IN({$ids});");
         while ($rs = $db->fetch($result)) {
             // 取得模板地址
-            $template = Content_Article::getTemplateBySortId($rs['sortid']);print_r($template);
-            $tmplpath = LAZY_PATH.'/'.c('TEMPLATE').'/'.$template['page'];
+            $template = Content_Article::getTemplateBySortId($rs['sortid'],'page');
+            $tmplpath = LAZY_PATH.'/'.c('TEMPLATE').'/'.$template;
             $tag->loadHTML($tmplpath);
             // 替换模板中的标签
             $tag->clear();

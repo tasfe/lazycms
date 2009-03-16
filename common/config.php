@@ -32,6 +32,7 @@ return array(
     'RSS_NUMBER' => 30,
     'TEMPLATE'   => 'themes',
     'TEMPLATE_EXTS'   => 'htm,html,shtml',
+    'TEMPLATE_DEFAULT'=> 'default.html',
     'GET_RELATED_KEY' => '',
 
     /* 上传设置 */

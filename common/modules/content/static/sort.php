@@ -37,8 +37,7 @@ class Content_Sort{
         for ($i=0;$i<$p4;$i++) {
             $nbsp.= "&nbsp; ";
         }
-        $oby = $p3==0?'ASC':'DESC';
-        $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` {$oby};",$p3);
+        $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` ASC;",$p3);
         while ($rs = $db->fetch($res,0)) {
             if ($db->count("SELECT * FROM `#@_content_sort_join` WHERE `modelid`=".DB::quote($p1)." AND `sortid`=".DB::quote($rs[0]).";") == 0) {
                 $class = ' class="disabled"';

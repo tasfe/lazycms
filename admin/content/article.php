@@ -73,7 +73,7 @@ function lazy_main(){
             echo '<p><label>'.t('article/fields').':</label><span id="fields"></span></p>';
             echo '<p><label>&nbsp;</label><button type="submit">'.t('article/view').'</button></p>';
         } else {
-            echo '<p class="empty"><strong>'.t('nomodel').'</strong> <a href="model.php">&gt;&gt;&gt;</a></p>';
+            echo '<p class="empty"><strong>'.t('nomodel').'</strong> <a href="model.php?action=edit&type=list">&gt;&gt;&gt;</a></p>';
         }
         echo '</div></fieldset>';
         echo '</form>'.$textarea;
