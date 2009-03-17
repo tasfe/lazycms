@@ -162,3 +162,5 @@ a:hover   { text-decoration: underline; }
 
 /* footer */
 #footer{ padding:10px; text-align:center; }
+
+#process{ width:200px; position:absolute; right:0; bottom:0; }

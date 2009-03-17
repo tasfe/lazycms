@@ -295,7 +295,14 @@ class System{
         $GLOBALS['_endTime'] = microtime(true);
         $execTime = ($GLOBALS['_endTime']-$GLOBALS['_beginTime']);
         $hl.= sprintf('</div><div id="footer"><a href="http://www.lazycms.net" target="_blank">Copyright &copy; LazyCMS.net All Rights Reserved.</a><br/>Processed in %f second(s)</div>',$execTime);
-        $hl.= '</body></html>'; echo $hl;
+        /*
+        $hl.= '<div id="process" class="panel">';
+        $hl.= '<div class="head" style="width:195px"><strong>进程列表</strong><a href="javascript:;" onclick="$().remove();">&nbsp;</a></div>';
+        $hl.= '<div class="body">dddddd</div>';
+        $hl.= '</div>';
+        */
+        $hl.= '</body></html>';
+        echo $hl;
     }
     /**
      * 中文分词

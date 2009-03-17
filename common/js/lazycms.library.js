@@ -458,6 +458,9 @@ function LoadScript(p,c){
                 case 'REDIRECT':// 跳转
                     $.redirect(JSON.DATA.URL);
                     break;
+				case 'PROCESS':
+
+					break;
 				default:
 					return JSON.DATA;
 					break;
