@@ -130,11 +130,17 @@ class Content_Model{
      * @param  string   $p2     数据库字段
      * @return array
      */
-    function getModelsBySortId($p1,$p2='modelid'){
-        $db = get_conn(); $R = array();
+    function getModelsBySortId($p1,$p2=array('modelid')){
+        $db = get_conn(); $R = array(); $l = count($p2); $p2 = $l>1?$p2:array_pop($p2);
         $res = $db->query("SELECT * FROM `#@_content_sort_join` AS `csm` LEFT JOIN `#@_content_model` AS `cm` ON `csm`.`modelid`=`cm`.`modelid` WHERE `cm`.`modelstate`=1 AND `csm`.`sortid`=?;",$p1);
         while ($rs = $db->fetch($res)) {
-            $R[] = $rs[$p2];
+            if ($l > 1) {
+                foreach ($p2 as $f){
+                    $R[$f][] = $rs[$f];
+                }
+            } else {
+                $R[] = $rs[$p2];
+            }
         }
         return $R;
     }
@@ -189,7 +195,9 @@ class Content_Model{
         $SQL.= "    `passed` TINYINT(1) DEFAULT '0',";
         $SQL.= "    `userid` INT(11) DEFAULT '0',";
         $SQL.= "    `path` VARCHAR(255),";
-        $SQL.= "    `description` VARCHAR(255){$sute}";
+        $SQL.= "    `description` VARCHAR(255),";
+        $SQL.= "    KEY `sortid` (`sortid`),";
+        $SQL.= "    UNIQUE (`path`) {$sute}";
         $SQL.= ") ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;";
         $db->exec($SQL);
         // 创建关联表
@@ -200,8 +208,7 @@ class Content_Model{
             `sid` INT(11) NOT NULL,
             `type` INT(11) NOT NULL,
             KEY `tid` (`tid`),
-            KEY `sid` (`sid`),
-            KEY `type` (`type`)
+            KEY `sid` (`sid`)
         ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");
         // 执行数据插入
         $db->insert('#@_content_model',$model);

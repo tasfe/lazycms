@@ -30,17 +30,17 @@ class Content_Onepage{
      * @param string $ids
      * @return bool
      */
-    function create($modelname,$ids){
-        import('system.keywords');  $key = new Keywords($modelname);
+    function createPage($modelename,$ids){
+        import('system.keywords');  $key = new Keywords($modelename);
         import('system.parsetags'); $tag = new ParseTags();
         $db     = get_conn(); $template = c('TEMPLATE_DEFAULT');
-        $table  = Content_Model::getDataTableName($modelname);
-        $model  = Content_Model::getModelByEname($modelname);
+        $table  = Content_Model::getDataTableName($modelename);
+        $model  = Content_Model::getModelByEname($modelename);
         $fields = json_decode($model['modelfields']);
         $result = $db->query("SELECT * FROM `{$table}` WHERE `id` IN({$ids});");
         while ($rs = $db->fetch($result)) {
             // 取得模板地址
-			$res = $db->query("SELECT `pagetemplate` FROM `#@_content_model` WHERE `modelename`=?;",$modelname);
+			$res = $db->query("SELECT `pagetemplate` FROM `#@_content_model` WHERE `modelename`=?;",$modelename);
 			if ($rs1 = $db->fetch($res,0)) { $template = $rs1[0]; }
             $tmplpath = LAZY_PATH.'/'.c('TEMPLATE').'/'.$template;
             $tag->loadHTML($tmplpath);

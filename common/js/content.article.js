@@ -34,6 +34,8 @@
 			} else {
 				$('#fields').parents('p').show().end().html(inputs);
 			}
+			// 执行半记忆操作
+			$(document).SemiMemory();
 	};
 	$.fn.toggleSorts = function(){
 		var sorts = $('#__sorts').css({width:'300px',left:this.offset().left,top:this.offset().top,'z-index':100,position:'absolute'}).toggle();

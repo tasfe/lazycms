@@ -143,7 +143,7 @@ function lazy_set(){
     empty($lists) ? ajax_alert(t('article/alert/noselect')) : null ;
     switch($submit){
         case 'create':
-            if (Content_Article::create($model,$lists)) {
+            if (Content_Article::createPage($model,$lists)) {
                 ajax_success(t('article/alert/create'),1);
             }
             break;
@@ -260,7 +260,7 @@ function lazy_edit(){
             $referer = isset($_POST['__referer'])?$_POST['__referer']:PHP_FILE;
 			$referer = strpos($referer,basename(PHP_FILE))!==false?$referer:PHP_FILE;
             // 生成页面
-			if (Content_Article::create($mName,$docId)) {
+			if (Content_Article::createPage($mName,$docId)) {
 				// 输出执行结果
 				ajax_success($text,$referer);
 			}

@@ -48,7 +48,7 @@ function lazy_main(){
     $ds = new Recordset();
     $ds->create("SELECT * FROM `#@_content_sort` WHERE `parentid`=0 ORDER BY `sortid` ASC");
     $ds->action = PHP_FILE."?action=set";
-    $ds->but = $ds->button('create:生成');
+    $ds->but = $ds->button('create:生成|recreate:重新生成');
     $ds->td("cklist(K[0]) + icon('d'+K[4]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&sortid=' + K[0] + '\">' + K[1] + '</a>'");
     $ds->td("K[5]");
     $ds->td("K[6]");
@@ -57,10 +57,14 @@ function lazy_main(){
     $ds->open();
     $ds->thead = '<tr><th>ID) '.t('sort/name').'</th><th>'.t('sort/model').'</th><th>'.t('sort/count').'</th><th>'.t('sort/path').'</th><th>'.t('system::Manage').'</th></tr>';
     while ($rs = $ds->result()) {
-        $isSub = Content_Sort::isSubSort($rs['sortid']);
-        $model = implode(',',Content_Model::getModelsBySortId($rs['sortid'],'modelname'));
-        $count = Content_Article::count($rs['sortid'],implode(',',Content_Model::getModelsBySortId($rs['sortid'],'modelename')));
-        $ds->tbody("E(".$rs['sortid'].",'".t2js(h2c($rs['sortname']))."','".t2js(h2c(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($model)?'&nbsp;':$model)."',{$count});\$(function(){\$('#list_".$rs['sortid']."').addSub(".$rs['sortid'].",1,{$isSub});});");
+        $isSub = Content_Sort::isSubSort($rs['sortid']); $modelname = $modelename = null;
+        $model = Content_Model::getModelsBySortId($rs['sortid'],array('modelname','modelename'));
+        if (!empty($model)) {
+            $modelname  = implode(',',$model['modelname']);
+            $modelename = implode(',',$model['modelename']);
+        }
+        $count = Content_Article::count($rs['sortid'],$modelename);
+        $ds->tbody("E(".$rs['sortid'].",'".t2js(h2c($rs['sortname']))."','".t2js(h2c(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($modelname)?'&nbsp;':$modelname)."',{$count});\$(function(){\$('#list_".$rs['sortid']."').addSub(".$rs['sortid'].",1,{$isSub});});");
     }
     $ds->close();
     $ds->display();
@@ -73,7 +77,10 @@ function lazy_set(){
     switch($submit){
         case 'create':
             empty($lists) ? ajax_alert(t('sort/alert/noselect')) : null ;
-            var_dump($lists);exit;
+            $data    = isset($_POST['data']) ? unserialize($_POST['data']) : null;
+            $result  = Content_Article::createList($lists,true,$data);
+            $percent = $result['make']/$result['total']*100; // 进度条
+            ajax_process($percent,serialize($result));
             break;
         case 'delete':
             empty($lists) ? ajax_alert(t('sort/alert/noselect')) : null ;
@@ -102,13 +109,17 @@ function lazy_set(){
             $result = $db->query("SELECT * FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` DESC",$lists);
             $array  = array();
             while ($rs = $db->fetch($result)) {
-                $isSub = Content_Sort::isSubSort($rs['sortid']);
-                $model = implode(',',Content_Model::getModelsBySortId($rs['sortid'],'modelname'));
-                $count = Content_Article::count($rs['sortid'],implode(',',Content_Model::getModelsBySortId($rs['sortid'],'modelename')));
+                $isSub = Content_Sort::isSubSort($rs['sortid']); $modelname = $modelename = null;
+                $model = Content_Model::getModelsBySortId($rs['sortid'],array('modelname','modelename'));
+                if (!empty($model)) {
+                    $modelname  = implode(',',$model['modelname']);
+                    $modelename = implode(',',$model['modelename']);
+                }
+                $count = Content_Article::count($rs['sortid'],$modelename);
                 $arr[] = array(
                     'id'    => $rs['sortid'],
                     'sub'   => $isSub,
-                    'code'  => "R(".$rs['sortid'].",'".t2js(h2c($rs['sortname']))."','".t2js(h2c(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($model)?'&nbsp;':$model)."',{$count});"
+                    'code'  => "R(".$rs['sortid'].",'".t2js(h2c($rs['sortname']))."','".t2js(h2c(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($modelname)?'&nbsp;':$modelname)."',{$count});"
                 );
             }
             ajax_result($arr);

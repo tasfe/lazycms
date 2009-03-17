@@ -128,3 +128,20 @@ CREATE TABLE IF NOT EXISTS `lazy_system_admin` (
 INSERT INTO `lazy_system_admin` (`adminid`, `adminname`, `adminpass`, `adminkey`, `adminmail`, `purview`, `language`, `islocked`) VALUES 
 (1, 'admin', '5e73b67753102a348f66dc9dba693a62', '4ef9f9', 'mylukin@gmail.com', 'system::admins,system::modules,system::settings,system::sysinfo,content::label,content::create,content::onepage,content::article,content::sort,content::model', 'zh-cn', 0),
 (2, 'test', '5ab6585a51a23ecab1af50bcde1911e4', 'd9a6e0', 'lukin@sohu.com', 'content::label,content::create,content::onepage,content::article,content::sort,content::model,system::admins,system::modules,system::settings,system::sysinfo', 'zh-cn', 0);
+
+--
+-- 表的结构 `lazy_system_create`
+--
+
+CREATE TABLE IF NOT EXISTS `lazy_system_create` (
+  `id` int(11) NOT NULL auto_increment,
+  `model` varchar(200) default NULL,
+  `sortid` int(11) default '0',
+  `dataid` int(11) default '0',
+  `type` tinyint(1) NOT NULL default '0' COMMENT '0:页面,1:列表',
+  PRIMARY KEY  (`id`),
+  KEY `sid` (`model`),
+  KEY `tid` (`dataid`),
+  KEY `sortid` (`sortid`),
+  KEY `type` (`type`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

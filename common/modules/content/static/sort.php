@@ -70,7 +70,7 @@ class Content_Sort{
         $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` ASC;",$p1);
         while ($rs = $db->fetch($res,0)) {
             if ((int)$p3 != (int)$rs[0]) {
-                $model = is_bool($p3)?null:' models="'.implode(',',Content_Model::getModelsBySortId($rs[0],'modelid')).'"';
+                $model = is_bool($p3)?null:' models="'.implode(',',Content_Model::getModelsBySortId($rs[0])).'"';
                 $selected = ((int)$p4 == (int)$rs[0]) ? ' selected="selected"' : null;
                 $R.= '<option'.$model.' value="'.$rs[0].'"'.$selected.'>'.$nbsp.'├'.$rs[1].'</option>';
                 if ((int)$db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {

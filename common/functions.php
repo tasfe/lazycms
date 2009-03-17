@@ -194,6 +194,26 @@ function but($p1){
     return $R;
 }
 /**
+ * 返回当前 Unix 时间戳和微秒数
+ *
+ * @return float
+ */
+function microtime_float(){
+    list($usec, $sec) = explode(" ", microtime());
+    return ((float)$usec + (float)$sec);
+}
+/**
+ * 判断是否超出最大执行时间
+ *
+ * @param  float    $p1   最大执行时间
+ * @return bool
+ */
+function isOverMaxTime($execTime){
+    if (floatval(microtime_float()-$GLOBALS['_beginTime']) >= floatval($execTime)) {
+        return true;
+    }
+}
+/**
  * 获取当前时间戳
  *
  * @return integer
@@ -434,6 +454,14 @@ function echo_json($p1,$p2){
         'DATA' => $p2,
     )));
 }
+
+function ajax_process($p1,$p2){
+    echo_json('PROCESS',array(
+        'PERCENT' => $p1,
+        'DATA'    => $p2,
+    ));
+}
+
 /**
  * alert 警告
  *

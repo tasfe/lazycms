@@ -18,9 +18,6 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-// 记录开始运行时间
-$GLOBALS['_beginTime'] = microtime(true);
-
 // 判断PHP版本不能低于5.0
 !version_compare(PHP_VERSION, '4.3.0', '<') or die('PHP version lower than 4.3.0, upgrade PHP!<br/>&lt;<a href="http://php.net/downloads.php" target="_blank">http://php.net/downloads.php</a>&gt;');
 
@@ -40,6 +37,9 @@ require COM_PATH."/defines.php";
 
 // 加载系统函数库
 require COM_PATH.'/functions.php';
+
+// 记录开始运行时间
+$GLOBALS['_beginTime'] = microtime_float();
 
 // 加载系统类
 import('system.db');
