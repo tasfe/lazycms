@@ -77,10 +77,12 @@ function lazy_set(){
     switch($submit){
         case 'create':
             empty($lists) ? ajax_alert(t('sort/alert/noselect')) : null ;
-            $data    = isset($_POST['data']) ? unserialize($_POST['data']) : null;
-            $result  = Content_Article::createList($lists,true,$data);
-            $percent = $result['make']/$result['total']*100; // 进度条
-            ajax_process($percent,serialize($result));
+            $result = Content_Article::createList($lists,true);
+            ajax_process($result['make'],$result['total'],array(
+                'submit' => $submit,
+                'lists'  => $result['id'],
+                'process'=> true,
+            ));
             break;
         case 'delete':
             empty($lists) ? ajax_alert(t('sort/alert/noselect')) : null ;

@@ -18,6 +18,8 @@
  * +---------------------------------------------------------------------------+
  */
 
+window.PROCESS = new Array();
+
 // 设置系统CSS
 $.setStyle();
 
@@ -79,7 +81,8 @@ $(document).ready(function(){
 	*/
     // 显示帮助
     $('[help]').help();
-    
+	// 执行任务进程
+    $('body').process();
 });
 
 /*
@@ -296,6 +299,57 @@ $(document).ready(function(){
             });
         }
     }
+	// 任务进程
+	$.fn.process = function(){
+		var This = this;
+		var process = $('<dl id="process"><dt><strong>进程列表</strong><a href="javascript:;"></a></dt></dl>').css({display:'none'});
+		$.post(common() + '/modules/system/gateway.php',{action:'create',submit:'process'},function(data){
+			if (JSON = $.result(data)) {
+				// 有数据，创建进程列表
+				var length = JSON.length;
+				if (length) {
+					var percent = 0; var DATA = {};
+					for (var i=0;i<length;i++) {
+						// 追加到队列
+						DATA = JSON[i]; window.PROCESS.push(DATA);
+						// 任务没有达到100%的情况下才显示
+						if (parseInt(DATA.OVER) < parseInt(DATA.TOTAL)) {
+							if (DATA.OVER==0 && DATA.TOTAL==0) { DATA.TOTAL = DATA.OVER = 1; } percent = DATA.OVER/DATA.TOTAL;
+							process.append('<dd id="' + DATA.PARAM.lists + '"><div class="process"><div style="width:' + (percent*180).toFixed(2) + 'px"></div><span>' + (percent*100).toFixed(2) + '%</span></div></dd>');
+						}
+					}
+					// 有任务，显示
+					if ($('dd',process).size()>0) {
+						process.slideDown('fast');
+					}
+					// 执行进程队列
+					$.execProcess();
+				}
+			}
+		});
+		// 添加到页面
+		process.appendTo(This);
+	}
+	// 执行进程
+	$.execProcess = function(){
+		// 先删除进度到100%的任务
+		var DATA = window.PROCESS.shift();
+		if (typeof DATA == 'undefined') { return ; }
+		if (parseInt(DATA.OVER) >= parseInt(DATA.TOTAL)) {
+			$.post(common() + '/modules/system/gateway.php',{action:'create',submit:'delete',id:DATA.PARAM.lists},function(data){
+				if (JSON = $.result(data)) {
+					// 再次执行当前队列进程
+					$.execProcess();
+				}
+			});
+			// 发现进度到100%，先退出
+			return ;
+		}
+		// 执行进程
+		$.post(common() + '/modules/system/gateway.php?action=create',DATA.PARAM,function(data){
+			$.result(data);
+		});
+	}
 })(jQuery);
 
 

@@ -459,7 +459,45 @@ function LoadScript(p,c){
                     $.redirect(JSON.DATA.URL);
                     break;
 				case 'PROCESS':
+					if (JSON.DATA.OVER==0 && JSON.DATA.TOTAL==0) { JSON.DATA.TOTAL = JSON.DATA.OVER = 1; }
+					var DL_PROCESS = $('#process');
+					var PARAMS  = JSON.DATA.PARAM;
+					var percent = JSON.DATA.OVER/JSON.DATA.TOTAL;
+					var PROCESS = $('#'+PARAMS.lists);
+					var DD_PROCESS = $('dd',DL_PROCESS).size();
 
+					// 当前进度条存在
+					if (PROCESS.is('dd')) {
+						// 刷新进度
+						$('.process > div',PROCESS).css({width:(percent*180).toFixed(2) + 'px'});
+						$('.process > span',PROCESS).text((percent*100).toFixed(2) + '%');
+					} else {
+						// 创建进度条
+						DL_PROCESS.append('<dd id="' + PARAMS.lists + '"><div class="process"><div style="width:' + (percent*180).toFixed(2) + 'px"></div><span>' + (percent*100).toFixed(2) + '%</span></div></dd>');
+					}
+					// 
+					if (parseInt(JSON.DATA.OVER) < parseInt(JSON.DATA.TOTAL)) {
+						// 保证只有一条进程
+						if (typeof PARAMS.process != 'undefined' && DD_PROCESS > 0) {
+							window.PROCESS.push(JSON.DATA);
+							break;
+						} else if (typeof PARAMS.process != 'undefined') {
+							DL_PROCESS.slideDown('fast');
+						}
+						// 执行进程
+						$.post(common() + '/modules/system/gateway.php?action=create',PARAMS,function(data){
+							$.result(data);
+						});
+					} else {
+						// 移除进度条
+						setTimeout(function(){
+							PROCESS.remove();
+							$.execProcess();
+							if ($('dd',DL_PROCESS).size()==0 && window.PROCESS.length==0) {
+								DL_PROCESS.slideUp('fast');
+							}
+						},1000);
+					}
 					break;
 				default:
 					return JSON.DATA;

@@ -130,18 +130,25 @@ class Content_Article{
         return true;
     }
     // 生成列表
-    function createList($lists,$isMakePage=false,$data=null,$isReCreate=false){
-        $db = get_conn();
-        // 传入的数据为空，则生成数据
-        if (empty($data)) {
-            $R = array(
-                // 文章总数
-                'total' => 0,
-                // 已经生成的文章数
-                'make'  => 0,
-                // 程序最大运行时间
-                'execTime' => get_cfg_var('max_execution_time')-1
-            );
+    function createList($lists,$isMakePage=false,$isReCreate=false){
+        $db = get_conn(); $execTime = 5;
+        // 任务进程的唯一标识
+        if (strlen($lists)==32 && !validate($lists,6)) {
+            $id = $lists;
+        } else {
+            $id = md5($lists.$isMakePage.$isReCreate);
+        }
+        $R = array('id' => $id);
+        $res = $db->query("SELECT * FROM `#@_system_create` WHERE `id`=? LIMIT 0,1;",$id);
+        if ($rs = $db->fetch($res)) {
+            $R['total']   = $rs['total'];
+            $R['make']    = $rs['make'];
+            $R['models']  = unserialize($rs['models']);
+            //$R['sortids'] = $rs['sortids'];
+            $isMakePage   = $rs['makepage'];
+            $isReCreate   = $rs['recreate'];
+        } else {
+            $R['total'] = $R['make'] = 0;
             $sortids  = explode(',',$lists); 
             foreach ($sortids as $sortid) {
                 // 已关联模型
@@ -155,8 +162,21 @@ class Content_Article{
                     }
                 }
             }
-        } else {
-            $R = $data;
+            
+            // 创建生成进程
+            $db->insert('#@_system_create',array(
+                'id'     => $id,
+                'sortids'=> $lists,
+                'total'  => $R['total'],
+                'make'   => $R['make'],
+                'models' => serialize($R['models']),    
+                'startdate' => now(),
+                'enddate'   => now(),
+                'makepage'  => $isMakePage?1:0,
+                'recreate'  => $isReCreate?1:0,
+            ));
+            // 首次创建进程，退出，并提示已加入进程列表
+            return $R;
         }
 
         // 开始生成文章
@@ -168,38 +188,48 @@ class Content_Article{
                 foreach ($R['models'] as $model=>$sorts){
                     $sortids = implode(',',$sorts);
                     $table   = Content_Model::getDataTableName($model);
-                    $result  = $db->query("SELECT * FROM `{$table}` WHERE `id` NOT IN(SELECT `dataid` FROM `#@_system_create` WHERE `model`=?) AND `sortid` IN({$sortids});",$model);
+                    $result  = $db->query("SELECT * FROM `{$table}` WHERE `id` NOT IN(SELECT `dataid` FROM `#@_system_create_logs` WHERE `model`=[model] AND `createid`=[id]) AND `sortid` IN({$sortids});",array('id'=>$id,'model'=>$model));
                     while ($rs = $db->fetch($result)) {
                         // 检查页面是否超时，如果超时则跳出循环；
-                        if (isOverMaxTime($R['execTime'])) {
+                        if (isOverMaxTime($execTime)) {
                             $isDo = false; break 1;
                         }                  
                         // 生成成功
                         if (Content_Article::createPage($model,$rs['id'])) {
                             // 记录已经生成的文件
-                            $db->insert('#@_system_create',array(
+                            $db->insert('#@_system_create_logs',array(
                                 'sortid'    => $rs['sortid'],
                                 'dataid'    => $rs['id'],    
                                 'model'     => $model,
-                                'type'      => 0,
+                                'createid'  => $id,
                             ));
                             // 生成一个减一
                             $R['make']++;
+                            // 更新已生成的文章数，防止意外关闭无法更新
+                            $db->update('#@_system_create',array('make' => $R['make']),"`id`='{$id}'");
+                            // 睡眠
+                            usleep(0.05 * 1000000);
                         }
                     }
                     // 所有记录循环完毕，退出
                     if ($isDo) {
-                        $isDo = false; unset($R['models'][$model]);
+                        $isDo = false; $R['make'] = $R['total'];
                     }
                 }
                 // 页面超时退出
-                if ($isDo || isOverMaxTime($R['execTime'])) {
+                if ($isDo || isOverMaxTime($execTime)) {
                     $isDo = false;
                 }
             } while ($isDo);
         } else {
             $R['make'] = $R['total'];
         }
+        // 现有任务进程信息
+        $db->update('#@_system_create',array(
+            'make'    => $R['make'],
+            'models'  => serialize($R['models']),
+            'enddate' => now(),
+        ),"`id`='{$id}'");
         // 文章都生成完啦，该生成文章列表啦！
         if ((int)$R['make'] == (int)$R['total']) {
             

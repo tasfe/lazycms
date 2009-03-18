@@ -454,11 +454,17 @@ function echo_json($p1,$p2){
         'DATA' => $p2,
     )));
 }
-
-function ajax_process($p1,$p2){
+/**
+ * 进度条
+ *
+ * @param int   $p1   已完成数
+ * @param mixed $p2   总数
+ */
+function ajax_process($p1,$p2,$p3){
     echo_json('PROCESS',array(
-        'PERCENT' => $p1,
-        'DATA'    => $p2,
+        'OVER'  => $p1,
+        'TOTAL' => $p2,
+        'PARAM' => $p3,
     ));
 }
 

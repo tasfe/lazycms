@@ -256,3 +256,45 @@ function lazy_explorer(){
         'BODY'  => $hl
     ));
 }
+// *** *** www.LazyCMS.net *** *** //
+function lazy_create(){
+    no_cache(); System::purview(); $db = get_conn();
+    $submit = isset($_POST['submit']) ? strtolower($_POST['submit']) : null;
+    switch($submit){
+        // 取得任务进程列表
+        case 'process':
+            $result = array();
+            $res = $db->query("SELECT * FROM `#@_system_create`;");
+            while ($rs = $db->fetch($res)) {
+                $result[] = array(
+                    'OVER'  => $rs['make'],
+                    'TOTAL' => $rs['total'],
+                    'PARAM' => array(
+                        'submit' => 'create',
+                        'lists'  => $rs['id'],
+                    )
+                );
+            }
+            ajax_result($result);
+            break;
+        // 执行任务进程
+        case 'create':
+            $lists = isset($_POST['lists']) ? $_POST['lists'] : null;
+            if (empty($lists)) { ajax_error(t('system::error/invalid')); }
+            $result = Content_Article::createList($lists);
+            ajax_process($result['make'],$result['total'],array(
+                'submit' => $submit,
+                'lists'  => $result['id'],
+            ));
+            break;
+        // 删除
+        case 'delete':
+            $id = isset($_POST['id']) ? $_POST['id'] : null;
+            if (!empty($id)) {
+                $db->delete('#@_system_create',"`id`=".DB::quote($id));
+                $db->delete('#@_system_create_logs',"`createid`=".DB::quote($id));
+            }
+            ajax_result(true);
+            break;
+    }
+}
