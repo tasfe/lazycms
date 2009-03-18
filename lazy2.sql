@@ -36,10 +36,6 @@ CREATE TABLE IF NOT EXISTS `lazy_content_model` (
   KEY `modelstate` (`modelstate`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
--- 
--- 导出表中的数据 `lazy_content_model`
--- 
-
 
 -- --------------------------------------------------------
 
@@ -58,10 +54,6 @@ CREATE TABLE IF NOT EXISTS `lazy_content_sort` (
   KEY `parentid` (`parentid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
--- 
--- 导出表中的数据 `lazy_content_sort`
--- 
-
 
 -- --------------------------------------------------------
 
@@ -78,11 +70,6 @@ CREATE TABLE IF NOT EXISTS `lazy_content_sort_join` (
   KEY `modelid` (`modelid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
--- 
--- 导出表中的数据 `lazy_content_sort_join`
--- 
-
-
 -- --------------------------------------------------------
 
 -- 
@@ -96,11 +83,6 @@ CREATE TABLE IF NOT EXISTS `lazy_keywords` (
   PRIMARY KEY  (`keyid`),
   UNIQUE KEY `keyword` (`keyword`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- 
--- 导出表中的数据 `lazy_keywords`
--- 
-
 
 -- --------------------------------------------------------
 
@@ -129,19 +111,43 @@ INSERT INTO `lazy_system_admin` (`adminid`, `adminname`, `adminpass`, `adminkey`
 (1, 'admin', '5e73b67753102a348f66dc9dba693a62', '4ef9f9', 'mylukin@gmail.com', 'system::admins,system::modules,system::settings,system::sysinfo,content::label,content::create,content::onepage,content::article,content::sort,content::model', 'zh-cn', 0),
 (2, 'test', '5ab6585a51a23ecab1af50bcde1911e4', 'd9a6e0', 'lukin@sohu.com', 'content::label,content::create,content::onepage,content::article,content::sort,content::model,system::admins,system::modules,system::settings,system::sysinfo', 'zh-cn', 0);
 
+
+-- --------------------------------------------------------
+
 --
 -- 表的结构 `lazy_system_create`
 --
 
 CREATE TABLE IF NOT EXISTS `lazy_system_create` (
+  `id` varchar(32) NOT NULL,
+  `total` int(11) NOT NULL default '0',
+  `make` int(11) NOT NULL default '0',
+  `startdate` int(11) NOT NULL,
+  `enddate` int(11) NOT NULL,
+  `makepage` tinyint(1) NOT NULL default '0',
+  `recreate` tinyint(1) NOT NULL default '0',
+  `models` text,
+  `state` tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  KEY `state` (`state`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `lazy_system_create_logs`
+--
+
+CREATE TABLE IF NOT EXISTS `lazy_system_create_logs` (
   `id` int(11) NOT NULL auto_increment,
   `model` varchar(200) default NULL,
-  `sortid` int(11) default '0',
-  `dataid` int(11) default '0',
-  `type` tinyint(1) NOT NULL default '0' COMMENT '0:页面,1:列表',
+  `sortid` int(11) NOT NULL default '0',
+  `dataid` int(11) NOT NULL default '0',
+  `createid` varchar(32) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `sid` (`model`),
   KEY `tid` (`dataid`),
   KEY `sortid` (`sortid`),
-  KEY `type` (`type`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  KEY `createid` (`createid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

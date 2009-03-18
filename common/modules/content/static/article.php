@@ -131,22 +131,24 @@ class Content_Article{
     }
     // 生成列表
     function createList($lists,$isMakePage=false,$isReCreate=false){
-        $db = get_conn(); $execTime = 5;
+        $db = get_conn(); $execTime = 5; $R = array();
         // 任务进程的唯一标识
         if (strlen($lists)==32 && !validate($lists,6)) {
-            $id = $lists;
+            $id = $lists; $R['alone'] = 0;
         } else {
             $id = md5($lists.$isMakePage.$isReCreate);
+            $R['alone'] = $db->count("SELECT * FROM `#@_system_create` WHERE `state`=1 LIMIT 0,1;");
         }
-        $R = array('id' => $id);
+        $R['id'] = $id;
         $res = $db->query("SELECT * FROM `#@_system_create` WHERE `id`=? LIMIT 0,1;",$id);
         if ($rs = $db->fetch($res)) {
             $R['total']   = $rs['total'];
             $R['make']    = $rs['make'];
             $R['models']  = unserialize($rs['models']);
-            //$R['sortids'] = $rs['sortids'];
             $isMakePage   = $rs['makepage'];
             $isReCreate   = $rs['recreate'];
+            // 更新状态为正在执行
+            $db->update('#@_system_create',array('state' => 1),"`id`='{$id}'");
         } else {
             $R['total'] = $R['make'] = 0;
             $sortids  = explode(',',$lists); 
@@ -162,11 +164,11 @@ class Content_Article{
                     }
                 }
             }
-            
+            // 总记录数为0,不加入到生成计划之内
+            if ((int)$R['total']==0){ $R['alone'] = 0; return $R; }
             // 创建生成进程
             $db->insert('#@_system_create',array(
                 'id'     => $id,
-                'sortids'=> $lists,
                 'total'  => $R['total'],
                 'make'   => $R['make'],
                 'models' => serialize($R['models']),    
@@ -178,7 +180,8 @@ class Content_Article{
             // 首次创建进程，退出，并提示已加入进程列表
             return $R;
         }
-
+        // 有进程正在执行，停止生成
+        if ((int)$R['alone'] > 0) { return $R; }
         // 开始生成文章
         if ($isMakePage) {
             // 循环生成文章
@@ -232,7 +235,8 @@ class Content_Article{
         ),"`id`='{$id}'");
         // 文章都生成完啦，该生成文章列表啦！
         if ((int)$R['make'] == (int)$R['total']) {
-            
+            $db->delete('#@_system_create',"`id`='{$id}'");
+            $db->delete('#@_system_create_logs',"`createid`='{$id}'");
         }
         // 生成完毕，返回结果
         return $R;

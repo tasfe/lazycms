@@ -314,6 +314,7 @@ $(document).ready(function(){
 						DATA = JSON[i]; window.PROCESS.push(DATA);
 						// 任务没有达到100%的情况下才显示
 						if (parseInt(DATA.OVER) < parseInt(DATA.TOTAL)) {
+							// 防止0整除
 							if (DATA.OVER==0 && DATA.TOTAL==0) { DATA.TOTAL = DATA.OVER = 1; } percent = DATA.OVER/DATA.TOTAL;
 							process.append('<dd id="' + DATA.PARAM.lists + '"><div class="process"><div style="width:' + (percent*180).toFixed(2) + 'px"></div><span>' + (percent*100).toFixed(2) + '%</span></div></dd>');
 						}
@@ -335,16 +336,6 @@ $(document).ready(function(){
 		// 先删除进度到100%的任务
 		var DATA = window.PROCESS.shift();
 		if (typeof DATA == 'undefined') { return ; }
-		if (parseInt(DATA.OVER) >= parseInt(DATA.TOTAL)) {
-			$.post(common() + '/modules/system/gateway.php',{action:'create',submit:'delete',id:DATA.PARAM.lists},function(data){
-				if (JSON = $.result(data)) {
-					// 再次执行当前队列进程
-					$.execProcess();
-				}
-			});
-			// 发现进度到100%，先退出
-			return ;
-		}
 		// 执行进程
 		$.post(common() + '/modules/system/gateway.php?action=create',DATA.PARAM,function(data){
 			$.result(data);

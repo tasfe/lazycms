@@ -78,10 +78,9 @@ function lazy_set(){
         case 'create':
             empty($lists) ? ajax_alert(t('sort/alert/noselect')) : null ;
             $result = Content_Article::createList($lists,true);
-            ajax_process($result['make'],$result['total'],array(
+            ajax_process($result['alone'],$result['make'],$result['total'],array(
                 'submit' => $submit,
                 'lists'  => $result['id'],
-                'process'=> true,
             ));
             break;
         case 'delete':

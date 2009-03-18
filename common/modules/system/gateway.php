@@ -282,7 +282,7 @@ function lazy_create(){
             $lists = isset($_POST['lists']) ? $_POST['lists'] : null;
             if (empty($lists)) { ajax_error(t('system::error/invalid')); }
             $result = Content_Article::createList($lists);
-            ajax_process($result['make'],$result['total'],array(
+            ajax_process($result['alone'],$result['make'],$result['total'],array(
                 'submit' => $submit,
                 'lists'  => $result['id'],
             ));

@@ -459,44 +459,54 @@ function LoadScript(p,c){
                     $.redirect(JSON.DATA.URL);
                     break;
 				case 'PROCESS':
+					var IS_CONTINUE = JSON.DATA.TOTAL==0?false:true;
+					// 重定义 [文档总数]和[已生成文档数]，防止出现0整除现象
 					if (JSON.DATA.OVER==0 && JSON.DATA.TOTAL==0) { JSON.DATA.TOTAL = JSON.DATA.OVER = 1; }
-					var DL_PROCESS = $('#process');
+					// 定义常用变量
 					var PARAMS  = JSON.DATA.PARAM;
 					var percent = JSON.DATA.OVER/JSON.DATA.TOTAL;
-					var PROCESS = $('#'+PARAMS.lists);
+					// 当前进度条对象
+					var SG_PROCESS = $('#'+PARAMS.lists);
+					// 进度列表对象
+					var DL_PROCESS = $('#process');
+					// 进度列表里面的进度条个数
 					var DD_PROCESS = $('dd',DL_PROCESS).size();
 
-					// 当前进度条存在
-					if (PROCESS.is('dd')) {
-						// 刷新进度
-						$('.process > div',PROCESS).css({width:(percent*180).toFixed(2) + 'px'});
-						$('.process > span',PROCESS).text((percent*100).toFixed(2) + '%');
+					// 当前进度条已添加到页面
+					if (SG_PROCESS.is('dd')) {
+						// 只刷新进度
+						$('.process > div',SG_PROCESS).css({width:(percent*180).toFixed(2) + 'px'});
+						$('.process > span',SG_PROCESS).text((percent*100).toFixed(2) + '%');
 					} else {
 						// 创建进度条
 						DL_PROCESS.append('<dd id="' + PARAMS.lists + '"><div class="process"><div style="width:' + (percent*180).toFixed(2) + 'px"></div><span>' + (percent*100).toFixed(2) + '%</span></div></dd>');
-					}
-					// 
-					if (parseInt(JSON.DATA.OVER) < parseInt(JSON.DATA.TOTAL)) {
-						// 保证只有一条进程
-						if (typeof PARAMS.process != 'undefined' && DD_PROCESS > 0) {
-							window.PROCESS.push(JSON.DATA);
-							break;
-						} else if (typeof PARAMS.process != 'undefined') {
+						// 显示进度列表
+						if (parseInt(JSON.DATA.ALONE) == 0) {
 							DL_PROCESS.slideDown('fast');
 						}
-						// 执行进程
+					}
+					// 当前进度没有执行完
+					if (parseInt(JSON.DATA.OVER) < parseInt(JSON.DATA.TOTAL)) {
+						// 保证只有一条进程
+						if (parseInt(JSON.DATA.ALONE) > 0) {
+							window.PROCESS.push(JSON.DATA); break;
+						}
+						// 循环提交执行进度
 						$.post(common() + '/modules/system/gateway.php?action=create',PARAMS,function(data){
 							$.result(data);
 						});
 					} else {
-						// 移除进度条
+						// 进度已经执行完毕，1.5秒后 移除进度条
 						setTimeout(function(){
-							PROCESS.remove();
-							$.execProcess();
+							// 移除当前进度条
+							$('#' + PARAMS.lists).remove();
+							// 继续执行队列
+							if (IS_CONTINUE) {$.execProcess(); }
+							// 判断进度列表里面是否还有为执行进度，没有则隐藏进度列表
 							if ($('dd',DL_PROCESS).size()==0 && window.PROCESS.length==0) {
 								DL_PROCESS.slideUp('fast');
 							}
-						},1000);
+						},1500);
 					}
 					break;
 				default:

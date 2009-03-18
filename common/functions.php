@@ -457,14 +457,17 @@ function echo_json($p1,$p2){
 /**
  * 进度条
  *
- * @param int   $p1   已完成数
- * @param mixed $p2   总数
+ * @param int $p1   正在执行的进程数
+ * @param int $p2   已生成文档数
+ * @param int $p3   总文档数
+ * @param int $p4   form 参数
  */
-function ajax_process($p1,$p2,$p3){
+function ajax_process($p1,$p2,$p3,$p4){
     echo_json('PROCESS',array(
-        'OVER'  => $p1,
-        'TOTAL' => $p2,
-        'PARAM' => $p3,
+        'ALONE' => $p1,
+        'OVER'  => $p2,
+        'TOTAL' => $p3,
+        'PARAM' => $p4,
     ));
 }
 
