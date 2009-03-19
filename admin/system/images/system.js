@@ -299,10 +299,16 @@ $(document).ready(function(){
             });
         }
     }
+	$.fn.Minimized = function(a){
+		var u = getURI();
+		var d = this.css('display');
+		//$.cookie('AJAX_PROCESS',d,{expires:365,path:});
+		this.slideToggle(a);
+	}
 	// 任务进程
 	$.fn.process = function(){
 		var This = this;
-		var process = $('<dl id="process"><dt><strong>进程列表</strong><a href="javascript:;"></a></dt></dl>').css({display:'none'});
+		var process = $('<dl id="process"><dt><strong>' + $.t('process') + '</strong><a href="javascript:;" onclick="$(\'#process > dd\').Minimized(\'fast\');"></a></dt></dl>').css({display:'none'});
 		$.post(common() + '/modules/system/gateway.php',{action:'create',submit:'process'},function(data){
 			if (JSON = $.result(data)) {
 				// 有数据，创建进程列表

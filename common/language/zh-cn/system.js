@@ -24,5 +24,6 @@ Language['save']		= '保存';
 Language['close']		= '关闭';
 Language['submit']		= '确认';
 Language['cancel']		= '取消';
+Language['process']		= '进程列表';
 Language['picture/preview']	= '图片预览';
 Language['confirm/delete']	= '确定要删除吗？';

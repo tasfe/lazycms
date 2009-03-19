@@ -124,7 +124,7 @@ class DB {
                         'db'    => $info[2],
                     );
                 } else {
-                    trigger_error(t('system:database/parseDSN'));
+                    trigger_error(t('system::database/parseDSN'));
                 }
                 break;
             // DSN format: mysql://root:123456@localhost:3306/lazy/lazycms
@@ -140,7 +140,7 @@ class DB {
                         'prefix'=> (!empty($info[9]) ? $info[9].'_' : null),
                     );
                 } else {
-                    trigger_error(t('system:database/parseDSN'));
+                    trigger_error(t('system::database/parseDSN'));
                 }
                 break;
         }

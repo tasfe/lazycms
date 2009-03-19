@@ -45,7 +45,7 @@ function lazy_main(){
     $sortids = array(2,4,5);
     for ($i=1;$i<=500;$i++) {
         $maxid = $db->max('id','#@_content_data_article');
-        $index  = mt_rand(0,2);
+        $index  = mt_rand(0,count($sortids)-1);
         $sortid = $sortids[$index];
         $db->insert('#@_content_data_article',array(
             'sortid' => $sortid,
