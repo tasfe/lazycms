@@ -198,7 +198,7 @@ function lazy_edit(){
             // 录入相关记录
             if (is_array($model)) {
                 foreach ($model as $modelid) {
-                    if ($db->count("SELECT * FROM `#@_content_sort_join` WHERE `sortid`=".DB::quote($sortid)." AND `modelid`=".DB::quote($modelid).";")==0) {
+                    if ($db->result("SELECT COUNT(*) FROM `#@_content_sort_join` WHERE `sortid`=".DB::quote($sortid)." AND `modelid`=".DB::quote($modelid).";")==0) {
                         $db->insert('#@_content_sort_join',array(
                             'sortid' => $sortid,
                             'modelid' => $modelid,

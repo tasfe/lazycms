@@ -237,8 +237,8 @@ function get_php_setting($p1){
  * @return string
  */
 function isok($p1){
-    return $p1 ? '<strong style="color:#009900;">'.t('system::ON').'</strong>' :
-                    '<strong style="color:#FF0000;">'.t('system::OFF').'</strong>';
+    return $p1 ? '<strong style="color:#009900;">'.t('system::on').'</strong>' :
+                    '<strong style="color:#FF0000;">'.t('system::off').'</strong>';
 }
 /**
  * 替换文件路径以网站根目录开始，防止暴露文件的真实地址

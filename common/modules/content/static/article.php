@@ -56,7 +56,7 @@ class Content_Article{
         $p3 = explode(',',$p2);
         foreach ($p3 as $v) {
             $table = Content_Model::getDataTableName($v);
-            $R = $R + $db->count("SELECT * FROM `{$table}` WHERE `sortid`=".DB::quote($p1).";");
+            $R = $R + $db->result("SELECT COUNT(*) FROM `{$table}` WHERE `sortid`=".DB::quote($p1).";");
         }
         return $R;
     }
@@ -148,27 +148,30 @@ class Content_Article{
                 $isDo = true;
                 // 遍历模型
                 foreach ($pro->models as $model=>$sorts){
-                    $result = $pro->fetchLogs($sorts,$model);
-                    while ($rs = $db->fetch($result)) {
-                        // 检查页面是否超时，如果超时则跳出循环；
-                        if (isOverMaxTime($execTime)) {
-                            $isDo = false; break 1;
-                        }                  
-                        // 生成成功
-                        if (Content_Article::createPage($model,$rs['id'])) {
-                            // 记录已经生成的文件
-                            $pro->insertLogs(array(
-                                'sortid'    => $rs['sortid'],
-                                'dataid'    => $rs['id'],    
-                                'model'     => $model,
-                                'createid'  => $pro->id,
-                            ));
-                            // 生成一个加一
-                            $pro->make++;
-                            // 更新已生成的文章数，防止意外关闭无法更新
-                            $pro->update();
-                            // 睡眠
-                            usleep(0.05 * 1000000);
+                    // 循环分类ID
+                    foreach ($sorts as $sortid) {
+                        // 取得当前分类下文档
+                        $result = $pro->fetchLogs($sortid,$model);
+                        while ($rs = $db->fetch($result)) {
+                            // 检查页面是否超时，如果超时则跳出循环；
+                            if (isOverMaxTime($execTime)) {
+                                $isDo = false; break 2;
+                            }
+                            // 生成成功
+                            if (Content_Article::createPage($model,$rs['id'])) {
+                                // 记录已经生成的文件
+                                $pro->insertLogs(array(
+                                    'dataid'    => $rs['id'],
+                                    'model'     => $model,
+                                    'createid'  => $pro->id,
+                                ));
+                                // 生成一个加一
+                                $pro->make++;
+                                // 更新已生成的文章数，防止意外关闭无法更新
+                                $pro->update();
+                                // 睡眠
+                                usleep(0.05 * 1000000);
+                            }
                         }
                     }
                     // 所有记录循环完毕，退出

@@ -168,7 +168,7 @@ class Keywords{
      */
     function _join($id,$keyid){
         // 如果关联不存在，则插入
-        $N = $this->_db->count("SELECT * FROM `{$this->_joinTable}` WHERE `tid`=".DB::quote($id)." AND `type`=0 AND `sid`=".DB::quote($keyid).";");
+        $N = $this->_db->result("SELECT COUNT(*) FROM `{$this->_joinTable}` WHERE `tid`=".DB::quote($id)." AND `type`=0 AND `sid`=".DB::quote($keyid).";");
         return ((int)$N>0) ? true : $this->_db->insert($this->_joinTable,array(
             'tid'  => $id,
             'sid'  => $keyid,
@@ -192,7 +192,7 @@ class Keywords{
         } else {
             $keyid = $keywords;
             return $this->_db->update('#@_keywords',array(
-                'keysum' => $this->_db->count("SELECT * FROM `{$this->_joinTable}` WHERE `sid`=".DB::quote($keyid)." AND `type`=0;")
+                'keysum' => $this->_db->result("SELECT COUNT(*) FROM `{$this->_joinTable}` WHERE `sid`=".DB::quote($keyid)." AND `type`=0;")
             ),DB::quoteInto('`keyid` = ?',$keyid));    
         }
     }

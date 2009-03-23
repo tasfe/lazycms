@@ -32,8 +32,7 @@ CREATE TABLE IF NOT EXISTS `lazy_content_model` (
   `modeltype` varchar(20) default NULL COMMENT '模型类型',
   `modelstate` tinyint(1) default '1' COMMENT '1:启用',
   PRIMARY KEY  (`modelid`),
-  UNIQUE KEY `modelename` (`modelename`),
-  KEY `modelstate` (`modelstate`)
+  UNIQUE KEY `modelename` (`modelename`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 
@@ -128,8 +127,7 @@ CREATE TABLE IF NOT EXISTS `lazy_system_create` (
   `models` text,
   `state` tinyint(1) NOT NULL default '0',
   `others` text COMMENT '其他字段',
-  PRIMARY KEY  (`id`),
-  KEY `state` (`state`)
+  PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
@@ -146,8 +144,5 @@ CREATE TABLE IF NOT EXISTS `lazy_system_create_logs` (
   `dataid` int(11) NOT NULL default '0',
   `createid` varchar(32) NOT NULL,
   PRIMARY KEY  (`id`),
-  KEY `sid` (`model`),
-  KEY `tid` (`dataid`),
-  KEY `sortid` (`sortid`),
-  KEY `createid` (`createid`)
+  KEY `dataid` (`dataid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

@@ -43,7 +43,7 @@ function lazy_main(){
 <p>对于这种建议，北京住房公积金管理中心回应说，目前还没有下调贷款利率、上调存款利率的打算，但可以考虑。 同时，公积金中心表示，为了提高公积金利用率，今年北京计划发放住房公积金贷款126亿元，这一数字比去年的实际放贷额提高了12%。</p>
 <p>商报记者 齐琳</p>';
     $sortids = array(2,4,5);
-    for ($i=1;$i<=500;$i++) {
+    for ($i=1;$i<=40000;$i++) {
         $maxid = $db->max('id','#@_content_data_article');
         $index  = mt_rand(0,count($sortids)-1);
         $sortid = $sortids[$index];

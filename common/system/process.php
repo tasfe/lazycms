@@ -56,7 +56,7 @@ class Process{
             $this->id = $ids;
         } else {
             $this->id = md5($ids);
-            $this->_alone = $this->_db->count("SELECT * FROM `#@_system_create` WHERE `state`=1 LIMIT 0,1;");
+            $this->_alone = $this->_db->result("SELECT COUNT(*) FROM `#@_system_create` WHERE `state`=1 LIMIT 0,1;");
         }
         // 设置开始时间
         $this->_beginTime = $GLOBALS['_beginTime'];
@@ -174,14 +174,13 @@ class Process{
     /**
      * 取得记录
      *
-     * @param string $sorts
+     * @param string $sortid
      * @param string $model
      * @return resource
      */
-    function fetchLogs($sorts,$model){
-        $sortids = implode(',',$sorts);
+    function fetchLogs($sortid,$model){
         $table   = Content_Model::getDataTableName($model);
-        $result  = $this->_db->query("SELECT * FROM `{$table}` WHERE `id` NOT IN(SELECT `dataid` FROM `#@_system_create_logs` WHERE `model`=[model] AND `createid`=[id]) AND `sortid` IN({$sortids});",array('id'=>$this->id,'model'=>$model));
+        $result  = $this->_db->query("SELECT * FROM `{$table}` AS `a` WHERE NOT EXISTS(SELECT `dataid` FROM `#@_system_create_logs` WHERE `dataid`=`a`.`id` AND `createid`=[id] AND `model`=[model]) AND `sortid`={$sortid};",array('id'=>$this->id,'model'=>$model));
         return $result;
     }
     /**

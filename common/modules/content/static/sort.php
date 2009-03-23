@@ -39,7 +39,7 @@ class Content_Sort{
         }
         $res = $db->query("SELECT `sortid`,`sortname` FROM `#@_content_sort` WHERE `parentid`=? ORDER BY `sortid` ASC;",$p3);
         while ($rs = $db->fetch($res,0)) {
-            if ($db->count("SELECT * FROM `#@_content_sort_join` WHERE `modelid`=".DB::quote($p1)." AND `sortid`=".DB::quote($rs[0]).";") == 0) {
+            if ($db->result("SELECT COUNT(*) FROM `#@_content_sort_join` WHERE `modelid`=".DB::quote($p1)." AND `sortid`=".DB::quote($rs[0]).";") == 0) {
                 $class = ' class="disabled"';
             } elseif ((int)$p2==(int)$rs[0]) {
                 $class = ' class="selected"';
@@ -47,7 +47,7 @@ class Content_Sort{
                 $class = null;
             }
             $R.= '<a href="javascript:;" onclick="$(this).setSortId();" value="'.$rs[0].'" label="'.h2c($rs[1]).'"'.$class.'>'.$nbsp.'├'.$rs[1].'</a>';
-            if ((int)$db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
+            if ((int)$db->result("SELECT COUNT(*) FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
                 $R.= Content_Sort::getSortListByParentId($p1,$p2,$rs[0],($p4+1));
             }
         }
@@ -73,7 +73,7 @@ class Content_Sort{
                 $model = is_bool($p3)?null:' models="'.implode(',',Content_Model::getModelsBySortId($rs[0])).'"';
                 $selected = ((int)$p4 == (int)$rs[0]) ? ' selected="selected"' : null;
                 $R.= '<option'.$model.' value="'.$rs[0].'"'.$selected.'>'.$nbsp.'├'.$rs[1].'</option>';
-                if ((int)$db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
+                if ((int)$db->result("SELECT COUNT(*) FROM `#@_content_sort` WHERE `parentid`=".DB::quote($rs[0]).";") > 0) {
                     $R.= Content_Sort::getSortOptionByParentId($rs[0],$p2+1,$p3,$p4);
                 }
             }
@@ -88,7 +88,7 @@ class Content_Sort{
      */
     function isSubSort($p1){
         $db  = get_conn();
-        $num = $db->count("SELECT * FROM `#@_content_sort` WHERE `parentid`=".DB::quote($p1).";");
+        $num = $db->result("SELECT COUNT(*) FROM `#@_content_sort` WHERE `parentid`=".DB::quote($p1).";");
         return ((int)$num>0)?'2':'1';
     }
     /**

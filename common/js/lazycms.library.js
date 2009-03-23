@@ -491,7 +491,12 @@ function LoadScript(p,c){
 						$('.process > span',SG_PROCESS).text(LeftTime);
 					} else {
 						// 创建进度条
-						DL_PROCESS.append('<dd id="' + PARAM.lists + '"><div class="process"><div style="width:' + (percent*180).toFixed(2) + 'px"></div><span>' + LeftTime + '</span></div></dd>');
+						SG_PROCESS = $('<dd id="' + PARAM.lists + '"><div class="process"><div style="width:' + (percent*180).toFixed(2) + 'px"></div><span>' + LeftTime + '</span></div></dd>');
+						DL_PROCESS.append(SG_PROCESS);
+						// 设置显示00
+						if (!IS_CONTINUE) {
+							$('.process > span',SG_PROCESS).text($.t('process/lefttime') + ' ' + formatTime(0));
+						}
 						// 显示进度列表
 						if (parseInt(DATAS.ALONE) == 0) {
 							DL_PROCESS.slideDown('fast');
@@ -511,11 +516,11 @@ function LoadScript(p,c){
 						// 进度已经执行完毕，1.5秒后 移除进度条
 						setTimeout(function(){
 							// 移除当前进度条
-							$('#' + PARAM.lists).remove();
+							SG_PROCESS.remove();
 							// 继续执行队列
 							if (IS_CONTINUE) { $.execProcess(); }
 							// 判断进度列表里面是否还有为执行进度，没有则隐藏进度列表
-							if ($('dd',DL_PROCESS).size()==0 && window.PROCESS.length==0) {
+							if (parseInt($('dd',DL_PROCESS).length)==0) {
 								DL_PROCESS.slideUp('fast');
 							}
 						},1500);

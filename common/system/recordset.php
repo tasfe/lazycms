@@ -70,7 +70,7 @@ class Recordset{
      */
     function create($sql,$size=0){
         if (!empty($size)) { $this->size = $size; }
-        $this->totalRows  = $this->_db->count($sql);
+        $this->totalRows  = $this->_db->result(preg_replace('/SELECT (.+) FROM/iU','SELECT COUNT(*) FROM',$sql,1));
         $this->totalPages = ceil($this->totalRows/$this->size);
         $this->totalPages = ((int)$this->totalPages == 0) ? 1 : $this->totalPages;
         if ((int)$this->page < (int)$this->totalPages) {
