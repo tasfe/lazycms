@@ -122,12 +122,12 @@ CREATE TABLE IF NOT EXISTS `lazy_system_create` (
   `id` varchar(32) NOT NULL,
   `total` int(11) NOT NULL default '0',
   `make` int(11) NOT NULL default '0',
-  `startdate` int(11) NOT NULL,
-  `enddate` int(11) NOT NULL,
+  `usetime` float NOT NULL COMMENT '已用时间',
   `makepage` tinyint(1) NOT NULL default '0',
   `recreate` tinyint(1) NOT NULL default '0',
   `models` text,
   `state` tinyint(1) NOT NULL default '0',
+  `others` text COMMENT '其他字段',
   PRIMARY KEY  (`id`),
   KEY `state` (`state`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

@@ -40,6 +40,14 @@ function getURI(){
         e.Url  = e.Host + e.Path + e.File;
         return e;
 }
+// 将秒格式化为日期格式
+function formatTime(time){
+	var T = parseFloat(time);
+	var H = Math.floor(T / (60 * 60));
+	var M = Math.floor(T / 60) - H * 60;
+	var S = Math.floor(T - (M * 60) - H * 60 * 60);
+	return (H + ':' + M + ':' + S).replace(/\b(\w)\b/g, '0$1');
+}
 // loading加载条
 window.loading = $('<div class="loading"><img class="os" src="' + common() + '/images/loading.gif" />Loading...</div>').css({width:'100px',position:'fixed',top:'5px',right:'5px'});
 /**
@@ -459,49 +467,53 @@ function LoadScript(p,c){
                     $.redirect(JSON.DATA.URL);
                     break;
 				case 'PROCESS':
-					var IS_CONTINUE = JSON.DATA.TOTAL==0?false:true;
-					// 重定义 [文档总数]和[已生成文档数]，防止出现0整除现象
-					if (JSON.DATA.OVER==0 && JSON.DATA.TOTAL==0) { JSON.DATA.TOTAL = JSON.DATA.OVER = 1; }
 					// 定义常用变量
-					var PARAMS  = JSON.DATA.PARAM;
-					var percent = JSON.DATA.OVER/JSON.DATA.TOTAL;
+					var D       = JSON.DATA;
+					var DATAS   = D.DATAS;
+					var PARAM   = D.PARAM;
+					var percent = DATAS.OVER / DATAS.TOTAL;
+					var IS_CONTINUE = DATAS.TOTAL==0?false:true;
+					// 重定义 [文档总数]和[已生成文档数]，防止出现0整除现象
+					if (DATAS.OVER==0 && DATAS.TOTAL==0) { DATAS.TOTAL = DATAS.OVER = 1; }
 					// 当前进度条对象
-					var SG_PROCESS = $('#'+PARAMS.lists);
+					var SG_PROCESS = $('#' + PARAM.lists);
 					// 进度列表对象
 					var DL_PROCESS = $('#process');
 					// 进度列表里面的进度条个数
 					var DD_PROCESS = $('dd',DL_PROCESS).size();
-
+					// 计算出剩余时间
+					var LeftTime = (DATAS.TOTAL - DATAS.OVER) * (DATAS.USED/DATAS.OVER);
+						LeftTime = $.t('process/lefttime') + ' ' + (DATAS.USED < 1 ? $.t('process/unknown') : formatTime(LeftTime));
 					// 当前进度条已添加到页面
 					if (SG_PROCESS.is('dd')) {
 						// 只刷新进度
 						$('.process > div',SG_PROCESS).css({width:(percent*180).toFixed(2) + 'px'});
-						$('.process > span',SG_PROCESS).text((percent*100).toFixed(2) + '%');
+						$('.process > span',SG_PROCESS).text(LeftTime);
 					} else {
 						// 创建进度条
-						DL_PROCESS.append('<dd id="' + PARAMS.lists + '"><div class="process"><div style="width:' + (percent*180).toFixed(2) + 'px"></div><span>' + (percent*100).toFixed(2) + '%</span></div></dd>');
+						DL_PROCESS.append('<dd id="' + PARAM.lists + '"><div class="process"><div style="width:' + (percent*180).toFixed(2) + 'px"></div><span>' + LeftTime + '</span></div></dd>');
 						// 显示进度列表
-						if (parseInt(JSON.DATA.ALONE) == 0) {
+						if (parseInt(DATAS.ALONE) == 0) {
 							DL_PROCESS.slideDown('fast');
 						}
 					}
 					// 当前进度没有执行完
-					if (parseInt(JSON.DATA.OVER) < parseInt(JSON.DATA.TOTAL)) {
+					if (parseInt(DATAS.OVER) < parseInt(DATAS.TOTAL)) {
 						// 保证只有一条进程
-						if (parseInt(JSON.DATA.ALONE) > 0) {
-							window.PROCESS.push(JSON.DATA); break;
+						if (parseInt(DATAS.ALONE) > 0) {
+							window.PROCESS.push(D); break;
 						}
 						// 循环提交执行进度
-						$.post(common() + '/modules/system/gateway.php?action=create',PARAMS,function(data){
+						$.post(D.ACTION,PARAM,function(data){
 							$.result(data);
 						});
 					} else {
 						// 进度已经执行完毕，1.5秒后 移除进度条
 						setTimeout(function(){
 							// 移除当前进度条
-							$('#' + PARAMS.lists).remove();
+							$('#' + PARAM.lists).remove();
 							// 继续执行队列
-							if (IS_CONTINUE) {$.execProcess(); }
+							if (IS_CONTINUE) { $.execProcess(); }
 							// 判断进度列表里面是否还有为执行进度，没有则隐藏进度列表
 							if ($('dd',DL_PROCESS).size()==0 && window.PROCESS.length==0) {
 								DL_PROCESS.slideUp('fast');

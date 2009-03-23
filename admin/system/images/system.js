@@ -301,36 +301,44 @@ $(document).ready(function(){
     }
 	$.fn.Minimized = function(a){
 		var u = getURI();
-		var d = this.css('display');
-		//$.cookie('AJAX_PROCESS',d,{expires:365,path:});
-		this.slideToggle(a);
+		var d = this.css('display'); this.slideToggle(a);
+		$.cookie('AJAX_PROCESS',d,{expires:365,path:'/'});
 	}
 	// 任务进程
 	$.fn.process = function(){
-		var This = this;
-		var process = $('<dl id="process"><dt><strong>' + $.t('process') + '</strong><a href="javascript:;" onclick="$(\'#process > dd\').Minimized(\'fast\');"></a></dt></dl>').css({display:'none'});
+		var This = this; var LeftTime = 0;
+		var process = $('<dl id="process"><dt><strong>' + $.t('process/title') + '</strong><a href="javascript:;" onclick="$(\'#process > dd\').Minimized(\'fast\');"></a></dt></dl>').css({display:'none'});
 		$.post(common() + '/modules/system/gateway.php',{action:'create',submit:'process'},function(data){
 			if (JSON = $.result(data)) {
 				// 有数据，创建进程列表
 				var length = JSON.length;
 				if (length) {
-					var percent = 0; var DATA = {};
+					var percent = 0; var D = {};
 					for (var i=0;i<length;i++) {
 						// 追加到队列
-						DATA = JSON[i]; window.PROCESS.push(DATA);
+						D = JSON[i]; window.PROCESS.push(D);
 						// 任务没有达到100%的情况下才显示
-						if (parseInt(DATA.OVER) < parseInt(DATA.TOTAL)) {
+						if (parseInt(D.DATAS.OVER) < parseInt(D.DATAS.TOTAL)) {
 							// 防止0整除
-							if (DATA.OVER==0 && DATA.TOTAL==0) { DATA.TOTAL = DATA.OVER = 1; } percent = DATA.OVER/DATA.TOTAL;
-							process.append('<dd id="' + DATA.PARAM.lists + '"><div class="process"><div style="width:' + (percent*180).toFixed(2) + 'px"></div><span>' + (percent*100).toFixed(2) + '%</span></div></dd>');
+							if (D.DATAS.OVER==0 && D.DATAS.TOTAL==0) { D.DATAS.TOTAL = D.DATAS.OVER = 1; } percent = D.DATAS.OVER/D.DATAS.TOTAL;
+							// 计算出剩余时间
+							LeftTime = (D.DATAS.TOTAL - D.DATAS.OVER) * (D.DATAS.USED/D.DATAS.OVER);
+							LeftTime = $.t('process/lefttime') + ' ' + (D.DATAS.USED < 1 ? $.t('process/unknown') : formatTime(LeftTime));
+							process.append('<dd id="' + D.PARAM.lists + '" style="display:none;"><div class="process"><div style="width:' + (percent*180).toFixed(2) + 'px"></div><span>' + LeftTime + '</span></div></dd>');
 						}
 					}
 					// 有任务，显示
 					if ($('dd',process).size()>0) {
-						process.slideDown('fast');
+						process.slideDown('fast',function(){
+							// 判断进度列表是否最小化
+							var c = $.cookie('AJAX_PROCESS');
+							if (c=='none' || c==null) {
+								$('#process > dd').Minimized('fast');
+							}
+						});
+						// 执行进程队列
+						$.execProcess();
 					}
-					// 执行进程队列
-					$.execProcess();
 				}
 			}
 		});
@@ -343,7 +351,7 @@ $(document).ready(function(){
 		var DATA = window.PROCESS.shift();
 		if (typeof DATA == 'undefined') { return ; }
 		// 执行进程
-		$.post(common() + '/modules/system/gateway.php?action=create',DATA.PARAM,function(data){
+		$.post(DATA.ACTION,DATA.PARAM,function(data){
 			$.result(data);
 		});
 	}

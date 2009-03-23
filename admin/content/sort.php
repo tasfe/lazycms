@@ -77,11 +77,29 @@ function lazy_set(){
     switch($submit){
         case 'create':
             empty($lists) ? ajax_alert(t('sort/alert/noselect')) : null ;
-            $result = Content_Article::createList($lists,true);
-            ajax_process($result['alone'],$result['make'],$result['total'],array(
-                'submit' => $submit,
-                'lists'  => $result['id'],
-            ));
+            import('system.process');
+            // 创建进程对象
+            $pro = new Process($lists);
+            // 判断是否已经设置过总文档数
+            if ($pro->total < 0) {
+                $sortids = explode(',',$lists); $pro->total = $count = 0;
+                foreach ($sortids as $sortid) {
+                    // 已关联模型
+                    if ($models = Content_Model::getModelsBySortId($sortid,array('modelename'))) {
+                        $count  = Content_Article::count($sortid,implode(',',$models));
+                        if ((int)$count > 0) {
+                            foreach ($models as $model) {
+                                $pro->models[$model][] = $sortid;
+                            }
+                            $pro->total = $pro->total + $count;
+                        }
+                    }
+                }
+            }
+            // 执行生成
+            $pro->exec('Content_Article::createList',true);
+            // 关闭对象
+            $pro->close();
             break;
         case 'delete':
             empty($lists) ? ajax_alert(t('sort/alert/noselect')) : null ;

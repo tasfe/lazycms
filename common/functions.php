@@ -454,22 +454,6 @@ function echo_json($p1,$p2){
         'DATA' => $p2,
     )));
 }
-/**
- * 进度条
- *
- * @param int $p1   正在执行的进程数
- * @param int $p2   已生成文档数
- * @param int $p3   总文档数
- * @param int $p4   form 参数
- */
-function ajax_process($p1,$p2,$p3,$p4){
-    echo_json('PROCESS',array(
-        'ALONE' => $p1,
-        'OVER'  => $p2,
-        'TOTAL' => $p3,
-        'PARAM' => $p4,
-    ));
-}
 
 /**
  * alert 警告
@@ -1508,11 +1492,12 @@ if (!function_exists('json_encode')) {
 
 // json_decode *** *** www.LazyCMS.net *** ***
 if (!function_exists('json_decode')) {
-    function json_decode($p1){
+    function json_decode($p1,$p2=false){
         static $R = array();
         if (!isset($R[0])) {
             import('system.json');
-            $R[0] = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
+            $type = $p2?SERVICES_JSON_IN_ARR:SERVICES_JSON_IN_OBJ;
+            $R[0] = new Services_JSON($type);
         }
         return $R[0]->decode($p1);
     }

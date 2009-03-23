@@ -266,35 +266,22 @@ function lazy_create(){
             $result = array();
             $res = $db->query("SELECT * FROM `#@_system_create`;");
             while ($rs = $db->fetch($res)) {
+                $others = json_decode($rs['others'],true);
                 $result[] = array(
-                    'OVER'  => $rs['make'],
-                    'TOTAL' => $rs['total'],
-                    'PARAM' => array(
-                        'submit' => 'create',
-                        'lists'  => $rs['id'],
+                    'ACTION' => $others['phpurl'],
+                    'DATAS'  => array(
+                        'OVER'  => (int) $rs['make'],    // 已生成文档数
+                        'TOTAL' => (int) $rs['total'],   // 总文档数
+                        'USED'  => (float) number_format($rs['usedate'],2), // 已用时间
+                    ),
+                    'PARAM'  => array(
+                        'action' => $others['action'],   // 动作
+                        'submit' => $others['submit'],   // 提交动作
+                        'lists'  => $rs['id'],           // ID
                     )
                 );
             }
             ajax_result($result);
-            break;
-        // 执行任务进程
-        case 'create':
-            $lists = isset($_POST['lists']) ? $_POST['lists'] : null;
-            if (empty($lists)) { ajax_error(t('system::error/invalid')); }
-            $result = Content_Article::createList($lists);
-            ajax_process($result['alone'],$result['make'],$result['total'],array(
-                'submit' => $submit,
-                'lists'  => $result['id'],
-            ));
-            break;
-        // 删除
-        case 'delete':
-            $id = isset($_POST['id']) ? $_POST['id'] : null;
-            if (!empty($id)) {
-                $db->delete('#@_system_create',"`id`=".DB::quote($id));
-                $db->delete('#@_system_create_logs',"`createid`=".DB::quote($id));
-            }
-            ajax_result(true);
             break;
     }
 }
