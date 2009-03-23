@@ -245,20 +245,6 @@ class lazy_mysql extends DB {
         return mysql_fetch_array($rs,$R);
     }
     /**
-     * 统计记录数
-     *
-     * @param resource $rs
-     * @return int
-     */
-    function count($rs=null){
-        if (is_resource($rs)) {
-            $R = $rs;
-        } else {
-            $R = $this->query($rs);
-        }
-        return mysql_num_rows($R);
-    }
-    /**
      * 取得前一次 MySQL 操作所影响的记录行数
      *
      * @return int
