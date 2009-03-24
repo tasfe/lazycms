@@ -299,9 +299,14 @@ $(document).ready(function(){
             });
         }
     }
+	// 最小化进程列表
 	$.fn.Minimized = function(a){
-		var u = getURI();
-		var d = this.css('display'); this.slideToggle(a);
+		var u = getURI(); var d = this.css('display'); this.slideToggle(a);
+		if (d=='none' || d==null) { 
+			$('a',this.prev()).addClass('revert');
+		} else {
+			$('a',this.prev()).removeClass('revert');
+		}
 		$.cookie('AJAX_PROCESS',d,{expires:365,path:'/'});
 	}
 	// 任务进程
@@ -335,6 +340,7 @@ $(document).ready(function(){
 							var c = $.cookie('AJAX_PROCESS');
 							if (c=='none' || c==null) {
 								$('#process > dd').Minimized('fast');
+								$('#process > dt > a').addClass('revert');
 							}
 						});
 						// 执行进程队列
@@ -343,6 +349,8 @@ $(document).ready(function(){
 				}
 			}
 		});
+		// 去除虚线
+		$('a',process).focus(function(){ this.blur(); });
 		// 添加到页面
 		process.appendTo(This);
 	}
