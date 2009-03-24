@@ -49,7 +49,7 @@ function formatTime(time){
 	return (H + ':' + M + ':' + S).replace(/\b(\w)\b/g, '0$1');
 }
 // loading加载条
-window.loading = $('<div class="loading"><img class="os" src="' + common() + '/images/loading.gif" />Loading...</div>').css({width:'100px',position:'fixed',top:'5px',right:'5px'});
+window.loading = $('<div class="loading"><img class="os" src="' + common() + '/images/loading.gif" />Loading...</div>').css({width:'100px',position:'fixed',top:'5px',right:'5px'}); if ($.browser.msie && $.browser.version == '6.0') { window.loading.css({position:'absolute'}); };
 /**
  * 动态加载脚本
  *

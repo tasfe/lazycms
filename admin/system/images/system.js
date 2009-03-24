@@ -308,6 +308,7 @@ $(document).ready(function(){
 	$.fn.process = function(){
 		var This = this; var LeftTime = 0;
 		var process = $('<dl id="process"><dt><strong>' + $.t('process/title') + '</strong><a href="javascript:;" onclick="$(\'#process > dd\').Minimized(\'fast\');"></a></dt></dl>').css({display:'none'});
+		if ($.browser.msie && $.browser.version == '6.0') { process.css({position:'absolute'}); }
 		$.post(common() + '/modules/system/gateway.php',{action:'create',submit:'process'},function(data){
 			if (JSON = $.result(data)) {
 				// 有数据，创建进程列表
