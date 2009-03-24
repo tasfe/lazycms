@@ -272,7 +272,7 @@ function lazy_create(){
                     'DATAS'  => array(
                         'OVER'  => (int) $rs['make'],    // 已生成文档数
                         'TOTAL' => (int) $rs['total'],   // 总文档数
-                        'USED'  => (float) number_format($rs['usetime'],2), // 已用时间
+                        'USED'  => (float) number_format($rs['usetime'],2,'.',''), // 已用时间
                     ),
                     'PARAM'  => array(
                         'action' => $others['action'],   // 动作

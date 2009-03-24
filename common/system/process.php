@@ -210,7 +210,7 @@ class Process{
                 'ALONE' => (int) $this->_alone,  // 进程数
                 'OVER'  => (int) $this->make,    // 已生成文档数
                 'TOTAL' => (int) $this->total,   // 总文档数
-                'USED'  => (float) number_format($this->useTime,2), // 已用时间
+                'USED'  => (float) number_format($this->useTime,2,'.',''), // 已用时间
             ),
             'PARAM'  => array(
                 'action' => $this->_others['action'],   // 动作
