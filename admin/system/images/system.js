@@ -300,8 +300,8 @@ $(document).ready(function(){
         }
     }
 	// 最小化进程列表
-	$.fn.Minimized = function(a){
-		var u = getURI(); var d = this.css('display'); this.slideToggle(a);
+	$.fn.Minimized = function(){
+		var u = getURI(); var d = this.css('display'); this.slideToggle();
 		if (d=='none' || d==null) { 
 			$('a',this.prev()).addClass('revert');
 		} else {
@@ -335,14 +335,12 @@ $(document).ready(function(){
 					}
 					// 有任务，显示
 					if ($('dd',process).size()>0) {
-						process.slideDown('fast',function(){
-							// 判断进度列表是否最小化
-							var c = $.cookie('AJAX_PROCESS');
-							if (c=='none' || c==null) {
-								$('#process > dd').Minimized('fast');
-								$('#process > dt > a').addClass('revert');
-							}
-						});
+						// 判断进度列表是否最小化
+						var c = $.cookie('AJAX_PROCESS');
+						if (c=='none' || c==null) {
+							$('#process > dd').Minimized();
+						}
+						process.slideDown();
 						// 执行进程队列
 						$.execProcess();
 					}

@@ -472,7 +472,7 @@ function LoadScript(p,c){
 					var DATAS   = D.DATAS;
 					var PARAM   = D.PARAM;
 					var percent = DATAS.OVER / DATAS.TOTAL;
-					var IS_CONTINUE = DATAS.TOTAL==0?false:true;
+					var IS_CONTINUE = (DATAS.TOTAL==0 && DATAS.ALONE > 0)?false:true;
 					// 重定义 [文档总数]和[已生成文档数]，防止出现0整除现象
 					if (DATAS.OVER==0 && DATAS.TOTAL==0) { DATAS.TOTAL = DATAS.OVER = 1; }
 					// 当前进度条对象
@@ -491,15 +491,19 @@ function LoadScript(p,c){
 						$('.process > span',SG_PROCESS).text(LeftTime);
 					} else {
 						// 创建进度条
-						SG_PROCESS = $('<dd id="' + PARAM.lists + '"><div class="process"><div style="width:' + (percent*180).toFixed(2) + 'px"></div><span>' + LeftTime + '</span></div></dd>');
+						SG_PROCESS = $('<dd id="' + PARAM.lists + '" style="display:none;"><div class="process"><div style="width:' + (percent*180).toFixed(2) + 'px"></div><span>' + LeftTime + '</span></div></dd>');
 						DL_PROCESS.append(SG_PROCESS);
+						var c = $.cookie('AJAX_PROCESS');
+						if (c=='none' || c==null) {
+							SG_PROCESS.slideDown();
+						}
 						// 设置显示00
 						if (!IS_CONTINUE) {
 							$('.process > span',SG_PROCESS).text($.t('process/lefttime') + ' ' + formatTime(0));
 						}
 						// 显示进度列表
 						if (parseInt(DATAS.ALONE) == 0) {
-							DL_PROCESS.slideDown('fast');
+							DL_PROCESS.slideDown();
 						}
 					}
 					// 当前进度没有执行完

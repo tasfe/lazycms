@@ -43,6 +43,8 @@ class Process{
     var $_beginTime = 0;
     // 其他变量
     var $_others;
+    var $_isInsert = true;
+    
     /**
      * 初始化
      *
@@ -54,6 +56,7 @@ class Process{
         // 进程唯一标识
         if (strlen($ids)==32 && !validate($ids,6)) {
             $this->id = $ids;
+            $this->_isInsert = false;
         } else {
             $this->id = md5($ids);
             $this->_alone = $this->_db->result("SELECT COUNT(*) FROM `#@_system_create` WHERE `state`=1 LIMIT 0,1;");
@@ -109,6 +112,7 @@ class Process{
             }
         } else {
             $this->updateUseTime();
+            if ($this->total == 0 || !$this->_isInsert) { return ; }
             // 创建进程
             return $this->_db->insert('#@_system_create',array(
                 'id'     => $this->id,
