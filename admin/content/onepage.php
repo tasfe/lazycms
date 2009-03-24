@@ -77,7 +77,7 @@ function lazy_main(){
         
         $db = get_conn();
         $ds = new Recordset();
-        $ds->create("SELECT * FROM `{$table}` ORDER BY `order` DESC,`id` DESC");
+        $ds->create("SELECT * FROM `{$table}` ORDER BY `id` DESC");
         $ds->action = PHP_FILE.'?action=set&model='.$model['modelename'];
         $ds->url = PHP_FILE.'?model='.$model['modelename'].$query.'&page=$';
         $ds->but = $ds->button('create:'.t('system::create')).$ds->plist();
