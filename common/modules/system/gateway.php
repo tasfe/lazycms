@@ -266,11 +266,12 @@ function lazy_create(){
             $result = array();
             $res = $db->query("SELECT * FROM `#@_system_create`;");
             while ($rs = $db->fetch($res)) {
-                $others = json_decode($rs['others'],true);
+                $data   = json_decode($rs['data'],true);
+                $others = $data['others'];
                 $result[] = array(
                     'ACTION' => $others['phpurl'],
                     'DATAS'  => array(
-                        'OVER'  => (int) $rs['make'],    // 已生成文档数
+                        'OVER'  => (int) $rs['create'],    // 已生成文档数
                         'TOTAL' => (int) $rs['total'],   // 总文档数
                         'USED'  => (float) number_format($rs['usetime'],2,'.',''), // 已用时间
                     ),

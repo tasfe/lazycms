@@ -495,7 +495,7 @@ function LoadScript(p,c){
 						DL_PROCESS.append(SG_PROCESS);
 						var c = $.cookie('AJAX_PROCESS');
 						if (c=='none' || c==null) {
-							$('#process > dd').Minimized();
+							SG_PROCESS.slideDown();
 						}
 						// 设置显示00
 						if (!IS_CONTINUE) {

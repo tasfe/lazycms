@@ -112,10 +112,8 @@ class Recordset{
         if (!empty($p1)) {
             $R1 = explode('|',$p1);
             foreach ($R1 as $v) {
-                if ($v!='-') {
-                    $R2 = explode(':',$v);
-                    $R.= '<button onclick="$(this.form).ajaxButton(\''.$R2[0].'\');" type="button"'.$disabled.'>'.$R2[1].'</button>';
-                }
+                $R2 = explode(':',$v);
+                $R.= '<button onclick="$(this.form).ajaxButton(\''.$R2[0].'\');" type="button"'.$disabled.'>'.$R2[1].'</button>';
             }
         }
         $R.= $p2;

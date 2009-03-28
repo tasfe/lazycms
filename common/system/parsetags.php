@@ -25,7 +25,6 @@ defined('COM_PATH') or die('Restricted access!');
  * 模板标签直接扩展HTML标签实现
  */
 class ParseTags{
-    var $_tags = array();
     var $_HTML = null;
     var $_Value= array();
     /**
@@ -254,10 +253,36 @@ class ParseTags{
      *
      * @return array
      */
-    function getBlockTag(){
-        $R = array();
-        if (preg_match_all('#\{([\w+\:\-]+\b)[^\}]*\}(.+)\{\/\1\}#isU',$this->_HTML,$r)) {
-            $R = $r[0];
+    function getBlockTag($p1=null){
+        if (empty($p1)) {
+            $R = array();
+            if (preg_match_all('#\{([\w+\:\-]+\b)[^\}]*\}(.+)\{\/\1\}#isU',$this->_HTML,$r)) {
+                $R = $r[0];
+            }
+        } else {
+            $R = null;
+            if (preg_match_all('#\{('.preg_quote($p1,'/').'\b)[^\}]*\}(.+)\{\/\1\}#isU',$this->_HTML,$r)) {
+                $R = array_pop($r[0]);
+            }
+        }
+        return $R;
+    }
+    /**
+     * 取得指定的属性
+     *
+     * @param bool   $p1   完整标签
+     * @param string $p2   属性名称
+     * @return string
+     */
+    function getTagAttr($p1,$p2){
+        $R = sect($p1,'('.$p2.'\=("|\'))','("|\')');
+        switch ((string)$p2) {
+            case 'number':
+                $R = validate($R,2)?$R:20;
+                break;
+            case 'zebra':
+                $R = validate($R,2)?$R:1;
+                break;
         }
         return $R;
     }
@@ -273,5 +298,10 @@ class ParseTags{
             'CODE' => $isParse,
             'DATA' => $result,
         );
+    }
+    // *** *** www.LazyCMS.net *** *** //
+    function close(){
+        $this->clear();
+        $this->_HTML = null;
     }
 }

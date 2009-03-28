@@ -301,11 +301,13 @@ $(document).ready(function(){
     }
 	// 最小化进程列表
 	$.fn.Minimized = function(){
-		var u = getURI(); var d = this.css('display'); this.slideToggle();
+		var u = getURI(); var d = this.css('display'); 
 		if (d=='none' || d==null) { 
 			$('a',this.prev()).addClass('revert');
+			this.slideDown();
 		} else {
 			$('a',this.prev()).removeClass('revert');
+			this.slideUp();
 		}
 		$.cookie('AJAX_PROCESS',d,{expires:365,path:'/'});
 	}
@@ -313,7 +315,6 @@ $(document).ready(function(){
 	$.fn.process = function(){
 		var This = this; var LeftTime = 0;
 		var process = $('<dl id="process"><dt><strong>' + $.t('process/title') + '</strong><a href="javascript:;" onclick="$(\'#process > dd\').Minimized(\'fast\');"></a></dt></dl>').css({display:'none'});
-		if ($.browser.msie && $.browser.version == '6.0') { process.css({position:'absolute'}); }
 		$.post(common() + '/modules/system/gateway.php',{action:'create',submit:'process'},function(data){
 			if (JSON = $.result(data)) {
 				// 有数据，创建进程列表
@@ -351,6 +352,23 @@ $(document).ready(function(){
 		$('a',process).focus(function(){ this.blur(); });
 		// 添加到页面
 		process.appendTo(This);
+		// 添加IE6事件
+		if ($.browser.msie && $.browser.version == '6.0') { 
+			process.css({position:'absolute'}); 
+			$(window).scroll(function(){
+				move();
+			});
+			window.setInterval(function(){
+				move();
+			},200);
+			function move(){
+				process.css({
+					'top':(document.documentElement.scrollTop + document.documentElement.clientHeight - process.get(0).clientHeight - 5) + 'px',
+					'left':(document.documentElement.clientWidth - process.get(0).clientWidth - 5) + 'px'}
+				);
+			}
+		}
+		return this;
 	}
 	// 执行进程
 	$.execProcess = function(){

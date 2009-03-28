@@ -24,26 +24,24 @@ defined('COM_PATH') or die('Restricted access!');
  */
 class Process{
     // 进程ID
-    var $id  = 0;
+    var $id     = 0;
     // 已生成文档数
-    var $make  = 0;
+    var $create = 0;
     // 总文档数
-    var $total = -1;
+    var $total  = 0;
     // 已使用时间
     var $useTime = 0;
-    // 模型数组
-    var $models  = array();
-    // 当前时间
-    var $_now;
+    // insert数据
+    var $insert = true;
+
+    // 数据变量
+    var $_data = array();
     // 数据库连接句柄
-    var $_db = null;
-    // 队列数
-    var $_alone = 0;
+    var $_db  = null;
     // 开始时间
     var $_beginTime = 0;
-    // 其他变量
-    var $_others;
-    var $_isInsert = true;
+    // 队列数
+    var $_alone = 0;
     
     /**
      * 初始化
@@ -53,36 +51,48 @@ class Process{
     function __construct($ids){
         // 设置数据库连接句柄
         $this->_db = get_conn();
-        // 进程唯一标识
-        if (strlen($ids)==32 && !validate($ids,6)) {
-            $this->id = $ids;
-            $this->_isInsert = false;
-        } else {
-            $this->id = md5($ids);
-            $this->_alone = $this->_db->result("SELECT COUNT(*) FROM `#@_system_create` WHERE `state`=1 LIMIT 0,1;");
-        }
         // 设置开始时间
         $this->_beginTime = $GLOBALS['_beginTime'];
-        // 设置默认的其他变量
-        $this->_others = array(
-            'phpurl' => PHP_FILE,
-            'submit' => isset($_POST['submit']) ? strtolower($_POST['submit']) : null,
-            'action' => ACTION,
-        );
+        // 进程唯一标识
+        if (strlen($ids)==32 && !validate($ids,6)) {
+            $this->id  = $ids;
+            $this->insert = false;
+        } else {
+            // 按钮事件
+            $submit = isset($_POST['submit']) ? strtolower($_POST['submit']) : null;
+            // 设置默认的其他变量
+            $this->_data['others'] = array(
+                'phpurl' => PHP_FILE,
+                'submit' => $submit,
+                'action' => ACTION,
+            );
+            $this->id  = md5($ids.PHP_FILE.ACTION.$submit);
+            $this->_data['sortids'] = explode(',',$ids);
+            $this->_alone = $this->_db->result("SELECT COUNT(*) FROM `#@_system_create` WHERE `state`=1 LIMIT 0,1;");
+        }
     }
     /**
-     * 设置其他变量的值
+     * 类数据存取方法
      * 
-     * 可以修改其他变量的属性值
+     * 可以存取类的内部数据
      *
      * @param mixed  $p1
      * @param string $p2
      */
-    function setAttr($p1,$p2=null){
+    function data($p1=null,$p2=null){
+        // 取得所有data数据
+        if (!$p1 && !$p2) {
+            return $this->_data;
+        }
+        // 取值
+        if (!is_array($p1) && empty($p2)) {
+            return isset($this->_data[$p1]) ? $this->_data[$p1] : null;
+        }
+        // 赋值
         if (is_array($p1)) {
-            $this->_others = array_merge($this->_others,$p1);
+            $this->_data = array_merge($this->_data,$p1);
         } else {
-            $this->_others = array_merge($this->_others,array($p1=>$p2));
+            $this->_data = array_merge($this->_data,array($p1 => $p2));
         }
     }
     /**
@@ -90,69 +100,60 @@ class Process{
      * 
      * 进程执行，保证队列唯一，执行页面生成
      *
-     * @param string $callback      回调函数
-     * @param bool   $isMakePage    是否生成页面
-     * @param bool   $isReCreate    是否重新生成
+     * @param string $args[0]      回调函数
      * @return mixed
      */
-    function exec($callBack,$isMakePage=false,$isReCreate=false){
-        $res = $this->_db->query("SELECT * FROM `#@_system_create` WHERE `id`=? LIMIT 0,1;",$this->id);
+    function exec(){
+        $args = func_get_args();
+        $func = explode('::',$args[0]); $args[0] = $this;
+        $res  = $this->_db->query("SELECT * FROM `#@_system_create` WHERE `id`=? LIMIT 0,1;",$this->id);
         if ($rs = $this->_db->fetch($res)) {
             // 取得属性变量
-            $this->total = $rs['total'];
-            $this->make  = $rs['make'];
+            $this->total   = $rs['total'];
+            $this->create  = $rs['create'];
             $this->useTime = $rs['usetime'];
-            $this->models  = json_decode($rs['models'],true);
-            $this->_others = json_decode($rs['others'],true);
-            $isMakePage    = $rs['makepage'];
-            $isReCreate    = $rs['recreate'];
+            $this->data(json_decode($rs['data'],true));
             // 更新当前进程的状态
             if (empty($rs['state'])) {
                 $this->_db->update('#@_system_create',array('state' => 1),"`id`=".DB::quote($this->id));
             }
         } else {
             $this->updateUseTime();
-            if ($this->total == 0 || !$this->_isInsert) { return ; }
-            // 创建进程
-            return $this->_db->insert('#@_system_create',array(
-                'id'     => $this->id,
-                'total'  => $this->total,
-                'make'   => $this->make,
-                'models' => json_encode($this->models),
-                'others' => json_encode($this->_others),
-                'usetime' => floatval($this->useTime),
-                'makepage'  => $isMakePage?1:0,
-                'recreate'  => $isReCreate?1:0,
-            ));
+            // 回调函数必须返回true
+            if (call_user_func_array($func,$args)) {
+                if ($this->total == 0 || !$this->insert) { return ; }
+                // 插入数据
+                return $this->_db->insert('#@_system_create',array(
+                    'id'      => $this->id,
+                    'total'   => $this->total,
+                    'create'  => $this->create,
+                    'usetime' => floatval($this->useTime),    
+                    'data'    => json_encode($this->_data),
+                ));
+            }
         }
         // 进程数大于0，退出
         if ((int)$this->_alone > 0) { return ; }
         // 执行生成回调函数
-        return call_user_func(explode('::',$callBack),$this,$isMakePage,$isReCreate);
+        return call_user_func_array($func,$args);
     }
     /**
      * 更新当前进程信息
      *
-     * @param bool $p1  true:更新多想信息
      * @return bool
      */
-    function update($p1=false){
+    function update($p1=null){
+        // 更新已用时间
+        $this->updateuseTime();
+        $update = array(
+            'create'  => $this->create,
+            'usetime' => $this->useTime
+        );
         if ($p1) {
-            // 更新多项信息
-            $this->_db->update('#@_system_create',array(
-                'make'    => $this->make,
-                'models'  => json_encode($this->models),
-                'usetime' => $this->useTime,
-            ),"`id`=".DB::quote($this->id));
-        } else {
-            // 更新已用时间
-            $this->updateuseTime();
-            // 更新已生成数，已用时间
-            $this->_db->update('#@_system_create',array(
-                'make'    => $this->make,
-                'usetime' => $this->useTime
-            ),"`id`=".DB::quote($this->id));
+            $update = array_merge($update,$p1);
         }
+        // 更新已生成数，已用时间
+        $this->_db->update('#@_system_create',$update,"`id`=".DB::quote($this->id));
         return true;
     }
     /**
@@ -176,16 +177,25 @@ class Process{
         $this->_beginTime = $this->_now;
     }
     /**
-     * 取得记录
+     * 查询记录
      *
      * @param string $sortid
      * @param string $model
      * @return resource
      */
-    function fetchLogs($sortid,$model){
+    function query($sortid,$model){
         $table   = Content_Model::getDataTableName($model);
         $result  = $this->_db->query("SELECT * FROM `{$table}` AS `a` WHERE NOT EXISTS(SELECT `dataid` FROM `#@_system_create_logs` WHERE `dataid`=`a`.`id` AND `createid`=[id] AND `model`=[model]) AND `sortid`={$sortid};",array('id'=>$this->id,'model'=>$model));
         return $result;
+    }
+    /**
+     * 取得记录
+     *
+     * @param resource $p1
+     * @return array
+     */
+    function fetch($p1){
+        return $this->_db->fetch($p1);
     }
     /**
      * 插入记录
@@ -201,25 +211,26 @@ class Process{
      * @return bool
      */
     function isOver(){
-        return (int)$this->make==(int)$this->total?true:false;
+        return (int)$this->create>=(int)$this->total?true:false;
     }
     /**
      * 关闭对象
      *
      */
     function close(){
+        $others = $this->data('others');
         echo_json('PROCESS',array(
-            'ACTION' => $this->_others['phpurl'],
+            'ACTION' => $others['phpurl'],
             'DATAS'  => array(
                 'ALONE' => (int) $this->_alone,  // 进程数
-                'OVER'  => (int) $this->make,    // 已生成文档数
+                'OVER'  => (int) $this->create,  // 已生成文档数
                 'TOTAL' => (int) $this->total,   // 总文档数
                 'USED'  => (float) number_format($this->useTime,2,'.',''), // 已用时间
             ),
             'PARAM'  => array(
-                'action' => $this->_others['action'],   // 动作
-                'submit' => $this->_others['submit'],   // 提交动作
-                'lists'  => $this->id,                  // ID
+                'action' => $others['action'],   // 动作
+                'submit' => $others['submit'],   // 提交动作
+                'lists'  => $this->id,           // ID
             )
         ));
     }

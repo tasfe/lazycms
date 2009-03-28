@@ -48,11 +48,11 @@ function lazy_main(){
     $ds = new Recordset();
     $ds->create("SELECT * FROM `#@_content_sort` WHERE `parentid`=0 ORDER BY `sortid` ASC");
     $ds->action = PHP_FILE."?action=set";
-    $ds->but = $ds->button('create:生成|recreate:重新生成');
+    $ds->but = $ds->button('create:生成文档|createlist:生成列表');
     $ds->td("cklist(K[0]) + icon('d'+K[4]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&sortid=' + K[0] + '\">' + K[1] + '</a>'");
     $ds->td("K[5]");
     $ds->td("K[6]");
-    $ds->td("(K[3]?icon('b3',K[2]):icon('b4','javascript:alert(\'create\');')) + K[2]");
+    $ds->td("(K[3]?icon('b3',K[2]):icon('b4','javascript:;','\$(this).ajaxLink(\'createlist\',' + K[0] + ');')) + K[2]");
     $ds->td("icon('a5','".PHP_FILE."?action=edit&sortid=' + K[0])");
     $ds->open();
     $ds->thead = '<tr><th>ID) '.t('sort/name').'</th><th>'.t('sort/model').'</th><th>'.t('sort/count').'</th><th>'.t('sort/path').'</th><th>'.t('system::Manage').'</th></tr>';
@@ -80,24 +80,18 @@ function lazy_set(){
             import('system.process');
             // 创建进程对象
             $pro = new Process($lists);
-            // 判断是否已经设置过总文档数
-            if ($pro->total < 0) {
-                $sortids = explode(',',$lists); $pro->total = $count = 0;
-                foreach ($sortids as $sortid) {
-                    // 已关联模型
-                    if ($models = Content_Model::getModelsBySortId($sortid,array('modelename'))) {
-                        $count  = Content_Article::count($sortid,implode(',',$models));
-                        if ((int)$count > 0) {
-                            foreach ($models as $model) {
-                                $pro->models[$model][] = $sortid;
-                            }
-                            $pro->total = $pro->total + $count;
-                        }
-                    }
-                }
-            }
             // 执行生成
-            $pro->exec('Content_Article::createList',true);
+            $pro->exec('Content_Article::create');
+            // 关闭对象
+            $pro->close();
+            break;
+        case 'createlist':
+            empty($lists) ? ajax_alert(t('sort/alert/noselect')) : null ;
+            import('system.process');
+            // 创建进程对象
+            $pro = new Process($lists);
+            // 执行生成
+            $pro->exec('Content_Article::createList');
             // 关闭对象
             $pro->close();
             break;

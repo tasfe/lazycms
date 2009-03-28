@@ -34,10 +34,11 @@ return array(
     ),
     /* 菜单列表 */
     'menus'   => array(
+        /*
         array('label' => array(
             'purview' => 'label',
             'href'    => '../content/label.php',
-        )),
+        )),*/
         array('create' => array(
             'purview' => 'create',
             'href'    => '../content/create.php',

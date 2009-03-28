@@ -96,15 +96,15 @@ class Content_Article{
      */
     function createPage($modelename,$ids){
         import('system.keywords');  $key = new Keywords($modelename);
-        import('system.parsetags'); $tag = new ParseTags(); $db = get_conn();
+        import('system.parsetags'); $tag = new ParseTags();
+        $template = c('TEMPLATE');  $db  = get_conn();
         $table  = Content_Model::getDataTableName($modelename);
         $model  = Content_Model::getModelByEname($modelename);
         $fields = json_decode($model['modelfields']);
         $result = $db->query("SELECT * FROM `{$table}` WHERE `id` IN({$ids});");
         while ($rs = $db->fetch($result)) {
             // 取得模板地址
-            $template = Content_Article::getTemplateBySortId($rs['sortid'],'page');
-            $tmplpath = LAZY_PATH.'/'.c('TEMPLATE').'/'.$template;
+            $tmplpath = LAZY_PATH.'/'.$template.'/'.Content_Article::getTemplateBySortId($rs['sortid'],'page');
             $tag->loadHTML($tmplpath);
             // 替换模板中的标签
             $tag->clear();
@@ -130,74 +130,151 @@ class Content_Article{
         return true;
     }
     /**
-     * 生成文档列表
-     * 
-     * 支持生成列表下文档，和重新生成文档或文档列表
+     * 生成文档
      *
      * @param object $pro           Process对象
-     * @param bool   $isMakePage    是否生成文档
-     * @param bool   $isReCreate    是否重新生成
      * @return bool
      */
-    function createList(&$pro,$isMakePage=false,$isReCreate=false){
-        $db = get_conn(); $execTime = 5;
-        // 开始生成文章
-        if ($isMakePage) {
-            // 循环生成文章
-            do {
-                $isDo = true;
-                // 遍历模型
-                foreach ($pro->models as $model=>$sorts){
-                    // 循环分类ID
-                    foreach ($sorts as $sortid) {
-                        // 取得当前分类下文档
-                        $result = $pro->fetchLogs($sortid,$model);
-                        while ($rs = $db->fetch($result)) {
-                            // 检查页面是否超时，如果超时则跳出循环；
-                            if (isOverMaxTime($execTime)) {
-                                $isDo = false; break 2;
-                            }
-                            // 生成成功
-                            if (Content_Article::createPage($model,$rs['id'])) {
-                                // 记录已经生成的文件
-                                $pro->insertLogs(array(
-                                    'dataid'    => $rs['id'],
-                                    'model'     => $model,
-                                    'createid'  => $pro->id,
-                                ));
-                                // 生成一个加一
-                                $pro->make++;
-                                // 更新已生成的文章数，防止意外关闭无法更新
-                                $pro->update();
-                                // 睡眠
-                                usleep(0.05 * 1000000);
-                            }
+    function create(&$pro){
+        $execTime = 5;
+        // 第一次需要insert数据
+        if ($pro->insert) {
+            $models = array();
+            foreach ($pro->data('sortids') as $sortid) {
+                // 计算数据
+                if ($ms  = Content_Model::getModelsBySortId($sortid,array('modelename'))) {
+                    $len = Content_Article::count($sortid,implode(',',$ms));
+                    if ((int)$len > 0) {
+                        foreach ($ms as $m) {
+                            $models[$m][] = $sortid;
+                        }
+                        $pro->total = $pro->total + $len;
+                    }
+                }
+            }
+            // 设置数据
+            $pro->data('models',$models);
+            // 第一次插入数据
+            return true;
+        }
+        // 生成文章
+        do {
+            $isDo = true;
+            // 遍历模型
+            foreach ($pro->data('models') as $model=>$sorts){
+                // 循环分类ID
+                foreach ($sorts as $sortid) {
+                    // 取得当前分类下文档
+                    $result = $pro->query($sortid,$model);
+                    while ($rs = $pro->fetch($result)) {
+                        // 检查页面是否超时，如果超时则跳出循环；
+                        if (isOverMaxTime($execTime)) {
+                            break 4;
+                        }
+                        // 生成成功
+                        if (Content_Article::createPage($model,$rs['id'])) {
+                            // 记录已经生成的文件
+                            $pro->insertLogs(array(
+                                'dataid'    => $rs['id'],
+                                'model'     => $model,
+                                'createid'  => $pro->id,
+                            ));
+                            // 生成一个加一
+                            $pro->create++;
+                            // 更新已生成的文章数，防止意外关闭无法更新
+                            $pro->update();
+                            // 睡眠
+                            usleep(0.05 * 1000000);
                         }
                     }
-                    // 所有记录循环完毕，退出
-                    if ($isDo) {
-                        $isDo = false;
-                        $pro->make = $pro->total;
-                    }
                 }
-                // 页面超时退出
-                if ($isDo || isOverMaxTime($execTime)) {
-                    $isDo = false;
-                }
-            } while ($isDo);
-        } else {
-            $pro->make = $pro->total;
-        }
+            }
+            // 页面超时退出
+            if ($isDo || isOverMaxTime($execTime)) {
+                $isDo = false;
+            }
+        } while ($isDo);
         // 更新已用时间
         $pro->updateUseTime();
         // 更新当前任务进程信息
-        $pro->update(true);
+        $pro->update();
         // 文章都生成完啦，该生成文章列表啦！
         if ($pro->isOver()) {
             $pro->delete();
         }
-
-        // 生成完毕，返回结果
         return true;
+    }
+    // *** *** www.LazyCMS.net *** *** //
+    function createList(&$pro){
+        $db  = get_conn(); $execTime = 5;
+        // 第一次需要insert数据
+        if ($pro->insert) {
+            import('system.parsetags'); $tag = new ParseTags(); $template = c('TEMPLATE');
+            $listdata = array();
+            // 计算分类文档数
+            foreach ($pro->data('sortids') as $sortid) {
+                // 取得模板地址
+                $tmplpath = LAZY_PATH.'/'.$template.'/'.Content_Article::getTemplateBySortId($sortid,'sort');
+                // 载入模板
+                $tag->loadHTML($tmplpath);
+                // 取得标签
+                $listtag  = $tag->getBlockTag('article:list');
+                // 取得每页显示条数
+                $number   = $tag->getTagAttr($listtag,'number');
+                // 取得当前分类下的所有模型
+                $models   = Content_Model::getModelsBySortId($sortid,array('modelename'));
+                // 计算需要生成的文档数
+                $length   = floor(Content_Article::count($sortid,implode(',',$models)) / $number + 1);
+                // 计算需要生成的文档总数
+                $pro->total = $pro->total + $length;
+                // 记录分类需要生成的文档数
+                $listdata[$sortid] = array(
+                    'total' => $length,
+                    'page'  => 1,
+                );
+                // 关闭对象
+                $tag->close();
+            }
+            // 设置数据
+            $pro->data('listdata',$listdata);
+            // 第一次插入数据
+            return true;
+        }
+        // 生成列表
+        do {
+            $isDo = true;
+            // 遍历所有分类
+            $listdata = $pro->data('listdata');
+            foreach ($listdata as $sortid => $data) {
+                if ((int)$data['total'] == (int)$data['page']) { continue; }
+                for ($i = $data['page']; $i <= $data['total']; $i++) {
+                    // 检查页面是否超时，如果超时则跳出循环；
+                    if (isOverMaxTime($execTime)) {
+                        break 3;
+                    }
+                    // 生成一个加一
+                    $listdata[$sortid]['page'] = $i;
+                    $pro->create++; $pro->data('listdata',$listdata);
+                    // 更新已生成的文章数，防止意外关闭无法更新
+                    $pro->update(array(
+                        'data' => json_encode($pro->data())
+                    ));
+                    // 睡眠
+                    usleep(0.05 * 1000000);    
+                }
+            }
+            // 页面超时退出
+            if ($isDo || isOverMaxTime($execTime)) {
+                $isDo = false;
+            }
+        } while ($isDo);
+        // 更新已用时间
+        $pro->updateUseTime();
+        // 更新当前任务进程信息
+        $pro->update();
+        // 文章都生成完啦，该生成文章列表啦！
+        if ($pro->isOver()) {
+            $pro->delete();
+        }
     }
 }
