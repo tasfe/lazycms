@@ -495,7 +495,8 @@ function LoadScript(p,c){
 						DL_PROCESS.append(SG_PROCESS);
 						var c = $.cookie('AJAX_PROCESS');
 						if (c=='none' || c==null) {
-							SG_PROCESS.slideDown();
+							$('#process > dd').Minimized('none');
+							//SG_PROCESS.slideDown();
 						}
 						// 设置显示00
 						if (!IS_CONTINUE) {
@@ -513,8 +514,14 @@ function LoadScript(p,c){
 							window.PROCESS.push(D); break;
 						}
 						// 循环提交执行进度
-						$.post(D.ACTION,PARAM,function(data){
-							$.result(data);
+						$.ajax({
+							type:'POST',
+							url:D.ACTION,
+							data:PARAM,
+							beforeSend: function(s){},
+							success:function(data){
+								$.result(data);
+							}
 						});
 					} else {
 						// 进度已经执行完毕，1.5秒后 移除进度条
