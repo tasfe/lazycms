@@ -42,7 +42,7 @@ class Content_Article{
         $R = strftime($R,$p4);
         return $R;
     }
-    
+
     /**
      * 统计分类和指定模型下的文档数量
      *
@@ -64,7 +64,7 @@ class Content_Article{
      * 取得模板文件
      *
      * 根据分类id取得模板文件
-     * 
+     *
      * @param int $p1
      * @param int $p2   取得值类型：all,sort,page
      * @return array
@@ -246,21 +246,25 @@ class Content_Article{
             // 遍历所有分类
             $listdata = $pro->data('listdata');
             foreach ($listdata as $sortid => $data) {
-                if ((int)$data['total'] == (int)$data['page']) { continue; }
                 for ($i = $data['page']; $i <= $data['total']; $i++) {
                     // 检查页面是否超时，如果超时则跳出循环；
                     if (isOverMaxTime($execTime)) {
                         break 3;
                     }
+                    $f = LAZY_PATH.'/sort/'.$sortid; mkdirs($f);
+                    save_file($f.'/'.$i.'.html',$i);
                     // 生成一个加一
-                    $listdata[$sortid]['page'] = $i;
-                    $pro->create++; $pro->data('listdata',$listdata);
+                    $listdata[$sortid]['page']++; $pro->create++;
+                    if ((int)$listdata[$sortid]['page'] == (int)$listdata[$sortid]['total']) {
+                        unset($listdata[$sortid]);
+                    }
+                    $pro->data('listdata',$listdata);
                     // 更新已生成的文章数，防止意外关闭无法更新
                     $pro->update(array(
-                        'data' => json_encode($pro->data())
+                        'data' => serialize($pro->data())
                     ));
                     // 睡眠
-                    usleep(0.05 * 1000000);    
+                    usleep(0.05 * 1000000);
                 }
             }
             // 页面超时退出
@@ -276,5 +280,6 @@ class Content_Article{
         if ($pro->isOver()) {
             $pro->delete();
         }
+
     }
 }

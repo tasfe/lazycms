@@ -266,7 +266,7 @@ function lazy_create(){
             $result = array();
             $res = $db->query("SELECT * FROM `#@_system_create`;");
             while ($rs = $db->fetch($res)) {
-                $data   = json_decode($rs['data'],true);
+                $data   = unserialize($rs['data']);
                 $others = $data['others'];
                 $result[] = array(
                     'ACTION' => $others['phpurl'],

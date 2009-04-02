@@ -427,9 +427,13 @@ function lazy_fields(){
             ajax_result($s);
         }
     } else {
-        $rq = isset($_POST['JSON']) ? json_decode($_POST['JSON'],true) : array();
-        if (empty($rq)) {
+        $_JSON = isset($_POST['JSON']) ? json_decode($_POST['JSON']) : array();
+        if (empty($_JSON)) {
             $rq[0] = isset($_GET['fieldid']) ? $_GET['fieldid'] : 0;
+        } else {
+            foreach ($eField as $field) {
+                $rq[] = isset($_JSON->$field) ? $_JSON->$field : null;
+            }
         }
     }
     $hl = '<form id="formFields" name="formFields" method="post" action="'.PHP_FILE.'?action=fields">';

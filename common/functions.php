@@ -581,7 +581,8 @@ function down_img($p1,$p2=null){
             import("system.httplib");
             $http = new Httplib();
         }
-        $http->connect($p1,'GET',100)->send();
+        $http->connect($p1,'GET',100);
+        $http->send();
         if ($http->status() == 200) {
             if (empty($p2)) {
                 $imgInfo = pathinfo($p1);
@@ -1492,12 +1493,11 @@ if (!function_exists('json_encode')) {
 
 // json_decode *** *** www.LazyCMS.net *** ***
 if (!function_exists('json_decode')) {
-    function json_decode($p1,$p2=false){
+    function json_decode($p1){
         static $R = array();
         if (!isset($R[0])) {
             import('system.json');
-            $type = $p2?SERVICES_JSON_IN_ARR:SERVICES_JSON_IN_OBJ;
-            $R[0] = new Services_JSON($type);
+            $R[0] = new Services_JSON();
         }
         return $R[0]->decode($p1);
     }

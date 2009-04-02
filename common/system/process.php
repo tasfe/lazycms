@@ -42,9 +42,11 @@ class Process{
     var $_beginTime = 0;
     // 队列数
     var $_alone = 0;
-    
+
     /**
      * 初始化
+     * 
+     * 兼容PHP5模式
      *
      * @param string $ids
      */
@@ -72,8 +74,14 @@ class Process{
         }
     }
     /**
+     * 初始化
+     */
+    function Process($ids){
+        $this->__construct($ids);
+    }
+    /**
      * 类数据存取方法
-     * 
+     *
      * 可以存取类的内部数据
      *
      * @param mixed  $p1
@@ -97,7 +105,7 @@ class Process{
     }
     /**
      * 执行进程
-     * 
+     *
      * 进程执行，保证队列唯一，执行页面生成
      *
      * @param string $args[0]      回调函数
@@ -105,14 +113,14 @@ class Process{
      */
     function exec(){
         $args = func_get_args();
-        $func = explode('::',$args[0]); $args[0] = $this;
+        $func = explode('::',$args[0]); $args[0] = &$this;
         $res  = $this->_db->query("SELECT * FROM `#@_system_create` WHERE `id`=? LIMIT 0,1;",$this->id);
         if ($rs = $this->_db->fetch($res)) {
             // 取得属性变量
             $this->total   = $rs['total'];
             $this->create  = $rs['create'];
             $this->useTime = $rs['usetime'];
-            $this->data(json_decode($rs['data'],true));
+            $this->data(unserialize($rs['data']));
             // 更新当前进程的状态
             if (empty($rs['state'])) {
                 $this->_db->update('#@_system_create',array('state' => 1),"`id`=".DB::quote($this->id));
@@ -127,8 +135,8 @@ class Process{
                     'id'      => $this->id,
                     'total'   => $this->total,
                     'create'  => $this->create,
-                    'usetime' => floatval($this->useTime),    
-                    'data'    => json_encode($this->_data),
+                    'usetime' => floatval($this->useTime),
+                    'data'    => serialize($this->_data),
                 ));
             }
         }

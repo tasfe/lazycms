@@ -292,7 +292,7 @@ class System{
         if (g('TABS')) {
             $hl.= '</div>';
         }
-        $GLOBALS['_endTime'] = microtime(true);
+        $GLOBALS['_endTime'] = microtime_float();
         $execTime = ($GLOBALS['_endTime']-$GLOBALS['_beginTime']);
         $hl.= sprintf('</div><div id="footer"><a href="http://www.lazycms.net" target="_blank">Copyright &copy; LazyCMS.net All Rights Reserved.</a><br/>Processed in %f second(s)</div>',$execTime);
         /*
