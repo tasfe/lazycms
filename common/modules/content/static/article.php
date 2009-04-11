@@ -115,6 +115,7 @@ class Content_Article{
             // 设置标签值
             $tag->value(array(
                 'id'        => $rs['id'],
+                'title'     => $rs['title'],
                 'date'      => $rs['date'],
                 'hits'      => $rs['hits'],
                 'digg'      => $rs['digg'],
@@ -204,9 +205,14 @@ class Content_Article{
         }
         return true;
     }
-    // *** *** www.LazyCMS.net *** *** //
+    /**
+     * 生成文件列表
+     *
+     * @param object $pro
+     * @return unknown
+     */
     function createList(&$pro){
-        $db  = get_conn(); $execTime = 5;
+        $db = get_conn(); $execTime = 5;
         // 第一次需要insert数据
         if ($pro->insert) {
             import('system.parsetags'); $tag = new ParseTags(); $template = c('TEMPLATE');
@@ -229,8 +235,9 @@ class Content_Article{
                 $pro->total = $pro->total + $length;
                 // 记录分类需要生成的文档数
                 $listdata[$sortid] = array(
-                    'total' => $length,
-                    'page'  => 1,
+                    'models' => $models,
+                    'total'  => $length,
+                    'page'   => 1,
                 );
                 // 关闭对象
                 $tag->close();
@@ -251,18 +258,21 @@ class Content_Article{
                     if (isOverMaxTime($execTime)) {
                         break 3;
                     }
-                    $f = LAZY_PATH.'/sort/'.$sortid; mkdirs($f);
-                    save_file($f.'/'.$i.'.html',$i);
-                    // 生成一个加一
-                    $listdata[$sortid]['page']++; $pro->create++;
-                    if ((int)$listdata[$sortid]['page'] == (int)$listdata[$sortid]['total']) {
-                        unset($listdata[$sortid]);
+                    // 生成成功
+                    if (Content_Article::createListPage($sortid,$data['models'],$data['total'],$i)) {
+                        //$f = LAZY_PATH.'/sort/'.$sortid; mkdirs($f);
+                        //save_file($f.'/'.$i.'.html',$i);
+                        // 生成一个加一
+                        $listdata[$sortid]['page']++; $pro->create++;
+                        if ((int)$listdata[$sortid]['page'] == (int)$listdata[$sortid]['total']) {
+                            unset($listdata[$sortid]);
+                        }
+                        $pro->data('listdata',$listdata);
+                        // 更新已生成的文章数，防止意外关闭无法更新
+                        $pro->update(array(
+                            'data' => serialize($pro->data())
+                        ));
                     }
-                    $pro->data('listdata',$listdata);
-                    // 更新已生成的文章数，防止意外关闭无法更新
-                    $pro->update(array(
-                        'data' => serialize($pro->data())
-                    ));
                     // 睡眠
                     usleep(0.05 * 1000000);
                 }
@@ -280,6 +290,20 @@ class Content_Article{
         if ($pro->isOver()) {
             $pro->delete();
         }
-
+        return true;
+    }
+    /**
+     * 生成列表页面
+     *
+     * @param int $sortid
+     * @param int $total
+     * @param int $page
+     */
+    function createListPage($sortid,$models,$total,$page){
+        $db = get_conn(); $template = c('TEMPLATE');
+        import('system.parsetags'); $tag = new ParseTags();
+        // 查询
+        //$db->query("");
+        return true;
     }
 }

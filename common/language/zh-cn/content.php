@@ -75,7 +75,6 @@ return array(
             'option'    => '更多属性',
             'ishelp'    => '需要帮助',
             'validate'  => '需要验证',
-            'iskeyword' => '点亮自动获取关键词',
             'description'=> '点亮自动获取简述',
             'type'  => array(
                 'input'     => '输入框',
@@ -145,6 +144,7 @@ return array(
     /* 文档管理 */
     'article'   => array(
         'title' => '文档管理',
+        'name'  => '标题',
         'model' => '模型',
         'sort'  => '分类',
         'path'  => '路径',
@@ -244,8 +244,8 @@ return array(
                 'help'  => '帮助信息，可以使用UBB标签',
                 'ename' => '
                     |必填，用处很多了，以下字段名已被系统使用：
-                    |(id,sortid,order,date,hits,digg,passed,userid,path,
-                    |keywords,description,isdel)
+                    |(id,sortid,title,order,date,hits,digg,passed,userid,
+                    |path,keywords,description,isdel)
                 ',
                 'rules' => '
                     |可以有多个规则，使用“分号”分割。
@@ -263,6 +263,7 @@ return array(
             'model' => '选择哪些内容类型使用此分类',
         ),
         'article'   => array(
+            'name'  => '文章标题',
             'path'  => '
                 |[b]生成文件的命名规则：[/b]
                 |%I=ID编号

@@ -92,7 +92,7 @@ class Content_Model{
         foreach ($p2 as $field) {
             $fields[] = $field->ename;
         }
-        $fields = array_merge($fields,array('id','sortid','order','date','hits','path','digg','passed','userid','keywords','description'));
+        $fields = array_merge($fields,array('id','sortid','title','order','date','hits','path','digg','passed','userid','keywords','description'));
         return array_diff($p1,$fields);
     }
     /**
@@ -188,6 +188,7 @@ class Content_Model{
         $SQL = "CREATE TABLE IF NOT EXISTS `{$table}` (";
         $SQL.= "    `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,";
         $SQL.= "    `sortid` INT(11) DEFAULT '0',";
+        $SQL.= "    `title` VARCHAR(255),";
         $SQL.= "    `order` INT(11) DEFAULT '0',";
         $SQL.= "    `date` INT(11) DEFAULT '0',";
         $SQL.= "    `hits` INT(11) DEFAULT '0',";

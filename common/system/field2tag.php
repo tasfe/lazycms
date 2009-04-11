@@ -128,9 +128,6 @@ class Field2Tag{
         switch ($f->intype) {
             case 'input':
                 $R = "<input{$help} style=\"width:{$width}\" type=\"text\" name=\"{$name}\" id=\"{$name}\" maxlength=\"{$length}\" value=\"{$default}\" />";
-                if ($this->_model['iskeyword']==$name) {
-                    $R.= '<span><input type="checkbox" name="autokeys" id="autokeys" value="1" checked="checked" cookie="true" /><label for="autokeys">'.t('system::autokeys').'</label></span></p>';
-                }
                 break;
             case 'textarea':
                 $R = "<textarea{$help} style=\"width:{$width}\" name=\"{$name}\" id=\"{$name}\" rows=\"5\">{$default}</textarea>";
