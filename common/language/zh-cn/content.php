@@ -179,6 +179,7 @@ return array(
     /* 单页管理 */
     'onepage'   => array(
         'title' => '单页管理',
+        'name'  => '标题',
         'model' => '模型',
         'path'  => '路径',
         'hits'  => '点击量',
@@ -276,6 +277,7 @@ return array(
             '
         ),
         'onepage'   => array(
+            'name'  => '页面标题',
             'path'  => '
                 |[b]生成文件的命名规则：[/b]
                 |%I=ID编号

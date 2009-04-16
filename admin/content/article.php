@@ -105,7 +105,7 @@ function lazy_main(){
         for ($i=0; $i<$length; $i++) {
             $ds->td("K[".($i+7)."]");
         }
-        $ds->td("(K[3]?icon('b3',K[1],'_blank'):icon('b4','javascript:;','\$(this).ajaxLink(\'create\',' + K[0] + ');')) + (K[3]?'<a href=\"' + K[2] + '\" target=\"_blank\">' + K[2] + '</a>':K[2])");
+        $ds->td("(K[3]?icon('b3',K[2],'_blank'):icon('b4','javascript:;','\$(this).ajaxLink(\'create\',' + K[0] + ');')) + (K[3]?'<a href=\"' + K[2] + '\" target=\"_blank\">' + K[2] + '</a>':K[2])");
         $ds->td("K[4]");
         $ds->td("K[5]");
         $ds->td("K[6]");
@@ -169,7 +169,7 @@ function lazy_edit(){
     $model  = Content_Model::getModelByEname($mName); if (!$model) { trigger_error(t('system::error/invalid')); }
     $sorts  = $db->result("SELECT COUNT(*) FROM `#@_content_sort_join` WHERE `modelid`=".DB::quote($model['modelid']).";");
     $label  = (empty($docId) ? t('system::add') : t('system::edit')).$model['modelname'];
-    $title   = isset($_POST['title']) ? $_POST['title'] : null;
+    $title  = isset($_POST['title']) ? $_POST['title'] : null;
     $path   = isset($_POST['path']) ? $_POST['path'] : null;
     $table  = Content_Model::getDataTableName($model['modelename']);
     $sortid = isset($_POST['sortid']) ? $_POST['sortid'] : 0;
@@ -245,15 +245,13 @@ function lazy_edit(){
                 $text = t('article/alert/edit');
             }
             // 自动获取关键词
-            if (!empty($model['iskeyword'])) {
-                $keywords = isset($_POST['keywords']) ? $_POST['keywords'] : null;
-                $autokeys = isset($_POST['autokeys']) ? $_POST['autokeys'] : null;
-                if ($autokeys && empty($keywords)) {
-                    $keywords = System::getKeywords($title);
-                    $keywords = implode(',',$keywords);
-                }
-                $key->save($docId,$keywords,c('GET_RELATED_KEY'));
+            $keywords = isset($_POST['keywords']) ? $_POST['keywords'] : null;
+            $autokeys = isset($_POST['autokeys']) ? $_POST['autokeys'] : null;
+            if ($autokeys && empty($keywords)) {
+                $keywords = System::getKeywords($title);
+                $keywords = implode(',',$keywords);
             }
+            $key->save($docId,$keywords,c('GET_RELATED_KEY'));
             $referer = isset($_POST['__referer'])?$_POST['__referer']:PHP_FILE;
 			$referer = strpos($referer,basename(PHP_FILE))!==false?$referer:PHP_FILE;
             // 生成页面

@@ -53,6 +53,7 @@ class Content_Onepage{
             // 设置标签值
             $tag->value(array(
                 'id'        => $rs['id'],
+                'title'     => $rs['title'],
                 'date'      => $rs['date'],
                 'hits'      => $rs['hits'],
                 'digg'      => $rs['digg'],
