@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS `lazy_content_model` (
   `modelname` varchar(50) NOT NULL COMMENT '模型名称',
   `modelename` varchar(50) NOT NULL COMMENT '模型英文标识',
   `modelpath` varchar(100) NOT NULL COMMENT '生成文件的命名规则',
+  `iskeyword` varchar(50) default NULL COMMENT '自动获取关键词',
   `description` varchar(50) default NULL COMMENT '自动获取简述',
   `sortemplate` varchar(50) default NULL COMMENT '列表页模板',
   `pagetemplate` varchar(50) default NULL COMMENT '内容页模板',

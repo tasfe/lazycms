@@ -178,7 +178,7 @@ function lazy_edit(){
     $modelid   = isset($_REQUEST['modelid']) ? $_REQUEST['modelid'] : 0;
     $oldename  = isset($_POST['oldename']) ? strtolower($_POST['oldename']) : null;
     $modeltype = isset($_REQUEST['type']) ? strtolower($_REQUEST['type']) : 'list';
-    $post      = POST('modelname','modelename','modelpath','modeltype','modelfields','description','sortemplate','pagetemplate');
+    $post      = POST('modelname','modelename','modelpath','modeltype','modelfields','iskeyword','description','sortemplate','pagetemplate');
     $post[3]   = empty($post[3]) ? $modeltype : $post[3];
     if (is_array($post[4])) {
         $post[4] = '['.implode(',',$post[4]).']';
@@ -197,9 +197,10 @@ function lazy_edit(){
                     'modelpath'   => $post[2],
                     'modeltype'   => $post[3],
                     'modelfields' => $post[4],
-                    'description' => $post[5],
-                    'sortemplate' => $post[6],
-                    'pagetemplate'=> $post[7],
+                    'iskeyword'   => $post[5],
+                    'description' => $post[6],
+                    'sortemplate' => $post[7],
+                    'pagetemplate'=> $post[8],
                 ));
                 $text = t('model/alert/add');
             } else {
@@ -270,9 +271,10 @@ function lazy_edit(){
                     'modelpath'   => $post[2],
                     'modeltype'   => $post[3],
                     'modelfields' => json_encode($post[4]),
-                    'description' => $post[5],
-                    'sortemplate' => $post[6],
-                    'pagetemplate'=> $post[7],
+                    'iskeyword'   => $post[5],
+                    'description' => $post[6],
+                    'sortemplate' => $post[7],
+                    'pagetemplate'=> $post[8],
                 ),DB::quoteInto('`modelid` = ?',$modelid));
                 $text = t('model/alert/edit');
             }
@@ -288,8 +290,9 @@ function lazy_edit(){
                 $post[2] = $rs['modelpath'];
                 $post[3] = $rs['modeltype'];
                 $post[4] = empty($rs['modelfields'])?array():json_decode($rs['modelfields']);
-                $post[5] = h2c($rs['description']);
-                $post[6] = h2c($rs['sortemplate']);
+                $post[5] = h2c($rs['iskeyword']);
+                $post[6] = h2c($rs['description']);
+                $post[7] = h2c($rs['sortemplate']);
                 $post[8] = h2c($rs['pagetemplate']);
             }
         }
@@ -329,13 +332,13 @@ function lazy_edit(){
     if ($post[3]=='list') {
         echo '<p><label>'.t('model/template/sort').':</label>';
         echo '<select name="sortemplate" id="sortemplate">';
-        echo form_opts(c('TEMPLATE'),c('TEMPLATE_EXTS'),'<option value="#value#"#selected#>#name#</option>',$post[6]);
+        echo form_opts(c('TEMPLATE'),c('TEMPLATE_EXTS'),'<option value="#value#"#selected#>#name#</option>',$post[7]);
         echo '</select></p>';
     }
     
     echo '<p><label>'.t('model/template/page').':</label>';
     echo '<select name="pagetemplate" id="pagetemplate">';
-    echo form_opts(c('TEMPLATE'),c('TEMPLATE_EXTS'),'<option value="#value#"#selected#>#name#</option>',$post[7]);
+    echo form_opts(c('TEMPLATE'),c('TEMPLATE_EXTS'),'<option value="#value#"#selected#>#name#</option>',$post[8]);
     echo '</select></p>';
     echo '</div></fieldset>';
 
@@ -354,8 +357,12 @@ function lazy_edit(){
         echo '<td>'.t('model/fields/type/'.$row['intype']).$len.'</td>';
         echo '<td>'.(empty($row['default'])?'NULL':$row['default']).'<textarea name="modelfields['.$row['id'].']" fieldid="'.$row['id'].'" class="hide">'.json_encode($row).'</textarea></td>';
         echo '<td><a href="javascript:;" onclick="$(\'#tableFields\').editFields('.$row['id'].');"><img class="a5 os" src="../system/images/white.gif" /></a>';
+        if ($row['intype']=='input') {
+            $selected = ($post[5]==$row['ename']) ? 'b5' : 'b6';
+            echo '<a href="javascript:;" onclick="$(this).isKeyword('.$row['id'].');" title="'.t('model/fields/iskeyword').'"><img class="'.$selected.' os" src="../system/images/white.gif" /></a>';
+        }
         if (instr('basic,editor',$row['intype'])) {
-            $selected = ($post[5]==$row['ename']) ? 'b7' : 'b8';
+            $selected = ($post[6]==$row['ename']) ? 'b7' : 'b8';
             echo '<a href="javascript:;" onclick="$(this).Description('.$row['id'].');" title="'.t('model/fields/description').'"><img class="'.$selected.' os" src="../system/images/white.gif" /></a>';
         }
         echo '</td></tr>';
@@ -376,7 +383,8 @@ function lazy_edit(){
     echo '<input name="modelid" type="hidden" value="'.$modelid.'" />';
     echo '<input name="modeltype" type="hidden" value="'.$post[3].'" />';
     echo '<input name="oldename" type="hidden" value="'.$post[1].'" />';
-    echo '<input name="description" type="hidden" value="'.$post[5].'" />';
+    echo '<input name="iskeyword" type="hidden" value="'.$post[5].'" />';
+    echo '<input name="description" type="hidden" value="'.$post[6].'" />';
     echo '</form>';
 }
 // *** *** www.LazyCMS.net *** *** //
@@ -389,7 +397,7 @@ function lazy_fields(){
         foreach ($eField as $field) {
             $rq[] = isset($_POST['field'.$field]) ? $_POST['field'.$field] : null;
         }
-        $isField = !instr('id,sortid,title,order,date,hits,digg,passed,userid,path,keywords,description,isdel',$rq[3]);
+        $isField = !instr('id,sortid,order,date,hits,digg,passed,userid,path,keywords,description,isdel',$rq[3]);
         $val->check('fieldlabel|0|'.t('model/fields/check/label'));
         $val->check('fieldename|0|'.t('model/fields/check/ename').';fieldename|validate|'.t('model/fields/check/ename1').'|3;fieldename|3|'.t('model/fields/check/restrict').'|'.$isField);
         if (instr('input',$rq[4])) {
@@ -409,6 +417,9 @@ function lazy_fields(){
             $s.= '<td>'.t('model/fields/type/'.$row['intype']).$len.'</td>';
             $s.= '<td>'.(empty($row['default'])?'NULL':$row['default']).'<textarea name="modelfields['.$row['id'].']" fieldid="'.$row['id'].'" class="hide">'.json_encode($row).'</textarea></td>';
             $s.= '<td><a href="javascript:;" onclick="$(\'#tableFields\').editFields('.$row['id'].');"><img class="a5 os" src="../system/images/white.gif" /></a>';
+            if ($row['intype']=='input') {
+                $s.= '<a href="javascript:;" onclick="$(this).isKeyword('.$row['id'].');" title="'.t('model/fields/iskeyword').'"><img class="b6 os" src="../system/images/white.gif" /></a>';
+            }
             if (instr('basic,editor',$row['intype'])) {
                 $s.= '<a href="javascript:;" onclick="$(this).Description('.$row['id'].');" title="'.t('model/fields/description').'"><img class="b8 os" src="../system/images/white.gif" /></a>';
             }

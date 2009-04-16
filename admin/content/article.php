@@ -84,7 +84,7 @@ function lazy_main(){
         $jtable = Content_Model::getJoinTableName($model['modelename']);
         $length = count($fields);
         $query  = null; $inSQL = null;
-        $inLike = empty($keyword)?null:"BINARY UCASE(`title`) LIKE UCASE('%{$keyword}%') OR BINARY UCASE(`description`) LIKE UCASE('%{$keyword}%')";
+        $inLike = empty($keyword)?null:"BINARY UCASE(`description`) LIKE UCASE('%{$keyword}%')";
         foreach ($fields as $k=>$v) {
             $query .= '&fields'.rawurlencode("[{$k}]").'='.rawurlencode($v);
             if ($keyword!='') {
@@ -100,29 +100,35 @@ function lazy_main(){
         $ds->action = PHP_FILE.'?action=set&model='.$model['modelename'];
         $ds->url = PHP_FILE.'?model='.$model['modelename'].'&sortid='.$sortid.'&keyword='.$keyword.'&size='.$size.$query.'&page=$';
         $ds->but = $ds->button('create:'.t('system::create').'|move:'.t('system::move')).$ds->plist();
-        $ds->td("cklist(K[0]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[1] + '</a>'");
         // 循环自定义显示字段
         for ($i=0; $i<$length; $i++) {
-            $ds->td("K[".($i+7)."]");
+            if ($i==0) {
+                $ds->td("cklist(K[0]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[".($i+6)."] + '</a>'");
+            } else {
+                $ds->td("K[".($i+6)."]");
+            }
         }
-        $ds->td("(K[3]?icon('b3',K[2],'_blank'):icon('b4','javascript:;','\$(this).ajaxLink(\'create\',' + K[0] + ');')) + (K[3]?'<a href=\"' + K[2] + '\" target=\"_blank\">' + K[2] + '</a>':K[2])");
+        if ($length==0) {
+            $ds->td("cklist(K[0]) + K[0] + ') ' + (K[2]?icon('b3',K[1]):icon('b4','javascript:;','\$(this).ajaxLink(\'create\',' + K[0] + ');')) + '<a href=\"".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0] + '\">' + K[1] + '</a>'");
+        } else {
+            $ds->td("(K[2]?icon('b3',K[1],'_blank'):icon('b4','javascript:;','\$(this).ajaxLink(\'create\',' + K[0] + ');')) + (K[2]?'<a href=\"' + K[1] + '\" target=\"_blank\">' + K[1] + '</a>':K[1])");
+        }
+        $ds->td("K[3]");
         $ds->td("K[4]");
         $ds->td("K[5]");
-        $ds->td("K[6]");
         $ds->td("icon('a5','".PHP_FILE."?action=edit&model=".$model['modelename']."&id=' + K[0])");
         $ds->open();
-        $ds->thead = '<tr>';
-        $ds->thead.= '<th>ID) '.t('article/name').'</th>';
+        $ds->thead = '<tr>'; $i=0;
         foreach ($fields as $field=>$label) {
-            $ds->thead.= '<th>'.$label.'</th>';
+            $ds->thead.= '<th>'.($i==0?'ID) ':null).$label.'</th>'; $i++;
         }
-        $ds->thead.= '<th>'.t('article/path').'</th><th>'.t('article/hits').'</th><th>'.t('article/digg').'</th><th>'.t('article/date').'</th><th>'.t('system::Manage').'</th></tr>';
+        $ds->thead.= '<th>'.($length==0?'ID) ':null).t('article/path').'</th><th>'.t('article/hits').'</th><th>'.t('article/digg').'</th><th>'.t('article/date').'</th><th>'.t('system::Manage').'</th></tr>';
         while ($rs = $ds->result()) {
             $K = null;
             foreach ($fields as $field=>$label) {
                 $K.= ",'".t2js(h2c($rs[$field]))."'";
             }
-            $ds->tbody("E(".$rs['id'].",'".t2js($rs['title'])."','".t2js(SITE_BASE.$rs['path'])."',".(is_file(LAZY_PATH.'/'.$rs['path'])?1:0).",".$rs['hits'].",".$rs['digg'].",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});");
+            $ds->tbody("E(".$rs['id'].",'".t2js(SITE_BASE.$rs['path'])."',".(is_file(LAZY_PATH.'/'.$rs['path'])?1:0).",".$rs['hits'].",".$rs['digg'].",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});");
         }
         $ds->close();
         $ds->display();
@@ -168,8 +174,7 @@ function lazy_edit(){
     $selTab = array_search($mName,g('MODEL'))+4;
     $model  = Content_Model::getModelByEname($mName); if (!$model) { trigger_error(t('system::error/invalid')); }
     $sorts  = $db->result("SELECT COUNT(*) FROM `#@_content_sort_join` WHERE `modelid`=".DB::quote($model['modelid']).";");
-    $label  = (empty($docId) ? t('system::add') : t('system::edit')).$model['modelname'];
-    $title  = isset($_POST['title']) ? $_POST['title'] : null;
+    $title  = (empty($docId) ? t('system::add') : t('system::edit')).$model['modelname'];
     $path   = isset($_POST['path']) ? $_POST['path'] : null;
     $table  = Content_Model::getDataTableName($model['modelename']);
     $sortid = isset($_POST['sortid']) ? $_POST['sortid'] : 0;
@@ -188,7 +193,7 @@ function lazy_edit(){
         $fields= $tag->_Fields();
         // 路径转换
         $maxid = $db->max('id',$table);
-        $path  = Content_Article::formatPath($maxid,$path,$title);
+        $path  = Content_Article::formatPath($maxid,$path,$data[$model['iskeyword']]);
         // 验证路径不能重复
         $val->check('path|0|'.t('article/check/path').';path|5|'.t('article/check/path1').';path|4|'.t('article/check/path2')."|SELECT COUNT(*) FROM `{$table}` WHERE `path`=".DB::quote($path).(empty($docId)?null:" AND `id` <> {$docId}"));
         $val->check('description|1|'.t('article/check/description').'|0-250');
@@ -217,8 +222,7 @@ function lazy_edit(){
             if (empty($docId)) {
                 $row = array(
                     'sortid'    => $sortid,
-                    'title'     => $title,
-                    'order'     => now(),
+                    'order'     => $maxid,
                     'date'      => now(),
                     'path'      => $path,
                     'userid'    => $_USER['adminid'],
@@ -233,7 +237,6 @@ function lazy_edit(){
             } else {
                 $row = array(
                     'sortid'  => $sortid,
-                    'title'   => $title,
                     'path'    => $path,
                     'userid'  => $_USER['adminid'],
                     'description' => $description,
@@ -245,13 +248,15 @@ function lazy_edit(){
                 $text = t('article/alert/edit');
             }
             // 自动获取关键词
-            $keywords = isset($_POST['keywords']) ? $_POST['keywords'] : null;
-            $autokeys = isset($_POST['autokeys']) ? $_POST['autokeys'] : null;
-            if ($autokeys && empty($keywords)) {
-                $keywords = System::getKeywords($title);
-                $keywords = implode(',',$keywords);
+            if (!empty($model['iskeyword'])) {
+                $keywords = isset($_POST['keywords']) ? $_POST['keywords'] : null;
+                $autokeys = isset($_POST['autokeys']) ? $_POST['autokeys'] : null;
+                if ($autokeys && empty($keywords)) {
+                    $keywords = System::getKeywords($data[$model['iskeyword']]);
+                    $keywords = implode(',',$keywords);
+                }
+                $key->save($docId,$keywords,c('GET_RELATED_KEY'));
             }
-            $key->save($docId,$keywords,c('GET_RELATED_KEY'));
             $referer = isset($_POST['__referer'])?$_POST['__referer']:PHP_FILE;
 			$referer = strpos($referer,basename(PHP_FILE))!==false?$referer:PHP_FILE;
             // 生成页面
@@ -264,10 +269,11 @@ function lazy_edit(){
         if (!empty($docId)) {
             $res = $db->query("SELECT * FROM `{$table}` WHERE `id`=?",$docId);
             if ($data = $db->fetch($res)) {
-                $title  = h2c($data['title']);
                 $path   = h2c($data['path']);
                 $sortid = $data['sortid'];
-                $keywords = $key->get($docId);
+                if (!empty($model['iskeyword'])) {
+                    $keywords = $key->get($docId);
+                }
                 $description = $data['description'];
             }
         }
@@ -281,10 +287,10 @@ function lazy_edit(){
         
     ');
     System::loadScript('content.article');
-    System::header($label,$selTab);
+    System::header($title,$selTab);
 
     echo '<form id="form1" name="form1" method="post" action="">';
-    echo '<fieldset><legend rel="tab"><a rel=".show" cookie="false"><img class="a2 os" src="../system/images/white.gif" />'.$label.'</a></legend>';
+    echo '<fieldset><legend rel="tab"><a rel=".show" cookie="false"><img class="a2 os" src="../system/images/white.gif" />'.$title.'</a></legend>';
     echo '<div class="show">';
 
     if ($sorts > 0) {
@@ -295,14 +301,16 @@ function lazy_edit(){
         echo Content_Sort::getSortListByParentId($model['modelid'],$sortid);
         echo '</div></div><input name="sortid" type="hidden" id="sortid" value="'.$sortid.'" /><script type="text/javascript">$(\'#__sorts a[value='.$sortid.']\').setSortId();</script></span></p>';
     }
-    echo '<p><label>'.t('article/name').':</label><input help="article/name" class="in w400" type="text" name="title" id="title" value="'.$title.'" /><span><input type="checkbox" name="autokeys" id="autokeys" value="1" checked="checked" cookie="true" /><label for="autokeys">'.t('system::autokeys').'</label></span></p>';
+
     echo $tag->fetch('<p><label>{label}:</label>{object}</p>',$data);
     echo '<p><label>'.t('article/path').':</label><input help="article/path" class="in w500" type="text" name="path" id="path" value="'.(empty($path)?$model['modelpath']:$path).'" /></p>';
     echo '</div></fieldset>';
 
     echo '<fieldset><legend><a rel=".more-attr"><img class="a2 os" src="../system/images/white.gif" />'.t('system::moreattr').'</a></legend>';
     echo '<div class="more-attr">';
-    echo '<p><label>'.t('article/keyword').':</label><input class="in w400" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" onclick="$(\'#keywords\').getKeywords(\'#title\')">'.t('system::get').'</button></p>';
+    if (!empty($model['iskeyword'])) {
+        echo '<p><label>'.t('article/keyword').':</label><input class="in w400" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" onclick="$(\'#keywords\').getKeywords(\'#'.$model['iskeyword'].'\')">'.t('system::get').'</button></p>';
+    }
     echo '<p><label>'.t('article/description').':</label><textarea name="description" id="description" rows="5" class="in w400">'.$description.'</textarea></p>';
     echo '</div></fieldset>';
     echo but('system::save').'<input name="id" type="hidden" value="'.$docId.'" /><input name="__referer" type="hidden" value="'.$_SERVER['HTTP_REFERER'].'" /></form>';

@@ -115,7 +115,6 @@ class Content_Article{
             // 设置标签值
             $tag->value(array(
                 'id'        => $rs['id'],
-                'title'     => $rs['title'],
                 'date'      => $rs['date'],
                 'hits'      => $rs['hits'],
                 'digg'      => $rs['digg'],
@@ -205,14 +204,9 @@ class Content_Article{
         }
         return true;
     }
-    /**
-     * 生成文件列表
-     *
-     * @param object $pro
-     * @return unknown
-     */
+    // *** *** www.LazyCMS.net *** *** //
     function createList(&$pro){
-        $db = get_conn(); $execTime = 5;
+        $db  = get_conn(); $execTime = 5;
         // 第一次需要insert数据
         if ($pro->insert) {
             import('system.parsetags'); $tag = new ParseTags(); $template = c('TEMPLATE');
@@ -237,6 +231,7 @@ class Content_Article{
                 $listdata[$sortid] = array(
                     'models' => $models,
                     'total'  => $length,
+                    'number' => $number,
                     'page'   => 1,
                 );
                 // 关闭对象
@@ -259,7 +254,7 @@ class Content_Article{
                         break 3;
                     }
                     // 生成成功
-                    if (Content_Article::createListPage($sortid,$data['models'],$data['total'],$i)) {
+                    if (Content_Article::createListPage($sortid,$data['models'],$data['total'],$data['number'],$i)) {
                         //$f = LAZY_PATH.'/sort/'.$sortid; mkdirs($f);
                         //save_file($f.'/'.$i.'.html',$i);
                         // 生成一个加一
@@ -297,13 +292,33 @@ class Content_Article{
      *
      * @param int $sortid
      * @param int $total
+     * @param int $number
      * @param int $page
      */
-    function createListPage($sortid,$models,$total,$page){
+    function createListPage($sortid,$models,$total,$number,$page){
         $db = get_conn(); $template = c('TEMPLATE');
         import('system.parsetags'); $tag = new ParseTags();
+        // 分类下如果有多个模块，则进行链表查询
+        if (count($models) > 1) {
+            $inSQL = null;
+            foreach ($models as $model) {
+                $table = Content_Model::getDataTableName($model);
+                $inSQL.= ($inSQL?" UNION ":null)."SELECT `id`,`order`,'{$model}' AS `model` FROM `{$table}` WHERE `passed`=0 AND `sortid`={$sortid}";
+            }
+            // 查询的数据可以放在临时表里进行缓存
+            $SQL = "SELECT * FROM ({$inSQL}) AS `article`";
+        } else {
+            // 只有一个模型，进行简单的查询
+            $model = array_pop($models);
+            $table = Content_Model::getDataTableName($model);
+            $SQL = "SELECT `id`,`order`,'{$model}' AS `model` FROM `{$table}` WHERE `passed`=0 AND `sortid`={$sortid}";
+        }
         // 查询
-        //$db->query("");
+        $result = $db->query("{$SQL} ORDER BY `order` LIMIT {$number} OFFSET ".(($page-1)*$number));
+        while ($rs = $db->fetch($result)) {
+        	// 可以搞列表了
+        	
+        }
         return true;
     }
 }

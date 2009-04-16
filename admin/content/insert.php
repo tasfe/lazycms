@@ -42,14 +42,16 @@ function lazy_main(){
 <p>对于这项改革的实施时机，该人士表示，&ldquo;一方面是利率上的优势不再，另一方面是巨额的闲置款，公积金的贷款利率改革现在最合适&rdquo;。</p>
 <p>对于这种建议，北京住房公积金管理中心回应说，目前还没有下调贷款利率、上调存款利率的打算，但可以考虑。 同时，公积金中心表示，为了提高公积金利用率，今年北京计划发放住房公积金贷款126亿元，这一数字比去年的实际放贷额提高了12%。</p>
 <p>商报记者 齐琳</p>';
-    $sortids = array(1,2,3,4,5,6);
-    for ($i=1;$i<=6000;$i++) {
-        $maxid = $db->max('id','#@_content_data_article');
+    $sortids = array(2,4,5);
+    $tables  = array('#@_content_data_article','#@_content_data_article1');
+    for ($i=1;$i<=4000;$i++) {
+        $table = $tables[mt_rand(0,1)];
+        $maxid = $db->max('id',$table);
         $index  = mt_rand(0,count($sortids)-1);
         $sortid = $sortids[$index];
-        $db->insert('#@_content_data_article',array(
+        $db->insert($table,array(
             'sortid' => $sortid,
-            'order'  => now(),
+            'order'  => $maxid,
             'date'   => now(),
             'path'   => 'article/20090316/'.$maxid.'.html',
             'title'  => $i.'北京住房公积金滞存400亿 购房者吁下调利率',
