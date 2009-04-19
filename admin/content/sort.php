@@ -52,7 +52,7 @@ function lazy_main(){
     $ds->td("cklist(K[0]) + icon('d'+K[4]) + K[0] + ') <a href=\"".PHP_FILE."?action=edit&sortid=' + K[0] + '\">' + K[1] + '</a>'");
     $ds->td("K[5]");
     $ds->td("K[6]");
-    $ds->td("(K[3]?icon('b3',K[2]):icon('b4','javascript:;','\$(this).ajaxLink(\'createlist\',' + K[0] + ');')) + K[2]");
+    $ds->td("(K[3]?icon('b3',K[2],'_blank'):icon('b4','javascript:;','\$(this).ajaxLink(\'createlist\',' + K[0] + ');')) + (K[3]?'<a href=\"' + K[2] + '\" target=\"_blank\">' + K[2] + '</a>':K[2])");
     $ds->td("icon('a5','".PHP_FILE."?action=edit&sortid=' + K[0])");
     $ds->open();
     $ds->thead = '<tr><th>ID) '.t('sort/name').'</th><th>'.t('sort/model').'</th><th>'.t('sort/count').'</th><th>'.t('sort/path').'</th><th>'.t('system::Manage').'</th></tr>';
@@ -64,7 +64,7 @@ function lazy_main(){
             $modelename = implode(',',$model['modelename']);
         }
         $count = Content_Article::count($rs['sortid'],$modelename);
-        $ds->tbody("E(".$rs['sortid'].",'".t2js(h2c($rs['sortname']))."','".t2js(h2c(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($modelname)?'&nbsp;':$modelname)."',{$count});\$(function(){\$('#list_".$rs['sortid']."').addSub(".$rs['sortid'].",1,{$isSub});});");
+        $ds->tbody("E(".$rs['sortid'].",'".t2js(h2c($rs['sortname']))."','".t2js(h2c(SITE_BASE.$rs['sortpath']))."',".(file_exists(LAZY_PATH.'/'.$rs['sortpath'])?1:0).",{$isSub},'".(empty($modelname)?'&nbsp;':$modelname)."',{$count});\$(function(){\$('#list_".$rs['sortid']."').addSub(".$rs['sortid'].",1,{$isSub});});");
     }
     $ds->close();
     $ds->display();

@@ -106,15 +106,13 @@ class Content_Article{
             // 取得模板地址
             $tmplpath = LAZY_PATH.'/'.$template.'/'.Content_Article::getTemplateBySortId($rs['sortid'],'page');
             $tag->loadHTML($tmplpath);
-            // 替换模板中的标签
+            // 清除标签值
             $tag->clear();
-            // 替换自定义字段标签
-            foreach ($fields as $field) {
-                $tag->value($field->ename,$rs[$field->ename]);
-            }
             // 设置标签值
             $tag->value(array(
                 'id'        => $rs['id'],
+                'sortid'    => $rs['sortid'],
+                'order'     => $rs['order'],
                 'date'      => $rs['date'],
                 'hits'      => $rs['hits'],
                 'digg'      => $rs['digg'],
@@ -122,6 +120,10 @@ class Content_Article{
                 'keywords'  => $key->get($rs['id']),
                 'description'   => $rs['description'],
             ));
+            // 替换自定义字段标签
+            foreach ($fields as $field) {
+                $tag->value($field->ename,$rs[$field->ename]);
+            }
             // 解析模板
             $outHTML = $tag->parse();
             $outFile = LAZY_PATH.'/'.$rs['path'];
@@ -227,8 +229,14 @@ class Content_Article{
                 $length   = floor(Content_Article::count($sortid,implode(',',$models)) / $number + 1);
                 // 计算需要生成的文档总数
                 $pro->total = $pro->total + $length;
+                // 查询分类信息
+                $result = $db->query("SELECT * FROM `#@_content_sort` WHERE `sortid`=".DB::quote($sortid));
+                if (!($sortrs = $db->fetch($result))) {
+                	$sortrs = array();
+                }
                 // 记录分类需要生成的文档数
                 $listdata[$sortid] = array(
+                    'sortrs' => $sortrs,
                     'models' => $models,
                     'total'  => $length,
                     'number' => $number,
@@ -254,9 +262,7 @@ class Content_Article{
                         break 3;
                     }
                     // 生成成功
-                    if (Content_Article::createListPage($sortid,$data['models'],$data['total'],$data['number'],$i)) {
-                        //$f = LAZY_PATH.'/sort/'.$sortid; mkdirs($f);
-                        //save_file($f.'/'.$i.'.html',$i);
+                    if (Content_Article::createListPage($listdata[$sortid])) {
                         // 生成一个加一
                         $listdata[$sortid]['page']++; $pro->create++;
                         if ((int)$listdata[$sortid]['page'] == (int)$listdata[$sortid]['total']) {
@@ -295,8 +301,12 @@ class Content_Article{
      * @param int $number
      * @param int $page
      */
-    function createListPage($sortid,$models,$total,$number,$page){
+    function createListPage($data){
+        if (!$data) { return true; } import('system.keywords');
         $db = get_conn(); $template = c('TEMPLATE');
+        $sortrs = $data['sortrs']; $sortid = $sortrs['sortid'];
+        $models = $data['models']; $total  = $data['total'];
+        $number  = $data['number']; $page  = $data['page'];
         import('system.parsetags'); $tag = new ParseTags();
         // 分类下如果有多个模块，则进行链表查询
         if (count($models) > 1) {
@@ -316,8 +326,46 @@ class Content_Article{
         // 查询
         $result = $db->query("{$SQL} ORDER BY `order` LIMIT {$number} OFFSET ".(($page-1)*$number));
         while ($rs = $db->fetch($result)) {
-        	// 可以搞列表了
-        	
+        	// 得到存放数据的表名
+            $table  = Content_Model::getDataTableName($rs['model']);
+            // 取得一篇文章的所有信息
+            $res = $db->query("SELECT * FROM `{$table}` WHERE `id`=".DB::quote($rs['id']));
+            if ($data = $db->fetch($res)) {
+                $key = new Keywords($rs['model']);
+                // 取得模板地址
+                $tmplpath = LAZY_PATH.'/'.$template.'/'.Content_Article::getTemplateBySortId($sortid,'sort');
+                // 加载模板
+                $tag->loadHTML($tmplpath);
+                // 清除标签值
+                $tag->clear();
+                // 取得模型数据
+                $model  = Content_Model::getModelByEname($rs['model']);
+                // 取得自定义字段
+                $fields = json_decode($model['modelfields']);
+                // 设置标签值
+                $tag->value(array(
+                    'id'        => $data['id'],
+                    'sortid'    => $data['sortid'],
+                    'order'     => $data['order'],
+                    'date'      => $data['date'],
+                    'hits'      => $data['hits'],
+                    'digg'      => $data['digg'],
+                    'path'      => SITE_BASE.$data['path'],
+                    'keywords'  => $key->get($data['id']),
+                    'description'   => $data['description'],
+                ));
+                // 替换自定义字段标签
+                foreach ($fields as $field) {
+                    $tag->value($field->ename,$data[$field->ename]);
+                }
+                unset($key);
+                // 解析模板
+                $outHTML = $tag->parse();
+                $tag->close();
+            }
+            // 生成列表文件
+            $outFile = LAZY_PATH.'/'.$sortrs['sortpath'].'/index'.($page>1?$page:'').'.html';
+            mkdirs(dirname($outFile)); save_file($outFile,$outHTML);
         }
         return true;
     }

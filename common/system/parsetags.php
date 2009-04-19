@@ -123,7 +123,7 @@ class ParseTags{
                 $tagName = sect($tag,'(\{)','( |\/)');
                 break;
             case 'b': 
-                $tagName = sect($tag,'{',':');
+                $tagName = sect($tag,'{',' ');
                 break;
             case 'v': 
                 $tagName = sect($tag,'(\{\$)','( |\})');
