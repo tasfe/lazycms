@@ -396,7 +396,7 @@ function save_file($p1,$p2='',$p3=true){
     if (!fwrite($fp,$p2)) {
         // TODO: 记录错误日志，无法写入文件
     }
-    fclose($fp);
+    //fclose($fp);
 }
 /**
  * 页面跳转

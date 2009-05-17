@@ -42,25 +42,26 @@ class Content_Onepage{
             // 取得模板地址
 			$res = $db->query("SELECT `pagetemplate` FROM `#@_content_model` WHERE `modelename`=?;",$modelename);
 			if ($rs1 = $db->fetch($res,0)) { $template = $rs1[0]; }
-            $tmplpath = LAZY_PATH.'/'.c('TEMPLATE').'/'.$template;
-            $tag->loadHTML($tmplpath);
-            // 替换模板中的标签
+			// 加载模板
+            $tag->loadHTML(LAZY_PATH.'/'.c('TEMPLATE').'/'.$template);
+            // 清除标签值
             $tag->clear();
-            // 替换自定义字段标签
-            foreach ($fields as $field) {
-                $tag->value($field->ename,$rs[$field->ename]);
-            }
-            // 设置标签值
-            $tag->value(array(
+            // 定义内部变量
+            $tag->V(array(
                 'id'        => $rs['id'],
+                'sortid'    => $rs['sortid'],
                 'date'      => $rs['date'],
                 'hits'      => $rs['hits'],
                 'digg'      => $rs['digg'],
                 'path'      => SITE_BASE.$rs['path'],
-                'keywords'  => $key->get($rs['id']),
+                'keywords'    => $key->get($rs['id']),
                 'description' => $rs['description'],
             ));
-            // 解析模板
+            // 添加自定义字段变量
+            foreach ($fields as $field) {
+                $tag->V($field->ename,$rs[$field->ename]);
+            }
+            // 解析模板变量
             $outHTML = $tag->parse();
             $outFile = LAZY_PATH.'/'.$rs['path'];
             mkdirs(dirname($outFile)); save_file($outFile,$outHTML);

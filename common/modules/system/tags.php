@@ -22,17 +22,16 @@ defined('COM_PATH') or die('Restricted access!');
 /**
  * 模块标签处理
  */
-class System_Tags {
+class System_Tags extends ParseTags {
     /**
      * 解析标签
      *
-     * @param object $tags      执行标签解析的对象
-     * @param string $tagName   标签名称
-     * @param string $tag       标签内容
-     * @return array            通过标签解析对象的R方法返回
+     * @param string $tagName
+     * @param string $tagHtml
+     * @return string
      */
-    function ParseTags($tags,$tagName,$tag){
-        $R = null; $isParse = true;
+    function vars($tagName,$tagHtml){
+        $R = null;
         switch ($tagName) {
             case 'sitename':
                 $R = c('SITE_NAME'); break;
@@ -48,10 +47,7 @@ class System_Tags {
                 $R = c('LANGUAGE'); break;
             case 'cms': case 'lazycms':
                 $R = '<span id="lazycms">Powered by: <a href="http://www.lazycms.net" style="font-weight:bold" target="_blank">LazyCMS</a> <span>'.LAZY_VERSION.'</span></span>'; break;
-            default:
-                $isParse = false;
-                break;
         }
-        return $tags->R($isParse,$R);
+        return $R;
     }
 }

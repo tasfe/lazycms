@@ -103,26 +103,24 @@ class Content_Article{
         $fields = json_decode($model['modelfields']);
         $result = $db->query("SELECT * FROM `{$table}` WHERE `id` IN({$ids});");
         while ($rs = $db->fetch($result)) {
-            // 取得模板地址
-            $tmplpath = LAZY_PATH.'/'.$template.'/'.Content_Article::getTemplateBySortId($rs['sortid'],'page');
-            $tag->loadHTML($tmplpath);
+            // 加载模板
+            $tag->loadHTML(LAZY_PATH.'/'.$template.'/'.Content_Article::getTemplateBySortId($rs['sortid'],'page'));
             // 清除标签值
             $tag->clear();
-            // 设置标签值
-            $tag->value(array(
+            // 定义内部变量
+            $tag->V(array(
                 'id'        => $rs['id'],
                 'sortid'    => $rs['sortid'],
-                'order'     => $rs['order'],
                 'date'      => $rs['date'],
                 'hits'      => $rs['hits'],
                 'digg'      => $rs['digg'],
                 'path'      => SITE_BASE.$rs['path'],
-                'keywords'  => $key->get($rs['id']),
-                'description'   => $rs['description'],
+                'keywords'    => $key->get($rs['id']),
+                'description' => $rs['description'],
             ));
-            // 替换自定义字段标签
+            // 添加自定义字段变量
             foreach ($fields as $field) {
-                $tag->value($field->ename,$rs[$field->ename]);
+                $tag->V($field->ename,$rs[$field->ename]);
             }
             // 解析模板
             $outHTML = $tag->parse();
@@ -308,6 +306,11 @@ class Content_Article{
         $models = $data['models']; $total  = $data['total'];
         $number  = $data['number']; $page  = $data['page'];
         import('system.parsetags'); $tag = new ParseTags();
+        // 取得模板地址
+        $tmplpath = LAZY_PATH.'/'.$template.'/'.Content_Article::getTemplateBySortId($sortid,'sort');
+        // 加载模板
+        $tag->loadHTML($tmplpath);
+        
         // 分类下如果有多个模块，则进行链表查询
         if (count($models) > 1) {
             $inSQL = null;
@@ -332,10 +335,6 @@ class Content_Article{
             $res = $db->query("SELECT * FROM `{$table}` WHERE `id`=".DB::quote($rs['id']));
             if ($data = $db->fetch($res)) {
                 $key = new Keywords($rs['model']);
-                // 取得模板地址
-                $tmplpath = LAZY_PATH.'/'.$template.'/'.Content_Article::getTemplateBySortId($sortid,'sort');
-                // 加载模板
-                $tag->loadHTML($tmplpath);
                 // 清除标签值
                 $tag->clear();
                 // 取得模型数据

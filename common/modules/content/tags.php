@@ -22,18 +22,14 @@ defined('COM_PATH') or die('Restricted access!');
 /**
  * 模块标签处理
  */
-class Content_Tags {
+class Content_Tags extends ParseTags {
     /**
      * 解析标签
      *
-     * @param object $tags      执行标签解析的对象
-     * @param string $tagName   标签名称
-     * @param string $tag       标签内容
-     * @return array            通过标签解析对象的R方法返回
+     * @param string $tagName
+     * @param string $tagHtml
      */
-    function ParseTags($tags,$tagName,$tag){
-        $R = null; $isParse = true;
-        $R = "功能正在开发中...";
-        return $tags->R($isParse,$R);
+    function run($tagName,$tagHtml){
+        return $tagName;
     }
 }
