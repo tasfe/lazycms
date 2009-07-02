@@ -35,7 +35,7 @@ class ParseTags{
     /**
      * 初始化类
      */
-    function Template(){
+    function ParseTags(){
         $this->__construct();
     }
     /**

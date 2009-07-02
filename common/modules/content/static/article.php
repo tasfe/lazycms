@@ -179,8 +179,6 @@ class Content_Article{
                                 'model'     => $model,
                                 'createid'  => $pro->id,
                             ));
-                            // 生成一个加一
-                            $pro->create++;
                             // 更新已生成的文章数，防止意外关闭无法更新
                             $pro->update();
                             // 睡眠

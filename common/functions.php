@@ -90,6 +90,7 @@ function lazycms_run() {
  * @param int    $errline
  */
 function lazycms_error($errno, $errstr, $errfile, $errline){
+    if (error_reporting() == 0) { return; }
     if (!in_array($errno,array(E_PARSE,E_USER_ERROR,E_USER_WARNING,E_USER_NOTICE,E_ALL))) { return ; }
     $errfile = replace_root($errfile); $errstr = replace_root($errstr);
     $trace = debug_backtrace(); unset($trace[0]);
@@ -110,7 +111,7 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
             $arrs = array();
             foreach ($args as $v) {
                 if (is_object($v)) {
-                    $arrs[] = implode(' ',get_object_vars($v));
+                    $arrs[] = h2c(var_export(get_object_vars($v),true));
                 } else {
                     $arrs[] = h2c(var_export($v,true));
                 }

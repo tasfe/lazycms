@@ -278,7 +278,7 @@ return array(
         ),
         'phpinfo'   => 'PHP设置',
         'zlib'      => 'Zlib开启',
-        'iconv'     => 'Zlib开启',
+        'iconv'     => 'ICONV开启',
         'mbstring'  => 'mbstring启用',
         'server_OS'     => '服务器系统',
         'GD_version'    => 'GD版本',

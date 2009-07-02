@@ -25,8 +25,6 @@ defined('COM_PATH') or die('Restricted access!');
 class Process{
     // 进程ID
     var $id     = 0;
-    // 已生成文档数
-    var $create = 0;
     // 总文档数
     var $total  = 0;
     // 已使用时间
@@ -118,7 +116,6 @@ class Process{
         if ($rs = $this->_db->fetch($res)) {
             // 取得属性变量
             $this->total   = $rs['total'];
-            $this->create  = $rs['create'];
             $this->useTime = $rs['usetime'];
             $this->data(unserialize($rs['data']));
             // 更新当前进程的状态
@@ -134,7 +131,7 @@ class Process{
                 return $this->_db->insert('#@_system_create',array(
                     'id'      => $this->id,
                     'total'   => $this->total,
-                    'create'  => $this->create,
+                    'create'  => $this->count(),
                     'usetime' => floatval($this->useTime),
                     'data'    => serialize($this->_data),
                 ));
@@ -154,7 +151,7 @@ class Process{
         // 更新已用时间
         $this->updateuseTime();
         $update = array(
-            'create'  => $this->create,
+            'create'  => $this->count(),
             'usetime' => $this->useTime
         );
         if ($p1) {
@@ -171,6 +168,10 @@ class Process{
     function delete(){
         $this->_db->delete('#@_system_create',"`id`=".DB::quote($this->id));
         $this->_db->delete('#@_system_create_logs',"`createid`=".DB::quote($this->id));
+    }
+    // 统计数量
+    function count(){
+        return $this->_db->result("SELECT COUNT(*) FROM `#@_system_create_logs` WHERE `createid`='".$this->id."';");
     }
     /**
      * 更新已用时间
@@ -211,7 +212,7 @@ class Process{
      * @param array $p1
      */
     function insertLogs($p1){
-        $this->_db->insert('#@_system_create_logs',(array) $p1);
+        @$this->_db->insert('#@_system_create_logs',(array) $p1);
     }
     /**
      * 判断记录是否生成完毕
@@ -219,7 +220,7 @@ class Process{
      * @return bool
      */
     function isOver(){
-        return (int)$this->create>=(int)$this->total?true:false;
+        return (int)$this->count()>=(int)$this->total?true:false;
     }
     /**
      * 关闭对象
@@ -231,7 +232,7 @@ class Process{
             'ACTION' => $others['phpurl'],
             'DATAS'  => array(
                 'ALONE' => (int) $this->_alone,  // 进程数
-                'OVER'  => (int) $this->create,  // 已生成文档数
+                'OVER'  => (int) $this->count(),  // 已生成文档数
                 'TOTAL' => (int) $this->total,   // 总文档数
                 'USED'  => (float) number_format($this->useTime,2,'.',''), // 已用时间
             ),

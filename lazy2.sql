@@ -141,5 +141,6 @@ CREATE TABLE IF NOT EXISTS `lazy_system_create_logs` (
   `dataid` int(11) NOT NULL default '0',
   `createid` varchar(32) NOT NULL,
   PRIMARY KEY  (`id`),
+  UNIQUE KEY `m_d_c_idx` (`model`,`dataid`,`createid`),
   KEY `dataid` (`dataid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

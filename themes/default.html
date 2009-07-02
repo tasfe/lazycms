@@ -9,17 +9,17 @@
 
 <body>
 <!-- include -->
-{include file="header.inc" /}
+{include file="header.inc"}
 <!-- 栏目名称 -->
 {$sortname}
 <!-- 网站名称 -->
 {$sitename}
 <!-- 循环id=3的热门文章 -->
-<div class="pagelist">{pagelist style="normal" /}</div>
+<div class="pagelist">{pagelist style="normal"}</div>
 <div class="article">
-	{article:list type="list" sortid="3,4,5" number="10"}
+	{content type="list" sortid="3,4,5" number="10"}
 	<p><a href="{sortpath}&id=xxx">[{$sortname}]</a> <span><a href="{$path}">{$title}</a></span></p>
-	{/article:list}
+	{/content}
 </div>
 
 
@@ -27,22 +27,9 @@
 
 
 {$content}
-
-<div class="pagelist">{pagelist style="normal" /}</div>
-<!-- 大分类循环 -->
-<div class="bigclass">
-	{article:class}
-	<h4>{$name}</h4>
-	<div class="article">
-		{article:list type="list" number="10"}
-		<p><a href="{$sortpath}&id=xxx">[{$sortname}]</a> <span><a href="{$path}">{$title}</a></span></p>
-		{/article:list}
-	</div>
-	{/article:class}
-</div>
 <!-- 自定义标签 -->
-<div name="google_ad">{tag type="html" name="google_ad" /}</div>
+<div name="google_ad">{tag type="html" name="google_ad"}</div>
 <!-- include -->
-{include file="footer.inc" /}
+{include file="footer.inc"}
 </body>
 </html>

@@ -33,7 +33,7 @@ return array(
     'TEMPLATE'   => 'themes',
     'TEMPLATE_EXTS'   => 'htm,html,shtml',
     'TEMPLATE_DEFAULT'=> 'default.html',
-    'GET_RELATED_KEY' => '',
+    'GET_RELATED_KEY' => true,
 
     /* 上传设置 */
     'UPLOAD_ALLOW_EXT' => 'png,gif,jpg,jpeg,zip,rar,doc,xls',
