@@ -546,6 +546,28 @@ function ob_zip($p1){
     return $p1;
 }
 /**
+ * HMAC-MD5
+ *
+ */
+function hmac_md5($key, $data) { 
+    if (extension_loaded("mhash")) {
+        return bin2hex(mhash(MHASH_MD5, $data, $key)); 
+    }
+    
+    // RFC 2104 HMAC implementation for php. Hacked by Lance Rushing 
+    $b = 64; 
+    if (strlen($key) > $b) {
+        $key = pack("H*", md5($key)); 
+    }
+    $key = str_pad($key, $b, chr(0x00)); 
+    $ipad = str_pad("", $b, chr(0x36)); 
+    $opad = str_pad("", $b, chr(0x5c)); 
+    $k_ipad = $key ^ $ipad ; 
+    $k_opad = $key ^ $opad; 
+    
+    return md5($k_opad . pack("H*", md5($k_ipad . $data))); 
+} 
+/**
  * 抓取图片
  *
  * @param string $p1
