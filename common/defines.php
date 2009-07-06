@@ -47,4 +47,4 @@ define('HTTP_SCHEME',(($scheme=isset($_SERVER['HTTPS'])?$_SERVER['HTTPS']:null)=
 // Http host
 define('HTTP_HOST',HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
 // System version
-define('LAZY_VERSION','2.0.524');
+define('LAZY_VERSION','2.0.525');

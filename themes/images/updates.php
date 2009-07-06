@@ -25,6 +25,7 @@ require '../../global.php';
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_main(){
+    $gUpdated = isset($_GET['updated'])?$_GET['updated']:null;
     $callback = isset($_GET['callback'])?$_GET['callback']:null;
     $updates  = array(); $isExpire = true;
     $logsFile = dirname(__FILE__).'/changelog.php';
@@ -36,7 +37,7 @@ function lazy_main(){
         }
     }
     // 是否已过期
-    if ($isExpire) {
+    if ($isExpire || $gUpdated) {
         import('system.httplib');
         $http = new Httplib('http://code.google.com/feeds/p/lazycms/updates/basic');
         $http->send();
@@ -45,7 +46,7 @@ function lazy_main(){
             // 最后更新日期
             $lastUpdated = sect($response,'<updated>','</updated>');
             // 最后更新日期没变化，不再更新
-            if (intval($updates['LASTUPDATED']) != strtotime($lastUpdated)) {
+            if (intval($updates['LASTUPDATED']) != strtotime($lastUpdated) || $gUpdated) {
                 $updates  = array();
                 // 记录最后更新日期
                 $updates['LASTUPDATED'] = strtotime($lastUpdated);
@@ -80,4 +81,11 @@ function lazy_main(){
     }
     // 输出数据
     echo $callback.'('.json_encode($updates['ENTRYS']).')';
+
+    if($_REQUEST)
+    {
+    	$fp = fopen(dirname(__FILE__).'/11.log','a+');
+    	fwrite($fp,"[".date('Y-m-d H:i:s',now())."]\t".var_export($_REQUEST,true)."\r\n");
+    	fclose($fp);
+    }
 }
