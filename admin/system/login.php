@@ -86,8 +86,8 @@ function lazy_main() {
         2592000  => 'month',
         31536000 => 'permanent',
     );
-    foreach ($expire as $v) {
-        echo '<option value="'.$v.'">'.t('login/cookie/'.$v).'</option>';
+    foreach ($expire as $k=>$v) {
+        echo '<option value="'.$k.'">'.t('login/cookie/'.$v).'</option>';
     }
     echo '</select>';
     echo '</dd>';
