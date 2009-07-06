@@ -45,6 +45,9 @@ class System_Tags extends ParseTags {
                 $R = c('TEMPLATE'); break;
             case 'lang': case 'language':
                 $R = c('LANGUAGE'); break;
+            case 'time':
+                $R = now();
+                break;
             case 'cms': case 'lazycms':
                 $R = '<span id="lazycms">Powered by: <a href="http://www.lazycms.net" style="font-weight:bold" target="_blank">LazyCMS</a> <span>'.LAZY_VERSION.'</span></span>'; break;
         }

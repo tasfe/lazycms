@@ -55,9 +55,10 @@ class ParseTags{
                 $html = str_replace($r[0][$i],read_file($tp.$file),$html);
             }
         }
-        
+        // 追加jQuery库
+        $html = preg_replace('/<\/title[^>]*>/is',"\${0}\n<meta name=\"generator\" content=\"LazyCMS ".LAZY_VERSION."\"/>\n<script type=\"text/javascript\" src=\"".SITE_BASE."common/js/jquery.js?ver=".LAZY_VERSION."\"></script>\n<script type=\"text/javascript\" src=\"".SITE_BASE."common/js/lazycms.library.js?ver=".LAZY_VERSION."\"></script>",$html);
         // 格式化图片、css、js路径
-        $html = preg_replace('/(<(((script|link|img|input|embed|object|base|area|map|table|td|th|tr).+?(src|href|background))|((param).+?(src|value)))=([^\/]+?))((images|scripts)\/.{0,}?\>)/i','${1}'.SITE_BASE.c('TEMPLATE').'/${10}',$html);
+        $html = preg_replace('/(<(((script|link|img|input|embed|object|base|area|map|table|td|th|tr).+?(src|href|background))|((param).+?(src|value)))=([^\/]+?))((images|scripts)\/.{0,}?\>)/i','${1}'.SITE_BASE.c('TEMPLATE').'/${10}',$html);        
         $this->HTML = $html;
         return $html;
     }
@@ -200,7 +201,7 @@ class ParseTags{
     function applyFunc($tag,$result){
         $result = empty($result)?'':$result;
         if (stripos($tag,'func=')!==false) {
-            $func = sect($tag,'(func\=("|\'))','("|\')');
+            $func = sect($tag,'func="','"');
             if (strlen($func)>0) {
                 if (strpos($func,'@me')!==false) { 
                     $func = preg_replace("/'@me'|\"@me\"|@me/isU",'$result',$func);
@@ -221,7 +222,7 @@ class ParseTags{
         $val = $R = $this->V($tagName);
         // size
         if (stripos($tag,'size=')!==false) {
-            $size = sect($tag,'(size\=("|\'))','("|\')');
+            $size = sect($tag,'size="','"');
             if (validate($size,2)) {
                 if ((int)len($val) > (int)$size) {
                     $R = cnsubstr($val,$size).'...';
@@ -232,7 +233,7 @@ class ParseTags{
         }
         // datemode
         if (is_numeric($val) && (stripos($tag,'mode=')!==false)) {
-            $date = sect($tag,'(mode\=("|\'))','("|\')');
+            $date = sect($tag,'mode="','"');var_dump($date);
             if (strlen($date) > 0) {
                 switch ((string)$date) {
                     case '0':
@@ -249,7 +250,7 @@ class ParseTags{
         }
         // code
         if (stripos($tag,'code=')!==false) {
-            $code = sect($tag,'(code\=("|\'))','("|\')');
+            $code = sect($tag,'code="','"');
             if (strlen($R) > 0) {
                 switch (strtolower($code)) {
                     case 'javascript': case 'js':

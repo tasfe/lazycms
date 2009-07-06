@@ -36,13 +36,15 @@ function lazy_main(){
     $val = new Validate();
     if ($val->method()) {
         $DSN_CONFIG = isset($_POST['DSN_CONFIG']) ? $_POST['DSN_CONFIG'] : null;
+        $_POST['TIME_DIFF'] = empty($_POST['TIME_DIFF']) ? 0 : $_POST['TIME_DIFF'];
         $val->check('SITE_NAME|0|'.t('settings/check/sitename'));
         $val->check('UPLOAD_ALLOW_EXT|0|'.t('settings/check/allowext').';UPLOAD_ALLOW_EXT|validate|'.t('settings/check/errorext').'|^[\w\,]+$');
         $val->check('UPLOAD_MAX_SIZE|0|'.t('settings/check/maxsize').';UPLOAD_MAX_SIZE|validate|'.t('settings/check/maxsize1').'|2');
         $val->check('UPLOAD_FILE_PATH|0|'.t('settings/check/filepath').';UPLOAD_FILE_PATH|5|'.t('settings/check/errorpath'));
         $val->check('UPLOAD_IMAGE_PATH|0|'.t('settings/check/imagepath').';UPLOAD_IMAGE_PATH|5|'.t('settings/check/errorpath'));
         $val->check('UPLOAD_IMAGE_EXT|0|'.t('settings/check/imageext').';UPLOAD_IMAGE_EXT|validate|'.t('settings/check/errorext').'|^[\w\,]+$');
-        $val->check('DSN_CONFIG|0|'.t('settings/check/DSNconfig').';DSN_CONFIG|3|'.t('settings/check/DSNformat').'|'.validate($DSN_CONFIG,'^((\w+):\/\/path\=(.+)$)|(^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@(\w+)(:(\d+))?(\/([\w\-]+)\/([\w\-]+)|\/([\w\-]+))$)'));
+        $val->check('TIME_DIFF|3|'.t('settings/check/timediff').'|'.is_numeric($_POST['TIME_DIFF']));
+        $val->check('DSN_CONFIG|0|'.t('settings/check/DSNconfig').';DSN_CONFIG|3|'.t('settings/check/DSNformat').'|'.validate($DSN_CONFIG,'^((\w+)\:\/\/path\=(.+)$)|(^(\w+)\:\/\/([^\/:]+)(\:([^@]+)?)?@(\w+)(\:(\d+))?(\/([\w\-]+)\/([\w\-]+)|\/([\w\-]+))$)'));
         if ($val->isVal()) {
             $val->out();
         } else {
@@ -63,7 +65,7 @@ function lazy_main(){
                 'UPLOAD_FILE_PATH',
                 'UPLOAD_IMAGE_PATH',
                 'UPLOAD_IMAGE_EXT',
-                'TIME_ZONE',
+                'TIME_DIFF',
                 'DSN_CONFIG'
             );
             foreach ($fields as $field) {
@@ -71,7 +73,7 @@ function lazy_main(){
                 if ($data!='true' && $data!='false' && !is_numeric($data)) {
                     $data = "'{$data}'";
                 }
-                $config = preg_replace('/(\''.$field.'\'( |\t)*\=\>( |\t)*)((true|false|null|[-\d]+)|\'.+\'),/ie','\'\\1\'.$data.\',\'',$config);
+                $config = preg_replace('/(\''.$field.'\'( |\t)*\=\>( |\t)*)((true|false|null|[\-\.\d]+)|\'.+\'),/ie','\'\\1\'.$data.\',\'',$config);
             }
             save_file(COM_PATH.'/config.php',$config);
             ajax_success(t('settings/alert/save'),0);
@@ -114,13 +116,7 @@ function lazy_main(){
     
     echo '<fieldset><legend><a rel=".show"><img class="a1 os" src="../system/images/white.gif" />'.t('settings/server').'</a></legend>';
     echo '<div class="show">';
-    echo '<p><label>'.t('settings/server/timezone').':</label>';
-    echo '<select name="TIME_ZONE" id="TIME_ZONE">';
-    foreach (t('timezone') as $hour => $zone) {
-        $selected = (c('TIME_ZONE')==(string)$hour) ? 'selected="selected"' : null;
-        echo '<option value="'.$hour.'"'.$selected.'>'.$zone.'</option>';
-    }
-    echo '</select></p>';
+    echo '<p><label>'.t('settings/server/timediff').':</label><input help="settings/timediff" class="in w50" type="text" name="TIME_DIFF" id="TIME_DIFF" value="'.c('TIME_DIFF').'"></p>';
 
     echo '<p><label>'.t('settings/server/DSN_config').':</label><input help="settings/DSN" class="in w400" type="text" name="DSN_CONFIG" id="DSN_CONFIG" value="'.c('DSN_CONFIG').'"></p>';
 

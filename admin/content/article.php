@@ -178,6 +178,8 @@ function lazy_edit(){
     $path   = isset($_POST['path']) ? $_POST['path'] : null;
     $table  = Content_Model::getDataTableName($model['modelename']);
     $sortid = isset($_POST['sortid']) ? $_POST['sortid'] : 0;
+    $oldpath = isset($_POST['oldpath']) ? $_POST['oldpath'] : null;
+    $template = isset($_POST['template']) ? $_POST['template'] : null;
     $description = isset($_POST['description']) ? $_POST['description'] : null;
 
     // 加载字段解析类
@@ -225,6 +227,7 @@ function lazy_edit(){
                     'order'     => $maxid,
                     'date'      => now(),
                     'path'      => $path,
+                    'template'  => $template,
                     'userid'    => $_USER['adminid'],
                     'description'   => $description,
                 );
@@ -238,6 +241,7 @@ function lazy_edit(){
                 $row = array(
                     'sortid'  => $sortid,
                     'path'    => $path,
+                    'template'=> $template,
                     'userid'  => $_USER['adminid'],
                     'description' => $description,
                 );
@@ -261,6 +265,10 @@ function lazy_edit(){
 			$referer = strpos($referer,basename(PHP_FILE))!==false?$referer:PHP_FILE;
             // 生成页面
 			if (Content_Article::createPage($mName,$docId)) {
+			    // 删除旧文件
+			    if ($oldpath != $path && is_file(LAZY_PATH.'/'.$oldpath)) {
+			    	unlink(LAZY_PATH.'/'.$oldpath);
+			    }
 				// 输出执行结果
 				ajax_success($text,$referer);
 			}
@@ -269,8 +277,9 @@ function lazy_edit(){
         if (!empty($docId)) {
             $res = $db->query("SELECT * FROM `{$table}` WHERE `id`=?",$docId);
             if ($data = $db->fetch($res)) {
-                $path   = h2c($data['path']);
-                $sortid = $data['sortid'];
+                $path     = h2c($data['path']);
+                $sortid   = $data['sortid'];
+                $template = h2c($data['template']);
                 if (!empty($model['iskeyword'])) {
                     $keywords = $key->get($docId);
                 }
@@ -308,11 +317,16 @@ function lazy_edit(){
 
     echo '<fieldset><legend><a rel=".more-attr"><img class="a2 os" src="../system/images/white.gif" />'.t('system::moreattr').'</a></legend>';
     echo '<div class="more-attr">';
+    echo '<p><label>'.t('article/template').':</label>';
+    echo '<select name="template" id="template" help="article/template">';
+    echo '<option value="">'.t('article/defaultemplate').'</option>';
+    echo form_opts(c('TEMPLATE'),c('TEMPLATE_EXTS'),'<option value="#value#"#selected#>#name#</option>',$template);
+    echo '</select></p>';
     if (!empty($model['iskeyword'])) {
         echo '<p><label>'.t('article/keyword').':</label><input class="in w400" type="text" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" onclick="$(\'#keywords\').getKeywords(\'#'.$model['iskeyword'].'\')">'.t('system::get').'</button></p>';
     }
     echo '<p><label>'.t('article/description').':</label><textarea name="description" id="description" rows="5" class="in w400">'.$description.'</textarea></p>';
-    echo '</div></fieldset>';
+    echo '</div></fieldset><input name="oldpath" type="hidden" value="'.$path.'" />';
     echo but('system::save').'<input name="id" type="hidden" value="'.$docId.'" /><input name="__referer" type="hidden" value="'.$_SERVER['HTTP_REFERER'].'" /></form>';
 }
 // *** *** www.LazyCMS.net *** *** //

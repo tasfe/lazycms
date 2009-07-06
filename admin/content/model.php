@@ -229,7 +229,7 @@ function lazy_edit(){
                         $sute[$k]['len'] = '(255)';
                     }
                     $sute[$k]['type'] = strpos($type,')')===false ? $type.$sute[$k]['len'] : $type;
-                    $sute[$k]['def']  = empty($data['default'])?null:" DEFAULT '".$data['default']."'";
+                    $sute[$k]['def']  = empty($data['default'])?null:" DEFAULT '".(instr('text,mediumtext',$type)?null:$data['default'])."'";
                     // 只改变结构
                     $data['oname'] = empty($data['oname'])?$data['ename']:$data['oname'];
                     if ($data['ename'] == $data['oname'] && $db->isField($table,$data['oname'])) {
@@ -397,7 +397,7 @@ function lazy_fields(){
         foreach ($eField as $field) {
             $rq[] = isset($_POST['field'.$field]) ? $_POST['field'.$field] : null;
         }
-        $isField = !instr('id,sortid,order,date,hits,digg,passed,userid,path,keywords,description,isdel',$rq[3]);
+        $isField = !instr('id,sortid,order,date,hits,digg,passed,userid,path,keywords,template,description,isdel',$rq[3]);
         $val->check('fieldlabel|0|'.t('model/fields/check/label'));
         $val->check('fieldename|0|'.t('model/fields/check/ename').';fieldename|validate|'.t('model/fields/check/ename1').'|3;fieldename|3|'.t('model/fields/check/restrict').'|'.$isField);
         if (instr('input',$rq[4])) {

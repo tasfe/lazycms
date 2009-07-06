@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 -- 
 -- 主机: localhost
--- 生成日期: 2009 年 03 月 11 日 05:53
--- 服务器版本: 5.0.45
--- PHP 版本: 5.2.3
+-- 生成日期: 2009 年 07 月 05 日 22:41
+-- 服务器版本: 5.0.67
+-- PHP 版本: 5.2.6
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -33,7 +33,11 @@ CREATE TABLE IF NOT EXISTS `lazy_content_model` (
   `modelstate` tinyint(1) default '1' COMMENT '1:启用',
   PRIMARY KEY  (`modelid`),
   UNIQUE KEY `modelename` (`modelename`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 
+-- 导出表中的数据 `lazy_content_model`
+-- 
 
 
 -- --------------------------------------------------------
@@ -51,7 +55,11 @@ CREATE TABLE IF NOT EXISTS `lazy_content_sort` (
   `parentid` int(11) default '0' COMMENT '父类id',
   PRIMARY KEY  (`sortid`),
   KEY `parentid` (`parentid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 
+-- 导出表中的数据 `lazy_content_sort`
+-- 
 
 
 -- --------------------------------------------------------
@@ -67,7 +75,12 @@ CREATE TABLE IF NOT EXISTS `lazy_content_sort_join` (
   PRIMARY KEY  (`joinid`),
   KEY `sortid` (`sortid`),
   KEY `modelid` (`modelid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 
+-- 导出表中的数据 `lazy_content_sort_join`
+-- 
+
 
 -- --------------------------------------------------------
 
@@ -81,7 +94,12 @@ CREATE TABLE IF NOT EXISTS `lazy_keywords` (
   `keysum` int(11) default '0' COMMENT '使用次数',
   PRIMARY KEY  (`keyid`),
   UNIQUE KEY `keyword` (`keyword`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 
+-- 导出表中的数据 `lazy_keywords`
+-- 
+
 
 -- --------------------------------------------------------
 
@@ -100,22 +118,20 @@ CREATE TABLE IF NOT EXISTS `lazy_system_admin` (
   `islocked` tinyint(1) default '0',
   PRIMARY KEY  (`adminid`),
   UNIQUE KEY `adminname` (`adminname`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 -- 
 -- 导出表中的数据 `lazy_system_admin`
 -- 
 
 INSERT INTO `lazy_system_admin` (`adminid`, `adminname`, `adminpass`, `adminkey`, `adminmail`, `purview`, `language`, `islocked`) VALUES 
-(1, 'admin', '5e73b67753102a348f66dc9dba693a62', '4ef9f9', 'mylukin@gmail.com', 'system::admins,system::modules,system::settings,system::sysinfo,content::label,content::create,content::onepage,content::article,content::sort,content::model', 'zh-cn', 0),
-(2, 'test', '5ab6585a51a23ecab1af50bcde1911e4', 'd9a6e0', 'lukin@sohu.com', 'content::label,content::create,content::onepage,content::article,content::sort,content::model,system::admins,system::modules,system::settings,system::sysinfo', 'zh-cn', 0);
-
+(1, 'admin', 'b62af8f00d5cd56ae5030bf775170010', '7fef61', 'mylukin@gmail.com', 'system::admins,system::modules,system::settings,system::sysinfo,content::label,content::create,content::onepage,content::article,content::sort,content::model', 'zh-cn', 0);
 
 -- --------------------------------------------------------
 
---
+-- 
 -- 表的结构 `lazy_system_create`
---
+-- 
 
 CREATE TABLE IF NOT EXISTS `lazy_system_create` (
   `id` varchar(32) NOT NULL COMMENT '唯一ID',
@@ -127,20 +143,28 @@ CREATE TABLE IF NOT EXISTS `lazy_system_create` (
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+-- 
+-- 导出表中的数据 `lazy_system_create`
+-- 
+
 
 -- --------------------------------------------------------
 
---
+-- 
 -- 表的结构 `lazy_system_create_logs`
---
+-- 
 
 CREATE TABLE IF NOT EXISTS `lazy_system_create_logs` (
   `id` int(11) NOT NULL auto_increment,
   `model` varchar(200) default NULL,
-  `sortid` int(11) NOT NULL default '0',
   `dataid` int(11) NOT NULL default '0',
   `createid` varchar(32) NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `m_d_c_idx` (`model`,`dataid`,`createid`),
   KEY `dataid` (`dataid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- 
+-- 导出表中的数据 `lazy_system_create_logs`
+-- 
+

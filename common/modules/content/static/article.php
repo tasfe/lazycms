@@ -103,8 +103,14 @@ class Content_Article{
         $fields = json_decode($model['modelfields']);
         $result = $db->query("SELECT * FROM `{$table}` WHERE `id` IN({$ids});");
         while ($rs = $db->fetch($result)) {
+            // 优先使用文章设置的模板
+            if ($rs['template']) {
+            	$tplfile = $rs['template'];
+            } else {
+                $tplfile = Content_Article::getTemplateBySortId($rs['sortid'],'page');
+            }
             // 加载模板
-            $tag->loadHTML(LAZY_PATH.'/'.$template.'/'.Content_Article::getTemplateBySortId($rs['sortid'],'page'));
+            $tag->loadHTML(LAZY_PATH.'/'.$template.'/'.$tplfile);
             // 清除标签值
             $tag->clear();
             // 定义内部变量

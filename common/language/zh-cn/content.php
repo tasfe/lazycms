@@ -26,6 +26,7 @@ return array(
     'name'  => '内容管理',
 
     'nomodel' => '请先创建并启用一个模型',
+    
     /* 标签中心 */
     'label' => array(
         'title' => '标签中心',
@@ -154,8 +155,10 @@ return array(
         'size'  => '每页条数',
         'nosort'    => '不属于任何分类',
         'sortall'   => '所有分类',
+        'template'  => '页面模板',
         'keyword'   => '关键词',
         'description'   => 'Meta简述',
+        'defaultemplate' => '使用默认设置',
         'fields'    => '列表字段',
         'view'      => '显示',
         'submit'    => '提交',
@@ -184,8 +187,10 @@ return array(
         'hits'  => '点击量',
         'digg'  => 'Digg',
         'date'  => '日期',
+        'template'  => '页面模板',
         'keyword'   => '关键词',
-        'description'   => 'Meta简述',
+        'description'    => 'Meta简述',
+        'defaultemplate' => '使用模型设置',
         'fields'    => '列表字段',
         'view'      => '显示',
         'check'     => array(
@@ -245,7 +250,7 @@ return array(
                 'ename' => '
                     |必填，用处很多了，以下字段名已被系统使用：
                     |(id,sortid,order,date,hits,digg,passed,userid,path,
-                    |keywords,description,isdel)
+                    |keywords,template,description,isdel)
                 ',
                 'rules' => '
                     |可以有多个规则，使用“分号”分割。
@@ -272,7 +277,8 @@ return array(
                 |%y=2位数字表示的年份：99 或 08
                 |%m=数字表示的月份，01 到 12
                 |%d=月份中的第几天，01 到 31
-            '
+            ',
+            'template' => '自定义的文档模板，如果选择使用默认设置，则使用分类的模板设置；如果文档没有分类，则使用模型的模板设置。'
         ),
         'onepage'   => array(
             'path'  => '

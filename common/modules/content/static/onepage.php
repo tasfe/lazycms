@@ -39,9 +39,12 @@ class Content_Onepage{
         $fields = json_decode($model['modelfields']);
         $result = $db->query("SELECT * FROM `{$table}` WHERE `id` IN({$ids});");
         while ($rs = $db->fetch($result)) {
-            // 取得模板地址
-			$res = $db->query("SELECT `pagetemplate` FROM `#@_content_model` WHERE `modelename`=?;",$modelename);
-			if ($rs1 = $db->fetch($res,0)) { $template = $rs1[0]; }
+            // 取得模板地址，优先使用页面设置的模板
+            if ($rs['template']) {
+            	$template = $rs['template'];
+            } else {
+            	$template = $db->result("SELECT `pagetemplate` FROM `#@_content_model` WHERE `modelename`='{$modelename}';");
+            }
 			// 加载模板
             $tag->loadHTML(LAZY_PATH.'/'.c('TEMPLATE').'/'.$template);
             // 清除标签值

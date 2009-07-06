@@ -33,7 +33,7 @@ return array(
     'TEMPLATE'   => 'themes',
     'TEMPLATE_EXTS'   => 'htm,html,shtml',
     'TEMPLATE_DEFAULT'=> 'default.html',
-    'GET_RELATED_KEY' => true,
+    'GET_RELATED_KEY' => false,
 
     /* 上传设置 */
     'UPLOAD_ALLOW_EXT' => 'png,gif,jpg,jpeg,zip,rar,doc,xls',
@@ -43,7 +43,7 @@ return array(
     'UPLOAD_IMAGE_EXT' => 'png,gif,jpg,jpeg',
 
     /* 服务器设置 */
-    'TIME_ZONE'  => 8,
+    'TIME_DIFF'  => 0,
     'DSN_CONFIG' => 'mysql://root@localhost/lazy/lazy2',
 
     /* Cookie设置 */

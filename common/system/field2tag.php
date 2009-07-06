@@ -115,13 +115,13 @@ class Field2Tag{
      * @param bool $p2
      * @return string
      */
-    function tag($p1,$p2=false){
+    function tag($p1,$p2=null){
         $R = null;
         $f = $p1;
         $tip     = empty($f->tip)?null:' tip="'.$f->label.'::'.ubbencode(h2c($f->tip)).'"';
         $name    = $f->ename;
         $length  = $f->length;
-        $default = ($p2===false) ? $f->default : $p2;
+        $default = is_null($p2) ? $f->default : $p2;
         $width   = $f->width;
         $help    = empty($f->help)?'':' help="HTML::'.str_replace(array("\r\n","\n"),'&#10;',h2c($f->help)).'"';
         $opts    = isset($f->option)?$f->option:null;

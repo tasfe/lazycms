@@ -92,7 +92,7 @@ class Content_Model{
         foreach ($p2 as $field) {
             $fields[] = $field->ename;
         }
-        $fields = array_merge($fields,array('id','sortid','order','date','hits','path','digg','passed','userid','keywords','description'));
+        $fields = array_merge($fields,array('id','sortid','order','date','hits','path','digg','passed','userid','keywords','template','description'));
         return array_diff($p1,$fields);
     }
     /**
@@ -195,6 +195,7 @@ class Content_Model{
         $SQL.= "    `passed` TINYINT(1) DEFAULT '0',";
         $SQL.= "    `userid` INT(11) DEFAULT '0',";
         $SQL.= "    `path` VARCHAR(255),";
+        $SQL.= "    `template` VARCHAR(100),";
         $SQL.= "    `description` VARCHAR(255),";
         $SQL.= "    KEY `sortid` (`sortid`),";
         $SQL.= "    UNIQUE (`path`) {$sute}";

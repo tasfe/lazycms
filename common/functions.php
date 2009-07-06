@@ -45,10 +45,8 @@ function lazycms_run() {
         unset($R,$k,$v);
     }
     unset($_ENV,$HTTP_ENV_VARS,$HTTP_POST_VARS,$HTTP_GET_VARS,$HTTP_POST_FILES,$HTTP_COOKIE_VARS);
-    // 设置系统时区 PHP5支持
-    if(function_exists('date_default_timezone_set')) { date_default_timezone_set('UTC'); } ob_start();
     // 定义处理错误的函数
-    set_error_handler('lazycms_error'); $PHP_DIR = dirname(PHP_FILE);
+    set_error_handler('lazycms_error'); $PHP_DIR = dirname(PHP_FILE); ob_start();
     // 获取当前动作
     $action = isset($_REQUEST['action']) ? strtolower($_REQUEST['action']) : null;
     // 设置当前模块常量
@@ -105,7 +103,7 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
         $type  = isset($t['type']) ? $t['type'] : null;
         $args  = isset($t['args']) ? $t['args'] : null;
         $function  = isset($t['function']) ? $t['function'] : null;
-        $traceInfo.= '['.date("y-m-d H:i:s").'] '.$file.' ('.$line.') ';
+        $traceInfo.= '['.date("y-m-d H:i:s",now()).'] '.$file.' ('.$line.') ';
         $traceInfo.= $class.$type.$function.'(';
         if (is_array($args)) {
             $arrs = array();
@@ -220,7 +218,7 @@ function isOverMaxTime($execTime){
  * @return integer
  */
 function now(){
-    return time() + (c('TIME_ZONE')*3600);
+    return time() + (floatval(c('TIME_DIFF'))*3600);
 }
 /**
  * 取得PHP设置
@@ -1031,10 +1029,10 @@ function validate($p1,$p2){
             $p3 = '^[\w\-]+$';
             break;
         case '4' : // Email
-            $p3 = '^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$';
+            $p3 = '^\w+([\-\+\.]\w+)*@\w+([\-\.]\w+)*\.\w+([\-\.]\w+)*$';
             break;
         case '5' : // url
-            $p3 = '^(http|https|ftp):(\/\/|\\\\)(([\w\/\\\+\-~`@:%])+\.)+([\w\/\\\.\=\?\+\-~`@\':!%#]|(&amp;)|&)+';
+            $p3 = '^(http|https|ftp)\:(\/\/|\\\\)(([\w\/\\\+\-~`@\:%])+\.)+([\w\/\\\.\=\?\+\-~`@\'\:!%#]|(&amp;)|&)+';
             break;
         case '6' : // 
             $p3 = '^[\d\,\.]+$';
