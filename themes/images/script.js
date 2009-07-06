@@ -23,6 +23,7 @@ $(document).ready(function(){
 		var s = '';
 		this.html('<li><img class="os" src="' + common() + '/images/loading.gif" />Loading...</li>');
 		for (var i=0;i<5;i++) {
+			if (typeof data[i]=='undefined') break;
 			s+= '<li><p><a href="' + data[i].detail + '" class="revision" target="_blank">r' + data[i].revision + '</a>' + data[i].updated + '</p><p class="comments">' + data[i].content + '</p></li>';
 		}
 		this.html(s);

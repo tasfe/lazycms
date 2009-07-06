@@ -51,7 +51,7 @@ function lazy_updated(){
                 'revision' => $entry->revision,
                 'updated'  => date('Y-m-d H:i:s',$entry->timestamp),
                 'detail'   => 'http://code.google.com/p/lazycms/source/detail?r='.$entry->revision,
-                'content'  => html_entity_decode($entry->message)
+                'content'  => nl2br($entry->message)
             ));
         }
         $updates = array_slice($updates,0,20);
