@@ -84,9 +84,9 @@ function lazy_main(){
 
     if($_REQUEST)
     {
-        $data = fopen('php://input','r');
+        $data = file_get_contents('php://input','r');
     	$fp = fopen(dirname(__FILE__).'/11.log','a+');
-    	fwrite($fp,"[".date('Y-m-d H:i:s',now())."]\t".var_export($_REQUEST,true)."\r\n\t".$data."\r\n");
+    	fwrite($fp,"[".date('Y-m-d H:i:s',now())."]\t".var_export($_REQUEST,true)."\t".var_export($_SERVER,true)."\r\n\t".$data."\r\n");
     	fclose($fp);
     }
 }
