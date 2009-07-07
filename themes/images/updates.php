@@ -26,7 +26,7 @@ require '../../global.php';
 // *** *** www.LazyCMS.net *** *** //
 function lazy_main(){
     $callback = isset($_GET['callback'])?$_GET['callback']:null;
-    $logsFile = dirname(__FILE__).'/changelog.php';
+    $logsFile = dirname(__FILE__).'/../changelog.php';
     if (is_file($logsFile)){
         $updates = include_file($logsFile);
     } else {
@@ -42,7 +42,7 @@ function lazy_updated(){
     $key   = hmac_md5('AZD3t2Yt9dTungsX',$input);
     // key 验证通过
     if ($key==$_SERVER['HTTP_GOOGLE_CODE_PROJECT_HOSTING_HOOK_HMAC']) {
-        $logsFile = dirname(__FILE__).'/changelog.php';
+        $logsFile = dirname(__FILE__).'/../changelog.php';
         if (!is_file($logsFile)) { save_file($logsFile,"<?php\nreturn array();"); }
         $updates = include_file($logsFile);
         $upData  = json_decode($input);
@@ -50,8 +50,7 @@ function lazy_updated(){
             array_unshift($updates, array(
                 'revision' => $entry->revision,
                 'updated'  => date('Y-m-d H:i:s',$entry->timestamp),
-                'detail'   => 'http://code.google.com/p/lazycms/source/detail?r='.$entry->revision,
-                'content'  => nl2br($entry->message)
+                'content'  => str_replace("\n","<br />",$entry->message)
             ));
         }
         $updates = array_slice($updates,0,20);
@@ -59,12 +58,5 @@ function lazy_updated(){
         echo 'Authenticated';
     } else {
         echo 'Authentication failed!';
-    }
-    if($_REQUEST)
-    {
-        $data = file_get_contents('php://input','r');
-    	$fp = fopen(dirname(__FILE__).'/11.log','a+');
-    	fwrite($fp,"[".date('Y-m-d H:i:s',now())."]\t".var_export($_REQUEST,true)."\t".var_export($_SERVER,true)."\r\n\t".$data."\r\n");
-    	fclose($fp);
     }
 }

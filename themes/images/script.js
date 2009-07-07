@@ -15,6 +15,11 @@ $(document).ready(function(){
 		thisToggle.addClass('checked');
 		return false; 
 	});
+	// 下载统计
+	$('#download_form').submit(function(){
+		$.alert('即将提供下载，敬请期待...');
+		return false;
+	});
 });
 
 // 扩展函数
@@ -24,7 +29,7 @@ $(document).ready(function(){
 		this.html('<li><img class="os" src="' + common() + '/images/loading.gif" />Loading...</li>');
 		for (var i=0;i<5;i++) {
 			if (typeof data[i]=='undefined') break;
-			s+= '<li><p><a href="' + data[i].detail + '" class="revision" target="_blank">r' + data[i].revision + '</a>' + data[i].updated + '</p><p class="comments">' + data[i].content + '</p></li>';
+			s+= '<li><p><a href="http://code.google.com/p/lazycms/source/detail?r=' + data[i].revision + '" class="revision" target="_blank">r' + data[i].revision + '</a>' + data[i].updated + '</p><p class="comments">' + data[i].content + '</p></li>';
 		}
 		this.html(s);
 		return this;

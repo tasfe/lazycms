@@ -49,7 +49,7 @@ function lazy_main() {
                 // 设置登陆信息
                 Cookie::set('adminname',$_USER['adminname'],$cookie);
                 Cookie::set('adminpass',$_USER['adminpass'],$cookie);
-                Cookie::set('language',$_USER['language'],$cookie);
+                Cookie::set('language',$_USER['language'],$cookie,'/',null,false);
                 redirect('index.php');
             } else {
                 // 输出错误信息

@@ -23,25 +23,47 @@ defined('COM_PATH') or die('Restricted access!');
  * 系统模块的公共函数
  */
 class System{
+    // 生成语言包文件
+    function makeLang(){
+        // 查找共支持多少语言包
+        $languages = get_dir_array('@.language','dir');
+        foreach ($languages as $language) {
+            // 语言文件
+            $langFiles = array(); $langMaxTime  = 0;
+            $langFile  = COM_PATH."/js/lang.{$language}.js";
+            $moduleLangJs = get_dir_array('@.language.'.$language,'js');
+            foreach ($moduleLangJs as $moduleLang) {
+                $langFiles[$moduleLang] = COM_PATH."/language/{$language}/{$moduleLang}";
+                $langMaxTime= max($langMaxTime,filemtime($langFiles[$moduleLang]));
+            }
+            // 取得文件的最后修改日期
+            $langLastTime = is_file($langFile)?filemtime($langFile):0;
+            // 合并文件
+            if ($langLastTime <= $langMaxTime) {
+                $langContent = null;
+                foreach ($langFiles as $file=>$lang) {
+                    $langContent.= "// {$file}".preg_replace('#/\*\*(.+)\*/#isU','',read_file($lang))."\n";
+                }
+                save_file($langFile,$langContent);
+            }
+        }
+    }
     /**
      * 输出后台header头
      *
      * @param string $title
      */
     function header($title=null,$selected=null){
-        $_USER    = System::getAdmin();
-        $selected = !empty($selected) ? $selected.'|' : null;
-        $title    = empty($title) ? t('system::system') : $title.' - '.t('system::system');
-        $language = get_dir_array('@.language.'.language(),'js');
+        $_USER     = System::getAdmin(); System::makeLang();
+        $selected  = !empty($selected) ? $selected.'|' : null;
+        $title     = empty($title) ? t('system::system') : $title.' - '.t('system::system');
+        // 生成语言js文件
         $hl = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
         $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
         $hl.= '<title>'.$title.'</title>';
         $hl.= '<link href="../system/images/style.css" rel="stylesheet" type="text/css" />';
         $hl.= '<link rel="shortcut icon" href="'.SITE_BASE.'favicon.ico" />';
-        $hl.= '<script type="text/javascript">';
-        $hl.= 'window.MODULE = \''.MODULE.'\';window.ACTION = \''.ACTION.'\';';
-        $hl.= 'window.LANGUAGE = \''.language().'\';window.LangFile = '.json_encode($language).';';
-        $hl.= '</script>';
+        $hl.= '<script type="text/javascript">window.MODULE = \''.MODULE.'\';window.ACTION = \''.ACTION.'\';</script>';
         $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.3"></script>';
         $hl.= '<script type="text/javascript" src="../../common/js/lazycms.library.js"></script>';
         $hl.= '<script type="text/javascript" src="../system/images/system.js"></script>';

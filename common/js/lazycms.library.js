@@ -49,7 +49,18 @@ function formatTime(time){
 	return (H + ':' + M + ':' + S).replace(/\b(\w)\b/g, '0$1');
 }
 // loading加载条
-window.loading = $('<div class="loading"><img class="os" src="' + common() + '/images/loading.gif" />Loading...</div>').css({width:'100px',position:'fixed',top:'5px',right:'5px'}); if ($.browser.msie && $.browser.version == '6.0') { window.loading.css({position:'absolute'}); };
+window.loading = $('<div class="loading"><img class="os" src="' + common() + '/images/loading.gif" />Loading...</div>').css({width:'100px',position:'fixed',top:'5px',right:'5px'});
+// IE6.0下的动作
+if ($.browser.msie && $.browser.version == '6.0') { 
+	var load_move = function(){
+		window.loading.css({
+			position:'absolute',
+			top:(document.documentElement.scrollTop + 5) + 'px',
+			left:(document.documentElement.clientWidth - 100 - 20) + 'px'
+		});
+	}
+	$(window).scroll(function(){load_move()}).resize(function(){load_move()});
+};
 /**
  * 动态加载脚本
  *
@@ -163,24 +174,28 @@ function LoadScript(p,c){
         // 默认设置
         style = $.extend({
             width:'100%',//Math.max(s.width(),$(document).width()) + 'px',
-            height:Math.max(s.height(),$(document).height()) + 'px',
+            height:'100%',//Math.max(s.height(),$(document).height()) + 'px',
             left:s.position().left + 'px',
             top:s.position().top + 'px',
             opacity:0.4,
             background:'#000000',
-            position:'absolute',
+            position:'fixed',
             'z-index': (z + 1) * 200
         }, style||{});
         // 设置透明度
         $.extend(style,{'filter':'alpha(opacity=' + (100 * style.opacity) + ')', '-moz-opacity':style.opacity});
+		// 窗口改变大小
+		if ($.browser.msie && $.browser.version == '6.0') { 
+			var mMove = function(){
+				m.css({ 'position':'absolute','top':document.documentElement.scrollTop + 'px'});
+			}
+			$(window).scroll(function(){mMove()}).resize(function(){mMove()});
+		}
         // 设置样式
         m.css(style);
         // 添加遮罩层
         m.appendTo(s);
-		// 窗口改变大小
-		$(window).resize(function(){
-			m.css({ height:Math.max(s.height(),$(document).height()) + 'px' });
-		});
+
         return this;
     }
     /*
@@ -210,7 +225,7 @@ function LoadScript(p,c){
         }, opts||{});
 
         // 定义弹出层对象
-        var dialog = $('<div class="dialogUI" style="display:none;"><div class="dialogBox"><div class="head"><strong>Loading...</strong></div><div class="body">Loading...</div></div></div>').css({position:'absolute'});
+        var dialog = $('<div class="dialogUI" style="display:none;"><div class="dialogBox"><div class="head"><strong>Loading...</strong></div><div class="body">Loading...</div></div></div>').css({position:'fixed'});
             opts.name==null?null:dialog.attr('name',opts.name);
 
         var target = $('.dialogUI[name=' + opts.name + ']',s);
@@ -245,27 +260,24 @@ function LoadScript(p,c){
 		if (style.overflow=='auto') {
 			$('.dialogBox > .body',dialog).css({height:parseInt(dialog.height() - 35) + 'px'});
 		}
-		// 设置CSS
-		var CSS = {
-			left:parseInt($('[rel=mask]',s).width()/2 - dialog.width()/2),
-			top:parseInt(Math.max($('[rel=mask]',s).height(),$(document).height())/2.5 - dialog.height()/2)
-		};
-		CSS.top = CSS.top<=0?10:CSS.top;
-		// 窗口改变大小，调整位置
-		$(window).resize(function(){
-			dialog.css({
-				top:(typeof(style.top)=='undefined'?CSS.top:style.top) + 'px',
-				left:(typeof(style.left)=='undefined'?CSS.left:style.left) + 'px'
-			});
-		});
-		// 设置位置
-        dialog.css({ overflow:'',
-            top:(typeof(style.top)=='undefined'?CSS.top:style.top) + 'px',
-            left:(typeof(style.left)=='undefined'?CSS.left:style.left) + 'px'
-        });
-
-        // 显示弹出层
-        dialog.show();
+		
+		// 定义窗口移动事件
+		var dialogMove = function(opts){
+			var top = parseInt(Math.min($('[rel=mask]',s).height(),document.documentElement.clientHeight)/2 - dialog.height()/2);
+			// 设置CSS
+			var CSS = {
+				top:(typeof(style.top)=='undefined'?($.browser.msie && $.browser.version == '6.0'?document.documentElement.scrollTop + top:top):style.top) + 'px',
+				left:(typeof(style.left)=='undefined'?parseInt($('[rel=mask]',s).width()/2 - dialog.width()/2):style.left) + 'px'
+			};
+			dialog.css($.extend(CSS,opts));
+		}
+		// 调整位置
+		if ($.browser.msie && $.browser.version == '6.0') { 
+			dialog.css({position:'absolute'}); $(window).scroll(function(){dialogMove()});
+		}
+		$(window).resize(function(){dialogMove()})
+		// 显示弹出层
+		dialogMove({overflow:''}); dialog.show();
 
         // 添加按钮
         $('.dialogBox > .buttons',dialog).remove();
@@ -730,10 +742,9 @@ jQuery.cookie = function(name, value, options) {
     }
 };
 
+// 设置系统CSS
+$.setStyle();
+
 // 加载语言包
-window.Language = new Array(); 
-if (typeof LangFile != 'undefined') {
-	$(LangFile).each(function(){
-		document.write('<scr' + 'ipt type="text/javascript" src="' + common() + '/language/' + LANGUAGE + '/' + this + '"><\/scr' + 'ipt>');
-	});
-}
+window.Language = new Array(); var language = $.cookie('language'); 
+if (language==null) { language = 'zh-cn';} LoadScript('lang.' + language);

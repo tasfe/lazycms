@@ -18,6 +18,9 @@
  * +---------------------------------------------------------------------------+
  */
 @charset "utf-8";
+/* 导入公用样式 */
+@import url("../../../common/images/global.css");
+@import url("../../../common/images/icons.css");
 /* 全局样式 */
 body { height:100%; margin:0; background: #F7FBFF; text-align:left;}
 body,td,th,p,div { color: #333333; line-height: 130%; font-family: Verdana; font-size: 12px;}
@@ -45,21 +48,17 @@ a:hover   { text-decoration: underline; }
 	#menu li a.active { color:#003683; background:#F7FBFF; font-weight:bold; border-top:solid 1px #3BB2F4; border-bottom:solid 1px #F7FBFF; background-image:url(menu_selected.png); background-repeat:repeat-x; background-position:0 0; }
 
 /* header */
-#header{ height:250px; margin:20px auto 0 auto; zoom:1; overflow:hidden; background:url(header-bg.gif) no-repeat left top; }
-	#intro{ width:570px; float:left; padding:20px 30px; }
-		#intro h2{ margin:0; padding:0; font-size:16px; color:#0B5B98; line-height:1; }
+#header{ height:255px; margin:20px auto 0 auto; zoom:1; overflow:hidden; background:url(header-bg.gif) no-repeat 0 0; }
+	
+	#intro{ width:565px; float:left; padding:20px 30px; }
+		#intro h2{ margin:0 0 15px 0; padding:0; font-size:16px; color:#0B5B98; line-height:1; }
 		#intro h2 em{ font-size:24px; font-style:normal; }
-		#intro p{ line-height:150%; margin:10px 0 15px 0; text-indent:2em; }
-		#intro ul{ width:570px; height:130px;  list-style:none; margin:0; padding:0; }
-		#intro li{ width:110px; height:125px; margin:0; padding:0; background:url(header-icon-bg.gif) no-repeat; text-align:center; letter-spacing:3px; color:#999999; }
-		#intro li img{ display:block; margin:5px 5px 8px 5px; }
-		#intro li.agile{ float:left; margin-left:30px; }
-		#intro li.brevity{ float:left; margin-left:90px; }
-		* html #intro li.brevity{ margin-left:60px; }
-		#intro li.free{ float:right; margin-right:30px; }
+		#intro p{ line-height:200%; margin:0px; text-indent:2em; font-size:12px; }
+		#intro blockquote{ margin:5px 0 5px 4em; padding:0; line-height:200%; }
+		#intro blockquote span{ color:#C0C0C0; }		
 		
-		
-	#download{ width:260px; height:230px; margin:10px 5px 0 0; padding:20px 20px 0 20px; border-top:solid 2px #E2F0F6; float:left; background:url(download-bg.gif) no-repeat left top; }
+	#download{ width:260px; height:230px; margin:10px 5px 0 0; padding:20px 20px 0 20px; border-top:solid 2px #E2F0F6; float:left; background:url(download-bg.gif) no-repeat 0 0; }
+	* html #download{ padding-right:14px !important; }
 		#download h3{ color:#0B5B98; margin:0px; padding:0; font-size:14px; letter-spacing:1px; }
 		#download p{ margin:10px 0; padding:0; }
 		#download .compression{ background:#FFFFFF; border:solid 1px #C6D9E7; height:55px; padding-top:5px; margin-bottom:10px; }
@@ -83,10 +82,11 @@ a:hover   { text-decoration: underline; }
 		#feature ul{ padding:0; margin:0; list-style:none; }
 		#feature li{ float:left; width:209px; }
 		#feature li h4{ margin:20px 0 10px 15px; padding:0; font-size:14px; color:#006600; }
-		#feature li p{ height:220px; margin:0 0 0 15px; padding:0 15px 0 0; color:#999999; }
-		#feature li.bk1 p{ border-right:solid 1px #D8E6F0; }
-		#feature li.bk2 p{ border-right:solid 1px #D8E6F0; }
-		#feature li.bk3{}
+		#feature li a{ width:65px; height:20px; line-height:20px; display:block; text-align:center; text-decoration:none; margin:0 auto; background:#3398CB none repeat scroll 0 0; border:1px solid #1274B5; color:#FFFFFF; }
+		#feature li p{ height:210px; margin:0; padding:0 15px 0 15px; color:#999999; }
+		#feature li.bk1 p{ border-right:solid 1px #D8E6F0; background:url(bk1.png) no-repeat center 80px; }
+		#feature li.bk2 p{ border-right:solid 1px #D8E6F0; background:url(bk2.png) no-repeat center 80px; }
+		#feature li.bk3 p{ background:url(bk3.png) no-repeat center 80px; }
 	
 	#updates { width:300px; height:300px; overflow:hidden; float:right; }
 		#updates ul{ width:284px; height:270px; list-style:none; margin:0; padding:5px 3px 0 13px; overflow:auto; }

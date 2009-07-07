@@ -8,5 +8,5 @@
 	</div>
 	Copyright &copy; LazyCMS.net All Rights Reserved.<br/>
 	{$lazycms}<br/>
-	<a href="http://www.miibeian.gov.cn" target="_blank" title="信息产业部">京ICP备00000001号</a>
+	<a href="http://www.miibeian.gov.cn" target="_blank" title="信息产业部">京ICP备09028602号</a>
 </div>

@@ -142,7 +142,7 @@ class Field2Tag{
                     $v = trim($v);
                     if ($v!='') {
                         $R2 = explode(':',$v);
-                        $R2 = array_map('h2c',$R2);
+                        $R2 = array_map('h2c',$R2); $R2[1] = isset($R2[1])?$R2[1]:$R2[0];
                         $selected = !empty($default) ? ((string)$default==(string)$R2[0] ? ' selected="selected"' : null) : null;
                         $R.= '<option value="'.$R2[0].'"'.$selected.'>'.$R2[1].'</option>';
                     }
@@ -156,7 +156,7 @@ class Field2Tag{
                     $v = trim($v);
                     if ($v!='') {
                         $R2 = explode(':',$v);
-                        $R2 = array_map('h2c',$R2);
+                        $R2 = array_map('h2c',$R2); $R2[1] = isset($R2[1])?$R2[1]:$R2[0];
                         $checked = !empty($default) ? (instr($default,$R2[0]) ? ' checked="checked"' : null) : null;
                         $R.= "<input name=\"{$name}".($f->intype=="checkbox"?"[{$k}]":null)."\" id=\"{$name}[{$k}]\" type=\"".$f->intype."\" value=\"{$R2[0]}\"{$checked} /><label for=\"{$name}[{$k}]\">{$R2[1]}</label>";
                     }
@@ -185,8 +185,8 @@ class Field2Tag{
 
                 break;
             case 'upfile':
-                $P = empty($default)?'/'.c('UPLOAD_IMAGE_PATH'):dirname($default);
-                $R = "<input style=\"width:{$width}\" type=\"text\" name=\"{$name}\" id=\"{$name}\" value=\"{$default}\" />&nbsp;<button{$help} type=\"button\" onclick=\"$('#{$name}').Explorer('{$P}','UPLOAD_IMAGE_EXT');\">".t('system::browse')."</button>";
+                $P = empty($default)?'/'.c('UPLOAD_FILE_PATH'):dirname($default);
+                $R = "<input style=\"width:{$width}\" type=\"text\" name=\"{$name}\" id=\"{$name}\" value=\"{$default}\" />&nbsp;<button{$help} type=\"button\" onclick=\"$('#{$name}').Explorer('{$P}','UPLOAD_ALLOW_EXT');\">".t('system::browse')."</button>";
                 break;
         }
         return $R;

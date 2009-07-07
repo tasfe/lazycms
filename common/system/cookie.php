@@ -50,9 +50,10 @@ class Cookie{
      * @param string $path
      * @param string $domain
      */
-    function set($name,$value,$expire=0,$path='/',$domain='') {
+    function set($name,$value,$expire=0,$path='/',$domain='',$prefix=true) {
         if(empty($domain)) { $domain = c('COOKIE_DOMAIN'); }
-        setcookie(c('COOKIE_PREFIX').'['.$name.']',$value,$expire,$path,$domain);
+        $name = $prefix?c('COOKIE_PREFIX').'['.$name.']':$name;
+        setcookie($name,$value,$expire,$path,$domain);
     }
     /**
      * 删除某个Cookie值

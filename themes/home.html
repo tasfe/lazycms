@@ -14,35 +14,38 @@
 
 <div id="header" class="wrapper">
 	<div id="intro">
-		<h2><em>LazyCMS</em> 是一款灵活、简洁、免费的网站管理系统。</h2>
-		{$content}
-		<ul>
-			<li class="agile"><img src="images/agile.gif" alt="灵活" />自由定制<br/>灵活配置</li>
-			<li class="brevity"><img src="images/brevity.gif" alt="简洁" />简洁后台<br/>简单操作</li>
-			<li class="free"><img src="images/free.gif" alt="免费" />保留连接<br/>免费使用</li>
-		</ul>
+		<h2><em>LazyCMS</em> 是一款新型、开源、免费的网站管理系统。</h2>
+		<p>LazyCMS 是一款新型、开源、免费的网站管理系统，她小巧灵活，操作简单，免费开源。</p>
+		<p>为什么选择LazyCMS？</p>
+		<blockquote>
+			灵活的模块装卸 <span>---------------- 像安装软件一样的模块安装方式。</span><br/>
+			简洁的后台操作 <span>---------------- 简洁人性化的后台操作界面，以人为本。</span><br/>
+			简单易学的模板标签 <span>----------- XML风格的模板标签，只要你懂HTML你就能做网站。</span><br/>
+			全面的搜索引擎优化支持 <span>------ 全面针对搜索引擎做了优化，让您网络营销变得更加轻松。</span><br/>
+			LazyCMS的开发初衷，就是让您简单、快速的建设网站。
+		</blockquote>
 	</div>
 	<div id="download">
-		<form method="get" action="http://code.google.com/p/lazycms/downloads/detail">
+		<form id="download_form" method="get" action="http://code.google.com/p/lazycms/downloads/detail">
 			<h3>下载LazyCMS最新版本</h3>
 			<p>选择您要下载的版本：</p>
 			<div class="compression">
-				<input type="radio" name="name" id="dl-production" checked="checked" value="production.zip" />
-				<a class="radioToggle name checked" href="production.zip">production.zip</a>
+				<input type="radio" name="name" id="dl-production" checked="checked" value="LazyCMS-v{$version}.min.zip" />
+				<a class="radioToggle name checked" href="LazyCMS-v{$version}.min.zip">LazyCMS-v{$version}.min.zip</a>
 				<label for="dl-production">
-					编译版（<strong>200K</strong>，删除注释、缩进）
+					编译版（<strong>509K</strong>，删除注释、缩进）
 				</label>
 				<div class="clear"></div>
-				<input type="radio" name="name" id="dl-development" value="development.zip" />
-				<a class="radioToggle name" href="development.zip">development.zip</a>
+				<input type="radio" name="name" id="dl-development" value="LazyCMS-v{$version}.zip" />
+				<a class="radioToggle name" href="LazyCMS-v{$version}.zip">LazyCMS-v{$version}.zip</a>
 				<label for="dl-development">
-					开发版（<strong>400K</strong>，保留注释、缩进）
+					开发版（<strong>548K</strong>，保留注释、缩进）
 				</label>
 			</div>
 			<button name="downloadBtn" type="submit">
-				<span>下载 LazyCMS（<em>10002</em>次）</span>
+				<span>下载 LazyCMS（<em>5000</em>次）</span>
 			</button>
-			<p class="version"><strong>当前版本：</strong>v.2.0.522</p>
+			<p class="version"><strong>当前版本：</strong>v.{$version}</p>
 		</form>
 	</div>
 </div>
@@ -52,15 +55,18 @@
 		<ul>
 			<li class="bk1">
 				<h4>LazyCMS能做什么</h4>
-				<p>建立企业、门户网站<br/>全面支持搜索引擎优化<br/>让网络营销变得更加轻松</p>
+				<p>建立企业网站、门户网站<br/>全面的搜索引擎优化支持<br/>让网络营销变得更加轻松</p>
+				<a href="#/about/" title="了解详细">了解详细</a>
 			</li>
 			<li class="bk2">
 				<h4>学习使用LazyCMS</h4>
-				<p>学习LazyCMS从这里开始</p>
+				<p>LazyCMS简单易用，在短时间内，将您打造成一个专业的建站高手。</p>
+				<a href="#/help/" title="查看更多学习教程">更多教程</a>
 			</li>
 			<li class="bk3">
 				<h4>支持LazyCMS发展</h4>
-				<p>欢迎热爱开源事业的朋友们加入我们! </p>
+				<p>源代码全部开源免费，新产品持续开发。欢迎更多热爱开源事业的朋友给与我们更多的支持。</p>
+				<a href="#/sponsor/" title="支持LazyCMS发展">加入我们</a>
 			</li>
 		</ul>
 	</div>

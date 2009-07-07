@@ -29,13 +29,13 @@ return array(
         'create',
         'onepage',
         'article',
+        'fragment',
         'sort',
         'model',
     ),
     /* 菜单列表 */
     'menus'   => array(
-        /*
-        array('label' => array(
+        /*array('label' => array(
             'purview' => 'label',
             'href'    => '../content/label.php',
         )),*/
@@ -51,6 +51,10 @@ return array(
         array('article' => array(
             'purview' => 'article',
             'href'    => '../content/article.php',
+        )),
+        array('fragment' => array(
+            'purview' => 'fragment',
+            'href'    => '../content/fragment.php',
         )),
         '-',
         array('sort' => array(

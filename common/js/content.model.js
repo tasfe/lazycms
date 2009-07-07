@@ -255,6 +255,6 @@
         var f = this.parents('form');
             this.hide().after('<input type="text" value="UpLoading..." class="in w400 uploading" />');
             f.parents('fieldset').after('<iframe src="about:blank" id="tempform" name="tempform" style="display:none;width:0px;height:0px;border:none;"></iframe>');
-            f.submit();
+            f.trigger('submit');
     }
 })(jQuery);

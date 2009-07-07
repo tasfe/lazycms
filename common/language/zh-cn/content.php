@@ -208,6 +208,11 @@ return array(
         ),
     ),
 
+    /* 文档碎片 */
+    'fragment' => array(
+        'title' => '碎片管理',
+    ),
+
     /* 验证信息 */
     'validate'  => array(
         'url'   => '匹配网址',

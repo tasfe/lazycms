@@ -20,9 +20,6 @@
 
 window.PROCESS = new Array();
 
-// 设置系统CSS
-$.setStyle();
-
 // 设置全局 AJAX 默认选项
 $.ajaxSetup({
     cache: false,
@@ -288,7 +285,7 @@ $(document).ready(function(){
                             $.dialogUI({
                                 mask:false, name:'help',
                                 title:JSON.TITLE, body:JSON.BODY,
-                                style:$.extend({width:'350px',overflow:'hidden'},{top:pos.top + 8,left:pos.left})
+                                style:{width:'350px',overflow:'hidden',position:'absolute',top:pos.top + 8,left:pos.left}
                             });
                         } else {
                             return ;
@@ -360,18 +357,14 @@ $(document).ready(function(){
 		process.appendTo(This);
 		// 添加IE6事件
 		if ($.browser.msie && $.browser.version == '6.0') { 
-			process.css({position:'absolute'}); 
-			$(window).scroll(function(){
-				move();
-			}).resize(function(){
-			    move();
-			});
-			function move(){
+			var processMove = function(){
 				process.css({
+					'position':'absolute',
 					'top':(document.documentElement.scrollTop + document.documentElement.clientHeight - process.get(0).clientHeight - 5) + 'px',
 					'left':(document.documentElement.clientWidth - process.get(0).clientWidth - 5) + 'px'}
 				);
 			}
+			$(window).scroll(function(){processMove()}).resize(function(){processMove()});
 		}
 		return this;
 	}

@@ -179,7 +179,7 @@ class Content_Model{
             $len  = instr('input,radio,checkbox,select,upfile',$data['intype'])?'('.$data['length'].')':null;
             $type = Content_Model::getType($data['intype']);
             $type = strpos($type,')')===false ? $type.$len : $type;
-            $def  = empty($data['default'])?null:" DEFAULT '".$data['default']."'";
+            $def  = empty($data['default'])?null:" DEFAULT '".(instr('text,mediumtext',$type)?null:$data['default'])."'";
             $sute.= ",\n`".$data['ename']."` {$type} {$def}";
         }
         // 先删除表
