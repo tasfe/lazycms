@@ -72,6 +72,29 @@ class ParseTags{
         return $this->load(call_user_func_array('read_file', $args));
     }
     /**
+     * 取得块标签
+     *
+     * @param  string   $p1  标签名
+     * @param  string   $p2  返回类型
+     *      all:匹配的整个标签;
+     *      tag:匹配标签内的HTML
+     * @return string
+     */
+    function getLabel($p1,$p2='all'){
+        $R = null;
+        if (preg_match('/\{('.preg_quote($p1,'/').'\b)[^\}]*\}(.+)\{\/\1\}/isU',$this->HTML,$r)) {
+            switch ($p2) {
+                case 'all':
+                    $R = array_shift($r);
+                    break;
+                case 'tag':
+                    $R = array_pop($r);
+                    break;
+            }
+        }
+        return $R;
+    }
+    /**
      * 解析标签
      */
     function parse(){
@@ -307,9 +330,35 @@ class ParseTags{
         return $this->vars;
     }
     /**
+     * 取得指定的属性
+     *
+     * @param bool   $p1   完整标签
+     * @param string $p2   属性名称
+     * @return string
+     */
+    function getTagAttr($p1,$p2){
+        $R = sect($p1,$p2.'="','"');
+        switch ((string)$p2) {
+            case 'number':
+                $R = validate($R,2)?$R:20;
+                break;
+            case 'zebra':
+                $R = validate($R,2)?$R:1;
+                break;
+        }
+        return $R;
+    }
+    /**
+     * 手动清除
+     */
+    function close(){
+        $this->clear();
+        $this->HTML = null;
+    }
+    /**
      * 类析构函数
      */
     function __destruct(){
-        
+        $this->close();
     }
 }

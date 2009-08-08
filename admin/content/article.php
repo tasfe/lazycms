@@ -45,10 +45,20 @@ function lazy_main(){
     System::loadScript('content.article');
     System::header(t('article'));
     $size    = isset($_GET['size'])?$_GET['size']:15;
+    $order   = isset($_GET['order'])?$_GET['order']:'default';
     $model   = isset($_GET['model'])?$_GET['model']:null;
     $sortid  = isset($_GET['sortid'])?$_GET['sortid']:0;
     $keyword = isset($_GET['keyword'])?$_GET['keyword']:null;
     $fields  = isset($_GET['fields'])?$_GET['fields']:null;
+    $orderArr = array(
+        'default' => '`order` DESC',
+        'dateaz'  => '`date` DESC',
+        'dateza'  => '`date` ASC',
+        'hitsaz'  => '`hits` DESC',
+        'hitsza'  => '`hits` ASC',
+        'diggaz'  => '`digg` DESC',
+        'diggza'  => '`digg` ASC',
+    );
     if (empty($model)) {
         $textarea = null;
         $models   = Content_Model::getModelsByType('list');
@@ -68,6 +78,12 @@ function lazy_main(){
             foreach (array(10,15,20,25,30,40,50) as $i) {
                 $selected = $i==$size?' selected="selected"':null;
                 echo '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+            }
+            echo '</select></p>';
+            echo '<p><label>'.t('article/order').':</label><select name="order">';
+            foreach ($orderArr as $k=>$v) {
+                $selected = $k==$order?' selected="selected"':null;
+                echo '<option value="'.$k.'"'.$selected.'>'.t("article/order/{$k}").'</option>';
             }
             echo '</select></p>';
             echo '<p><label>'.t('article/fields').':</label><span id="fields"></span></p>';
@@ -92,11 +108,10 @@ function lazy_main(){
             }
         }
         $inSQL.= empty($inLike)?null:' AND ('.$inLike.')';
-        $inSQL.= ($sortid==0?null:" AND `sortid`=".DB::quote($sortid));
-
-        $db = get_conn();
-        $ds = new Recordset();
-        $ds->create("SELECT * FROM `{$table}` WHERE `passed`=0 {$inSQL} ORDER BY `id` DESC");
+        $inSQL.= $sortid==0?null:" AND `sortid` IN(".DB::quote(Content_Sort::getSortIdsBySortIds($sortid)).")";
+        $db = get_conn(); 
+        $ds = new Recordset(); $order = isset($orderArr[$order])?$orderArr[$order]:$orderArr['default'];
+        $ds->create("SELECT * FROM `{$table}` WHERE `passed`=0 {$inSQL} ORDER BY {$order}");
         $ds->action = PHP_FILE.'?action=set&model='.$model['modelename'];
         $ds->url = PHP_FILE.'?model='.$model['modelename'].'&sortid='.$sortid.'&keyword='.$keyword.'&size='.$size.$query.'&page=$';
         $ds->but = $ds->button('create:'.t('system::create').'|move:'.t('system::move')).$ds->plist();

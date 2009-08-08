@@ -105,11 +105,13 @@ function lazy_set(){
                 $model  = Content_Model::getModelById($rs[0]);
                 $table  = Content_Model::getDataTableName($model['modelename']);
                 $jtable = Content_Model::getJoinTableName($model['modelename']);
-                $res1 = $db->query("SELECT `tid`,`sid` FROM `{$jtable}` WHERE `type`=1 AND `sid`=?;",$rs[1]);
-                while ($rs1 = $db->fetch($res1,0)) {
-                    $db->delete($table,"`id`='".$rs1[0]."'");
+                // 删除关键词连接
+                $keyRes = $db->query("SELECT `jid` FROM `{$jtable}` WHERE EXISTS(SELECT * FROM `{$table}` WHERE `{$jtable}`.`tid`=`id` AND `sortid`=?);",$rs[1]);
+                while ($krs = $db->fetch($keyRes,0)) {
+                    $db->delete($jtable,"`jid`='".$krs[0]."'");
                 }
-                $db->delete($jtable,array("`type`=1","`sid`='".$rs[1]."'"));
+                // 删除文章
+                $db->delete($table,array("`sortid`=".$rs[1]));
             }
             // 删除分类与模型之间的关联关系
             $db->delete('#@_content_sort_join',"`sortid` IN({$sortids})");

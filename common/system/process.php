@@ -25,6 +25,8 @@ defined('COM_PATH') or die('Restricted access!');
 class Process{
     // 进程ID
     var $id     = 0;
+    // 已生成数
+    var $create = 0;
     // 总文档数
     var $total  = 0;
     // 已使用时间
@@ -68,7 +70,7 @@ class Process{
             );
             $this->id  = md5($ids.PHP_FILE.ACTION.$submit);
             $this->_data['sortids'] = explode(',',$ids);
-            $this->_alone = $this->_db->result("SELECT COUNT(*) FROM `#@_system_create` WHERE `state`=1 LIMIT 0,1;");
+            $this->_alone = $this->_db->result("SELECT COUNT(*) FROM `#@_system_create` WHERE `state`=1;");
         }
     }
     /**
@@ -116,6 +118,7 @@ class Process{
         if ($rs = $this->_db->fetch($res)) {
             // 取得属性变量
             $this->total   = $rs['total'];
+            $this->create  = $rs['create'];
             $this->useTime = $rs['usetime'];
             $this->data(unserialize($rs['data']));
             // 更新当前进程的状态
@@ -131,7 +134,7 @@ class Process{
                 return $this->_db->insert('#@_system_create',array(
                     'id'      => $this->id,
                     'total'   => $this->total,
-                    'create'  => $this->count(),
+                    'create'  => $this->create,
                     'usetime' => floatval($this->useTime),
                     'data'    => serialize($this->_data),
                 ));
@@ -157,6 +160,7 @@ class Process{
         if ($p1) {
             $update = array_merge($update,$p1);
         }
+        $this->create = $update['create'];
         // 更新已生成数，已用时间
         $this->_db->update('#@_system_create',$update,"`id`=".DB::quote($this->id));
         return true;
@@ -220,7 +224,7 @@ class Process{
      * @return bool
      */
     function isOver(){
-        return (int)$this->count()>=(int)$this->total?true:false;
+        return (int)$this->create>=(int)$this->total?true:false;
     }
     /**
      * 关闭对象
@@ -232,7 +236,7 @@ class Process{
             'ACTION' => $others['phpurl'],
             'DATAS'  => array(
                 'ALONE' => (int) $this->_alone,  // 进程数
-                'OVER'  => (int) $this->count(),  // 已生成文档数
+                'OVER'  => (int) $this->create,  // 已生成文档数
                 'TOTAL' => (int) $this->total,   // 总文档数
                 'USED'  => (float) number_format($this->useTime,2,'.',''), // 已用时间
             ),

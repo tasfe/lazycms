@@ -50,7 +50,7 @@ class Keywords{
      */
     function get($id){
         $R = array();
-        $result = $this->_db->query("SELECT `k`.`keyword` FROM `{$this->_joinTable}` AS `j` LEFT JOIN `#@_keywords` AS `k` ON `j`.`sid`=`k`.`keyid` WHERE `j`.`tid`=? AND `j`.`type`=0 ORDER BY `j`.`sid` ASC;",$id);
+        $result = $this->_db->query("SELECT `k`.`keyword` FROM `{$this->_joinTable}` AS `j` LEFT JOIN `#@_keywords` AS `k` ON `j`.`kid`=`k`.`keyid` WHERE `j`.`tid`=? AND `j`.`type`=0 ORDER BY `j`.`kid` ASC;",$id);
         while ($rs = $this->_db->fetch($result,0)) {
             $R[] = $rs[0];
         }
@@ -155,7 +155,7 @@ class Keywords{
      */
     function _rejoin($id,$keywords){
         if (empty($keywords) || !is_array($keywords)) { return ; }
-        $this->_db->exec("DELETE FROM `{$this->_joinTable}` WHERE `tid`=? AND `type`=0 AND `sid` IN(SELECT `keyid` FROM `#@_keywords` WHERE `keyword` IN(".DB::quote($keywords)."));",$id);
+        $this->_db->exec("DELETE FROM `{$this->_joinTable}` WHERE `tid`=? AND `type`=0 AND `kid` IN(SELECT `keyid` FROM `#@_keywords` WHERE `keyword` IN(".DB::quote($keywords)."));",$id);
         $this->_keysum($keywords);
         return true;
     }
@@ -168,10 +168,10 @@ class Keywords{
      */
     function _join($id,$keyid){
         // 如果关联不存在，则插入
-        $N = $this->_db->result("SELECT COUNT(*) FROM `{$this->_joinTable}` WHERE `tid`=".DB::quote($id)." AND `type`=0 AND `sid`=".DB::quote($keyid).";");
+        $N = $this->_db->result("SELECT COUNT(*) FROM `{$this->_joinTable}` WHERE `tid`=".DB::quote($id)." AND `type`=0 AND `kid`=".DB::quote($keyid).";");
         return ((int)$N>0) ? true : $this->_db->insert($this->_joinTable,array(
             'tid'  => $id,
-            'sid'  => $keyid,
+            'kid'  => $keyid,
             'type' => 0,
         ));
     }
@@ -192,7 +192,7 @@ class Keywords{
         } else {
             $keyid = $keywords;
             return $this->_db->update('#@_keywords',array(
-                'keysum' => $this->_db->result("SELECT COUNT(*) FROM `{$this->_joinTable}` WHERE `sid`=".DB::quote($keyid)." AND `type`=0;")
+                'keysum' => $this->_db->result("SELECT COUNT(*) FROM `{$this->_joinTable}` WHERE `kid`=".DB::quote($keyid)." AND `type`=0;")
             ),DB::quoteInto('`keyid` = ?',$keyid));    
         }
     }

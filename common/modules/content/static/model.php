@@ -31,7 +31,7 @@ class Content_Model{
      */
     function getDataTableName($p1){
         $db = get_conn(); if (strlen($p1)==0) { return false; }
-        return str_replace('#@_',$db->config('prefix'),"#@_content_data_{$p1}");
+        return str_replace('#@_',$db->config('prefix'),"#@_content_{$p1}_data");
     }
     /**
      * 根据模型标识，取得关联表名
@@ -41,7 +41,7 @@ class Content_Model{
      */
     function getJoinTableName($p1){
         $db = get_conn(); if (strlen($p1)==0) { return false; }
-        return str_replace('#@_',$db->config('prefix'),"#@_content_join_{$p1}");
+        return str_replace('#@_',$db->config('prefix'),"#@_content_{$p1}_join");
     }
     /**
      * 取得控件的数据库字段类型
@@ -202,15 +202,7 @@ class Content_Model{
         $SQL.= ") ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;";
         $db->exec($SQL);
         // 创建关联表
-        $db->exec("
-        CREATE TABLE IF NOT EXISTS `{$jtable}` (
-            `jid` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            `tid` INT(11) NOT NULL,
-            `sid` INT(11) NOT NULL,
-            `type` INT(11) NOT NULL,
-            KEY `tid` (`tid`),
-            KEY `sid` (`sid`)
-        ) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");
+        $db->exec("CREATE TABLE IF NOT EXISTS `{$jtable}` (`jid` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,`tid` INT(11) NOT NULL,`kid` INT(11) NOT NULL,`type` INT(11) NOT NULL,KEY `tid` (`tid`),KEY `kid` (`kid`)) ENGINE=MyISAM DEFAULT CHARSET=#~lang~#;");
         // 执行数据插入
         $db->insert('#@_content_model',$model);
         return $db->lastId();

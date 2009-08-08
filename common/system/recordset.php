@@ -81,7 +81,7 @@ class Recordset{
         if ((int)$this->page > (int)$this->totalPages) {
             $this->page = $this->totalPages;
         }
-        $sql .= ' LIMIT '.$this->size.' OFFSET '.($this->page-1)*$this->size.';';
+        $sql.= ' LIMIT '.$this->size.' OFFSET '.($this->page-1)*$this->size.';';
         $this->result = $this->_db->query($sql);
     }
     /**

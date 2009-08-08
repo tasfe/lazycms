@@ -160,7 +160,7 @@ class Content_Article{
             }
             // 设置数据
             $pro->data('models',$models);
-            // 第一次插入数据
+            // 第一次强力插入
             return true;
         }
         // 生成文章
@@ -202,7 +202,7 @@ class Content_Article{
         $pro->updateUseTime();
         // 更新当前任务进程信息
         $pro->update();
-        // 文章都生成完啦，该生成文章列表啦！
+        // 文章都生成完毕
         if ($pro->isOver()) {
             $pro->delete();
         }
@@ -217,12 +217,10 @@ class Content_Article{
             $listdata = array();
             // 计算分类文档数
             foreach ($pro->data('sortids') as $sortid) {
-                // 取得模板地址
-                $tmplpath = LAZY_PATH.'/'.$template.'/'.Content_Article::getTemplateBySortId($sortid,'sort');
-                // 载入模板
-                $tag->loadHTML($tmplpath);
+                // 取得模板地址，并载入模板
+                $tag->loadHTML(LAZY_PATH.'/'.$template.'/'.Content_Article::getTemplateBySortId($sortid,'sort'));
                 // 取得标签
-                $listtag  = $tag->getBlockTag('article:list');
+                $listtag  = $tag->getLabel('content');
                 // 取得每页显示条数
                 $number   = $tag->getTagAttr($listtag,'number');
                 // 取得当前分类下的所有模型
@@ -243,6 +241,7 @@ class Content_Article{
                     'total'  => $length,
                     'number' => $number,
                     'page'   => 1,
+                    'outhtm' => $tag->HTML,
                 );
                 // 关闭对象
                 $tag->close();
@@ -291,7 +290,7 @@ class Content_Article{
         $pro->update();
         // 文章都生成完啦，该生成文章列表啦！
         if ($pro->isOver()) {
-            $pro->delete();
+            //$pro->delete();
         }
         return true;
     }
@@ -304,6 +303,7 @@ class Content_Article{
      * @param int $page
      */
     function createListPage($data){
+        return true;
         if (!$data) { return true; } import('system.keywords');
         $db = get_conn(); $template = c('TEMPLATE');
         $sortrs = $data['sortrs']; $sortid = $sortrs['sortid'];
