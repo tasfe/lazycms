@@ -14,7 +14,7 @@ IF NOT (%1)==() SET RELEASER_PATH=%1
 :: If not defined, set it to the default value.
 IF (%RELEASER_PATH%)==() SET RELEASER_PATH=../../release/
 
-D:\apmxe\php5\php.exe releaser.php ../ "%RELEASER_PATH%" "%RELEASER_VERSION%"
+php releaser.php ../ "%RELEASER_PATH%" "%RELEASER_VERSION%"
 
 :End
 
