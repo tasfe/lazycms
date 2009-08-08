@@ -1,5 +1,6 @@
-<?php
-/**
+<?xml version="1.0" encoding="utf-8" ?>
+<Package>
+	<Header><![CDATA[/**
  * +---------------------------------------------------------------------------+
  * | LL                             LLLL   LL     L   LLLL               LLLL  |
  * | LL                            LL   L  LLL   LL  LL   L             LL  LL |
@@ -18,33 +19,18 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-defined('COM_PATH') or die('Restricted access!');
-/**
- * LazyCMS 系统定义文件
- */
-// 系统信息
-define('PHP_SAPI_NAME',php_sapi_name());
-define('IS_APACHE',strstr($_SERVER['SERVER_SOFTWARE'], 'Apache') || strstr($_SERVER['SERVER_SOFTWARE'], 'LiteSpeed'));
-define('IS_CGI',strncmp(PHP_SAPI_NAME,'cgi',3)==0 ? 1 : 0 );
-define('IS_IIS',PHP_SAPI_NAME =='isapi' ? 1 : 0);
-define('IIS_VER',IS_IIS ? substr($_SERVER["SERVER_SOFTWARE"],strrpos($_SERVER["SERVER_SOFTWARE"],'/')+1) :0);
-// 当前文件名
-if (!defined('PHP_FILE')) {
-    // CGI or FASTCGI 模式
-    if (IS_CGI) {
-        $R = explode('.php',$_SERVER['PHP_SELF']);
-        define('PHP_FILE',rtrim(str_replace($_SERVER['HTTP_HOST'],'',$R[0].'.php'),'/'));
-    } else {
-        define('PHP_FILE',rtrim($_SERVER['SCRIPT_NAME'],'/'));
-    } unset($R);
-}
-// 路径分隔符
-define('SEPARATOR',DIRECTORY_SEPARATOR);
-// 网站根目录
-define('LAZY_PATH',str_replace(str_replace(str_replace(SEPARATOR,'/',ABS_PATH.SEPARATOR),'/',str_replace(SEPARATOR,'/',$_SERVER["SCRIPT_FILENAME"])),'/',PHP_FILE));
-// Http scheme
-define('HTTP_SCHEME',(($scheme=isset($_SERVER['HTTPS'])?$_SERVER['HTTPS']:null)=='off' || empty($scheme))?'http':'https');
-// Http host
-define('HTTP_HOST',HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
-// System version
-define('LAZY_VERSION','[Development]');
+]]></Header>
+	
+	<PackageFile path="common/js/lazycms.js">
+		<File path="_source/js/lazycms.library.js" />
+		
+		<File path="_source/js/system.admins.js" />
+
+		<File path="_source/js/content.article.js" />
+		<File path="_source/js/content.model.js" />
+		<File path="_source/js/content.onepage.js" />
+		<File path="_source/js/content.sort.js" />
+		
+	</PackageFile>
+
+</Package>

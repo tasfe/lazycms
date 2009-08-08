@@ -65,7 +65,6 @@ class System{
         $hl.= '<link rel="shortcut icon" href="'.LAZY_PATH.'favicon.ico" />';
         $hl.= '<script type="text/javascript">window.MODULE = \''.MODULE.'\';window.ACTION = \''.ACTION.'\';</script>';
         $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.3"></script>';
-        $hl.= '<script type="text/javascript" src="../../common/js/lazycms.library.js"></script>';
         $hl.= '<script type="text/javascript" src="../system/images/system.js"></script>';
         if ($script = g('SCRIPT')) {
             $hl.= '<script type="text/javascript">'.$script.'</script>';

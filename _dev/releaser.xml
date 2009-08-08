@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Release>
+	
+	<OriginalFile sourcePath="admin/system/images/system.js" targetPath="admin/system/images/system.original.js" />
+
+	<IgnoreDir path="_dev" />
+	<IgnoreDir path="_docs" />
+
+	<IgnoreFile path="TODO" />
+	<IgnoreFile path="common/dicts/LazyCMS_Private.dict" />
+	<IgnoreFile path="common/images/icons_source.png" />
+	<IgnoreFile path="common/js/lang.zh-cn.js" />
+	<IgnoreFile path="themes/changelog.php" />
+
+	<!--
+		The following files should not existing in the development version,
+		but we leave it here just in case the packager has been run by mistake.
+	-->
+	<IgnoreFile path="common/js/lazycms.js" />
+
+</Release>

@@ -63,8 +63,7 @@ function lazy_main() {
     echo '<title>LazyCMS '.t('login').'</title>';
     echo '<link href="images/style.css" rel="stylesheet" type="text/css" />';
     echo '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.3"></script>';
-    echo '<script type="text/javascript" src="../../common/js/lazycms.library.js?ver=1.0"></script>';
-    echo '<script type="text/javascript" src="../../common/language/'.language().'/system.js"></script>';
+    echo '<script type="text/javascript" src="../system/images/system.js"></script>';
     echo '<script type="text/javascript">';
     echo '$(document).ready(function(){';
     echo '  $("#adminname").focus(); $("form[method=post]:not([ajax=false])").ajaxSubmit();';
