@@ -145,13 +145,13 @@ function lazy_import(){
 // *** *** www.LazyCMS.net *** *** //
 function lazy_upmodel(){
     import('system.uploadfile');
-    $folder = SITE_BASE.C('UPLOAD_FILE_PATH');
+    $folder = LAZY_PATH.C('UPLOAD_FILE_PATH');
     $upload = new UpLoadFile();
     $upload->allowExts = 'mod';
     $upload->maxSize   = 500*1024;//500K
-    $upload->savePath  = $folder; mkdirs(LAZY_PATH.$folder);
+    $upload->savePath  = $folder; mkdirs(ABS_PATH.$folder);
     if ($file = $upload->save('modelfile')) {
-        $modelcode  = read_file(LAZY_PATH.$file['path']); @unlink(LAZY_PATH.$file['path']);
+        $modelcode  = read_file(ABS_PATH.$file['path']); @unlink(ABS_PATH.$file['path']);
         if (is_utf8($modelcode)) { $charset = ' charset="utf-8"'; }
         $modelname  = trim(sect($modelcode,'(Content\-Name\:)','(\r\n)'));
         $modelename = trim(sect($modelcode,'(Content\-Model\-Name\:)','(\r\n)'));

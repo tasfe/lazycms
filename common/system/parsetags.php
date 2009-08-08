@@ -47,7 +47,7 @@ class ParseTags{
     function load($p1){
         $html = $p1;
         // 处理 include 标签
-        $tags = array(); $tp = LAZY_PATH.'/'.c('TEMPLATE').'/';
+        $tags = array(); $tp = ABS_PATH.'/'.c('TEMPLATE').'/';
         if (preg_match_all('/\{include[^\}]*file=([^\}]*)\}/isU',$html,$r)) {
             $tags = $r[1];
             foreach ($tags as $i=>$tag) {
@@ -56,9 +56,9 @@ class ParseTags{
             }
         }
         // 追加jQuery库
-        $html = preg_replace('/<\/title[^>]*>/is',"\${0}\n<meta name=\"generator\" content=\"LazyCMS ".LAZY_VERSION."\"/>\n<script type=\"text/javascript\" src=\"".SITE_BASE."common/js/jquery.js?ver=".LAZY_VERSION."\"></script>\n<script type=\"text/javascript\" src=\"".SITE_BASE."common/js/lazycms.library.js?ver=".LAZY_VERSION."\"></script>",$html);
+        $html = preg_replace('/<\/title[^>]*>/is',"\${0}\n<meta name=\"generator\" content=\"LazyCMS ".LAZY_VERSION."\"/>\n<script type=\"text/javascript\" src=\"".LAZY_PATH."common/js/jquery.js?ver=".LAZY_VERSION."\"></script>\n<script type=\"text/javascript\" src=\"".LAZY_PATH."common/js/lazycms.library.js?ver=".LAZY_VERSION."\"></script>",$html);
         // 格式化图片、css、js路径
-        $html = preg_replace('/(<(((script|link|img|input|embed|object|base|area|map|table|td|th|tr).+?(src|href|background))|((param).+?(src|value)))=([^\/]+?))((images|scripts)\/.{0,}?\>)/i','${1}'.SITE_BASE.c('TEMPLATE').'/${10}',$html);        
+        $html = preg_replace('/(<(((script|link|img|input|embed|object|base|area|map|table|td|th|tr).+?(src|href|background))|((param).+?(src|value)))=([^\/]+?))((images|scripts)\/.{0,}?\>)/i','${1}'.LAZY_PATH.c('TEMPLATE').'/${10}',$html);        
         $this->HTML = $html;
         return $html;
     }

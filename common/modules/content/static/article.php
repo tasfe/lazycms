@@ -110,7 +110,7 @@ class Content_Article{
                 $tplfile = Content_Article::getTemplateBySortId($rs['sortid'],'page');
             }
             // 加载模板
-            $tag->loadHTML(LAZY_PATH.'/'.$template.'/'.$tplfile);
+            $tag->loadHTML(ABS_PATH.'/'.$template.'/'.$tplfile);
             // 清除标签值
             $tag->clear();
             // 定义内部变量
@@ -120,7 +120,7 @@ class Content_Article{
                 'date'      => $rs['date'],
                 'hits'      => $rs['hits'],
                 'digg'      => $rs['digg'],
-                'path'      => SITE_BASE.$rs['path'],
+                'path'      => LAZY_PATH.$rs['path'],
                 'keywords'    => $key->get($rs['id']),
                 'description' => $rs['description'],
             ));
@@ -130,7 +130,7 @@ class Content_Article{
             }
             // 解析模板
             $outHTML = $tag->parse();
-            $outFile = LAZY_PATH.'/'.$rs['path'];
+            $outFile = ABS_PATH.'/'.$rs['path'];
             mkdirs(dirname($outFile)); save_file($outFile,$outHTML);
         }
         return true;
@@ -218,7 +218,7 @@ class Content_Article{
             // 计算分类文档数
             foreach ($pro->data('sortids') as $sortid) {
                 // 取得模板地址，并载入模板
-                $tag->loadHTML(LAZY_PATH.'/'.$template.'/'.Content_Article::getTemplateBySortId($sortid,'sort'));
+                $tag->loadHTML(ABS_PATH.'/'.$template.'/'.Content_Article::getTemplateBySortId($sortid,'sort'));
                 // 取得标签
                 $listtag  = $tag->getLabel('content');
                 // 取得每页显示条数
@@ -311,7 +311,7 @@ class Content_Article{
         $number  = $data['number']; $page  = $data['page'];
         import('system.parsetags'); $tag = new ParseTags();
         // 取得模板地址
-        $tmplpath = LAZY_PATH.'/'.$template.'/'.Content_Article::getTemplateBySortId($sortid,'sort');
+        $tmplpath = ABS_PATH.'/'.$template.'/'.Content_Article::getTemplateBySortId($sortid,'sort');
         // 加载模板
         $tag->loadHTML($tmplpath);
         
@@ -353,7 +353,7 @@ class Content_Article{
                     'date'      => $data['date'],
                     'hits'      => $data['hits'],
                     'digg'      => $data['digg'],
-                    'path'      => SITE_BASE.$data['path'],
+                    'path'      => LAZY_PATH.$data['path'],
                     'keywords'  => $key->get($data['id']),
                     'description'   => $data['description'],
                 ));
@@ -367,7 +367,7 @@ class Content_Article{
                 $tag->close();
             }
             // 生成列表文件
-            $outFile = LAZY_PATH.'/'.$sortrs['sortpath'].'/index'.($page>1?$page:'').'.html';
+            $outFile = ABS_PATH.'/'.$sortrs['sortpath'].'/index'.($page>1?$page:'').'.html';
             mkdirs(dirname($outFile)); save_file($outFile,$outHTML);
         }
         return true;

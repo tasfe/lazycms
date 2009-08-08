@@ -111,11 +111,11 @@ class DB {
                         if ($pos = strrpos($info[2],SEPARATOR)) {
                             $dbpath = substr($info[2],0,$pos);
                             $dbfile = substr($info[2],$pos+1);
-                            $folder = LAZY_PATH.SEPARATOR.$dbpath;
+                            $folder = ABS_PATH.SEPARATOR.$dbpath;
                             mkdirs($folder); save_file($folder.'/index.html',' ');
                         } else {
                             $dbfile = $info[2];
-                            $folder = LAZY_PATH;
+                            $folder = ABS_PATH;
                         }
                         $info[2] = $folder.SEPARATOR.$dbfile;
                     }

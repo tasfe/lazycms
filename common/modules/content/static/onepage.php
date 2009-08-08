@@ -46,7 +46,7 @@ class Content_Onepage{
             	$template = $db->result("SELECT `pagetemplate` FROM `#@_content_model` WHERE `modelename`='{$modelename}';");
             }
 			// 加载模板
-            $tag->loadHTML(LAZY_PATH.'/'.c('TEMPLATE').'/'.$template);
+            $tag->loadHTML(ABS_PATH.'/'.c('TEMPLATE').'/'.$template);
             // 清除标签值
             $tag->clear();
             // 定义内部变量
@@ -56,7 +56,7 @@ class Content_Onepage{
                 'date'      => $rs['date'],
                 'hits'      => $rs['hits'],
                 'digg'      => $rs['digg'],
-                'path'      => SITE_BASE.$rs['path'],
+                'path'      => LAZY_PATH.$rs['path'],
                 'keywords'    => $key->get($rs['id']),
                 'description' => $rs['description'],
             ));
@@ -66,7 +66,7 @@ class Content_Onepage{
             }
             // 解析模板变量
             $outHTML = $tag->parse();
-            $outFile = LAZY_PATH.'/'.$rs['path'];
+            $outFile = ABS_PATH.'/'.$rs['path'];
             mkdirs(dirname($outFile)); save_file($outFile,$outHTML);
         }
         return true;

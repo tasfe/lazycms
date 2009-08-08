@@ -75,7 +75,7 @@ class UpLoadFile{
         $p3 = (substr($this->savePath,-1)=='/' ? $this->savePath : $this->savePath.'/');
         $p4 = $p2.'.'.$Info['ext']; $n  = 1;
         do {
-            if ($isfile = is_file(LAZY_PATH.$p3.$p4)) {
+            if ($isfile = is_file(ABS_PATH.$p3.$p4)) {
                 $p4 = $p2.'('.$n.').'.$Info['ext'];
             }
             $n++;
@@ -92,7 +92,7 @@ class UpLoadFile{
                 $this->_error = $this->_UPLOAD_ERR_FORBID_EXT;
                 return false;
             }
-            if (move_uploaded_file($Info['tmp_name'],LAZY_PATH.$Info['path'])){
+            if (move_uploaded_file($Info['tmp_name'],ABS_PATH.$Info['path'])){
                 unset($Info['tmp_name'],$Info['error']);
                 return $Info;
             } else {

@@ -156,7 +156,7 @@ function lazycms_error($errno, $errstr, $errfile, $errline){
         $hl.= '#footer span{color:silver;}';
         $hl.= '</style></head><body>';
         $hl.= '<div class="notice"><h2>'.t('system::error').'</h2>';
-        $hl.= '<div>You can choose to [ <a href="javascript:self.location.reload();">'.t('system::try').'</a> ] [ <a href="'.$RE.'">'.t('system::back').'</a> ] or [ <a href="'.SITE_BASE.'">'.t('system::home').'</a> ]</div>';
+        $hl.= '<div>You can choose to [ <a href="javascript:self.location.reload();">'.t('system::try').'</a> ] [ <a href="'.$RE.'">'.t('system::back').'</a> ] or [ <a href="'.LAZY_PATH.'">'.t('system::home').'</a> ]</div>';
         $hl.= '<p><strong>'.t('system::error/position').':</strong>　FILE: <strong class="red">'.$error['file'].'</strong>　LINE: <strong class="red">'.$error['line'].'</strong></p>';
         $hl.= '<p class="title">[ '.t('system::error/message').' ]</p>';
         $hl.= '<p class="message">'.$error['message'].'</p>';
@@ -246,7 +246,7 @@ function isok($p1){
  * @return  string
  */
 function replace_root($p1){
-    return str_replace(SEPARATOR,'/',str_replace(LAZY_PATH.SEPARATOR,SITE_BASE,$p1));
+    return str_replace(SEPARATOR,'/',str_replace(ABS_PATH.SEPARATOR,LAZY_PATH,$p1));
 }
 /**
  * 转换特殊字符为HTML实体
@@ -581,7 +581,7 @@ function snap_img($p1){
             $img = trim($img,'"\'');
             if ($downImg = down_img($img)) {
                 if (validate($img,5) && $img!=$downImg) {
-                    $R = str_replace($img,SITE_BASE.ltrim($downImg,'/'),$R);
+                    $R = str_replace($img,LAZY_PATH.ltrim($downImg,'/'),$R);
                 }
             }
         }
@@ -611,7 +611,7 @@ function down_img($p1,$p2=null){
                 $imgPath = str_replace('/',SEPARATOR,$imgPath);
                 if (isset($imgInfo['extension']) && isset($imgInfo['filename'])) {
                     $fileName = $imgInfo['filename'].'.'.$imgInfo['extension'];
-                    if (is_file(LAZY_PATH.SEPARATOR.$imgPath.$fileName)) {
+                    if (is_file(ABS_PATH.SEPARATOR.$imgPath.$fileName)) {
                         $fileName = str_replace('.','',microtime(true)).'.'.$imgInfo['extension'];
                     }
                 } else {
@@ -624,8 +624,8 @@ function down_img($p1,$p2=null){
                 $imgPath  = $imgInfo['dirname'];
                 $fileName = $imgInfo['basename'];
             }
-            mkdirs(LAZY_PATH.SEPARATOR.$imgPath);
-            save_file(LAZY_PATH.SEPARATOR.$imgPath.$fileName,$http->response());
+            mkdirs(ABS_PATH.SEPARATOR.$imgPath);
+            save_file(ABS_PATH.SEPARATOR.$imgPath.$fileName,$http->response());
             return str_replace(SEPARATOR,'/',$imgPath).$fileName;
         } else {
             return $p1;
@@ -872,7 +872,7 @@ function icon($p1){
 		default:
 		    $R = 'e2'; break;
     }
-    return '<img class="'.$R.' os" src="'.SITE_BASE.'common/images/white.gif" />';
+    return '<img class="'.$R.' os" src="'.LAZY_PATH.'common/images/white.gif" />';
 }
 /**
  * 输出tabs菜单
@@ -927,7 +927,7 @@ function get_dir_array($p1,$p2='*'){
     if (substr($p1,0,1)=='@') {
         $p1 = str_replace('@',COM_PATH,$p1);
     } else {
-        $p1 = LAZY_PATH.SEPARATOR.$p1;
+        $p1 = ABS_PATH.SEPARATOR.$p1;
     }
     $p3 = create_function('&$p1,$p2','$p1=substr($p1,strrpos($p1,"/")+1);');
     if (substr($p1,-1)!='/') { $p1 .= '/'; }
@@ -1186,10 +1186,11 @@ function editor($p1,$p2=array()){
     if (!empty($but)) {
         $div.= '<div class="'.$p1.'_editor_button">'.$but.'</div>';
     }
+    /*
     $hl = '<!-- tinyMCE include script -->';
     if (!$isLoadJs) {
         $isLoadJs = true;
-        $hl.= '<script src="'.SITE_BASE.'common/editor/tiny_mce/tiny_mce.js" type="text/javascript"></script>';
+        $hl.= '<script src="'.LAZY_PATH.'common/editor/tiny_mce/tiny_mce.js" type="text/javascript"></script>';
     }
     $hl.= '<script type="text/javascript">';
     $hl.= 'tinyMCE.init({';
@@ -1203,6 +1204,7 @@ function editor($p1,$p2=array()){
     $hl.= 'theme_advanced_toolbar_location:"top",theme_advanced_toolbar_align:"left",theme_advanced_statusbar_location:"bottom",theme_advanced_resizing:'.$A1['resize'].',';
     $hl.= 'setup : function(ed) {ed.onInit.add(function(ed) {});}';
     $hl.= '});</script>';
+    */
     $hl.= '<textarea style="width:'.$A1['width'].';height:'.$A1['height'].';" id="'.$p1.'" name="'.$p1.'">'.h2c($p2).'</textarea>';
     $R = $hl.$div;
     unset($A1); return $R;
@@ -1284,7 +1286,7 @@ function import($p1,$p2='',$p3='.php',$p4=false){
     } elseif('@' == $R1[0]) {
         // 加载根目录目录的文件
         $p1 = str_replace('@.','',$p1);
-        $p2 = LAZY_PATH;
+        $p2 = ABS_PATH;
     }
     if (substr($p2, -1) != '/') { $p2 .= '/'; }
     $p6 = $p2.str_replace('.', '/', $p1).$p3;
@@ -1373,18 +1375,18 @@ function langbox($p1){
 function c($p1=null,$p2=null) {
     static $R = array();
     if(!is_null($p2)) {
-        $R[strtolower($p1)] = $p2;
+        $R[$p1] = $p2;
         return ;
     }
     if(empty($p1)) {
         return $R;
     }
     if(is_array($p1)) {
-        $R = array_merge($R,array_change_key_case($p1));
+        $R = array_merge($R,$p1);
         return $R;
     }
-    if(isset($R[strtolower($p1)])) {
-        return $R[strtolower($p1)];
+    if(isset($R[$p1])) {
+        return $R[$p1];
     }else{
         return false;
     }
@@ -1399,18 +1401,18 @@ function c($p1=null,$p2=null) {
 function g($p1=null,$p2=null){
     static $R = array();
     if(!is_null($p2)) {
-        $R[strtolower($p1)] = $p2;
+        $R[$p1] = $p2;
         return ;
     }
     if(empty($p1)) {
         return $R;
     }
     if(is_array($p1)) {
-        $R = array_merge($R,array_change_key_case($p1));
+        $R = array_merge($R,$p1);
         return $R;
     }
-    if(isset($R[strtolower($p1)])) {
-        return $R[strtolower($p1)];
+    if(isset($R[$p1])) {
+        return $R[$p1];
     }else{
         return false;
     }

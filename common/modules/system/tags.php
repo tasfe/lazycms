@@ -36,7 +36,7 @@ class System_Tags extends ParseTags {
             case 'sitename':
                 $R = c('SITE_NAME'); break;
             case 'inst':
-                $R = SITE_BASE; break;
+                $R = LAZY_PATH; break;
             case 'host':
                 $R = HTTP_HOST; break;
             case 'ver': case 'version':

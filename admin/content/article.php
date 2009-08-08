@@ -143,7 +143,7 @@ function lazy_main(){
             foreach ($fields as $field=>$label) {
                 $K.= ",'".t2js(h2c($rs[$field]))."'";
             }
-            $ds->tbody("E(".$rs['id'].",'".t2js(SITE_BASE.$rs['path'])."',".(is_file(LAZY_PATH.'/'.$rs['path'])?1:0).",".$rs['hits'].",".$rs['digg'].",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});");
+            $ds->tbody("E(".$rs['id'].",'".t2js(LAZY_PATH.$rs['path'])."',".(is_file(ABS_PATH.'/'.$rs['path'])?1:0).",".$rs['hits'].",".$rs['digg'].",'".date('Y-m-d H:i:s',$rs['date'])."'{$K});");
         }
         $ds->close();
         $ds->display();
@@ -168,7 +168,7 @@ function lazy_set(){
             // 删除文件
             $result = $db->query("SELECT * FROM `{$table}` WHERE `id` IN({$lists});");
             while ($rs = $db->fetch($result)) {
-                $file = LAZY_PATH.'/'.$rs['path'];
+                $file = ABS_PATH.'/'.$rs['path'];
                 if (is_file($file)){ unlink($file); }
             }
             // 删除记录
@@ -281,8 +281,8 @@ function lazy_edit(){
             // 生成页面
 			if (Content_Article::createPage($mName,$docId)) {
 			    // 删除旧文件
-			    if ($oldpath != $path && is_file(LAZY_PATH.'/'.$oldpath)) {
-			    	unlink(LAZY_PATH.'/'.$oldpath);
+			    if ($oldpath != $path && is_file(ABS_PATH.'/'.$oldpath)) {
+			    	unlink(ABS_PATH.'/'.$oldpath);
 			    }
 				// 输出执行结果
 				ajax_success($text,$referer);

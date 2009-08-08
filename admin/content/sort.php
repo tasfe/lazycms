@@ -64,7 +64,7 @@ function lazy_main(){
             $modelename = implode(',',$model['modelename']);
         }
         $count = Content_Article::count($rs['sortid'],$modelename);
-        $ds->tbody("E(".$rs['sortid'].",'".t2js(h2c($rs['sortname']))."','".t2js(h2c(SITE_BASE.$rs['sortpath']))."',".(file_exists(LAZY_PATH.'/'.$rs['sortpath'])?1:0).",{$isSub},'".(empty($modelname)?'&nbsp;':$modelname)."',{$count});\$(function(){\$('#list_".$rs['sortid']."').addSub(".$rs['sortid'].",1,{$isSub});});");
+        $ds->tbody("E(".$rs['sortid'].",'".t2js(h2c($rs['sortname']))."','".t2js(h2c(LAZY_PATH.$rs['sortpath']))."',".(file_exists(ABS_PATH.'/'.$rs['sortpath'])?1:0).",{$isSub},'".(empty($modelname)?'&nbsp;':$modelname)."',{$count});\$(function(){\$('#list_".$rs['sortid']."').addSub(".$rs['sortid'].",1,{$isSub});});");
     }
     $ds->close();
     $ds->display();
@@ -134,7 +134,7 @@ function lazy_set(){
                 $arr[] = array(
                     'id'    => $rs['sortid'],
                     'sub'   => $isSub,
-                    'code'  => "R(".$rs['sortid'].",'".t2js(h2c($rs['sortname']))."','".t2js(h2c(SITE_BASE.$rs['sortpath']))."',".(is_file(LAZY_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($modelname)?'&nbsp;':$modelname)."',{$count});"
+                    'code'  => "R(".$rs['sortid'].",'".t2js(h2c($rs['sortname']))."','".t2js(h2c(LAZY_PATH.$rs['sortpath']))."',".(is_file(ABS_PATH.$rs['sortpath'])?1:0).",{$isSub},'".(empty($modelname)?'&nbsp;':$modelname)."',{$count});"
                 );
             }
             ajax_result($arr);

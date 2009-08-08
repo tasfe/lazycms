@@ -41,10 +41,10 @@ if (!defined('PHP_FILE')) {
 // 路径分隔符
 define('SEPARATOR',DIRECTORY_SEPARATOR);
 // 网站根目录
-define('SITE_BASE',str_replace(str_replace(str_replace(SEPARATOR,'/',LAZY_PATH.SEPARATOR),'/',str_replace(SEPARATOR,'/',$_SERVER["SCRIPT_FILENAME"])),'/',PHP_FILE));
+define('LAZY_PATH',str_replace(str_replace(str_replace(SEPARATOR,'/',ABS_PATH.SEPARATOR),'/',str_replace(SEPARATOR,'/',$_SERVER["SCRIPT_FILENAME"])),'/',PHP_FILE));
 // Http scheme
 define('HTTP_SCHEME',(($scheme=isset($_SERVER['HTTPS'])?$_SERVER['HTTPS']:null)=='off' || empty($scheme))?'http':'https');
 // Http host
 define('HTTP_HOST',HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
 // System version
-define('LAZY_VERSION','2.0.531');
+define('LAZY_VERSION','2.0.532');

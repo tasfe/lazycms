@@ -122,7 +122,7 @@ function lazy_directory(){
     echo '<table class="table" cellspacing="0"><tbody>';
     echo '<tr><th>'.t('sysinfo/directory/path').'</th><th>'.t('sysinfo/directory/read').'</th><th>'.t('sysinfo/directory/write').'</th></tr>';
     foreach ($paths as $path) {
-        echo '<tr><td>'.$path.'</td><td>'.isok(is_readable(LAZY_PATH.$path)).'</td><td>'.isok(is_writable(LAZY_PATH.$path)).'</td></tr>';
+        echo '<tr><td>'.$path.'</td><td>'.isok(is_readable(ABS_PATH.$path)).'</td><td>'.isok(is_writable(ABS_PATH.$path)).'</td></tr>';
     }
     echo '</tbody></table></fieldset>';
 }

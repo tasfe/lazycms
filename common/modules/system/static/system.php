@@ -62,7 +62,7 @@ class System{
         $hl.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
         $hl.= '<title>'.$title.'</title>';
         $hl.= '<link href="../system/images/style.css" rel="stylesheet" type="text/css" />';
-        $hl.= '<link rel="shortcut icon" href="'.SITE_BASE.'favicon.ico" />';
+        $hl.= '<link rel="shortcut icon" href="'.LAZY_PATH.'favicon.ico" />';
         $hl.= '<script type="text/javascript">window.MODULE = \''.MODULE.'\';window.ACTION = \''.ACTION.'\';</script>';
         $hl.= '<script type="text/javascript" src="../../common/js/jquery.js?ver=1.3"></script>';
         $hl.= '<script type="text/javascript" src="../../common/js/lazycms.library.js"></script>';
@@ -128,7 +128,7 @@ class System{
         $hl.= '    <li><a href="../system/sysinfo.php">'.t('system::sysinfo').'</a></li>';
         $hl.= '    </ul>';
         $hl.= '</li></ul>';
-        $hl.= '<ul class="menu"><li><a href="'.SITE_BASE.'" target="_blank">'.t('system::system/preview').'</a></li><li><a href="../system/myaccount.php">'.t('system::myaccount').'</a></li><li><a href="javascript:;" onclick="$.confirm(\''.t('system::confirm/logout').'\',function(r){ r ? $.redirect(\'../system/logout.php\') : false; })">'.t('system::system/logout').'</a></li></ul>';
+        $hl.= '<ul class="menu"><li><a href="'.LAZY_PATH.'" target="_blank">'.t('system::system/preview').'</a></li><li><a href="../system/myaccount.php">'.t('system::myaccount').'</a></li><li><a href="javascript:;" onclick="$.confirm(\''.t('system::confirm/logout').'\',function(r){ r ? $.redirect(\'../system/logout.php\') : false; })">'.t('system::system/logout').'</a></li></ul>';
         $hl.= '</div><div id="main">';
         if ($tabs = g('TABS')) { 
             $hl.= menu($selected.$tabs); 

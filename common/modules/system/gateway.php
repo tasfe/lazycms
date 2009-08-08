@@ -57,8 +57,8 @@ function lazy_explorer_delete(){
     no_cache(); System::purview();
     $file = isset($_POST['file']) ? $_POST['file'] : null;
     if (!empty($file)) {
-        if (is_file(LAZY_PATH.$file)) {
-            unlink(LAZY_PATH.$file);
+        if (is_file(ABS_PATH.$file)) {
+            unlink(ABS_PATH.$file);
         }
     }
     ajax_result(true);
@@ -68,7 +68,7 @@ function lazy_explorer_create(){
     no_cache(); System::purview();
     $path   = isset($_REQUEST['path']) ? $_REQUEST['path'] : '/';
     $folder = isset($_POST['folder']) ? $_POST['folder'] : null;
-    $rPath  = LAZY_PATH.$path.'/'.$folder;
+    $rPath  = ABS_PATH.$path.'/'.$folder;
     $val = new Validate();
     if ($val->method()) {
         $val->check('folder|0|'.t('files/check/folder').';folder|5|'.t('files/check/folder1').';folder|3|'.t('files/check/folder2').'|'.!file_exists($rPath));
@@ -130,7 +130,7 @@ function lazy_explorer_uploadfile(){
 function lazy_explorer_image(){
     $file = isset($_REQUEST['file']) ? $_REQUEST['file'] : null;
     if (!empty($file)) {
-        $file = LAZY_PATH.utf2ansi($file);
+        $file = ABS_PATH.utf2ansi($file);
         // 判断文件类型是否合法
         if (!instr(c('UPLOAD_IMAGE_EXT'),pathinfo($file,PATHINFO_EXTENSION))) {
             header('Cache-Control: max-age='.(30*365*24*60*60));
@@ -175,8 +175,8 @@ function lazy_explorer(){
     $CMD   = isset($_POST['CMD']) ? $_POST['CMD'] : null;
 
     // 文件夹不存在，则创建
-    if (!file_exists(LAZY_PATH.$path)) {
-        mkdirs(LAZY_PATH.$path);
+    if (!file_exists(ABS_PATH.$path)) {
+        mkdirs(ABS_PATH.$path);
     }
     $dirs   = get_dir_array($path,'dir');
     $files  = get_dir_array($path,$exts);
@@ -214,14 +214,14 @@ function lazy_explorer(){
     $hl.= '<tbody>';
     if (empty($CMD)) {
         if (!empty($files)) {
-            $folder = LAZY_PATH.($path=='/'?'':$path).'/';
+            $folder = ABS_PATH.($path=='/'?'':$path).'/';
             if ($exts == c('UPLOAD_IMAGE_EXT')) {
                 $hl.= '<tr><td colspan="3"><ul class="thumb">';
                 foreach ($files as $k=>$v) {
                     $uf = ansi2utf($v);
                     $fz = file_size(filesize($folder.$v));
-                    $thumb = LAZY_PATH.$path.'/.Thumbs/'.$uf;
-                    $src= (is_file(utf2ansi($thumb)) && filemtime(LAZY_PATH.$path.'/'.$uf) == filemtime($thumb)) ? $path.'/.Thumbs/'.$uf : PHP_FILE.'?action=explorer_image&file='.rawurlencode($path.'/'.$uf);
+                    $thumb = ABS_PATH.$path.'/.Thumbs/'.$uf;
+                    $src= (is_file(utf2ansi($thumb)) && filemtime(ABS_PATH.$path.'/'.$uf) == filemtime($thumb)) ? $path.'/.Thumbs/'.$uf : PHP_FILE.'?action=explorer_image&file='.rawurlencode($path.'/'.$uf);
                     $hl.= '<li><table border="0" cellpadding="0" cellspacing="0" title="'.$uf.'">';
                     $hl.= '<tr><td class="picture" rel="preview" src="'.$path.'/'.$uf.'"><img src="'.$src.'" onload="$(this).bbimg(70,60);" alt="'.$uf.'" /></td></tr>';
                     $hl.= '<tr><td><div class="name"><a href="javascript:;" src="'.$path.'/'.$uf.'" rel="insert"><img class="e3 os" src="../system/images/white.gif" /></a>'.$uf.'</div></td></tr>';
