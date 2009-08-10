@@ -155,7 +155,7 @@ function lazy_explorer_image(){
             }
             $time = filemtime($file); touch($file,$time); touch($thumb,$time);
         }
-        
+
         // 判断缩略图是否存在
         if (is_file($thumb)) {
             no_cache(); readfile($thumb);
@@ -235,7 +235,7 @@ function lazy_explorer(){
                     $hl.= '<tr><td rel="preview" src="'.$path.'/'.$uf.'" title="'.$uf.'"><div class="filename">'.icon($v).$uf.'</div></td><td>'.$fz.'</td>';
                     $hl.= '<td><a href="javascript:;" src="'.$path.'/'.$uf.'" rel="insert"><img class="e3 os" src="../system/images/white.gif" /></a>';
                     $hl.= '<a href="javascript:;" src="'.$path.'/'.$uf.'" rel="delete"><img class="e7 os" src="../system/images/white.gif" /></a></td></tr>';
-                }    
+                }
             }
         }
     } else {

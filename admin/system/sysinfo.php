@@ -21,7 +21,7 @@
 require '../../global.php';
 /**
  * 系统信息
- * 
+ *
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
@@ -38,9 +38,9 @@ function lazy_before(){
 function lazy_main(){
     $db = get_conn();
     $gdInfo = function_exists('gd_info') ? gd_info() : array('GD Version'=>'none');
-    
+
     System::header(t('sysinfo'));
-    
+
     /* System settings */
     echo '<fieldset><legend><a rel=".table"><img class="a2 os" src="../system/images/white.gif" />'.t('sysinfo').'</a></legend>';
     echo '<table class="table" cellspacing="0">';
@@ -54,7 +54,7 @@ function lazy_main(){
     echo '<tr><td>'.t('sysinfo/software').'</td><td>'.$_SERVER['SERVER_SOFTWARE'].'</td></tr>';
     echo '<tr><td>'.t('sysinfo/useragent').'</td><td>'.$_SERVER['HTTP_USER_AGENT'].'</td></tr>';
     echo '</tbody></table></fieldset>';
-    
+
     /* PHP settings */
     echo '<fieldset><legend><a rel=".table"><img class="a2 os" src="../system/images/white.gif" />'.t('sysinfo/phpinfo').'</a></legend>';
     echo '<table class="table" cellspacing="0"><tbody>';
@@ -132,9 +132,9 @@ function lazy_PHPInfo(){
     phpinfo(INFO_GENERAL | INFO_CONFIGURATION | INFO_MODULES);
     $phpinfo = ob_get_contents();
     ob_end_clean();
-    
+
     System::header(t('sysinfo/phpinfo'));
-    
+
     preg_match_all('#<body[^>]*>(.*)</body>#siU', $phpinfo, $output);
     $output = preg_replace('#<table#', '<table class="table" align="center"', $output[1][0]);
     $output = preg_replace('#(\w),(\w)#', '\1, \2', $output);

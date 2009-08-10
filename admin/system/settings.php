@@ -21,7 +21,7 @@
 require '../../global.php';
 /**
  * 系统设置
- * 
+ *
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
@@ -97,7 +97,7 @@ function lazy_main(){
         echo '<option value="'.$number.'"'.$selected.'>'.$number.'</option>';
     }
     echo '</select></p>';
-    
+
     echo '<p><label>'.t('settings/Related_keywords').':</label><span help="settings/Related_keywords">';
     echo '<input type="radio" name="GET_RELATED_KEY" id="GET_RELATED_KEY[1]" value="true"'.((c('GET_RELATED_KEY') == 1) ? ' checked="checked"':null).'/><label for="GET_RELATED_KEY[1]">'.t('True').'</label> ';
     echo '<input type="radio" name="GET_RELATED_KEY" id="GET_RELATED_KEY[0]" value="false"'.((c('GET_RELATED_KEY') == 0) ? ' checked="checked"':null).'/><label for="GET_RELATED_KEY[0]">'.t('False').'</label>';
@@ -113,7 +113,7 @@ function lazy_main(){
     echo '<p><label>'.t('settings/upload/imagepath').':</label><input class="in w200" type="text" name="UPLOAD_IMAGE_PATH" id="UPLOAD_IMAGE_PATH" value="'.c('UPLOAD_IMAGE_PATH').'"></p>';
     echo '<p><label>'.t('settings/upload/imageext').':</label><input class="in w200" type="text" name="UPLOAD_IMAGE_EXT" id="UPLOAD_IMAGE_EXT" value="'.c('UPLOAD_IMAGE_EXT').'"></p>';
     echo '</div></fieldset>';
-    
+
     echo '<fieldset><legend><a rel=".show"><img class="a1 os" src="../system/images/white.gif" />'.t('settings/server').'</a></legend>';
     echo '<div class="show">';
     echo '<p><label>'.t('settings/server/timediff').':</label><input help="settings/timediff" class="in w50" type="text" name="TIME_DIFF" id="TIME_DIFF" value="'.c('TIME_DIFF').'"></p>';

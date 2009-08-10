@@ -45,6 +45,6 @@
 	};
 	$.fn.setSortId = function(){
 		if (this.hasClass('disabled')) { return ; }
-		$('#__sorts').hide(); $('#sortid').val(this.attr('value')); $('#__sortname').text(this.attr('label')); 
+		$('#__sorts').hide(); $('#sortid').val(this.attr('value')); $('#__sortname').text(this.attr('label'));
 	}
 })(jQuery);

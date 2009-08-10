@@ -21,7 +21,7 @@
 require '../../global.php';
 /**
  * 管理员管理
- * 
+ *
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
@@ -93,7 +93,7 @@ function lazy_edit(){
         $inSQL = !empty($adminid) ? " AND `adminid`<>'{$adminid}'" : null;
         $val->check('adminname|1|'.t('admins/check/name').'|1-30;adminname|4|'.t('admins/check/name1')."|SELECT COUNT(adminid) FROM `#@_system_admin` WHERE `adminname`='#pro#'{$inSQL}");
         if (empty($adminid)) {
-            $val->check('adminpass|1|'.t('admins/check/password').'|6-30;adminpass|2|'.t('admins/check/repassword').'|adminpass1');    
+            $val->check('adminpass|1|'.t('admins/check/password').'|6-30;adminpass|2|'.t('admins/check/repassword').'|adminpass1');
         }
         $val->check('adminmail|0|'.t('admins/check/email').';adminmail|validate|'.t('admins/check/email1').'|4');
         if ($val->isVal()) {
@@ -138,12 +138,11 @@ function lazy_edit(){
             }
         }
     }
-    
-    System::loadScript('system.admins');
+
     System::header($title);
-    
+
     echo '<form id="form1" name="form1" method="post" action="">';
-    
+
     echo '<fieldset><legend rel="tab">'.$title.'</legend>';
 
     echo '<p><label>'.t('admins/name').':</label><input class="in w200" type="text" name="adminname" id="adminname" value="'.$adminname.'" /></p>';
@@ -172,7 +171,7 @@ function lazy_edit(){
     echo '</select></p>';
 
     echo '</fieldset>';
-    
+
     echo but('system::save').'<input name="adminid" type="hidden" value="'.$adminid.'" /></form>';
     echo '<script type="text/javascript">$.Purview();</script>';
 }

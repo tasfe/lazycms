@@ -25,7 +25,7 @@ defined('COM_PATH') or die('Restricted access!');
 return array(
     /* 模块名称 */
     'name' => '系统管理',
-    
+
     /* 公用语言 */
     'ON'    => '√',
     'OFF'   => '×',
@@ -52,7 +52,7 @@ return array(
     'selectall' => '全选',
     'moreattr'  => '更多属性',
     'autokeys'  => '自动获取关键词',
-    
+
     /* JavaScript确认 */
     'confirm'   => array(
         'delete'    => '确定要删除吗？',
@@ -60,7 +60,7 @@ return array(
         'logout'    => '确定要退出吗？',
         'reset'     => '确定要重置吗？',
     ),
-    
+
     /* 数据库异常 */
     'database'  => array(
         'parseDSN'  => '数据库连接字符串，设置错误。',
@@ -69,7 +69,7 @@ return array(
         'noextension'   => '-_-!!请先开启%s扩展支持！',
         'versionlower'  => '%s数据库版本低于%s，请升级数据库版本！',
     ),
-    
+
     /* 上传错误信息 */
     'upload'    => array(
         'title'   => '上传文件',
@@ -85,7 +85,7 @@ return array(
         'error10' => '文件上传的路径缺少写入权限',
         'error11' => 'POST值超过了 post_max_size(%s)',
     ),
-    
+
     /* 错误信息 */
     'error' => array(
         'title'     => '系统发生错误',
@@ -96,9 +96,9 @@ return array(
         'position'  => '错误位置',
         'overtime'  => '您的登录已经超时，请重新登录！',
         'permission'    => '您没有权限查看此页，返回前页。',
-        
+
     ),
-    
+
     /* 登录页面 */
     'login' => array(
         'title' => '管理后台登录',
@@ -123,7 +123,7 @@ return array(
             'password' => '管理员密码不能为空或过长'
         )
     ),
-    
+
     /* 系统管理 */
     'system'    => array(
         'title' => '后台管理',
@@ -133,7 +133,7 @@ return array(
         'cpanel'    => '控制面板',
         'lastversion'   => '最新版本',
     ),
-    
+
     /* 官方信息 */
     'official'  => array(
         'site'  => '官方网站',
@@ -194,7 +194,7 @@ return array(
             'email1'    => '邮箱格式不正确',
         ),
         'alert' => array(
-            'noselect'  => '请选择一个管理员！',    
+            'noselect'  => '请选择一个管理员！',
             'add'       => '添加管理员成功',
             'edit'      => '编辑管理员成功',
             'lock'      => '锁定管理员成功',
@@ -202,12 +202,12 @@ return array(
             'delete'    => '删除管理员成功',
         )
     ),
-    
+
     /* 模块管理 */
     'modules'   => array(
         'title' => '安装卸载',
     ),
-    
+
     /* 文件管理 */
     'files'     => array(
         'title' => '文件管理',
@@ -224,7 +224,7 @@ return array(
             'folder2'   => '文件夹已经存在',
         ),
     ),
-    
+
     /* 系统设置 */
     'settings'  => array(
         'title' => '系统设置',
@@ -266,7 +266,7 @@ return array(
             'save'  => '系统设置保存成功'
         )
     ),
-    
+
     /* 系统信息 */
     'sysinfo'   => array(
         'title' => '系统信息',
@@ -298,7 +298,7 @@ return array(
         'allow_url_fopen'   => '打开远程连接',
         'disable_functions' => '已关闭的功能',
         'upload_max_filesize'   => '最大上传文件',
-        
+
     ),
 
     /* 帮助信息 */

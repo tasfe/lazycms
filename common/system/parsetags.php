@@ -58,7 +58,7 @@ class ParseTags{
         // 追加jQuery库
         $html = preg_replace('/<\/title[^>]*>/is',"\${0}\n<meta name=\"generator\" content=\"LazyCMS ".LAZY_VERSION."\"/>\n<script type=\"text/javascript\" src=\"".LAZY_PATH."common/js/jquery.js?ver=".LAZY_VERSION."\"></script>\n<script type=\"text/javascript\" src=\"".LAZY_PATH."common/js/lazycms.library.js?ver=".LAZY_VERSION."\"></script>",$html);
         // 格式化图片、css、js路径
-        $html = preg_replace('/(<(((script|link|img|input|embed|object|base|area|map|table|td|th|tr).+?(src|href|background))|((param).+?(src|value)))=([^\/]+?))((images|scripts)\/.{0,}?\>)/i','${1}'.LAZY_PATH.c('TEMPLATE').'/${10}',$html);        
+        $html = preg_replace('/(<(((script|link|img|input|embed|object|base|area|map|table|td|th|tr).+?(src|href|background))|((param).+?(src|value)))=([^\/]+?))((images|scripts)\/.{0,}?\>)/i','${1}'.LAZY_PATH.c('TEMPLATE').'/${10}',$html);
         $this->HTML = $html;
         return $html;
     }
@@ -191,13 +191,13 @@ class ParseTags{
                 // 组合类名
                 $className = ucfirst($module).'_Tags';
                 // 判断类是否已定义
-                if (class_exists($className)) { 
+                if (class_exists($className)) {
                     // 判断run方法是否存在
                     if (method_exists($className,'vars')) {
                         if (!isset($objects[$module])) {
                             $objects[$module] = new $className();
                             $objects[$module]->vars = &$this->vars;
-                            $objects[$module]->HTML = &$this->HTML;	
+                            $objects[$module]->HTML = &$this->HTML;
                         }
                         // 调用run方法处理标签
                         $result = $objects[$module]->vars($tagName,$tagHtml);
@@ -226,7 +226,7 @@ class ParseTags{
         if (stripos($tag,'func=')!==false) {
             $func = sect($tag,'func="','"');
             if (strlen($func)>0) {
-                if (strpos($func,'@me')!==false) { 
+                if (strpos($func,'@me')!==false) {
                     $func = preg_replace("/'@me'|\"@me\"|@me/isU",'$result',$func);
                 }
                 $result = eval('return '.$func.';');
@@ -291,7 +291,7 @@ class ParseTags{
                 }
             }
         }
-        
+
         // 关键字加链接
 
 
@@ -299,7 +299,7 @@ class ParseTags{
     }
     /**
      * 清空内部数组
-     * 
+     *
      * 清空通过$this->value()设置的内部数组
      *
      */

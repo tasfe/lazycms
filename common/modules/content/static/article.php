@@ -314,7 +314,7 @@ class Content_Article{
         $tmplpath = ABS_PATH.'/'.$template.'/'.Content_Article::getTemplateBySortId($sortid,'sort');
         // 加载模板
         $tag->loadHTML($tmplpath);
-        
+
         // 分类下如果有多个模块，则进行链表查询
         if (count($models) > 1) {
             $inSQL = null;

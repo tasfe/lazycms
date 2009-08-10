@@ -21,7 +21,7 @@
 require '../../global.php';
 /**
  * 单页管理
- * 
+ *
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
@@ -40,7 +40,6 @@ function lazy_before(){
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_main(){
-    System::loadScript('content.onepage');
     System::header(t('onepage'));
     $model   = isset($_GET['model'])?$_GET['model']:null;
     $fields  = isset($_GET['fields'])?$_GET['fields']:null;
@@ -74,7 +73,7 @@ function lazy_main(){
         foreach ($fields as $k=>$v) {
             $query .= '&fields'.rawurlencode("[{$k}]").'='.rawurlencode($v);
         }
-        
+
         $db = get_conn();
         $ds = new Recordset();
         $ds->create("SELECT * FROM `{$table}` ORDER BY `id` ASC");
@@ -264,8 +263,7 @@ function lazy_edit(){
             }
         }
     }
-    
-    System::loadScript('content.onepage');
+
     System::header($title,$selTab);
 
     echo '<form id="form1" name="form1" method="post" action="">';

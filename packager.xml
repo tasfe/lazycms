@@ -20,17 +20,17 @@
  * +---------------------------------------------------------------------------+
  */
 ]]></Header>
-	
+
 	<PackageFile path="common/js/lazycms.js">
 		<File path="_source/js/lazycms.library.js" />
-		
+
 		<File path="_source/js/system.admins.js" />
 
 		<File path="_source/js/content.article.js" />
 		<File path="_source/js/content.model.js" />
 		<File path="_source/js/content.onepage.js" />
 		<File path="_source/js/content.sort.js" />
-		
+
 	</PackageFile>
 
 </Package>

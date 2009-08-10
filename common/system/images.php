@@ -44,7 +44,7 @@ class Images{
     // thumb *** *** www.LazyCMS.net *** ***
     static function thumb($image,$filename='',$maxWidth=100,$maxHeight=100,$suffix='_thumb') {
         // 获取原图信息
-        $info  = Images::getImageInfo($image); 
+        $info  = Images::getImageInfo($image);
         if($info !== false) {
             // 原图大小
             $srcWidth  = $info['width'];
@@ -60,7 +60,7 @@ class Images{
 
             // 载入原图
             $createFun = 'ImageCreateFrom'.($type=='jpg'?'jpeg':$type);
-            $srcImg    = $createFun($image); 
+            $srcImg    = $createFun($image);
 
             //创建缩略图
             if ($type!='gif' && function_exists('imagecreatetruecolor')) {
@@ -73,12 +73,12 @@ class Images{
             if (function_exists("ImageCopyResampled")) {
                 ImageCopyResampled($thumbImg, $srcImg, 0, 0, 0, 0, $width, $height, $srcWidth,$srcHeight);
             } else {
-                ImageCopyResized($thumbImg, $srcImg, 0, 0, 0, 0, $width, $height,  $srcWidth,$srcHeight); 
+                ImageCopyResized($thumbImg, $srcImg, 0, 0, 0, 0, $width, $height,  $srcWidth,$srcHeight);
             }
 
             if('gif'==$type || 'png'==$type) {
-                $background_color = imagecolorallocate($thumbImg,0,255,0);  //  指派一个绿色  
-                imagecolortransparent($thumbImg,$background_color);  //  设置为透明色，若注释掉该行则输出绿色的图 
+                $background_color = imagecolorallocate($thumbImg,0,255,0);  //  指派一个绿色
+                imagecolortransparent($thumbImg,$background_color);  //  设置为透明色，若注释掉该行则输出绿色的图
             }
 
             // 对jpeg图形设置隔行扫描
@@ -86,7 +86,7 @@ class Images{
 
             // 生成图片
             $imageFun = 'image'.($type=='jpg'?'jpeg':$type);
-            
+
             if (empty($filename)) {
                 $filename = substr($image,0,strrpos($image, '.')).$suffix.'.'.$type;
             } else {
@@ -94,7 +94,7 @@ class Images{
                 mkdirs($path);
             }
 
-            $imageFun($thumbImg,$filename); 
+            $imageFun($thumbImg,$filename);
             ImageDestroy($thumbImg);
             ImageDestroy($srcImg);
             return $filename;

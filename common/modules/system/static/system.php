@@ -68,7 +68,7 @@ class System{
         $hl.= '<script type="text/javascript" src="../system/images/system.js"></script>';
         if ($script = g('SCRIPT')) {
             $hl.= '<script type="text/javascript">'.$script.'</script>';
-        }        
+        }
         if ($style = g('STYLE')) {
             $hl.= '<style type="text/css">'.$style.'</style>';
         }
@@ -129,8 +129,8 @@ class System{
         $hl.= '</li></ul>';
         $hl.= '<ul class="menu"><li><a href="'.LAZY_PATH.'" target="_blank">'.t('system::system/preview').'</a></li><li><a href="../system/myaccount.php">'.t('system::myaccount').'</a></li><li><a href="javascript:;" onclick="$.confirm(\''.t('system::confirm/logout').'\',function(r){ r ? $.redirect(\'../system/logout.php\') : false; })">'.t('system::system/logout').'</a></li></ul>';
         $hl.= '</div><div id="main">';
-        if ($tabs = g('TABS')) { 
-            $hl.= menu($selected.$tabs); 
+        if ($tabs = g('TABS')) {
+            $hl.= menu($selected.$tabs);
             $hl.= '<div id="box">';
             $help = basename(PHP_FILE,'.php').(ACTION==''?'':'/'.ACTION);
             $path = 'help/'.$help;
@@ -239,14 +239,14 @@ class System{
     }
     /**
      * 验证后台用户的登录和权限
-     * 
-     * @example 
+     *
+     * @example
      *  get_admin() 取得已登录管理员的信息
      *  get_admin('purview') 验证已登录管理员的权限
      *  get_admin('adminname','adminpass') 进行管理员登录验证
      */
     function getAdmin(){
-        $db = get_conn(); 
+        $db = get_conn();
         $funcNum = func_num_args();
         $params  = func_get_args();
         if ((int)$funcNum <= 1) {

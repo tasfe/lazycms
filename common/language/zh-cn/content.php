@@ -26,7 +26,7 @@ return array(
     'name'  => '内容管理',
 
     'nomodel' => '请先创建并启用一个模型',
-    
+
     /* 标签中心 */
     'label' => array(
         'title' => '标签中心',
@@ -142,7 +142,7 @@ return array(
             'noselect'  => '请选择一个分类',
         )
     ),
-    
+
     /* 文档管理 */
     'article'   => array(
         'title' => '文档管理',

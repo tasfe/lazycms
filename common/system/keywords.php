@@ -193,7 +193,7 @@ class Keywords{
             $keyid = $keywords;
             return $this->_db->update('#@_keywords',array(
                 'keysum' => $this->_db->result("SELECT COUNT(*) FROM `{$this->_joinTable}` WHERE `kid`=".DB::quote($keyid)." AND `type`=0;")
-            ),DB::quoteInto('`keyid` = ?',$keyid));    
+            ),DB::quoteInto('`keyid` = ?',$keyid));
         }
     }
     /**

@@ -160,7 +160,7 @@ class lazy_mysql extends DB {
     }
     /**
      * 批量执行SQL
-     * 
+     *
      * @param string $p1 SQL
      */
     function batQuery($p1){
@@ -253,7 +253,7 @@ class lazy_mysql extends DB {
         return mysql_affected_rows($this->_conn);
     }
     /**
-     * 取得上一步 INSERT 操作产生的 ID 
+     * 取得上一步 INSERT 操作产生的 ID
      *
      * @return string
      */
@@ -261,7 +261,7 @@ class lazy_mysql extends DB {
         return ($R = mysql_insert_id($this->_conn)) >= 0 ? $R : $this->result("SELECT last_insert_id();");
     }
     /**
-     * 返回上一个 MySQL 操作产生的文本错误信息 
+     * 返回上一个 MySQL 操作产生的文本错误信息
      *
      * @return string
      */

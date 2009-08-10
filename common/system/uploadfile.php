@@ -81,7 +81,7 @@ class UpLoadFile{
             $n++;
         } while ($isfile);
         $Info['path'] = $p3.$p4;
-        
+
         if (is_uploaded_file($Info['tmp_name'])){
             // 检查文件大小
             if ($this->_checkSize($Info['size'])){

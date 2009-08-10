@@ -549,24 +549,24 @@ function ob_zip($p1){
  * HMAC-MD5
  *
  */
-function hmac_md5($key, $data) { 
+function hmac_md5($key, $data) {
     if (extension_loaded("mhash")) {
-        return bin2hex(mhash(MHASH_MD5, $data, $key)); 
+        return bin2hex(mhash(MHASH_MD5, $data, $key));
     }
-    
-    // RFC 2104 HMAC implementation for php. Hacked by Lance Rushing 
-    $b = 64; 
+
+    // RFC 2104 HMAC implementation for php. Hacked by Lance Rushing
+    $b = 64;
     if (strlen($key) > $b) {
-        $key = pack("H*", md5($key)); 
+        $key = pack("H*", md5($key));
     }
-    $key = str_pad($key, $b, chr(0x00)); 
-    $ipad = str_pad("", $b, chr(0x36)); 
-    $opad = str_pad("", $b, chr(0x5c)); 
-    $k_ipad = $key ^ $ipad ; 
-    $k_opad = $key ^ $opad; 
-    
-    return md5($k_opad . pack("H*", md5($k_ipad . $data))); 
-} 
+    $key = str_pad($key, $b, chr(0x00));
+    $ipad = str_pad("", $b, chr(0x36));
+    $opad = str_pad("", $b, chr(0x5c));
+    $k_ipad = $key ^ $ipad ;
+    $k_opad = $key ^ $opad;
+
+    return md5($k_opad . pack("H*", md5($k_ipad . $data)));
+}
 /**
  * 抓取图片
  *
@@ -635,7 +635,7 @@ function down_img($p1,$p2=null){
 }
 /**
  * UTF-8转换成其他任何编码
- * 
+ *
  * @param  string   $p1    要转换的内容
  * @param  string   $p2    转换的编码
  * @return string
@@ -651,7 +651,7 @@ function utf2ansi($p1,$p2='GB2312'){
 }
 /**
  * 判断是否为UTF-8编码
- * 
+ *
  * @return bool
  */
 function is_utf8($p1){
@@ -668,7 +668,7 @@ function is_utf8($p1){
 }
 /**
  * ANSI转换为UTF－8
- * 
+ *
  * @param  string   $p1    要转换的内容
  * @return string
  */
@@ -1056,7 +1056,7 @@ function validate($p1,$p2){
         case '5' : // url
             $p3 = '^(http|https|ftp)\:(\/\/|\\\\)(([\w\/\\\+\-~`@\:%])+\.)+([\w\/\\\.\=\?\+\-~`@\'\:!%#]|(&amp;)|&)+';
             break;
-        case '6' : // 
+        case '6' : //
             $p3 = '^[\d\,\.]+$';
             break;
         default  : // 自定义正则
@@ -1151,7 +1151,7 @@ function ubbencode($p1){
     }
 
     if (strpos($R,' ')!==false) {
-        $R = str_replace(' ','&nbsp;',$R); 
+        $R = str_replace(' ','&nbsp;',$R);
     }
     return $R;
 }
@@ -1426,7 +1426,7 @@ function g($p1=null,$p2=null){
  * @return string
  */
 function t($p1,$p2=array()){
-    static $T = array(); 
+    static $T = array();
     $p3 = strtolower($p1);
     // 取得模块名
     if (($i = strpos($p3,'::'))!==false) {
@@ -1447,7 +1447,7 @@ function t($p1,$p2=array()){
         // key 全部转换成小写
         $T[$p4] = array_change_key_case_deep($T[$p4]);
     }
-    
+
     if (strpos($p3,'/')!==false) {
         $p5 = explode('/',$p3);
         $R  = array();
@@ -1472,15 +1472,15 @@ function t($p1,$p2=array()){
                 }
             }
         }
-        
+
     } else {
         $R = isset($T[$p4][$p3])?$T[$p4][$p3]:$p1;
     }
-    
+
     if (is_array($R)) {
         $R = isset($R['title'])?$R['title']:$R;
     }
-    
+
     if (!empty($p2) && is_array($p2)) {
         $R = call_user_func_array('sprintf',array_merge(array((string)$R),$p2));
     }

@@ -13,7 +13,7 @@ $(document).ready(function(){
 			checkBox.trigger('click');
 		$('.radioToggle').removeClass('checked');
 		thisToggle.addClass('checked');
-		return false; 
+		return false;
 	});
 	// 下载统计
 	$('#download_form').submit(function(){

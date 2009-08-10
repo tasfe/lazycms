@@ -21,7 +21,7 @@
 require '../../global.php';
 /**
  * 管理员管理
- * 
+ *
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
@@ -84,9 +84,9 @@ function lazy_main(){
 
     }
     System::header(t('myaccount'));
-    
+
     echo '<form id="form1" name="form1" method="post" action="">';
-    
+
     echo '<fieldset><legend rel="tab">'.t('myaccount').'</legend>';
 
     echo '<p><label>'.t('myaccount/name').':</label><strong>'.$adminname.'</strong></p>';
@@ -100,7 +100,7 @@ function lazy_main(){
     echo '</select></p>';
 
     echo '</fieldset>';
-    
+
     echo but('system::save').'</form>';
 }
 // *** *** www.LazyCMS.net *** *** //

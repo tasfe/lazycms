@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Release>
-	
+
 	<OriginalFile sourcePath="admin/system/images/system.js" targetPath="admin/system/images/system.original.js" />
 
 	<IgnoreDir path="_dev" />

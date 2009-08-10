@@ -26,14 +26,14 @@ defined('COM_PATH') or die('Restricted access!');
 class Recordset{
     var $url;
     var $action;
-    
+
     var $length;
     var $page;
     var $size;
     var $result;
     var $totalRows;
     var $totalPages;
-    
+
     var $but;
     var $_td;
     var $thead;
@@ -135,7 +135,7 @@ class Recordset{
     function open(){
         $this->_hl = '<form name="form1" id="form1"  action="'.$this->action.'" class="form">';
         if ((int)$this->length > 0) {
-            $this->_hl.= "<script type=\"text/javascript\">var lazy_delete = '".t('system::confirm/delete')."';var lazy_clear = '".t('system::confirm/clear')."';function E(){var K = arguments;document.writeln('<tr>'+".$this->_td."'</tr>');};function R(){ var K = arguments; return '<tr>'+".$this->_td."'</tr>';}</script>";    
+            $this->_hl.= "<script type=\"text/javascript\">var lazy_delete = '".t('system::confirm/delete')."';var lazy_clear = '".t('system::confirm/clear')."';function E(){var K = arguments;document.writeln('<tr>'+".$this->_td."'</tr>');};function R(){ var K = arguments; return '<tr>'+".$this->_td."'</tr>';}</script>";
         }
         $this->_hl.= '<table class="table" cellspacing="0">';
     }

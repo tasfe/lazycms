@@ -21,7 +21,7 @@
 require '../../global.php';
 /**
  * 模型管理
- * 
+ *
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
@@ -127,7 +127,6 @@ function lazy_import(){
             ajax_success(t('model/alert/import'),0);
         }
     }
-    System::loadScript('content.model');
     System::header(t('model/import'));
     echo '<fieldset><legend><a rel=".show" cookie="false"><img class="a2 os" src="../system/images/white.gif" />'.t('model/import').'</a></legend>';
     echo '<div class="show">';
@@ -308,7 +307,6 @@ function lazy_edit(){
             $n = 3; break;
     }
 
-    System::loadScript('content.model');
     System::script('
         $(document).ready(function() {
             $("#tableFields").__tableDnD();
@@ -328,14 +326,14 @@ function lazy_edit(){
     echo '<p><label>'.t('model/name').':</label><input class="in w200" type="text" name="modelname" id="modelname" value="'.$post[0].'" /></p>';
     echo '<p><label>'.t('model/ename').':</label><input help="model/ename" class="in w250" type="text" name="modelename" id="modelename" value="'.$post[1].'" /></p>';
     echo '<p><label>'.t('model/path').':</label><input help="model/path" class="in w300" type="text" name="modelpath" id="modelpath" value="'.$post[2].'" /></p>';
-    
+
     if ($post[3]=='list') {
         echo '<p><label>'.t('model/template/sort').':</label>';
         echo '<select name="sortemplate" id="sortemplate">';
         echo form_opts(c('TEMPLATE'),c('TEMPLATE_EXTS'),'<option value="#value#"#selected#>#name#</option>',$post[7]);
         echo '</select></p>';
     }
-    
+
     echo '<p><label>'.t('model/template/page').':</label>';
     echo '<select name="pagetemplate" id="pagetemplate">';
     echo form_opts(c('TEMPLATE'),c('TEMPLATE_EXTS'),'<option value="#value#"#selected#>#name#</option>',$post[8]);
@@ -347,7 +345,7 @@ function lazy_edit(){
 
     echo '<table id="tableFields" action="'.PHP_FILE.'?action=fields" class="table" cellspacing="0">';
     echo '<thead><tr class="nodrop"><th>'.t('model/fields/text').'</th><th>'.t('model/fields/ename').'</th><th>'.t('model/fields/input').'</th><th>'.t('model/fields/default').'</th><th>'.t('system::manage').'</th></tr></thead><tbody>';
-    
+
     foreach ($post[4] as $row) {
         $row = (array) $row;
         $len = instr('input,radio,checkbox,select,upfile',$row['intype'])?'('.$row['length'].')':null;
@@ -457,9 +455,9 @@ function lazy_fields(){
     }
     $hl.= '</select>&nbsp;<a href="javascript:;" rule="+"><img class="a6 os" src="../system/images/white.gif" /></a><a href="javascript:;" rule="-"><img class="a7 os" src="../system/images/white.gif" /></a>';
     $hl.= '<textarea help="model/fields/rules" name="fieldvalidate" id="fieldvalidate" rows="3" class="in w250">'.h2c($rq[6]).'</textarea></p>';
-    
+
     $hl.= '<p class="hide"><label>'.t('model/fields/value').':</label><textarea help="model/fields/value" name="fieldvalue" id="fieldvalue" rows="4" class="in w250">'.h2c($rq[7]).'</textarea></p>';
-    
+
     $hl.= '<p class="hide"><label>'.t('model/fields/option').':</label><span id="fieldoption">';
     $hl.= '<input type="checkbox" name="fieldoption[upimg]" id="option_upimg" value="1"'.($rq[10]->upimg?' checked="checked"':null).' /><label for="option_upimg">'.t('system::editor/upimg').'</label>';
     $hl.= '<input type="checkbox" name="fieldoption[upfile]" id="option_upfile" value="1"'.($rq[10]->upfile?' checked="checked"':null).' /><label for="option_upfile">'.t('system::editor/upfile').'</label>';

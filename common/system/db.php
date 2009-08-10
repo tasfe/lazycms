@@ -21,10 +21,10 @@
 defined('COM_PATH') or die('Restricted access!');
 /**
  * 数据操作基础封装类
- * 
+ *
  * 统一处理引号
  * DB::quote(mixed value)
- * 
+ *
  * 统一处理数据库字段
  * DB::quoteInto(mixed value)
  * @example:
@@ -32,7 +32,7 @@ defined('COM_PATH') or die('Restricted access!');
  *   quoteInto('field = ?','value');
  *   // 多个占位符
  *   quoteInto('field = [field] and field1 = [field1]',array('field'=>'value','field1'=>'value1'));
- * 
+ *
  * 统一处理字段冲突
  * DB::quoteIdentifier(mixed value)
  * @example:
@@ -128,7 +128,7 @@ class DB {
                 }
                 break;
             // DSN format: mysql://root:123456@localhost:3306/lazy/lazycms
-            default: 
+            default:
                 if (preg_match('/^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@([\w\-\.]+)(:(\d+))?(\/([\w\-]+)\/([\w\-]+)|\/([\w\-]+))$/i',trim($DSN),$info)) {
                     return array(
                         'host'  => $info[5],

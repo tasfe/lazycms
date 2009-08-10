@@ -21,7 +21,7 @@
 require '../../global.php';
 /**
  * 分类管理
- * 
+ *
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
@@ -42,7 +42,6 @@ function lazy_before(){
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_main(){
-    System::loadScript('content.article');
     System::header(t('article'));
     $size    = isset($_GET['size'])?$_GET['size']:15;
     $order   = isset($_GET['order'])?$_GET['order']:'default';
@@ -109,7 +108,7 @@ function lazy_main(){
         }
         $inSQL.= empty($inLike)?null:' AND ('.$inLike.')';
         $inSQL.= $sortid==0?null:" AND `sortid` IN(".DB::quote(Content_Sort::getSortIdsBySortIds($sortid)).")";
-        $db = get_conn(); 
+        $db = get_conn();
         $ds = new Recordset(); $order = isset($orderArr[$order])?$orderArr[$order]:$orderArr['default'];
         $ds->create("SELECT * FROM `{$table}` WHERE `passed`=0 {$inSQL} ORDER BY {$order}");
         $ds->action = PHP_FILE.'?action=set&model='.$model['modelename'];
@@ -308,9 +307,8 @@ function lazy_edit(){
         #__sorts .body a.disabled:hover{ background:#fff;color:#ccc; cursor:default; }
         #__sorts .body a{ text-decoration:none; line-height:150%; display:block;}
         #__sorts .body a:hover{background:#316AC5; color:#FFFFFF;}
-        
+
     ');
-    System::loadScript('content.article');
     System::header($title,$selTab);
 
     echo '<form id="form1" name="form1" method="post" action="">';

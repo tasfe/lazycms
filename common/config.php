@@ -21,7 +21,7 @@
 defined('COM_PATH') or die('Restricted access!');
 /**
  * LazyCMS 配置文件
- * 
+ *
  * 配置定义 键名区分大小写，书写请注意
  * 所有配置参数都可以在生效前动态改变
  */

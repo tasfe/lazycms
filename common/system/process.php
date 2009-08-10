@@ -45,7 +45,7 @@ class Process{
 
     /**
      * 初始化
-     * 
+     *
      * 兼容PHP5模式
      *
      * @param string $ids

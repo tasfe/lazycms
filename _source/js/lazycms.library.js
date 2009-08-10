@@ -51,7 +51,7 @@ function formatTime(time){
 // loading加载条
 window.loading = $('<div class="loading"><img class="os" src="' + common() + '/images/loading.gif" />Loading...</div>').css({width:'100px',position:'fixed',top:'5px',right:'5px'});
 // IE6.0下的动作
-if ($.browser.msie && $.browser.version == '6.0') { 
+if ($.browser.msie && $.browser.version == '6.0') {
 	var load_move = function(){
 		window.loading.css({
 			position:'absolute',
@@ -105,15 +105,15 @@ function LoadScript(p,c){
      *
      * @param string    p1   true:全选,false:
      */
-    $.fn.checkALL = function(p1){ 
+    $.fn.checkALL = function(p1){
         p1 = p1||false;
-        $('input:checkbox',this).each(function(){ 
-            if (p1) { 
+        $('input:checkbox',this).each(function(){
+            if (p1) {
                 this.checked = true;
-            } else { 
-                this.checked = !this.checked; 
+            } else {
+                this.checked = !this.checked;
             }
-        }); 
+        });
     }
     // 固定公用CSS
     $.setStyle = function(){
@@ -185,7 +185,7 @@ function LoadScript(p,c){
         // 设置透明度
         $.extend(style,{'filter':'alpha(opacity=' + (100 * style.opacity) + ')', '-moz-opacity':style.opacity});
 		// 窗口改变大小
-		if ($.browser.msie && $.browser.version == '6.0') { 
+		if ($.browser.msie && $.browser.version == '6.0') {
 			var mMove = function(){
 				m.css({ 'position':'absolute','top':document.documentElement.scrollTop + 'px'});
 			}
@@ -230,16 +230,16 @@ function LoadScript(p,c){
 
         var target = $('.dialogUI[name=' + opts.name + ']',s);
             dialog = target.size()==0 ? dialog.appendTo(s) : target;
-        
+
         // 添加遮罩层
-		if (opts.mask) {		
+		if (opts.mask) {
 			if ($('[rel=mask]',s).size()==0) {
 				$(this).mask();
 			} else {
 				$('[rel=mask]',s).css('z-index',$('.mask,.dialogUI').getMaxzIndex());
 			}
 		}
-		
+
         // 添加关闭按钮
         $('.dialogBox > .head > a[rel=close]',dialog).remove();
         if (opts.close) {
@@ -249,7 +249,7 @@ function LoadScript(p,c){
             });
             close.insertAfter($('.dialogBox > .head > strong',dialog));
         }
-		
+
         // 重新调整CSS
         var style = $.extend({overflow:'auto','z-index':$('.mask,.dialogUI').getMaxzIndex() + 1,background:'#FFFFFF',height:'auto'},opts.style); dialog.css(style);
 
@@ -271,7 +271,7 @@ function LoadScript(p,c){
 			dialog.css($.extend(CSS,opts));
 		}
 		// 调整位置
-		if ($.browser.msie && $.browser.version == '6.0') { 
+		if ($.browser.msie && $.browser.version == '6.0') {
 			dialog.css({position:'absolute'}); $(window).scroll(function(){dialogMove()});
 		}
 		$(window).resize(function(){dialogMove()});
@@ -828,7 +828,7 @@ function LoadScript(p,c){
                                     $('div.body',s).css({'text-align':'center'}).click(function(){
                                         dialog.remove();
                                     });
-                                }); 
+                                });
                             }
                     });
                     $('td a[rel=insert]',s).click(function(){
@@ -940,8 +940,8 @@ function LoadScript(p,c){
     }
 	// 最小化进程列表
 	$.fn.Minimized = function(s){
-		var u = getURI(); var d = s?s:this.css('display'); 
-		if (d=='none' || d==null) { 
+		var u = getURI(); var d = s?s:this.css('display');
+		if (d=='none' || d==null) {
 			$('a',this.prev()).addClass('revert');
 			this.slideDown();
 		} else {
@@ -998,7 +998,7 @@ function LoadScript(p,c){
 		// 添加到页面
 		process.appendTo(This);
 		// 添加IE6事件
-		if ($.browser.msie && $.browser.version == '6.0') { 
+		if ($.browser.msie && $.browser.version == '6.0') {
 			var processMove = function(){
 				process.css({
 					'position':'absolute',
@@ -1037,7 +1037,7 @@ function LoadScript(p,c){
  * Licensed like jQuery, see http://docs.jquery.com/License.
  *
  * Configuration options:
- * 
+ *
  * onDragStyle
  *     This is the style that is assigned to the row during drag. There are limitations to the styles that can be
  *     associated with a row (such as you can't assign a border--well you can, but it won't be
@@ -1060,7 +1060,7 @@ function LoadScript(p,c){
  *     Pass a function that will be called when the user starts dragging. The function takes 2 parameters: the
  *     table and the row which the user has started to drag.
  * onAllowDrop
- *     Pass a function that will be called as a row is over another row. If the function returns true, allow 
+ *     Pass a function that will be called as a row is over another row. If the function returns true, allow
  *     dropping on that row, otherwise not. The function takes 2 parameters: the dragged row and the row under
  *     the cursor. It returns a boolean: true allows the drop, false doesn't allow it.
  * scrollAmount
@@ -1072,7 +1072,7 @@ function LoadScript(p,c){
  *     specify this class, then you are responsible for setting cursor: move in the CSS and only these cells
  *     will have the drag behaviour. If you do not specify a dragHandle, then you get the old behaviour where
  *     the whole row is draggable.
- * 
+ *
  * Other ways to control behaviour:
  *
  * Add class="nodrop" to any rows for which you don't want to allow dropping, and class="nodrag" to any rows
@@ -1084,7 +1084,7 @@ function LoadScript(p,c){
  *
  * Other methods:
  *
- * $("...").tableDnDUpdate() 
+ * $("...").tableDnDUpdate()
  * Will update all the matching tables, that is it will reapply the mousedown method to the rows (or handle cells).
  * This is useful if you have updated the table rows using Ajax and you want to make the table draggable again.
  * The table maintains the original configuration (so you don't have to specify it again).
@@ -1095,7 +1095,7 @@ function LoadScript(p,c){
  *
  * Known problems:
  * - Auto-scoll has some problems with IE7  (it scrolls even when it shouldn't), work-around: set scrollAmount to 0
- * 
+ *
  * Version 0.2: 2008-02-20 First public version
  * Version 0.3: 2008-02-07 Added onDragStart option
  *                         Made the scroll amount configurable (default is 5 as before)
@@ -1273,7 +1273,7 @@ jQuery.tableDnD = {
             }
 
         }
-            
+
         if (mousePos.y-yOffset < config.scrollAmount) {
             window.scrollBy(0, -config.scrollAmount);
         } else {
@@ -1417,5 +1417,5 @@ jQuery.fn.extend(
 $.setStyle();
 
 // 加载语言包
-window.Language = new Array(); var language = $.cookie('language'); 
+window.Language = new Array(); var language = $.cookie('language');
 if (language==null) { language = 'zh-cn';} LoadScript('lang.' + language);

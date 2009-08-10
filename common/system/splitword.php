@@ -21,7 +21,7 @@
 defined('COM_PATH') or die('Restricted access!');
 /**
  * 中文分词类
- * 
+ *
  * 修改自ThinkPHP的中英文分词扩展
  */
 class SplitWord{
@@ -129,7 +129,7 @@ class SplitWord{
                 $enTmpStr.= $char;
             } else {
                 // 遇到中文了,可以给英文句子或数字断句了
-                if ($enTmpStr != "") { 
+                if ($enTmpStr != "") {
                     $substring[] = array($enTmpStr,'1');
                     $enTmpStr = "";
                 }
@@ -179,7 +179,7 @@ class SplitWord{
             // 用来记录没有匹配的字,多个连续的未匹配的字认为组合成一个词.
             $tmpStr = '';
             // 每次取的子串
-            $sub_str = ''; 
+            $sub_str = '';
             // 字符串长度
             $senLen = len($subSen);
 
@@ -209,7 +209,7 @@ class SplitWord{
                         break;
                     }
                 }
-                
+
                 if(!$bFind) {
                     // 当前单个字无法匹配,而且它是高频词
                     if (isset($this->_highFreq[$sub_str])) {

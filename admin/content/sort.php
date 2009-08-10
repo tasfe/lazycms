@@ -21,7 +21,7 @@
 require '../../global.php';
 /**
  * 分类管理
- * 
+ *
  */
 // *** *** www.LazyCMS.net *** *** //
 function lazy_before(){
@@ -42,7 +42,6 @@ function lazy_before(){
 }
 // *** *** www.LazyCMS.net *** *** //
 function lazy_main(){
-    System::loadScript('content.sort');
     System::header(t('sort'));
     $db = get_conn();
     $ds = new Recordset();
@@ -218,7 +217,6 @@ function lazy_edit(){
             }
         }
     }
-    System::loadScript('content.sort');
     System::header($title);
     echo '<form id="form1" name="form1" method="post" action="">';
     echo '<fieldset><legend rel="tab"><a rel=".show" cookie="false"><img class="a2 os" src="../system/images/white.gif" />'.$title.'</a></legend>';

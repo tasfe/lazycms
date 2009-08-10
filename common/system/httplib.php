@@ -33,7 +33,7 @@ class Httplib{
     var $_response;
     /**
      * 兼容PHP5模式
-     * 
+     *
      * @param 同下面的参数
      */
     function __construct($url=null,$method='GET',$timeout=60){
@@ -75,10 +75,10 @@ class Httplib{
     }
     /**
      * 发送请求
-     * 
+     *
      * @param array $params
      * @return bool
-     */ 
+     */
     function send($params=array()) {
         $header = null; $response = null; $QueryStr = null;
         if (!empty($params)) { $this->_method = 'POST'; }
@@ -153,7 +153,7 @@ class Httplib{
                 $response.= fread($fp,4096);
             }
             fclose($fp);
-        } 
+        }
         $this->_header   = $header;
         $this->_response = $response;
         return true;

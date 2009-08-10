@@ -17,8 +17,8 @@
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
- 
- * 
+
+ *
  */
 require '../../global.php';
 /**
