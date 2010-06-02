@@ -578,7 +578,7 @@ class PackageFile
 
         // Compress (if needed) and process its contents.
         if ( $this->CompactJavaScript )
-            exec("java -jar {$curDir}\yuicompressor-2.4.2.jar --type js --charset utf-8 -o {$this->_OutputPath} {$this->_OutputPath}");
+            exec("java -jar {$curDir}\yuicompressor-2.4.2.jar --type js --charset utf-8 {$this->_OutputPath} -o {$this->_OutputPath}");
 
         // Write the output file.
 		 if ( strlen( $this->Header ) > 0 )

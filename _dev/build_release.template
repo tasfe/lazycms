@@ -1,7 +1,7 @@
 @ECHO OFF
 
 :: Update this variable for each new release.
-SET RELEASER_VERSION=2.0.536 (SVN)
+SET RELEASER_VERSION=2.0.$WCREV$ (SVN)
 
 CLS
 
