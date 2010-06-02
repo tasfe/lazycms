@@ -1,0 +1,115 @@
+/**
+ * +---------------------------------------------------------------------------+
+ * | LL                             LLLL   LL     L   LLLL               LLLL  |
+ * | LL                            LL   L  LLL   LL  LL   L             LL  LL |
+ * | LL      LLLL   LLLLL  LL  LL  LL      LLLL LLL  LL         LL  LL      LL |
+ * | LL         LL     LL  LL  LL  LL      L LLL LL  LLLLL      LL  LL     LL  |
+ * | LL      LLLLL    LL    LLLL   LL      L  L  LL   LLLLL     LL  LL    LL   |
+ * | LL     LL  LL   LL     LLLL   LL      L     LL      LL      LLLL    LL    |
+ * | LL     LL  LL  LL       LL    LL   L  L     LL  L   LL      LLLL   LL     |
+ * | LLLLLL  LLLLL  LLLLL    LL     LLLL   L     LL   LLLL        LL    LLLLLL |
+ * |                        LL                                                 |
+ * |                        LL                                                 |
+ * +---------------------------------------------------------------------------+
+ * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * +---------------------------------------------------------------------------+
+ * | LazyCMS is free software. This version use Apache License 2.0             |
+ * | See LICENSE.txt for copyright notices and details.                        |
+ * +---------------------------------------------------------------------------+
+ */
+
+/* Basic HTML
+----------------------------------------------------------------------------------------------------*/
+html { height:100%; }
+body { font-family: Verdana; color: #333333; background:#FAFAFA; padding:0; margin:0; }
+
+/* Header
+----------------------------------------------------------------------------------------------------*/
+#header {width:100%; height:50px; margin:0; display:block; clear:both; background:#eff8ff url(../images/lazyadmin-bgs.png) repeat-x 0 -5px;border-bottom:1px solid #c6d9e7; color:#333333; text-align:left;}
+    #header a{ color:#333333;}
+    #header-logo{ padding:0 5px 0 10px; float:left; text-align:left;}
+    #header-visit{ height:50px; float:left; margin:0; font-size:16px; line-height:50px;}
+    #header-visit a{ display:block; text-decoration: none; }
+	#header-visit span{ display:inline-block; cursor:pointer; }
+	#header-visit a:hover span { text-decoration:underline; }
+	#header-visit a:hover em{ filter:alpha(opacity=100); opacity:1; color:#666; }
+	#header-visit em{ filter:alpha(opacity=70); opacity:0.7; background:#C6D9E7; color:#999; -moz-border-radius:3px; -webkit-border-radius:3px; -khtml-border-radius:3px; border-radius:3px; cursor:pointer; display:inline-block; font-size:12px; font-style:normal; line-height:17px; margin-left:5px; padding:1px 6px; vertical-align:middle; }
+
+    /* 顶部右上角菜单 */
+    #header-menu{ position:absolute; right:0px; display:table; float:right; text-align:right; margin-right:10px; padding-top:3px; color:#999999;}
+    #header-menu a,
+    #header-menu strong{ color:#333333; }
+
+/* Wrapper
+----------------------------------------------------------------------------------------------------*/
+#wrapper{ height:auto; _height:100%; min-height: 100%; width: 100%; clear:both;}
+
+/* Admin Body
+----------------------------------------------------------------------------------------------------*/
+#admin-body { padding-bottom:41px; clear:both; margin-left:175px; }
+
+/* Admin Menu
+----------------------------------------------------------------------------------------------------*/
+#admin-menu { width:145px; position:relative; list-style:none; float:left; padding:0; clear:left; margin:15px 5px 15px -160px; _margin-left:-80px; font-size:0px; }
+	#admin-menu li{ background-color:#fff; margin:0; padding:0; clear:both; zoom:100%; overflow: visible; list-style:none; }
+	#admin-menu li a{ display:block; font-size: 12px; }
+	#admin-menu .toggle{ display:none;_display:block; width:25px; height:30px; position:absolute; top:1px; right:0; cursor: default; background: url(../images/menu-current-bgs.png) no-repeat left -91px; }
+
+	/* 选中 */
+	#admin-menu li.current{ border:none !important; }
+	#admin-menu li.current a.toggle{ background-position: left -178px; }
+	#admin-menu li.current a.text{ border:solid 1px #B5B5B5 !important; background: url(../images/menu-current-bgs.png) repeat-x left top; *background-position: left 1px; color:#FFF; }
+	#admin-menu li.current .submenu { border-right:solid 1px #B5B5B5 !important; border-bottom:solid 1px #B5B5B5 !important; border-top:none; }
+	#admin-menu li.current .submenu dd{ padding:0; margin:0; border-left:solid 1px #B5B5B5; }
+	/* 展开菜单 */
+	#admin-menu li.expand .submenu { border-left:none; border-right:none; border-bottom:none; }
+	#admin-menu li.expand .submenu, #admin-menu li.expand .submenu dd { display:block; }
+	#admin-menu li.expand .toggle{ display:inline; }
+	/* 分隔符 */
+	#admin-menu .separator{ height:21px; background:transparent url(../images/menu-arrows.gif) no-repeat left 5px; }
+	#admin-menu .separator a{ height:21px; cursor: default; }
+
+	#admin-menu li.first,#admin-menu li.current a.first{ border:solid 1px #DFDFDF; border-bottom:none; -moz-border-radius-topleft :6px; -moz-border-radius-topright: 6px; -webkit-border-top-right-radius: 6px; -webkit-border-top-left-radius: 6px; -khtml-border-top-right-radius: 6px; -khtml-border-top-left-radius: 6px; border-top-right-radius: 6px; border-top-left-radius: 6px; }
+	#admin-menu li.last,#admin-menu li.current a.last{ border: solid 1px #DFDFDF; -moz-border-radius-bottomleft: 6px; -moz-border-radius-bottomright: 6px; -webkit-border-bottom-right-radius: 6px; -webkit-border-bottom-left-radius: 6px; -khtml-border-bottom-right-radius: 6px; -khtml-border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; }
+	
+	#admin-menu .head{ position:relative; border: solid 1px #DFDFDF; border-bottom:none; }
+	#admin-menu .head a:hover{ text-decoration:none; }
+	#admin-menu .head a.image{ position:absolute; left:5px; top:5px; *top:3px; float:left; }
+	#admin-menu .head a.text{ padding-left: 30px; line-height:30px; background: #E5F4FE; }
+	#admin-menu .head:hover a.toggle{ display:block; }
+	
+	#admin-menu .submenu{ display:none; border-top: solid #DFDFDF 1px; border-right: solid #DFDFDF 1px; border-bottom: solid #DFDFDF 1px; margin:0; }
+		#admin-menu .submenu dt{ display:none; }
+		#admin-menu .submenu dd{ zoom:100%; overflow:visible; }
+		#admin-menu .submenu dd a{ line-height:25px; padding:0 10px; }
+		#admin-menu .submenu dd a:hover{ background-color: #E5F4FE; }
+		#admin-menu .submenu dd.current{ border-left: none !important; background:#F5F5F5 url(../images/menu-current-bgs.png) no-repeat left -33px; }
+		#admin-menu .submenu dd.current a{ color:#333333; font-weight:bold; }
+		#admin-menu .submenu dd.current a:hover{ background-color: transparent; }
+
+#admin-content{ width:100%; float:left; }
+	#admin-content .wrap{ padding-top:5px; margin-right:10px; }
+	#admin-content .wrap p{ margin:1em 0; line-height:140%; }
+
+	#admin-content .wrap h2{ color:#093E56; margin:10px 0 5px 0; font-family:Georgia,"Times New Roman","Bitstream Charter",Times,serif; text-shadow:0 1px 0 #FFFFFF;}
+	#admin-content .wrap h2 a{ font-size:12px; font-style: normal; margin-left:10px; background:#C6D9E7; color:#666; -moz-border-radius:3px; -webkit-border-radius:3px; -khtml-border-radius:3px; border-radius:3px; display:inline-block;  padding:1px 6px; }
+	#admin-content .wrap h2 a:hover{ text-decoration: none; }
+	#admin-content .wrap .description{ color:#666666; font-style:italic; }
+	#admin-content .wrap .submit{ margin-top:15px; }
+
+	#admin-content .wrap .actions{}
+	#admin-content .wrap .actions button, #admin-content .wrap .actions select{ margin-right:5px; }
+	
+	#admin-content .wrap fieldset{ position:relative; background:#FFF; -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px; border:1px solid #DFDFDF; border-collapse:separate;}
+	#admin-content .wrap fieldset.closed .form-table{ display:none; }
+	#admin-content .wrap fieldset:hover .toggle{ display:block; }
+	#admin-content .wrap fieldset .toggle{ display:none; _display:block; width:25px; height:25px; position:absolute; top:1px; right:0; cursor: default; background: url(../images/menu-current-bgs.png) no-repeat left -95px; }
+	#admin-content .wrap fieldset h3 { cursor:pointer; font-size:12px; font-weight:bold; line-height:1; margin:0; padding:7px 9px; color:#093E56; background:url(../images/blue-grad.png) repeat-x scroll left top;}
+    	
+    
+/* Footer
+----------------------------------------------------------------------------------------------------*/
+#footer { width:100%; height:30px; overflow: hidden; display:block; padding:5px 0; background:#E5F4FE; border-top:1px solid #c6d9e7; clear:both; position:relative; margin-top:-41px; font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif; font-style: italic; }
+    #footer p { margin:0; padding:7px 0; display:inline-block; color:#666666; }
+    #footer-left { padding-left:15px !important; }
+    #footer-upgrade { padding-right:10px !important; }

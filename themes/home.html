@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="{$keywords}"/>
+<meta name="description" content="{$description}"/>
+<title>{$title}</title>
+<link type="text/css" href="images/style.css?ver={$time func="date('YmdHis',@me)"}" rel="stylesheet" />
+<script type="text/javascript" src="images/script.js?ver={$time func="date('YmdHis',@me)"}"></script>
+</head>
+
+<body>
+{include file="top.inc"}
+
+<div id="header" class="wrapper">
+	<div id="intro">
+		<h2><em>LazyCMS</em> 是一款新型、开源、免费的网站管理系统。</h2>
+		<p>LazyCMS 是一款新型、开源、免费的网站管理系统，她小巧灵活，操作简单，免费开源。</p>
+		<p>为什么选择LazyCMS？</p>
+		<blockquote>
+			灵活的模块装卸 <span>---------------- 像安装软件一样的模块安装方式。</span><br/>
+			简洁的后台操作 <span>---------------- 简洁人性化的后台操作界面，以人为本。</span><br/>
+			简单易学的模板标签 <span>----------- XML风格的模板标签，只要你懂HTML你就能做网站。</span><br/>
+			全面的搜索引擎优化支持 <span>------ 全面针对搜索引擎做了优化，让您网络营销变得更加轻松。</span><br/>
+			LazyCMS的开发初衷，就是让您简单、快速的建设网站。
+		</blockquote>
+	</div>
+	<div id="download">
+		<form id="download_form" method="get" action="http://code.google.com/p/lazycms/downloads/detail">
+			<h3>下载LazyCMS最新版本</h3>
+			<p>选择您要下载的版本：</p>
+			<div class="compression">
+				<input type="radio" name="name" id="dl-production" checked="checked" value="LazyCMS-v{$version}.min.zip" />
+				<a class="radioToggle name checked" href="http://code.google.com/p/lazycms/downloads/detail?name=LazyCMS-v{$version}.min.zip">LazyCMS-v{$version}.min.zip</a>
+				<label for="dl-production">
+					编译版（<strong>509K</strong>，删除注释、缩进）
+				</label>
+				<div class="clear"></div>
+				<input type="radio" name="name" id="dl-development" value="LazyCMS-v{$version}.zip" />
+				<a class="radioToggle name" href="http://code.google.com/p/lazycms/downloads/detail?name=LazyCMS-v{$version}.zip">LazyCMS-v{$version}.zip</a>
+				<label for="dl-development">
+					开发版（<strong>548K</strong>，保留注释、缩进）
+				</label>
+			</div>
+			<button name="downloadBtn" type="submit">
+				<span>下载 LazyCMS（<em>5000</em>次）</span>
+			</button>
+			<p class="version"><strong>当前版本：</strong>v.{$version}</p>
+		</form>
+	</div>
+</div>
+
+<div id="content" class="wrapper">
+	<div id="feature" class="container">
+		<ul>
+			<li class="bk1">
+				<h4>LazyCMS能做什么</h4>
+				<p>建立企业网站、门户网站<br/>全面的搜索引擎优化支持<br/>让网络营销变得更加轻松</p>
+				<a href="#/about/" title="了解详细">了解详细</a>
+			</li>
+			<li class="bk2">
+				<h4>学习使用LazyCMS</h4>
+				<p>LazyCMS简单易用，在短时间内，将您打造成一个专业的建站高手。</p>
+				<a href="#/help/" title="查看更多学习教程">更多教程</a>
+			</li>
+			<li class="bk3">
+				<h4>支持LazyCMS发展</h4>
+				<p>源代码全部开源免费，新产品持续开发。欢迎更多热爱开源事业的朋友给与我们更多的支持。</p>
+				<a href="#/sponsor/" title="支持LazyCMS发展">加入我们</a>
+			</li>
+		</ul>
+	</div>
+	<div id="updates" class="container">
+		<h3>更新记录</h3>
+		<ul>
+			<li><img class="os" src="images/loading.gif" />Loading...</li>
+		</ul>
+	</div>
+</div>
+
+<div id="links" class="wrapper"><strong>友情链接</strong>
+	<a href="http://www.chinaz.com/" target="_blank">中国站长站</a>
+	<a href="http://www.im286.com/" target="_blank">落伍者</a>
+	<a href="http://www.tgbus.com/" target="_blank">电玩巴士</a>
+	<a href="http://www.jzwar.com/" target="_blank">机甲战争</a>
+</div>
+
+<script type="text/javascript">$.getJSON('{$inst}{$theme}/images/updates.php?callback=?',function(data){ $('#updates ul').lazy_updates(data); });</script>
+
+{include file="footer.inc"}
+</body>
+</html>
