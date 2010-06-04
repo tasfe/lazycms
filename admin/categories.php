@@ -153,7 +153,7 @@ switch ($action) {
         if ($sorts) {
             echo            display_tr_tree($sorts);
         } else {
-            echo           '<tr><td colspan="5" class="tc">'._('Empty').'</td></tr>';
+            echo           '<tr><td colspan="5" class="tc">'._('No record!').'</td></tr>';
         }
         echo           '</tbody>';
         echo       '</table>';

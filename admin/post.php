@@ -148,7 +148,7 @@ switch ($action) {
         if ($posts) {
             
         } else {
-            echo           '<tr><td colspan="6" class="tc">'._('Empty').'</td></tr>';
+            echo           '<tr><td colspan="6" class="tc">'._('No record!').'</td></tr>';
         }
         echo           '</tbody>';
         echo       '</table>';

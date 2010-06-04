@@ -33,7 +33,7 @@ function user_list_init() {
 	// 绑定删除事件
 	$('span.delete a',form).click(function(){
 		var url = this.href;
-		LazyCMS.confirm(_('common.confirm.delete'),function(r){
+		LazyCMS.confirm(_('Confirm Delete?'),function(r){
 			if (r) {
 				$.get(url,function(data){
 					LazyCMS.ajaxResult(data);

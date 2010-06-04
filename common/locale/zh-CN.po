@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-02 15:51+0800\n"
+"POT-Creation-Date: 2010-06-04 23:39+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.cn>\n"
 "Language-Team: LazyCMS.net\n"
@@ -278,8 +278,8 @@ msgstr "添加分类"
 #: admin/model.php:302
 #: admin/model.php:429
 #: admin/post.php:151
-msgid "Empty"
-msgstr "没有记录，请添加。"
+msgid "No record!"
+msgstr "没有记录！"
 
 #: admin/categories.php:174
 #: admin/model.php:320
@@ -1256,38 +1256,49 @@ msgstr "系统提示"
 msgid "Submit"
 msgstr "确认"
 
-#: common/system/loader.php:59
+#: common/system/loader.php:58
 msgid "Confirm"
 msgstr "操作确认"
 
-#: common/system/loader.php:60
-msgid "Confirm Logout?"
-msgstr "确定要退出吗？"
-
 #: common/system/loader.php:61
-msgid "Confirm Delete?"
-msgstr "确定要删除吗？"
-
-#: common/system/loader.php:65
 msgid "Close"
 msgstr "关闭"
 
-#: common/system/loader.php:75
-msgctxt "field"
-msgid "Edit"
-msgstr "编辑"
+#: common/system/loader.php:63
+msgid "Upgrade Tips"
+msgstr "升级提示"
 
-#: common/system/loader.php:78
+#: common/system/loader.php:64
+msgid "Current:"
+msgstr "当前版本："
+
+#: common/system/loader.php:65
+msgid "Recommended:"
+msgstr "推荐版本："
+
+#: common/system/loader.php:66
+msgid "Confirm Logout?"
+msgstr "确定要退出吗？"
+
+#: common/system/loader.php:67
+msgid "Confirm Delete?"
+msgstr "确定要删除吗？"
+
+#: common/system/loader.php:68
+msgid "(Recommended to upgrade to IE 7.0 +)"
+msgstr "（推荐升级至IE 7.0+）"
+
+#: common/system/loader.php:77
 msgctxt "field"
 msgid "The label field is empty."
 msgstr "表单文字字段为空。"
 
-#: common/system/loader.php:81
+#: common/system/loader.php:78
 msgctxt "field"
 msgid "The name field is empty."
 msgstr "字段名字为空。"
 
-#: common/system/loader.php:82
+#: common/system/loader.php:79
 msgctxt "field"
 msgid "The name already exists."
 msgstr "字段名已存在，请重新输入字段名。"
@@ -1314,6 +1325,11 @@ msgstr "mysql数据库版本低于4.1，请升级mysql！"
 msgid "MySQL Query Error:<br/>SQL:%s<br/>%s"
 msgstr "MySQL 查询错误：<br/>SQL:%s<br/>%s"
 
+#~ msgid "Empty"
+#~ msgstr "没有记录，请添加。"
+#~ msgctxt "field"
+#~ msgid "Edit"
+#~ msgstr "编辑"
 #~ msgid "Category Pinyin"
 #~ msgstr "分类拼音"
 #~ msgid "Click the right links."

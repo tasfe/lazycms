@@ -32,6 +32,15 @@ var LazyCMS = window.LazyCMS = window.CMS = {
     init: function() {
         // codeing...
     },
+	// 计数变量
+	COUNT_VAR: {
+		Loading:false,
+		Masked:false,
+		Float:{
+			Scroll:false,
+			Resize:false
+		}
+	},
     // 添加事件
     addLoadEvent: function(func){
         if(typeof jQuery!="undefined") {
@@ -46,12 +55,11 @@ var LazyCMS = window.LazyCMS = window.CMS = {
         }
     },
     // translate
-    translate: function(msgid){
-        var arrMsg = msgid.split('.');
-        var result = LazyCMS.L10n;
-        for (var i=0;i<arrMsg.length;i++ ) {
-            result = result[arrMsg[i]] || msgid;
-        }
+    translate: function(msgid,context,module){
+		context = context || 'common';  module  = module || null;
+		var language = LazyCMS.L10n, context = language[context] || {};
+		if (module) context = context[module] || {};
+		result = context[msgid] || msgid;
         return result;
     },
     // alert
@@ -84,11 +92,11 @@ var LazyCMS = window.LazyCMS = window.CMS = {
             };
         }
         LazyCMS.dialog({
-            name:'alert', title:_('common.alert'),close:false,styles:{ 'max-width':'600px', 'min-width':'400px' },
+            name:'alert', title:_('Alert'),close:false,styles:{ 'max-width':'600px', 'min-width':'400px' },
             top:100, body:message,
             buttons:[{
                 focus:true,
-                text:_('common.submit'),
+                text:_('Submit'),
                 handler:function(opts){
                     LazyCMS.removeDialog('alert');
                     if ($.isFunction(callback)) callback();
@@ -100,17 +108,17 @@ var LazyCMS = window.LazyCMS = window.CMS = {
     // confirm
     confirm: function(message,callback){
         LazyCMS.dialog({
-            name:'confirm', title:_('common.confirm.title'),styles:{ width:'400px' },
+            name:'confirm', title:_('Confirm'),styles:{ width:'400px' },
             top:100, body:'<div class="icon" style="background-position:0px -80px;"></div><div class="content"><h6>' + message + '</h6></div>',
             buttons:[{
                 focus:true,
-                text:_('common.submit'),
+                text:_('Submit'),
                 handler:function(){
                     LazyCMS.removeDialog('confirm');
                     return callback.call(this,true);
                 }
             },{
-                text:_('common.cancel'),
+                text:_('Cancel'),
                 handler:function(){
                     LazyCMS.removeDialog('confirm');
                     return callback.call(this,false);
@@ -167,7 +175,10 @@ var LazyCMS = window.LazyCMS = window.CMS = {
                 var reposition = function(){
                     maskDiv.css({ 'position':'absolute','top':$(window).scrollTop() + 'px'});
                 }
-                $(window).scroll(function(){ reposition() }).resize(function(){ reposition() });
+				if (!LazyCMS.COUNT_VAR.Masked) {
+					$(window).scroll(reposition).resize(reposition);
+					LazyCMS.COUNT_VAR.Masked = true;
+				}
                 // 干掉IE6那邪恶的option
                 reposition(); $('div#lazy_mask').bgiframe();
             }
@@ -215,7 +226,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
         } else {
             // show error
             LazyCMS.dialog({
-                title:_('common.error'),styles:{ width:'700px' },body:result
+                title:_('System Error'),styles:{ width:'700px' },body:result
             });
         }
     },
@@ -232,6 +243,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
             masked:true,
             close:true,
 			way:'c',
+			className:'dialog',
             remove:function(){ LazyCMS.removeDialog(opts.name); },
             buttons:[]
         }, options||{});
@@ -241,7 +253,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
         // 设置默认名称
         opts.name = opts.name?'lazy_dialog_' + opts.name:'lazy_dialog';
         // 定义弹出层对象
-        var dialog = $('<div class="dialog window" dialog="' + opts.name + '" style="display:none;"><h1>Loading...</h1><div class="wrapper">Loading...</div></div>').css({position:'fixed'});
+        var dialog = $('<div class="' + opts.className + ' window" dialog="' + opts.name + '" style="display:none;"><h1>Loading...</h1><div class="wrapper">Loading...</div></div>').css({position:'fixed'});
         var target = $('div[dialog=' + opts.name + ']',body);
             if (target.is('div')) {
                 dialog = target;

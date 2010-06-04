@@ -33,7 +33,7 @@ function model_list_init() {
 	// 绑定删除事件
 	$('span.delete a',form).click(function(){
 		var url = this.href;
-		LazyCMS.confirm(_('common.confirm.delete'),function(r){
+		LazyCMS.confirm(_('Confirm Delete?'),function(r){
 			if (r) {
 				$.get(url,function(data){
 					LazyCMS.ajaxResult(data);
@@ -64,7 +64,7 @@ function model_manage_init() {
 	// 字段为空
 	field_empty = function(){
 	    if ($('tbody tr',wrap).size()==0) {
-	        $('tbody',wrap).append('<tr class="empty"><td colspan="5" class="tc">' + _('model.field.empty') + '</td></tr>');
+	        $('tbody',wrap).append('<tr class="empty"><td colspan="5" class="tc">' + _('No record!') + '</td></tr>');
 	    }
 	},
 	// 绑定动作
@@ -84,7 +84,7 @@ function model_manage_init() {
         // 绑定删除事件
     	$('span.delete a',wrap).click(function(){
     	    var id = this.href.replace(self.location,'').replace('#','');
-    		LazyCMS.confirm(_('common.confirm.delete'),function(r){
+    		LazyCMS.confirm(_('Confirm Delete?'),function(r){
     			if (r) {
     				model_field_delete(id,field_empty);
     			}
@@ -130,7 +130,7 @@ function model_manage_init() {
     });
 	// 绑定删除按钮
 	$('button.delete',wrap).click(function(){
-	    LazyCMS.confirm(_('common.confirm.delete'),function(r){
+	    LazyCMS.confirm(_('Confirm Delete?'),function(r){
 			if (r) {
 				$('input:checkbox[name^=listids]:checked',wrap).each(function(){
                     model_field_delete(this.value,field_empty);
@@ -160,7 +160,7 @@ function model_field_manage(id,params) {
 		var r = LazyCMS.ajaxResult(data);
 		if (r) {
 			LazyCMS.dialog({
-				name:'field', title:_('model.field.title'),styles:{ 'width':'400px' },top:100,body:r
+				name:'field', title:_('Add New','model','field'),styles:{ 'width':'400px' },top:100,body:r
 			},function(){
 				var dialog = this, switch_type = function(type){
 					$('#field_serialize,#field_attrs,#field_length,#field_default',dialog).hide(0,function(){
@@ -231,11 +231,11 @@ function model_field_manage(id,params) {
 					    label = $.trim($('input[name=l]',dialog).val()), name = $.trim($('input[name=n]',dialog).val());
 					// 取消样式
                     $('.input_error,.textarea_error',dialog).removeClass('input_error').removeClass('textarea_error');
-					if (label=='') error.push({'id':'l','text':_('model.field.label.empty')});
+					if (label=='') error.push({'id':'l','text':_('The label field is empty.','model')});
 					if (name=='') {
-					    error.push({'id':'n','text':_('model.field.name.empty')});
+					    error.push({'id':'n','text':_('The name field is empty.','model')});
 					} else if ($.inArray(name,['postid','path','title','content'])!=-1) {
-					    error.push({'id':'n','text':_('model.field.name.exists')});
+					    error.push({'id':'n','text':_('The name already exists.','model')});
 					}
 					if (error.length > 0) {
 					    $(dialog).error(error);
@@ -271,7 +271,7 @@ function model_field_manage(id,params) {
                         var tr = '<tr id="field-index-' + index + '" index="' + index + '">';
                         	tr+= '<td class="check-column"><input type="checkbox" value="' + index + '" name="listids[]"></td>';
                         	tr+= '<td><strong><a href="javascript:;">' + $('input[name=l]',dialog).val() + '</a></strong><br>';
-                        	tr+= '<div class="row-actions" style="visibility: hidden;"><span class="edit"><a href="#' + index + '">' + _('model.field.edit') + '</a> | </span><span class="delete"><a href="#' + index + '">' + _('model.field.delete') + '</a></span></div>';
+                        	tr+= '<div class="row-actions" style="visibility: hidden;"><span class="edit"><a href="#' + index + '">' + _('Edit') + '</a> | </span><span class="delete"><a href="#' + index + '">' + _('Delete') + '</a></span></div>';
                         	tr+= '<textarea class="hide" name="field[]">' + $(selector,dialog).serialize() + '</textarea></td>';
                         	tr+= '<td>' + $('input[name=n]',dialog).val() + '</td>';
                         	tr+= '<td>' + $('select[name=t]',dialog).val() + '</td>';

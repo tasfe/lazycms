@@ -23,12 +23,13 @@ LazyCMS.Loading = $('<div class="loading"><img class="os" src="' + LazyCMS.ADMIN
 // IE6.0下的动作
 if ($.browser.msie && $.browser.version == '6.0') {
 	$(document).ready(function(){
+		var language = $.cookie('language'),width = '350px';
+		switch (language) {
+		    default: case 'zh-cn': width = '250px'; break;
+		}
 		LazyCMS.dialog({
-			title:'升级提示',
-			body: '<strong>当前版本：</strong>IE ' + $.browser.version + '（推荐升级至IE 7.0+）<br /><strong>需求版本：</strong>IE 7.0+, FF 2+, Safari 3.0+',
-			name: 'upgreade_tip',
-			masked:false, way:'rb',
-			styles:{width:'250px'}
+			title:_('Upgrade Tips','admin'),name: 'upgreade_tip', className:'tips', masked:false, way:'rb', styles:{width:width},
+			body: '<strong>' + _('Current:') + '</strong>IE ' + $.browser.version + _('(Recommended to upgrade to IE 7.0 +)') + '<br /><strong>' + _('Recommended:') + '</strong>IE 7.0+, FF 2+, Safari 3.0+'			
 		});
 		var load_move = function(){
 			LazyCMS.Loading.css({
@@ -37,7 +38,11 @@ if ($.browser.msie && $.browser.version == '6.0') {
 				left:($(window).width() - 100 - 20) + 'px'
 			});
 		}; load_move();
-		$(window).scroll(function(){load_move()}).resize(function(){load_move()});
+
+		if (!LazyCMS.COUNT_VAR.Loading) {
+			$(window).scroll(load_move).resize(load_move);
+			LazyCMS.COUNT_VAR.Loading = true;
+		}
 	});
 }
 
@@ -57,7 +62,7 @@ $.ajaxSetup({
 	// 退出登录
 	$.fn.logout = function(){
 		var url = this.attr('href');
-		return LazyCMS.confirm(_('common.confirm.logout'),function(r){
+		return LazyCMS.confirm(_('Confirm Logout?'),function(r){
 			if (r) {
 				LazyCMS.redirect(url);
 			}

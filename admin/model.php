@@ -299,7 +299,7 @@ switch ($action) {
                 echo       '</tr>';
             }
         } else {
-            echo           '<tr><td colspan="4" class="tc">'._('Empty').'</td></tr>';
+            echo           '<tr><td colspan="4" class="tc">'._('No record!').'</td></tr>';
         }
         echo           '</tbody>';
         echo       '</table>';
@@ -426,7 +426,7 @@ function model_manage_page($action) {
             echo                           '</tr>';
         }
     } else {
-        echo                               '<tr class="empty"><td colspan="5" class="tc">'._('Empty').'</td></tr>';
+        echo                               '<tr class="empty"><td colspan="5" class="tc">'._('No record!').'</td></tr>';
     }
     echo                               '</tbody>';
     echo                           '</table>';
