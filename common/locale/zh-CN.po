@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-04 23:39+0800\n"
+"POT-Creation-Date: 2010-06-06 00:20+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.cn>\n"
 "Language-Team: LazyCMS.net\n"
@@ -1004,207 +1004,207 @@ msgstr "<a href=\"%s\">%d 秒后转向 %s。</a>"
 msgid "Redirecting..."
 msgstr "正在重定向..."
 
-#: common/functions.php:632
+#: common/functions.php:649
 msgid "Afrikaans"
 msgstr "布尔文(南非洲的荷兰文)"
 
-#: common/functions.php:633
+#: common/functions.php:650
 msgid "Albanian"
 msgstr "阿尔巴尼亚文"
 
-#: common/functions.php:634
+#: common/functions.php:651
 msgid "Arabic"
 msgstr "阿拉伯文"
 
-#: common/functions.php:635
+#: common/functions.php:652
 msgid "Belarusian"
 msgstr "白俄罗斯语"
 
-#: common/functions.php:636
+#: common/functions.php:653
 msgid "Bulgarian"
 msgstr "保加利亚文"
 
-#: common/functions.php:637
+#: common/functions.php:654
 msgid "Catalan"
 msgstr "加泰罗尼亚语"
 
-#: common/functions.php:638
+#: common/functions.php:655
 msgid "Chinese (Simplified)"
 msgstr "中文(简体)"
 
-#: common/functions.php:639
+#: common/functions.php:656
 msgid "Chinese (Traditional)"
 msgstr "中文(繁体)"
 
-#: common/functions.php:640
+#: common/functions.php:657
 msgid "Croatian"
 msgstr "克罗地亚文"
 
-#: common/functions.php:641
+#: common/functions.php:658
 msgid "Czech"
 msgstr "捷克语"
 
-#: common/functions.php:642
+#: common/functions.php:659
 msgid "Danish"
 msgstr "丹麦语"
 
-#: common/functions.php:643
+#: common/functions.php:660
 msgid "Dutch"
 msgstr "荷兰语"
 
-#: common/functions.php:645
+#: common/functions.php:662
 msgid "Estonian"
 msgstr "爱沙尼亚语"
 
-#: common/functions.php:646
+#: common/functions.php:663
 msgid "Filipino"
 msgstr "菲律宾文"
 
-#: common/functions.php:647
+#: common/functions.php:664
 msgid "Finnish"
 msgstr "芬兰语"
 
-#: common/functions.php:648
+#: common/functions.php:665
 msgid "French"
 msgstr "法语"
 
-#: common/functions.php:649
+#: common/functions.php:666
 msgid "Galician"
 msgstr "加利西亚语"
 
-#: common/functions.php:650
+#: common/functions.php:667
 msgid "German"
 msgstr "德语"
 
-#: common/functions.php:651
+#: common/functions.php:668
 msgid "Greek"
 msgstr "希腊语"
 
-#: common/functions.php:652
+#: common/functions.php:669
 msgid "Hebrew"
 msgstr "希伯来语"
 
-#: common/functions.php:653
+#: common/functions.php:670
 msgid "Hindi"
 msgstr "印度文"
 
-#: common/functions.php:654
+#: common/functions.php:671
 msgid "Hungarian"
 msgstr "匈牙利语"
 
-#: common/functions.php:655
+#: common/functions.php:672
 msgid "Icelandic"
 msgstr "冰岛语"
 
-#: common/functions.php:656
+#: common/functions.php:673
 msgid "Indonesian"
 msgstr "印尼文"
 
-#: common/functions.php:657
+#: common/functions.php:674
 msgid "Irish"
 msgstr "爱尔兰文"
 
-#: common/functions.php:658
+#: common/functions.php:675
 msgid "Italian"
 msgstr "意大利语"
 
-#: common/functions.php:659
+#: common/functions.php:676
 msgid "Japanese"
 msgstr "日语"
 
-#: common/functions.php:660
+#: common/functions.php:677
 msgid "Korean"
 msgstr "朝鲜语"
 
-#: common/functions.php:661
+#: common/functions.php:678
 msgid "Latvian"
 msgstr "拉脱维亚语"
 
-#: common/functions.php:662
+#: common/functions.php:679
 msgid "Lithuanian"
 msgstr "立陶宛语"
 
-#: common/functions.php:663
+#: common/functions.php:680
 msgid "Macedonian"
 msgstr "马其顿文"
 
-#: common/functions.php:664
+#: common/functions.php:681
 msgid "Malay"
 msgstr "马来文"
 
-#: common/functions.php:665
+#: common/functions.php:682
 msgid "Maltese"
 msgstr "马耳他文"
 
-#: common/functions.php:666
+#: common/functions.php:683
 msgid "Norwegian"
 msgstr "挪威语"
 
-#: common/functions.php:667
+#: common/functions.php:684
 msgid "Persian"
 msgstr "波斯语"
 
-#: common/functions.php:668
+#: common/functions.php:685
 msgid "Polish"
 msgstr "波兰语"
 
-#: common/functions.php:669
+#: common/functions.php:686
 msgid "Portuguese"
 msgstr "葡萄牙语"
 
-#: common/functions.php:670
+#: common/functions.php:687
 msgid "Romanian"
 msgstr "罗马尼亚语"
 
-#: common/functions.php:671
+#: common/functions.php:688
 msgid "Russian"
 msgstr "俄语"
 
-#: common/functions.php:672
+#: common/functions.php:689
 msgid "Serbian"
 msgstr "塞尔维亚文"
 
-#: common/functions.php:673
+#: common/functions.php:690
 msgid "Slovak"
 msgstr "斯洛伐克文"
 
-#: common/functions.php:674
+#: common/functions.php:691
 msgid "Slovenian"
 msgstr "斯洛文尼亚文"
 
-#: common/functions.php:675
+#: common/functions.php:692
 msgid "Spanish"
 msgstr "西班牙语"
 
-#: common/functions.php:676
+#: common/functions.php:693
 msgid "Swahili"
 msgstr "非洲的斯瓦希里文"
 
-#: common/functions.php:677
+#: common/functions.php:694
 msgid "Swedish"
 msgstr "瑞典语"
 
-#: common/functions.php:678
+#: common/functions.php:695
 msgid "Thai"
 msgstr "泰文"
 
-#: common/functions.php:679
+#: common/functions.php:696
 msgid "Turkish"
 msgstr "土耳其文"
 
-#: common/functions.php:680
+#: common/functions.php:697
 msgid "Ukrainian"
 msgstr "乌克兰文"
 
-#: common/functions.php:681
+#: common/functions.php:698
 msgid "Vietnamese"
 msgstr "越南文"
 
-#: common/functions.php:682
+#: common/functions.php:699
 msgid "Welsh"
 msgstr "威尔士语"
 
-#: common/functions.php:683
+#: common/functions.php:700
 msgid "Yiddish"
 msgstr "意第绪语"
 
