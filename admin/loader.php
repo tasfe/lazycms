@@ -61,8 +61,7 @@ switch ($type) {
         		    	$content = str_replace('../images/',ADMIN_ROOT.'images/',$content);
         		    }
         		    // 清除注释和回车
-        		    $out.= $content;
-        			//$out.= preg_replace('@(\/\*(.+)\*\/)|(\r\n|\n)@sU','',$content);
+        			$out.= preg_replace('@(\/\*(.+)\*\/)|(\r\n|\n)@sU','',$content);
         		}
         	}
         }
@@ -82,12 +81,13 @@ switch ($type) {
         // 添加语言翻译
         $jsL10n = $loads['LazyCMS.L10N'];
         $out = preg_replace('/^(\\s*L10n) *(\:) *(.+)/m','\1: $.extend(\3'.json_encode($jsL10n).'),',$out);
+        // 替换系统常量
+        $out = preg_replace('/^(\\s*ADMIN_ROOT).+/m',"$1: '".ADMIN_ROOT."',",$out);
+        $out = preg_replace('/^(\\s*WEB_ROOT).+/m',"$1: '".WEB_ROOT."',",$out);
+        // 压缩混淆代码
+        $out = ob_compress($out);
 		break;
 }
-// 替换系统常量
-$out = preg_replace('/^(\\s*ADMIN_ROOT).+/m',"$1: '".ADMIN_ROOT."',",$out);
-$out = preg_replace('/^(\\s*WEB_ROOT).+/m',"$1: '".WEB_ROOT."',",$out);
-
 // 输出内容
 echo $out;
 

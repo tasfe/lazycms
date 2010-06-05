@@ -8,7 +8,7 @@ $scripts = admin_head('scripts')?admin_head('scripts'):array();
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php echo $title;?> &lsaquo; <?php echo C('SiteName');?>  &#8212; LazyCMS</title>
-<?php 
+<?php
 // 加载CSS
 call_user_func_array('admin_css',array_merge(array('css/admin'),$styles));
 // 加载JS

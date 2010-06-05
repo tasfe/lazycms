@@ -24,7 +24,11 @@
  * @date:   2010/1/21 17:11
  */
 (function ($) {
-    // 插入值
+    /**
+     * 在光标位置插入值
+     * 
+     * @param val
+     */
     $.fn.insertVal = function(val) {
         return this.each(function(){ 
             // IE support
@@ -49,14 +53,16 @@
             }
         });
     }
-    // 取得所有属性
+    /**
+     * 取得一个对象的所有属性
+     */
     $.fn.getAttrs = function() {
         var r = {};
         if (!this.length) return r;
         if ($.browser.msie) {
-            var s = this.attr('outerHTML');
-            var t = /<[^>]*>/.exec(s)[0];
-            var p = /([^'"= ]+)=('[^']*'|"[^"]*"|[^'" ]+)/g;
+            var p = /([^'"= ]+)=('[^']*'|"[^"]*"|[^'" ]+)/g,
+                t = /<[^>]*>/.exec(s)[0],
+                s = this.attr('outerHTML');
             while (m = p.exec(t)) {
                 r[m[1]] = m[2].replace(/^['"]|['"]$/g, '');
             }
@@ -75,7 +81,21 @@
         });
         return max;
     }
-    // 错误处理
+    /**
+     * 错误处理
+     * 
+     * @param data
+     *          [
+     *              {
+     *                  id:输入框name,
+     *                  text:错误信息
+     *              },
+     *              {
+     *                  id:输入框name,
+     *                  text:错误信息
+     *              },
+     *          ]
+     */
     $.fn.error = function(data) {
         var wrap = this ,s = '<ul>',elm;
         $.each(data,function(i){
@@ -88,11 +108,20 @@
         s+= '</ul>';
         LazyCMS.alert(s);
     }
-	// 设置对象的浮动位置
+    /**
+     * 设置对象的浮动位置
+     * 
+     * @param opts
+     *          c|Center:居中
+     *          lt|LeftTop:左上角
+     *          rt|RightTop:右上角
+     *          lb|LeftBottom:左下角
+     *          rb|RightBottom:右下角
+     */
 	$.fn.float = function(opts) {
 		var _this = this,way = 'c',css = function(){};
 		if (typeof opts == 'object') {
-			way = opts.way;
+			way = opts.float;
 		} else if (typeof opts == 'string') {
 			way = opts; opts = {};
 		}
@@ -101,19 +130,19 @@
 		css = function(way) {
 			var r = {};
 			switch (way) {
-				case 'c':
+				case 'c': case 'Center':
 					r = { left:($(window).width() - _this.outerWidth())/2 - opts.left,top:($(window).height() - _this.outerHeight())/2 - opts.top };
 					break;
-				case 'lt':
+				case 'lt': case 'LeftTop':
 					r = { left:opts.left, top:opts.top };
 					break;
-				case 'rt':
+				case 'rt': case 'RightTop':
 					r = { right:opts.right, top:opts.top };
 					break;
-				case 'lb':
+				case 'lb': case 'LeftBottom':
 					r = { left:opts.left, bottom:opts.bottom };
 					break;
-				case 'rb':
+				case 'rb': case 'RightBottom':
 					r = { right:opts.right, bottom:opts.bottom };
 					break;
 			
@@ -145,7 +174,11 @@
 		}
         return this;
 	}
-    // ajaxSubmit
+    /**
+     * ajax 表单提交
+     * 
+     * @param callback
+     */
     $.fn.ajaxSubmit = function(callback){
         return this.each(function(){
             var _this = $(this);

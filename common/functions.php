@@ -587,9 +587,26 @@ function require_file($path){
  * @return string
  */
 function authcode($data=null){
-    $ipaddr   = $_SERVER['REMOTE_ADDR'];
-    $authcode = md5($data.$ipaddr.$_SERVER['HTTP_USER_AGENT']);
-    return $authcode;
+    $ipaddr = $_SERVER['REMOTE_ADDR'];
+    $randid = strtoupper(md5($data.$ipaddr.$_SERVER['HTTP_USER_AGENT']));
+    return guid($randid);
+}
+/**
+ * 生成guid
+ *
+ * @param  $randid  字符串
+ * @return string   guid
+ */
+function guid($randid=null){
+    $randid = is_null($randid)?strtoupper(md5(uniqid(mt_rand(), true))):$randid;
+    $hyphen = chr(45);
+    $result = array();
+    $result[] = substr($randid, 0, 8);
+    $result[] = substr($randid, 8, 4);
+    $result[] = substr($randid, 12, 4);
+    $result[] = substr($randid, 16, 4);
+    $result[] = substr($randid, 20, 12);
+    return implode($hyphen,$result);
 }
 /**
  * 取得拼音

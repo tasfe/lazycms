@@ -41,7 +41,11 @@ var LazyCMS = window.LazyCMS = window.CMS = {
 			Resize:false
 		}
 	},
-    // 添加事件
+    /**
+     * 添加事件
+     *
+     * @param func
+     */
     addLoadEvent: function(func){
         if(typeof jQuery!="undefined") {
             jQuery(document).ready(func);
@@ -54,7 +58,13 @@ var LazyCMS = window.LazyCMS = window.CMS = {
                 }
         }
     },
-    // translate
+    /**
+     * 多语言翻译
+     *
+     * @param msgid     英文
+     * @param context   上下文
+     * @param module    具体模块
+     */
     translate: function(msgid,context,module){
 		context = context || 'common';  module  = module || null;
 		var language = LazyCMS.L10n, context = language[context] || {};
@@ -62,7 +72,13 @@ var LazyCMS = window.LazyCMS = window.CMS = {
 		result = context[msgid] || msgid;
         return result;
     },
-    // alert
+    /**
+     * 模拟alert
+     * 
+     * @param message   消息内容，html格式
+     * @param callback  点击确定之后的回调函数
+     * @param code      警告类型：Success，Error，Other
+     */
     alert: function(message,callback,code) {
         var position,IE6_hacker;
         if (!$.isFunction(callback)) {
@@ -105,7 +121,17 @@ var LazyCMS = window.LazyCMS = window.CMS = {
             }]
         },IE6_hacker);
     },
-    // confirm
+    /**
+     * 模拟确认框
+     *
+     * @param message   消息内容
+     * @param callback  回调函数
+     * @example LazyCMS.confirm('message',function(r){
+     *              if (r) {
+     *                  coding...
+     *              }
+     *           });
+     */
     confirm: function(message,callback){
         LazyCMS.dialog({
             name:'confirm', title:_('Confirm'),styles:{ width:'400px' },
@@ -127,7 +153,13 @@ var LazyCMS = window.LazyCMS = window.CMS = {
         });
         return false;
     },
-    // redirect
+    /**
+     * URL跳转
+     *
+     * @param url
+     * @param time
+     * @param message
+     */
     redirect: function(url,time,message) {
         if (typeof url != 'undefined' && url != '') {
             var win = top || window;
@@ -138,7 +170,17 @@ var LazyCMS = window.LazyCMS = window.CMS = {
     isMask: function(){
         return $('div#lazy_mask').is('div');
     },
-    // 创建遮罩层
+    /**
+     * 创建遮罩层
+     * 
+     * @param options
+     *          {
+     *              width:宽度，默认100%,
+     *              height:高度，默认100%,
+     *              opacity:透明度，默认 0.7,
+     *              background:遮罩层颜色，默认#fff              
+     *          }
+     */
     masked: function(options) {
         var isMask   = LazyCMS.isMask();
         var maskDiv  = isMask ? $('div#lazy_mask') : $('<div id="lazy_mask"></div>');
@@ -193,7 +235,11 @@ var LazyCMS = window.LazyCMS = window.CMS = {
             LazyCMS.masked({'z-index':$('div.dialog').maxIndex() - 1});
         }
     },
-    // 统一处理结果
+    /**
+     * 统一处理ajax返回结果
+     *
+     * @param result    ajax result
+     */
     ajaxResult: function(result) {
         if ($.isPlainObject(result)) {
             var code = result.CODE, data = result.DATA;
@@ -230,7 +276,23 @@ var LazyCMS = window.LazyCMS = window.CMS = {
             });
         }
     },
-    // 弹出框
+    /**
+     * 模拟的弹出框
+     *
+     * @param options   参数
+     *          {
+     *              name:标识,
+     *              title:标题,
+     *              body:内容,
+     *              styles:css 样式,
+     *              masked:是否需要遮罩，默认true,
+     *              close:是否显示关闭按钮，默认true,
+     *              float:浮动位置，默认居中，参数：c,lt,rt,lb,rb,
+     *              remove:点击关闭按钮触发的事件,
+     *              buttons:按钮
+     *          }
+     * @param callback  回调函数(dialog jquery对象,传入的 options)
+     */
     dialog: function(options,callback) {
         // body
         var body = $('body');
@@ -242,7 +304,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
             name:null,
             masked:true,
             close:true,
-			way:'c',
+			float:'c',
 			className:'dialog',
             remove:function(){ LazyCMS.removeDialog(opts.name); },
             buttons:[]
@@ -340,7 +402,11 @@ var LazyCMS = window.LazyCMS = window.CMS = {
 
         return dialog;
     },
-    // 删除弹出
+    /**
+     * 删除弹出框
+     *
+     * @param name  options.name
+     */
     removeDialog: function(name){
         var dialog = $.data(document,name);
             dialog = dialog ? dialog : $('[dialog=lazy_dialog_' + name + ']');
