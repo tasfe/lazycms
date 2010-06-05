@@ -84,10 +84,10 @@ switch ($type) {
         // 替换系统常量
         $out = preg_replace('/^(\\s*ADMIN_ROOT).+/m',"$1: '".ADMIN_ROOT."',",$out);
         $out = preg_replace('/^(\\s*WEB_ROOT).+/m',"$1: '".WEB_ROOT."',",$out);
-        // 压缩混淆代码
-        $out = ob_compress($out);
 		break;
 }
+// 压缩代码
+$out = ob_compress($out);
 // 输出内容
 echo $out;
 
