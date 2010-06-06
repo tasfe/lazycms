@@ -808,8 +808,27 @@ function __($str,$context=null) {
 		$language = language();
 		$mo_file  = COM_PATH."/locale/{$language}.mo";
 		if (!file_exists_case($mo_file)) return $str;
-        require_file(COM_PATH.'/system/l10n.php');
-		$_l10n = new L10n(); $_l10n->load_file($mo_file);
+		require_file(COM_PATH.'/system/l10n.php');
+		$_l10n = new L10n();
+	    $ckey = 'L10n.'.$language.'.entries';
+	    // 取出缓存
+	    $tables = DataCache::get($ckey);
+	    // 判断文件过期
+	    $cache_file = DataCache::file($ckey);
+	    if (file_exists_case($cache_file)) {
+	       defined('DATACACHE_EXPIRE') or define('DATACACHE_EXPIRE',0);
+	       // mo文件的修改时间大于缓存文件的过期时间
+	       if (filemtime($mo_file)+DATACACHE_EXPIRE > filemtime($cache_file)) {
+	           $tables = null;
+	       }
+	    }
+	    // 缓存结果不存在
+		if (empty($tables)) {
+		    $_l10n->load_file($mo_file);
+		    DataCache::set($ckey,$_l10n->entries);
+		} else {
+		    $_l10n->entries = $tables;
+		}
 	}
 	return $_l10n->translate($str,$context);
 }

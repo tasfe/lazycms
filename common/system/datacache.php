@@ -22,7 +22,8 @@ defined('COM_PATH') or die('Restricted access!');
 
 // 默认的缓存目录
 defined('CACHE_PATH') or define('CACHE_PATH',dirname(__FILE__).'/.cache');
-
+// 默认过期时间
+define('DATACACHE_EXPIRE',31536000);
 /**
  * 数据缓存类
  *
@@ -36,9 +37,11 @@ class DataCache {
      * @param string $key
      * @return unknown
      */
-    function get_file_path($key) {
-        mkdirs(CACHE_PATH);
-        $file = CACHE_PATH.'/'.md5($key);
+    function file($key) {
+        $md5_key = md5($key); $folders = array();
+        for ($i=1;$i<=3;$i++) $folders[] = substr($md5_key,0,$i);
+        $folder = sprintf('%s/%s',CACHE_PATH,implode('/',$folders),$md5_key);
+        $file   = sprintf('%s/%s.cache',$folder,$md5_key); mkdirs($folder);
         return $file;
     }
     /**
@@ -50,7 +53,7 @@ class DataCache {
      * @return bool
      */
     function set($key, $data, $expire=0) {
-        $hash_file = DataCache::get_file_path($key);
+        $hash_file = DataCache::file($key);
         $fp = @fopen($hash_file, "wb");
     	if ($fp) {
     	    @flock($fp, LOCK_EX);
@@ -67,9 +70,9 @@ class DataCache {
             @flock($fp, LOCK_UN);
             @fclose($fp);
             // 默认永不过期
-            $expire = $expire===0?31536000:$expire;
+            $expire = $expire===0?DATACACHE_EXPIRE:$expire;
             // 写入过期时间
-            @touch($hash_file, time() + abs($expire)); 
+            touch($hash_file, time() + abs($expire)); 
             return true;
     	}
     }
@@ -80,7 +83,7 @@ class DataCache {
      * @return array|string
      */
     function get($key) {
-        $hash_file = DataCache::get_file_path($key);
+        $hash_file = DataCache::file($key);
         if (is_file($hash_file)) {
         	$fp = @fopen($hash_file, "rb");
         	@flock($fp, LOCK_SH);
@@ -118,7 +121,7 @@ class DataCache {
      * @return bool
      */
     function delete($key) {
-        $hash_file = DataCache::get_file_path($key);
+        $hash_file = DataCache::file($key);
         if (is_file($hash_file)) {
         	@unlink($hash_file);
         	return true;

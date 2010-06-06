@@ -40,7 +40,6 @@ class L10n{
     function __construct($str = ''){
 		$this->_str = $str;
 		$this->_pos = 0;
-		$this->is_overloaded = ((ini_get("mbstring.func_overload") & 2) != 0) && function_exists('mb_substr');
 		if ($this->_str) $this->load_tables();
 	}
 
@@ -49,41 +48,17 @@ class L10n{
 		if ($this->_str) $this->load_tables();
 	}
 
-	function _substr($string, $start, $length) {
-		if ($this->is_overloaded) {
-			return mb_substr($string,$start,$length,'UTF-8');
-		} else {
-			return substr($string,$start,$length);
-		}
-	}
-
-	function _strlen($string) {
-		if ($this->is_overloaded) {
-			return mb_strlen($string,'UTF-8');
-		} else {
-			return strlen($string);
-		}
-	}
-
 	function read($bytes) {
-		$data = $this->_substr($this->_str, $this->_pos, $bytes);
+		$data = mb_substr($this->_str, $this->_pos, $bytes);
 		$this->_pos += $bytes;
-		if ($this->_strlen($this->_str) < $this->_pos) $this->_pos = $this->_strlen($this->_str);
+		if (mb_strlen($this->_str) < $this->_pos) $this->_pos = mb_strlen($this->_str);
 		return $data;
 	}
 
 	function seekto($pos) {
 		$this->_pos = $pos;
-		if ($this->_strlen($this->_str) < $this->_pos) $this->_pos = $this->_strlen($this->_str);
+		if (mb_strlen($this->_str) < $this->_pos) $this->_pos = mb_strlen($this->_str);
 		return $this->_pos;
-	}
-
-	function pos() {
-		return $this->_pos;
-	}
-
-	function length() {
-		return $this->_strlen($this->_str);
 	}
 
 	function set_header($header, $value) {
@@ -196,7 +171,7 @@ class L10n{
 
 	function read_int() {
 		$bytes = $this->read(4);
-		if (4 != $this->_strlen($bytes))
+		if (4 != mb_strlen($bytes))
 			return false;
 		$endian_letter = ('big' == $this->endian)? 'N' : 'V';
 		$int = unpack($endian_letter, $bytes);
@@ -205,7 +180,7 @@ class L10n{
 
 	function read_int_array($count) {
 		$bytes = $this->read(4 * $count);
-		if (4*$count != $this->_strlen($bytes))
+		if (4*$count != mb_strlen($bytes))
 			return false;
 		$endian_letter = ('big' == $this->endian)? 'N' : 'V';
 		return unpack($endian_letter.$count, $bytes);
@@ -236,7 +211,6 @@ class L10n{
 			return false;
 		}
 		$this->endian = $endian;
-
 		$revision = $this->read_int();
 		$total = $this->read_int();
 
