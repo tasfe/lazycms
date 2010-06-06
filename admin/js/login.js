@@ -20,6 +20,6 @@
 $(document).ready(function(){
     $("input#username").focus();
     $('form#login').ajaxSubmit(function(data){
-        LazyCMS.ajaxResult.call(this,data);
+        LazyCMS.ajaxResult(data);
     });
 });

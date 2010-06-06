@@ -52,7 +52,16 @@ switch ($action) {
 	    break;
 	// 保存
 	case 'save':
-	    
+	    $mcode   = isset($_POST['model'])?$_POST['model']:null;
+        $model   = ModuleModel::get_model_by_code($mcode);
+        $sortid  = isset($_POST['sortid'])?$_POST['sortid']:0;
+        $title   = isset($_POST['title'])?$_POST['title']:null;
+        $path    = isset($_POST['path'])?$_POST['path']:null;
+        $content = isset($_POST['content'])?$_POST['content']:null;
+        $page    = isset($_POST['page'])?$_POST['page']:null;
+        $keywords = isset($_POST['keywords'])?$_POST['keywords']:null;
+        $description = isset($_POST['description'])?$_POST['description']:null;
+
 	    break;
 	// 获取扩展字段
 	case 'extend-attr':
@@ -67,7 +76,6 @@ switch ($action) {
         $sorts.=      display_option_tree($mcode,0);
         $sorts.=    '</select></td>';
         $sorts.= '</tr>';
-
 	    if ($model) {
 	    	foreach ($model['fields'] as $field) {
 	    		$attrs.= '<tr>';

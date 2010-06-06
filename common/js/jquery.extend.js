@@ -221,11 +221,8 @@
                 submit = function(url,data) {
                     button.attr('disabled',true);
                     $.ajax({
-                        cache: false, url: url,data: data,
+                        dataType: 'json', url: url, data: data,
                         type: form.attr('method') && form.attr('method').toUpperCase() || 'POST',
-                        error:function(xhr, status, error){
-                            if ($.isFunction(callback)) callback.call(_this,error);
-                        },
                         success: function(data){
                             if ($.isFunction(callback)) callback.call(_this,data);
                         },

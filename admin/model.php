@@ -264,7 +264,7 @@ switch ($action) {
 	    $hl.= '<div class="buttons"><button type="button" rel="save">'._('Save').'</button><button type="button" rel="close">'._('Cancel').'</button></div>';
 	    $hl.= '<input type="hidden" name="id" value="'.$id.'" />';
 	    $hl.= '</form></div>';
-	    echo_json('Return',$hl);
+	    echo $hl;
 	    break;
 	default:
 	    current_user_can('model-list');

@@ -269,11 +269,6 @@ var LazyCMS = window.LazyCMS = window.CMS = {
                     break;
 
             }
-        } else {
-            // show error
-            LazyCMS.dialog({
-                title:_('System Error'),styles:{ width:'700px' },body:result
-            });
         }
     },
     /**
@@ -343,14 +338,14 @@ var LazyCMS = window.LazyCMS = window.CMS = {
         }
 
         // 重新调整CSS
-        var styles = $.extend({overflow:'auto','z-index':$('*').maxIndex() + 1,height:'auto'},opts.styles); dialog.css(styles);
+        var styles = $.extend({overflow:'','z-index':$('*').maxIndex() + 1,height:'auto'},opts.styles); dialog.css(styles);
 
         // 设置标题
         $('h1',dialog).text(opts.title);
 
         // 设置内容
         if ($('div.wrapper','<div>' + opts.body + '</div>').is('div')) {
-            $('.wrapper',dialog).replaceWith(opts.body);
+            $('div.wrapper',dialog).replaceWith(opts.body);
         } else {
             $('.wrapper',dialog).html(opts.body + '<div class="clear"></div>');
             // 删除原来存在的按钮
@@ -373,9 +368,15 @@ var LazyCMS = window.LazyCMS = window.CMS = {
             }
             dialog.width(width);
         }
-		
-		dialog.float(opts).css({overflow:''}).show();
-
+        var overflow = dialog.css('overflow'); dialog.float(opts).css({overflow:''}).show();
+        if (overflow=='auto') {
+            var wrapper = $('div.wrapper',dialog),
+                paddtop = parseFloat(wrapper.css('padding-top')),
+                paddbottom = parseFloat(wrapper.css('padding-bottom')),
+                h1_height  = $('h1',dialog).outerHeight();
+                wrapper.css({overflow:'auto',width:wrapper.width(),height:dialog.height()-(paddtop+paddbottom)-h1_height});
+        }
+        
         // 添加按钮
         if (btnLength > 0) {
             $('.wrapper',dialog).after('<div class="buttons"></div>');

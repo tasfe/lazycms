@@ -49,9 +49,13 @@ if ($.browser.msie && $.browser.version == '6.0') {
 
 // 设置全局 AJAX 默认选项
 $.ajaxSetup({
-    cache: false,
     beforeSend: function(s){
         LazyCMS.Loading.css({'z-index':$('*').maxIndex() + 1}).appendTo('body');
+    },
+    error:function(xhr,status,error) {
+        LazyCMS.dialog({
+            title:_('System Error') + ':' + status,styles:{ overflow:'auto', width:'700px',height:'350px' },body:error
+        });
     },
     complete: function(){
         LazyCMS.Loading.remove();

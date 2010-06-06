@@ -35,7 +35,7 @@ function user_list_init() {
 		var url = this.href;
 		LazyCMS.confirm(_('Confirm Delete?'),function(r){
 			if (r) {
-				$.get(url,function(data){
+				$.getJSON(url,function(data){
 					LazyCMS.ajaxResult(data);
 				});
 			}
@@ -45,7 +45,7 @@ function user_list_init() {
 	});
 	// 绑定提交事件
 	form.actions(function(data){
-        LazyCMS.ajaxResult.call(this,data);
+        LazyCMS.ajaxResult(data);
     });
     
 }
@@ -64,12 +64,12 @@ function user_manage_init() {
         $('.role-list input.parent-' + rel + ':checkbox').attr('checked',checked);
     });
 	$('form#usermanage').ajaxSubmit(function(data){
-        LazyCMS.ajaxResult.call(this,data);
+        LazyCMS.ajaxResult(data);
     });
 }
 // 我的配置页面初始化
 function user_profile_init() {
 	$('form#profile').ajaxSubmit(function(data){
-        LazyCMS.ajaxResult.call(this,data);
+        LazyCMS.ajaxResult(data);
     });
 }

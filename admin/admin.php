@@ -49,7 +49,11 @@ function current_user_can($action,$is_redirect=true) {
     if (!$result && $is_redirect) {
     	if (is_ajax()) {
     		// 显示未登录的提示警告
-        	echo_json('Alert',_('Restricted access, please contact the administrator.'));
+            if (is_accept_json()) {
+        	    echo_json('Alert',_('Restricted access, please contact the administrator.'));
+            } else {
+                exit(_('Restricted access, please contact the administrator.'));
+            }
     	} else {
     	    admin_head('title',_('Restricted access'));
     	    include ADMIN_PATH.'/admin-header.php';

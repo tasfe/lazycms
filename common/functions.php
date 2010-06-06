@@ -292,6 +292,14 @@ function is_ajax(){
 	return (isset($_SERVER['HTTP_X_REQUESTED_WITH'])?$_SERVER['HTTP_X_REQUESTED_WITH']:null)=='XMLHttpRequest';
 }
 /**
+ * 判断是否请求JSON格式
+ * 
+ * @return bool
+ */
+function is_accept_json() {
+    return strpos(strtolower($_SERVER['HTTP_ACCEPT']),'application/json')!==false;
+}
+/**
  * 验证是否json
  *
  * @param string $string
