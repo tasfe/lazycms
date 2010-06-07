@@ -234,7 +234,7 @@ class ModuleUser {
             }
             // 更新数据
             if ($user_rows) {
-                $db->update('#@_user',$user_rows,"`userid`=".$db->escape($userid));
+                $db->update('#@_user',$user_rows,array('userid' => $userid));
             }
             if ($meta_rows) {
                 ModuleUser::fill_user_meta($userid,$meta_rows);
@@ -267,7 +267,10 @@ class ModuleUser {
                 $db->update('#@_user_meta',array(
                     'value' => $value,
                     'type'  => $var_type,
-                ),vsprintf("`userid`=%s AND `key`=%s",array($db->escape($userid),$db->escape($key))));
+                ),array(
+                    'userid' => $userid,
+                    'key'    => $key,
+                ));
             }
             // insert
             else {
@@ -307,8 +310,8 @@ class ModuleUser {
         $db = get_conn(); if (!$userid) return ;
         if (ModuleUser::get_user_by_id($userid)) {
             ModuleUser::clear_user_cache($userid);
-            $db->delete('#@_user',vsprintf('`userid`=%s',array($db->escape($userid))));
-            $db->delete('#@_user_meta',vsprintf('`userid`=%s',array($db->escape($userid))));
+            $db->delete('#@_user',array('userid' => $userid));
+            $db->delete('#@_user_meta',array('userid' => $userid));
             return true;
         }
         return false;

@@ -147,7 +147,7 @@ class ModuleSort {
             // 更新数据
             if ($term_rows) {
             	if ($sort['termid']) {
-            		$db->update('#@_term',$term_rows,"`termid`=".$db->escape($sort['termid']));
+            		$db->update('#@_term',$term_rows,array('termid'=>$sort['termid']));
             	} else {
             	    $termid = $db->result(sprintf("SELECT `termid` FROM `#@_term` WHERE `name`=%s LIMIT 0,1;",$db->escape($term_rows['name'])));
             	    if ($termid) {
@@ -159,7 +159,7 @@ class ModuleSort {
             	}
             }
             if ($sort_rows) {
-                $db->update('#@_sort',$sort_rows,"`sortid`=".$db->escape($sortid));
+                $db->update('#@_sort',$sort_rows,array('sortid'=>$sortid));
             }
             if ($meta_rows) {
                 ModuleSort::fill_sort_meta($sortid,$meta_rows);
@@ -192,7 +192,10 @@ class ModuleSort {
                 $db->update('#@_sort_meta',array(
                     'value' => $value,
                     'type'  => $var_type,
-                ),vsprintf("`sortid`=%s AND `key`=%s",array($db->escape($sortid),$db->escape($key))));
+                ),array(
+                    'sortid' => $sortid,
+                    'key'    => $key,
+                ));
             }
             // insert
             else {
@@ -227,8 +230,8 @@ class ModuleSort {
         $db = get_conn(); if (!$sortid) return ;
         if (ModuleSort::get_sort_by_id($sortid)) {
             ModuleSort::clear_sort_cache($sortid);
-            $db->delete('#@_sort',vsprintf('`sortid`=%s',array($db->escape($sortid))));
-            $db->delete('#@_sort_meta',vsprintf('`sortid`=%s',array($db->escape($sortid))));
+            $db->delete('#@_sort',array('sortid' => $sortid));
+            $db->delete('#@_sort_meta',array('sortid' => $sortid));
             // TODO: 删除其他数据
             return true;
         }

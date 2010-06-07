@@ -759,7 +759,10 @@ function C($key,$value=null){
         	$db->update('#@_option',array(
         	   'value' => $value,
         	   'type'  => $var_type,
-        	),vsprintf("`module`=%s AND `code`=%s",array($db->escape($module),$db->escape($code))));
+        	),array(
+                'module' => $module,
+                'code'   => $code,
+            ));
         }
         // insert
         else {

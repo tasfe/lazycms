@@ -87,7 +87,7 @@ switch ($type) {
 		break;
 }
 // 压缩代码
-//$out = ob_compress($out);
+$out = ob_compress($out);
 // 输出内容
 echo $out;
 

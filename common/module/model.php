@@ -128,7 +128,7 @@ class ModuleModel {
 	    if ($model = ModuleModel::get_model_by_id($modelid)) {
 	    	// 更新数据
             if ($data) {
-                $db->update('#@_model',$data,"`modelid`=".$db->escape($modelid));
+                $db->update('#@_model',$data,array('modelid'=>$modelid));
             }
             // 清理用户缓存
             ModuleModel::clear_model_cache($modelid);
@@ -161,7 +161,7 @@ class ModuleModel {
         $db = get_conn(); if (!$modelid) return ;
         if (ModuleModel::get_model_by_id($modelid)) {
             ModuleModel::clear_model_cache($modelid);
-            $db->delete('#@_model',vsprintf('`modelid`=%s',array($db->escape($modelid))));
+            $db->delete('#@_model',array('modelid'=>$modelid));
             // TODO: 删除其他数据
             return true;
         }

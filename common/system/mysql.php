@@ -240,18 +240,12 @@ class Mysql{
      * @param string $table    表名
      */
     function list_fields($table){
-        static $result = array();
-        if (isset($result[$table])) {
-        	return $result[$table];
+        $result = array();
+        $res = $this->query("SHOW COLUMNS FROM {$table};");
+        while ($rs = $this->fetch($res)) {
+        	$result[] = $rs['Field'];
         }
-        $table   = str_replace('#@_',$this->_prefix,$table);
-        $fields  = mysql_list_fields($this->_name, $table, $this->conn);
-        $columns = mysql_num_fields($fields);
-        for ($i=0; $i<$columns; $i++) {
-            $result[$table][] = mysql_field_name($fields, $i);
-        }
-        $this->free($fields);
-        return $result[$table];
+        return $result;
     }
     /**
      * 判断数据表是否存在
@@ -262,15 +256,10 @@ class Mysql{
      * @return bool
      */
     function is_table($table){
-        $table  = str_replace('#@_',$this->_prefix,$table);
-        $result = mysql_list_tables($this->_name, $this->conn);
-        while ($rs = mysql_fetch_row($result)) {
-            if ($table == $rs[0]) {
-                $this->free($result);
-                return true;
-            }
+        $res = $this->query("SHOW TABLES FROM {$this->_name};");
+        while ($rs = $this->fetch($res)) {
+        	if ($table == $rs[0]) return true;
         }
-        $this->free($result);
         return false;
     }
     /**
@@ -358,8 +347,8 @@ class Mysql{
             return $data;
         }
         $cond = array();
-        foreach ($data as $term) {
-            $cond[] = '(' . $term . ')';
+        foreach ($data as $field => $value) {
+            $cond[] = '(' . $this->identifier($field) .'='. $this->escape($value) . ')';
         }
         $sql = implode(' AND ', $cond);
         return $sql;
