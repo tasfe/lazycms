@@ -432,7 +432,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
                 var s = $(this); if (s.is('select')==false) { return ; }
                 var v = (s.attr('default')!='' && (typeof s.attr('default'))!='undefined')?s.attr('default'):s.val();
                 var i = $('<input type="text" name="' + s.attr('name') + '" value="' + v + '" />')
-                    .click(function(){ $(this).select(); })
+                    .dblclick(function(){ $(this).select(); })
                     .css({width:(s.width() - 18) + 'px',height:(s.height() - 2) + 'px',position:'absolute',top:s.position().top+'px',border:'none',margin:($.browser.msie?1:2)+'px 0 0 1px',padding:($.browser.msie?2:0)+'px 0 0 2px'})
                     .insertBefore(s);
                 // 取得所有属性

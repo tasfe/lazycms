@@ -72,7 +72,7 @@ class Mysql{
     function connect(){
         // 连接数据库
         if (function_exists('mysql_connect')) {
-            $this->conn = @mysql_connect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,true,CLIENT_MULTI_RESULTS);
+            $this->conn = @mysql_connect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,false,CLIENT_MULTI_RESULTS);
         } else {
             $this->ready = false; trigger_error(_('-_-!! Please open the mysql extension!'),E_USER_ERROR);
         }

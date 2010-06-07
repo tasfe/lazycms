@@ -194,9 +194,9 @@
                         cache: false, url: url,
                         type: _this.attr('method') && _this.attr('method').toUpperCase() || 'POST',
                         data: _this.serializeArray(),
-                        error:function(xhr, status, error){
+						/*error:function(xhr, status, error){
                             if ($.isFunction(callback)) callback.call(_this,error);
-                        },
+                        },*/
                         success: function(data){
                             if ($.isFunction(callback)) callback.call(_this,data);
                         },
