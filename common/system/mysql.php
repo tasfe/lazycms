@@ -69,9 +69,11 @@ class Mysql{
      * 连接MySQL
      *
      */
-    function connect(){
+    function connect($pconnect=false){
         // 连接数据库
-        if (function_exists('mysql_connect')) {
+        if (function_exists('mysql_pconnect') && $pconnect) {
+            $this->conn = @mysql_pconnect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,CLIENT_MULTI_RESULTS);
+        } elseif (function_exists('mysql_connect')) {
             $this->conn = @mysql_connect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,false,CLIENT_MULTI_RESULTS);
         } else {
             $this->ready = false; trigger_error(_('-_-!! Please open the mysql extension!'),E_USER_ERROR);

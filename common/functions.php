@@ -606,7 +606,7 @@ function authcode($data=null){
  * @return string   guid
  */
 function guid($randid=null){
-    $randid = is_null($randid)?strtoupper(md5(uniqid(mt_rand(), true))):$randid;
+    $randid = is_null($randid)?strtoupper(md5(uniqid(mt_rand(micro_time(true)), true))):$randid;
     $hyphen = chr(45);
     $result = array();
     $result[] = substr($randid, 0, 8);
