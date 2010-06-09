@@ -24,7 +24,7 @@ $db = get_conn();
 // 清空数据
 $db->query('TRUNCATE `#@_option`;');
 // 清除缓存
-DataCache::flush();
+FCache::flush();
 
 // 网站标题
 C('SiteName','LazyCMS v2.0 演示站');

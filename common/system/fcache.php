@@ -30,7 +30,7 @@ define('DATACACHE_EXPIRE',31536000);
  * @author  Lukin <my@lukin.cn>
  * @date    2010/1/21 20:42
  */
-class DataCache { 
+class FCache {
     /**
      * 取得缓存路径
      *
@@ -53,7 +53,7 @@ class DataCache {
      * @return bool
      */
     function set($key, $data, $expire=0) {
-        $hash_file = DataCache::file($key);
+        $hash_file = FCache::file($key);
         $fp = @fopen($hash_file, "wb");
     	if ($fp) {
     	    @flock($fp, LOCK_EX);
@@ -83,7 +83,7 @@ class DataCache {
      * @return array|string
      */
     function get($key) {
-        $hash_file = DataCache::file($key);
+        $hash_file = FCache::file($key);
         if (is_file($hash_file)) {
         	$fp = @fopen($hash_file, "rb");
         	@flock($fp, LOCK_SH);
@@ -121,7 +121,7 @@ class DataCache {
      * @return bool
      */
     function delete($key) {
-        $hash_file = DataCache::file($key);
+        $hash_file = FCache::file($key);
         if (is_file($hash_file)) {
         	@unlink($hash_file);
         	return true;

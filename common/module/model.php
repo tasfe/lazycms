@@ -60,7 +60,7 @@ class ModuleModel {
         $db = get_conn(); if ((int)$type>2) return null;
 	    $prefixs = array('model.modelid.','model.code.');
         $prefix  = $prefixs[$type];
-        $value   = DataCache::get($prefix.$param);
+        $value   = FCache::get($prefix.$param);
         if (!empty($value)) return $value;
         
         switch($type){
@@ -83,7 +83,7 @@ class ModuleModel {
     		    }	
 		    }
 		    // 保存到缓存
-            DataCache::set($prefix.$param,$model);
+            FCache::set($prefix.$param,$model);
 			return $model;
 		}
 		return null;
@@ -146,7 +146,7 @@ class ModuleModel {
         if ($model = ModuleModel::get_model_by_id($modelid)) {
             $prefix = 'model.';
             foreach (array('modelid','code') as $field) {
-                DataCache::delete($prefix.$field.'.'.$model[$field]);
+                FCache::delete($prefix.$field.'.'.$model[$field]);
             }
         }
         return true;

@@ -46,7 +46,7 @@ require COM_PATH.'/system/cookie.php';
 // 加载验证处理类
 require COM_PATH.'/system/validate.php';
 // 加载缓存类
-require COM_PATH.'/system/datacache.php';
+require COM_PATH . '/system/fcache.php';
 
 // 定义处理错误的函数
 set_error_handler('handler_error');

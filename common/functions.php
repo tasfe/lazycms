@@ -606,7 +606,7 @@ function authcode($data=null){
  * @return string   guid
  */
 function guid($randid=null){
-    $randid = is_null($randid)?strtoupper(md5(uniqid(mt_rand(micro_time(true)), true))):$randid;
+    $randid = is_null($randid)?strtoupper(md5(uniqid(mt_rand(1000,micro_time(true)), true))):$randid;
     $hyphen = chr(45);
     $result = array();
     $result[] = substr($randid, 0, 8);
@@ -747,7 +747,7 @@ function C($key,$value=null){
     if($key && !is_null($value)) {
         $key = $module.'.'.$code;
         // 保存到缓存
-        DataCache::set($prefix.$key,$value);
+        FCache::set($prefix.$key,$value);
         // 获取变量类型
         $var_type = gettype($value);
         // 判断是否需要序列化
@@ -780,13 +780,13 @@ function C($key,$value=null){
     elseif ($key && is_null($value)) {
         $key   = $module.'.'.$code;
         // 先从缓存里取值
-        $value = DataCache::get($prefix.$key);
+        $value = FCache::get($prefix.$key);
         if (empty($value)) {
             $result = $db->query("SELECT * FROM `#@_option` WHERE `module`=%s AND `code`=%s LIMIT 0,1;",array($module,$code));
             if ($data = $db->fetch($result)) {
                 $value = is_need_unserialize($data['type']) ? unserialize($data['value']) : $data['value'];
                 // 保存到缓存
-                DataCache::set($prefix.$key,$value);
+                FCache::set($prefix.$key,$value);
             }
         }
         // 支持多维数组取值
@@ -815,9 +815,9 @@ function __($str,$context=null) {
 		$_l10n = new L10n();
 	    $ckey = 'L10n.'.$language.'.entries';
 	    // 取出缓存
-	    $tables = DataCache::get($ckey);
+	    $tables = FCache::get($ckey);
 	    // 判断文件过期
-	    $cache_file = DataCache::file($ckey);
+	    $cache_file = FCache::file($ckey);
 	    if (file_exists_case($cache_file)) {
 	       defined('DATACACHE_EXPIRE') or define('DATACACHE_EXPIRE',0);
 	       // mo文件的修改时间大于缓存文件的过期时间
@@ -828,7 +828,7 @@ function __($str,$context=null) {
 	    // 缓存结果不存在
 		if (empty($tables)) {
 		    $_l10n->load_file($mo_file);
-		    DataCache::set($ckey,$_l10n->entries);
+		    FCache::set($ckey,$_l10n->entries);
 		} else {
 		    $_l10n->entries = $tables;
 		}

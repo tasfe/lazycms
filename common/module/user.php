@@ -127,7 +127,7 @@ class ModuleUser {
 	    $db = get_conn(); if ((int)$type>2) return null;
 	    $prefixs = array('user.userid.','user.name.','user.authcode.');
         $prefix  = $prefixs[$type];
-        $value   = DataCache::get($prefix.$param);
+        $value   = FCache::get($prefix.$param);
         if (!empty($value)) return $value;
         
         switch($type){
@@ -148,7 +148,7 @@ class ModuleUser {
 		    	$user = array_merge($user,$meta);
 		    }
 		    // 保存到缓存
-            DataCache::set($prefix.$param,$user);
+            FCache::set($prefix.$param,$user);
 			return $user;
 		}
 		return null;
@@ -295,7 +295,7 @@ class ModuleUser {
         if ($user = ModuleUser::get_user_by_id($userid)) {
             $prefix = 'user.';
             foreach (array('userid','name','authcode') as $field) {
-                DataCache::delete($prefix.$field.'.'.$user[$field]);
+                FCache::delete($prefix.$field.'.'.$user[$field]);
             }
         }
         return true;

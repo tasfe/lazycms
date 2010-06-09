@@ -55,7 +55,7 @@ class ModuleSort {
      */
     function get_sort_by_id($sortid) {
         $db = get_conn(); $prefix = 'sort.';
-        $value = DataCache::get($prefix.$sortid);
+        $value = FCache::get($prefix.$sortid);
         if (!empty($value)) return $value;
 	    $rs = $db->query("SELECT * FROM `#@_sort` WHERE `sortid`=%s LIMIT 0,1;",$sortid);
 		// 判断用户是否存在
@@ -69,7 +69,7 @@ class ModuleSort {
 		    // 查询数量
 		    $sort['count'] = $db->result(sprintf("SELECT COUNT(*) FROM `#@_term_relation` WHERE `termid`=%s;",$sort['termid']));
 		    // 保存到缓存
-            DataCache::set($prefix.$sortid,$sort);
+            FCache::set($prefix.$sortid,$sort);
 			return $sort;
 		}
 		return null;
@@ -217,7 +217,7 @@ class ModuleSort {
      * @return bool
      */
     function clear_sort_cache($sortid) {
-        DataCache::delete('sort.'.$sortid);
+        FCache::delete('sort.'.$sortid);
         return true;
     }
     /**
