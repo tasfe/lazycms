@@ -81,7 +81,7 @@ switch ($action) {
             $list   = isset($_POST['list'])?$_POST['list']:null;
             $page   = isset($_POST['page'])?$_POST['page']:null;
             $fields = isset($_POST['field'])?$_POST['field']:null;
-
+            
             $validate->check(array(
                 // 模型名不能为空
                 array('name',VALIDATE_EMPTY,__('The name field is empty.','model')),

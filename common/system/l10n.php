@@ -22,6 +22,8 @@ defined('COM_PATH') or die('Restricted access!');
 /**
  * 语言包本地化类
  *
+ * 修改自WordPress L10n类
+ *
  * @author Lukin <my@lukin.cn>
  */
 class L10n{

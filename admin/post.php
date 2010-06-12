@@ -52,16 +52,35 @@ switch ($action) {
 	    break;
 	// 保存
 	case 'save':
-	    $mcode   = isset($_POST['model'])?$_POST['model']:null;
-        $model   = ModuleModel::get_model_by_code($mcode);
-        $sortid  = isset($_POST['sortid'])?$_POST['sortid']:0;
-        $title   = isset($_POST['title'])?$_POST['title']:null;
-        $path    = isset($_POST['path'])?$_POST['path']:null;
-        $content = isset($_POST['content'])?$_POST['content']:null;
-        $page    = isset($_POST['page'])?$_POST['page']:null;
-        $keywords = isset($_POST['keywords'])?$_POST['keywords']:null;
-        $description = isset($_POST['description'])?$_POST['description']:null;
+	    
+	    $validate = new Validate();
+        if ($validate->post()) {
+            $mcode   = isset($_POST['model'])?$_POST['model']:null;
+            $model   = ModuleModel::get_model_by_code($mcode);
+            $sortid  = isset($_POST['sortid'])?$_POST['sortid']:0;
+            $title   = isset($_POST['title'])?$_POST['title']:null;
+            $path    = isset($_POST['path'])?$_POST['path']:null;
+            $content = isset($_POST['content'])?$_POST['content']:null;
+            $page    = isset($_POST['page'])?$_POST['page']:null;
+            $keywords = isset($_POST['keywords'])?$_POST['keywords']:null;
+            $description = isset($_POST['description'])?$_POST['description']:null;
+            
+            $validate->check(array(
+                array('title',VALIDATE_EMPTY,__('The title field is empty.','post')),
+                array('title',VALIDATE_LENGTH,__('The title field length must be %d-%d characters.','post'),1,255),
+            ));
 
+            $validate->check(array(
+                array('path',VALIDATE_EMPTY,__('The path field is empty.','post')),
+            ));
+
+            print_r($model['fields']);
+
+            // 验证通过
+            if (!$validate->is_error()) {
+                
+            }
+        }
 	    break;
 	// 获取扩展字段
 	case 'extend-attr':

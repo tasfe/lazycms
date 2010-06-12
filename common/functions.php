@@ -49,7 +49,7 @@ function parse_dsn($DSN){
  * @param string $DSN	DSN format: mysql://root:123456@localhost:3306/lazy/lazycms
  * @return object
  */
-function get_conn($DSN=null){
+function get_conn($DSN=null,$pconnect=false){
     static $_db = array();
     if (is_null($DSN)) { $DSN = DSN_CONFIG; } $dsn = md5($DSN);
     if (isset($_db[$dsn]) && is_object($_db[$dsn])) return $_db[$dsn];
@@ -57,7 +57,7 @@ function get_conn($DSN=null){
         require_file(COM_PATH.'/system/mysql.php');
     	$_db[$dsn] = new Mysql();
     	$_db[$dsn]->config($config);
-        $_db[$dsn]->connect();
+        $_db[$dsn]->connect($pconnect);
         $_db[$dsn]->select_db();
         if ($_db[$dsn]->ready) {
         	return $_db[$dsn];
