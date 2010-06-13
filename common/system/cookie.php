@@ -57,7 +57,7 @@ class Cookie{
     function set($name,$value,$expire=0,$path='/',$domain='') {
         if (empty($domain)) $domain = COOKIE_DOMAIN;
         if ($expire) $expire = time() + $expire;
-        setcookie($name,$value,$expire,$path);
+        setcookie($name,$value,$expire,$path,$domain);
     }
     /**
      * 删除某个cookie值
