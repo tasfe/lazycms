@@ -160,10 +160,14 @@ function model_field_manage(id,params) {
         var title = _('Add New','model','field');
             title = id?_('Edit','model','field'):title;
 		LazyCMS.dialog({
-            name:'field', title:title, styles:{ 'width':'400px' }, top:100,body:r
+            name:'field', title:title, styles:{ 'width':'400px' }, top:100, body:r, remove:function() {
+                LazyCMS.removeDialog('field'); $('#field-index-' + id + ' textarea').removeClass('edit');
+            }
         },function(){
-
+            
             if ($('form#model-field-table',this).is('form')==false) return ;
+
+            $('#field-index-' + id + ' textarea').addClass('edit');
             
             var dialog = this, switch_type = function(type){
                 $('#field_serialize,#field_attrs,#field_length,#field_default',dialog).hide(0,function(){
@@ -235,7 +239,9 @@ function model_field_manage(id,params) {
                 // 取消样式
                 $('.input_error,.textarea_error',dialog).removeClass('input_error').removeClass('textarea_error');
                 // 获取已经添加的字段
-                $('td textarea',wrap).each(function(){ fields.push(parse_str(this.value).n); });
+                $('td textarea:not(.edit)',wrap).each(function(){
+                    fields.push(parse_str(this.value).n);
+                });
                 // 开始验证
                 if (label=='') error.push({'id':'l','text':_('The label field is empty.','model')});
                 if (name=='') {

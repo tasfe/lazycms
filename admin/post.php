@@ -74,7 +74,20 @@ switch ($action) {
                 array('path',VALIDATE_EMPTY,__('The path field is empty.','post')),
             ));
 
-            print_r($model['fields']);
+            // 验证自定义的字段
+            if ($model['fields']) {
+                foreach($model['fields'] as $field) {
+                    if (empty($field['v'])) continue;
+                    $last_rules = array();
+                    $rules = explode("\n",$field['v']);
+                    foreach($rules as $rule) {
+                        if (strpos($rule,'|')===false) continue;
+                        $VRS = explode('|',rtrim($rule,';')); array_unshift($VRS,$field['n']);
+                        $last_rules[] = $VRS;
+                    }
+                    $validate->check($last_rules);
+                }
+            }
 
             // 验证通过
             if (!$validate->is_error()) {

@@ -21,26 +21,26 @@
 defined('COM_PATH') or die('Restricted access!');
 
 // 数字
-define('VALIDATE_IS_NUMERIC',0x000000);
+define('VALIDATE_IS_NUMERIC','IS_NUMERIC');
 // 字母
-define('VALIDATE_IS_LETTERS',0x000001);
+define('VALIDATE_IS_LETTERS','IS_LETTERS');
 //电子邮箱
-define('VALIDATE_IS_EMAIL',0x000002);
+define('VALIDATE_IS_EMAIL','IS_EMAIL');
 // 超链接
-define('VALIDATE_IS_URL',0x000003);
+define('VALIDATE_IS_URL','IS_URL');
 // 逗号分隔的字符串列表
-define('VALIDATE_IS_LIST',0x000004);
+define('VALIDATE_IS_LIST','IS_LIST');
 // 字母、数字、下划线、杠
-define('VALIDATE_IS_CNUS',0x000005);
+define('VALIDATE_IS_CNUS','IS_CNUS');
 // 字母、数字、下划线、杠、逗号、[、]
-define('VALIDATE_IS_CNUSO',0x000006);
+define('VALIDATE_IS_CNUSO','IS_CNUSO');
 
 // 不能为空
-define('VALIDATE_EMPTY',0x000007);
+define('VALIDATE_EMPTY','EMPTY');
 // 验证长度
-define('VALIDATE_LENGTH',0x000008);
+define('VALIDATE_LENGTH','LENGTH');
 // 两个值是否相等
-define('VALIDATE_EQUAL',0x000009);
+define('VALIDATE_EQUAL','EQUAL');
 
 /**
  * LazyCMS 系统验证类
@@ -95,6 +95,11 @@ class Validate {
                     if (empty($value)) $error = $text;
                     break;
                 case VALIDATE_LENGTH: case 'LENGTH_LIMIT':
+                    if (!is_numeric($args[3]) && strpos($args[3],'-')!==false) {
+                        $as = explode('-',$args[3]);
+                        $args[3] = $as[0];
+                        $args[4] = $as[1];
+                    }
                     if (mb_strlen($value,'UTF-8') < (int)$args[3]
                         || mb_strlen($value,'UTF-8') > (int)$args[4]) {
                             if ($args[3]) {
@@ -108,7 +113,7 @@ class Validate {
                     $value1 = isset($_POST[$args[3]]) ? trim($_POST[$args[3]]) : null;
                     if ($value != $value1) $error = $text;
                     break;
-                case false: case 'false':
+                case false: case 'FALSE':
                     $error = $text;
                     break;
                 default:
@@ -131,31 +136,31 @@ class Validate {
     function is($str,$type){
         switch ($type) {
             case VALIDATE_IS_NUMERIC: case 'IS_NUMERIC':
-                $pattern = '^\d+$';
+                $pattern = '/^\d+$/';
                 break;
             case VALIDATE_IS_LETTERS: case 'IS_LETTERS':
-                $pattern = '^[A-Za-z]+$';
+                $pattern = '/^[A-Za-z]+$/';
                 break;
             case VALIDATE_IS_EMAIL: case 'IS_EMAIL':
-                $pattern = '^\w+([\-\+\.]\w+)*@\w+([\-\.]\w+)*\.\w+([\-\.]\w+)*$';
+                $pattern = '/^\w+([\-\+\.]\w+)*@\w+([\-\.]\w+)*\.\w+([\-\.]\w+)*$/i';
                 break;
             case VALIDATE_IS_URL: case 'IS_URL':
-                $pattern = '^(http|https|ftp)\:(\/\/|\\\\)(([\w\/\\\+\-~`@\:%])+\.)+([\w\/\\\.\=\?\+\-~`@\'\:!%#]|(&amp;)|&)+';
+                $pattern = '/^(http|https|ftp)\:(\/\/|\\\\)(([\w\/\\\+\-~`@\:%])+\.)+([\w\/\\\.\=\?\+\-~`@\'\:!%#]|(&amp;)|&)+/i';
                 break;
             case VALIDATE_IS_LIST: case 'IS_LIST':
-                $pattern = '^[\d\,\.]+$';
+                $pattern = '/^[\d\,\.]+$/i';
                 break;
             case VALIDATE_IS_CNUS: case 'IS_CNUS':
-                $pattern = '^[\w\-]+$';
+                $pattern = '/^[\w\-]+$/i';
                 break;
             case VALIDATE_IS_CNUSO: case 'IS_CNUSO':
-                $pattern = '^[\w\,\/\-\[\]]+$';
+                $pattern = '/^[\w\,\/\-\[\]]+$/i';
                 break;
             default: // 自定义正则
                 $pattern = $type;
                 break;
         }
-        return preg_match("/{$pattern}/i",$str);
+        return preg_match($pattern,$str);
     }
     /**
      * 验证结果有错误，输出错误
@@ -166,9 +171,11 @@ class Validate {
     function is_error($is_echo=true){
         if ($this->_error){
             if ($is_echo) {
-                echo_json('Validate',$this->_error);
+                if (is_ajax()) {
+                    echo_json('Validate',$this->_error);
+                }
             }
-            return true;
+            return $this->_error;
         }
         return false;
     }
