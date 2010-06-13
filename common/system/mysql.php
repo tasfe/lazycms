@@ -35,6 +35,7 @@ class Mysql{
     var $_user = 'root';
     var $_pwd  = '';
     var $_name = 'test';
+    var $_mode = false;
     var $_prefix = null;
     var $_scheme = 'mysql';
 
@@ -69,7 +70,9 @@ class Mysql{
      * 连接MySQL
      *
      */
-    function connect($pconnect=false){
+    function connect(){
+        // 取得连接模式
+        $pconnect = $this->_mode;
         // 连接数据库
         if (function_exists('mysql_pconnect') && $pconnect) {
             $this->conn = @mysql_pconnect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,CLIENT_MULTI_RESULTS);
@@ -131,7 +134,7 @@ class Mysql{
         if (!($result = $func($sql,$this->conn))) {
             if (in_array($this->errno(),array(2006,2013)) && substr($type,0,5) != 'RETRY') {
                 $this->close();$this->connect(); $this->select_db();
-                $this->query($sql,$bind,'RETRY'.$type);
+                $result = $this->query($sql,$bind,'RETRY'.$type);
             } elseif($type != 'SILENT' && substr($type, 5) != 'SILENT') {
                 trigger_error(sprintf(_('MySQL Query Error:<br/>SQL:%s<br/>%s'),$sql,$this->error()),E_USER_WARNING);
             }
