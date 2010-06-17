@@ -18,14 +18,22 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-// 加载公共文件
-require dirname(__FILE__).'/admin.php';
+defined('COM_PATH') or die('Restricted access!');
 
-// 取得管理员信息
-$_ADMIN = LCUser::current();
-// 设置标题
-admin_head('title',_('Control Panel'));
-// 加载头部
-include ADMIN_PATH.'/admin-header.php';
-// 加载尾部
-include ADMIN_PATH.'/admin-footer.php';
+class LCPost {
+
+    function addPost($title,$content,$path,$data=null) {
+        $db = get_conn();
+	    $postid = $db->insert('#@_post',array(
+	       'title'   => $title,
+	       'content' => $content,
+	       'path'    => $path,
+	    ));
+	    return LCPost::editPost($postid,$data);
+    }
+    
+    function editPost($postid,$data) {
+
+    }
+    
+}

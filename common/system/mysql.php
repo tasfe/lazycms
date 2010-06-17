@@ -246,7 +246,7 @@ class Mysql{
      */
     function list_fields($table){
         $result = array();
-        $res = $this->query("SHOW COLUMNS FROM {$table};");
+        $res = $this->query("SHOW COLUMNS FROM `{$table}`;");
         while ($rs = $this->fetch($res)) {
         	$result[] = $rs['Field'];
         }
@@ -261,7 +261,7 @@ class Mysql{
      * @return bool
      */
     function is_table($table){
-        $res = $this->query("SHOW TABLES FROM {$this->_name};");
+        $res = $this->query("SHOW TABLES FROM `{$this->_name}`;");
         while ($rs = $this->fetch($res)) {
         	if ($table == $rs[0]) return true;
         }

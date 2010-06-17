@@ -25,11 +25,11 @@ CREATE TABLE `lazy_model` (
   `state` enum('0','1') NOT NULL default '0',
   PRIMARY KEY  (`modelid`),
   KEY `code` (`code`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 /*Data for the table `lazy_model` */
 
-insert  into `lazy_model`(`modelid`,`code`,`name`,`path`,`list`,`page`,`fields`,`state`) values (1,'article','文章','%PY.html','default.html','default.html','a:2:{i:0;s:138:\"l=%E6%9D%A5%E6%BA%90&h=(%E5%BF%85%E9%A1%BB)&n=from&t=select&w=200px&s=%E7%BD%91%E7%BB%9C%0A%E6%9C%AA%E7%9F%A5%0ALukin&d=%E7%BD%91%E7%BB%9C\";i:1;s:287:\"l=%E7%AE%80%E4%BB%8B&h=%28%E5%BF%85%E9%A1%BB%29&n=intro&t=textarea&w=450px&v=IS_EMPTY%7C%E8%BF%99%E4%B8%AA%E5%AD%97%E6%AE%B5%E5%80%BC%E6%98%AF%E7%A9%BA%E7%9A%84%E3%80%82%3B%0AIS_LETTERS%7C%E8%BF%99%E4%B8%AA%E5%AD%97%E6%AE%B5%E5%80%BC%E4%B8%8D%E6%98%AF%E5%AD%97%E6%AF%8D%E3%80%82%3B%0A&d=\";}','0');
+insert  into `lazy_model`(`modelid`,`code`,`name`,`path`,`list`,`page`,`fields`,`state`) values (1,'article','文章','%PY.html','default.html','default.html','a:2:{i:0;s:401:\"l=%E6%9D%A5%E6%BA%90&h=(%E5%BF%85%E9%A1%BB)&n=from&t=select&w=200px&v=IS_EMPTY%7C%E8%BF%99%E4%B8%AA%E5%AD%97%E6%AE%B5%E5%80%BC%E6%98%AF%E7%A9%BA%E7%9A%84%E3%80%82%3B%0ALENGTH_LIMIT%7C%E8%BF%99%E4%B8%AA%E5%AD%97%E6%AE%B5%E5%80%BC%E9%95%BF%E5%BA%A6%E5%BF%85%E9%A1%BB%25d%E8%87%B3%25d%E4%B8%AA%E5%AD%97%E7%AC%A6%E3%80%82%7C1-20%3B%0A&s=%E7%BD%91%E7%BB%9C%0A%E6%9C%AA%E7%9F%A5%0ALukin&d=%E7%BD%91%E7%BB%9C\";i:1;s:178:\"l=%E7%AE%80%E4%BB%8B&h=%28%E5%BF%85%E9%A1%BB%29&n=intro&t=textarea&w=450px&v=IS_EMPTY%7C%E8%BF%99%E4%B8%AA%E5%AD%97%E6%AE%B5%E5%80%BC%E6%98%AF%E7%A9%BA%E7%9A%84%E3%80%82%3B%0A&d=\";}','0');
 insert  into `lazy_model`(`modelid`,`code`,`name`,`path`,`list`,`page`,`fields`,`state`) values (2,'download','下载','%ID.html','default.html','default.html','a:1:{i:0;s:70:\"l=%E8%BD%AF%E4%BB%B6%E5%A4%A7%E5%B0%8F&n=size&t=input&w=200px&c=255&d=\";}','0');
 
 /*Table structure for table `lazy_option` */
@@ -471,6 +471,7 @@ DROP TABLE IF EXISTS `lazy_post`;
 
 CREATE TABLE `lazy_post` (
   `postid` bigint(20) unsigned NOT NULL auto_increment,
+  `taxonomyid` bigint(20) unsigned NOT NULL default '0',
   `model` varchar(50) NOT NULL,
   `author` bigint(20) NOT NULL default '0',
   `path` varchar(255) NOT NULL,
@@ -500,55 +501,6 @@ CREATE TABLE `lazy_post_meta` (
 
 /*Data for the table `lazy_post_meta` */
 
-/*Table structure for table `lazy_sort` */
-
-DROP TABLE IF EXISTS `lazy_sort`;
-
-CREATE TABLE `lazy_sort` (
-  `sortid` bigint(20) unsigned NOT NULL auto_increment,
-  `termid` bigint(20) unsigned NOT NULL,
-  `type` varchar(50) NOT NULL default 'category',
-  `path` varchar(255) NOT NULL,
-  `parent` bigint(20) NOT NULL default '0',
-  `count` bigint(20) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`sortid`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
-
-/*Data for the table `lazy_sort` */
-
-insert  into `lazy_sort`(`sortid`,`termid`,`type`,`path`,`parent`,`count`) values (1,1,'category','%PY',0,0);
-insert  into `lazy_sort`(`sortid`,`termid`,`type`,`path`,`parent`,`count`) values (2,2,'category','XinWen/%PY',1,0);
-insert  into `lazy_sort`(`sortid`,`termid`,`type`,`path`,`parent`,`count`) values (3,3,'category','XinWen/GuoNaXinWen/%PY',2,0);
-insert  into `lazy_sort`(`sortid`,`termid`,`type`,`path`,`parent`,`count`) values (4,4,'category','XinWen/GuoNaXinWen/BeiJingXinWen/%PY',3,0);
-
-/*Table structure for table `lazy_sort_meta` */
-
-DROP TABLE IF EXISTS `lazy_sort_meta`;
-
-CREATE TABLE `lazy_sort_meta` (
-  `metaid` bigint(20) unsigned NOT NULL auto_increment,
-  `sortid` bigint(20) unsigned NOT NULL,
-  `key` varchar(50) default NULL,
-  `value` longtext,
-  `type` varchar(20) default NULL,
-  PRIMARY KEY  (`metaid`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
-
-/*Data for the table `lazy_sort_meta` */
-
-insert  into `lazy_sort_meta`(`metaid`,`sortid`,`key`,`value`,`type`) values (1,1,'model','a:1:{i:0;s:7:\"article\";}','array');
-insert  into `lazy_sort_meta`(`metaid`,`sortid`,`key`,`value`,`type`) values (2,1,'list','','string');
-insert  into `lazy_sort_meta`(`metaid`,`sortid`,`key`,`value`,`type`) values (3,1,'page','','string');
-insert  into `lazy_sort_meta`(`metaid`,`sortid`,`key`,`value`,`type`) values (4,2,'model','a:1:{i:0;s:7:\"article\";}','array');
-insert  into `lazy_sort_meta`(`metaid`,`sortid`,`key`,`value`,`type`) values (5,2,'list','','string');
-insert  into `lazy_sort_meta`(`metaid`,`sortid`,`key`,`value`,`type`) values (6,2,'page','','string');
-insert  into `lazy_sort_meta`(`metaid`,`sortid`,`key`,`value`,`type`) values (7,3,'model','a:1:{i:0;s:8:\"download\";}','array');
-insert  into `lazy_sort_meta`(`metaid`,`sortid`,`key`,`value`,`type`) values (8,3,'list','','string');
-insert  into `lazy_sort_meta`(`metaid`,`sortid`,`key`,`value`,`type`) values (9,3,'page','','string');
-insert  into `lazy_sort_meta`(`metaid`,`sortid`,`key`,`value`,`type`) values (10,4,'model','a:1:{i:0;s:7:\"article\";}','array');
-insert  into `lazy_sort_meta`(`metaid`,`sortid`,`key`,`value`,`type`) values (11,4,'list','','string');
-insert  into `lazy_sort_meta`(`metaid`,`sortid`,`key`,`value`,`type`) values (12,4,'page','','string');
-
 /*Table structure for table `lazy_term` */
 
 DROP TABLE IF EXISTS `lazy_term`;
@@ -558,14 +510,9 @@ CREATE TABLE `lazy_term` (
   `name` varchar(50) NOT NULL,
   PRIMARY KEY  (`termid`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Data for the table `lazy_term` */
-
-insert  into `lazy_term`(`termid`,`name`) values (1,'新闻');
-insert  into `lazy_term`(`termid`,`name`) values (2,'国内新闻');
-insert  into `lazy_term`(`termid`,`name`) values (3,'北京新闻');
-insert  into `lazy_term`(`termid`,`name`) values (4,'石景山新闻');
 
 /*Table structure for table `lazy_term_relation` */
 
@@ -573,11 +520,41 @@ DROP TABLE IF EXISTS `lazy_term_relation`;
 
 CREATE TABLE `lazy_term_relation` (
   `objectid` bigint(20) unsigned NOT NULL,
-  `termid` bigint(20) unsigned NOT NULL,
+  `taxonomyid` bigint(20) unsigned NOT NULL,
   `order` bigint(20) unsigned NOT NULL default '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Data for the table `lazy_term_relation` */
+
+/*Table structure for table `lazy_term_taxonomy` */
+
+DROP TABLE IF EXISTS `lazy_term_taxonomy`;
+
+CREATE TABLE `lazy_term_taxonomy` (
+  `taxonomyid` bigint(20) unsigned NOT NULL auto_increment,
+  `termid` bigint(20) unsigned NOT NULL,
+  `type` varchar(50) NOT NULL default 'category',
+  `parent` bigint(20) NOT NULL default '0',
+  `count` bigint(20) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`taxonomyid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+/*Data for the table `lazy_term_taxonomy` */
+
+/*Table structure for table `lazy_term_taxonomy_meta` */
+
+DROP TABLE IF EXISTS `lazy_term_taxonomy_meta`;
+
+CREATE TABLE `lazy_term_taxonomy_meta` (
+  `metaid` bigint(20) unsigned NOT NULL auto_increment,
+  `taxonomyid` bigint(20) unsigned NOT NULL,
+  `key` varchar(50) default NULL,
+  `value` longtext,
+  `type` varchar(20) default NULL,
+  PRIMARY KEY  (`metaid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+/*Data for the table `lazy_term_taxonomy_meta` */
 
 /*Table structure for table `lazy_user` */
 
@@ -590,15 +567,15 @@ CREATE TABLE `lazy_user` (
   `mail` varchar(150) NOT NULL,
   `status` tinyint(1) default '0',
   `registered` timestamp NULL default '0000-00-00 00:00:00',
-  `authcode` varchar(32) default NULL,
+  `authcode` varchar(36) default NULL,
   PRIMARY KEY  (`userid`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 /*Data for the table `lazy_user` */
 
-insert  into `lazy_user`(`userid`,`name`,`pass`,`mail`,`status`,`registered`,`authcode`) values (1,'admin','2ee2e5350f0b8b0308139187aa55cd86','my@lukin.cn',0,'0000-00-00 00:00:00','52cf8b2e38dbc4e378545d7fbbc30805');
-insert  into `lazy_user`(`userid`,`name`,`pass`,`mail`,`status`,`registered`,`authcode`) values (2,'Lukin','9598b77d8a9f835ad5f512179c3a06f1','mmmm@sss.com',0,'2010-05-06 21:13:21','874fb813eb6d202dc690c78f03009310');
+insert  into `lazy_user`(`userid`,`name`,`pass`,`mail`,`status`,`registered`,`authcode`) values (1,'admin','a0be60dedc02e27493879aa9990af4e1','my@lukin.cn',0,'0000-00-00 00:00:00','6D0E9BB2-A931-90B8-3536-AFC5654A594B');
+insert  into `lazy_user`(`userid`,`name`,`pass`,`mail`,`status`,`registered`,`authcode`) values (2,'Lukin','caca917333c9bddb7544ccb67f30cfd5','mmmm@sss.com',0,'2010-05-06 21:13:21','5E8DA15A-6CA4-587C-1137-37043409837D');
 
 /*Table structure for table `lazy_user_meta` */
 

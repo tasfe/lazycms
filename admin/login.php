@@ -52,7 +52,7 @@ if ($validate->post()) {
     // 验证通过
     if (!$validate->is_error()) {
         // 提交到数据库验证用户名和密码
-        if ($user = ModuleUser::login($username,$userpass)) {
+        if ($user = LCUser::login($username,$userpass)) {
             $expire = $rememberme=='forever'?365*86400:0;
             Cookie::set('authcode',$user['authcode'],$expire);
             Cookie::set('language',$language,$expire);
@@ -62,7 +62,7 @@ if ($validate->post()) {
         }
     }
 } else {
-    if (ModuleUser::current(false)) {
+    if (LCUser::current(false)) {
 		redirect('index.php');
 	}
 }

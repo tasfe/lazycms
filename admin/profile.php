@@ -21,7 +21,7 @@
 // 加载公共文件
 require dirname(__FILE__).'/admin.php';
 // 取得管理员信息
-$_ADMIN = ModuleUser::current(); 
+$_ADMIN = LCUser::current();
 // 动作
 $action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
 $referer = referer(PHP_FILE,false);
@@ -60,7 +60,7 @@ if ($action=='save') {
             	   'pass' => md5($password.$_ADMIN['authcode'])
             	));
             }
-            ModuleUser::fill_user_info($userid,$user_info);
+            LCUser::editUser($userid,$user_info);
             // 保存用户信息
             admin_success(_('User updated.'),"LazyCMS.redirect('".$referer."');");
         }

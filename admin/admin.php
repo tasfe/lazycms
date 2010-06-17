@@ -28,7 +28,8 @@ define('ADMIN_ROOT',WEB_ROOT.str_replace('\\','/',substr(ADMIN_PATH,strlen(ABS_P
 require_file(COM_PATH.'/module/system.php');
 require_file(COM_PATH.'/module/user.php');
 require_file(COM_PATH.'/module/model.php');
-require_file(COM_PATH.'/module/sort.php');
+require_file(COM_PATH.'/module/taxonomy.php');
+require_file(COM_PATH.'/module/post.php');
 
 /**
  * 验证用户权限
@@ -39,7 +40,7 @@ require_file(COM_PATH.'/module/sort.php');
  */
 function current_user_can($action,$is_redirect=true) {
     global $_ADMIN; $result = false;
-    $user = ModuleUser::current(false);
+    $user = LCUser::current(false);
     if (isset($user['roles'])) {
     	if (in_array($action,$user['roles'])) {
     		$result = true;

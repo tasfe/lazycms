@@ -20,16 +20,18 @@
  */
 defined('COM_PATH') or die('Restricted access!');
 
-class ModuleModel {
+class LCModel {
     /**
      * 通过模型ID查询模型信息
      *
      * @param int $modelid
      * @param string $field
+     * @param string $prefix    字段前缀
      * @return array|null
      */
-    function get_model_by_id($modelid,$field='*') {
-        $model = ModuleModel::get_model($modelid,0);
+    function getModelById($modelid,$field='*',$prefix='') {
+        $modelid = intval($modelid);
+        $model = LCModel::getModel($modelid,0,$prefix);
         if ($field!='*') {
         	return isset($model[$field])?$model[$field]:null;
         }
@@ -40,10 +42,11 @@ class ModuleModel {
      *
      * @param string $ename
      * @param string $field
+     * @param string $prefix    字段前缀
      * @return array|null
      */
-    function get_model_by_code($code,$field='*') {
-        $model = ModuleModel::get_model($code,1);
+    function getModelByCode($code,$field='*',$prefix='') {
+        $model = LCModel::getModel($code,1,$prefix);
         if ($field!='*') {
         	return isset($model[$field])?$model[$field]:null;
         }
@@ -54,13 +57,14 @@ class ModuleModel {
      *
      * @param string $param
      * @param int $type
+     * @param string $prefix    字段前缀
      * @return array|null
      */
-    function get_model($param,$type=0) {
+    function getModel($param,$type=0,$prefix='') {
         $db = get_conn(); if ((int)$type>2) return null;
-	    $prefixs = array('model.modelid.','model.code.');
-        $prefix  = $prefixs[$type];
-        $value   = FCache::get($prefix.$param);
+	    $ckeys = array('model.modelid.','model.code.');
+        $ckey  = $ckeys[$type];
+        $value = FCache::get($ckey.$param);
         if (!empty($value)) return $value;
         
         switch($type){
@@ -79,11 +83,12 @@ class ModuleModel {
 		    if (is_array($fields)) {
     		    foreach ($fields as $i=>$field_str) {
     		    	parse_str($field_str,$field);
+                    if ($prefix!='') $field['n'] = $prefix.$field['n'].$prefix;
     		    	$model['fields'][$i+1] = $field;
     		    }	
 		    }
 		    // 保存到缓存
-            FCache::set($prefix.$param,$model);
+            FCache::set($ckey.$param,$model);
 			return $model;
 		}
 		return null;
@@ -93,12 +98,12 @@ class ModuleModel {
      *
      * @return unknown
      */
-    function get_models($state=null) {
+    function getModels($state=null) {
 	    $db = get_conn(); $result = array();
 	    $where = is_null($state)?null:"WHERE `state`='0'";
 	    $rs = $db->query("SELECT * FROM `#@_model` {$where} ORDER BY `modelid` ASC;");
 	    while ($row = $db->fetch($rs)) {
-	        $result[] = ModuleModel::get_model_by_id($row['modelid']);
+	        $result[] = LCModel::getModelById($row['modelid']);
 	    }
 	    return $result;
 	}
@@ -108,8 +113,9 @@ class ModuleModel {
 	 * @param array $data
 	 * @return array
 	 */
-	function create_model($data) {
+	function addModel($data) {
 	    $db = get_conn();
+        if (!is_array($data)) return false;
 	    $modelid = $db->insert('#@_model',$data);
 	    $model   = array_merge($data,array(
 	       'modelid' => $modelid,
@@ -123,15 +129,16 @@ class ModuleModel {
 	 * @param array $data
 	 * @return array|null
 	 */
-	function fill_model($modelid,$data) {
-	    $db = get_conn();
-	    if ($model = ModuleModel::get_model_by_id($modelid)) {
+	function editModel($modelid,$data) {
+	    $db = get_conn(); $modelid = intval($modelid);
+        $data = is_array($data) ? $data : array();
+	    if ($model = LCModel::getModelById($modelid)) {
 	    	// 更新数据
             if ($data) {
                 $db->update('#@_model',$data,array('modelid'=>$modelid));
             }
             // 清理用户缓存
-            ModuleModel::clear_model_cache($modelid);
+            LCModel::clearModelCache($modelid);
             return array_merge($model,$data);
 	    }
         return null;
@@ -142,11 +149,11 @@ class ModuleModel {
      * @param int $modelid
      * @return bool
      */
-    function clear_model_cache($modelid) {
-        if ($model = ModuleModel::get_model_by_id($modelid)) {
-            $prefix = 'model.';
+    function clearModelCache($modelid) {
+        if ($model = LCModel::getModelById($modelid)) {
+            $ckey = 'model.';
             foreach (array('modelid','code') as $field) {
-                FCache::delete($prefix.$field.'.'.$model[$field]);
+                FCache::delete($ckey.$field.'.'.$model[$field]);
             }
         }
         return true;
@@ -157,10 +164,12 @@ class ModuleModel {
      * @param int $userid
      * @return bool
      */
-    function delete_model_by_id($modelid) {
-        $db = get_conn(); if (!$modelid) return ;
-        if (ModuleModel::get_model_by_id($modelid)) {
-            ModuleModel::clear_model_cache($modelid);
+    function deleteModelById($modelid) {
+        $db = get_conn();
+        $modelid = intval($data);
+        if (!$modelid) return false;
+        if (LCModel::getModelById($modelid)) {
+            LCModel::clearModelCache($modelid);
             $db->delete('#@_model',array('modelid'=>$modelid));
             // TODO: 删除其他数据
             return true;
@@ -173,7 +182,7 @@ class ModuleModel {
      * @param string $type
      * @return string|array
      */
-    function get_type($type=null) {
+    function getType($type=null) {
         $types = array(
             'input'    => _('Input'),                   // 输入框
             'textarea' => _('Textarea'),                // 文本框

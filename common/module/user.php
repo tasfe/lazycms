@@ -20,7 +20,7 @@
  */
 defined('COM_PATH') or die('Restricted access!');
 
-class ModuleUser {
+class LCUser {
     /**
 	 * 验证用户是否登录成功
 	 *
@@ -33,7 +33,7 @@ class ModuleUser {
         $is_login = $authcode?true:false;
         // 执行用户验证
         if ($is_login) {
-            if ($user = ModuleUser::get_user_by_auth($authcode)) {
+            if ($user = LCUser::getUserByAuth($authcode)) {
                 $is_login = true;
             } else {
                 $is_login = false;
@@ -61,7 +61,7 @@ class ModuleUser {
      *         int   负数   用户的其它状态，可能是被锁定
      */
 	function login($username,$password){
-		if ($user = ModuleUser::get_user_by_name($username)) {
+		if ($user = LCUser::getUserByName($username)) {
 		    if ((int)$user['status']!==0) {
 		    	return $user['status'];
 		    }
@@ -75,7 +75,7 @@ class ModuleUser {
                         'authcode' => $authcode,
                     );
                     // 更新数据
-                    ModuleUser::fill_user_info($user['userid'],$userinfo);
+                    LCUser::editUser($user['userid'],$userinfo);
                     // 合并新密码和key
                     $user = array_merge($user,$userinfo);
                 }
@@ -95,8 +95,9 @@ class ModuleUser {
      * @param int $userid
      * @return array|null
      */
-    function get_user_by_id($userid) {
-        return ModuleUser::get_user($userid,0);
+    function getUserById($userid) {
+        $userid = intval($userid);
+        return LCUser::getUser($userid,0);
     }
     /**
      * 通过用户名查询用户信息
@@ -104,8 +105,8 @@ class ModuleUser {
      * @param string $name
      * @return array|null
      */
-    function get_user_by_name($name) {
-        return ModuleUser::get_user($name,1);
+    function getUserByName($name) {
+        return LCUser::getUser($name,1);
     }
     /**
      * 通过authcode查询用户信息
@@ -113,8 +114,8 @@ class ModuleUser {
      * @param string $authcode
      * @return array|null
      */
-    function get_user_by_auth($authcode) {
-        return ModuleUser::get_user($authcode,2);
+    function getUserByAuth($authcode) {
+        return LCUser::getUser($authcode,2);
     }
     /**
      * 取得用户信息
@@ -123,11 +124,11 @@ class ModuleUser {
      * @param int $type
      * @return array|null
      */
-	function get_user($param,$type=0){
+	function getUser($param,$type=0){
 	    $db = get_conn(); if ((int)$type>2) return null;
-	    $prefixs = array('user.userid.','user.name.','user.authcode.');
-        $prefix  = $prefixs[$type];
-        $value   = FCache::get($prefix.$param);
+	    $ckeys = array('user.userid.','user.name.','user.authcode.');
+        $ckey  = $ckeys[$type];
+        $value = FCache::get($ckey.$param);
         if (!empty($value)) return $value;
         
         switch($type){
@@ -144,11 +145,11 @@ class ModuleUser {
 	    $rs = $db->query("SELECT * FROM `#@_user` WHERE {$where} LIMIT 0,1;");
 		// 判断用户是否存在
 		if ($user = $db->fetch($rs)) {
-		    if ($meta = ModuleUser::get_user_meta($user['userid'])) {
+		    if ($meta = LCUser::getUserMeta($user['userid'])) {
 		    	$user = array_merge($user,$meta);
 		    }
 		    // 保存到缓存
-            FCache::set($prefix.$param,$user);
+            FCache::set($ckey.$param,$user);
 			return $user;
 		}
 		return null;
@@ -159,8 +160,8 @@ class ModuleUser {
 	 * @param int $userid
 	 * @return array
 	 */
-	function get_user_meta($userid) {
-	    $db = get_conn(); $result = array();
+	function getUserMeta($userid) {
+	    $db = get_conn(); $result = array(); $userid = intval($userid);
 	    $rs = $db->query("SELECT * FROM `#@_user_meta` WHERE `userid`=%s;",$userid);
 	    while ($row = $db->fetch($rs)) {
 	        if (is_need_unserialize($row['type'])) {
@@ -176,11 +177,11 @@ class ModuleUser {
 	 *
 	 * @return array
 	 */
-	function get_adminis() {
+	function getAdminis() {
 	    $db = get_conn(); $result = array();
 	    $rs = $db->query("SELECT * FROM `#@_user_meta` WHERE `key`='Administrator' AND `VALUE`='Yes' ORDER BY `userid` ASC;");
 	    while ($row = $db->fetch($rs)) {
-	        $result[] = ModuleUser::get_user_by_id($row['userid']);
+	        $result[] = LCUser::getUserById($row['userid']);
 	    }
 	    return $result;
 	}
@@ -193,7 +194,7 @@ class ModuleUser {
 	 * @param array $data
 	 * @return array
 	 */
-	function create_user($name,$pass,$email,$data=null) {
+	function addUser($name,$pass,$email,$data=null) {
 	    $db = get_conn();
 	    // 插入用户
 	    $userid = $db->insert('#@_user',array(
@@ -209,11 +210,11 @@ class ModuleUser {
 	       'pass' => md5($pass.$authcode),
 	       'authcode' => $authcode,
 	    );
-	    if ($data) {
+	    if ($data && is_array($data)) {
 	    	$user_info = array_merge($user_info,$data);
 	    }
 	    // 更新用户资料
-	    return ModuleUser::fill_user_info($userid,$user_info);
+	    return LCUser::editUser($userid,$user_info);
 	}
 	/**
 	 * 填写用户信息
@@ -222,9 +223,12 @@ class ModuleUser {
 	 * @param array $data
 	 * @return array|null
 	 */
-    function fill_user_info($userid,$data) {
-        $db = get_conn(); $user_rows = $meta_rows = array();
-        if ($user = ModuleUser::get_user_by_id($userid)) {
+    function editUser($userid,$data) {
+        $db = get_conn();
+        $userid = intval($userid);
+        $user_rows = $meta_rows = array();
+        if ($user = LCUser::getUserById($userid)) {
+            $data = is_array($data) ? $data : array();
             foreach ($data as $field=>$value) {
                 if ($db->is_field('#@_user',$field)) {
                     $user_rows[$field] = $value;
@@ -237,10 +241,10 @@ class ModuleUser {
                 $db->update('#@_user',$user_rows,array('userid' => $userid));
             }
             if ($meta_rows) {
-                ModuleUser::fill_user_meta($userid,$meta_rows);
+                LCUser::editUserMeta($userid,$meta_rows);
             }
             // 清理用户缓存
-            ModuleUser::clear_user_cache($userid);
+            LCUser::clearUserCache($userid);
             return array_merge($user,$data);
         }
         return null;
@@ -252,8 +256,8 @@ class ModuleUser {
      * @param array $data
      * @return bool
      */
-    function fill_user_meta($userid,$data) {
-        $db = get_conn();
+    function editUserMeta($userid,$data) {
+        $db = get_conn(); $userid = intval($userid);
         if (!is_array($data)) return false;
         foreach ($data as $key=>$value) {
             // 获取变量类型
@@ -291,11 +295,11 @@ class ModuleUser {
      * @param int $userid
      * @return bool
      */
-    function clear_user_cache($userid) {
-        if ($user = ModuleUser::get_user_by_id($userid)) {
-            $prefix = 'user.';
+    function clearUserCache($userid) {
+        if ($user = LCUser::getUserById($userid)) {
+            $ckey = 'user.';
             foreach (array('userid','name','authcode') as $field) {
-                FCache::delete($prefix.$field.'.'.$user[$field]);
+                FCache::delete($ckey.$field.'.'.$user[$field]);
             }
         }
         return true;
@@ -306,10 +310,12 @@ class ModuleUser {
      * @param int $userid
      * @return bool
      */
-    function delete_user_by_id($userid) {
-        $db = get_conn(); if (!$userid) return ;
-        if (ModuleUser::get_user_by_id($userid)) {
-            ModuleUser::clear_user_cache($userid);
+    function deleteUserById($userid) {
+        $db = get_conn();
+        $userid = intval($userid);
+        if (!$userid) return false;
+        if (LCUser::getUserById($userid)) {
+            LCUser::clearUserCache($userid);
             $db->delete('#@_user',array('userid' => $userid));
             $db->delete('#@_user_meta',array('userid' => $userid));
             return true;

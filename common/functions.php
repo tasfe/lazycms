@@ -44,6 +44,35 @@ function parse_dsn($DSN){
     return null;
 }
 /**
+ * 格式化路径
+ *
+ * @param string $path  %ID,%PY,%MD5 和 strftime() 支持的参数
+ * @param array $data
+ *          array(
+ *              'ID'  => 1,
+ *              'PY'  => '标题',
+ *              'MD5' => '文章ID或者其他任何唯一的值',
+ *          )
+ * @return string
+ */
+function format_path($path,$data=null) {
+    $py = $id = $md5 = null;
+    if (is_array($data)) {
+        foreach ($data as $k=>$v) {
+            if (empty($v)) continue;
+            if ($k=='PY') {
+                $py = pinyin($v);
+            } elseif ($k=='ID') {
+                $id = $v;
+            } elseif ($k=='MD5') {
+                $md5 = strtoupper(md5($path.$v));
+            }
+        }
+        $path = str_replace(array('%PY','%ID','%MD5'),array($py,$id,$md5),$path);
+    }
+    return strftime($path);
+}
+/**
  * 取得数据库连接对象
  *
  * @param string $DSN	DSN format: mysql://root:123456@localhost:3306/lazy/lazycms
@@ -284,6 +313,24 @@ function esc_html($str){
     }
 }
 /**
+ * 判断是否为UTF-8编码
+ *
+ * @param   string
+ * @return  bool
+ */
+function is_utf8($str){
+    return preg_match('%^(?:
+        [\x09\x0A\x0D\x20-\x7E]             # ASCII
+        | [\xC2-\xDF][\x80-\xBF]            # non-overlong 2-byte
+        | \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
+        | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2} # straight 3-byte
+        | \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
+        | \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
+        | [\xF1-\xF3][\x80-\xBF]{3}         # planes 4-15
+        | \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
+        )*$%xs',$str);
+}
+/**
  * 判断是否为ajax提交
  *
  * @return bool
@@ -450,24 +497,7 @@ function options($path,$ext,$html,$selected=null){
     }
     return $result;
 }
-/**
- * 判断是否为UTF-8编码
- *
- * @param   string
- * @return  bool
- */
-function is_utf8($str){
-    return preg_match('%^(?:
-        [\x09\x0A\x0D\x20-\x7E]             # ASCII
-        | [\xC2-\xDF][\x80-\xBF]            # non-overlong 2-byte
-        | \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
-        | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2} # straight 3-byte
-        | \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
-        | \xF0[\x90-\xBF][\x80-\xBF]{2}     # planes 1-3
-        | [\xF1-\xF3][\x80-\xBF]{3}         # planes 4-15
-        | \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
-        )*$%xs',$str);
-}
+
 /**
  * 自动转换字符集 支持数组转换
  *
@@ -606,7 +636,7 @@ function authcode($data=null){
  * @return string   guid
  */
 function guid($randid=null){
-    $randid = is_null($randid)?strtoupper(md5(uniqid(mt_rand(1000,micro_time(true)), true))):$randid;
+    $randid = is_null($randid)?strtoupper(md5(uniqid(mt_rand(), true))):$randid;
     $hyphen = chr(45);
     $result = array();
     $result[] = substr($randid, 0, 8);
@@ -726,7 +756,7 @@ function language() {
  * @return mixed
  */
 function C($key,$value=null){
-    $db = get_conn(); $prefix = 'cfg.'; $args = null;
+    $db = get_conn(); $ckey = 'cfg.'; $args = null;
     // 批量赋值
     if(is_array($key)) {
         foreach ($key as $k=>$v) {
@@ -747,7 +777,7 @@ function C($key,$value=null){
     if($key && !is_null($value)) {
         $key = $module.'.'.$code;
         // 保存到缓存
-        FCache::set($prefix.$key,$value);
+        FCache::set($ckey.$key,$value);
         // 获取变量类型
         $var_type = gettype($value);
         // 判断是否需要序列化
@@ -780,13 +810,13 @@ function C($key,$value=null){
     elseif ($key && is_null($value)) {
         $key   = $module.'.'.$code;
         // 先从缓存里取值
-        $value = FCache::get($prefix.$key);
+        $value = FCache::get($ckey.$key);
         if (empty($value)) {
             $result = $db->query("SELECT * FROM `#@_option` WHERE `module`=%s AND `code`=%s LIMIT 0,1;",array($module,$code));
             if ($data = $db->fetch($result)) {
                 $value = is_need_unserialize($data['type']) ? unserialize($data['value']) : $data['value'];
                 // 保存到缓存
-                FCache::set($prefix.$key,$value);
+                FCache::set($ckey.$key,$value);
             }
         }
         // 支持多维数组取值

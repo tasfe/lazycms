@@ -21,7 +21,7 @@
 // 加载公共文件
 require dirname(__FILE__).'/admin.php';
 // 取得管理员信息
-$_ADMIN = ModuleUser::current(); 
+$_ADMIN = LCUser::current();
 // 标题
 admin_head('title',  _('Users'));
 admin_head('styles', array('css/user'));
@@ -62,7 +62,7 @@ switch ($action) {
         // 权限检查
 	    current_user_can('user-delete');
         $userid = isset($_GET['userid'])?$_GET['userid']:null;
-        if (ModuleUser::delete_user_by_id($userid)) {
+        if (LCUser::deleteUserById($userid)) {
         	admin_success(_('User deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
         } else {
             admin_error(_('User delete fail.'));
@@ -84,13 +84,13 @@ switch ($action) {
             $desc      = isset($_POST['description'])?$_POST['description']:null;
             $roldes    = isset($_POST['roles'])?$_POST['roles']:array();
             if ($userid) {
-            	$user = ModuleUser::get_user_by_id($userid); $is_exist = true; 
+            	$user = LCUser::getUserById($userid); $is_exist = true;
             	if ($username != $user['name']) {
-            		$is_exist = ModuleUser::get_user_by_name($username)?false:true;
+            		$is_exist = LCUser::getUserByName($username)?false:true;
             	}
             	unset($user);
             } else {
-                $is_exist = ModuleUser::get_user_by_name($username)?false:true;
+                $is_exist = LCUser::getUserByName($username)?false:true;
             }
             // 验证用户名
             $validate->check(array(
@@ -136,13 +136,13 @@ switch ($action) {
                     	   'pass' => md5($password), 'authcode' => '',
                     	));
                     }
-                    ModuleUser::fill_user_info($userid,$user_info);
+                    LCUser::editUser($userid,$user_info);
                     // 保存用户信息
                     admin_success(_('User updated.'),"LazyCMS.redirect('".PHP_FILE."');");
                 } 
                 // 添加
                 else {
-                    ModuleUser::create_user($username,$password,$email,$user_info);
+                    LCUser::addUser($username,$password,$email,$user_info);
                     // 保存用户信息
                     admin_success(_('User created.'),"LazyCMS.redirect('".PHP_FILE."');");
                 }
@@ -161,7 +161,7 @@ switch ($action) {
 	            current_user_can('user-delete');
 	            foreach ($listids as $userid) {
 	                if ($_ADMIN['userid']==$userid) continue;
-	            	ModuleUser::delete_user_by_id($userid);
+	            	LCUser::deleteUserById($userid);
 	            }
 	            admin_success(_('Users deleted.'),"LazyCMS.redirect('".PHP_FILE."');"); 
 	            break;
@@ -170,7 +170,7 @@ switch ($action) {
 	default:
 	    current_user_can('user-list');
 	    admin_head('loadevents','user_list_init');
-	    $admins = ModuleUser::get_adminis();
+	    $admins = LCUser::getAdminis();
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'.__('Add New','user').'</a></h2>';
@@ -246,7 +246,7 @@ function user_manage_page($action) {
     $referer = referer(PHP_FILE);
     $userid  = isset($_GET['userid'])?$_GET['userid']:0;
     if ($action!='add') {
-    	$_USER  = ModuleUser::get_user_by_id($userid);
+    	$_USER  = LCUser::getUserById($userid);
     }
     $username = isset($_USER['name'])?$_USER['name']:null;
     $nickname = isset($_USER['nickname'])?$_USER['nickname']:null;

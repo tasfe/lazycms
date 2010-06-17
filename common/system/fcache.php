@@ -52,7 +52,7 @@ class FCache {
      * @param int $expire 单位秒
      * @return bool
      */
-    function set($key, $data, $expire=0) {
+    function set($key, $data, $expire=0) {return ;
         $hash_file = FCache::file($key);
         $fp = @fopen($hash_file, "wb");
     	if ($fp) {

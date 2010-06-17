@@ -21,7 +21,7 @@
 // 加载公共文件
 require dirname(__FILE__).'/admin.php';
 // 取得管理员信息
-$_ADMIN = ModuleUser::current(); 
+$_ADMIN = LCUser::current();
 // 标题
 admin_head('title',  _('Categories'));
 admin_head('styles', array('css/categories'));
@@ -57,8 +57,8 @@ switch ($action) {
 	    break;
 	// 删除
     case 'delete':
-        $sortid = isset($_GET['sortid'])?$_GET['sortid']:null;
-        if (ModuleSort::delete_sort_by_id($sortid)) {
+        $taxonomyid = isset($_GET['taxonomyid'])?$_GET['taxonomyid']:null;
+        if (LCTaxonomy::deleteTaxonomyById($taxonomyid)) {
         	admin_success(_('Category deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
         } else {
             admin_error(_('Category delete fail.'));
@@ -66,7 +66,7 @@ switch ($action) {
         break;
     // 保存
 	case 'save':
-        $sortid  = isset($_POST['sortid'])?$_POST['sortid']:null;
+        $taxonomyid  = isset($_POST['taxonomyid'])?$_POST['taxonomyid']:0;
 	    $validate = new Validate();
         if ($validate->post()) {
             $parent = isset($_POST['parent'])?$_POST['parent']:'0';
@@ -88,7 +88,7 @@ switch ($action) {
             // 验证通过
             if (!$validate->is_error()) {
                 // 编辑
-                if ($sortid) {
+                if ($taxonomyid) {
                     $info = array(
                         'parent' => esc_html($parent),
                         'name'   => esc_html($name),
@@ -97,7 +97,7 @@ switch ($action) {
                         'list'   => esc_html($list),
                         'page'   => esc_html($page),
                     );
-                    ModuleSort::fill_sort_info($sortid,$info);
+                    LCTaxonomy::editTaxonomy($taxonomyid,$info);
                     // 保存用户信息
                     admin_success(_('Category updated.'),"LazyCMS.redirect('".PHP_FILE."');");
                 } 
@@ -105,8 +105,9 @@ switch ($action) {
                 else {
                     $path   = esc_html($path);
                     $parent = esc_html($parent);
-                    ModuleSort::create_sort($path,$parent,'category',array(
+                    LCTaxonomy::addTaxonomy($parent,'category',array(
                         'name'  => esc_html($name),
+                        'path'  => esc_html($path),
                         'model' => esc_html($type),
                         'list'  => esc_html($list),
                         'page'  => esc_html($page),
@@ -127,8 +128,8 @@ switch ($action) {
 	    switch ($actions) {
 	        // 删除
 	        case 'delete':
-	            foreach ($listids as $sortid) {
-	            	ModuleSort::delete_sort_by_id($sortid);
+	            foreach ($listids as $taxonomyid) {
+	            	LCTaxonomy::deleteTaxonomyById($taxonomyid);
 	            }
 	            admin_success(_('Categories deleted.'),"LazyCMS.redirect('".PHP_FILE."');"); 
 	            break;
@@ -136,7 +137,7 @@ switch ($action) {
 	    break;
     default:
 	    admin_head('loadevents','sort_list_init');
-	    $sorts = ModuleSort::get_sorts_tree();
+	    $sorts = LCTaxonomy::getTaxonomysTree();
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'.__('Add New','sort').'</a></h2>';
@@ -202,18 +203,18 @@ function display_tr_tree($sorts,$n=0) {
     static $func = null; if (!$func) $func = __FUNCTION__; 
     $hl = ''; $space = str_repeat('&mdash; ',$n);
     foreach ($sorts as $sort) {
-        $path = WEB_ROOT.ModuleSystem::format_path($sort['path'],array(
-            'ID'  => $sort['sortid'],
+        $path = WEB_ROOT.format_path($sort['path'],array(
+            'ID'  => $sort['taxonomyid'],
             'PY'  => $sort['name'],
-            'MD5' => $sort['sortid'],
+            'MD5' => $sort['taxonomyid'],
         ));
-        $href    = PHP_FILE.'?action=edit&sortid='.$sort['sortid'];
+        $href    = PHP_FILE.'?action=edit&taxonomyid='.$sort['taxonomyid'];
         $actions = '<span class="create"><a href="javascript:;">'._('Create').'</a> | </span>';
         $actions.= '<span class="edit"><a href="'.$href.'">'._('Edit').'</a> | </span>';
-        $actions.= '<span class="delete"><a href="'.PHP_FILE.'?action=delete&sortid='.$sort['sortid'].'">'._('Delete').'</a></span>';
-        $models  = array(); foreach ($sort['model'] as $code) $models[] = ModuleModel::get_model_by_code($code,'name');
+        $actions.= '<span class="delete"><a href="'.PHP_FILE.'?action=delete&taxonomyid='.$sort['taxonomyid'].'">'._('Delete').'</a></span>';
+        $models  = array(); foreach ($sort['model'] as $code) $models[] = LCModel::getModelByCode($code,'name');
         $hl.= '<tr>';
-        $hl.=   '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$sort['sortid'].'" /></td>';
+        $hl.=   '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$sort['taxonomyid'].'" /></td>';
         $hl.=   '<td><span class="space">'.$space.'</span><strong><a href="'.$href.'">'.$sort['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
         $hl.=   '<td><a href="'.$path.'" target="_blank">'.$path.'</a></td>';
         $hl.=   '<td>'.implode(',',$models).'</td>';
@@ -233,9 +234,9 @@ function display_tr_tree($sorts,$n=0) {
  */
 function category_manage_page($action) {
     $referer = referer(PHP_FILE);
-    $sortid  = isset($_GET['sortid'])?$_GET['sortid']:0;
+    $taxonomyid  = isset($_GET['taxonomyid'])?$_GET['taxonomyid']:0;
     if ($action!='add') {
-    	$_SORT  = ModuleSort::get_sort_by_id($sortid);
+    	$_SORT  = LCTaxonomy::getTaxonomyById($taxonomyid);
     }
     $parent = isset($_SORT['parent'])?$_SORT['parent']:null;
     $name   = isset($_SORT['name'])?$_SORT['name']:null;
@@ -243,7 +244,7 @@ function category_manage_page($action) {
     $model  = isset($_SORT['model'])?$_SORT['model']:array();
     $list   = isset($_SORT['list'])?$_SORT['list']:null;
     $page   = isset($_SORT['page'])?$_SORT['page']:null;
-    $modules = ModuleModel::get_models(1);
+    $modules = LCModel::getModels(1);
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?action=save" method="post" name="sortmanage" id="sortmanage">';
@@ -253,7 +254,7 @@ function category_manage_page($action) {
     echo               '<th><label for="parent">'.__('Parent','sort').'</label></th>';
     echo               '<td><select name="parent" id="parent">';
     echo                   '<option value="0" path="" model="">--- '._('None').' ---</option>';
-    echo                    display_option_tree($sortid,$parent);
+    echo                    display_option_tree($taxonomyid,$parent);
     echo               '</select></td>';
     echo           '</tr>';
     echo           '<tr>';
@@ -306,7 +307,7 @@ function category_manage_page($action) {
     if ($action=='add') {
         echo   '<p class="submit"><button type="submit">'._('Add Category').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'._('Back').'</button></p>';
     } else {
-        echo   '<input type="hidden" name="sortid" value="'.$sortid.'" />';
+        echo   '<input type="hidden" name="taxonomyid" value="'.$taxonomyid.'" />';
         echo   '<p class="submit"><button type="submit">'._('Update Category').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'._('Back').'</button></p>';
     }
     echo   '</form>';
@@ -315,30 +316,30 @@ function category_manage_page($action) {
 /**
  * 显示分类树
  *
- * @param int $sortid   当前分类ID
+ * @param int $taxonomyid   当前分类ID
  * @param int $selected 被选择的分类ID
  * @param int $n
  * @param array $trees
  * @return string
  */
-function display_option_tree($sortid,$selected=0,$n=0,$trees=null) {
+function display_option_tree($taxonomyid,$selected=0,$n=0,$trees=null) {
     static $func = null; if (!$func) $func = __FUNCTION__;
-    if ($trees===null) $trees = ModuleSort::get_sorts_tree();
+    if ($trees===null) $trees = LCTaxonomy::getTaxonomysTree();
     $hl = ''; $space = str_repeat('&nbsp; &nbsp; ',$n);
     foreach ($trees as $tree) {
-        $sel  = $selected==$tree['sortid']?' selected="selected"':null;
-        $path = ModuleSystem::format_path($tree['path'],array(
-            'ID'  => $tree['sortid'],
+        $sel  = $selected==$tree['taxonomyid']?' selected="selected"':null;
+        $path = format_path($tree['path'],array(
+            'ID'  => $tree['taxonomyid'],
             'PY'  => $tree['name'],
-            'MD5' => $tree['sortid'],
+            'MD5' => $tree['taxonomyid'],
         ));
-        if ($sortid==$tree['sortid']) {
+        if ($taxonomyid==$tree['taxonomyid']) {
             $hl.= '<optgroup label="'.$space.'├ '.$tree['name'].'"></optgroup>';
         } else {
-            $hl.= '<option value="'.$tree['sortid'].'"'.$sel.' path="'.$path.'" model="'.implode(',',$tree['model']).'">'.$space.'├ '.$tree['name'].'</option>';
+            $hl.= '<option value="'.$tree['taxonomyid'].'"'.$sel.' path="'.$path.'" model="'.implode(',',$tree['model']).'">'.$space.'├ '.$tree['name'].'</option>';
         }
     	if (isset($tree['subs'])) {
-    		$hl.= $func($sortid,$selected,$n+1,$tree['subs']);
+    		$hl.= $func($taxonomyid,$selected,$n+1,$tree['subs']);
     	}
     }
     return $hl;

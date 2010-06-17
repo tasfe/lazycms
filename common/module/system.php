@@ -20,36 +20,6 @@
  */
 defined('COM_PATH') or die('Restricted access!');
 
-class ModuleSystem {
-    /**
-     * 格式化路径
-     *
-     * @param string $path  %ID,%PY,%MD5 和 strftime() 支持的参数
-     * @param array $data
-     *          array(
-     *              'ID'  => 1,
-     *              'PY'  => '标题',
-     *              'MD5' => '文章ID或者其他任何唯一的值',
-     *          )
-     * @return string
-     */
-    function format_path($path,$data=null) {
-        $py = $id = null; $md5 = '%MD5';
-        if (is_array($data)) {
-        	foreach ($data as $k=>$v) {
-        		if ($k=='PY') {
-        		    $py = pinyin($v);
-        		} elseif ($k=='ID') {
-        		    $id = $v;
-        		} elseif ($k=='MD5') {
-        		    $md5 = strtoupper(md5($path.micro_time(true).$v));
-        		}
-        	}
-        	$path = str_replace(array('%PY','%ID','%MD5'),array($py,$id,$md5),$path);
-        }
-        if ($md5=='%MD5') {
-            $path = str_replace('%MD5',strtoupper(md5($path.micro_time(true))),$path);
-    	}
-        return strftime($path);
-    }
+class LCSystem {
+    
 }

@@ -21,7 +21,7 @@
 // 加载公共文件
 require dirname(__FILE__).'/admin.php';
 // 取得管理员信息
-$_ADMIN = ModuleUser::current(); 
+$_ADMIN = LCUser::current();
 // 标题
 admin_head('title',  _('Models'));
 admin_head('styles', array('css/model'));
@@ -62,7 +62,7 @@ switch ($action) {
         // 权限检查
 	    current_user_can('model-delete');
         $modelid = isset($_GET['modelid'])?$_GET['modelid']:null;
-        if (ModuleModel::delete_model_by_id($modelid)) {
+        if (LCModel::deleteModelById($modelid)) {
         	admin_success(_('Model deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
         } else {
             admin_error(_('Model delete fail.'));
@@ -90,13 +90,13 @@ switch ($action) {
             ));
             
             if ($modelid) {
-            	$model = ModuleModel::get_model_by_id($modelid); $is_exist = true; 
+            	$model = LCModel::getModelById($modelid); $is_exist = true;
             	if ($code != $model['code']) {
-            		$is_exist = ModuleModel::get_model_by_code($code)?false:true;
+            		$is_exist = LCModel::getModelByCode($code)?false:true;
             	}
             	unset($model);
             } else {
-                $is_exist = ModuleModel::get_model_by_code($code)?false:true;
+                $is_exist = LCModel::getModelByCode($code)?false:true;
             }
             
             $validate->check(array(
@@ -124,13 +124,13 @@ switch ($action) {
                 );
                 // 编辑
                 if ($modelid) {
-                    ModuleModel::fill_model($modelid,$info);
+                    LCModel::editModel($modelid,$info);
                     // 保存用户信息
                     admin_success(_('Model updated.'),"LazyCMS.redirect('".PHP_FILE."');");
                 } 
                 // 添加
                 else {
-                    ModuleModel::create_model($info);
+                    LCModel::addModel($info);
                     // 保存用户信息
                     admin_success(_('Model created.'),"LazyCMS.redirect('".PHP_FILE."');");
                 }
@@ -149,14 +149,14 @@ switch ($action) {
 	        case 'delete':
 	            current_user_can('model-delete');
 	            foreach ($listids as $modelid) {
-	            	ModuleModel::delete_model_by_id($modelid);
+	            	LCModel::deleteModelById($modelid);
 	            }
 	            admin_success(_('Models deleted.'),"LazyCMS.redirect('".PHP_FILE."');"); 
 	            break;
 	        // 启用
 	        case 'enabled':
 	            foreach ($listids as $modelid) {
-	            	ModuleModel::fill_model($modelid,array(
+	            	LCModel::editModel($modelid,array(
 	            	  'state' => 0
 	            	));
 	            }
@@ -165,7 +165,7 @@ switch ($action) {
 	        // 禁用
 	        case 'disabled':
 	            foreach ($listids as $modelid) {
-	            	ModuleModel::fill_model($modelid,array(
+	            	LCModel::editModel($modelid,array(
 	            	  'state' => 1
 	            	));
 	            }
@@ -223,7 +223,7 @@ switch ($action) {
 	    $hl.=    '<tr><th><label for="field_n">'.__('Field','model').'</label></th><td><input id="field_n" name="n" type="text" size="30" value="'.$n.'" />';
 	    $hl.=    '<label><input type="checkbox" name="so" value="1"'.($so?' checked="checked"':null).' /> '._('Can search').'</label></td></tr>';
 	    $hl.=    '<tr><th><label for="field_t">'.__('Type','model').'</label></th><td>';
-	    $hl.=        '<select id="field_t" name="t">'; $types = ModuleModel::get_type();
+	    $hl.=        '<select id="field_t" name="t">'; $types = LCModel::getType();
 	    foreach ($types as $type=>$text) {
 	        $selected = $type==$t?' selected="selected"':null;
 	    	$hl.=      '<option value="'.$type.'"'.$selected.'>'.$text.'</option>';
@@ -269,7 +269,7 @@ switch ($action) {
 	default:
 	    current_user_can('model-list');
 	    admin_head('loadevents','model_list_init');
-	    $models = ModuleModel::get_models();
+	    $models = LCModel::getModels();
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'.__('Add New','model').'</a></h2>';
@@ -348,7 +348,7 @@ function model_manage_page($action) {
     $referer = referer(PHP_FILE);
     $modelid  = isset($_GET['modelid'])?$_GET['modelid']:0;
     if ($action!='add') {
-    	$_MODEL = ModuleModel::get_model_by_id($modelid);
+    	$_MODEL = LCModel::getModelById($modelid);
     }
     $ext     = C('CreateFileExt');
     $default = sprintf('%%ID%s',$ext);
@@ -421,7 +421,7 @@ function model_manage_page($action) {
             echo                               '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$i.'" /></td>';
             echo                               '<td><strong class="edit"><a href="#'.$i.'">'.$field['l'].'</a></strong><br/><div class="row-actions">'.$actions.'</div>'.$textarea.'</td>';
             echo                               '<td>'.$field['n'].'</td>';
-            echo                               '<td>'.ModuleModel::get_type($field['t']).'</td>';
+            echo                               '<td>'.LCModel::getType($field['t']).'</td>';
             echo                               '<td>'.(empty($field['d'])?'NULL':$field['d']).'</td>';
             echo                           '</tr>';
         }

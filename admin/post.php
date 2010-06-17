@@ -21,7 +21,7 @@
 // 加载公共文件
 require dirname(__FILE__).'/admin.php';
 // 取得管理员信息
-$_ADMIN = ModuleUser::current(); 
+$_ADMIN = LCUser::current();
 // 标题
 admin_head('title',  _('Posts'));
 admin_head('styles', array('css/post'));
@@ -55,13 +55,15 @@ switch ($action) {
 	    
 	    $validate = new Validate();
         if ($validate->post()) {
-            $mcode   = isset($_POST['model'])?$_POST['model']:null;
-            $model   = ModuleModel::get_model_by_code($mcode);
-            $sortid  = isset($_POST['sortid'])?$_POST['sortid']:0;
-            $title   = isset($_POST['title'])?$_POST['title']:null;
-            $path    = isset($_POST['path'])?$_POST['path']:null;
-            $content = isset($_POST['content'])?$_POST['content']:null;
-            $page    = isset($_POST['page'])?$_POST['page']:null;
+            $mcode    = isset($_POST['model'])?$_POST['model']:null;
+            $model    = LCModel::getModelByCode($mcode,'*','_');
+            $postid   = isset($_POST['postid'])?$_POST['postid']:0;
+            $taxonomyid   = isset($_POST['taxonomyid'])?$_POST['taxonomyid']:0;
+            $title    = isset($_POST['title'])?$_POST['title']:null;
+            $autokeys = isset($_POST['autokeys'])?$_POST['autokeys']:null;
+            $path     = isset($_POST['path'])?$_POST['path']:null;
+            $content  = isset($_POST['content'])?$_POST['content']:null;
+            $page     = isset($_POST['page'])?$_POST['page']:null;
             $keywords = isset($_POST['keywords'])?$_POST['keywords']:null;
             $description = isset($_POST['description'])?$_POST['description']:null;
             
@@ -91,19 +93,47 @@ switch ($action) {
 
             // 验证通过
             if (!$validate->is_error()) {
+                // TODO 判断是否开启自动获取关键词
                 
+                // 获取数据
+                $data = array(
+                    'taxonomyid'  => $taxonomyid,
+                    'model'   => esc_html($mcode),
+                );
+                // 获取模型字段值
+                if ($model['fields']) {
+                    foreach($model['fields'] as $field) {
+                        $data['meta'][trim($field['n'],'_')] = isset($_POST[$field['n']])?$_POST[$field['n']]:null;
+                    }
+                }
+                
+                // 插入
+                if (empty($postid)) {
+                    $path = esc_html($path);
+                    $data['author'] = $_ADMIN['userid'];
+                    $data['passed'] = 0;
+                    $postid = LCPost::addPost($title,$content,$path,$data);
+                }
+                // 更新
+                else {
+                    $data['path']    = esc_html($path);
+                    $data['title']   = $title;
+                    $data['content'] = $content;
+                    
+                }
+                print_r($data);
             }
         }
 	    break;
 	// 获取扩展字段
 	case 'extend-attr':
 	    $mcode  = isset($_GET['model'])?$_GET['model']:null;
-	    $model  = ModuleModel::get_model_by_code($mcode);
+	    $model  = LCModel::getModelByCode($mcode,'*','_');
         $result = $attrs = $sorts = null;
-
-        $sorts.= '<tr class="sortid">';
-        $sorts.=    '<th><label for="sortid">'.__('Parent','post').'</label></th>';
-        $sorts.=    '<td><select name="sortid" id="sortid">';
+        
+        $sorts.= '<tr class="taxonomyid">';
+        $sorts.=    '<th><label for="taxonomyid">'.__('Parent','post').'</label></th>';
+        $sorts.=    '<td><select name="taxonomyid" id="taxonomyid">';
         $sorts.=      '<option value="0" path="" model="">--- '._('None').' ---</option>';
         $sorts.=      display_option_tree($mcode,0);
         $sorts.=    '</select></td>';
@@ -236,14 +266,14 @@ function thead() {
 function post_manage_page($action) {
     $referer = referer(PHP_FILE);
     $postid  = isset($_GET['postid'])?$_GET['postid']:0;
-    $models  = ModuleModel::get_models(1);
+    $models  = LCModel::getModels(1);
     if ($action!='add') {
     	$_DATA = array();
     }
     $ext   = C('CreateFileExt');
     $mcode = isset($_GET['model'])?$_GET['model']:null;
     if ($mcode) {
-    	$model = ModuleModel::get_model_by_code($mcode);
+    	$model = LCModel::getModelByCode($mcode);
     } else {
         $model   = array_pop(array_slice($models,0,1));
     }
@@ -268,9 +298,9 @@ function post_manage_page($action) {
         echo               '</select></td>';
         echo           '</tr>';
     }
-    echo               '<tr class="sortid">';
-    echo                   '<th><label for="sortid">'.__('Parent','post').'</label></th>';
-    echo                   '<td><select name="sortid" id="sortid">';
+    echo               '<tr class="taxonomyid">';
+    echo                   '<th><label for="taxonomyid">'.__('Parent','post').'</label></th>';
+    echo                   '<td><select name="taxonomyid" id="taxonomyid">';
     echo                       '<option value="0" path="" model="">--- '._('None').' ---</option>';
     echo                       display_option_tree($model['code'],0);
     echo                   '</select></td>';
@@ -336,7 +366,7 @@ function post_manage_page($action) {
 /**
  * 显示分类树
  *
- * @param int $sortid
+ * @param int $taxonomyid
  * @param int $selected
  * @param int $n
  * @param array $trees
@@ -344,17 +374,17 @@ function post_manage_page($action) {
  */
 function display_option_tree($model,$selected=0,$n=0,$trees=null) {
     static $func = null; if (!$func) $func = __FUNCTION__;
-    if ($trees===null) $trees = ModuleSort::get_sorts_tree();
+    if ($trees===null) $trees = LCTaxonomy::getTaxonomysTree();
     $hl = ''; $space = str_repeat('&nbsp; &nbsp; ',$n);
     foreach ($trees as $i=>$tree) {
-        $sel  = $selected==$tree['sortid']?' selected="selected"':null;
-        $path = ModuleSystem::format_path($tree['path'],array(
-            'ID'  => $tree['sortid'],
+        $sel  = $selected==$tree['taxonomyid']?' selected="selected"':null;
+        $path = format_path($tree['path'],array(
+            'ID'  => $tree['taxonomyid'],
             'PY'  => $tree['name'],
-            'MD5' => $tree['sortid'],
+            'MD5' => $tree['taxonomyid'],
         ));
         if (in_array($model,$tree['model'])) {
-            $hl.= '<option value="'.$tree['sortid'].'"'.$sel.' path="'.$path.'" model="'.implode(',',$tree['model']).'">'.$space.'├ '.$tree['name'].'</option>';
+            $hl.= '<option value="'.$tree['taxonomyid'].'"'.$sel.' path="'.$path.'" model="'.implode(',',$tree['model']).'">'.$space.'├ '.$tree['name'].'</option>';
         } else {
     	    $hl.= '<optgroup label="'.$space.'├ '.$tree['name'].'"></optgroup>';
         }
