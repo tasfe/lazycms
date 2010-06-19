@@ -293,7 +293,7 @@ function post_manage_page($action) {
         echo               '<th><label for="model">'._x('Model','post').'</label></th>';
         echo               '<td><select name="model" id="model">';
         foreach ($models as $m) {
-        	echo               '<option value="'.$m['code'].'">'.$m['name'].'</option>';
+        	echo               '<option value="'.$m['langcode'].'">'.$m['name'].'</option>';
         }
         echo               '</select></td>';
         echo           '</tr>';

@@ -31,7 +31,7 @@ class LCModel {
      */
     function getModelById($modelid,$field='*',$prefix='') {
         $modelid = intval($modelid);
-        $model = LCModel::getModel($modelid,0,$prefix);
+        $model = LCModel::getModel($modelid,0,null,$prefix);
         if ($field!='*') {
         	return isset($model[$field])?$model[$field]:null;
         }
@@ -46,7 +46,12 @@ class LCModel {
      * @return array|null
      */
     function getModelByCode($code,$field='*',$prefix='') {
-        $model = LCModel::getModel($code,1,$prefix);
+        $language = null;
+        if (($pos=strpos($code,':'))!==false) {
+            $language = mb_substr($code,0,$pos);
+            $code     = mb_substr($code,$pos+1);
+        }
+        $model = LCModel::getModel($code,1,$language,$prefix);
         if ($field!='*') {
         	return isset($model[$field])?$model[$field]:null;
         }
@@ -57,27 +62,34 @@ class LCModel {
      *
      * @param string $param
      * @param int $type
+     * @param string $language  语言
      * @param string $prefix    字段前缀
      * @return array|null
      */
-    function getModel($param,$type=0,$prefix='') {
+    function getModel($param,$type=0,$language=null,$prefix='') {
         $db = get_conn(); if ((int)$type>2) return null;
 	    $ckeys = array('model.modelid.','model.code.');
-        $ckey  = $ckeys[$type];
+        if ($type==1) {
+            $language = $language==null?language():$language;
+            $ckey = sprintf('%s%s.',$ckeys[$type],$language);
+        } else {
+            $ckey = $ckeys[$type];    
+        }
         $value = FCache::get($ckey.$param);
         if (!empty($value)) return $value;
         
         switch($type){
             case 0:
-                $where = sprintf("`modelid`=%s",$db->escape($param));
+                $where = sprintf("WHERE `modelid`=%s",$db->escape($param));
                 break;
             case 1:
-                $where = sprintf("`code`=%s",$db->escape($param));
+                $where = sprintf("WHERE `language`=%s AND `code`=%s",$db->escape($language),$db->escape($param));
                 break;
         }
-	    $rs = $db->query("SELECT * FROM `#@_model` WHERE {$where} LIMIT 0,1;");
+	    $rs = $db->query("SELECT * FROM `#@_model` {$where} LIMIT 0,1;");
 		// 判断是否存在
 		if ($model = $db->fetch($rs)) {
+            $model['langcode'] = sprintf('%s:%s',$model['language'],$model['code']);
 		    $fields = unserialize($model['fields']);
 		    $model['fields'] = array();
 		    if (is_array($fields)) {
@@ -99,9 +111,9 @@ class LCModel {
      * @return unknown
      */
     function getModels($state=null) {
-	    $db = get_conn(); $result = array();
-	    $where = is_null($state)?null:"WHERE `state`='0'";
-	    $rs = $db->query("SELECT * FROM `#@_model` {$where} ORDER BY `modelid` ASC;");
+	    $db = get_conn(); $result = array(); $conditions = array();
+        $where = is_null($state) ? null : sprintf("WHERE `state`=%s",$db->escape($state));
+        $rs = $db->query("SELECT * FROM `#@_model` {$where} ORDER BY `modelid` ASC;");
 	    while ($row = $db->fetch($rs)) {
 	        $result[] = LCModel::getModelById($row['modelid']);
 	    }
@@ -153,7 +165,11 @@ class LCModel {
         if ($model = LCModel::getModelById($modelid)) {
             $ckey = 'model.';
             foreach (array('modelid','code') as $field) {
-                FCache::delete($ckey.$field.'.'.$model[$field]);
+                if ($field=='modelid') {
+                    FCache::delete(sprintf('%s%s.%s',$ckey,$field,$model[$field]));
+                } else {
+                    FCache::delete(sprintf('%s%s.%s.%s',$ckey,$field,$model['language'],$model[$field]));
+                }
             }
         }
         return true;

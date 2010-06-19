@@ -16,21 +16,24 @@ DROP TABLE IF EXISTS `lazy_model`;
 
 CREATE TABLE `lazy_model` (
   `modelid` bigint(20) unsigned NOT NULL auto_increment,
+  `language` varchar(20) NOT NULL default 'en',
   `code` varchar(50) NOT NULL,
   `name` varchar(50) NOT NULL,
   `path` varchar(255) NOT NULL,
   `list` varchar(50) default NULL,
   `page` varchar(50) default NULL,
   `fields` longtext NOT NULL,
-  `state` enum('0','1') NOT NULL default '0',
+  `state` enum('0','1') NOT NULL default '1',
   PRIMARY KEY  (`modelid`),
   KEY `code` (`code`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 /*Data for the table `lazy_model` */
 
-insert  into `lazy_model`(`modelid`,`code`,`name`,`path`,`list`,`page`,`fields`,`state`) values (1,'article','文章','%PY.html','default.html','default.html','a:2:{i:0;s:401:\"l=%E6%9D%A5%E6%BA%90&h=(%E5%BF%85%E9%A1%BB)&n=from&t=select&w=200px&v=IS_EMPTY%7C%E8%BF%99%E4%B8%AA%E5%AD%97%E6%AE%B5%E5%80%BC%E6%98%AF%E7%A9%BA%E7%9A%84%E3%80%82%3B%0ALENGTH_LIMIT%7C%E8%BF%99%E4%B8%AA%E5%AD%97%E6%AE%B5%E5%80%BC%E9%95%BF%E5%BA%A6%E5%BF%85%E9%A1%BB%25d%E8%87%B3%25d%E4%B8%AA%E5%AD%97%E7%AC%A6%E3%80%82%7C1-20%3B%0A&s=%E7%BD%91%E7%BB%9C%0A%E6%9C%AA%E7%9F%A5%0ALukin&d=%E7%BD%91%E7%BB%9C\";i:1;s:178:\"l=%E7%AE%80%E4%BB%8B&h=%28%E5%BF%85%E9%A1%BB%29&n=intro&t=textarea&w=450px&v=IS_EMPTY%7C%E8%BF%99%E4%B8%AA%E5%AD%97%E6%AE%B5%E5%80%BC%E6%98%AF%E7%A9%BA%E7%9A%84%E3%80%82%3B%0A&d=\";}','0');
-insert  into `lazy_model`(`modelid`,`code`,`name`,`path`,`list`,`page`,`fields`,`state`) values (2,'download','下载','%ID.html','default.html','default.html','a:1:{i:0;s:70:\"l=%E8%BD%AF%E4%BB%B6%E5%A4%A7%E5%B0%8F&n=size&t=input&w=200px&c=255&d=\";}','0');
+insert  into `lazy_model`(`modelid`,`language`,`code`,`name`,`path`,`list`,`page`,`fields`,`state`) values (1,'zh-CN','article','文章','%PY.html','default.html','default.html','a:2:{i:0;s:405:\"l=%E6%9D%A5%E6%BA%90&h=%28%E5%BF%85%E9%A1%BB%29&n=from&t=select&w=200px&v=IS_EMPTY%7C%E8%BF%99%E4%B8%AA%E5%AD%97%E6%AE%B5%E5%80%BC%E6%98%AF%E7%A9%BA%E7%9A%84%E3%80%82%3B%0ALENGTH_LIMIT%7C%E8%BF%99%E4%B8%AA%E5%AD%97%E6%AE%B5%E5%80%BC%E9%95%BF%E5%BA%A6%E5%BF%85%E9%A1%BB%25d%E8%87%B3%25d%E4%B8%AA%E5%AD%97%E7%AC%A6%E3%80%82%7C1-20%3B%0A&s=%E7%BD%91%E7%BB%9C%0A%E6%9C%AA%E7%9F%A5%0ALukin&d=%E7%BD%91%E7%BB%9C\";i:1;s:178:\"l=%E7%AE%80%E4%BB%8B&h=%28%E5%BF%85%E9%A1%BB%29&n=intro&t=textarea&w=450px&v=IS_EMPTY%7C%E8%BF%99%E4%B8%AA%E5%AD%97%E6%AE%B5%E5%80%BC%E6%98%AF%E7%A9%BA%E7%9A%84%E3%80%82%3B%0A&d=\";}','1');
+insert  into `lazy_model`(`modelid`,`language`,`code`,`name`,`path`,`list`,`page`,`fields`,`state`) values (2,'zh-CN','download','下载','%ID.html','default.html','default.html','a:1:{i:0;s:70:\"l=%E8%BD%AF%E4%BB%B6%E5%A4%A7%E5%B0%8F&n=size&t=input&w=200px&c=255&d=\";}','1');
+insert  into `lazy_model`(`modelid`,`language`,`code`,`name`,`path`,`list`,`page`,`fields`,`state`) values (4,'en','article','article','%ID.html','default.html','default.html','a:1:{i:0;s:38:\"l=from&n=from&t=input&w=200px&c=255&d=\";}','1');
+insert  into `lazy_model`(`modelid`,`language`,`code`,`name`,`path`,`list`,`page`,`fields`,`state`) values (5,'en','download','download','%ID.html','default.html','default.html','N;','1');
 
 /*Table structure for table `lazy_option` */
 

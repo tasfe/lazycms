@@ -29,7 +29,7 @@ if ($action=='logout') {
     Cookie::delete('authcode');
     redirect('login.php'); exit();
 } else {
-	$language = Cookie::get('language');
+	$language = language();
 }
 
 // 实例化验证类

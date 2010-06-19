@@ -278,8 +278,8 @@ function category_manage_page($action) {
         echo           '<th><label>'._x('Type','sort').'</label></th>';
         echo           '<td>';
         foreach ($modules as $module) {
-            $checked = in_array($module['code'],$model)?' checked="checked"':null;
-        	echo           '<label><input type="checkbox" name="type[]" value="'.$module['code'].'"'.$checked.' /> '.$module['name'].'</label>';
+            $checked = in_array($module['langcode'],$model)?' checked="checked"':null;
+        	echo           '<label><input type="checkbox" name="type[]" value="'.$module['langcode'].'"'.$checked.' /> '.$module['name'].'</label>';
         }
         echo           '</td>';
         echo       '</tr>';

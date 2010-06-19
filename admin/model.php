@@ -75,12 +75,13 @@ switch ($action) {
 	    current_user_can($purview);
 	    $validate = new Validate();
         if ($validate->post()) {
-            $name   = isset($_POST['name'])?$_POST['name']:null;
-            $code   = isset($_POST['code'])?$_POST['code']:null;
-            $path   = isset($_POST['path'])?$_POST['path']:null;
-            $list   = isset($_POST['list'])?$_POST['list']:null;
-            $page   = isset($_POST['page'])?$_POST['page']:null;
-            $fields = isset($_POST['field'])?$_POST['field']:null;
+            $name     = isset($_POST['name'])?$_POST['name']:null;
+            $code     = isset($_POST['code'])?$_POST['code']:null;
+            $path     = isset($_POST['path'])?$_POST['path']:null;
+            $list     = isset($_POST['list'])?$_POST['list']:null;
+            $page     = isset($_POST['page'])?$_POST['page']:null;
+            $fields   = isset($_POST['field'])?$_POST['field']:null;
+            $language = isset($_POST['language'])?$_POST['language']:language();
             
             $validate->check(array(
                 // 模型名不能为空
@@ -92,11 +93,11 @@ switch ($action) {
             if ($modelid) {
             	$model = LCModel::getModelById($modelid); $is_exist = true;
             	if ($code != $model['code']) {
-            		$is_exist = LCModel::getModelByCode($code)?false:true;
+            		$is_exist = LCModel::getModelByCode(sprintf('%s:%s',$language,$code))?false:true;
             	}
             	unset($model);
             } else {
-                $is_exist = LCModel::getModelByCode($code)?false:true;
+                $is_exist = LCModel::getModelByCode(sprintf('%s:%s',$language,$code))?false:true;
             }
             
             $validate->check(array(
@@ -115,12 +116,13 @@ switch ($action) {
             // 验证通过
             if (!$validate->is_error()) {
                 $info = array(
-                    'code'   => esc_html($code),
-                    'name'   => esc_html($name),
-                    'path'   => esc_html($path),
-                    'list'   => esc_html($list),
-                    'page'   => esc_html($page),
-                    'fields' => serialize($fields),
+                    'code'     => esc_html($code),
+                    'name'     => esc_html($name),
+                    'path'     => esc_html($path),
+                    'list'     => esc_html($list),
+                    'page'     => esc_html($page),
+                    'fields'   => serialize($fields),
+                    'language' => esc_html($language),
                 );
                 // 编辑
                 if ($modelid) {
@@ -157,7 +159,7 @@ switch ($action) {
 	        case 'enabled':
 	            foreach ($listids as $modelid) {
 	            	LCModel::editModel($modelid,array(
-	            	  'state' => 0
+	            	  'state' => 1
 	            	));
 	            }
 	            admin_success(__('Models enabled.'),"LazyCMS.redirect('".PHP_FILE."');");
@@ -166,7 +168,7 @@ switch ($action) {
 	        case 'disabled':
 	            foreach ($listids as $modelid) {
 	            	LCModel::editModel($modelid,array(
-	            	  'state' => 1
+	            	  'state' => 0
 	            	));
 	            }
 	            admin_success(__('Models disabled.'),"LazyCMS.redirect('".PHP_FILE."');");
@@ -295,6 +297,7 @@ switch ($action) {
                 echo           '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$model['modelid'].'" /></td>';
                 echo           '<td><strong><a href="'.$href.'">'.$model['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
                 echo           '<td>'.$model['code'].'</td>';
+                echo           '<td>'.code2lang($model['language']).'</td>';
                 echo           '<td>'.$model['state'].'</td>';
                 echo       '</tr>';
             }
@@ -335,6 +338,7 @@ function thead() {
     echo     '<th class="check-column"><input type="checkbox" name="select" value="all" /></th>';
     echo     '<th>'._x('Name','model').'</th>';
     echo     '<th>'._x('Code','model').'</th>';
+    echo     '<th>'._x('Language','model').'</th>';
     echo     '<th>'._x('State','model').'</th>';
     echo '</tr>';
 }
@@ -350,19 +354,27 @@ function model_manage_page($action) {
     if ($action!='add') {
     	$_MODEL = LCModel::getModelById($modelid);
     }
-    $ext     = C('CreateFileExt');
-    $default = sprintf('%%ID%s',$ext);
-    $name    = isset($_MODEL['name'])?$_MODEL['name']:null;
-    $code    = isset($_MODEL['code'])?$_MODEL['code']:null;
-    $path    = isset($_MODEL['path'])?$_MODEL['path']:$default;
-    $list    = isset($_MODEL['list'])?$_MODEL['list']:null;
-    $page    = isset($_MODEL['page'])?$_MODEL['page']:null;
-    $fields  = isset($_MODEL['fields'])?$_MODEL['fields']:null;
+    $ext      = C('CreateFileExt');
+    $default  = sprintf('%%ID%s',$ext);
+    $language = isset($_MODEL['language'])?$_MODEL['language']:language();
+    $name     = isset($_MODEL['name'])?$_MODEL['name']:null;
+    $code     = isset($_MODEL['code'])?$_MODEL['code']:null;
+    $path     = isset($_MODEL['path'])?$_MODEL['path']:$default;
+    $list     = isset($_MODEL['list'])?$_MODEL['list']:null;
+    $page     = isset($_MODEL['page'])?$_MODEL['page']:null;
+    $fields   = isset($_MODEL['fields'])?$_MODEL['fields']:null;
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?action=save" method="post" name="modelmanage" id="modelmanage">';
     echo     '<fieldset>';
     echo       '<table class="form-table">';
+    echo           '<tr>';
+    echo               '<th><label for="language">'._x('Language','model').'</label></th>';
+    echo               '<td><select name="language" id="language">';
+    echo                  '<option value="en"'.($language=='en'?' selected="selected"':null).'>'.__('English').'</option>';
+    echo                   options('@.locale','lang','<option value="#value#"#selected#>#name#</option>',$language);
+    echo               '</select></td>';
+    echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="name">'._x('Name','model').' <span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td><input id="name" name="name" type="text" size="20" value="'.$name.'" /></td>';

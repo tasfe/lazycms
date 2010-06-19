@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-19 13:10+0800\n"
+"POT-Creation-Date: 2010-06-19 14:35+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.cn>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
@@ -51,7 +51,7 @@ msgstr "文章管理"
 #: admin/admin-header-menu.php:40
 #: admin/categories.php:213
 #: admin/model.php:289
-#: admin/model.php:416
+#: admin/model.php:424
 #: admin/user.php:190
 #: admin/user.php:193
 msgid "Edit"
@@ -200,7 +200,7 @@ msgid "Export"
 msgstr "导出模型"
 
 #: admin/admin.php:183
-#: admin/model.php:402
+#: admin/model.php:410
 msgctxt "model"
 msgid "Fields"
 msgstr "字段管理"
@@ -277,7 +277,7 @@ msgstr "添加分类"
 
 #: admin/categories.php:157
 #: admin/model.php:302
-#: admin/model.php:428
+#: admin/model.php:436
 #: admin/post.php:221
 msgid "No record!"
 msgstr "没有记录！"
@@ -299,7 +299,7 @@ msgstr "生成"
 #: admin/categories.php:214
 #: admin/model.php:293
 #: admin/model.php:324
-#: admin/model.php:417
+#: admin/model.php:425
 #: admin/post.php:241
 #: admin/user.php:194
 #: admin/user.php:221
@@ -349,8 +349,8 @@ msgstr "无"
 
 #: admin/categories.php:261
 #: admin/categories.php:265
-#: admin/model.php:367
 #: admin/model.php:375
+#: admin/model.php:383
 #: admin/post.php:309
 #: admin/post.php:320
 #: admin/profile.php:94
@@ -364,19 +364,19 @@ msgid "Category ID"
 msgstr "分类ID"
 
 #: admin/categories.php:268
-#: admin/model.php:378
+#: admin/model.php:386
 #: admin/post.php:323
 msgid "MD5 Value"
 msgstr "MD5值"
 
 #: admin/categories.php:269
-#: admin/model.php:379
+#: admin/model.php:387
 #: admin/post.php:324
 msgid "Pinyin"
 msgstr "拼音"
 
 #: admin/categories.php:288
-#: admin/model.php:383
+#: admin/model.php:391
 msgid "List Template"
 msgstr "列表模板"
 
@@ -387,7 +387,7 @@ msgid "Use model setting"
 msgstr "使用模型设置"
 
 #: admin/categories.php:297
-#: admin/model.php:391
+#: admin/model.php:399
 msgid "Page Template"
 msgstr "内容模板"
 
@@ -397,8 +397,8 @@ msgstr "添加分类"
 
 #: admin/categories.php:308
 #: admin/categories.php:311
-#: admin/model.php:441
-#: admin/model.php:444
+#: admin/model.php:449
+#: admin/model.php:452
 #: admin/post.php:357
 #: admin/post.php:360
 #: admin/user.php:311
@@ -461,6 +461,7 @@ msgid "Default"
 msgstr "默认"
 
 #: admin/login.php:85
+#: admin/model.php:370
 msgid "English"
 msgstr "英语"
 
@@ -612,7 +613,7 @@ msgid "Error Message"
 msgstr "错误信息"
 
 #: admin/model.php:220
-#: admin/model.php:456
+#: admin/model.php:464
 msgctxt "model"
 msgid "Label"
 msgstr "表单文字"
@@ -627,7 +628,7 @@ msgid "Help"
 msgstr "帮助信息"
 
 #: admin/model.php:223
-#: admin/model.php:457
+#: admin/model.php:465
 msgctxt "model"
 msgid "Field"
 msgstr "字段名"
@@ -637,7 +638,7 @@ msgid "Can search"
 msgstr "可以搜索"
 
 #: admin/model.php:225
-#: admin/model.php:458
+#: admin/model.php:466
 msgctxt "model"
 msgid "Type"
 msgstr "输入类型"
@@ -681,7 +682,7 @@ msgid "Length"
 msgstr "长度"
 
 #: admin/model.php:262
-#: admin/model.php:459
+#: admin/model.php:467
 msgctxt "model"
 msgid "Default"
 msgstr "默认值"
@@ -710,13 +711,13 @@ msgid "Disabled"
 msgstr "禁用"
 
 #: admin/model.php:336
-#: admin/model.php:367
+#: admin/model.php:375
 msgctxt "model"
 msgid "Name"
 msgstr "模型名称"
 
 #: admin/model.php:337
-#: admin/model.php:371
+#: admin/model.php:379
 msgctxt "model"
 msgid "Code"
 msgstr "模型标识"
@@ -726,48 +727,53 @@ msgctxt "model"
 msgid "State"
 msgstr "状态"
 
-#: admin/model.php:371
+#: admin/model.php:368
+msgctxt "model"
+msgid "Language"
+msgstr "所属语言"
+
+#: admin/model.php:379
 msgid "(required,only)"
 msgstr "(必填，唯一)"
 
-#: admin/model.php:375
+#: admin/model.php:383
 #: admin/post.php:320
 msgctxt "model"
 msgid "Path"
 msgstr "生成规则"
 
-#: admin/model.php:376
+#: admin/model.php:384
 msgid "List rule"
 msgstr "列表规则"
 
-#: admin/model.php:376
+#: admin/model.php:384
 msgid "Page rule"
 msgstr "单页规则"
 
-#: admin/model.php:377
+#: admin/model.php:385
 #: admin/post.php:322
 msgid "Post ID"
 msgstr "文章ID"
 
-#: admin/model.php:401
+#: admin/model.php:409
 #: admin/post.php:332
 msgid "Click to toggle"
 msgstr "点击切换"
 
-#: admin/model.php:441
+#: admin/model.php:449
 msgid "Add Model"
 msgstr "添加模型"
 
-#: admin/model.php:444
+#: admin/model.php:452
 msgid "Update Model"
 msgstr "更新模型"
 
-#: admin/model.php:468
+#: admin/model.php:476
 msgctxt "field"
 msgid "Delete"
 msgstr "删除字段"
 
-#: admin/model.php:469
+#: admin/model.php:477
 msgctxt "field"
 msgid "Add New"
 msgstr "添加字段"
@@ -783,7 +789,7 @@ msgstr "编辑文章"
 #: admin/post.php:71
 msgctxt "post"
 msgid "The title field is empty."
-msgstr "标题字段为空。"
+msgstr "标题字段不能为空。"
 
 #: admin/post.php:72
 #, php-format
