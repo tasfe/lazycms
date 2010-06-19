@@ -51,14 +51,14 @@ function current_user_can($action,$is_redirect=true) {
     	if (is_ajax()) {
     		// 显示未登录的提示警告
             if (is_accept_json()) {
-        	    echo_json('Alert',_('Restricted access, please contact the administrator.'));
+        	    echo_json('Alert',__('Restricted access, please contact the administrator.'));
             } else {
-                exit(_('Restricted access, please contact the administrator.'));
+                exit(__('Restricted access, please contact the administrator.'));
             }
     	} else {
-    	    admin_head('title',_('Restricted access'));
+    	    admin_head('title',__('Restricted access'));
     	    include ADMIN_PATH.'/admin-header.php';
-    	    echo error_page(_('Restricted access'),_('Restricted access, please contact the administrator.'));
+    	    echo error_page(__('Restricted access'),__('Restricted access, please contact the administrator.'));
     	    include ADMIN_PATH.'/admin-footer.php';
     		exit();
     	}
@@ -165,29 +165,29 @@ function admin_purview($data=null) {
     if (!is_array($data)) $data = array();
     $purview = array(
         'post' => array(
-            '_LABEL_'    => _('Posts'),
-            'categories' => _('Categories'),
-            'post-new'   => __('Add New','post'),
-            'post-list'  => __('List','post'),
-            'post-edit'  => __('Edit','post'),
-            'post-del'   => __('Delete','post'),
+            '_LABEL_'    => __('Posts'),
+            'categories' => __('Categories'),
+            'post-new'   => _x('Add New','post'),
+            'post-list'  => _x('List','post'),
+            'post-edit'  => _x('Edit','post'),
+            'post-del'   => _x('Delete','post'),
         ),
         'model' => array(
-            '_LABEL_'      => _('Models'),
-            'model-list'   => __('List','model'),
-            'model-new'    => __('Add New','model'),
-            'model-edit'   => __('Edit','model'),
-            'model-delete' => __('Delete','model'),
-            'model-import' => __('Import','model'),
-            'model-export' => __('Export','model'),
-            'model-fields' => __('Fields','model'),
+            '_LABEL_'      => __('Models'),
+            'model-list'   => _x('List','model'),
+            'model-new'    => _x('Add New','model'),
+            'model-edit'   => _x('Edit','model'),
+            'model-delete' => _x('Delete','model'),
+            'model-import' => _x('Import','model'),
+            'model-export' => _x('Export','model'),
+            'model-fields' => _x('Fields','model'),
         ),
         'user' => array(
-            '_LABEL_'     => _('Users'),
-            'user-list'   => __('List','user'),
-            'user-new'    => __('Add New','user'),
-            'user-edit'   => __('Edit','user'),
-            'user-delete' => __('Delete','user'),
+            '_LABEL_'     => __('Users'),
+            'user-list'   => _x('List','user'),
+            'user-new'    => _x('Add New','user'),
+            'user-edit'   => _x('Edit','user'),
+            'user-delete' => _x('Delete','user'),
         ),
     );
     $hl = '<div class="role-list">';

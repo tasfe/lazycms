@@ -23,7 +23,7 @@ require dirname(__FILE__).'/admin.php';
 // 取得管理员信息
 $_ADMIN = LCUser::current();
 // 标题
-admin_head('title',  _('Categories'));
+admin_head('title',  __('Categories'));
 admin_head('styles', array('css/categories'));
 admin_head('scripts',array('js/categories'));
 // 动作
@@ -37,7 +37,7 @@ switch ($action) {
     // 添加
     case 'new':
 	    // 重置标题
-	    admin_head('title',_('Add New Category'));
+	    admin_head('title',__('Add New Category'));
 	    // 添加JS事件
 	    admin_head('loadevents','sort_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
@@ -48,7 +48,7 @@ switch ($action) {
     // 编辑
 	case 'edit':
 	    // 重置标题
-	    admin_head('title',_('Edit Category'));
+	    admin_head('title',__('Edit Category'));
 	    // 添加JS事件
 	    admin_head('loadevents','sort_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
@@ -59,9 +59,9 @@ switch ($action) {
     case 'delete':
         $taxonomyid = isset($_GET['taxonomyid'])?$_GET['taxonomyid']:null;
         if (LCTaxonomy::deleteTaxonomyById($taxonomyid)) {
-        	admin_success(_('Category deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
+        	admin_success(__('Category deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
         } else {
-            admin_error(_('Category delete fail.'));
+            admin_error(__('Category delete fail.'));
         }
         break;
     // 保存
@@ -77,12 +77,12 @@ switch ($action) {
             $page   = isset($_POST['page'])?$_POST['page']:null;
 
             $validate->check(array(
-                array('name',VALIDATE_EMPTY,__('The name field is empty.','sort')),
-                array('name',VALIDATE_LENGTH,__('The name field length must be %d-%d characters.','sort'),1,30),
+                array('name',VALIDATE_EMPTY,_x('The name field is empty.','sort')),
+                array('name',VALIDATE_LENGTH,_x('The name field length must be %d-%d characters.','sort'),1,30),
             ));
             
             $validate->check(array(
-                array('path',VALIDATE_EMPTY,__('The path field is empty.','sort')),
+                array('path',VALIDATE_EMPTY,_x('The path field is empty.','sort')),
             ));
 
             // 验证通过
@@ -99,7 +99,7 @@ switch ($action) {
                     );
                     LCTaxonomy::editTaxonomy($taxonomyid,$info);
                     // 保存用户信息
-                    admin_success(_('Category updated.'),"LazyCMS.redirect('".PHP_FILE."');");
+                    admin_success(__('Category updated.'),"LazyCMS.redirect('".PHP_FILE."');");
                 } 
                 // 添加
                 else {
@@ -113,7 +113,7 @@ switch ($action) {
                         'page'  => esc_html($page),
                     ));
                     // 保存用户信息
-                    admin_success(_('Category created.'),"LazyCMS.redirect('".PHP_FILE."');");
+                    admin_success(__('Category created.'),"LazyCMS.redirect('".PHP_FILE."');");
                 }
             }
         }
@@ -123,7 +123,7 @@ switch ($action) {
 	    $actions = isset($_POST['actions'])?$_POST['actions']:null;
 	    $listids = isset($_POST['listids'])?$_POST['listids']:null;
 	    if (empty($listids)) {
-	    	admin_error(_('Did not select any item.'));
+	    	admin_error(__('Did not select any item.'));
 	    }
 	    switch ($actions) {
 	        // 删除
@@ -131,7 +131,7 @@ switch ($action) {
 	            foreach ($listids as $taxonomyid) {
 	            	LCTaxonomy::deleteTaxonomyById($taxonomyid);
 	            }
-	            admin_success(_('Categories deleted.'),"LazyCMS.redirect('".PHP_FILE."');"); 
+	            admin_success(__('Categories deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
 	            break;
 	    }
 	    break;
@@ -140,7 +140,7 @@ switch ($action) {
 	    $sorts = LCTaxonomy::getTaxonomysTree();
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'.__('Add New','sort').'</a></h2>';
+        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'._x('Add New','sort').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?action=bulk" method="post" name="sortlist" id="sortlist">';
         actions();
         echo       '<table class="data-table" cellspacing="0">';
@@ -154,7 +154,7 @@ switch ($action) {
         if ($sorts) {
             echo            display_tr_tree($sorts);
         } else {
-            echo           '<tr><td colspan="5" class="tc">'._('No record!').'</td></tr>';
+            echo           '<tr><td colspan="5" class="tc">'.__('No record!').'</td></tr>';
         }
         echo           '</tbody>';
         echo       '</table>';
@@ -172,11 +172,11 @@ switch ($action) {
 function actions() {
     echo '<div class="actions">';
     echo     '<select name="actions">';
-    echo         '<option value="">'._('Bulk Actions').'</option>';
-    echo         '<option value="create">'._('Create').'</option>';
-    echo         '<option value="delete">'._('Delete').'</option>';
+    echo         '<option value="">'.__('Bulk Actions').'</option>';
+    echo         '<option value="create">'.__('Create').'</option>';
+    echo         '<option value="delete">'.__('Delete').'</option>';
     echo     '</select>';
-    echo     '<button type="button">'._('Apply').'</button>';
+    echo     '<button type="button">'.__('Apply').'</button>';
     echo '</div>';
 }
 /**
@@ -186,10 +186,10 @@ function actions() {
 function thead() {
     echo '<tr>';
     echo     '<th class="check-column"><input type="checkbox" name="select" value="all" /></th>';
-    echo     '<th>'.__('Name','sort').'</th>';
-    echo     '<th>'.__('Path','sort').'</th>';
-    echo     '<th class="w150">'.__('Type','sort').'</th>';
-    echo     '<th class="w50">'.__('Posts','sort').'</th>';
+    echo     '<th>'._x('Name','sort').'</th>';
+    echo     '<th>'._x('Path','sort').'</th>';
+    echo     '<th class="w150">'._x('Type','sort').'</th>';
+    echo     '<th class="w50">'._x('Posts','sort').'</th>';
     echo '</tr>';
 }
 /**
@@ -209,9 +209,9 @@ function display_tr_tree($sorts,$n=0) {
             'MD5' => $sort['taxonomyid'],
         ));
         $href    = PHP_FILE.'?action=edit&taxonomyid='.$sort['taxonomyid'];
-        $actions = '<span class="create"><a href="javascript:;">'._('Create').'</a> | </span>';
-        $actions.= '<span class="edit"><a href="'.$href.'">'._('Edit').'</a> | </span>';
-        $actions.= '<span class="delete"><a href="'.PHP_FILE.'?action=delete&taxonomyid='.$sort['taxonomyid'].'">'._('Delete').'</a></span>';
+        $actions = '<span class="create"><a href="javascript:;">'.__('Create').'</a> | </span>';
+        $actions.= '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a> | </span>';
+        $actions.= '<span class="delete"><a href="'.PHP_FILE.'?action=delete&taxonomyid='.$sort['taxonomyid'].'">'.__('Delete').'</a></span>';
         $models  = array(); foreach ($sort['model'] as $code) $models[] = LCModel::getModelByCode($code,'name');
         $hl.= '<tr>';
         $hl.=   '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$sort['taxonomyid'].'" /></td>';
@@ -251,22 +251,22 @@ function category_manage_page($action) {
     echo     '<fieldset>';
     echo       '<table class="form-table">';
     echo           '<tr>';
-    echo               '<th><label for="parent">'.__('Parent','sort').'</label></th>';
+    echo               '<th><label for="parent">'._x('Parent','sort').'</label></th>';
     echo               '<td><select name="parent" id="parent">';
-    echo                   '<option value="0" path="" model="">--- '._('None').' ---</option>';
+    echo                   '<option value="0" path="" model="">--- '.__('None').' ---</option>';
     echo                    display_option_tree($taxonomyid,$parent);
     echo               '</select></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="name">'.__('Name','sort').' <span class="description">'._('(required)').'</span></label></th>';
+    echo               '<th><label for="name">'._x('Name','sort').' <span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td><input id="name" name="name" type="text" size="30" value="'.$name.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="path">'.__('Path','sort').' <span class="description">'._('(required)').'</span></label></th>';
+    echo               '<th><label for="path">'._x('Path','sort').' <span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td><input id="path" name="path" type="text" size="70" value="'.$path.'" /><div class="rules">';
-    echo                   '<a href="#%ID">['._('Category ID').']</a>';
-    echo                   '<a href="#%MD5">['._('MD5 Value').']</a>';
-    echo                   '<a href="#%PY">['._('Pinyin').']</a>';
+    echo                   '<a href="#%ID">['.__('Category ID').']</a>';
+    echo                   '<a href="#%MD5">['.__('MD5 Value').']</a>';
+    echo                   '<a href="#%PY">['.__('Pinyin').']</a>';
     echo                   '<a href="#%Y">['.strftime('%Y').']</a>';
     echo                   '<a href="#%m">['.strftime('%m').']</a>';
     echo                   '<a href="#%d">['.strftime('%d').']</a>';
@@ -275,7 +275,7 @@ function category_manage_page($action) {
     echo           '</tr>';
     if ($modules) {
         echo       '<tr>';
-        echo           '<th><label>'.__('Type','sort').'</label></th>';
+        echo           '<th><label>'._x('Type','sort').'</label></th>';
         echo           '<td>';
         foreach ($modules as $module) {
             $checked = in_array($module['code'],$model)?' checked="checked"':null;
@@ -285,19 +285,19 @@ function category_manage_page($action) {
         echo       '</tr>';
     }
     echo           '<tr>';
-    echo               '<th><label for="listtemplate">'._('List Template').'</label></th>';
+    echo               '<th><label for="listtemplate">'.__('List Template').'</label></th>';
     echo               '<td>';
     echo                   '<select id="listtemplate" name="list">';
-    echo                       $modules?'<option value="">'._('Use model setting').'</option>':null;
+    echo                       $modules?'<option value="">'.__('Use model setting').'</option>':null;
     echo                       options(C('Template'),C('TemplateExts'),'<option value="#value#"#selected#>#name#</option>',$list);
     echo                   '</select>';
     echo               '</td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="pagetemplate">'._('Page Template').'</label></th>';
+    echo               '<th><label for="pagetemplate">'.__('Page Template').'</label></th>';
     echo               '<td>';
     echo                   '<select id="pagetemplate" name="page">';
-    echo                       $modules?'<option value="">'._('Use model setting').'</option>':null;
+    echo                       $modules?'<option value="">'.__('Use model setting').'</option>':null;
     echo                       options(C('Template'),C('TemplateExts'),'<option value="#value#"#selected#>#name#</option>',$page);
     echo                   '</select>';
     echo               '</td>';
@@ -305,10 +305,10 @@ function category_manage_page($action) {
     echo       '</table>';
     echo     '</fieldset>';
     if ($action=='add') {
-        echo   '<p class="submit"><button type="submit">'._('Add Category').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'._('Back').'</button></p>';
+        echo   '<p class="submit"><button type="submit">'.__('Add Category').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'.__('Back').'</button></p>';
     } else {
         echo   '<input type="hidden" name="taxonomyid" value="'.$taxonomyid.'" />';
-        echo   '<p class="submit"><button type="submit">'._('Update Category').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'._('Back').'</button></p>';
+        echo   '<p class="submit"><button type="submit">'.__('Update Category').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'.__('Back').'</button></p>';
     }
     echo   '</form>';
     echo '</div>';

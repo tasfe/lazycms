@@ -120,7 +120,7 @@ function error_page($title,$content,$is_full=false) {
     $page = '<div id="error-page">';
     $page.= '<div id="error-title"><h1>'.$title.'</h1></div>';
     $page.= '<div id="error-content">'.$content.'</div>';
-    $page.= '<div id="error-buttons"><button type="button" onclick="window.history.back();">'._('Back').'</button></div>';
+    $page.= '<div id="error-buttons"><button type="button" onclick="window.history.back();">'.__('Back').'</button></div>';
     $page.= '</div>';
 
     if ($is_full) {
@@ -187,7 +187,7 @@ function handler_error($errno, $errstr, $errfile, $errline){//E_NOTICE
     ob_end_clean();
 
     if (!is_ajax()) {
-    	$output = error_page(_('System Error'),$output,true);
+    	$output = error_page(__('System Error'),$output,true);
     }
     exit($output);
 }
@@ -232,7 +232,7 @@ function instr($needle,$haystack){
 function redirect($url,$time=0,$msg='') {
 	// 多行URL地址支持
     $url = str_replace(array("\n", "\r"), '', $url);
-    if (empty($msg)) $msg = sprintf(_('<a href="%s">%d seconds after goto %s.</a>'),$url,$time,$url);
+    if (empty($msg)) $msg = sprintf(__('<a href="%s">%d seconds after goto %s.</a>'),$url,$time,$url);
     if (!headers_sent()) header("Content-Type:text/html; charset=utf-8");
     if (is_ajax()) {
         $data = array('Location' => $url);
@@ -250,7 +250,7 @@ function redirect($url,$time=0,$msg='') {
 		$html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 		$html.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
 		$html.= '<meta http-equiv="refresh" content="0;url='.$url.'" />';
-		$html.= '<title>'._('Redirecting...').'</title>';
+		$html.= '<title>'.__('Redirecting...').'</title>';
 		$html.= '<script type="text/javascript" charset="utf-8">self.location.href="'.$url.'";</script>';
 		$html.= '</head><body>';
 		$html.= 0===$time ? null : $msg;
@@ -481,7 +481,7 @@ function options($path,$ext,$html,$selected=null){
     foreach ($dirs as $v) {
         if ($ext=='lang') {
             $v   = basename($v,'.mo');
-            $val = _(code2lang($v));
+            $val = __(code2lang($v));
         } else{
             $val = $v;
         }
@@ -684,58 +684,58 @@ function pinyin($string) {
  */
 function code2lang($code){
     $lang = array(
-        'af'	=> _('Afrikaans'),
-        'sq'	=> _('Albanian'),
-        'ar'	=> _('Arabic'),
-        'be'	=> _('Belarusian'),
-        'bg'	=> _('Bulgarian'),
-        'ca'	=> _('Catalan'),
-        'zh-CN'	=> _('Chinese (Simplified)'),
-        'zh-TW'	=> _('Chinese (Traditional)'),
-        'hr'	=> _('Croatian'),
-        'cs'	=> _('Czech'),
-        'da'	=> _('Danish'),
-        'nl'	=> _('Dutch'),
-        'en'	=> _('English'),
-        'et'	=> _('Estonian'),
-        'tl'	=> _('Filipino'),
-        'fi'	=> _('Finnish'),
-        'fr'	=> _('French'),
-        'gl'	=> _('Galician'),
-        'de'	=> _('German'),
-        'el'	=> _('Greek'),
-        'iw'	=> _('Hebrew'),
-        'hi'	=> _('Hindi'),
-        'hu'	=> _('Hungarian'),
-        'is'	=> _('Icelandic'),
-        'id'	=> _('Indonesian'),
-        'ga'	=> _('Irish'),
-        'it'	=> _('Italian'),
-        'ja'	=> _('Japanese'),
-        'ko'	=> _('Korean'),
-        'lv'	=> _('Latvian'),
-        'lt'	=> _('Lithuanian'),
-        'mk'	=> _('Macedonian'),
-        'ms'	=> _('Malay'),
-        'mt'	=> _('Maltese'),
-        'no'	=> _('Norwegian'),
-        'fa'	=> _('Persian'),
-        'pl'	=> _('Polish'),
-        'pt'	=> _('Portuguese'),
-        'ro'	=> _('Romanian'),
-        'ru'	=> _('Russian'),
-        'sr'	=> _('Serbian'),
-        'sk'	=> _('Slovak'),
-        'sl'	=> _('Slovenian'),
-        'es'	=> _('Spanish'),
-        'sw'	=> _('Swahili'),
-        'sv'	=> _('Swedish'),
-        'th'	=> _('Thai'),
-        'tr'	=> _('Turkish'),
-        'uk'	=> _('Ukrainian'),
-        'vi'	=> _('Vietnamese'),
-        'cy'	=> _('Welsh'),
-        'yi'	=> _('Yiddish'),
+        'af'	=> __('Afrikaans'),
+        'sq'	=> __('Albanian'),
+        'ar'	=> __('Arabic'),
+        'be'	=> __('Belarusian'),
+        'bg'	=> __('Bulgarian'),
+        'ca'	=> __('Catalan'),
+        'zh-CN'	=> __('Chinese (Simplified)'),
+        'zh-TW'	=> __('Chinese (Traditional)'),
+        'hr'	=> __('Croatian'),
+        'cs'	=> __('Czech'),
+        'da'	=> __('Danish'),
+        'nl'	=> __('Dutch'),
+        'en'	=> __('English'),
+        'et'	=> __('Estonian'),
+        'tl'	=> __('Filipino'),
+        'fi'	=> __('Finnish'),
+        'fr'	=> __('French'),
+        'gl'	=> __('Galician'),
+        'de'	=> __('German'),
+        'el'	=> __('Greek'),
+        'iw'	=> __('Hebrew'),
+        'hi'	=> __('Hindi'),
+        'hu'	=> __('Hungarian'),
+        'is'	=> __('Icelandic'),
+        'id'	=> __('Indonesian'),
+        'ga'	=> __('Irish'),
+        'it'	=> __('Italian'),
+        'ja'	=> __('Japanese'),
+        'ko'	=> __('Korean'),
+        'lv'	=> __('Latvian'),
+        'lt'	=> __('Lithuanian'),
+        'mk'	=> __('Macedonian'),
+        'ms'	=> __('Malay'),
+        'mt'	=> __('Maltese'),
+        'no'	=> __('Norwegian'),
+        'fa'	=> __('Persian'),
+        'pl'	=> __('Polish'),
+        'pt'	=> __('Portuguese'),
+        'ro'	=> __('Romanian'),
+        'ru'	=> __('Russian'),
+        'sr'	=> __('Serbian'),
+        'sk'	=> __('Slovak'),
+        'sl'	=> __('Slovenian'),
+        'es'	=> __('Spanish'),
+        'sw'	=> __('Swahili'),
+        'sv'	=> __('Swedish'),
+        'th'	=> __('Thai'),
+        'tr'	=> __('Turkish'),
+        'uk'	=> __('Ukrainian'),
+        'vi'	=> __('Vietnamese'),
+        'cy'	=> __('Welsh'),
+        'yi'	=> __('Yiddish'),
     );
     return isset($lang[$code])?$lang[$code]:$code;
 }
@@ -835,7 +835,7 @@ function C($key,$value=null){
  * @param string $str
  * @return string
  */
-function __($str,$context=null) {
+function _x($str,$context=null) {
 	static $_l10n;
 	if (!is_object($_l10n)) {
 		$language = language();
@@ -866,18 +866,22 @@ function __($str,$context=null) {
 	return $_l10n->translate($str,$context);
 }
 /**
+ *  简写的翻译函数
+ *
+ * @param  $string
+ * @return string
+ */
+function __($string){
+    return _x($string);
+}
+
+/**
  * 输出字符串
  *
  * @param string $str
  */
 function _e($str){
-    echo __($str);
-}
-
-if (!function_exists('_')) {
-    function _($string){
-        return __($string);
-    }
+    echo _x($str);
 }
 
 if (!function_exists('json_encode')) {

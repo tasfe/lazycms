@@ -43,7 +43,7 @@ class LCUser {
         if (!$is_login && $is_redirect) {
         	if (is_ajax()) {
         		// 显示未登录的提示警告
-        		echo_json('Alert',_('You are now logged out, please log in again!'),array('CALL'=>"LazyCMS.redirect('".ADMIN_ROOT."login.php');"));
+        		echo_json('Alert',__('You are now logged out, please log in again!'),array('CALL'=>"LazyCMS.redirect('".ADMIN_ROOT."login.php');"));
         	} else {
         	    redirect(ADMIN_ROOT.'login.php');
         	}

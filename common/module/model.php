@@ -184,15 +184,15 @@ class LCModel {
      */
     function getType($type=null) {
         $types = array(
-            'input'    => _('Input'),                   // 输入框
-            'textarea' => _('Textarea'),                // 文本框
-            'radio'    => _('Radio'),                   // 单选框
-            'checkbox' => _('Checkbox'),                // 复选框
-            'select'   => _('Select'),                  // 下拉菜单
-            'basic'    => _('Basic editor'),            // 简易编辑器
-            'editor'   => _('Adv editor'),              // 内容编辑器
-            'date'     => _('Date'),                    // 日期选择器
-            'upfile'   => _('Upload file'),             // 文件上传框
+            'input'    => __('Input'),                   // 输入框
+            'textarea' => __('Textarea'),                // 文本框
+            'radio'    => __('Radio'),                   // 单选框
+            'checkbox' => __('Checkbox'),                // 复选框
+            'select'   => __('Select'),                  // 下拉菜单
+            'basic'    => __('Basic editor'),            // 简易编辑器
+            'editor'   => __('Adv editor'),              // 内容编辑器
+            'date'     => __('Date'),                    // 日期选择器
+            'upfile'   => __('Upload file'),             // 文件上传框
         );
         return empty($type) ? $types : $types[$type];
     }

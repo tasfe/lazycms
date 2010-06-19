@@ -79,11 +79,11 @@ class Mysql{
         } elseif (function_exists('mysql_connect')) {
             $this->conn = @mysql_connect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,false,CLIENT_MULTI_RESULTS);
         } else {
-            $this->ready = false; trigger_error(_('-_-!! Please open the mysql extension!'),E_USER_ERROR);
+            $this->ready = false; trigger_error(__('-_-!! Please open the mysql extension!'),E_USER_ERROR);
         }
         // 验证连接是否正确
         if (!$this->conn) {
-            $this->ready = false; trigger_error(_('Database connect error, please check the database settings!'),E_USER_ERROR);
+            $this->ready = false; trigger_error(__('Database connect error, please check the database settings!'),E_USER_ERROR);
         }
     }
     /**
@@ -97,7 +97,7 @@ class Mysql{
         if (empty($db)) $db = $this->_name;
         // 选择数据库
         if (!mysql_select_db($db,$this->conn)) {
-            $this->ready = false; trigger_error(sprintf(_('%s database not found!'),$db),E_USER_ERROR);
+            $this->ready = false; trigger_error(sprintf(__('%s database not found!'),$db),E_USER_ERROR);
         }
         // MYSQL数据库的设置
         if (version_compare($this->version(), '4.1', '>=')) {
@@ -106,7 +106,7 @@ class Mysql{
 	            mysql_query("SET sql_mode='';",$this->conn);
 	        }
         } else {
-        	$this->ready = false; trigger_error(_('mysql database version lower than 4.1, please upgrade mysql!'),E_USER_WARNING);
+        	$this->ready = false; trigger_error(__('mysql database version lower than 4.1, please upgrade mysql!'),E_USER_WARNING);
         }
     }
     /**
@@ -136,7 +136,7 @@ class Mysql{
                 $this->close();$this->connect(); $this->select_db();
                 $result = $this->query($sql,$bind,'RETRY'.$type);
             } elseif($type != 'SILENT' && substr($type, 5) != 'SILENT') {
-                trigger_error(sprintf(_('MySQL Query Error:<br/>SQL:%s<br/>%s'),$sql,$this->error()),E_USER_WARNING);
+                trigger_error(sprintf(__('MySQL Query Error:<br/>SQL:%s<br/>%s'),$sql,$this->error()),E_USER_WARNING);
             }
         }
         if ($func=='mysql_unbuffered_query') {

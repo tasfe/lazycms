@@ -38,12 +38,12 @@ if ($action=='save') {
         $desc      = isset($_POST['description'])?$_POST['description']:null;
         // 验证email
         $validate->check(array(
-            array('email',VALIDATE_EMPTY,_('Please enter an e-mail address.')),
-            array('email',VALIDATE_IS_EMAIL,_('The e-mail address isn\'t correct.'))
+            array('email',VALIDATE_EMPTY,__('Please enter an e-mail address.')),
+            array('email',VALIDATE_IS_EMAIL,__('The e-mail address isn\'t correct.'))
         ));
         // 验证密码
         if ($password || $password2) {
-            $validate->check('password1',VALIDATE_EQUAL,_('Please enter the same password in the two password fields.'),'password2');
+            $validate->check('password1',VALIDATE_EQUAL,__('Please enter the same password in the two password fields.'),'password2');
         }
         
         // 验证通过
@@ -62,12 +62,12 @@ if ($action=='save') {
             }
             LCUser::editUser($userid,$user_info);
             // 保存用户信息
-            admin_success(_('User updated.'),"LazyCMS.redirect('".$referer."');");
+            admin_success(__('User updated.'),"LazyCMS.redirect('".$referer."');");
         }
     }
 } else {
     // 标题
-    admin_head('title',_('Profile'));
+    admin_head('title',__('Profile'));
     admin_head('styles', array('css/user'));
     admin_head('scripts',array('js/user'));
     admin_head('loadevents','user_profile_init');
@@ -83,39 +83,39 @@ if ($action=='save') {
     echo     '<fieldset>';
     echo       '<table class="form-table">';
     echo           '<tr>';
-    echo               '<th><label for="username">'._('Username').'</label></th>';
+    echo               '<th><label for="username">'.__('Username').'</label></th>';
     echo               '<td><input id="username" name="username" type="text" size="20" value="'.$username.'" disabled="disabled" /></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="nickname">'._('Nickname').'</label></th>';
+    echo               '<th><label for="nickname">'.__('Nickname').'</label></th>';
     echo               '<td><input id="nickname" name="nickname" type="text" size="20" value="'.$nickname.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="email">'._('E-mail').' <span class="description">'._('(required)').'</span></label></th>';
+    echo               '<th><label for="email">'.__('E-mail').' <span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td><input id="email" name="email" type="text" size="40" value="'.$email.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="url">'._('Website').'</label></th>';
+    echo               '<th><label for="url">'.__('Website').'</label></th>';
     echo               '<td><input id="url" name="url" type="text" size="60" value="'.$url.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="description">'._('Biographical Info').'</label></th>';
+    echo               '<th><label for="description">'.__('Biographical Info').'</label></th>';
     echo               '<td><textarea cols="70" rows="5" id="description" name="description">'.$desc.'</textarea>';
-    echo                   '<br/><span class="description">'._('Share a little biographical information to fill out your profile. This may be shown publicly.').'</span>';
+    echo                   '<br/><span class="description">'.__('Share a little biographical information to fill out your profile. This may be shown publicly.').'</span>';
     echo               '</td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="password1">'._('Password').' <span class="description">'._('(twice)').'</span></label></th>';
+    echo               '<th><label for="password1">'.__('Password').' <span class="description">'.__('(twice)').'</span></label></th>';
     echo               '<td><input id="password1" name="password1" type="password" size="20" />';
-    echo                   '<span class="description">'._('If you would like to change the password type a new one. Otherwise leave this blank.').'</span>';
-    echo                   '<br/><input id="password2" name="password2" type="password" size="20" /> <span class="description">'._('Type your new password again.').'</span>';
+    echo                   '<span class="description">'.__('If you would like to change the password type a new one. Otherwise leave this blank.').'</span>';
+    echo                   '<br/><input id="password2" name="password2" type="password" size="20" /> <span class="description">'.__('Type your new password again.').'</span>';
     echo               '</td>';
     echo           '</tr>';
     echo       '</table>';
     echo     '</fieldset>';
     echo     '<input type="hidden" name="action" value="save" />';
     echo     '<input type="hidden" name="referer" value="'.$referer.'" />';
-    echo     '<p class="submit"><button type="submit">'._('Update Profile').'</button></p>';
+    echo     '<p class="submit"><button type="submit">'.__('Update Profile').'</button></p>';
     echo   '</form>';
     echo '</div>';
     include ADMIN_PATH.'/admin-footer.php';

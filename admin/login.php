@@ -43,12 +43,12 @@ if ($validate->post()) {
     // 验证用户名
     $validate->check(array(
         // 用户名不能为空
-        array('username',VALIDATE_EMPTY,_('The username field is empty.')),
+        array('username',VALIDATE_EMPTY,__('The username field is empty.')),
         // 用户名长度必须是2-30个字符
-        array('username',VALIDATE_LENGTH,_('The username field length must be %d-%d characters.'),2,30)
+        array('username',VALIDATE_LENGTH,__('The username field length must be %d-%d characters.'),2,30)
     ));
     // 验证密码
-    $validate->check('userpass',VALIDATE_EMPTY,_('The password field is empty.'));
+    $validate->check('userpass',VALIDATE_EMPTY,__('The password field is empty.'));
     // 验证通过
     if (!$validate->is_error()) {
         // 提交到数据库验证用户名和密码
@@ -58,7 +58,7 @@ if ($validate->post()) {
             Cookie::set('language',$language,$expire);
             redirect('index.php');
         } else {
-            admin_alert(_('Username or password error!'));
+            admin_alert(__('Username or password error!'));
         }
     }
 } else {
@@ -70,23 +70,23 @@ if ($validate->post()) {
 // 登录页面
 echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 echo '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-echo '<title>LazyCMS '._('Administrator Login').'</title>'; admin_css('css/login'); admin_script('js/login');
+echo '<title>LazyCMS '.__('Administrator Login').'</title>'; admin_css('css/login'); admin_script('js/login');
 echo '<link rel="shortcut icon" href="favicon.ico" />';
 echo '</head><body>';
 echo '<form id="login" name="login" method="post" action="'.sprintf('%s?action=login',PHP_FILE).'">';
-echo '<div class="col1">'.sprintf(_('<p>LazyCMS is a new kind,open source, free content management system.</p><p>Runtime:PHP 4.3.3+、MySQL 4.1+</p><p><a href="%s">Back Home</a></p>'),WEB_ROOT).'</div>';
+echo '<div class="col1">'.sprintf(__('<p>LazyCMS is a new kind,open source, free content management system.</p><p>Runtime:PHP 4.3.3+、MySQL 4.1+</p><p><a href="%s">Back Home</a></p>'),WEB_ROOT).'</div>';
 echo '<dl class="col2">';
-echo '<dt>'._('Administrator Login').'</dt>';
-echo '<dd><label>'._('Username').'</label><br/><input class="username" type="text" name="username" id="username" tabindex="1" /></dd>';
-echo '<dd><label>'._('Password').'</label><br/><input class="password" type="password" name="userpass" id="userpass" tabindex="2" /></dd>';
-echo '<dd><label>'._('Language').'</label><br/>';
+echo '<dt>'.__('Administrator Login').'</dt>';
+echo '<dd><label>'.__('Username').'</label><br/><input class="username" type="text" name="username" id="username" tabindex="1" /></dd>';
+echo '<dd><label>'.__('Password').'</label><br/><input class="password" type="password" name="userpass" id="userpass" tabindex="2" /></dd>';
+echo '<dd><label>'.__('Language').'</label><br/>';
 echo '<select name="language" id="language">';
-echo '<option value="default">'._('Default').'</option>';
-echo '<option value="en"'.($language=='en'?' selected="selected"':null).'>'._('English').'</option>';
+echo '<option value="default">'.__('Default').'</option>';
+echo '<option value="en"'.($language=='en'?' selected="selected"':null).'>'.__('English').'</option>';
 echo options('@.locale','lang','<option value="#value#"#selected#>#name#</option>',$language);
 echo '</select></dd>';
-echo '<dd class="remember"><input name="rememberme" type="checkbox" id="rememberme" value="forever" tabindex="3" /><label for="rememberme">'._('Remember Me').'</label></dd>';
-echo '<dd class="submit"><button type="submit" tabindex="4">'._('Login').'</button></dd>';
+echo '<dd class="remember"><input name="rememberme" type="checkbox" id="rememberme" value="forever" tabindex="3" /><label for="rememberme">'.__('Remember Me').'</label></dd>';
+echo '<dd class="submit"><button type="submit" tabindex="4">'.__('Login').'</button></dd>';
 echo '</dl>';
 echo '</form>';
 echo '</body>';

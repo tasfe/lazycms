@@ -24,7 +24,7 @@ require dirname(__FILE__).'/admin.php';
 // 取得管理员信息
 $_ADMIN = LCUser::current();
 // 设置标题
-admin_head('title',_('Control Panel'));
+admin_head('title',__('Control Panel'));
 // 加载头部
 include ADMIN_PATH.'/admin-header.php';
 // 加载尾部

@@ -23,7 +23,7 @@ require dirname(__FILE__).'/admin.php';
 // 取得管理员信息
 $_ADMIN = LCUser::current();
 // 标题
-admin_head('title',  _('Posts'));
+admin_head('title',  __('Posts'));
 admin_head('styles', array('css/post'));
 admin_head('scripts',array('js/post'));
 // 动作
@@ -34,7 +34,7 @@ switch ($action) {
     case 'new':
 	    current_user_can('post-new');
 	    // 重置标题
-	    admin_head('title',_('Add New Post'));
+	    admin_head('title',__('Add New Post'));
 	    admin_head('loadevents','post_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
 	    post_manage_page('add');	    
@@ -44,7 +44,7 @@ switch ($action) {
 	case 'edit':
 	    current_user_can('post-edit');
 	    // 重置标题
-	    admin_head('title',_('Edit Post'));
+	    admin_head('title',__('Edit Post'));
 	    admin_head('loadevents','post_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
 	    post_manage_page('edit');	    
@@ -68,12 +68,12 @@ switch ($action) {
             $description = isset($_POST['description'])?$_POST['description']:null;
             
             $validate->check(array(
-                array('title',VALIDATE_EMPTY,__('The title field is empty.','post')),
-                array('title',VALIDATE_LENGTH,__('The title field length must be %d-%d characters.','post'),1,255),
+                array('title',VALIDATE_EMPTY,_x('The title field is empty.','post')),
+                array('title',VALIDATE_LENGTH,_x('The title field length must be %d-%d characters.','post'),1,255),
             ));
 
             $validate->check(array(
-                array('path',VALIDATE_EMPTY,__('The path field is empty.','post')),
+                array('path',VALIDATE_EMPTY,_x('The path field is empty.','post')),
             ));
 
             // 验证自定义的字段
@@ -132,9 +132,9 @@ switch ($action) {
         $result = $attrs = $sorts = null;
         
         $sorts.= '<tr class="taxonomyid">';
-        $sorts.=    '<th><label for="taxonomyid">'.__('Parent','post').'</label></th>';
+        $sorts.=    '<th><label for="taxonomyid">'._x('Parent','post').'</label></th>';
         $sorts.=    '<td><select name="taxonomyid" id="taxonomyid">';
-        $sorts.=      '<option value="0" path="" model="">--- '._('None').' ---</option>';
+        $sorts.=      '<option value="0" path="" model="">--- '.__('None').' ---</option>';
         $sorts.=      display_option_tree($mcode,0);
         $sorts.=    '</select></td>';
         $sorts.= '</tr>';
@@ -184,7 +184,7 @@ switch ($action) {
                         $attrs.= '</div>';
                         break;
                     case 'upfile':
-                        $attrs.= '<input id="'.$field['n'].'" name="'.$field['n'].'" type="text" style="width:'.$field['w'].'" />&nbsp;<button type="button">'._('Browse...').'</button>';
+                        $attrs.= '<input id="'.$field['n'].'" name="'.$field['n'].'" type="text" style="width:'.$field['w'].'" />&nbsp;<button type="button">'.__('Browse...').'</button>';
                         break;
                 }
                 
@@ -204,7 +204,7 @@ switch ($action) {
 	    $posts = array();
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'.__('Add New','post').'</a></h2>';
+        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'._x('Add New','post').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?action=bulk" method="post" name="postlist" id="postlist">';
         actions();
         echo       '<table class="data-table" cellspacing="0">';
@@ -218,7 +218,7 @@ switch ($action) {
         if ($posts) {
             
         } else {
-            echo           '<tr><td colspan="6" class="tc">'._('No record!').'</td></tr>';
+            echo           '<tr><td colspan="6" class="tc">'.__('No record!').'</td></tr>';
         }
         echo           '</tbody>';
         echo       '</table>';
@@ -236,11 +236,11 @@ switch ($action) {
 function actions() {
     echo '<div class="actions">';
     echo     '<select name="actions">';
-    echo         '<option value="">'._('Bulk Actions').'</option>';
-    echo         '<option value="Create">'._('Create').'</option>';
-    echo         '<option value="delete">'._('Delete').'</option>';
+    echo         '<option value="">'.__('Bulk Actions').'</option>';
+    echo         '<option value="Create">'.__('Create').'</option>';
+    echo         '<option value="delete">'.__('Delete').'</option>';
     echo     '</select>';
-    echo     '<button type="button">'._('Apply').'</button>';
+    echo     '<button type="button">'.__('Apply').'</button>';
     echo '</div>';
 }
 /**
@@ -250,11 +250,11 @@ function actions() {
 function thead() {
     echo '<tr>';
     echo     '<th class="check-column"><input type="checkbox" name="select" value="all" /></th>';
-    echo     '<th>'.__('Title','post').'</th>';
-    echo     '<th>'.__('Author','post').'</th>';
-    echo     '<th>'.__('Categories','post').'</th>';
-    echo     '<th>'.__('Tags','post').'</th>';
-    echo     '<th>'.__('Date','post').'</th>';
+    echo     '<th>'._x('Title','post').'</th>';
+    echo     '<th>'._x('Author','post').'</th>';
+    echo     '<th>'._x('Categories','post').'</th>';
+    echo     '<th>'._x('Tags','post').'</th>';
+    echo     '<th>'._x('Date','post').'</th>';
     echo '</tr>';
 }
 
@@ -290,7 +290,7 @@ function post_manage_page($action) {
     echo           '<tbody class="fixed-attr">';
     if ($models) {
         echo           '<tr>';
-        echo               '<th><label for="model">'.__('Model','post').'</label></th>';
+        echo               '<th><label for="model">'._x('Model','post').'</label></th>';
         echo               '<td><select name="model" id="model">';
         foreach ($models as $m) {
         	echo               '<option value="'.$m['code'].'">'.$m['name'].'</option>';
@@ -299,29 +299,29 @@ function post_manage_page($action) {
         echo           '</tr>';
     }
     echo               '<tr class="taxonomyid">';
-    echo                   '<th><label for="taxonomyid">'.__('Parent','post').'</label></th>';
+    echo                   '<th><label for="taxonomyid">'._x('Parent','post').'</label></th>';
     echo                   '<td><select name="taxonomyid" id="taxonomyid">';
-    echo                       '<option value="0" path="" model="">--- '._('None').' ---</option>';
+    echo                       '<option value="0" path="" model="">--- '.__('None').' ---</option>';
     echo                       display_option_tree($model['code'],0);
     echo                   '</select></td>';
     echo               '</tr>';
     echo               '<tr>';
-    echo                   '<th><label for="title">'.__('Title','post').' <span class="description">'._('(required)').'</span></label></th>';
+    echo                   '<th><label for="title">'._x('Title','post').' <span class="description">'.__('(required)').'</span></label></th>';
     echo                   '<td>';
     echo                       '<input id="title" name="title" type="text" size="70" value="'.$title.'" />';
-    echo                       '&nbsp;<label><input type="checkbox" value="1" name="autokeys">'._('Auto get keywords').'</label>';
+    echo                       '&nbsp;<label><input type="checkbox" value="1" name="autokeys">'.__('Auto get keywords').'</label>';
     echo                   '</td>';
     echo               '</tr>';
     echo               '<tr>';
-    echo                   '<th><label for="content">'.__('Content','post').'</label></th>';
+    echo                   '<th><label for="content">'._x('Content','post').'</label></th>';
     echo                   '<td><textarea cols="120" rows="15" id="content" name="content">'.$content.'</textarea></td>';
     echo               '</tr>';
     echo               '<tr>';
-    echo                   '<th><label for="path">'.__('Path','model').' <span class="description">'._('(required)').'</span></label></th>';
+    echo                   '<th><label for="path">'._x('Path','model').' <span class="description">'.__('(required)').'</span></label></th>';
     echo                   '<td><input id="path" name="path" type="text" size="70" value="'.$path.'" /> <span class="rules">';
-    echo                       '<a href="#%ID'.$ext.'">['._('Post ID').']</a>';
-    echo                       '<a href="#%MD5'.$ext.'">['._('MD5 Value').']</a>';
-    echo                       '<a href="#%PY'.$ext.'">['._('Pinyin').']</a>';
+    echo                       '<a href="#%ID'.$ext.'">['.__('Post ID').']</a>';
+    echo                       '<a href="#%MD5'.$ext.'">['.__('MD5 Value').']</a>';
+    echo                       '<a href="#%PY'.$ext.'">['.__('Pinyin').']</a>';
     echo                   '</span></td>';
     echo               '</tr>';
     echo           '</tbody>';
@@ -329,35 +329,35 @@ function post_manage_page($action) {
     echo       '</table>';
     echo   '</fieldset>';
     echo   '<fieldset>';
-    echo       '<a href="javascript:;" class="toggle" title="'._('Click to toggle').'"><br/></a>';
-    echo       '<h3>'._('More attribute').'</h3>';
+    echo       '<a href="javascript:;" class="toggle" title="'.__('Click to toggle').'"><br/></a>';
+    echo       '<h3>'.__('More attribute').'</h3>';
     echo       '<table class="form-table">';
     echo           '<tbody class="more-attr">';
     echo               '<tr>';
-    echo                   '<th><label for="pagetemplate">'.__('Page Template','post').'</label></th>';
+    echo                   '<th><label for="pagetemplate">'._x('Page Template','post').'</label></th>';
     echo                   '<td>';
     echo                       '<select id="pagetemplate" name="page">';
-    echo                           $models?'<option value="">'._('Use model setting').'</option>':null;
+    echo                           $models?'<option value="">'.__('Use model setting').'</option>':null;
     echo                           options(C('Template'),C('TemplateExts'),'<option value="#value#"#selected#>#name#</option>',$page);
     echo                       '</select>';
     echo                   '</td>';
     echo               '</tr>';
     echo               '<tr>';
-    echo                   '<th><label for="keywords">'.__('Keywords','post').'</label></th>';
-    echo                   '<td><input type="text" size="70" name="keywords" id="keywords" value="" />&nbsp;<button type="button">'._('Get').'</button></td>';
+    echo                   '<th><label for="keywords">'._x('Keywords','post').'</label></th>';
+    echo                   '<td><input type="text" size="70" name="keywords" id="keywords" value="" />&nbsp;<button type="button">'.__('Get').'</button></td>';
     echo               '</tr>';
     echo               '<tr>';
-    echo                   '<th><label for="description">'.__('Description','post').'</label></th>';
+    echo                   '<th><label for="description">'._x('Description','post').'</label></th>';
     echo                   '<td><textarea cols="70" rows="5" id="description" name="description"></textarea></td>';
     echo               '</tr>';    
     echo           '</tbody>';
     echo       '</table>';
     echo '</fieldset>';
     if ($action=='add') {
-        echo   '<p class="submit"><button type="submit">'._('Add Post').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'._('Back').'</button></p>';
+        echo   '<p class="submit"><button type="submit">'.__('Add Post').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'.__('Back').'</button></p>';
     } else {
         echo   '<input type="hidden" name="postid" value="'.$postid.'" />';
-        echo   '<p class="submit"><button type="submit">'._('Update Post').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'._('Back').'</button></p>';
+        echo   '<p class="submit"><button type="submit">'.__('Update Post').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'.__('Back').'</button></p>';
     }
     echo   '</form>';
     echo '</div>';
