@@ -288,7 +288,7 @@ function category_manage_page($action) {
     echo               '<th><label for="listtemplate">'.__('List Template').'</label></th>';
     echo               '<td>';
     echo                   '<select id="listtemplate" name="list">';
-    echo                       $modules?'<option value="">'.__('Use model setting').'</option>':null;
+    echo                       $modules?'<option value="">'.__('Use the model set').'</option>':null;
     echo                       options(C('Template'),C('TemplateExts'),'<option value="#value#"#selected#>#name#</option>',$list);
     echo                   '</select>';
     echo               '</td>';
@@ -297,7 +297,7 @@ function category_manage_page($action) {
     echo               '<th><label for="pagetemplate">'.__('Page Template').'</label></th>';
     echo               '<td>';
     echo                   '<select id="pagetemplate" name="page">';
-    echo                       $modules?'<option value="">'.__('Use model setting').'</option>':null;
+    echo                       $modules?'<option value="">'.__('Use the model set').'</option>':null;
     echo                       options(C('Template'),C('TemplateExts'),'<option value="#value#"#selected#>#name#</option>',$page);
     echo                   '</select>';
     echo               '</td>';

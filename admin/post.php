@@ -237,7 +237,7 @@ function actions() {
     echo '<div class="actions">';
     echo     '<select name="actions">';
     echo         '<option value="">'.__('Bulk Actions').'</option>';
-    echo         '<option value="Create">'.__('Create').'</option>';
+    echo         '<option value="create">'.__('Create').'</option>';
     echo         '<option value="delete">'.__('Delete').'</option>';
     echo     '</select>';
     echo     '<button type="button">'.__('Apply').'</button>';
@@ -302,7 +302,7 @@ function post_manage_page($action) {
     echo                   '<th><label for="taxonomyid">'._x('Parent','post').'</label></th>';
     echo                   '<td><select name="taxonomyid" id="taxonomyid">';
     echo                       '<option value="0" path="" model="">--- '.__('None').' ---</option>';
-    echo                       display_option_tree($model['code'],0);
+    echo                       display_option_tree($model['langcode'],0);
     echo                   '</select></td>';
     echo               '</tr>';
     echo               '<tr>';
@@ -337,7 +337,7 @@ function post_manage_page($action) {
     echo                   '<th><label for="pagetemplate">'._x('Page Template','post').'</label></th>';
     echo                   '<td>';
     echo                       '<select id="pagetemplate" name="page">';
-    echo                           $models?'<option value="">'.__('Use model setting').'</option>':null;
+    echo                           $models?'<option value="">'.__('Use the model set').'</option>':null;
     echo                           options(C('Template'),C('TemplateExts'),'<option value="#value#"#selected#>#name#</option>',$page);
     echo                       '</select>';
     echo                   '</td>';
@@ -383,6 +383,7 @@ function display_option_tree($model,$selected=0,$n=0,$trees=null) {
             'PY'  => $tree['name'],
             'MD5' => $tree['taxonomyid'],
         ));
+        
         if (in_array($model,$tree['model'])) {
             $hl.= '<option value="'.$tree['taxonomyid'].'"'.$sel.' path="'.$path.'" model="'.implode(',',$tree['model']).'">'.$space.'├ '.$tree['name'].'</option>';
         } else {

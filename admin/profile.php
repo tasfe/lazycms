@@ -106,7 +106,7 @@ if ($action=='save') {
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="password1">'.__('Password').' <span class="description">'.__('(twice)').'</span></label></th>';
-    echo               '<td><input id="password1" name="password1" type="password" size="20" />';
+    echo               '<td><input id="password1" name="password1" type="password" size="20" /> ';
     echo                   '<span class="description">'.__('If you would like to change the password type a new one. Otherwise leave this blank.').'</span>';
     echo                   '<br/><input id="password2" name="password2" type="password" size="20" /> <span class="description">'.__('Type your new password again.').'</span>';
     echo               '</td>';

@@ -25,3 +25,5 @@ define('LANGUAGE','zh-CN');
 define('DSN_CONFIG','mysql://root@localhost/lazy/test');
 // 缓存文件夹
 define('CACHE_PATH',COM_PATH.'/.cache');
+// debug 模式
+define('DEBUG_MODE',true);

@@ -83,7 +83,7 @@ function post_manage_extend_attr(model) {
 		var data = LazyCMS.ajaxResult(r);
 		if (data) {
 			$('tbody.extend-attr',wrap).empty().append(data.attr);
-			$('tr.sortid',wrap).replaceWith(data.sort);
+			$('tr.taxonomyid',wrap).replaceWith(data.sort);
 			LazyCMS.selectEdit();
 		}
     });

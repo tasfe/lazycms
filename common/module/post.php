@@ -33,7 +33,7 @@ class LCPost {
     }
     
     function editPost($postid,$data) {
-
+        print_r($data);
     }
     
 }

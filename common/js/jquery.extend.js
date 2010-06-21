@@ -61,8 +61,8 @@
         if (!this.length) return r;
         if ($.browser.msie) {
             var p = /([^'"= ]+)=('[^']*'|"[^"]*"|[^'" ]+)/g,
-                t = /<[^>]*>/.exec(s)[0],
-                s = this.attr('outerHTML');
+                s = this.attr('outerHTML'),
+                t = /<[^>]*>/.exec(s)[0];
             while (m = p.exec(t)) {
                 r[m[1]] = m[2].replace(/^['"]|['"]$/g, '');
             }

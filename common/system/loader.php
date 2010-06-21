@@ -21,15 +21,28 @@
 defined('COM_PATH') or die('Restricted access!');
 
 class LazyLoader {
-    var $version;
-    var $_groups = array();
+    var $version  = 0;
+    var $language = null;
+    var $_groups  = array();
+    /**
+     * 设置语言
+     *
+     * @param string $language
+     * @return void
+     */
+    function set_language($language = ''){
+        if ($language) {
+            $this->language = $language; $files[] = $language;
+        }
+	}
+
     /**
      * CSS样式依赖关系
      *
      * @return array
      */
     function styles() {
-        return array(
+        $styles = array(
             'reset'  => array(COM_PATH.'/css/reset.css'),
             'icons'  => array(COM_PATH.'/css/icons.css'),
             'common' => array(COM_PATH.'/css/common.css',array('reset','icons')),
@@ -41,6 +54,11 @@ class LazyLoader {
             'model'  => array(ADMIN_PATH.'/css/model.css',array('admin_common')),
             'categories' => array(ADMIN_PATH.'/css/categories.css',array('admin_common')),
         );
+        // 追加语言相关的CSS
+        if ($this->language) {
+            $styles[$this->language] = array(sprintf('%s/css/%s.css',ADMIN_PATH,$this->language),array('admin_common'));
+        }
+        return $styles;
     }
     /**
      * Js依赖关系
@@ -48,7 +66,7 @@ class LazyLoader {
      * @return array
      */
     function scripts(){
-        return array(
+        $scripts = array(
             'jquery'        => array(COM_PATH.'/js/jquery.js'),
             'jquery.extend' => array(COM_PATH.'/js/jquery.extend.js'),
             'common'        => array(COM_PATH.'/js/lazycms.js',array('jquery','jquery.extend'),array(
@@ -84,6 +102,11 @@ class LazyLoader {
             'categories'    => array(ADMIN_PATH.'/js/categories.js',array('admin')),
             'post'          => array(ADMIN_PATH.'/js/post.js',array('admin')),
         );
+        // 追加语言相关的JS
+        if ($this->language) {
+            $scripts[$this->language] = array(sprintf('%s/js/%s.js',ADMIN_PATH,$this->language),array('admin'));
+        }
+        return $scripts;
     }
     /**
      * 取得版本号
@@ -125,11 +148,12 @@ class LazyLoader {
         } else {
             $files[$file] = $this->_get_dependence_files($file,$jsL10n);
         }
-
+        
         $is_exist = array();
         foreach ($files as $group => $src) {
             $arr_src = array();
             foreach ($src as $k=>$v) {
+                if (empty($v)) continue;
                 if (!isset($is_exist[$k])) {
                 	$arr_src[]    = $k;
                 	$is_exist[$k] = 1;
@@ -169,11 +193,15 @@ class LazyLoader {
     function loads($files){
         return $this->get_dependence_files($files);
     }
+    function get_files() {
+        return $this->_groups;
+    }
 }
 
 class StylesLoader extends LazyLoader {
 
-    function __construct($str = ''){
+    function __construct($language = ''){
+        $this->set_language($language);
 		$this->_groups = $this->styles();
 	}
 
@@ -185,7 +213,8 @@ class StylesLoader extends LazyLoader {
 
 class ScriptsLoader extends LazyLoader {
 
-    function __construct($str = ''){
+    function __construct($language = ''){
+        $this->set_language($language);
 		$this->_groups = $this->scripts();
 	}
 

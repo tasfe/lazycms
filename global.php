@@ -38,6 +38,12 @@ require COM_PATH.'/config.php';
 // 加载系统定义文件
 require COM_PATH."/defines.php";
 
+// debug模式
+if (DEBUG_MODE) {
+    // 加载FirePHP类
+    require COM_PATH.'/system/firephp.php';
+}
+
 // 加载系统函数库
 require COM_PATH.'/functions.php';
 
@@ -46,14 +52,15 @@ require COM_PATH.'/system/cookie.php';
 // 加载验证处理类
 require COM_PATH.'/system/validate.php';
 // 加载缓存类
-require COM_PATH . '/system/fcache.php';
+require COM_PATH.'/system/fcache.php';
+
 
 // 定义处理错误的函数
 set_error_handler('handler_error');
 
 // 处理来自用户的数据，包括Cookie
 if (get_magic_quotes_gpc()) {
-    $args = array(& $_GET, & $_POST, & $_COOKIE, & $_REQUEST);
+    $args = array(& $_GET, & $_POST, & $_COOKIE, & $_FILES, & $_REQUEST);
     while (list($k,$v) = each($args)) {
         $args[$k] = stripslashes_deep($args[$k]);
     }
@@ -61,4 +68,4 @@ if (get_magic_quotes_gpc()) {
 }
 
 // 删除没用的全局数组
-unset($_ENV,$HTTP_ENV_VARS,$HTTP_POST_VARS,$HTTP_GET_VARS,$HTTP_POST_FILES,$HTTP_COOKIE_VARS);
+unset($_ENV,$HTTP_ENV_VARS,$HTTP_SERVER_VARS,$HTTP_SESSION_VARS,$HTTP_POST_VARS,$HTTP_GET_VARS,$HTTP_POST_FILES,$HTTP_COOKIE_VARS);

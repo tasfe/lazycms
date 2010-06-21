@@ -31,10 +31,12 @@ require ADMIN_PATH.'/admin.php'; error_reporting(0);
 require_file(COM_PATH.'/system/loader.php');
 // 获取相关变量
 $type = isset($_GET['type'])?$_GET['type']:null;
+$lang = isset($_GET['lang'])?$_GET['lang']:null;
+$lang = preg_replace( '/[^a-z0-9,_-]+/i', '', $lang );
 $load = isset($_GET['load'])?$_GET['load']:null;
 $load = preg_replace( '/[^a-z0-9,_-]+/i', '', $load );
 $load = explode(',', $load);
-if ( empty($load) ) exit;
+if ( empty($load) ) exit; $load[] = $lang;
 
 // 缓存日期，默认365天
 $expire = 31536000;
@@ -49,7 +51,7 @@ switch ($type) {
 	case 'css':
 		header('Content-Type: text/css');
 		// 实例化loader类
-        $loader = new StylesLoader();
+        $loader = new StylesLoader($lang);
         $loads  = $loader->loads($load);
         foreach ($load as $css) {
         	if (isset($loads[$css])) {
@@ -69,7 +71,7 @@ switch ($type) {
     case 'js':
 		header('Content-Type: application/x-javascript; charset=utf-8');
 		// 实例化loader类
-        $loader = new ScriptsLoader();
+        $loader = new ScriptsLoader($lang);
         $loads  = $loader->loads($load);
         foreach ($load as $js) {
             if (isset($loads[$js])) {

@@ -220,10 +220,10 @@ switch ($action) {
 	    $hl.= '<form id="model-field-table">';
 	    $hl.= '<table class="model-field-table">';
 	    $hl.=    '<tr><th><label for="field_l">'._x('Label','model').'</label></th><td><input id="field_l" name="l" type="text" size="35" value="'.$l.'" />';
-	    $hl.=    '<label><input type="checkbox" id="field_is_help"'.($h?' checked="checked"':null).' /> '.__('Need help').'</label></td></tr>';
+	    $hl.=    '<label for="field_is_help"><input type="checkbox" id="field_is_help"'.($h?' checked="checked"':null).' /> '.__('Need help').'</label></td></tr>';
 	    $hl.=    '<tr id="field_help" class="hide"><th class="vt"><label for="field_h">'._x('Help','model').'</label></th><td><textarea name="h" id="field_h" rows="2" cols="45">'.$h.'</textarea></td></tr>';
 	    $hl.=    '<tr><th><label for="field_n">'._x('Field','model').'</label></th><td><input id="field_n" name="n" type="text" size="30" value="'.$n.'" />';
-	    $hl.=    '<label><input type="checkbox" name="so" value="1"'.($so?' checked="checked"':null).' /> '.__('Can search').'</label></td></tr>';
+	    $hl.=    '<label for="can_search"><input type="checkbox" id="can_search" name="so" value="1"'.($so?' checked="checked"':null).' /> '.__('Can search').'</label></td></tr>';
 	    $hl.=    '<tr><th><label for="field_t">'._x('Type','model').'</label></th><td>';
 	    $hl.=        '<select id="field_t" name="t">'; $types = LCModel::getType();
 	    foreach ($types as $type=>$text) {
@@ -236,7 +236,7 @@ switch ($action) {
             $hl.=      '<option value="'.($i*50).'px">'.($i*50).'px</option>';
         }
 	    $hl.=        '</select>';
-	    $hl.=        '<label><input type="checkbox" id="field_is_verify"'.($v?' checked="checked"':null).' /> '.__('Need verify').'</label>';
+	    $hl.=        '<label for="field_is_verify"><input type="checkbox" id="field_is_verify"'.($v?' checked="checked"':null).' /> '.__('Need to verify').'</label>';
 	    $hl.=    '</td></tr>';
 	    $hl.=    '<tr id="field_verify" class="hide">';
 	    $hl.=        '<th class="vt"><label for="field_sv">'.__('Verify rule').'</label></th>';

@@ -310,8 +310,8 @@ var LazyCMS = window.LazyCMS = window.CMS = {
         // 设置默认名称
         opts.name = opts.name?'lazy_dialog_' + opts.name:'lazy_dialog';
         // 定义弹出层对象
-        var dialog = $('<div class="' + opts.className + ' window" dialog="' + opts.name + '" style="display:none;"><h1>Loading...</h1><div class="wrapper">Loading...</div></div>').css({position:'fixed'});
-        var target = $('div[dialog=' + opts.name + ']',body);
+        var dialog = $('<div class="' + opts.name + ' ' + opts.className + ' window" style="display:none;"><h1>Loading...</h1><div class="wrapper">Loading...</div></div>').css({position:'fixed'});
+        var target = $('div.' + opts.name,body);
             if (target.is('div')) {
                 dialog = target;
             } else {
@@ -410,7 +410,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
      */
     removeDialog: function(name){
         var dialog = $.data(document,name);
-            dialog = dialog ? dialog : $('[dialog=lazy_dialog_' + name + ']');
+            dialog = dialog ? dialog : $('.lazy_dialog_' + name);
             dialog.remove(); LazyCMS.removeMask();
     },
     /**

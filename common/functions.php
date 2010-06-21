@@ -75,7 +75,8 @@ function format_path($path,$data=null) {
 /**
  * 取得数据库连接对象
  *
- * @param string $DSN	DSN format: mysql://root:123456@localhost:3306/lazy/lazycms
+ * @param string $DSN	    DSN format: mysql://root:123456@localhost:3306/lazy/lazycms
+ * @param bool   $pconnect  是否使用长连接，默认不使用
  * @return object
  */
 function get_conn($DSN=null,$pconnect=false){
@@ -83,10 +84,11 @@ function get_conn($DSN=null,$pconnect=false){
     if (is_null($DSN)) { $DSN = DSN_CONFIG; } $dsn = md5($DSN);
     if (isset($_db[$dsn]) && is_object($_db[$dsn])) return $_db[$dsn];
     if ($config = parse_dsn($DSN)) {
+        $config['mode'] = $pconnect;
         require_file(COM_PATH.'/system/mysql.php');
     	$_db[$dsn] = new Mysql();
     	$_db[$dsn]->config($config);
-        $_db[$dsn]->connect($pconnect);
+        $_db[$dsn]->connect();
         $_db[$dsn]->select_db();
         if ($_db[$dsn]->ready) {
         	return $_db[$dsn];
@@ -746,6 +748,7 @@ function code2lang($code){
  */
 function language() {
     $ck_lang = Cookie::get('language');
+    $ck_lang = preg_replace( '/[^a-z0-9,_-]+/i', '', $ck_lang );
 	return $ck_lang && $ck_lang!='default' ? $ck_lang : LANGUAGE;
 }
 /**
@@ -1125,4 +1128,9 @@ function micro_time($get_as_float=false){
         return ((float)$usec + (float)$sec);
     }
     return microtime($get_as_float);
+}
+
+// 兼容 FirePHP 输出函数
+if (!function_exists('fb')) {
+    function fb(){ }
 }
