@@ -72,9 +72,7 @@ switch ($action) {
             $parent = isset($_POST['parent'])?$_POST['parent']:'0';
             $name   = isset($_POST['name'])?$_POST['name']:null;
             $path   = isset($_POST['path'])?$_POST['path']:null;
-            $type   = isset($_POST['type'])?$_POST['type']:array();
             $list   = isset($_POST['list'])?$_POST['list']:null;
-            $page   = isset($_POST['page'])?$_POST['page']:null;
 
             $validate->check(array(
                 array('name',VALIDATE_EMPTY,_x('The name field is empty.','sort')),
@@ -93,9 +91,7 @@ switch ($action) {
                         'parent' => esc_html($parent),
                         'name'   => esc_html($name),
                         'path'   => esc_html($path),
-                        'model'  => esc_html($type),
                         'list'   => esc_html($list),
-                        'page'   => esc_html($page),
                     );
                     LCTaxonomy::editTaxonomy($taxonomyid,$info);
                     // 保存用户信息
@@ -108,9 +104,7 @@ switch ($action) {
                     LCTaxonomy::addTaxonomy($parent,'category',array(
                         'name'  => esc_html($name),
                         'path'  => esc_html($path),
-                        'model' => esc_html($type),
                         'list'  => esc_html($list),
-                        'page'  => esc_html($page),
                     ));
                     // 保存用户信息
                     admin_success(__('Category created.'),"LazyCMS.redirect('".PHP_FILE."');");
@@ -188,7 +182,6 @@ function thead() {
     echo     '<th class="check-column"><input type="checkbox" name="select" value="all" /></th>';
     echo     '<th>'._x('Name','sort').'</th>';
     echo     '<th>'._x('Path','sort').'</th>';
-    echo     '<th class="w150">'._x('Type','sort').'</th>';
     echo     '<th class="w50">'._x('Posts','sort').'</th>';
     echo '</tr>';
 }
@@ -212,12 +205,10 @@ function display_tr_tree($sorts,$n=0) {
         $actions = '<span class="create"><a href="javascript:;">'.__('Create').'</a> | </span>';
         $actions.= '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a> | </span>';
         $actions.= '<span class="delete"><a href="'.PHP_FILE.'?action=delete&taxonomyid='.$sort['taxonomyid'].'">'.__('Delete').'</a></span>';
-        $models  = array(); foreach ($sort['model'] as $code) $models[] = LCModel::getModelByCode($code,'name');
         $hl.= '<tr>';
         $hl.=   '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$sort['taxonomyid'].'" /></td>';
         $hl.=   '<td><span class="space">'.$space.'</span><strong><a href="'.$href.'">'.$sort['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
         $hl.=   '<td><a href="'.$path.'" target="_blank">'.$path.'</a></td>';
-        $hl.=   '<td>'.implode(',',$models).'</td>';
         $hl.=   '<td>'.$sort['count'].'</td>';
         $hl.= '</tr>';
         if (isset($sort['subs'])) {
@@ -238,12 +229,11 @@ function category_manage_page($action) {
     if ($action!='add') {
     	$_SORT  = LCTaxonomy::getTaxonomyById($taxonomyid);
     }
-    $parent = isset($_SORT['parent'])?$_SORT['parent']:null;
-    $name   = isset($_SORT['name'])?$_SORT['name']:null;
-    $path   = isset($_SORT['path'])?$_SORT['path']:null;
-    $model  = isset($_SORT['model'])?$_SORT['model']:array();
-    $list   = isset($_SORT['list'])?$_SORT['list']:null;
-    $page   = isset($_SORT['page'])?$_SORT['page']:null;
+    $parent  = isset($_SORT['parent'])?$_SORT['parent']:null;
+    $name    = isset($_SORT['name'])?$_SORT['name']:null;
+    $path    = isset($_SORT['path'])?$_SORT['path']:null;
+    $list    = isset($_SORT['list'])?$_SORT['list']:null;
+    $page    = isset($_SORT['page'])?$_SORT['page']:null;
     $modules = LCModel::getModels(1);
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
@@ -254,7 +244,7 @@ function category_manage_page($action) {
     echo               '<th><label for="parent">'._x('Parent','sort').'</label></th>';
     echo               '<td><select name="parent" id="parent">';
     echo                   '<option value="0" path="" model="">--- '.__('None').' ---</option>';
-    echo                    display_option_tree($taxonomyid,$parent);
+    echo                    options_tree($taxonomyid,$parent);
     echo               '</select></td>';
     echo           '</tr>';
     echo           '<tr>';
@@ -273,32 +263,12 @@ function category_manage_page($action) {
     echo                   '<a href="#%a">['.strftime('%a').']</a>';
     echo               '</div></td>';
     echo           '</tr>';
-    if ($modules) {
-        echo       '<tr>';
-        echo           '<th><label>'._x('Type','sort').'</label></th>';
-        echo           '<td>';
-        foreach ($modules as $module) {
-            $checked = in_array($module['langcode'],$model)?' checked="checked"':null;
-        	echo           '<label><input type="checkbox" name="type[]" value="'.$module['langcode'].'"'.$checked.' /> '.$module['name'].'</label>';
-        }
-        echo           '</td>';
-        echo       '</tr>';
-    }
     echo           '<tr>';
     echo               '<th><label for="listtemplate">'.__('List Template').'</label></th>';
     echo               '<td>';
     echo                   '<select id="listtemplate" name="list">';
     echo                       $modules?'<option value="">'.__('Use the model set').'</option>':null;
     echo                       options(C('Template'),C('TemplateExts'),'<option value="#value#"#selected#>#name#</option>',$list);
-    echo                   '</select>';
-    echo               '</td>';
-    echo           '</tr>';
-    echo           '<tr>';
-    echo               '<th><label for="pagetemplate">'.__('Page Template').'</label></th>';
-    echo               '<td>';
-    echo                   '<select id="pagetemplate" name="page">';
-    echo                       $modules?'<option value="">'.__('Use the model set').'</option>':null;
-    echo                       options(C('Template'),C('TemplateExts'),'<option value="#value#"#selected#>#name#</option>',$page);
     echo                   '</select>';
     echo               '</td>';
     echo           '</tr>';
@@ -322,7 +292,7 @@ function category_manage_page($action) {
  * @param array $trees
  * @return string
  */
-function display_option_tree($taxonomyid,$selected=0,$n=0,$trees=null) {
+function options_tree($taxonomyid,$selected=0,$n=0,$trees=null) {
     static $func = null; if (!$func) $func = __FUNCTION__;
     if ($trees===null) $trees = LCTaxonomy::getTaxonomysTree();
     $hl = ''; $space = str_repeat('&nbsp; &nbsp; ',$n);
@@ -336,7 +306,7 @@ function display_option_tree($taxonomyid,$selected=0,$n=0,$trees=null) {
         if ($taxonomyid==$tree['taxonomyid']) {
             $hl.= '<optgroup label="'.$space.'├ '.$tree['name'].'"></optgroup>';
         } else {
-            $hl.= '<option value="'.$tree['taxonomyid'].'"'.$sel.' path="'.$path.'" model="'.implode(',',$tree['model']).'">'.$space.'├ '.$tree['name'].'</option>';
+            $hl.= '<option value="'.$tree['taxonomyid'].'"'.$sel.' path="'.$path.'">'.$space.'├ '.$tree['name'].'</option>';
         }
     	if (isset($tree['subs'])) {
     		$hl.= $func($taxonomyid,$selected,$n+1,$tree['subs']);

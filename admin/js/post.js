@@ -82,8 +82,7 @@ function post_manage_extend_attr(model) {
     $.getJSON(LazyCMS.ADMIN_ROOT+'post.php',{action:'extend-attr',model:model},function(r){
 		var data = LazyCMS.ajaxResult(r);
 		if (data) {
-			$('tbody.extend-attr',wrap).empty().append(data.attr);
-			$('tr.taxonomyid',wrap).replaceWith(data.sort);
+			$('tbody.extend-attr',wrap).html(data);
 			LazyCMS.selectEdit();
 		}
     });

@@ -32,6 +32,7 @@ $action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
 switch ($action) {
     // 添加
     case 'new':
+        //fb(LCPost::getPostById(1));
 	    current_user_can('post-new');
 	    // 重置标题
 	    admin_head('title',__('Add New Post'));
@@ -58,7 +59,7 @@ switch ($action) {
             $mcode    = isset($_POST['model'])?$_POST['model']:null;
             $model    = LCModel::getModelByCode($mcode,'*','_');
             $postid   = isset($_POST['postid'])?$_POST['postid']:0;
-            $taxonomyid   = isset($_POST['taxonomyid'])?$_POST['taxonomyid']:0;
+            $category = isset($_POST['category'])?$_POST['category']:array();
             $title    = isset($_POST['title'])?$_POST['title']:null;
             $autokeys = isset($_POST['autokeys'])?$_POST['autokeys']:null;
             $path     = isset($_POST['path'])?$_POST['path']:null;
@@ -97,8 +98,8 @@ switch ($action) {
                 
                 // 获取数据
                 $data = array(
-                    'taxonomyid'  => $taxonomyid,
-                    'model'   => esc_html($mcode),
+                    'category' => $category,
+                    'model'    => esc_html($mcode),
                 );
                 // 获取模型字段值
                 if ($model['fields']) {
@@ -112,7 +113,9 @@ switch ($action) {
                     $path = esc_html($path);
                     $data['author'] = $_ADMIN['userid'];
                     $data['passed'] = 0;
-                    $postid = LCPost::addPost($title,$content,$path,$data);
+                    if ($post = LCPost::addPost($title,$content,$path,$data)) {
+                        $postid = $post['postid'];
+                    }
                 }
                 // 更新
                 else {
@@ -121,7 +124,6 @@ switch ($action) {
                     $data['content'] = $content;
                     
                 }
-                print_r($data);
             }
         }
 	    break;
@@ -129,15 +131,8 @@ switch ($action) {
 	case 'extend-attr':
 	    $mcode  = isset($_GET['model'])?$_GET['model']:null;
 	    $model  = LCModel::getModelByCode($mcode,'*','_');
-        $result = $attrs = $sorts = null;
-        
-        $sorts.= '<tr class="taxonomyid">';
-        $sorts.=    '<th><label for="taxonomyid">'._x('Parent','post').'</label></th>';
-        $sorts.=    '<td><select name="taxonomyid" id="taxonomyid">';
-        $sorts.=      '<option value="0" path="" model="">--- '.__('None').' ---</option>';
-        $sorts.=      display_option_tree($mcode,0);
-        $sorts.=    '</select></td>';
-        $sorts.= '</tr>';
+        $attrs = null;
+
 	    if ($model) {
 	    	foreach ($model['fields'] as $field) {
 	    		$attrs.= '<tr>';
@@ -192,11 +187,7 @@ switch ($action) {
                 $attrs.= '</tr>';
 	    	}
 	    }
-        $result = array(
-            'sort' => $sorts,
-            'attr' => $attrs
-        );
-        echo_json('Return',$result);
+        echo_json('Return',$attrs);
 	    break;
     default:
 	    current_user_can('post-list');
@@ -299,11 +290,10 @@ function post_manage_page($action) {
         echo           '</tr>';
     }
     echo               '<tr class="taxonomyid">';
-    echo                   '<th><label for="taxonomyid">'._x('Parent','post').'</label></th>';
-    echo                   '<td><select name="taxonomyid" id="taxonomyid">';
-    echo                       '<option value="0" path="" model="">--- '.__('None').' ---</option>';
-    echo                       display_option_tree($model['langcode'],0);
-    echo                   '</select></td>';
+    echo                   '<th><label for="taxonomyid">'._x('Categories','post').'</label></th>';
+    echo                   '<td>';
+    echo                       categories_tree();
+    echo                   '</td>';
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="title">'._x('Title','post').' <span class="description">'.__('(required)').'</span></label></th>';
@@ -366,32 +356,22 @@ function post_manage_page($action) {
 /**
  * 显示分类树
  *
- * @param int $taxonomyid
  * @param int $selected
- * @param int $n
- * @param array $trees
+ * @param  $trees
  * @return string
  */
-function display_option_tree($model,$selected=0,$n=0,$trees=null) {
+function categories_tree($selected=0,$trees=null) {
     static $func = null; if (!$func) $func = __FUNCTION__;
+    $hl = sprintf('<ul class="%s">',is_null($trees) ? 'categories' : 'children');
     if ($trees===null) $trees = LCTaxonomy::getTaxonomysTree();
-    $hl = ''; $space = str_repeat('&nbsp; &nbsp; ',$n);
     foreach ($trees as $i=>$tree) {
-        $sel  = $selected==$tree['taxonomyid']?' selected="selected"':null;
-        $path = format_path($tree['path'],array(
-            'ID'  => $tree['taxonomyid'],
-            'PY'  => $tree['name'],
-            'MD5' => $tree['taxonomyid'],
-        ));
-        
-        if (in_array($model,$tree['model'])) {
-            $hl.= '<option value="'.$tree['taxonomyid'].'"'.$sel.' path="'.$path.'" model="'.implode(',',$tree['model']).'">'.$space.'├ '.$tree['name'].'</option>';
-        } else {
-    	    $hl.= '<optgroup label="'.$space.'├ '.$tree['name'].'"></optgroup>';
-        }
+        $hl.= sprintf('<li><label class="selectit" for="category-%d">',$tree['taxonomyid']);
+        $hl.= sprintf('<input type="checkbox" id="category-%d" name="category[]" value="%d">%s</label>',$tree['taxonomyid'],$tree['taxonomyid'],$tree['name']);
     	if (isset($tree['subs'])) {
-    		$hl.= $func($model,$selected,$n+1,$tree['subs']);
+    		$hl.= $func($selected,$tree['subs']);
     	}
+        $hl.= '</li>';
     }
+    $hl.= '</ul>';
     return $hl;
 }

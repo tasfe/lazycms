@@ -52,23 +52,6 @@ class LCTerm {
         }
         return $termid;
     }
-    /**
-     * 添加分类关系
-     *
-     * @param int $taxonomyid
-     * @param int $objectid
-     * @param int $order
-     */
-    function addRelation($taxonomyid,$objectid,$order=0) {
-        $db = get_conn();
-        $taxonomyid = intval($taxonomyid);
-        $objectid   = intval($objectid);
-        return $db->insert('#@_term_relation',array(
-            'taxonomyid' => $taxonomyid,
-            'objectid'   => $objectid,
-            'order'      => $order,
-        ));
-    }
 }
 
 class LCTaxonomy {
@@ -118,8 +101,6 @@ class LCTaxonomy {
 		    if ($term = LCTerm::getTermById($taxonomy['termid'])) {
 		    	$taxonomy = array_merge($taxonomy,$term);
 		    }
-		    // 查询数量
-		    //$taxonomy['count'] = $db->result(sprintf("SELECT COUNT(*) FROM `#@_term_relation` WHERE `taxonomyid`=%s;",$taxonomy['taxonomyid']));
 		    // 保存到缓存
             FCache::set($prefix.$taxonomyid,$taxonomy);
 			return $taxonomy;
@@ -143,6 +124,60 @@ class LCTaxonomy {
             }
 	    }
 	    return $result;
+    }
+    /**
+     * 取得一个对象的分类
+     *
+     * @param  $type
+     * @param  $objectid
+     * @return array
+     */
+    function getRelation($type,$objectid) {
+        $db = get_conn(); $tt_ids = array(); $result = array();
+        $rs = $db->query("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `type`=%s;",$type);
+        while ($tt = $db->fetch($rs)) {
+            $tt_ids[] = $tt['taxonomyid'];
+        }
+        $in_tt_ids = "'" . implode("', '", $tt_ids) . "'";
+        $rs = $db->query("SELECT `tr`.`taxonomyid` AS `taxonomyid` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%s AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
+        while ($taxonomy = $db->fetch($rs)) {
+            $result[] = $taxonomy['taxonomyid'];
+        }
+        return $result;
+    }
+    /**
+     * 建立分类关系
+     *
+     * @param  $type
+     * @param  $objectid
+     * @param  $taxonomies
+     * @return bool
+     */
+    function makeRelation($type,$objectid,$taxonomies) {
+        $db = get_conn(); $tt_ids = array(); $taxonomies = (array) $taxonomies;
+        $rs = $db->query("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `type`=%s;",$type);
+        while ($tt = $db->fetch($rs)) {
+            $tt_ids[] = $tt['taxonomyid'];
+        }
+        // 取得分类差集,删除差集
+        $tt_ids = array_diff($taxonomies,$tt_ids);
+        $in_tt_ids = "'" . implode("', '", $tt_ids) . "'";
+        // 先删除关系
+        $rs = $db->query("SELECT `tr`.`taxonomyid` AS `taxonomyid` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%s AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
+        while ($taxonomy = $db->fetch($rs)) {
+            $db->delete('#@_term_relation',array(
+                'taxonomyid' => $taxonomy['taxonomyid'],
+                'objectid'   => $objectid,
+            ));
+        }
+        // 然后添加分类关系
+        foreach($taxonomies as $taxonomyid) {
+            $db->insert('#@_term_relation',array(
+                'taxonomyid' => $taxonomyid,
+                'objectid'   => $objectid,
+            ));
+        }
+        return true;
     }
     /**
      * 创建分类

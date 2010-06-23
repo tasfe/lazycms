@@ -385,10 +385,10 @@ function model_manage_page($action) {
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="path">'._x('Path','model').' <span class="description">'.__('(required)').'</span></label></th>';
-    echo               '<td><input id="path" name="path" type="text" size="70" value="'.$path.'" /> <span class="default-rules"><a href="#'.$default.'">['.__('List rule').']</a> <a href="#%PY'.$ext.'">['.__('Page rule').']</a></span><div class="rules">';
-    echo                   '<a href="#%ID">['.__('Post ID').']</a>';
-    echo                   '<a href="#%MD5">['.__('MD5 Value').']</a>';
-    echo                   '<a href="#%PY">['.__('Pinyin').']</a>';
+    echo               '<td><input id="path" name="path" type="text" size="70" value="'.$path.'" /><div class="rules">';
+    echo                   '<a href="#%ID'.$ext.'">['.__('Post ID').']</a>';
+    echo                   '<a href="#%MD5'.$ext.'">['.__('MD5 Value').']</a>';
+    echo                   '<a href="#%PY'.$ext.'">['.__('Pinyin').']</a>';
     echo               '</div></td>';
     echo           '</tr>';
     echo           '<tr>';

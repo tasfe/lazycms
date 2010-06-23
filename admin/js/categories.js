@@ -52,17 +52,10 @@ function sort_manage_init() {
     var wrap = $('#sortmanage'),sortid = $('input:hidden[name=sortid]',wrap).val();
     // 绑定分类选择事件
     $('select[name=parent]',wrap).change(function(){
-        var selected = $('option:selected',this), models = selected.attr('model').split(',');
+        var selected = $('option:selected',this);
         if (typeof(sortid)=='undefined') {
             $('input[name=path]',wrap).val(selected.attr('path') + (selected.attr('path')==''?'':'/') );
         }
-	    $('input[name^=type]:checkbox',wrap).each(function(){
-	        if ($.inArray(this.value,models)==-1) {
-	            this.checked = false;
-	        } else {
-	            this.checked = true;
-	        }
-	    });
     });
     // 绑定规则点击
 	$('div.rules > a',wrap).click(function(){
