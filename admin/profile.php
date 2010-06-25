@@ -18,11 +18,11 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-// 加载公共文件
+// 接客了！。。。
 require dirname(__FILE__).'/admin.php';
-// 取得管理员信息
+// 得到客人信息
 $_ADMIN = LCUser::current();
-// 动作
+// 姿势
 $action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
 $referer = referer(PHP_FILE,false);
 // 保存我的配置
@@ -54,14 +54,13 @@ if ($action=='save') {
                 'nickname' => esc_html($nickname),
                 'description' => esc_html($desc),
             );
-            // 修改密码
+            // 修改暗号
             if ($password) {
             	$user_info = array_merge($user_info,array(
             	   'pass' => md5($password.$_ADMIN['authcode'])
             	));
             }
             LCUser::editUser($userid,$user_info);
-            // 保存用户信息
             admin_success(__('User updated.'),"LazyCMS.redirect('".$referer."');");
         }
     }

@@ -118,7 +118,8 @@ class Mysql{
      * @return resource
      */
     function query($sql,$bind='`*([BIND_NULL])*`',$type=''){
-    	// 替换占位符
+    	$stattime = microtime(true);
+        // 替换占位符
     	if (is_array($bind)) {
     		$sql = vsprintf($sql,$this->escape($bind));
     	} elseif ($bind!=='`*([BIND_NULL])*`') {
@@ -144,6 +145,29 @@ class Mysql{
                 $result = $this->insert_id();
             } else {
                 $result = $this->affected_rows();
+            }
+        }
+        $endtime = microtime(true);
+        // 记录sql日志
+        if (DEBUG_MODE && !IS_CLI) {
+            static $logs = array(); $QUERY_STRING = '';
+    	    parse_str($_SERVER['QUERY_STRING'],$_QUERY);
+    	    if (!empty($_QUERY)) $QUERY_STRING = "QUERY:".http_build_query($_QUERY);
+    	    if (empty($_POST)) {
+    	        $QUERY_STRING.= "\r\n";
+                $POST_STRING  = '';
+    	    } else {
+    	        $QUERY_STRING.= "\t\t";
+    	        $POST_STRING = "POST:".http_build_query($_POST)."\r\n";
+    	    }
+    	    $key = md5($QUERY_STRING.$POST_STRING);
+    	    $folder  = ABS_PATH.'/logs/sql/'.date('Y-m-d'); mkdirs($folder);
+            $logfile = $folder.'/'.str_replace(array('/','.php'),array('_',''),ltrim(PHP_FILE,'/')).'.log';
+    	    if (isset($logs[$key])) {
+            	error_log(($endtime-$stattime)."\tSQL:".$sql."\r\n",3,$logfile);
+            } else {
+                $logs[$key] = true;
+                error_log('['.date("y-m-d H:i:s")."]\t".$QUERY_STRING.$POST_STRING.($endtime-$stattime)."\tSQL:".$sql."\r\n",3,$logfile);
             }
         }
         return $result;

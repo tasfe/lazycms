@@ -97,6 +97,50 @@ function get_conn($DSN=null,$pconnect=false){
     return false;
 }
 /**
+ * 分页函数
+ *
+ * @param string $url        url中必须包含$特殊字符，用来代替页数
+ * @param int    $page      当前页数
+ * @param int    $total     总页数
+ * @param int    $length    记录总数
+ * @return string
+ */
+function page_list($url,$page,$total,$length){
+    $pages = null;
+    if (strpos($url,'%24')!==false) { $url = str_replace('%24','$',$url); }
+    if (strpos($url,'$')==0 || $length==0) { return ; }
+    if ($page > 2) {
+        $pages.= '<a href="'.str_replace('$',$page-1,$url).'">&laquo;</a>';
+    } elseif ($page==2) {
+        $pages.= '<a href="'.str_replace('$',1,$url).'">&laquo;</a>';
+    }
+    if ($page > 3) {
+        $pages.= '<a href="'.str_replace('$',1,$url).'">1</a><span>&#8230;</span>';
+    }
+    $before = $page-2;
+    $after  = $page+7;
+    for ($i=$before; $i<=$after; $i++) {
+        if ($i>=1 && $i<=$total) {
+            if ((int)$i==(int)$page) {
+                $pages.= '<span class="active">'.$i.'</span>';
+            } else {
+                if ($i==1) {
+                    $pages.= '<a href="'.str_replace('$',1,$url).'">'.$i.'</a>';
+                } else {
+                    $pages.= '<a href="'.str_replace('$',$i,$url).'">'.$i.'</a>';
+                }
+            }
+        }
+    }
+    if ($page < ($total-7)) {
+        $pages.= '<span>&#8230;</span><a href="'.str_replace('$',$total,$url).'">'.$total.'</a>';
+    }
+    if ($page < $total) {
+        $pages.= '<a href="'.str_replace('$',$page+1,$url).'">&raquo;</a>';
+    }
+    return '<div class="pages">'.$pages.'</div>';
+}
+/**
  * 错误页面
  *
  * @param string $title
@@ -655,17 +699,28 @@ function guid($randid=null){
  * @return string
  */
 function pinyin($string) {
-    $db = get_conn();
+    $db = get_conn(); $result = null;
     if (mb_strlen($string,'UTF-8')==1) {
-        $result = $db->result("SELECT `key` FROM `#@_pinyin` WHERE FIND_IN_SET(".$db->escape($string).",`value`) LIMIT 0,1;");
-        if ($result) {
-        	$result = ucfirst($result);
-        } else {
-        	$result = $string;
+        if (class_exists('FCache')) {
+            $prefix = 'pinyin.';
+            $en_str = md5($string);
+            $result = FCache::get($prefix . $en_str);
+        }
+
+        if (empty($result)) {
+            $result = $db->result("SELECT `key` FROM `#@_pinyin` WHERE FIND_IN_SET(".$db->escape($string).",`value`) LIMIT 0,1;");
+            if ($result) {
+                $result = ucfirst($result);
+            } else {
+                $result = $string;
+            }
+            
+            if (class_exists('FCache')) {
+                FCache::set($prefix . $en_str, $result);
+            }
         }
     	return $result;
     } else {
-        $result = null;
         if (preg_match_all('/./u',$string,$args)) {
         	foreach ($args[0] as $arg) {
         	    if (preg_match('/[\x80-\xff]./',$arg)) {

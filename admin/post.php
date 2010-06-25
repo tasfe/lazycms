@@ -18,21 +18,20 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-// 加载公共文件
+// 接客了！。。。
 require dirname(__FILE__).'/admin.php';
-// 取得管理员信息
+// 得到客人信息
 $_ADMIN = LCUser::current();
 // 标题
 admin_head('title',  __('Posts'));
 admin_head('styles', array('css/post'));
 admin_head('scripts',array('js/post'));
-// 动作
+// 姿势
 $action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
 
 switch ($action) {
-    // 添加
+    // 强力插入
     case 'new':
-        //fb(LCPost::getPostById(1));
 	    current_user_can('post-new');
 	    // 重置标题
 	    admin_head('title',__('Add New Post'));
@@ -41,7 +40,7 @@ switch ($action) {
 	    post_manage_page('add');	    
 	    include ADMIN_PATH.'/admin-footer.php';
 	    break;
-	// 编辑
+	// 活塞式运动，你懂得。。。
 	case 'edit':
 	    current_user_can('post-edit');
 	    // 重置标题
@@ -92,7 +91,7 @@ switch ($action) {
                 }
             }
 
-            // 验证通过
+            // 安全有保证，做爱做的事吧！
             if (!$validate->is_error()) {
                 // TODO 判断是否开启自动获取关键词
                 
@@ -100,6 +99,7 @@ switch ($action) {
                 $data = array(
                     'category' => $category,
                     'model'    => esc_html($mcode),
+                    'datetime' => time(),
                 );
                 // 获取模型字段值
                 if ($model['fields']) {
@@ -108,22 +108,24 @@ switch ($action) {
                     }
                 }
                 
-                // 插入
-                if (empty($postid)) {
+                // 更新
+                if ($postid) {
+                    $data['path']    = esc_html($path);
+                    $data['title']   = $title;
+                    $data['content'] = $content;
+                }
+                // 强力插入
+                else {
                     $path = esc_html($path);
                     $data['author'] = $_ADMIN['userid'];
                     $data['passed'] = 0;
                     if ($post = LCPost::addPost($title,$content,$path,$data)) {
                         $postid = $post['postid'];
                     }
+                    $result = __('Post created.');
                 }
-                // 更新
-                else {
-                    $data['path']    = esc_html($path);
-                    $data['title']   = $title;
-                    $data['content'] = $content;
-                    
-                }
+                
+                admin_success($result,"LazyCMS.redirect('".PHP_FILE."');");
             }
         }
 	    break;
@@ -191,13 +193,15 @@ switch ($action) {
 	    break;
     default:
 	    current_user_can('post-list');
+        $page = isset($_REQUEST['page'])?$_REQUEST['page']:1;
+        $size = isset($_REQUEST['size'])?$_REQUEST['size']:1;
 	    admin_head('loadevents','post_list_init');
-	    $posts = array();
+        $result = LCPost::getPosts("SELECT * FROM `#@_post`", $page, $size);fb($result);
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'._x('Add New','post').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?action=bulk" method="post" name="postlist" id="postlist">';
-        actions();
+        table_nav($result);
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
         thead();
@@ -206,14 +210,26 @@ switch ($action) {
         thead();
         echo           '</tfoot>';
         echo           '<tbody>';
-        if ($posts) {
-            
+        if (0 < $result['length']) {
+            foreach ($result['posts'] as $post) {
+                $href = PHP_FILE.'?action=edit&postid='.$post['postid'];
+                $actions = '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a> | </span>';
+                $actions.= '<span class="delete"><a href="'.PHP_FILE.'?action=delete&postid='.$post['postid'].'">'.__('Delete').'</a></span>';
+                echo '<tr>';
+                echo    '<td><input type="checkbox" name="listids[]" value="'.$post['postid'].'" /></td>';
+                echo    '<td><strong><a href="'.$href.'">'.$post['title'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
+                echo    '<td><a href="#'.$post['model']['code'].'">'.$post['model']['name'].'</a></td>';
+                echo    '<td>'.print_r($post['category'],true).'</td>';
+                echo    '<td>'.date('Y-m-d H:i:s',$post['datetime']).'</td>';
+                echo     '<td>'.$post['passed'].'</td>';
+                echo '</tr>';
+            }
         } else {
             echo           '<tr><td colspan="6" class="tc">'.__('No record!').'</td></tr>';
         }
         echo           '</tbody>';
         echo       '</table>';
-        actions();
+        table_nav($result);
         echo   '</form>';
         echo '</div>';
         include ADMIN_PATH.'/admin-footer.php';
@@ -224,14 +240,15 @@ switch ($action) {
  * 批量操作
  *
  */
-function actions() {
-    echo '<div class="actions">';
+function table_nav($result) {
+    echo '<div class="table-nav">';
     echo     '<select name="actions">';
     echo         '<option value="">'.__('Bulk Actions').'</option>';
     echo         '<option value="create">'.__('Create').'</option>';
     echo         '<option value="delete">'.__('Delete').'</option>';
     echo     '</select>';
     echo     '<button type="button">'.__('Apply').'</button>';
+    echo page_list(PHP_FILE.'?page=$&size='.$result['size'],$result['page'],$result['pages'],$result['total']);
     echo '</div>';
 }
 /**
@@ -242,10 +259,10 @@ function thead() {
     echo '<tr>';
     echo     '<th class="check-column"><input type="checkbox" name="select" value="all" /></th>';
     echo     '<th>'._x('Title','post').'</th>';
-    echo     '<th>'._x('Author','post').'</th>';
+    echo     '<th>'._x('Model','post').'</th>';
     echo     '<th>'._x('Categories','post').'</th>';
-    echo     '<th>'._x('Tags','post').'</th>';
     echo     '<th>'._x('Date','post').'</th>';
+    echo     '<th>'._x('State','post').'</th>';
     echo '</tr>';
 }
 

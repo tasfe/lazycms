@@ -31,6 +31,13 @@ a:hover   { text-decoration: underline; }
 /* error and tips */
 .input_error, .textarea_error { border:solid 1px #FF0000 !important; background:#fff url(../images/invalid-line.gif) repeat-x left bottom !important;}
 
+/* 分页样式 */
+.pages { display:table; }
+.pages a, .pages span { display:block; float:left; background:#fff; border:solid 1px #DEDEDE; padding:1px 3px; margin-right:2px; text-align:center; text-decoration:none;}
+.pages a:hover{ position:relative; line-height:130%; padding:0 5px; font-size:24px; z-index:100; margin:-8px 0 0 -8px; text-decoration:none;}
+.pages a:hover + a{ position:relative; line-height:130%; padding:0 5px; font-size:18px; z-index:90; margin:-4px 0 0 -4px; text-decoration:none;}
+.pages span.active{ color:#990000 !important; font-weight:bold; }
+
 /* 浮动窗口
 ----------------------------------------------------------------------------------------------------*/
 .window { position:absolute; background:#D4E6EE; border:solid 1px #8ab0de; }

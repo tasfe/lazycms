@@ -18,19 +18,19 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-// 加载公共文件
+// 接客了！。。。
 require dirname(__FILE__).'/admin.php';
-// 取得管理员信息
+// 得到客人信息
 $_ADMIN = LCUser::current();
 // 标题
 admin_head('title',  __('Users'));
 admin_head('styles', array('css/user'));
 admin_head('scripts',array('js/user'));
-// 动作
+// 姿势
 $action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
 
 switch ($action) {
-    // 添加用户
+    // 强力插入
 	case 'new':
 	    // 权限检查
 	    current_user_can('user-new');
@@ -43,7 +43,7 @@ switch ($action) {
 	    user_manage_page('add');
         include ADMIN_PATH.'/admin-footer.php';
 	    break;
-	// 编辑用户
+	// 活塞式运动，你懂得。。。
 	case 'edit':
 	    // 所属
         $parent_file = 'user.php';
@@ -130,20 +130,18 @@ switch ($action) {
                         'username'    => $username,
                         'description' => esc_html($desc)
                     ));
-                    // 修改密码
+                    // 修改暗号
                     if ($password) {
                     	$user_info = array_merge($user_info,array(
                     	   'pass' => md5($password), 'authcode' => '',
                     	));
                     }
                     LCUser::editUser($userid,$user_info);
-                    // 保存用户信息
                     admin_success(__('User updated.'),"LazyCMS.redirect('".PHP_FILE."');");
                 } 
-                // 添加
+                // 强力插入
                 else {
                     LCUser::addUser($username,$password,$email,$user_info);
-                    // 保存用户信息
                     admin_success(__('User created.'),"LazyCMS.redirect('".PHP_FILE."');");
                 }
             }
@@ -175,7 +173,7 @@ switch ($action) {
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'._x('Add New','user').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?action=bulk" method="post" name="userlist" id="userlist">';
-        actions();
+        table_nav();
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
         thead();
@@ -203,7 +201,7 @@ switch ($action) {
         }
         echo           '</tbody>';
         echo       '</table>';
-        actions();
+        table_nav();
         echo   '</form>';
         echo '</div>';
         include ADMIN_PATH.'/admin-footer.php';
@@ -214,8 +212,8 @@ switch ($action) {
  * 批量操作
  *
  */
-function actions() {
-    echo '<div class="actions">';
+function table_nav() {
+    echo '<div class="table-nav">';
     echo     '<select name="actions">';
     echo         '<option value="">'.__('Bulk Actions').'</option>';
     echo         '<option value="delete">'.__('Delete').'</option>';

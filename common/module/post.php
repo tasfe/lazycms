@@ -74,6 +74,42 @@ class LCPost {
         return null;
     }
     /**
+     * 取得post
+     *
+     * @param  $res
+     * @param  $sql
+     * @param int $page
+     * @param int $size
+     * @return array
+     */
+    function getPosts($sql, $page=0, $size=10){
+        $db = get_conn(); $posts = array();
+        $total = $db->result(preg_replace('/SELECT (.+) FROM/iU','SELECT COUNT(*) FROM',$sql,1));
+        $pages = ceil($total/$size);
+        $pages = ((int)$pages == 0) ? 1 : $pages;
+        if ((int)$page < (int)$pages) {
+            $length = $size;
+        } elseif ((int)$page >= (int)$pages) {
+            $length = $total - (($pages-1) * $size);
+        }
+        if ((int)$page > (int)$pages) $page = $pages;
+        $sql.= sprintf(' LIMIT %d OFFSET %d;',$size,($page-1)*$size);
+        $res = $db->query($sql);
+        while ($post = $db->fetch($res)) {
+            $post['model'] = LCModel::getModelByCode($post['model']);
+            $post['category'] = LCTaxonomy::getRelation('category',$post['postid']);
+            $posts[] = $post;
+        }
+        return array(
+            'page'   => $page,
+            'size'   => $size,
+            'total'  => $total,
+            'pages'  => $pages,
+            'length' => $length,
+            'posts'  => $posts,
+        );
+    }
+    /**
      * 查找指定的文章
      *
      * @param  $postid

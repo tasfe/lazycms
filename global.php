@@ -18,24 +18,24 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-// 判断PHP版本不能低于4.3.3
+// 检查环境是否适合做爱做的事
 !version_compare(PHP_VERSION, '4.3.3', '<') or die('PHP version lower than 4.3.3, upgrade PHP!<br/>&lt;<a href="http://php.net/downloads.php" target="_blank">http://php.net/downloads.php</a>&gt;');
 
 if (str_replace('\\','/',__FILE__) === $_SERVER["SCRIPT_FILENAME"]) { die('Restricted access!'); }
 
-// 设置错误级别
+// 屏蔽无聊人的闲言碎语
 error_reporting() < E_ALL & ~E_NOTICE or error_reporting(E_ALL & ~E_NOTICE);
 
-// 定义网站根目录真实路径
+// 确定插入的位置，防止插到菊花
 define('ABS_PATH',dirname(__FILE__));
 
-// 定义内核路径
+// 确定菊花位置
 define('COM_PATH',ABS_PATH.'/common');
 
-// 加载游戏配置
+// 确定用什么姿势来做爱做的事
 require COM_PATH.'/config.php';
 
-// 加载系统定义文件
+// 加点料，更容易插入
 require COM_PATH."/defines.php";
 
 // debug模式
@@ -44,20 +44,19 @@ if (DEBUG_MODE) {
     require COM_PATH.'/system/firephp.php';
 }
 
-// 加载系统函数库
+// 加载配套设施，更容易达到高潮
 require COM_PATH.'/functions.php';
-
-// 加载Cookie处理类
+// 加载用来确定是几P的功能类
 require COM_PATH.'/system/cookie.php';
-// 加载验证处理类
+// 加载防止意外受孕功能类
 require COM_PATH.'/system/validate.php';
-// 加载缓存类
+// 加载高潮缓冲区功能类
 require COM_PATH.'/system/fcache.php';
 
-// 定义处理错误的函数
+// 设置意外受孕后的处理方法
 set_error_handler('handler_error');
 
-// 处理来自用户的数据，包括Cookie
+// 处理那些不老实的爪子，更深层次的防止意外出现
 if (get_magic_quotes_gpc()) {
     $args = array(& $_GET, & $_POST, & $_COOKIE, & $_FILES, & $_REQUEST);
     while (list($k,$v) = each($args)) {
@@ -66,5 +65,5 @@ if (get_magic_quotes_gpc()) {
     unset($args,$k,$v);
 }
 
-// 删除没用的全局数组
+// 将闲杂人等踢出房间
 unset($_ENV,$HTTP_ENV_VARS,$HTTP_SERVER_VARS,$HTTP_SESSION_VARS,$HTTP_POST_VARS,$HTTP_GET_VARS,$HTTP_POST_FILES,$HTTP_COOKIE_VARS);

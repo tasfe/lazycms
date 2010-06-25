@@ -133,12 +133,17 @@ class LCTaxonomy {
      * @return array
      */
     function getRelation($type,$objectid) {
-        $db = get_conn(); $tt_ids = array(); $result = array();
-        $rs = $db->query("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `type`=%s;",$type);
-        while ($tt = $db->fetch($rs)) {
-            $tt_ids[] = $tt['taxonomyid'];
+        static $taxonomies = array();
+        $db = get_conn(); $result = array();
+        if (!isset($taxonomies[$type])) {
+            $tt_ids = array();
+            $rs = $db->query("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `type`=%s;",$type);
+            while ($tt = $db->fetch($rs)) {
+                $tt_ids[] = $tt['taxonomyid'];
+            }
+            $taxonomies[$type] = "'" . implode("', '", $tt_ids) . "'";
         }
-        $in_tt_ids = "'" . implode("', '", $tt_ids) . "'";
+        $in_tt_ids = $taxonomies[$type];
         $rs = $db->query("SELECT `tr`.`taxonomyid` AS `taxonomyid` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%s AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
         while ($taxonomy = $db->fetch($rs)) {
             $result[] = $taxonomy['taxonomyid'];

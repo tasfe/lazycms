@@ -210,7 +210,7 @@
         // 取得 action 地址
         var form = $(this);
         var url  = form.attr('action'); if (url==''||typeof url=='undefined') { url = self.location.href; }
-        $('.actions',form).each(function(i){
+        $('.table-nav',form).each(function(i){
             var _this  = $(this);
             $('button[type=button]',_this).click(function(){
                 var button  = $(this), listids = [] ,actions = $('select[name=actions]',_this).val(),

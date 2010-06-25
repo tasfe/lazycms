@@ -97,9 +97,10 @@ body { font-family: Verdana; color: #333333; background:#FAFAFA; padding:0; marg
 	#admin-content .wrap .description{ color:#666666; font-style:italic; }
 	#admin-content .wrap .submit{ margin-top:15px; }
 
-	#admin-content .wrap .actions{}
-	#admin-content .wrap .actions button, #admin-content .wrap .actions select{ margin-right:5px; }
-	
+	#admin-content .wrap .table-nav{}
+	#admin-content .wrap .table-nav button, #admin-content .wrap .table-nav select{ margin-right:5px; }
+	#admin-content .wrap .table-nav div.pages{ float:right; }
+
 	#admin-content .wrap fieldset{ position:relative; background:#FFF; -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px; border:1px solid #DFDFDF; border-collapse:separate;}
 	#admin-content .wrap fieldset.closed .form-table{ display:none; }
 	#admin-content .wrap fieldset:hover .toggle{ display:block; }

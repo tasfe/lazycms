@@ -12,19 +12,19 @@
         '------------------------------------------------------------',
         
         'posts' => array(__('Posts'),'post.php','a2',array(
-            array(__('Edit'),'post.php','post-list'),
+            array(__('Posts'),'post.php','post-list'),
             array(_x('Add New','post'),'post.php?action=new','post-new'),
             array(__('Categories'),'categories.php','categories'),
         )),
         
         'models' => array(__('Models'),'model.php','a7',array(
-            array(__('Edit'),'model.php','model-list'),
+            array(__('Models'),'model.php','model-list'),
             array(_x('Add New','model'),'model.php?action=new','model-new'),
             array(_x('Import','model'),'model.php?action=import','model-import'),
         )),
         
         'fragments' => array(__('Fragment'),'fragment.php','a6',array(
-            array(__('Edit'),'fragment.php','fragment-list'),
+            array(__('Fragments'),'fragment.php','fragment-list'),
             array(_x('Add New','fragment'),'fragment.php?action=new','fragment-new'),
         )),
         
@@ -37,7 +37,7 @@
         )),
         
         'modules' => array(__('Modules'),'module.php','a3',array(
-            array(__('Edit'),'module.php','module-list'),
+            array(__('Modules'),'module.php','module-list'),
             array(_x('Add New','module'),'module.php?action=new','module-new'),
         )),
         

@@ -20,7 +20,7 @@
  */
 // 定义管理后台路径
 defined('ADMIN_PATH') or define('ADMIN_PATH',dirname(__FILE__));
-// 加载公共文件
+// 接客了！。。。
 require ADMIN_PATH.'/../global.php';
 // 后台的目录
 define('ADMIN_ROOT',WEB_ROOT.str_replace('\\','/',substr(ADMIN_PATH,strlen(ABS_PATH)+1)).'/');

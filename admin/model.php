@@ -18,19 +18,19 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-// 加载公共文件
+// 接客了！。。。
 require dirname(__FILE__).'/admin.php';
-// 取得管理员信息
+// 得到客人信息
 $_ADMIN = LCUser::current();
 // 标题
 admin_head('title',  __('Models'));
 admin_head('styles', array('css/model'));
 admin_head('scripts',array('js/model'));
-// 动作
+// 姿势
 $action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
 
 switch ($action) {
-    // 添加
+    // 强力插入
 	case 'new':
 	    // 权限检查
 	    current_user_can('model-new');
@@ -43,7 +43,7 @@ switch ($action) {
 	    model_manage_page('add');
         include ADMIN_PATH.'/admin-footer.php';
 	    break;
-	// 编辑
+	// 活塞式运动，你懂得。。。
 	case 'edit':
 	    // 所属
         $parent_file = 'model.php';
@@ -113,7 +113,7 @@ switch ($action) {
                 array('path',VALIDATE_EMPTY,_x('The path field is empty.','model')),
             ));
 
-            // 验证通过
+            // 安全有保证，做爱做的事吧！
             if (!$validate->is_error()) {
                 $info = array(
                     'code'     => esc_html($code),
@@ -127,13 +127,11 @@ switch ($action) {
                 // 编辑
                 if ($modelid) {
                     LCModel::editModel($modelid,$info);
-                    // 保存用户信息
                     admin_success(__('Model updated.'),"LazyCMS.redirect('".PHP_FILE."');");
                 } 
-                // 添加
+                // 强力插入了
                 else {
                     LCModel::addModel($info);
-                    // 保存用户信息
                     admin_success(__('Model created.'),"LazyCMS.redirect('".PHP_FILE."');");
                 }
             }
@@ -276,7 +274,7 @@ switch ($action) {
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'._x('Add New','model').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?action=bulk" method="post" name="modellist" id="modellist">';
-        actions();
+        table_nav();
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
         thead();
@@ -306,7 +304,7 @@ switch ($action) {
         }
         echo           '</tbody>';
         echo       '</table>';
-        actions();
+        table_nav();
         echo   '</form>';
         echo '</div>';
         include ADMIN_PATH.'/admin-footer.php';
@@ -317,8 +315,8 @@ switch ($action) {
  * 批量操作
  *
  */
-function actions() {
-    echo '<div class="actions">';
+function table_nav() {
+    echo '<div class="table-nav">';
     echo     '<select name="actions">';
     echo         '<option value="">'.__('Bulk Actions').'</option>';
     echo         '<option value="export">'.__('Export').'</option>';
