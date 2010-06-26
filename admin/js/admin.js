@@ -52,6 +52,7 @@ $.ajaxSetup({
         LazyCMS.dialog({
             title:_('System Error') + ':' + status, styles:{ overflow:'auto', width:'700px',height:'350px' }, body:error
         });
+        LazyCMS.Loading.remove();
     },
     complete: function(){
         LazyCMS.Loading.remove();

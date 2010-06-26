@@ -270,6 +270,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
 
             }
         }
+        return result;
     },
     /**
      * 模拟的弹出框

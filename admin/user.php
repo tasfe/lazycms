@@ -70,9 +70,8 @@ switch ($action) {
         break;
 	// 保存用户
 	case 'save':
-	    $userid  = isset($_POST['userid'])?$_POST['userid']:null;
-	    $purview = $userid?'user-edit':'user-new';
-	    current_user_can($purview);
+	    $userid = isset($_POST['userid'])?$_POST['userid']:null;
+	    current_user_can($userid?'user-edit':'user-new');
 	    $validate = new Validate();
         if ($validate->post()) {
             $username  = isset($_POST['username'])?$_POST['username']:null;
@@ -176,10 +175,10 @@ switch ($action) {
         table_nav();
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
-        thead();
+        table_thead();
         echo           '</thead>';
         echo           '<tfoot>';
-        thead();
+        table_thead();
         echo           '</tfoot>';
         echo           '<tbody>';
         foreach ($admins as $admin) {
@@ -225,7 +224,7 @@ function table_nav() {
  * 表头
  *
  */
-function thead() {
+function table_thead() {
     echo '<tr>';
     echo     '<th class="check-column"><input type="checkbox" name="select" value="all" /></th>';
     echo     '<th>'.__('Username').'</th>';

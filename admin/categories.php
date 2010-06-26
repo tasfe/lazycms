@@ -137,10 +137,10 @@ switch ($action) {
         table_nav();
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
-        thead();
+        table_thead();
         echo           '</thead>';
         echo           '<tfoot>';
-        thead();
+        table_thead();
         echo           '</tfoot>';
         echo           '<tbody>';
         if ($sorts) {
@@ -175,7 +175,7 @@ function table_nav() {
  * 表头
  *
  */
-function thead() {
+function table_thead() {
     echo '<tr>';
     echo     '<th class="check-column"><input type="checkbox" name="select" value="all" /></th>';
     echo     '<th>'._x('Name','sort').'</th>';

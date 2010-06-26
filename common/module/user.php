@@ -133,13 +133,13 @@ class LCUser {
         
         switch($type){
             case 0:
-                $where = sprintf("`userid`=%s",$db->escape($param));
+                $where = sprintf("`userid`=%s",esc_sql($param));
                 break;
             case 1:
-                $where = sprintf("`name`=%s",$db->escape($param));
+                $where = sprintf("`name`=%s",esc_sql($param));
                 break;
             case 2:
-                $where = sprintf("`authcode`=%s",$db->escape($param));
+                $where = sprintf("`authcode`=%s",esc_sql($param));
                 break;
         }
 	    $rs = $db->query("SELECT * FROM `#@_user` WHERE {$where} LIMIT 0,1;");
@@ -265,7 +265,7 @@ class LCUser {
             // 判断是否需要序列化
             $value = is_need_serialize($value) ? serialize($value) : $value;
             // 查询数据库里是否已经存在
-            $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_user_meta` WHERE `userid`=%s AND `key`=%s;",array($userid,$db->escape($key))));
+            $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_user_meta` WHERE `userid`=%s AND `key`=%s;",array($userid,esc_sql($key))));
             // update
             if ($length > 0) {
                 $db->update('#@_user_meta',array(

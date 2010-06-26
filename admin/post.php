@@ -42,6 +42,9 @@ switch ($action) {
 	    break;
 	// 活塞式运动，你懂得。。。
 	case 'edit':
+        // 所属
+        $parent_file = 'post.php';
+        // 权限检查
 	    current_user_can('post-edit');
 	    // 重置标题
 	    admin_head('title',__('Edit Post'));
@@ -50,20 +53,48 @@ switch ($action) {
 	    post_manage_page('edit');	    
 	    include ADMIN_PATH.'/admin-footer.php';
 	    break;
+    // 删除
+    case 'delete':
+        // 权限检查
+	    current_user_can('post-delete');
+        $postid = isset($_GET['postid'])?$_GET['postid']:null;
+        if (LCPost::deletePostById($postid)) {
+        	admin_success(__('Post deleted.'),"LazyCMS.redirect('".referer()."');");
+        } else {
+            admin_error(__('Post delete fail.'));
+        }
+        break;
+    // 批量动作
+	case 'bulk':
+	    $actions = isset($_POST['actions'])?$_POST['actions']:null;
+	    $listids = isset($_POST['listids'])?$_POST['listids']:null;
+	    if (empty($listids)) {
+	    	admin_error(__('Did not select any item.'));
+	    }
+	    switch ($actions) {
+	        case 'delete':
+	            current_user_can('post-delete');
+	            foreach ($listids as $postid) {
+	            	LCPost::deletePostById($postid);
+	            }
+	            admin_success(__('Posts deleted.'),"LazyCMS.redirect('".referer()."');");
+	            break;
+	    }
+	    break;
 	// 保存
 	case 'save':
-	    
+        $postid = isset($_POST['postid'])?$_POST['postid']:0;
+	    current_user_can($postid?'post-edit':'post-new');
 	    $validate = new Validate();
         if ($validate->post()) {
             $mcode    = isset($_POST['model'])?$_POST['model']:null;
-            $model    = LCModel::getModelByCode($mcode,'*','_');
-            $postid   = isset($_POST['postid'])?$_POST['postid']:0;
+            $model    = LCModel::getModelByCode($mcode);
             $category = isset($_POST['category'])?$_POST['category']:array();
             $title    = isset($_POST['title'])?$_POST['title']:null;
             $autokeys = isset($_POST['autokeys'])?$_POST['autokeys']:null;
             $path     = isset($_POST['path'])?$_POST['path']:null;
             $content  = isset($_POST['content'])?$_POST['content']:null;
-            $page     = isset($_POST['page'])?$_POST['page']:null;
+            $template = isset($_POST['template'])?$_POST['template']:null;
             $keywords = isset($_POST['keywords'])?$_POST['keywords']:null;
             $description = isset($_POST['description'])?$_POST['description']:null;
             
@@ -94,17 +125,19 @@ switch ($action) {
             // 安全有保证，做爱做的事吧！
             if (!$validate->is_error()) {
                 // TODO 判断是否开启自动获取关键词
+
                 
                 // 获取数据
                 $data = array(
                     'category' => $category,
                     'model'    => esc_html($mcode),
-                    'datetime' => time(),
+                    'template' => esc_html($template),
+                    'description' => esc_html($description),
                 );
                 // 获取模型字段值
                 if ($model['fields']) {
                     foreach($model['fields'] as $field) {
-                        $data['meta'][trim($field['n'],'_')] = isset($_POST[$field['n']])?$_POST[$field['n']]:null;
+                        $data['meta'][$field['n']] = isset($_POST[$field['_n_']])?$_POST[$field['_n_']]:null;
                     }
                 }
                 
@@ -113,12 +146,15 @@ switch ($action) {
                     $data['path']    = esc_html($path);
                     $data['title']   = $title;
                     $data['content'] = $content;
+                    LCPost::editPost($postid,$data);
+                    $result = __('Post updated.');
                 }
                 // 强力插入
                 else {
                     $path = esc_html($path);
                     $data['author'] = $_ADMIN['userid'];
                     $data['passed'] = 0;
+                    $data['datetime'] = time();
                     if ($post = LCPost::addPost($title,$content,$path,$data)) {
                         $postid = $post['postid'];
                     }
@@ -131,14 +167,19 @@ switch ($action) {
 	    break;
 	// 获取扩展字段
 	case 'extend-attr':
-	    $mcode  = isset($_GET['model'])?$_GET['model']:null;
-	    $model  = LCModel::getModelByCode($mcode,'*','_');
-        $attrs = null;
+	    $mcode  = isset($_REQUEST['model'])?$_REQUEST['model']:null;
+	    $postid = isset($_REQUEST['postid'])?$_REQUEST['postid']:0;
+	    $model  = LCModel::getModelByCode($mcode);
+        $attrs  = null;
 
 	    if ($model) {
+            $post = LCPost::getPostById($postid);
 	    	foreach ($model['fields'] as $field) {
+                if (isset($post['meta'][$field['n']])) {
+                    $field['d'] = $post['meta'][$field['n']];
+                }
 	    		$attrs.= '<tr>';
-                $attrs.=    '<th><label for="'.$field['n'].'">'.$field['l'];
+                $attrs.=    '<th><label for="'.$field['_n_'].'">'.$field['l'];
                 if (!empty($field['h'])) {
                     $attrs.=    '<span class="description">'.$field['h'].'</span>';
                 }
@@ -147,14 +188,14 @@ switch ($action) {
                 $attrs.=    '<td>';
                 switch ($field['t']) {
                     case 'input':
-                        $attrs.= '<input id="'.$field['n'].'" name="'.$field['n'].'" type="text" style="width:'.$field['w'].'" maxlength="'.$field['c'].'" value="'.$field['d'].'" />';
+                        $attrs.= '<input id="'.$field['_n_'].'" name="'.$field['_n_'].'" type="text" style="width:'.$field['w'].'" maxlength="'.$field['c'].'" value="'.$field['d'].'" />';
                         break;
                     case 'textarea':
-                        $attrs.= '<textarea name="'.$field['n'].'" id="'.$field['n'].'" style="width:'.$field['w'].'" rows="8">'.$field['d'].'</textarea>';
+                        $attrs.= '<textarea name="'.$field['_n_'].'" id="'.$field['_n_'].'" style="width:'.$field['w'].'" rows="8">'.$field['d'].'</textarea>';
                         break;
                     case 'select':
                         $values = explode("\n",$field['s']);
-                        $attrs.= '<select name="'.$field['n'].'" id="'.$field['n'].'" edit="true" style="width:'.$field['w'].'">';
+                        $attrs.= '<select name="'.$field['_n_'].'" id="'.$field['_n_'].'" edit="true" style="width:'.$field['w'].'">';
                         foreach ($values as $k=>$v) {
                             $v = trim($v);
                             if ($v!='') {
@@ -168,20 +209,20 @@ switch ($action) {
                         break;
                     case 'radio': case 'checkbox':
                         $values = explode("\n",$field['s']);
-                        $attrs.= '<div id="'.$field['n'].'" style="width:'.$field['w'].'">';
+                        $attrs.= '<div id="'.$field['_n_'].'" style="width:'.$field['w'].'">';
                         foreach ($values as $k=>$v) {
                             $v = trim($v);
                             if ($v!='') {
                                 $vs = explode(':',$v);
                                 $vs = array_map('esc_html',$vs); $vs[1] = isset($vs[1])?$vs[1]:$vs[0];
                                 $checked = !empty($field['d']) ? (instr($vs[0],$field['d']) ? ' checked="checked"' : null) : null;
-                                $attrs.= '<label><input name="'.$field['n'].($field['t']=='checkbox'?'['.$k.']':null).'" type="'.$field['t'].'" value="'.$vs[0].'"'.$checked.' />'.$vs[1].'</label>';
+                                $attrs.= '<label><input name="'.$field['_n_'].($field['t']=='checkbox'?'['.$k.']':null).'" type="'.$field['t'].'" value="'.$vs[0].'"'.$checked.' />'.$vs[1].'</label>';
                             }
                         }
                         $attrs.= '</div>';
                         break;
                     case 'upfile':
-                        $attrs.= '<input id="'.$field['n'].'" name="'.$field['n'].'" type="text" style="width:'.$field['w'].'" />&nbsp;<button type="button">'.__('Browse...').'</button>';
+                        $attrs.= '<input id="'.$field['_n_'].'" name="'.$field['_n_'].'" type="text" style="width:'.$field['w'].'" />&nbsp;<button type="button">'.__('Browse...').'</button>';
                         break;
                 }
                 
@@ -189,39 +230,68 @@ switch ($action) {
                 $attrs.= '</tr>';
 	    	}
 	    }
-        echo_json('Return',$attrs);
+        echo $attrs;
 	    break;
     default:
 	    current_user_can('post-list');
-        $page = isset($_REQUEST['page'])?$_REQUEST['page']:1;
-        $size = isset($_REQUEST['size'])?$_REQUEST['size']:1;
-	    admin_head('loadevents','post_list_init');
-        $result = LCPost::getPosts("SELECT * FROM `#@_post`", $page, $size);fb($result);
+        admin_head('loadevents','post_list_init');
+        $page  = isset($_REQUEST['page'])?$_REQUEST['page']:1;
+        $size  = isset($_REQUEST['size'])?$_REQUEST['size']:10;
+        $model = isset($_REQUEST['model'])?$_REQUEST['model']:'';
+        $category = isset($_REQUEST['category'])?$_REQUEST['category']:'';
+        $query = array(
+            'page' => '$',
+            'size' => $size,
+        );
+        $condition = array();
+        if ($model) {
+            $query['model'] = $model;
+            $field = $category?'`p`.`model`':'`model`';
+            $condition[] = "({$field}=".esc_sql($model).")";
+        }
+        if ($category) {
+            $query['category'] = $category;
+            $condition[] = "(`tr`.`taxonomyid`=".esc_sql($category).")";
+        }
+        $where = $condition?' WHERE '.implode(' AND ' , $condition):'';
+        $page_url = PHP_FILE.'?'.http_build_query($query);
+        if ($category) {
+            $sql = "SELECT DISTINCT * FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` {$where} ORDER BY `p`.`postid` DESC";
+        } else {
+            $sql = "SELECT * FROM `#@_post` {$where} ORDER BY `postid` DESC";
+        }
+        $result   = LCPost::getPosts($sql, $page, $size);
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'._x('Add New','post').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?action=bulk" method="post" name="postlist" id="postlist">';
-        table_nav($result);
+        table_nav($page_url,$result);
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
-        thead();
+        table_thead();
         echo           '</thead>';
         echo           '<tfoot>';
-        thead();
+        table_thead();
         echo           '</tfoot>';
         echo           '<tbody>';
         if (0 < $result['length']) {
             foreach ($result['posts'] as $post) {
-                $href = PHP_FILE.'?action=edit&postid='.$post['postid'];
-                $actions = '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a> | </span>';
+                $edit_url   = PHP_FILE.'?action=edit&postid='.$post['postid'];
+                $model_url  = PHP_FILE.'?model='.$post['model']['langcode'];
+                $categories = array();
+                foreach($post['category'] as $category) {
+                    $categories[] = '<a href="'.PHP_FILE.'?category='.$category['taxonomyid'].'">'.$category['name'].'</a>';
+                }
+                $actions = '<span class="edit"><a href="'.$edit_url.'">'.__('Edit').'</a> | </span>';
                 $actions.= '<span class="delete"><a href="'.PHP_FILE.'?action=delete&postid='.$post['postid'].'">'.__('Delete').'</a></span>';
                 echo '<tr>';
-                echo    '<td><input type="checkbox" name="listids[]" value="'.$post['postid'].'" /></td>';
-                echo    '<td><strong><a href="'.$href.'">'.$post['title'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
-                echo    '<td><a href="#'.$post['model']['code'].'">'.$post['model']['name'].'</a></td>';
-                echo    '<td>'.print_r($post['category'],true).'</td>';
+                echo    '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$post['postid'].'" /></td>';
+                echo    '<td><strong><a href="'.$edit_url.'">'.$post['title'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
+                echo    '<td><a href="'.$model_url.'">'.$post['model']['name'].'</a></td>';
+                echo    '<td><a href="javascript:;">'.C('CreateDir').$post['path'].'</a></td>';
+                echo    '<td>'.implode(',' , $categories).'</td>';
                 echo    '<td>'.date('Y-m-d H:i:s',$post['datetime']).'</td>';
-                echo     '<td>'.$post['passed'].'</td>';
+                echo    '<td>'.$post['passed'].'</td>';
                 echo '</tr>';
             }
         } else {
@@ -229,7 +299,7 @@ switch ($action) {
         }
         echo           '</tbody>';
         echo       '</table>';
-        table_nav($result);
+        table_nav($page_url,$result);
         echo   '</form>';
         echo '</div>';
         include ADMIN_PATH.'/admin-footer.php';
@@ -240,7 +310,7 @@ switch ($action) {
  * 批量操作
  *
  */
-function table_nav($result) {
+function table_nav($url,$result) {
     echo '<div class="table-nav">';
     echo     '<select name="actions">';
     echo         '<option value="">'.__('Bulk Actions').'</option>';
@@ -248,18 +318,19 @@ function table_nav($result) {
     echo         '<option value="delete">'.__('Delete').'</option>';
     echo     '</select>';
     echo     '<button type="button">'.__('Apply').'</button>';
-    echo page_list(PHP_FILE.'?page=$&size='.$result['size'],$result['page'],$result['pages'],$result['total']);
+    echo     page_list($url,$result['page'],$result['pages'],$result['total']);
     echo '</div>';
 }
 /**
  * 表头
  *
  */
-function thead() {
+function table_thead() {
     echo '<tr>';
     echo     '<th class="check-column"><input type="checkbox" name="select" value="all" /></th>';
     echo     '<th>'._x('Title','post').'</th>';
     echo     '<th>'._x('Model','post').'</th>';
+    echo     '<th>'._x('Path','post').'</th>';
     echo     '<th>'._x('Categories','post').'</th>';
     echo     '<th>'._x('Date','post').'</th>';
     echo     '<th>'._x('State','post').'</th>';
@@ -275,21 +346,28 @@ function post_manage_page($action) {
     $referer = referer(PHP_FILE);
     $postid  = isset($_GET['postid'])?$_GET['postid']:0;
     $models  = LCModel::getModels(1);
-    if ($action!='add') {
-    	$_DATA = array();
+    $ext     = C('CreateFileExt');
+    if ($action=='add') {
+        $mcode = isset($_GET['model'])?$_GET['model']:null;
+    } else {
+        $_DATA = LCPost::getPostById($postid); 
+        $mcode = $_DATA['model'];
     }
-    $ext   = C('CreateFileExt');
-    $mcode = isset($_GET['model'])?$_GET['model']:null;
+
     if ($mcode) {
-    	$model = LCModel::getModelByCode($mcode);
+        $model = LCModel::getModelByCode($mcode);
     } else {
         $model   = array_pop(array_slice($models,0,1));
     }
-    $title   = isset($_DATA['title'])?$_DATA['title']:null;
-    $content = isset($_DATA['content'])?$_DATA['content']:null;
-    $path    = isset($_DATA['path'])?$_DATA['path']:$model['path'];
-    $page    = isset($_DATA['page'])?$_DATA['page']:null;
-    
+    $title    = isset($_DATA['title'])?$_DATA['title']:null;
+    $content  = isset($_DATA['content'])?$_DATA['content']:null;
+    $path     = isset($_DATA['path'])?$_DATA['path']:$model['path'];
+    $template = isset($_DATA['template'])?$_DATA['template']:null;
+    $description = isset($_DATA['description'])?$_DATA['description']:null;
+    $categories  = array();
+    if (isset($_DATA['category'])) {
+        foreach($_DATA['category'] as $category) $categories[] = $category['taxonomyid'];
+    }
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?action=save" method="post" name="postmanage" id="postmanage">';
@@ -301,7 +379,8 @@ function post_manage_page($action) {
         echo               '<th><label for="model">'._x('Model','post').'</label></th>';
         echo               '<td><select name="model" id="model">';
         foreach ($models as $m) {
-        	echo               '<option value="'.$m['langcode'].'">'.$m['name'].'</option>';
+            $selected = $m['langcode']==$model['langcode']?'selected="selected"':'';
+        	echo               '<option value="'.$m['langcode'].'"'.$selected.'>'.$m['name'].'</option>';
         }
         echo               '</select></td>';
         echo           '</tr>';
@@ -309,7 +388,7 @@ function post_manage_page($action) {
     echo               '<tr class="taxonomyid">';
     echo                   '<th><label for="taxonomyid">'._x('Categories','post').'</label></th>';
     echo                   '<td>';
-    echo                       categories_tree();
+    echo                       categories_tree($categories);
     echo                   '</td>';
     echo               '</tr>';
     echo               '<tr>';
@@ -324,7 +403,7 @@ function post_manage_page($action) {
     echo                   '<td><textarea cols="120" rows="15" id="content" name="content">'.$content.'</textarea></td>';
     echo               '</tr>';
     echo               '<tr>';
-    echo                   '<th><label for="path">'._x('Path','model').' <span class="description">'.__('(required)').'</span></label></th>';
+    echo                   '<th><label for="path">'._x('Path','post').' <span class="description">'.__('(required)').'</span></label></th>';
     echo                   '<td><input id="path" name="path" type="text" size="70" value="'.$path.'" /> <span class="rules">';
     echo                       '<a href="#%ID'.$ext.'">['.__('Post ID').']</a>';
     echo                       '<a href="#%MD5'.$ext.'">['.__('MD5 Value').']</a>';
@@ -341,11 +420,11 @@ function post_manage_page($action) {
     echo       '<table class="form-table">';
     echo           '<tbody class="more-attr">';
     echo               '<tr>';
-    echo                   '<th><label for="pagetemplate">'._x('Page Template','post').'</label></th>';
+    echo                   '<th><label for="template">'._x('Page Template','post').'</label></th>';
     echo                   '<td>';
-    echo                       '<select id="pagetemplate" name="page">';
+    echo                       '<select id="template" name="template">';
     echo                           $models?'<option value="">'.__('Use the model set').'</option>':null;
-    echo                           options(C('Template'),C('TemplateExts'),'<option value="#value#"#selected#>#name#</option>',$page);
+    echo                           options(C('Template'),C('TemplateExts'),'<option value="#value#"#selected#>#name#</option>',$template);
     echo                       '</select>';
     echo                   '</td>';
     echo               '</tr>';
@@ -355,7 +434,7 @@ function post_manage_page($action) {
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="description">'._x('Description','post').'</label></th>';
-    echo                   '<td><textarea cols="70" rows="5" id="description" name="description"></textarea></td>';
+    echo                   '<td><textarea cols="70" rows="5" id="description" name="description">'.$description.'</textarea></td>';
     echo               '</tr>';    
     echo           '</tbody>';
     echo       '</table>';
@@ -377,15 +456,16 @@ function post_manage_page($action) {
  * @param  $trees
  * @return string
  */
-function categories_tree($selected=0,$trees=null) {
+function categories_tree($categories=array(),$trees=null) {
     static $func = null; if (!$func) $func = __FUNCTION__;
     $hl = sprintf('<ul class="%s">',is_null($trees) ? 'categories' : 'children');
     if ($trees===null) $trees = LCTaxonomy::getTaxonomysTree();
     foreach ($trees as $i=>$tree) {
+        $checked = in_array($tree['taxonomyid'],$categories)?'checked="checked"':'';
         $hl.= sprintf('<li><label class="selectit" for="category-%d">',$tree['taxonomyid']);
-        $hl.= sprintf('<input type="checkbox" id="category-%d" name="category[]" value="%d">%s</label>',$tree['taxonomyid'],$tree['taxonomyid'],$tree['name']);
+        $hl.= sprintf('<input type="checkbox" id="category-%d" name="category[]" value="%d"%s/>%s</label>',$tree['taxonomyid'],$tree['taxonomyid'],$checked,$tree['name']);
     	if (isset($tree['subs'])) {
-    		$hl.= $func($selected,$tree['subs']);
+    		$hl.= $func($categories,$tree['subs']);
     	}
         $hl.= '</li>';
     }

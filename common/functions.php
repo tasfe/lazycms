@@ -344,6 +344,16 @@ function replace_root($path){
     return str_replace($abs_path,WEB_ROOT,$src_path);
 }
 /**
+ * 转义sql语句
+ *
+ * @param  $str
+ * @return string
+ */
+function esc_sql($str) {
+    $db = get_conn();
+    return $db->escape($str);
+}
+/**
  * 转换特殊字符为HTML实体
  *
  * @param   string $str
@@ -708,7 +718,7 @@ function pinyin($string) {
         }
 
         if (empty($result)) {
-            $result = $db->result("SELECT `key` FROM `#@_pinyin` WHERE FIND_IN_SET(".$db->escape($string).",`value`) LIMIT 0,1;");
+            $result = $db->result("SELECT `key` FROM `#@_pinyin` WHERE FIND_IN_SET(".esc_sql($string).",`value`) LIMIT 0,1;");
             if ($result) {
                 $result = ucfirst($result);
             } else {
@@ -841,7 +851,7 @@ function C($key,$value=null){
         // 判断是否需要序列化
         $value = is_need_serialize($value) ? serialize($value) : $value;
         // 查询数据库里是否已经存在
-        $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_option` WHERE `module`=%s AND `code`=%s",array($db->escape($module),$db->escape($code))));
+        $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_option` WHERE `module`=%s AND `code`=%s",array(esc_sql($module),esc_sql($code))));
         // update
         if ($length > 0) {
         	$db->update('#@_option',array(

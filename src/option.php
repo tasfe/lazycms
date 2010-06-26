@@ -32,7 +32,10 @@ C('SiteName','LazyCMS v2.0 演示站');
 C('Template','themes');
 // 模板文件后缀
 C('TemplateExts','htm,html,shtml');
+// 文章生成目录
+C('CreateDir',WEB_ROOT.'a/');
 // 生成文件默认后缀
 C('CreateFileExt','.html');
+
 
 var_dump('Success!');

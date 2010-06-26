@@ -52,12 +52,14 @@ function post_list_init() {
 function post_manage_init() {
 	var wrap = $('#postmanage');
 	if ($('select[name=model]',wrap).is('select')) {
+        var postid = $('input[name=postid]',wrap).val(),
+            mcode  = $('select[name=model]',wrap).val();
 	    // 绑定模型切换事件
     	$('select[name=model]',wrap).change(function(){
-    	    post_manage_extend_attr.call(wrap,this.value);
+    	    post_manage_extend_attr.call(wrap,this.value,postid);
     	});
 	    // 初始化
-	    post_manage_extend_attr.call(wrap,$('select[name=model]',wrap).val());
+	    post_manage_extend_attr.call(wrap,mcode,postid);
 	}
 	// 绑定规则点击
 	$('span.rules > a',wrap).click(function(){
@@ -77,9 +79,10 @@ function post_manage_init() {
     });
 }
 // 获取扩展字段
-function post_manage_extend_attr(model) {
-    var wrap = this;
-    $.getJSON(LazyCMS.ADMIN_ROOT+'post.php',{action:'extend-attr',model:model},function(r){
+function post_manage_extend_attr(model,postid) {
+    var wrap = this,params = {action:'extend-attr',model:model};
+        params = typeof(postid)!='undefined' ? $.extend(params,{postid:postid}) : params;
+    $.post(LazyCMS.ADMIN_ROOT+'post.php',params,function(r){
 		var data = LazyCMS.ajaxResult(r);
 		if (data) {
 			$('tbody.extend-attr',wrap).html(data);

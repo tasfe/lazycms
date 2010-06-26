@@ -52,14 +52,24 @@ class LCPost {
         $post_rows = $meta_rows = array();
         if ($post = LCPost::getPostById($postid)) {
             $data = is_array($data) ? $data : array();
-            $categories = array();
-            // 更新分类关系
-            if ($data['category']) {
-                LCTaxonomy::makeRelation('category',$postid,$data['category']);
-                $categories = $data['category']; unset($data['category']);
+            // 格式化路径
+            if (isset($data['path'])) {
+                $data['path'] = format_path($data['path'],array(
+                    'ID'  => $postid,
+                    'PY'  => $post['title'],
+                    'MD5' => $postid,
+                ));
             }
+            // 更新分类关系
+            $categories = array();
+            if (isset($data['category'])) {
+                $categories = $data['category'];
+                LCTaxonomy::makeRelation('category',$postid,$data['category']);
+            }
+            unset($data['category']);
             $meta_rows = empty($data['meta']) ? array() : $data['meta']; unset($data['meta']);
-            $post_rows = $data; $data['meta'] = $meta_rows; $data['category'] = $categories; 
+            $post_rows = $data; $data['meta'] = $meta_rows; $data['category'] = $categories;
+
             // 更新数据
             if (!empty($post_rows)) {
                 $db->update('#@_post',$post_rows,array('postid' => $postid));
@@ -84,7 +94,9 @@ class LCPost {
      */
     function getPosts($sql, $page=0, $size=10){
         $db = get_conn(); $posts = array();
-        $total = $db->result(preg_replace('/SELECT (.+) FROM/iU','SELECT COUNT(*) FROM',$sql,1));
+        $count_sql = preg_replace('/SELECT (.+) FROM/iU','SELECT COUNT(*) FROM',$sql,1);
+        $count_sql = preg_replace('/ORDER BY (.+) (ASC|DESC)/i','',$sql,1);
+        $total = $db->result($count_sql);
         $pages = ceil($total/$size);
         $pages = ((int)$pages == 0) ? 1 : $pages;
         if ((int)$page < (int)$pages) {
@@ -169,7 +181,7 @@ class LCPost {
             // 判断是否需要序列化
             $value = is_need_serialize($value) ? serialize($value) : $value;
             // 查询数据库里是否已经存在
-            $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_post_meta` WHERE `postid`=%s AND `key`=%s;",array($postid,$db->escape($key))));
+            $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_post_meta` WHERE `postid`=%s AND `key`=%s;",array($postid,esc_sql($key))));
             // update
             if ($length > 0) {
                 $db->update('#@_post_meta',array(
@@ -202,5 +214,28 @@ class LCPost {
     function clearPostCache($postid) {
         return FCache::delete('post.'.$postid);
     }
-    
+    /**
+     * 删除一片文章
+     *
+     * @param  $postid
+     * @return bool
+     */
+    function deletePostById($postid) {
+        $db = get_conn();
+        $postid = intval($postid);
+        if (!$postid) return false;
+        if (LCPost::getPostById($postid)) {
+            // 删除分类关系
+            $relations = LCTaxonomy::getRelation('category',$postid);
+            foreach($relations as $r) {
+                LCTaxonomy::deleteRelation($postid,$r['taxonomyid']);
+            }
+            $db->delete('#@_post_meta',array('postid' => $postid));
+            $db->delete('#@_post',array('postid' => $postid));
+            // 清理缓存
+            LCPost::clearPostCache($postid);
+            return true;
+        }
+        return false;
+    }
 }

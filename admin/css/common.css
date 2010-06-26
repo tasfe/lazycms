@@ -33,7 +33,7 @@ a:hover   { text-decoration: underline; }
 
 /* 分页样式 */
 .pages { display:table; }
-.pages a, .pages span { display:block; float:left; background:#fff; border:solid 1px #DEDEDE; padding:1px 3px; margin-right:2px; text-align:center; text-decoration:none;}
+.pages a, .pages span { display:block; float:left; background:#fff; border:solid 1px #DEDEDE; padding:1px 3px; margin-right:2px; text-align:center; text-decoration:none; -moz-border-radius:5px; -webkit-border-radius:5px; -khtml-border-radius:5px; border-radius:5px;}
 .pages a:hover{ position:relative; line-height:130%; padding:0 5px; font-size:24px; z-index:100; margin:-8px 0 0 -8px; text-decoration:none;}
 .pages a:hover + a{ position:relative; line-height:130%; padding:0 5px; font-size:18px; z-index:90; margin:-4px 0 0 -4px; text-decoration:none;}
 .pages span.active{ color:#990000 !important; font-weight:bold; }
@@ -65,7 +65,7 @@ a:hover   { text-decoration: underline; }
 
 /* 数据表格
 ----------------------------------------------------------------------------------------------------*/
-.data-table{ table-layout:fixed; width:100%; margin-top:5px; margin-bottom:5px; border-collapse:separate; clear:both; border:solid 1px #DFDFDF; -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px; }
+.data-table{ width:100%; margin-top:5px; margin-bottom:5px; border-collapse:separate; clear:both; border:solid 1px #DFDFDF; -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px; }
 	.data-table th { font-weight:bold; }
 	.data-table th, .data-table td { padding:4px; text-align:left; border:none; }
 	.data-table th, .data-table td { border-bottom:solid 1px #DFDFDF; }

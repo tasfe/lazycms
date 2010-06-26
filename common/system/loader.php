@@ -52,6 +52,7 @@ class LazyLoader {
             'admin'  => array(ADMIN_PATH.'/css/admin.css',array('admin_common')),
             'user'   => array(ADMIN_PATH.'/css/user.css',array('admin_common')),
             'model'  => array(ADMIN_PATH.'/css/model.css',array('admin_common')),
+            'post'   => array(ADMIN_PATH.'/css/post.css',array('admin_common')),
             'categories' => array(ADMIN_PATH.'/css/categories.css',array('admin_common')),
         );
         // 追加语言相关的CSS

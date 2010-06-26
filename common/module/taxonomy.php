@@ -44,7 +44,7 @@ class LCTerm {
      */
     function addTerm($name) {
         $db = get_conn();
-        $termid = $db->result(sprintf("SELECT `termid` FROM `#@_term` WHERE `name`=%s LIMIT 0,1;",$db->escape($name)));
+        $termid = $db->result(sprintf("SELECT `termid` FROM `#@_term` WHERE `name`=%s LIMIT 0,1;",esc_sql($name)));
         if (!$termid) {
             $termid = $db->insert('#@_term',array(
                 'name' => $name,
@@ -95,11 +95,11 @@ class LCTaxonomy {
 	    $rs = $db->query("SELECT * FROM `#@_term_taxonomy` WHERE `taxonomyid`=%s LIMIT 0,1;",$taxonomyid);
 		// 判断用户是否存在
 		if ($taxonomy = $db->fetch($rs)) {
-		    if ($meta = LCTaxonomy::getTaxonomyMeta($taxonomy['taxonomyid'])) {
-		    	$taxonomy = array_merge($taxonomy,$meta);
-		    }
 		    if ($term = LCTerm::getTermById($taxonomy['termid'])) {
 		    	$taxonomy = array_merge($taxonomy,$term);
+		    }
+            if ($meta = LCTaxonomy::getTaxonomyMeta($taxonomy['taxonomyid'])) {
+		    	$taxonomy = array_merge($taxonomy,$meta);
 		    }
 		    // 保存到缓存
             FCache::set($prefix.$taxonomyid,$taxonomy);
@@ -144,9 +144,9 @@ class LCTaxonomy {
             $taxonomies[$type] = "'" . implode("', '", $tt_ids) . "'";
         }
         $in_tt_ids = $taxonomies[$type];
-        $rs = $db->query("SELECT `tr`.`taxonomyid` AS `taxonomyid` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%s AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
+        $rs = $db->query("SELECT DISTINCT `tr`.`taxonomyid` AS `taxonomyid` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%s AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
         while ($taxonomy = $db->fetch($rs)) {
-            $result[] = $taxonomy['taxonomyid'];
+            $result[] = LCTaxonomy::getTaxonomyById($taxonomy['taxonomyid']);
         }
         return $result;
     }
@@ -165,15 +165,12 @@ class LCTaxonomy {
             $tt_ids[] = $tt['taxonomyid'];
         }
         // 取得分类差集,删除差集
-        $tt_ids = array_diff($taxonomies,$tt_ids);
+        $tt_ids = array_diff($tt_ids,$taxonomies);
         $in_tt_ids = "'" . implode("', '", $tt_ids) . "'";
         // 先删除关系
-        $rs = $db->query("SELECT `tr`.`taxonomyid` AS `taxonomyid` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%s AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
+        $rs = $db->query("SELECT DISTINCT `tr`.`taxonomyid` AS `taxonomyid` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%s AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
         while ($taxonomy = $db->fetch($rs)) {
-            $db->delete('#@_term_relation',array(
-                'taxonomyid' => $taxonomy['taxonomyid'],
-                'objectid'   => $objectid,
-            ));
+            LCTaxonomy::deleteRelation($objectid,$taxonomy['taxonomyid']);
         }
         // 然后添加分类关系
         foreach($taxonomies as $taxonomyid) {
@@ -248,7 +245,7 @@ class LCTaxonomy {
             // 判断是否需要序列化
             $value = is_need_serialize($value) ? serialize($value) : $value;
             // 查询数据库里是否已经存在
-            $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_term_taxonomy_meta` WHERE `taxonomyid`=%s AND `key`=%s;",array($taxonomyid,$db->escape($key))));
+            $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_term_taxonomy_meta` WHERE `taxonomyid`=%s AND `key`=%s;",array($taxonomyid,esc_sql($key))));
             // update
             if ($length > 0) {
                 $db->update('#@_term_taxonomy_meta',array(
@@ -300,5 +297,19 @@ class LCTaxonomy {
             return true;
         }
         return false;
+    }
+    /**
+     * 删除关系
+     *
+     * @param  $objectid
+     * @param  $taxonomyid
+     * @return bool
+     */
+    function deleteRelation($objectid,$taxonomyid) {
+        $db = get_conn();
+        return $db->delete('#@_term_relation',array(
+            'taxonomyid' => $taxonomyid,
+            'objectid'   => $objectid,
+        ));
     }
 }
