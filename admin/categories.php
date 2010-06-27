@@ -100,8 +100,8 @@ switch ($action) {
                 else {
                     $path   = esc_html($path);
                     $parent = esc_html($parent);
-                    LCTaxonomy::addTaxonomy($parent,'category',array(
-                        'name'  => esc_html($name),
+                    $name   = esc_html($name);
+                    LCTaxonomy::addTaxonomy('category',$name,$parent,array(
                         'path'  => esc_html($path),
                         'list'  => esc_html($list),
                     ));

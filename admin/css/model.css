@@ -32,6 +32,7 @@ fieldset#fields { background: #fff; border:1px solid #CCC; padding:0; -moz-borde
 table.model-field-table{ border:0 none; clear:both; margin-bottom:0px; border-collapse:collapse; }
 	table.model-field-table input{ margin:1px 0; }
 	table.model-field-table label{ cursor:pointer; color:#0000CC; }
+    table.model-field-table label input{ margin-right:3px; }
 	table.model-field-table th, table.model-field-table td { padding:3px; border:none; }
 	table.model-field-table th{ width:70px; padding-right:5px; text-align:right; font-weight:normal; }
 	table.model-field-table td{ }

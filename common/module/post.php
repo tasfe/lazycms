@@ -66,7 +66,31 @@ class LCPost {
                 $categories = $data['category'];
                 LCTaxonomy::makeRelation('category',$postid,$data['category']);
             }
-            unset($data['category']);
+            // 分析关键词
+            if (isset($data['keywords'])) {
+                $taxonomies = array();
+                if ($data['keywords']) {
+                    // 替换掉全角逗号和全角空格
+                    $data['keywords'] = str_replace(array('，','　'),array(',',' '),$data['keywords']);
+                    // 先用,分隔关键词
+                    $keywords = explode(',',$data['keywords']);
+                    // 分隔失败，使用空格分隔关键词
+                    if (count($keywords)==1) $keywords = explode(' ',$data['keywords']);
+                    // 移除重复的关键词
+                    $keywords = array_unique($keywords);
+                    // 去除关键词两边的空格
+                    array_walk($keywords,create_function('&$s','$s=trim($s);'));
+                    // 强力插入关键词
+                    foreach($keywords as $key) {
+                        $taxonomy = LCTaxonomy::addTaxonomy('post_tag',$key);
+                        $taxonomies[] = $taxonomy['taxonomyid'];
+                    }
+                }
+                // 创建关系
+                LCTaxonomy::makeRelation('post_tag',$postid,$taxonomies);
+
+            }
+            unset($data['category'],$data['keywords']);
             $meta_rows = empty($data['meta']) ? array() : $data['meta']; unset($data['meta']);
             $post_rows = $data; $data['meta'] = $meta_rows; $data['category'] = $categories;
 
@@ -138,6 +162,7 @@ class LCPost {
 		if ($post = $db->fetch($rs)) {
             // 取得分类关系
             $post['category'] = LCTaxonomy::getRelation('category',$postid);
+            $post['keywords'] = LCTaxonomy::getRelation('post_tag',$postid);
 		    if ($meta = LCPost::getPostMeta($post['postid'])) {
 		    	$post['meta'] = $meta;
 		    }

@@ -37,6 +37,21 @@ class LCTerm {
 		return null;
     }
     /**
+     * 根据名称查找
+     *
+     * @param  $name
+     * @return array|null
+     */
+    function getTermByName($name) {
+        $db = get_conn();
+	    $rs = $db->query("SELECT * FROM `#@_term` WHERE `name`=%s LIMIT 0,1;",$name);
+		// 判断用户是否存在
+		if ($term = $db->fetch($rs)) {
+			return $term;
+		}
+		return null;
+    }
+    /**
      * 添加术语
      *
      * @param  $name
@@ -187,19 +202,24 @@ class LCTaxonomy {
     /**
      * 创建分类
      *
-     * @param string $parentid
-     * @param string $type
-     * @param array $data
+     * @param  $type
+     * @param  $name
+     * @param int $parentid
+     * @param  $data
      * @return array|null
      */
-    function addTaxonomy($parentid,$type='category',$data=null) {
+    function addTaxonomy($type,$name,$parentid=0,$data=null) {
         $db = get_conn(); $parentid = intval($parentid);
         $data = is_array($data) ? $data : array();
-	    $taxonomyid = $db->insert('#@_term_taxonomy',array(
-	       'type'   => $type,
-	       'parent' => $parentid,
-	    ));
-	    return LCTaxonomy::editTaxonomy($taxonomyid,$data);
+        $taxonomyid = $db->result(sprintf("SELECT `taxonomyid` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term` AS `t` ON `tt`.`termid`=`t`.`termid` WHERE `tt`.`type`=%s AND `t`.`name`=%s LIMIT 0,1;",esc_sql($type),esc_sql($name)));
+        if (!$taxonomyid) {
+            $taxonomyid = $db->insert('#@_term_taxonomy',array(
+               'type'   => $type,
+               'parent' => $parentid,
+            ));
+        }
+        $data['name'] = $name;
+	    return LCTaxonomy::editTaxonomy($taxonomyid,$data);;
     }
     /**
      * 填写分类信息
@@ -223,7 +243,7 @@ class LCTaxonomy {
                 }
             }
             // 更新数据
-            if ($term_rows) $taxonomy_rows['termid'] = LCTerm::addTerm($term_rows['name']);
+            if (!empty($term_rows['name'])) $taxonomy_rows['termid'] = LCTerm::addTerm($term_rows['name']);
             if ($taxonomy_rows) $db->update('#@_term_taxonomy',$taxonomy_rows,array('taxonomyid'=>$taxonomyid));
             if ($meta_rows) LCTaxonomy::editTaxonomyMeta($taxonomyid,$meta_rows);
             // 清理缓存

@@ -124,14 +124,17 @@ switch ($action) {
 
             // 安全有保证，做爱做的事吧！
             if (!$validate->is_error()) {
-                // TODO 判断是否开启自动获取关键词
-
+                // 自动获取关键词
+                if ($autokeys) {
+                    
+                }
                 
                 // 获取数据
                 $data = array(
                     'category' => $category,
                     'model'    => esc_html($mcode),
                     'template' => esc_html($template),
+                    'keywords' => esc_html($keywords),
                     'description' => esc_html($description),
                 );
                 // 获取模型字段值
@@ -364,10 +367,17 @@ function post_manage_page($action) {
     $path     = isset($_DATA['path'])?$_DATA['path']:$model['path'];
     $template = isset($_DATA['template'])?$_DATA['template']:null;
     $description = isset($_DATA['description'])?$_DATA['description']:null;
+    // 取得分类关系
     $categories  = array();
     if (isset($_DATA['category'])) {
         foreach($_DATA['category'] as $category) $categories[] = $category['taxonomyid'];
     }
+    // 获取关键词
+    $keywords = array();
+    if (isset($_DATA['keywords'])) {
+        foreach($_DATA['keywords'] as $keyword) $keywords[] = $keyword['name'];
+    }
+    $keywords = implode(',',$keywords);
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?action=save" method="post" name="postmanage" id="postmanage">';
@@ -395,7 +405,7 @@ function post_manage_page($action) {
     echo                   '<th><label for="title">'._x('Title','post').' <span class="description">'.__('(required)').'</span></label></th>';
     echo                   '<td>';
     echo                       '<input id="title" name="title" type="text" size="70" value="'.$title.'" />';
-    echo                       '&nbsp;<label><input type="checkbox" value="1" name="autokeys">'.__('Auto get keywords').'</label>';
+    echo                       '&nbsp;<label for="autokeys"><input type="checkbox" value="1" id="autokeys" name="autokeys">'.__('Auto get keywords').'</label>';
     echo                   '</td>';
     echo               '</tr>';
     echo               '<tr>';
@@ -430,7 +440,7 @@ function post_manage_page($action) {
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="keywords">'._x('Keywords','post').'</label></th>';
-    echo                   '<td><input type="text" size="70" name="keywords" id="keywords" value="" />&nbsp;<button type="button">'.__('Get').'</button></td>';
+    echo                   '<td><input type="text" size="70" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button">'.__('Get').'</button></td>';
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="description">'._x('Description','post').'</label></th>';
