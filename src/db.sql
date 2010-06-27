@@ -50,6 +50,7 @@ CREATE TABLE `lazy_option` (
 insert  into `lazy_option`(`module`,`code`,`value`,`type`) values ('System','SiteName','LazyCMS v2.0 演示站','string');
 insert  into `lazy_option`(`module`,`code`,`value`,`type`) values ('System','Template','themes','string');
 insert  into `lazy_option`(`module`,`code`,`value`,`type`) values ('System','TemplateExts','htm,html,shtml','string');
+insert  into `lazy_option`(`module`,`code`,`value`,`type`) values ('System','CreateDir','/a/','string');
 insert  into `lazy_option`(`module`,`code`,`value`,`type`) values ('System','CreateFileExt','.html','string');
 
 /*Table structure for table `lazy_pinyin` */
@@ -478,12 +479,15 @@ CREATE TABLE `lazy_post` (
   `title` varchar(255) NOT NULL,
   `content` longtext,
   `passed` tinyint(1) NOT NULL default '0',
+  `datetime` int(11) NOT NULL default '0',
+  `template` varchar(50) default NULL,
+  `description` varchar(255) default NULL,
   PRIMARY KEY  (`postid`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 /*Data for the table `lazy_post` */
 
-insert  into `lazy_post`(`postid`,`model`,`author`,`path`,`title`,`content`,`passed`) values (1,'zh-CN:article',1,'%ID.html','sdfsf','dsdsdf',0);
+insert  into `lazy_post`(`postid`,`model`,`author`,`path`,`title`,`content`,`passed`,`datetime`,`template`,`description`) values (2,'zh-CN:download',1,'2.html','软件名称','软件内容描述',0,1277549567,'','Meta简述');
 
 /*Table structure for table `lazy_post_meta` */
 
@@ -499,11 +503,11 @@ CREATE TABLE `lazy_post_meta` (
   UNIQUE KEY `postid_key_idx` (`postid`,`key`),
   KEY `postid` (`postid`),
   KEY `key` (`key`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 /*Data for the table `lazy_post_meta` */
 
-insert  into `lazy_post_meta`(`metaid`,`postid`,`key`,`value`,`type`) values (1,1,'from','网络','string');
+insert  into `lazy_post_meta`(`metaid`,`postid`,`key`,`value`,`type`) values (5,2,'downurl','下载地址ddd','string');
 
 /*Table structure for table `lazy_term` */
 
@@ -514,13 +518,28 @@ CREATE TABLE `lazy_term` (
   `name` varchar(50) NOT NULL,
   PRIMARY KEY  (`termid`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 
 /*Data for the table `lazy_term` */
 
 insert  into `lazy_term`(`termid`,`name`) values (1,'新闻');
 insert  into `lazy_term`(`termid`,`name`) values (2,'地方新闻');
 insert  into `lazy_term`(`termid`,`name`) values (3,'社会新闻');
+insert  into `lazy_term`(`termid`,`name`) values (4,'下载');
+insert  into `lazy_term`(`termid`,`name`) values (5,'网络软件');
+insert  into `lazy_term`(`termid`,`name`) values (6,'IM');
+insert  into `lazy_term`(`termid`,`name`) values (7,'系统软件');
+insert  into `lazy_term`(`termid`,`name`) values (8,'安全相关');
+insert  into `lazy_term`(`termid`,`name`) values (9,'图形图像');
+insert  into `lazy_term`(`termid`,`name`) values (10,'媒体工具');
+insert  into `lazy_term`(`termid`,`name`) values (11,'网络工具');
+insert  into `lazy_term`(`termid`,`name`) values (12,'主页浏览');
+insert  into `lazy_term`(`termid`,`name`) values (13,'下载工具');
+insert  into `lazy_term`(`termid`,`name`) values (14,'联络聊天');
+insert  into `lazy_term`(`termid`,`name`) values (15,'书签工具');
+insert  into `lazy_term`(`termid`,`name`) values (16,'病毒防治');
+insert  into `lazy_term`(`termid`,`name`) values (17,'系统安全');
+insert  into `lazy_term`(`termid`,`name`) values (18,'加密解密');
 
 /*Table structure for table `lazy_term_relation` */
 
@@ -534,8 +553,16 @@ CREATE TABLE `lazy_term_relation` (
 
 /*Data for the table `lazy_term_relation` */
 
-insert  into `lazy_term_relation`(`objectid`,`taxonomyid`,`order`) values (1,1,0);
-insert  into `lazy_term_relation`(`objectid`,`taxonomyid`,`order`) values (1,2,0);
+insert  into `lazy_term_relation`(`objectid`,`taxonomyid`,`order`) values (2,5,0);
+insert  into `lazy_term_relation`(`objectid`,`taxonomyid`,`order`) values (2,1,0);
+insert  into `lazy_term_relation`(`objectid`,`taxonomyid`,`order`) values (2,1,0);
+insert  into `lazy_term_relation`(`objectid`,`taxonomyid`,`order`) values (2,5,0);
+insert  into `lazy_term_relation`(`objectid`,`taxonomyid`,`order`) values (2,1,0);
+insert  into `lazy_term_relation`(`objectid`,`taxonomyid`,`order`) values (2,5,0);
+insert  into `lazy_term_relation`(`objectid`,`taxonomyid`,`order`) values (2,1,0);
+insert  into `lazy_term_relation`(`objectid`,`taxonomyid`,`order`) values (2,5,0);
+insert  into `lazy_term_relation`(`objectid`,`taxonomyid`,`order`) values (2,1,0);
+insert  into `lazy_term_relation`(`objectid`,`taxonomyid`,`order`) values (2,5,0);
 
 /*Table structure for table `lazy_term_taxonomy` */
 
@@ -548,13 +575,26 @@ CREATE TABLE `lazy_term_taxonomy` (
   `parent` bigint(20) NOT NULL default '0',
   `count` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY  (`taxonomyid`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 /*Data for the table `lazy_term_taxonomy` */
 
 insert  into `lazy_term_taxonomy`(`taxonomyid`,`termid`,`type`,`parent`,`count`) values (1,1,'category',0,0);
 insert  into `lazy_term_taxonomy`(`taxonomyid`,`termid`,`type`,`parent`,`count`) values (2,2,'category',1,0);
 insert  into `lazy_term_taxonomy`(`taxonomyid`,`termid`,`type`,`parent`,`count`) values (3,3,'category',2,0);
+insert  into `lazy_term_taxonomy`(`taxonomyid`,`termid`,`type`,`parent`,`count`) values (4,4,'category',0,0);
+insert  into `lazy_term_taxonomy`(`taxonomyid`,`termid`,`type`,`parent`,`count`) values (5,11,'category',4,0);
+insert  into `lazy_term_taxonomy`(`taxonomyid`,`termid`,`type`,`parent`,`count`) values (6,12,'category',5,0);
+insert  into `lazy_term_taxonomy`(`taxonomyid`,`termid`,`type`,`parent`,`count`) values (7,7,'category',4,0);
+insert  into `lazy_term_taxonomy`(`taxonomyid`,`termid`,`type`,`parent`,`count`) values (8,8,'category',4,0);
+insert  into `lazy_term_taxonomy`(`taxonomyid`,`termid`,`type`,`parent`,`count`) values (9,9,'category',4,0);
+insert  into `lazy_term_taxonomy`(`taxonomyid`,`termid`,`type`,`parent`,`count`) values (10,10,'category',4,0);
+insert  into `lazy_term_taxonomy`(`taxonomyid`,`termid`,`type`,`parent`,`count`) values (11,13,'category',5,0);
+insert  into `lazy_term_taxonomy`(`taxonomyid`,`termid`,`type`,`parent`,`count`) values (12,14,'category',5,0);
+insert  into `lazy_term_taxonomy`(`taxonomyid`,`termid`,`type`,`parent`,`count`) values (13,15,'category',5,0);
+insert  into `lazy_term_taxonomy`(`taxonomyid`,`termid`,`type`,`parent`,`count`) values (14,16,'category',8,0);
+insert  into `lazy_term_taxonomy`(`taxonomyid`,`termid`,`type`,`parent`,`count`) values (15,17,'category',8,0);
+insert  into `lazy_term_taxonomy`(`taxonomyid`,`termid`,`type`,`parent`,`count`) values (16,18,'category',8,0);
 
 /*Table structure for table `lazy_term_taxonomy_meta` */
 
@@ -567,7 +607,7 @@ CREATE TABLE `lazy_term_taxonomy_meta` (
   `value` longtext,
   `type` varchar(20) default NULL,
   PRIMARY KEY  (`metaid`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 
 /*Data for the table `lazy_term_taxonomy_meta` */
 
@@ -577,6 +617,32 @@ insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type
 insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (4,2,'list','','string');
 insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (5,3,'path','%PY','string');
 insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (6,3,'list','','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (7,4,'path','%PY','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (8,4,'list','','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (9,5,'path','XiaZai/%PY','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (10,5,'list','','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (11,6,'path','XiaZai/WangLuoGongJu/%PY','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (12,6,'list','','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (13,7,'path','XiaZai/%PY','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (14,7,'list','','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (15,8,'path','XiaZai/%PY','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (16,8,'list','','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (17,9,'path','XiaZai/%PY','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (18,9,'list','','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (19,10,'path','XiaZai/%PY','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (20,10,'list','','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (21,11,'path','XiaZai/WangLuoGongJu/%PY','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (22,11,'list','','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (23,12,'path','XiaZai/WangLuoGongJu/%PY','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (24,12,'list','','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (25,13,'path','XiaZai/WangLuoGongJu/%PY','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (26,13,'list','','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (27,14,'path','XiaZai/AnQuanXiangGuan/%PY','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (28,14,'list','','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (29,15,'path','XiaZai/AnQuanXiangGuan/','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (30,15,'list','','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (31,16,'path','XiaZai/AnQuanXiangGuan/%PY','string');
+insert  into `lazy_term_taxonomy_meta`(`metaid`,`taxonomyid`,`key`,`value`,`type`) values (32,16,'list','','string');
 
 /*Table structure for table `lazy_user` */
 
@@ -597,7 +663,7 @@ CREATE TABLE `lazy_user` (
 /*Data for the table `lazy_user` */
 
 insert  into `lazy_user`(`userid`,`name`,`pass`,`mail`,`status`,`registered`,`authcode`) values (1,'admin','1dec98cdd2bb5dcfddaf68c261212715','my@lukin.cn',0,'0000-00-00 00:00:00','7D49FF4B-1484-59D2-2647-11EAFA047747');
-insert  into `lazy_user`(`userid`,`name`,`pass`,`mail`,`status`,`registered`,`authcode`) values (2,'Lukin','655ae2801769868fbd093adda70c4deb','mmmm@sss.com',0,'2010-05-06 21:13:21','BB548E7C-80DA-373F-17E1-DC2A74CC41E4');
+insert  into `lazy_user`(`userid`,`name`,`pass`,`mail`,`status`,`registered`,`authcode`) values (2,'Lukin','87a946550f794a260ef4537bea3c2741','mmmm@sss.com',0,'2010-05-06 21:13:21','875356A8-9F29-7BC0-813B-AE268B9CB8F3');
 
 /*Table structure for table `lazy_user_meta` */
 
@@ -617,7 +683,7 @@ CREATE TABLE `lazy_user_meta` (
 /*Data for the table `lazy_user_meta` */
 
 insert  into `lazy_user_meta`(`metaid`,`userid`,`key`,`value`,`type`) values (1,1,'Administrator','Yes','string');
-insert  into `lazy_user_meta`(`metaid`,`userid`,`key`,`value`,`type`) values (2,1,'roles','a:16:{i:0;s:10:\"categories\";i:1;s:8:\"post-new\";i:2;s:9:\"post-list\";i:3;s:9:\"post-edit\";i:4;s:8:\"post-del\";i:5;s:10:\"model-list\";i:6;s:9:\"model-new\";i:7;s:10:\"model-edit\";i:8;s:12:\"model-delete\";i:9;s:12:\"model-import\";i:10;s:12:\"model-export\";i:11;s:12:\"model-fields\";i:12;s:9:\"user-list\";i:13;s:8:\"user-new\";i:14;s:9:\"user-edit\";i:15;s:11:\"user-delete\";}','array');
+insert  into `lazy_user_meta`(`metaid`,`userid`,`key`,`value`,`type`) values (2,1,'roles','a:16:{i:0;s:10:\"categories\";i:1;s:8:\"post-new\";i:2;s:9:\"post-list\";i:3;s:9:\"post-edit\";i:4;s:11:\"post-delete\";i:5;s:10:\"model-list\";i:6;s:9:\"model-new\";i:7;s:10:\"model-edit\";i:8;s:12:\"model-delete\";i:9;s:12:\"model-import\";i:10;s:12:\"model-export\";i:11;s:12:\"model-fields\";i:12;s:9:\"user-list\";i:13;s:8:\"user-new\";i:14;s:9:\"user-edit\";i:15;s:11:\"user-delete\";}','array');
 insert  into `lazy_user_meta`(`metaid`,`userid`,`key`,`value`,`type`) values (3,1,'username','admin','string');
 insert  into `lazy_user_meta`(`metaid`,`userid`,`key`,`value`,`type`) values (4,1,'url','http://lukin.net','string');
 insert  into `lazy_user_meta`(`metaid`,`userid`,`key`,`value`,`type`) values (5,1,'nickname','Lukin','string');

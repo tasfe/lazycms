@@ -146,8 +146,9 @@ class LCTaxonomy {
         $in_tt_ids = $taxonomies[$type];
         $rs = $db->query("SELECT DISTINCT `tr`.`taxonomyid` AS `taxonomyid` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%s AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
         while ($taxonomy = $db->fetch($rs)) {
-            $result[] = LCTaxonomy::getTaxonomyById($taxonomy['taxonomyid']);
+            $result[$taxonomy['taxonomyid']] = LCTaxonomy::getTaxonomyById($taxonomy['taxonomyid']);
         }
+        ksort($result);
         return $result;
     }
     /**
@@ -174,6 +175,8 @@ class LCTaxonomy {
         }
         // 然后添加分类关系
         foreach($taxonomies as $taxonomyid) {
+            $is_exist = $db->result(sprintf("SELECT COUNT(*) FROM `#@_term_relation` WHERE `taxonomyid`=%s AND `objectid`=%s;",esc_sql($taxonomyid),esc_sql($objectid)));
+            if (0 < $is_exist) continue;
             $db->insert('#@_term_relation',array(
                 'taxonomyid' => $taxonomyid,
                 'objectid'   => $objectid,
