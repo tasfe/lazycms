@@ -36,7 +36,7 @@
             array(_x('Add New','user'),'user.php?action=new','user-new'),
             array(__('Your Profile'),'profile.php'),
         )),
-        /*
+        
         'modules' => array(__('Modules'),'module.php','a3',array(
             array(__('Modules'),'module.php','module-list'),
             array(_x('Add New','module'),'module.php?action=new','module-new'),
@@ -45,9 +45,9 @@
         'tools' => array(__('Tools'),'tools.php','a8',array(
             array(__('Upgrade'),'upgrade.php','upgrade'),
         )),
-        */
+
         'options'  => array(__('Settings'),'options/general.php','a5',array(
-            array(__('General'),'options/general.php'),
+            array(__('General'),'options/general.php','option-general'),
         )),
     ));
     ?>

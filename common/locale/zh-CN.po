@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-30 23:11+0800\n"
+"POT-Creation-Date: 2010-07-01 01:24+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.cn>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
@@ -59,61 +59,66 @@ msgstr "添加文章"
 msgid "Categories"
 msgstr "分类管理"
 
-#: admin/admin-header-menu.php:20
+#: admin/admin-header-menu.php:18
+msgid "Post Tags"
+msgstr "关键词管理"
+
 #: admin/admin-header-menu.php:21
+#: admin/admin-header-menu.php:22
 #: admin/admin.php:176
 msgid "Topics"
 msgstr "专题管理"
 
-#: admin/admin-header-menu.php:22
+#: admin/admin-header-menu.php:23
 #: admin/admin.php:178
 msgctxt "topic"
 msgid "Add New"
 msgstr "添加专题"
 
-#: admin/admin-header-menu.php:25
 #: admin/admin-header-menu.php:26
+#: admin/admin-header-menu.php:27
 #: admin/admin.php:183
 #: admin/model.php:26
 msgid "Models"
 msgstr "模型管理"
 
-#: admin/admin-header-menu.php:27
+#: admin/admin-header-menu.php:28
 #: admin/admin.php:185
 #: admin/model.php:275
 msgctxt "model"
 msgid "Add New"
 msgstr "添加模型"
 
-#: admin/admin-header-menu.php:28
+#: admin/admin-header-menu.php:29
 #: admin/admin.php:188
 msgctxt "model"
 msgid "Import"
 msgstr "导入模型"
 
-#: admin/admin-header-menu.php:33
 #: admin/admin-header-menu.php:34
+#: admin/admin-header-menu.php:35
 #: admin/admin.php:193
 #: admin/user.php:26
 msgid "Users"
 msgstr "用户管理"
 
-#: admin/admin-header-menu.php:35
+#: admin/admin-header-menu.php:36
 #: admin/admin.php:195
 #: admin/user.php:173
 msgctxt "user"
 msgid "Add New"
 msgstr "添加用户"
 
-#: admin/admin-header-menu.php:36
+#: admin/admin-header-menu.php:37
 msgid "Your Profile"
 msgstr "我的配置"
 
-#: admin/admin-header-menu.php:48
+#: admin/admin-header-menu.php:49
+#: admin/admin.php:200
 msgid "Settings"
 msgstr "设置管理"
 
-#: admin/admin-header-menu.php:49
+#: admin/admin-header-menu.php:50
 msgid "General"
 msgstr "常规"
 
@@ -206,6 +211,11 @@ msgstr "编辑用户"
 msgctxt "user"
 msgid "Delete"
 msgstr "删除用户"
+
+#: admin/admin.php:201
+msgctxt "settings"
+msgid "General"
+msgstr "常规设置"
 
 #: admin/categories.php:40
 msgid "Add New Category"
