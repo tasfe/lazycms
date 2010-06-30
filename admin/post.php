@@ -471,7 +471,7 @@ function categories_tree($categories=array(),$trees=null) {
     $hl = sprintf('<ul class="%s">',is_null($trees) ? 'categories' : 'children');
     if ($trees===null) $trees = LCTaxonomy::getTaxonomysTree();
     foreach ($trees as $i=>$tree) {
-        $checked = in_array($tree['taxonomyid'],$categories)?'checked="checked"':'';
+        $checked = instr($tree['taxonomyid'],$categories)?'checked="checked"':'';
         $hl.= sprintf('<li><label class="selectit" for="category-%d">',$tree['taxonomyid']);
         $hl.= sprintf('<input type="checkbox" id="category-%d" name="category[]" value="%d"%s/>%s</label>',$tree['taxonomyid'],$tree['taxonomyid'],$checked,$tree['name']);
     	if (isset($tree['subs'])) {

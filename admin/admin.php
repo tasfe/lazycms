@@ -42,7 +42,7 @@ function current_user_can($action,$is_redirect=true) {
     global $_ADMIN; $result = false;
     $user = LCUser::current(false);
     if (isset($user['roles'])) {
-    	if (in_array($action,$user['roles'])) {
+    	if (instr($action,$user['roles'])) {
     		$result = true;
     	}
     }
@@ -202,7 +202,7 @@ function admin_purview($data=null) {
         $title = $pv['_LABEL_']; unset($pv['_LABEL_']);
         $roles = null; $parent_checked = ' checked="checked"';
         foreach ($pv as $sk=>$spv) {
-            $checked = in_array($sk,$data)?' checked="checked"':null;
+            $checked = instr($sk,$data)?' checked="checked"':null;
             $parent_checked = empty($checked)?'':$parent_checked;
         	$roles.= '<label><input type="checkbox" name="roles[]" rel="'.$k.'" value="'.$sk.'"'.$checked.' /> '.$spv.'</label>';
         }
@@ -218,7 +218,9 @@ function admin_purview($data=null) {
  * @author  Lukin <my@lukin.cn>
  */
 function admin_menu($menus){
-    global $parent_file;
+    global $parent_file,$_ADMIN;
+    // 获取管理员信息
+    if (!isset($_ADMIN)) $_ADMIN = LCUser::current(false);
     // 自动植入配置
     $is_first = true; $is_last = false;
     // 设置默认参数
@@ -241,14 +243,22 @@ function admin_menu($menus){
         // 数组是菜单
         if (is_array($menu)) {
             // 检查是否需要展开菜单
-            $is_expand = false; $submenus = array();
+            $is_expand = false; $has_submenu = false; $submenus = array();
             if (isset($menu[3]) && is_array($menu[3])) {
+                $has_submenu = true;
                 foreach ($menu[3] as $href) {
                     $href[1]    = ADMIN_ROOT.$href[1];
                     $url_query  = strpos($href[1],'?')!==false?$href[1]:$href[1].'?action=default';
-                    $href[2]    = !strncasecmp($parent_file,$url_query,strlen($url_query))?true:false;
+                    $href[3]    = !strncasecmp($parent_file,$url_query,strlen($url_query))?true:false;
                     $is_expand  = !strncasecmp($parent_file,$url_query,strlen($url_query))?true:$is_expand;
-                    $submenus[] = $href;
+                    // 子菜单需要权限才能访问，且用户要有权限
+                    if (isset($href[2]) && instr($href[2],$_ADMIN['roles'])) {
+                        $submenus[] = $href;
+                    }
+                    // 子菜单存在，不需要权限
+                    elseif (empty($href[2])) {
+                        $submenus[] = $href;
+                    }
                 }
             }
             $menu[1] = ADMIN_ROOT.$menu[1];
@@ -261,22 +271,25 @@ function admin_menu($menus){
             if ($is_last) {
                 $class.= ' last';
             }
-        	
-            echo '<li id="menu-'.$k.'" class="head'.$class.$current.$expand.'">';
-        	echo '<a href="'.$menu[1].'" class="image"><img src="'.ADMIN_ROOT.'images/white.gif" class="'.$menu[2].' os" /></a>';
-        	echo '<a href="'.$menu[1].'" class="text'.$class.'">'.$menu[0].'</a>';
-        	// 展示子菜单
-        	if (!empty($submenus)) {
-        	    echo '<a href="javascript:;" class="toggle"><br/></a>';
-        	    echo '<dl class="submenu">';
-        	    echo '<dt>'.$menu[0].'</dt>';
-        		foreach ($submenus as $submenu) {
-        		    $current = $submenu[2]?' class="current"':null;
-        			echo '<dd'.$current.'><a href="'.$submenu[1].'">'.$submenu[0].'</a></dd>';
-        		}
-        		echo '</dl>';
-        	}
-        	echo '</li>'; $is_first = false;
+            // 存在子菜单，并且子菜单不为空
+        	if ($has_submenu===true && !empty($submenus)) {
+                echo '<li id="menu-'.$k.'" class="head'.$class.$current.$expand.'">';
+                echo '<a href="'.$menu[1].'" class="image"><img src="'.ADMIN_ROOT.'images/white.gif" class="'.$menu[2].' os" /></a>';
+                echo '<a href="'.$menu[1].'" class="text'.$class.'">'.$menu[0].'</a>';
+                // 展示子菜单
+                if (!empty($submenus)) {
+                    echo '<a href="javascript:;" class="toggle"><br/></a>';
+                    echo '<dl class="submenu">';
+                    echo '<dt>'.$menu[0].'</dt>';
+                    foreach ($submenus as $submenu) {
+                        $current = $submenu[3]?' class="current"':null;
+                        echo '<dd'.$current.'><a href="'.$submenu[1].'">'.$submenu[0].'</a></dd>';
+                    }
+                    echo '</dl>';
+                }
+                echo '</li>';
+            }
+            $is_first = false;
     	}
     	// 否则是分隔符
     	else {

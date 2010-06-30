@@ -422,7 +422,7 @@ function is_json($string){
  */
 function is_need_serialize($value){
     $type = strtolower(gettype($value));
-    return !in_array($type,array('integer','double','string','null'));
+    return !instr($type,'integer,double,string,null');
 }
 /**
  * 是否需要反序列化
@@ -432,7 +432,7 @@ function is_need_serialize($value){
  */
 function is_need_unserialize($type){
     $type = strtolower($type);
-    return !in_array($type,array('integer','double','string','null'));
+    return !instr($type,'integer,double,string,null');
 }
 /**
  * stripslashes 扩展
@@ -976,7 +976,7 @@ if (!function_exists('json_decode')) {
 
 if (!function_exists('mb_substr')) {
     function mb_substr( $str, $start, $length=null, $encoding='UTF-8' ) {
-        if ( !in_array( $encoding, array('utf8', 'utf-8', 'UTF8', 'UTF-8') ) ) {
+        if ( !instr( $encoding, 'utf8,utf-8,UTF8,UTF-8' ) ) {
             return is_null( $length )? substr( $str, $start ) : substr( $str, $start, $length);
         }
         if (function_exists('iconv_substr')){
@@ -991,7 +991,7 @@ if (!function_exists('mb_substr')) {
 
 if (!function_exists('mb_strlen')) {
     function mb_strlen( $str, $encoding='UTF-8' ) {
-        if ( !in_array( $encoding, array('utf8', 'utf-8', 'UTF8', 'UTF-8') ) ) {
+        if ( !instr( $encoding, 'utf8,utf-8,UTF8,UTF-8' ) ) {
             return strlen($str);
         }
         if (function_exists('iconv_strlen')){

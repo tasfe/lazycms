@@ -15,6 +15,7 @@
             array(__('Posts'),'post.php','post-list'),
             array(_x('Add New','post'),'post.php?action=new','post-new'),
             array(__('Categories'),'categories.php','categories'),
+            array(__('Post Tags'),'tags.php','tags'),
         )),
 
         'topics' => array(__('Topics'),'topic.php','a6',array(
@@ -46,7 +47,7 @@
         )),
         */
         'options'  => array(__('Settings'),'options/general.php','a5',array(
-            array(__('General'),'options/general.php','option-general'),
+            array(__('General'),'options/general.php'),
         )),
     ));
     ?>
