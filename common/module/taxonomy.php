@@ -322,10 +322,14 @@ class LCTaxonomy {
         $taxonomyid = intval($taxonomyid);
         if (!$taxonomyid) return false;
         if (LCTaxonomy::getTaxonomyById($taxonomyid)) {
-            LCTaxonomy::clearTaxonomyCache($taxonomyid);
-            $db->delete('#@_term_taxonomy',array('taxonomyid' => $taxonomyid));
+            // 删除分类关系
+            $db->delete('#@_term_relation',array('taxonomyid' => $taxonomyid));
+            // 删除分类扩展信息
             $db->delete('#@_term_taxonomy_meta',array('taxonomyid' => $taxonomyid));
-            // TODO: 删除其他数据
+            // 删除分类信息
+            $db->delete('#@_term_taxonomy',array('taxonomyid' => $taxonomyid));
+            // 清理缓存
+            LCTaxonomy::clearTaxonomyCache($taxonomyid);
             return true;
         }
         return false;

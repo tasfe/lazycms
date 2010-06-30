@@ -352,8 +352,8 @@ function model_manage_page($action) {
     if ($action!='add') {
     	$_MODEL = LCModel::getModelById($modelid);
     }
-    $ext      = C('CreateFileExt');
-    $default  = sprintf('%%ID%s',$ext);
+    $suffix   = C('HTMLFileSuffix');
+    $default  = sprintf('%%ID%s',$suffix);
     $language = isset($_MODEL['language'])?$_MODEL['language']:language();
     $name     = isset($_MODEL['name'])?$_MODEL['name']:null;
     $code     = isset($_MODEL['code'])?$_MODEL['code']:null;
@@ -374,26 +374,26 @@ function model_manage_page($action) {
     echo               '</select></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="name">'._x('Name','model').' <span class="description">'.__('(required)').'</span></label></th>';
+    echo               '<th><label for="name">'._x('Name','model').'<span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td><input id="name" name="name" type="text" size="20" value="'.$name.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="code">'._x('Code','model').' <span class="description">'.__('(required,only)').'</span></label></th>';
+    echo               '<th><label for="code">'._x('Code','model').'<span class="description">'.__('(required,only)').'</span></label></th>';
     echo               '<td><input id="code" name="code" type="text" size="20" value="'.$code.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="path">'._x('Path','model').' <span class="description">'.__('(required)').'</span></label></th>';
+    echo               '<th><label for="path">'._x('Path','model').'<span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td><input id="path" name="path" type="text" size="70" value="'.$path.'" /><div class="rules">';
-    echo                   '<a href="#%ID'.$ext.'">['.__('Post ID').']</a>';
-    echo                   '<a href="#%MD5'.$ext.'">['.__('MD5 Value').']</a>';
-    echo                   '<a href="#%PY'.$ext.'">['.__('Pinyin').']</a>';
+    echo                   '<a href="#%ID'.$suffix.'">['.__('Post ID').']</a>';
+    echo                   '<a href="#%MD5'.$suffix.'">['.__('MD5 Value').']</a>';
+    echo                   '<a href="#%PY'.$suffix.'">['.__('Pinyin').']</a>';
     echo               '</div></td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="listtemplate">'.__('List Template').'</label></th>';
     echo               '<td>';
     echo                   '<select id="listtemplate" name="list">';
-    echo                        options(C('Template'),C('TemplateExts'),'<option value="#value#"#selected#>#name#</option>',$list);
+    echo                        options(C('Template'),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$list);
     echo                   '</select>';
     echo               '</td>';
     echo           '</tr>';
@@ -401,7 +401,7 @@ function model_manage_page($action) {
     echo               '<th><label for="pagetemplate">'.__('Page Template').'</label></th>';
     echo               '<td>';
     echo                   '<select id="pagetemplate" name="page">';
-    echo                        options(C('Template'),C('TemplateExts'),'<option value="#value#"#selected#>#name#</option>',$page);
+    echo                        options(C('Template'),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$page);
     echo                   '</select>';
     echo               '</td>';
     echo           '</tr>';

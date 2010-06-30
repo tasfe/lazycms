@@ -102,6 +102,7 @@ class LazyLoader {
                                 )),
             'categories'    => array(ADMIN_PATH.'/js/categories.js',array('admin')),
             'post'          => array(ADMIN_PATH.'/js/post.js',array('admin')),
+            'options'       => array(ADMIN_PATH.'/js/options.js',array('admin')),
         );
         // 追加语言相关的JS
         if ($this->language) {

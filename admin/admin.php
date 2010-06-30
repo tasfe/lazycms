@@ -172,6 +172,13 @@ function admin_purview($data=null) {
             'post-edit'   => _x('Edit','post'),
             'post-delete' => _x('Delete','post'),
         ),
+        'topic' => array(
+            '_LABEL_'     => __('Topics'),
+            'topic-list'   => _x('List','topic'),
+            'topic-new'    => _x('Add New','topic'),
+            'topic-edit'   => _x('Edit','topic'),
+            'topic-delete' => _x('Delete','topic'),
+        ),
         'model' => array(
             '_LABEL_'      => __('Models'),
             'model-list'   => _x('List','model'),
@@ -245,7 +252,8 @@ function admin_menu($menus){
                 }
             }
             $menu[1] = ADMIN_ROOT.$menu[1];
-            $current = !strncasecmp($parent_file,$menu[1],strlen($menu[1])) || $is_expand ? ' current expand' : null;
+            $current = !strncasecmp($parent_file,$menu[1],strlen($menu[1])) || $is_expand ? ' current' : null;
+            $expand  = empty($submenus) || empty($current) ? '' : ' expand';
             $is_last = is_array(current($menus)) ? $is_last : true; $class = '';
             if ($is_first) {
                 $class.= ' first';
@@ -254,7 +262,7 @@ function admin_menu($menus){
                 $class.= ' last';
             }
         	
-            echo '<li id="menu-'.$k.'" class="head'.$class.$current.'">';
+            echo '<li id="menu-'.$k.'" class="head'.$class.$current.$expand.'">';
         	echo '<a href="'.$menu[1].'" class="image"><img src="'.ADMIN_ROOT.'images/white.gif" class="'.$menu[2].' os" /></a>';
         	echo '<a href="'.$menu[1].'" class="text'.$class.'">'.$menu[0].'</a>';
         	// 展示子菜单

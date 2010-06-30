@@ -1,4 +1,3 @@
-<?php
 /**
  * +---------------------------------------------------------------------------+
  * | LL                             LLLL   LL     L   LLLL               LLLL  |
@@ -18,24 +17,9 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-require '../global.php';
-// 取得数据库连接
-$db = get_conn();
-// 清空数据
-$db->query('TRUNCATE `#@_option`;');
-// 清除缓存
-FCache::flush();
-
-// 网站标题
-C('SiteName','LazyCMS v2.0 演示站');
-// 模板地址
-C('Template','themes');
-// 模板文件后缀
-C('TemplateSuffixs','htm,html,shtml');
-// 网页保存目录
-C('HTMLSaveDir','a/');
-// 网页文件默认后缀
-C('HTMLFileSuffix','.html');
-
-
-var_dump('Success!');
+// 我的配置页面初始化
+function options_init() {
+	$('form#options').ajaxSubmit(function(data){
+        LazyCMS.ajaxResult(data);
+    });
+}

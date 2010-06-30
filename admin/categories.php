@@ -246,11 +246,11 @@ function category_manage_page($action) {
     echo               '</select></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="name">'._x('Name','sort').' <span class="description">'.__('(required)').'</span></label></th>';
+    echo               '<th><label for="name">'._x('Name','sort').'<span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td><input id="name" name="name" type="text" size="30" value="'.$name.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="path">'._x('Path','sort').' <span class="description">'.__('(required)').'</span></label></th>';
+    echo               '<th><label for="path">'._x('Path','sort').'<span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td><input id="path" name="path" type="text" size="70" value="'.$path.'" /><div class="rules">';
     echo                   '<a href="#%ID">['.__('Category ID').']</a>';
     echo                   '<a href="#%MD5">['.__('MD5 Value').']</a>';
@@ -266,7 +266,7 @@ function category_manage_page($action) {
     echo               '<td>';
     echo                   '<select id="listtemplate" name="list">';
     echo                       $modules?'<option value="">'.__('Use the model set').'</option>':null;
-    echo                       options(C('Template'),C('TemplateExts'),'<option value="#value#"#selected#>#name#</option>',$list);
+    echo                       options(C('Template'),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$list);
     echo                   '</select>';
     echo               '</td>';
     echo           '</tr>';

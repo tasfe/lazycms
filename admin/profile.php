@@ -26,43 +26,41 @@ $_ADMIN = LCUser::current();
 $action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
 $referer = referer(PHP_FILE,false);
 // 保存我的配置
-if ($action=='save') {
-	$validate = new Validate();
-    if ($validate->post()) {
-        $userid    = isset($_ADMIN['userid'])?$_ADMIN['userid']:null;
-        $password  = isset($_POST['password1'])?$_POST['password1']:null;
-        $password2 = isset($_POST['password2'])?$_POST['password2']:null;
-        $nickname  = isset($_POST['nickname'])?$_POST['nickname']:null;
-        $email     = isset($_POST['email'])?$_POST['email']:null;
-        $url       = isset($_POST['url'])?$_POST['url']:null;
-        $desc      = isset($_POST['description'])?$_POST['description']:null;
-        // 验证email
-        $validate->check(array(
-            array('email',VALIDATE_EMPTY,__('Please enter an e-mail address.')),
-            array('email',VALIDATE_IS_EMAIL,__('The e-mail address isn\'t correct.'))
-        ));
-        // 验证密码
-        if ($password || $password2) {
-            $validate->check('password1',VALIDATE_EQUAL,__('Please enter the same password in the two password fields.'),'password2');
+$validate = new Validate();
+if ($validate->post()) {
+    $userid    = isset($_ADMIN['userid'])?$_ADMIN['userid']:null;
+    $password  = isset($_POST['password1'])?$_POST['password1']:null;
+    $password2 = isset($_POST['password2'])?$_POST['password2']:null;
+    $nickname  = isset($_POST['nickname'])?$_POST['nickname']:null;
+    $email     = isset($_POST['email'])?$_POST['email']:null;
+    $url       = isset($_POST['url'])?$_POST['url']:null;
+    $desc      = isset($_POST['description'])?$_POST['description']:null;
+    // 验证email
+    $validate->check(array(
+        array('email',VALIDATE_EMPTY,__('Please enter an e-mail address.')),
+        array('email',VALIDATE_IS_EMAIL,__('The e-mail address isn\'t correct.'))
+    ));
+    // 验证密码
+    if ($password || $password2) {
+        $validate->check('password1',VALIDATE_EQUAL,__('Please enter the same password in the two password fields.'),'password2');
+    }
+
+    // 验证通过
+    if (!$validate->is_error()) {
+        $user_info = array(
+            'url'  => esc_html($url),
+            'mail' => esc_html($email),
+            'nickname' => esc_html($nickname),
+            'description' => esc_html($desc),
+        );
+        // 修改暗号
+        if ($password) {
+            $user_info = array_merge($user_info,array(
+               'pass' => md5($password.$_ADMIN['authcode'])
+            ));
         }
-        
-        // 验证通过
-        if (!$validate->is_error()) {
-            $user_info = array(
-                'url'  => esc_html($url),
-                'mail' => esc_html($email),
-                'nickname' => esc_html($nickname),
-                'description' => esc_html($desc),
-            );
-            // 修改暗号
-            if ($password) {
-            	$user_info = array_merge($user_info,array(
-            	   'pass' => md5($password.$_ADMIN['authcode'])
-            	));
-            }
-            LCUser::editUser($userid,$user_info);
-            admin_success(__('User updated.'),"LazyCMS.redirect('".$referer."');");
-        }
+        LCUser::editUser($userid,$user_info);
+        admin_success(__('User updated.'),"LazyCMS.redirect('".$referer."');");
     }
 } else {
     // 标题
@@ -90,7 +88,7 @@ if ($action=='save') {
     echo               '<td><input id="nickname" name="nickname" type="text" size="20" value="'.$nickname.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="email">'.__('E-mail').' <span class="description">'.__('(required)').'</span></label></th>';
+    echo               '<th><label for="email">'.__('E-mail').'<span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td><input id="email" name="email" type="text" size="40" value="'.$email.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
@@ -104,15 +102,14 @@ if ($action=='save') {
     echo               '</td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="password1">'.__('Password').' <span class="description">'.__('(twice)').'</span></label></th>';
-    echo               '<td><input id="password1" name="password1" type="password" size="20" /> ';
+    echo               '<th><label for="password1">'.__('Password').'<span class="description">'.__('(twice)').'</span></label></th>';
+    echo               '<td><input id="password1" name="password1" type="password" size="20" />';
     echo                   '<span class="description">'.__('If you would like to change the password type a new one. Otherwise leave this blank.').'</span>';
-    echo                   '<br/><input id="password2" name="password2" type="password" size="20" /> <span class="description">'.__('Type your new password again.').'</span>';
+    echo                   '<br/><input id="password2" name="password2" type="password" size="20" /><span class="description">'.__('Type your new password again.').'</span>';
     echo               '</td>';
     echo           '</tr>';
     echo       '</table>';
     echo     '</fieldset>';
-    echo     '<input type="hidden" name="action" value="save" />';
     echo     '<input type="hidden" name="referer" value="'.$referer.'" />';
     echo     '<p class="submit"><button type="submit">'.__('Update Profile').'</button></p>';
     echo   '</form>';

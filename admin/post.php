@@ -163,7 +163,7 @@ switch ($action) {
                     }
                     $result = __('Post created.');
                 }
-                
+                // TODO 生成文章
                 admin_success($result,"LazyCMS.redirect('".PHP_FILE."');");
             }
         }
@@ -291,7 +291,7 @@ switch ($action) {
                 echo    '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$post['postid'].'" /></td>';
                 echo    '<td><strong><a href="'.$edit_url.'">'.$post['title'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
                 echo    '<td><a href="'.$model_url.'">'.$post['model']['name'].'</a></td>';
-                echo    '<td><a href="javascript:;">'.C('CreateDir').$post['path'].'</a></td>';
+                echo    '<td><a href="javascript:;">'.WEB_ROOT.C('HTMLSaveDir').$post['path'].'</a></td>';
                 echo    '<td>'.implode(',' , $categories).'</td>';
                 echo    '<td>'.date('Y-m-d H:i:s',$post['datetime']).'</td>';
                 echo    '<td>'.$post['passed'].'</td>';
@@ -349,7 +349,7 @@ function post_manage_page($action) {
     $referer = referer(PHP_FILE);
     $postid  = isset($_GET['postid'])?$_GET['postid']:0;
     $models  = LCModel::getModels(1);
-    $ext     = C('CreateFileExt');
+    $suffix  = C('HTMLFileSuffix');
     if ($action=='add') {
         $mcode = isset($_GET['model'])?$_GET['model']:null;
     } else {
@@ -402,7 +402,7 @@ function post_manage_page($action) {
     echo                   '</td>';
     echo               '</tr>';
     echo               '<tr>';
-    echo                   '<th><label for="title">'._x('Title','post').' <span class="description">'.__('(required)').'</span></label></th>';
+    echo                   '<th><label for="title">'._x('Title','post').'<span class="description">'.__('(required)').'</span></label></th>';
     echo                   '<td>';
     echo                       '<input id="title" name="title" type="text" size="70" value="'.$title.'" />';
     echo                       '&nbsp;<label for="autokeys"><input type="checkbox" value="1" id="autokeys" name="autokeys">'.__('Auto get keywords').'</label>';
@@ -413,11 +413,11 @@ function post_manage_page($action) {
     echo                   '<td><textarea cols="120" rows="15" id="content" name="content">'.$content.'</textarea></td>';
     echo               '</tr>';
     echo               '<tr>';
-    echo                   '<th><label for="path">'._x('Path','post').' <span class="description">'.__('(required)').'</span></label></th>';
-    echo                   '<td><input id="path" name="path" type="text" size="70" value="'.$path.'" /> <span class="rules">';
-    echo                       '<a href="#%ID'.$ext.'">['.__('Post ID').']</a>';
-    echo                       '<a href="#%MD5'.$ext.'">['.__('MD5 Value').']</a>';
-    echo                       '<a href="#%PY'.$ext.'">['.__('Pinyin').']</a>';
+    echo                   '<th><label for="path">'._x('Path','post').'<span class="description">'.__('(required)').'</span></label></th>';
+    echo                   '<td><input id="path" name="path" type="text" size="70" value="'.$path.'" /><span class="rules">';
+    echo                       '<a href="#%ID'.$suffix.'">['.__('Post ID').']</a>';
+    echo                       '<a href="#%MD5'.$suffix.'">['.__('MD5 Value').']</a>';
+    echo                       '<a href="#%PY'.$suffix.'">['.__('Pinyin').']</a>';
     echo                   '</span></td>';
     echo               '</tr>';
     echo           '</tbody>';
@@ -434,7 +434,7 @@ function post_manage_page($action) {
     echo                   '<td>';
     echo                       '<select id="template" name="template">';
     echo                           $models?'<option value="">'.__('Use the model set').'</option>':null;
-    echo                           options(C('Template'),C('TemplateExts'),'<option value="#value#"#selected#>#name#</option>',$template);
+    echo                           options(C('Template'),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$template);
     echo                       '</select>';
     echo                   '</td>';
     echo               '</tr>';
