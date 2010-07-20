@@ -111,7 +111,7 @@ function model_manage_init() {
 	// 绑定规则点击
 	$('#modelmanage div.rules > a').click(function(){
 	    var val = this.href.replace(self.location,'').replace('#','');
-	    $('#modelmanage input[name=path]').val(val); return false;
+	    $('#modelmanage input[name=path]').insertVal(val); return false;
 	});
 	// 绑定展开事件
 	$('#fields').each(function(i){

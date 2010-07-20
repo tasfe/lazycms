@@ -59,10 +59,6 @@ if ($validate->post()) {
     echo               '<td><input id="TemplateSuffixs" name="TemplateSuffixs" type="text" size="50" value="'.C('TemplateSuffixs').'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="HTMLSaveDir">'.__('HTML Save the directory').'<br /><span class="description">'.__('Must be "/" end, required').'</span></label></th>';
-    echo               '<td><input id="HTMLSaveDir" name="HTMLSaveDir" type="text" size="10" value="'.C('HTMLSaveDir').'" /></td>';
-    echo           '</tr>';
-    echo           '<tr>';
     echo               '<th><label for="HTMLFileSuffix">'.__('HTML file suffix').'<span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td><input id="HTMLFileSuffix" name="HTMLFileSuffix" type="text" size="10" value="'.C('HTMLFileSuffix').'" /></td>';
     echo           '</tr>';

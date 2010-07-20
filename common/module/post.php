@@ -37,6 +37,7 @@ class LCPost {
 	       'content' => $content,
 	       'path'    => $path,
 	    ));
+        $data['path'] = $path;
 	    return LCPost::editPost($postid,$data);
     }
     /**

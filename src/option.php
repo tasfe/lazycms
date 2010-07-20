@@ -32,8 +32,6 @@ C('SiteName','LazyCMS v2.0 演示站');
 C('Template','themes');
 // 模板文件后缀
 C('TemplateSuffixs','htm,html,shtml');
-// 网页保存目录
-C('HTMLSaveDir','a/');
 // 网页文件默认后缀
 C('HTMLFileSuffix','.html');
 

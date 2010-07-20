@@ -353,7 +353,7 @@ function model_manage_page($action) {
     	$_MODEL = LCModel::getModelById($modelid);
     }
     $suffix   = C('HTMLFileSuffix');
-    $default  = sprintf('%%ID%s',$suffix);
+    $default  = sprintf('%%Y%%m%%d/%%ID%s',$suffix);
     $language = isset($_MODEL['language'])?$_MODEL['language']:language();
     $name     = isset($_MODEL['name'])?$_MODEL['name']:null;
     $code     = isset($_MODEL['code'])?$_MODEL['code']:null;
@@ -387,6 +387,10 @@ function model_manage_page($action) {
     echo                   '<a href="#%ID'.$suffix.'">['.__('Post ID').']</a>';
     echo                   '<a href="#%MD5'.$suffix.'">['.__('MD5 Value').']</a>';
     echo                   '<a href="#%PY'.$suffix.'">['.__('Pinyin').']</a>';
+    echo                   '<a href="#%Y">['.strftime('%Y').']</a>';
+    echo                   '<a href="#%m">['.strftime('%m').']</a>';
+    echo                   '<a href="#%d">['.strftime('%d').']</a>';
+    echo                   '<a href="#%a">['.strftime('%a').']</a>';
     echo               '</div></td>';
     echo           '</tr>';
     echo           '<tr>';

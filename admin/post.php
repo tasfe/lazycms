@@ -291,7 +291,7 @@ switch ($action) {
                 echo    '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$post['postid'].'" /></td>';
                 echo    '<td><strong><a href="'.$edit_url.'">'.$post['title'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
                 echo    '<td><a href="'.$model_url.'">'.$post['model']['name'].'</a></td>';
-                echo    '<td><a href="javascript:;">'.WEB_ROOT.C('HTMLSaveDir').$post['path'].'</a></td>';
+                echo    '<td><a href="javascript:;">'.WEB_ROOT.$post['path'].'</a></td>';
                 echo    '<td>'.implode(',' , $categories).'</td>';
                 echo    '<td>'.date('Y-m-d H:i:s',$post['datetime']).'</td>';
                 echo    '<td>'.$post['passed'].'</td>';
