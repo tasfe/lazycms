@@ -22,7 +22,7 @@ defined('COM_PATH') or die('Restricted access!');
 // 默认系统语言
 define('LANGUAGE','zh-CN');
 // DSN format: mysql://root@localhost/lazy/test
-define('DSN_CONFIG','mysql://root@localhost/lazy/test');
+define('DSN_CONFIG','mysql://root:123@localhost/lazy/test');
 // 缓存文件夹
 define('CACHE_PATH',COM_PATH.'/.cache');
 // debug 模式
