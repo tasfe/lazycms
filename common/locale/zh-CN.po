@@ -2,1067 +2,24 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-01 01:24+0800\n"
+"POT-Creation-Date: 2010-08-03 14:06+0800\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Lukin <my@lukin.cn>\n"
+"Last-Translator: Lukin <my@lukin.net>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Chinese\n"
 "X-Poedit-Country: CHINA\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-KeywordsList: __;_e;_x:1,2c\n"
-"X-Poedit-Basepath: D:\\Users\\Lukin\\WwwRoot\\cms\n"
+"X-Poedit-Basepath: /home/lukin/Projects/lazycms\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: admin/admin-footer.php:8
-msgid "Thank you for creating with <a href=\"http://lazycms.net/\" target=\"_blank\">LazyCMS</a>."
-msgstr "感谢使用 <a href=\"http://lazycms.net/\" target=\"_blank\">LazyCMS</a> 进行创作。"
-
-#: admin/admin-footer.php:8
-msgid "<a href=\"http://docs.lazycms.net/\" target=\"_blank\">Documentation</a>"
-msgstr "<a href=\"http://docs.lazycms.net/\" target=\"_blank\">官方文档</a>"
-
-#: admin/admin-footer.php:8
-msgid "<a href=\"http://forums.lazycms.net/\" target=\"_blank\">Support Forums</a>"
-msgstr "<a href=\"http://forums.lazycms.net/\" target=\"_blank\">支持论坛</a>"
-
-#: admin/admin-footer.php:10
-#, php-format
-msgid "Version <span>%s</span>"
-msgstr "版本 <span>%s</span>"
-
-#: admin/admin-header-menu.php:10
-#: admin/index.php:27
-msgid "Control Panel"
-msgstr "控制面板"
-
-#: admin/admin-header-menu.php:14
-#: admin/admin-header-menu.php:15
-#: admin/admin.php:168
-#: admin/post.php:26
-msgid "Posts"
-msgstr "文章管理"
-
-#: admin/admin-header-menu.php:16
-#: admin/admin.php:170
-#: admin/post.php:269
-msgctxt "post"
-msgid "Add New"
-msgstr "添加文章"
-
-#: admin/admin-header-menu.php:17
-#: admin/admin.php:169
-#: admin/categories.php:26
-msgid "Categories"
-msgstr "分类管理"
-
-#: admin/admin-header-menu.php:18
-msgid "Post Tags"
-msgstr "关键词管理"
-
-#: admin/admin-header-menu.php:21
-#: admin/admin-header-menu.php:22
-#: admin/admin.php:176
-msgid "Topics"
-msgstr "专题管理"
-
-#: admin/admin-header-menu.php:23
-#: admin/admin.php:178
-msgctxt "topic"
-msgid "Add New"
-msgstr "添加专题"
-
-#: admin/admin-header-menu.php:26
-#: admin/admin-header-menu.php:27
-#: admin/admin.php:183
-#: admin/model.php:26
-msgid "Models"
-msgstr "模型管理"
-
-#: admin/admin-header-menu.php:28
-#: admin/admin.php:185
-#: admin/model.php:275
-msgctxt "model"
-msgid "Add New"
-msgstr "添加模型"
-
-#: admin/admin-header-menu.php:29
-#: admin/admin.php:188
-msgctxt "model"
-msgid "Import"
-msgstr "导入模型"
-
-#: admin/admin-header-menu.php:34
-#: admin/admin-header-menu.php:35
-#: admin/admin.php:193
-#: admin/user.php:26
-msgid "Users"
-msgstr "用户管理"
-
-#: admin/admin-header-menu.php:36
-#: admin/admin.php:195
-#: admin/user.php:173
-msgctxt "user"
-msgid "Add New"
-msgstr "添加用户"
-
-#: admin/admin-header-menu.php:37
-msgid "Your Profile"
-msgstr "我的配置"
-
-#: admin/admin-header-menu.php:49
-#: admin/admin.php:200
-msgid "Settings"
-msgstr "设置管理"
-
-#: admin/admin-header-menu.php:50
-msgid "General"
-msgstr "常规"
-
-#: admin/admin-header.php:39
-msgid "Visit Site"
-msgstr "访问网站"
-
-#: admin/admin-header.php:43
-msgid "Logout"
-msgstr "退出"
-
-#: admin/admin.php:54
-#: admin/admin.php:56
-#: admin/admin.php:61
-msgid "Restricted access, please contact the administrator."
-msgstr "受限制的访问，请联系管理员。"
-
-#: admin/admin.php:59
-#: admin/admin.php:61
-msgid "Restricted access"
-msgstr "限制访问"
-
-#: admin/admin.php:171
-msgctxt "post"
-msgid "List"
-msgstr "文章列表"
-
-#: admin/admin.php:172
-msgctxt "post"
-msgid "Edit"
-msgstr "编辑文章"
-
-#: admin/admin.php:173
-msgctxt "post"
-msgid "Delete"
-msgstr "删除文章"
-
-#: admin/admin.php:177
-msgctxt "topic"
-msgid "List"
-msgstr "专题列表"
-
-#: admin/admin.php:179
-msgctxt "topic"
-msgid "Edit"
-msgstr "编辑专题"
-
-#: admin/admin.php:180
-msgctxt "topic"
-msgid "Delete"
-msgstr "删除专题"
-
-#: admin/admin.php:184
-msgctxt "model"
-msgid "List"
-msgstr "模型列表"
-
-#: admin/admin.php:186
-msgctxt "model"
-msgid "Edit"
-msgstr "编辑模型"
-
-#: admin/admin.php:187
-msgctxt "model"
-msgid "Delete"
-msgstr "删除模型"
-
-#: admin/admin.php:189
-msgctxt "model"
-msgid "Export"
-msgstr "导出模型"
-
-#: admin/admin.php:190
-#: admin/model.php:412
-msgctxt "model"
-msgid "Fields"
-msgstr "字段管理"
-
-#: admin/admin.php:194
-msgctxt "user"
-msgid "List"
-msgstr "用户列表"
-
-#: admin/admin.php:196
-msgctxt "user"
-msgid "Edit"
-msgstr "编辑用户"
-
-#: admin/admin.php:197
-msgctxt "user"
-msgid "Delete"
-msgstr "删除用户"
-
-#: admin/admin.php:201
-msgctxt "settings"
-msgid "General"
-msgstr "常规设置"
-
-#: admin/categories.php:40
-msgid "Add New Category"
-msgstr "添加新分类"
-
-#: admin/categories.php:51
-msgid "Edit Category"
-msgstr "编辑分类"
-
-#: admin/categories.php:62
-msgid "Category deleted."
-msgstr "分类删除成功。"
-
-#: admin/categories.php:64
-msgid "Category delete fail."
-msgstr "分类删除失败。"
-
-#: admin/categories.php:78
-msgctxt "sort"
-msgid "The name field is empty."
-msgstr "分类名称不能为空。"
-
-#: admin/categories.php:79
-#, php-format
-msgctxt "sort"
-msgid "The name field length must be %d-%d characters."
-msgstr "分类名称长度必须%d至%d个字符。"
-
-#: admin/categories.php:83
-msgctxt "sort"
-msgid "The path field is empty."
-msgstr "列表目录不能为空。"
-
-#: admin/categories.php:97
-msgid "Category updated."
-msgstr "分类更新成功。"
-
-#: admin/categories.php:108
-msgid "Category created."
-msgstr "分类添加成功。"
-
-#: admin/categories.php:118
-#: admin/model.php:145
-#: admin/post.php:72
-#: admin/user.php:154
-msgid "Did not select any item."
-msgstr "没有选择任何一项。"
-
-#: admin/categories.php:126
-msgid "Categories deleted."
-msgstr "分类删除成功。"
-
-#: admin/categories.php:135
-msgctxt "sort"
-msgid "Add New"
-msgstr "添加分类"
-
-#: admin/categories.php:149
-#: admin/model.php:303
-#: admin/model.php:438
-#: admin/post.php:301
-msgid "No record!"
-msgstr "没有记录！"
-
-#: admin/categories.php:167
-#: admin/model.php:321
-#: admin/post.php:319
-#: admin/user.php:217
-msgid "Bulk Actions"
-msgstr "批量操作"
-
-#: admin/categories.php:168
-#: admin/categories.php:203
-#: admin/post.php:320
-msgid "Create"
-msgstr "生成"
-
-#: admin/categories.php:169
-#: admin/categories.php:205
-#: admin/model.php:293
-#: admin/model.php:325
-#: admin/model.php:427
-#: admin/post.php:289
-#: admin/post.php:321
-#: admin/user.php:191
-#: admin/user.php:218
-msgid "Delete"
-msgstr "删除"
-
-#: admin/categories.php:171
-#: admin/model.php:327
-#: admin/post.php:323
-#: admin/user.php:220
-msgid "Apply"
-msgstr "应用"
-
-#: admin/categories.php:181
-#: admin/categories.php:249
-msgctxt "sort"
-msgid "Name"
-msgstr "分类名称"
-
-#: admin/categories.php:182
-#: admin/categories.php:253
-msgctxt "sort"
-msgid "Path"
-msgstr "列表目录"
-
-#: admin/categories.php:183
-msgctxt "sort"
-msgid "Posts"
-msgstr "文章数"
-
-#: admin/categories.php:204
-#: admin/model.php:289
-#: admin/model.php:426
-#: admin/post.php:288
-#: admin/user.php:187
-#: admin/user.php:190
-msgid "Edit"
-msgstr "编辑"
-
-#: admin/categories.php:242
-msgctxt "sort"
-msgid "Parent"
-msgstr "上级目录"
-
-#: admin/categories.php:244
-msgid "None"
-msgstr "无"
-
-#: admin/categories.php:249
-#: admin/categories.php:253
-#: admin/model.php:377
-#: admin/model.php:385
-#: admin/post.php:405
-#: admin/post.php:416
-#: admin/profile.php:91
-#: admin/user.php:260
-#: admin/user.php:268
-#: admin/options/general.php:50
-#: admin/options/general.php:54
-#: admin/options/general.php:58
-#: admin/options/general.php:66
-msgid "(required)"
-msgstr "(必填)"
-
-#: admin/categories.php:255
-msgid "Category ID"
-msgstr "分类ID"
-
-#: admin/categories.php:256
-#: admin/model.php:388
-#: admin/post.php:419
-msgid "MD5 Value"
-msgstr "MD5值"
-
-#: admin/categories.php:257
-#: admin/model.php:389
-#: admin/post.php:420
-msgid "Pinyin"
-msgstr "拼音"
-
-#: admin/categories.php:265
-#: admin/model.php:393
-msgid "List Template"
-msgstr "列表模板"
-
-#: admin/categories.php:268
-#: admin/post.php:436
-msgid "Use the model set"
-msgstr "使用模型设置"
-
-#: admin/categories.php:276
-msgid "Add Category"
-msgstr "添加分类"
-
-#: admin/categories.php:276
-#: admin/categories.php:279
-#: admin/model.php:451
-#: admin/model.php:454
-#: admin/post.php:453
-#: admin/post.php:456
-#: admin/user.php:308
-#: admin/user.php:311
+#: common/functions.php:169
 msgid "Back"
 msgstr "返回"
-
-#: admin/categories.php:279
-msgid "Update Category"
-msgstr "更新分类"
-
-#: admin/login.php:46
-#: admin/user.php:97
-msgid "The username field is empty."
-msgstr "用户名不能为空。"
-
-#: admin/login.php:48
-#: admin/user.php:99
-#, php-format
-msgid "The username field length must be %d-%d characters."
-msgstr "用户名长度必须%d至%d个字符。"
-
-#: admin/login.php:51
-msgid "The password field is empty."
-msgstr "密码不能为空。"
-
-#: admin/login.php:61
-msgid "Username or password error!"
-msgstr "用户名或者密码错误！"
-
-#: admin/login.php:73
-#: admin/login.php:80
-msgid "Administrator Login"
-msgstr "管理员登录"
-
-#: admin/login.php:78
-#, php-format
-msgid "<p>LazyCMS is a new kind,open source, free content management system.</p><p>Runtime:PHP 4.3.3+、MySQL 4.1+</p><p><a href=\"%s\">Back Home</a></p>"
-msgstr "<p>LazyCMS是一种新型的、开源、免费的内容管理系统。</p><p>运行环境：PHP 4.3.3+、MySQL 4.1+</p><p><a href=\"%s\">返回首页</a></p>"
-
-#: admin/login.php:81
-#: admin/profile.php:83
-#: admin/user.php:230
-#: admin/user.php:260
-msgid "Username"
-msgstr "用户名"
-
-#: admin/login.php:82
-#: admin/profile.php:105
-#: admin/user.php:291
-msgid "Password"
-msgstr "密码"
-
-#: admin/login.php:83
-msgid "Language"
-msgstr "语言"
-
-#: admin/login.php:85
-msgid "Default"
-msgstr "默认"
-
-#: admin/login.php:86
-#: admin/model.php:372
-msgid "English"
-msgstr "英语"
-
-#: admin/login.php:90
-msgid "Remember Me"
-msgstr "记住我的登录信息"
-
-#: admin/login.php:91
-msgid "Login"
-msgstr "登入"
-
-#: admin/model.php:38
-msgid "Add New Model"
-msgstr "添加新模型"
-
-#: admin/model.php:53
-msgid "Edit Model"
-msgstr "编辑模型"
-
-#: admin/model.php:66
-msgid "Model deleted."
-msgstr "模型删除成功。"
-
-#: admin/model.php:68
-msgid "Model delete fail."
-msgstr "模型删除失败。"
-
-#: admin/model.php:88
-msgctxt "model"
-msgid "The name field is empty."
-msgstr "模型名称不能为空。"
-
-#: admin/model.php:90
-#, php-format
-msgctxt "model"
-msgid "The name field length must be %d-%d characters."
-msgstr "模型名称长度必须%d至%d个字符。"
-
-#: admin/model.php:105
-msgctxt "model"
-msgid "The code field is empty."
-msgstr "模型标识不能为空。"
-
-#: admin/model.php:107
-#, php-format
-msgctxt "model"
-msgid "The code field length must be %d-%d characters."
-msgstr "模型标识长度必须%d至%d个字符。"
-
-#: admin/model.php:109
-msgctxt "model"
-msgid "The code already exists."
-msgstr "模型标识已存在，请重新输入。"
-
-#: admin/model.php:113
-msgctxt "model"
-msgid "The path field is empty."
-msgstr "生成规则不能为空。"
-
-#: admin/model.php:130
-msgid "Model updated."
-msgstr "模型更新成功。"
-
-#: admin/model.php:135
-msgid "Model created."
-msgstr "模型创建成功。"
-
-#: admin/model.php:154
-msgid "Models deleted."
-msgstr "模型删除成功。"
-
-#: admin/model.php:163
-msgid "Models enabled."
-msgstr "模型启用成功。"
-
-#: admin/model.php:172
-msgid "Models disabled."
-msgstr "模型禁用成功。"
-
-#: admin/model.php:207
-msgid "Can't be empty"
-msgstr "不能为空"
-
-#: admin/model.php:207
-msgid "The field value is empty."
-msgstr "这个字段值是空的。"
-
-#: admin/model.php:208
-msgid "Fixed-length"
-msgstr "固定长度"
-
-#: admin/model.php:208
-#, php-format
-msgid "The field value length must be %d-%d characters."
-msgstr "这个字段值长度必须%d至%d个字符。"
-
-#: admin/model.php:209
-msgid "Value1 = Value2"
-msgstr "相同的两个值"
-
-#: admin/model.php:209
-msgid "Same the two fields."
-msgstr "两个字段值不相等。"
-
-#: admin/model.php:210
-#: admin/profile.php:91
-#: admin/user.php:231
-#: admin/user.php:268
-msgid "E-mail"
-msgstr "电子邮箱"
-
-#: admin/model.php:210
-#: admin/profile.php:41
-#: admin/user.php:106
-msgid "The e-mail address isn't correct."
-msgstr "电子邮件地址不正确。"
-
-#: admin/model.php:211
-msgid "Case-Insensitive letters"
-msgstr "英文字母"
-
-#: admin/model.php:211
-msgid "This field value is not a letter."
-msgstr "这个字段值不是字母。"
-
-#: admin/model.php:212
-msgid "Numeric:[0-9]"
-msgstr "匹配数字"
-
-#: admin/model.php:212
-msgid "This field value is not a number."
-msgstr "这个字段值不是数字。"
-
-#: admin/model.php:213
-msgctxt "model"
-msgid "URL"
-msgstr "匹配网址"
-
-#: admin/model.php:213
-msgid "This field value is not a URL."
-msgstr "这个字段值不是一个超级链接。"
-
-#: admin/model.php:214
-msgid "Custom validation"
-msgstr "自定义验证"
-
-#: admin/model.php:214
-msgid "Error Message"
-msgstr "错误信息"
-
-#: admin/model.php:220
-#: admin/model.php:466
-msgctxt "model"
-msgid "Label"
-msgstr "表单文字"
-
-#: admin/model.php:221
-msgid "Need help"
-msgstr "需要帮助"
-
-#: admin/model.php:222
-msgctxt "model"
-msgid "Help"
-msgstr "帮助信息"
-
-#: admin/model.php:223
-#: admin/model.php:467
-msgctxt "model"
-msgid "Field"
-msgstr "字段名"
-
-#: admin/model.php:224
-msgid "Can search"
-msgstr "可以搜索"
-
-#: admin/model.php:225
-#: admin/model.php:468
-msgctxt "model"
-msgid "Type"
-msgstr "输入类型"
-
-#: admin/model.php:232
-msgid "Width"
-msgstr "宽"
-
-#: admin/model.php:237
-msgid "Need to verify"
-msgstr "需要验证"
-
-#: admin/model.php:240
-msgid "Verify rule"
-msgstr "验证规则"
-
-#: admin/model.php:248
-msgctxt "model"
-msgid "Serialize"
-msgstr "序列值"
-
-#: admin/model.php:249
-msgid "Attributes"
-msgstr "更多属性"
-
-#: admin/model.php:250
-msgid "Insert Pagebreak"
-msgstr "插入分页符"
-
-#: admin/model.php:251
-msgid "Delete link"
-msgstr "删除站外链接"
-
-#: admin/model.php:252
-msgid "Resize"
-msgstr "调整大小"
-
-#: admin/model.php:255
-msgctxt "model"
-msgid "Length"
-msgstr "长度"
-
-#: admin/model.php:262
-#: admin/model.php:469
-msgctxt "model"
-msgid "Default"
-msgstr "默认值"
-
-#: admin/model.php:264
-msgid "Save"
-msgstr "保存"
-
-#: admin/model.php:264
-msgid "Cancel"
-msgstr "取消"
-
-#: admin/model.php:290
-#: admin/model.php:322
-msgid "Export"
-msgstr "导出"
-
-#: admin/model.php:291
-#: admin/model.php:323
-msgid "Enabled"
-msgstr "启用"
-
-#: admin/model.php:292
-#: admin/model.php:324
-msgid "Disabled"
-msgstr "禁用"
-
-#: admin/model.php:337
-#: admin/model.php:377
-msgctxt "model"
-msgid "Name"
-msgstr "模型名称"
-
-#: admin/model.php:338
-#: admin/model.php:381
-msgctxt "model"
-msgid "Code"
-msgstr "模型标识"
-
-#: admin/model.php:339
-#: admin/model.php:370
-msgctxt "model"
-msgid "Language"
-msgstr "所属语言"
-
-#: admin/model.php:340
-msgctxt "model"
-msgid "State"
-msgstr "状态"
-
-#: admin/model.php:381
-msgid "(required,only)"
-msgstr "(必填，唯一)"
-
-#: admin/model.php:385
-msgctxt "model"
-msgid "Path"
-msgstr "生成规则"
-
-#: admin/model.php:387
-#: admin/post.php:418
-msgid "Post ID"
-msgstr "文章ID"
-
-#: admin/model.php:401
-msgid "Page Template"
-msgstr "内容模板"
-
-#: admin/model.php:411
-#: admin/post.php:428
-msgid "Click to toggle"
-msgstr "点击切换"
-
-#: admin/model.php:451
-msgid "Add Model"
-msgstr "添加模型"
-
-#: admin/model.php:454
-msgid "Update Model"
-msgstr "更新模型"
-
-#: admin/model.php:478
-msgctxt "field"
-msgid "Delete"
-msgstr "删除字段"
-
-#: admin/model.php:479
-msgctxt "field"
-msgid "Add New"
-msgstr "添加字段"
-
-#: admin/post.php:37
-msgid "Add New Post"
-msgstr "添加新文章"
-
-#: admin/post.php:50
-msgid "Edit Post"
-msgstr "编辑文章"
-
-#: admin/post.php:62
-msgid "Post deleted."
-msgstr "文章删除成功。"
-
-#: admin/post.php:64
-msgid "Post delete fail."
-msgstr "文章删除失败。"
-
-#: admin/post.php:80
-msgid "Posts deleted."
-msgstr "文章删除成功。"
-
-#: admin/post.php:102
-msgctxt "post"
-msgid "The title field is empty."
-msgstr "标题字段不能为空。"
-
-#: admin/post.php:103
-#, php-format
-msgctxt "post"
-msgid "The title field length must be %d-%d characters."
-msgstr "标题长度必须%d至%d个字符。"
-
-#: admin/post.php:107
-msgctxt "post"
-msgid "The path field is empty."
-msgstr "路径不能为空。"
-
-#: admin/post.php:153
-msgid "Post updated."
-msgstr "文章更新成功。"
-
-#: admin/post.php:164
-msgid "Post created."
-msgstr "文章添加成功。"
-
-#: admin/post.php:228
-msgid "Browse..."
-msgstr "浏览..."
-
-#: admin/post.php:334
-#: admin/post.php:405
-msgctxt "post"
-msgid "Title"
-msgstr "标题"
-
-#: admin/post.php:335
-#: admin/post.php:389
-msgctxt "post"
-msgid "Model"
-msgstr "模型"
-
-#: admin/post.php:336
-#: admin/post.php:416
-msgctxt "post"
-msgid "Path"
-msgstr "路径"
-
-#: admin/post.php:337
-#: admin/post.php:399
-msgctxt "post"
-msgid "Categories"
-msgstr "分类"
-
-#: admin/post.php:338
-msgctxt "post"
-msgid "Date"
-msgstr "日期"
-
-#: admin/post.php:339
-msgctxt "post"
-msgid "State"
-msgstr "状态"
-
-#: admin/post.php:408
-msgid "Auto get keywords"
-msgstr "自动获取关键词"
-
-#: admin/post.php:412
-msgctxt "post"
-msgid "Content"
-msgstr "内容"
-
-#: admin/post.php:429
-msgid "More attribute"
-msgstr "更多属性"
-
-#: admin/post.php:433
-msgctxt "post"
-msgid "Page Template"
-msgstr "页面模板"
-
-#: admin/post.php:442
-msgctxt "post"
-msgid "Keywords"
-msgstr "关键词"
-
-#: admin/post.php:443
-msgid "Get"
-msgstr "获取"
-
-#: admin/post.php:446
-msgctxt "post"
-msgid "Description"
-msgstr "Meta简述"
-
-#: admin/post.php:453
-msgid "Add Post"
-msgstr "添加文章"
-
-#: admin/post.php:456
-msgid "Update Post"
-msgstr "更新文章"
-
-#: admin/profile.php:40
-#: admin/user.php:105
-msgid "Please enter an e-mail address."
-msgstr "请输入一个电子邮件地址。"
-
-#: admin/profile.php:45
-#: admin/user.php:113
-msgid "Please enter the same password in the two password fields."
-msgstr "请在两处密码框中输入一致的密码。"
-
-#: admin/profile.php:63
-#: admin/user.php:139
-msgid "User updated."
-msgstr "用户资料更新成功。"
-
-#: admin/profile.php:67
-msgid "Profile"
-msgstr "我的配置"
-
-#: admin/profile.php:87
-#: admin/user.php:264
-msgid "Nickname"
-msgstr "昵称"
-
-#: admin/profile.php:95
-#: admin/user.php:272
-msgid "Website"
-msgstr "个人主页"
-
-#: admin/profile.php:99
-#: admin/user.php:277
-msgid "Biographical Info"
-msgstr "个人说明"
-
-#: admin/profile.php:101
-#: admin/user.php:279
-msgid "Share a little biographical information to fill out your profile. This may be shown publicly."
-msgstr "共享您的一些信息。这个可能会被公开。"
-
-#: admin/profile.php:105
-#: admin/user.php:283
-msgid "(twice)"
-msgstr "(两次)"
-
-#: admin/profile.php:107
-#: admin/user.php:285
-msgid "If you would like to change the password type a new one. Otherwise leave this blank."
-msgstr "如果您想修改您的密码请输入一个新密码，否则请留空。"
-
-#: admin/profile.php:108
-#: admin/user.php:286
-msgid "Type your new password again."
-msgstr "输入新密码。"
-
-#: admin/profile.php:114
-msgid "Update Profile"
-msgstr "更新资料"
-
-#: admin/user.php:38
-msgid "Add New User"
-msgstr "添加新用户"
-
-#: admin/user.php:53
-msgid "Edit User"
-msgstr "编辑用户"
-
-#: admin/user.php:66
-msgid "User deleted."
-msgstr "用户删除成功。"
-
-#: admin/user.php:68
-msgid "User delete fail."
-msgstr "用户删除失败。"
-
-#: admin/user.php:101
-msgid "The username already exists."
-msgstr "用户名已存在，请重新输入用户名。"
-
-#: admin/user.php:111
-msgid "Please enter your password."
-msgstr "请您输入密码。"
-
-#: admin/user.php:112
-msgid "Please enter your password twice."
-msgstr "请您再次输入密码。"
-
-#: admin/user.php:144
-msgid "User created."
-msgstr "用户添加成功。"
-
-#: admin/user.php:163
-msgid "Users deleted."
-msgstr "用户删除成功。"
-
-#: admin/user.php:232
-msgid "Status"
-msgstr "状态"
-
-#: admin/user.php:233
-msgid "Registered"
-msgstr "注册日期"
-
-#: admin/user.php:283
-msgid "New Password"
-msgstr "新密码"
-
-#: admin/user.php:291
-msgid "(twice,required)"
-msgstr "(两次，必填)"
-
-#: admin/user.php:295
-msgid "Send Password?"
-msgstr "发送密码？"
-
-#: admin/user.php:296
-msgid "Send this password to the new user by email."
-msgstr "通过电子邮件发送新用户的密码。"
-
-#: admin/user.php:300
-msgid "Role"
-msgstr "权限"
-
-#: admin/user.php:308
-msgid "Add User"
-msgstr "添加用户"
-
-#: admin/user.php:311
-msgid "Update User"
-msgstr "更新用户"
-
-#: admin/options/general.php:32
-msgid "Please enter the site name."
-msgstr "请输入网站的名称。"
-
-#: admin/options/general.php:36
-msgid "Settings saved."
-msgstr "设置已保存。"
-
-#: admin/options/general.php:39
-msgid "General Settings"
-msgstr "常规设置"
-
-#: admin/options/general.php:50
-msgid "Site name"
-msgstr "站点名"
-
-#: admin/options/general.php:54
-msgid "Template"
-msgstr "模板"
-
-#: admin/options/general.php:58
-msgid "Template suffix"
-msgstr "模板后缀"
-
-#: admin/options/general.php:62
-msgid "HTML Save the directory"
-msgstr "网页保存目录"
-
-#: admin/options/general.php:62
-msgid "Must be \"/\" end, required"
-msgstr "必须以“/”结尾，必填"
-
-#: admin/options/general.php:66
-msgid "HTML file suffix"
-msgstr "网页文件后缀"
-
-#: admin/options/general.php:72
-msgid "Save Changes"
-msgstr "保存更改"
 
 #: common/functions.php:236
 #: common/system/loader.php:74
@@ -1125,6 +82,10 @@ msgstr "丹麦语"
 #: common/functions.php:765
 msgid "Dutch"
 msgstr "荷兰语"
+
+#: common/functions.php:766
+msgid "English"
+msgstr "英语"
 
 #: common/functions.php:767
 msgid "Estonian"
@@ -1282,46 +243,6 @@ msgstr "威尔士语"
 msgid "Yiddish"
 msgstr "意第绪语"
 
-#: common/module/model.php:200
-msgid "Input"
-msgstr "输入框"
-
-#: common/module/model.php:201
-msgid "Textarea"
-msgstr "文本域"
-
-#: common/module/model.php:202
-msgid "Radio"
-msgstr "单选项"
-
-#: common/module/model.php:203
-msgid "Check box"
-msgstr "复选框"
-
-#: common/module/model.php:204
-msgid "Drop-down menu"
-msgstr "下拉菜单"
-
-#: common/module/model.php:205
-msgid "Basic editor"
-msgstr "基本编辑器"
-
-#: common/module/model.php:206
-msgid "Adv editor"
-msgstr "高级编辑器"
-
-#: common/module/model.php:207
-msgid "Date Selector"
-msgstr "日期选择器"
-
-#: common/module/model.php:208
-msgid "File upload box"
-msgstr "文件上传框"
-
-#: common/module/user.php:46
-msgid "You are now logged out, please log in again!"
-msgstr "您现在已经退出，请重新登录！"
-
 #: common/system/loader.php:75
 msgid "Alert"
 msgstr "系统提示"
@@ -1334,9 +255,29 @@ msgstr "确认"
 msgid "Confirm"
 msgstr "操作确认"
 
+#: common/system/loader.php:78
+msgid "Cancel"
+msgstr "取消"
+
+#: common/system/loader.php:79
+msgid "Save"
+msgstr "保存"
+
 #: common/system/loader.php:80
 msgid "Close"
 msgstr "关闭"
+
+#: common/system/loader.php:81
+msgid "Edit"
+msgstr "编辑"
+
+#: common/system/loader.php:82
+msgid "Delete"
+msgstr "删除"
+
+#: common/system/loader.php:83
+msgid "No record!"
+msgstr "没有记录！"
 
 #: common/system/loader.php:84
 msgid "Upgrade Tips"
@@ -1361,6 +302,11 @@ msgstr "确定要删除吗？"
 #: common/system/loader.php:89
 msgid "(Recommended to upgrade to IE 7.0 +)"
 msgstr "（推荐升级至IE 7.0+）"
+
+#: common/system/loader.php:96
+msgctxt "field"
+msgid "Add New"
+msgstr "添加字段"
 
 #: common/system/loader.php:97
 msgctxt "field"
@@ -1404,15 +350,1058 @@ msgstr "mysql数据库版本低于4.1，请升级mysql！"
 msgid "MySQL Query Error:<br/>SQL:%s<br/>%s"
 msgstr "MySQL 查询错误：<br/>SQL:%s<br/>%s"
 
-#~ msgid "Modules"
-#~ msgstr "模块管理"
-#~ msgctxt "module"
-#~ msgid "Add New"
-#~ msgstr "添加模块"
-#~ msgid "Tools"
-#~ msgstr "系统工具"
-#~ msgid "Upgrade"
-#~ msgstr "升级"
+#: common/module/model.php:200
+msgid "Input"
+msgstr "输入框"
+
+#: common/module/model.php:201
+msgid "Textarea"
+msgstr "文本域"
+
+#: common/module/model.php:202
+msgid "Radio"
+msgstr "单选项"
+
+#: common/module/model.php:203
+msgid "Check box"
+msgstr "复选框"
+
+#: common/module/model.php:204
+msgid "Drop-down menu"
+msgstr "下拉菜单"
+
+#: common/module/model.php:205
+msgid "Basic editor"
+msgstr "基本编辑器"
+
+#: common/module/model.php:206
+msgid "Adv editor"
+msgstr "高级编辑器"
+
+#: common/module/model.php:207
+msgid "Date Selector"
+msgstr "日期选择器"
+
+#: common/module/model.php:208
+msgid "File upload box"
+msgstr "文件上传框"
+
+#: common/module/user.php:46
+msgid "You are now logged out, please log in again!"
+msgstr "您现在已经退出，请重新登录！"
+
+#: admin/categories.php:26
+#: admin/admin-header-menu.php:17
+#: admin/admin.php:169
+msgid "Categories"
+msgstr "分类管理"
+
+#: admin/categories.php:40
+msgid "Add New Category"
+msgstr "添加新分类"
+
+#: admin/categories.php:51
+msgid "Edit Category"
+msgstr "编辑分类"
+
+#: admin/categories.php:62
+msgid "Category deleted."
+msgstr "分类删除成功。"
+
+#: admin/categories.php:64
+msgid "Category delete fail."
+msgstr "分类删除失败。"
+
+#: admin/categories.php:78
+msgctxt "sort"
+msgid "The name field is empty."
+msgstr "分类名称不能为空。"
+
+#: admin/categories.php:79
+#, php-format
+msgctxt "sort"
+msgid "The name field length must be %d-%d characters."
+msgstr "分类名称长度必须%d至%d个字符。"
+
+#: admin/categories.php:83
+msgctxt "sort"
+msgid "The path field is empty."
+msgstr "列表目录不能为空。"
+
+#: admin/categories.php:97
+msgid "Category updated."
+msgstr "分类更新成功。"
+
+#: admin/categories.php:108
+msgid "Category created."
+msgstr "分类添加成功。"
+
+#: admin/categories.php:118
+#: admin/model.php:145
+#: admin/user.php:154
+#: admin/post.php:72
+msgid "Did not select any item."
+msgstr "没有选择任何一项。"
+
+#: admin/categories.php:126
+msgid "Categories deleted."
+msgstr "分类删除成功。"
+
+#: admin/categories.php:129
+msgid "Parameter is invalid."
+msgstr "参数错误。"
+
+#: admin/categories.php:138
+msgctxt "sort"
+msgid "Add New"
+msgstr "添加分类"
+
+#: admin/categories.php:170
+#: admin/model.php:321
+#: admin/user.php:217
+#: admin/post.php:319
+msgid "Bulk Actions"
+msgstr "批量操作"
+
+#: admin/categories.php:171
+#: admin/categories.php:207
+#: admin/post.php:320
+msgid "Create"
+msgstr "生成"
+
+#: admin/categories.php:172
+msgid "Recreate"
+msgstr "重新生成"
+
+#: admin/categories.php:175
+#: admin/model.php:327
+#: admin/user.php:220
+#: admin/post.php:323
+msgid "Apply"
+msgstr "应用"
+
+#: admin/categories.php:185
+#: admin/categories.php:253
+msgctxt "sort"
+msgid "Name"
+msgstr "分类名称"
+
+#: admin/categories.php:186
+#: admin/categories.php:257
+msgctxt "sort"
+msgid "Path"
+msgstr "列表目录"
+
+#: admin/categories.php:187
+msgctxt "sort"
+msgid "Posts"
+msgstr "文章数"
+
+#: admin/categories.php:246
+msgctxt "sort"
+msgid "Parent"
+msgstr "上级目录"
+
+#: admin/categories.php:248
+msgid "None"
+msgstr "无"
+
+#: admin/categories.php:253
+#: admin/categories.php:257
+#: admin/model.php:377
+#: admin/model.php:385
+#: admin/user.php:260
+#: admin/user.php:268
+#: admin/post.php:405
+#: admin/post.php:416
+#: admin/profile.php:91
+#: admin/options/general.php:50
+#: admin/options/general.php:54
+#: admin/options/general.php:58
+#: admin/options/general.php:62
+msgid "(required)"
+msgstr "(必填)"
+
+#: admin/categories.php:259
+msgid "Category ID"
+msgstr "分类ID"
+
+#: admin/categories.php:260
+#: admin/model.php:388
+#: admin/post.php:419
+msgid "MD5 Value"
+msgstr "MD5值"
+
+#: admin/categories.php:261
+#: admin/model.php:389
+#: admin/post.php:420
+msgid "Pinyin"
+msgstr "拼音"
+
+#: admin/categories.php:269
+#: admin/model.php:397
+msgid "List Template"
+msgstr "列表模板"
+
+#: admin/categories.php:272
+#: admin/post.php:436
+msgid "Use the model set"
+msgstr "使用模型设置"
+
+#: admin/categories.php:280
+msgid "Add Category"
+msgstr "添加分类"
+
+#: admin/categories.php:283
+msgid "Update Category"
+msgstr "更新分类"
+
+#: admin/model.php:26
+#: admin/admin-header-menu.php:26
+#: admin/admin-header-menu.php:27
+#: admin/admin.php:183
+msgid "Models"
+msgstr "模型管理"
+
+#: admin/model.php:38
+msgid "Add New Model"
+msgstr "添加新模型"
+
+#: admin/model.php:53
+msgid "Edit Model"
+msgstr "编辑模型"
+
+#: admin/model.php:66
+msgid "Model deleted."
+msgstr "模型删除成功。"
+
+#: admin/model.php:68
+msgid "Model delete fail."
+msgstr "模型删除失败。"
+
+#: admin/model.php:88
+msgctxt "model"
+msgid "The name field is empty."
+msgstr "模型名称不能为空。"
+
+#: admin/model.php:90
+#, php-format
+msgctxt "model"
+msgid "The name field length must be %d-%d characters."
+msgstr "模型名称长度必须%d至%d个字符。"
+
+#: admin/model.php:105
+msgctxt "model"
+msgid "The code field is empty."
+msgstr "模型标识不能为空。"
+
+#: admin/model.php:107
+#, php-format
+msgctxt "model"
+msgid "The code field length must be %d-%d characters."
+msgstr "模型标识长度必须%d至%d个字符。"
+
+#: admin/model.php:109
+msgctxt "model"
+msgid "The code already exists."
+msgstr "模型标识已存在，请重新输入。"
+
+#: admin/model.php:113
+msgctxt "model"
+msgid "The path field is empty."
+msgstr "生成规则不能为空。"
+
+#: admin/model.php:130
+msgid "Model updated."
+msgstr "模型更新成功。"
+
+#: admin/model.php:135
+msgid "Model created."
+msgstr "模型创建成功。"
+
+#: admin/model.php:154
+msgid "Models deleted."
+msgstr "模型删除成功。"
+
+#: admin/model.php:163
+msgid "Models enabled."
+msgstr "模型启用成功。"
+
+#: admin/model.php:172
+msgid "Models disabled."
+msgstr "模型禁用成功。"
+
+#: admin/model.php:207
+msgid "Can't be empty"
+msgstr "不能为空"
+
+#: admin/model.php:207
+msgid "The field value is empty."
+msgstr "这个字段值是空的。"
+
+#: admin/model.php:208
+msgid "Fixed-length"
+msgstr "固定长度"
+
+#: admin/model.php:208
+#, php-format
+msgid "The field value length must be %d-%d characters."
+msgstr "这个字段值长度必须%d至%d个字符。"
+
+#: admin/model.php:209
+msgid "Value1 = Value2"
+msgstr "相同的两个值"
+
+#: admin/model.php:209
+msgid "Same the two fields."
+msgstr "两个字段值不相等。"
+
+#: admin/model.php:210
+#: admin/user.php:231
+#: admin/user.php:268
+#: admin/profile.php:91
+msgid "E-mail"
+msgstr "电子邮箱"
+
+#: admin/model.php:210
+#: admin/user.php:106
+#: admin/profile.php:41
+msgid "The e-mail address isn't correct."
+msgstr "电子邮件地址不正确。"
+
+#: admin/model.php:211
+msgid "Case-Insensitive letters"
+msgstr "英文字母"
+
+#: admin/model.php:211
+msgid "This field value is not a letter."
+msgstr "这个字段值不是字母。"
+
+#: admin/model.php:212
+msgid "Numeric:[0-9]"
+msgstr "匹配数字"
+
+#: admin/model.php:212
+msgid "This field value is not a number."
+msgstr "这个字段值不是数字。"
+
+#: admin/model.php:213
+msgctxt "model"
+msgid "URL"
+msgstr "匹配网址"
+
+#: admin/model.php:213
+msgid "This field value is not a URL."
+msgstr "这个字段值不是一个超级链接。"
+
+#: admin/model.php:214
+msgid "Custom validation"
+msgstr "自定义验证"
+
+#: admin/model.php:214
+msgid "Error Message"
+msgstr "错误信息"
+
+#: admin/model.php:220
+#: admin/model.php:470
+msgctxt "model"
+msgid "Label"
+msgstr "表单文字"
+
+#: admin/model.php:221
+msgid "Need help"
+msgstr "需要帮助"
+
+#: admin/model.php:222
+msgctxt "model"
+msgid "Help"
+msgstr "帮助信息"
+
+#: admin/model.php:223
+#: admin/model.php:471
+msgctxt "model"
+msgid "Field"
+msgstr "字段名"
+
+#: admin/model.php:224
+msgid "Can search"
+msgstr "可以搜索"
+
+#: admin/model.php:225
+#: admin/model.php:472
+msgctxt "model"
+msgid "Type"
+msgstr "输入类型"
+
+#: admin/model.php:232
+msgid "Width"
+msgstr "宽"
+
+#: admin/model.php:237
+msgid "Need to verify"
+msgstr "需要验证"
+
+#: admin/model.php:240
+msgid "Verify rule"
+msgstr "验证规则"
+
+#: admin/model.php:248
+msgctxt "model"
+msgid "Serialize"
+msgstr "序列值"
+
+#: admin/model.php:249
+msgid "Attributes"
+msgstr "更多属性"
+
+#: admin/model.php:250
+msgid "Insert Pagebreak"
+msgstr "插入分页符"
+
+#: admin/model.php:251
+msgid "Delete link"
+msgstr "删除站外链接"
+
+#: admin/model.php:252
+msgid "Resize"
+msgstr "调整大小"
+
+#: admin/model.php:255
+msgctxt "model"
+msgid "Length"
+msgstr "长度"
+
+#: admin/model.php:262
+#: admin/model.php:473
+msgctxt "model"
+msgid "Default"
+msgstr "默认值"
+
+#: admin/model.php:275
+#: admin/admin-header-menu.php:28
+#: admin/admin.php:185
+msgctxt "model"
+msgid "Add New"
+msgstr "添加模型"
+
+#: admin/model.php:290
+#: admin/model.php:322
+msgid "Export"
+msgstr "导出"
+
+#: admin/model.php:291
+#: admin/model.php:323
+msgid "Enabled"
+msgstr "启用"
+
+#: admin/model.php:292
+#: admin/model.php:324
+msgid "Disabled"
+msgstr "禁用"
+
+#: admin/model.php:337
+#: admin/model.php:377
+msgctxt "model"
+msgid "Name"
+msgstr "模型名称"
+
+#: admin/model.php:338
+#: admin/model.php:381
+msgctxt "model"
+msgid "Code"
+msgstr "模型标识"
+
+#: admin/model.php:339
+#: admin/model.php:370
+msgctxt "model"
+msgid "Language"
+msgstr "所属语言"
+
+#: admin/model.php:340
+msgctxt "model"
+msgid "State"
+msgstr "状态"
+
+#: admin/model.php:381
+msgid "(required,only)"
+msgstr "(必填，唯一)"
+
+#: admin/model.php:385
+msgctxt "model"
+msgid "Path"
+msgstr "生成规则"
+
+#: admin/model.php:387
+#: admin/post.php:418
+msgid "Post ID"
+msgstr "文章ID"
+
+#: admin/model.php:405
+msgid "Page Template"
+msgstr "内容模板"
+
+#: admin/model.php:415
+#: admin/post.php:428
+msgid "Click to toggle"
+msgstr "点击切换"
+
+#: admin/model.php:416
+#: admin/admin.php:190
+msgctxt "model"
+msgid "Fields"
+msgstr "字段管理"
+
+#: admin/model.php:455
+msgid "Add Model"
+msgstr "添加模型"
+
+#: admin/model.php:458
+msgid "Update Model"
+msgstr "更新模型"
+
+#: admin/model.php:482
+msgctxt "field"
+msgid "Delete"
+msgstr "删除字段"
+
+#: admin/index.php:27
+#: admin/admin-header-menu.php:10
+msgid "Control Panel"
+msgstr "控制面板"
+
+#: admin/login.php:46
+#: admin/user.php:97
+msgid "The username field is empty."
+msgstr "用户名不能为空。"
+
+#: admin/login.php:48
+#: admin/user.php:99
+#, php-format
+msgid "The username field length must be %d-%d characters."
+msgstr "用户名长度必须%d至%d个字符。"
+
+#: admin/login.php:51
+msgid "The password field is empty."
+msgstr "密码不能为空。"
+
+#: admin/login.php:61
+msgid "Username or password error!"
+msgstr "用户名或者密码错误！"
+
+#: admin/login.php:73
+#: admin/login.php:80
+msgid "Administrator Login"
+msgstr "管理员登录"
+
+#: admin/login.php:78
+#, php-format
+msgid "<p>LazyCMS is a new kind,open source, free content management system.</p><p>Runtime:PHP 4.3.3+、MySQL 4.1+</p><p><a href=\"%s\">Back Home</a></p>"
+msgstr "<p>LazyCMS是一种新型的、开源、免费的内容管理系统。</p><p>运行环境：PHP 4.3.3+、MySQL 4.1+</p><p><a href=\"%s\">返回首页</a></p>"
+
+#: admin/login.php:81
+#: admin/user.php:230
+#: admin/user.php:260
+#: admin/profile.php:83
+msgid "Username"
+msgstr "用户名"
+
+#: admin/login.php:82
+#: admin/user.php:291
+#: admin/profile.php:105
+msgid "Password"
+msgstr "密码"
+
+#: admin/login.php:83
+msgid "Language"
+msgstr "语言"
+
+#: admin/login.php:85
+msgid "Default"
+msgstr "默认"
+
+#: admin/login.php:90
+msgid "Remember Me"
+msgstr "记住我的登录信息"
+
+#: admin/login.php:91
+msgid "Login"
+msgstr "登入"
+
+#: admin/user.php:26
+#: admin/admin-header-menu.php:34
+#: admin/admin-header-menu.php:35
+#: admin/admin.php:193
+msgid "Users"
+msgstr "用户管理"
+
+#: admin/user.php:38
+msgid "Add New User"
+msgstr "添加新用户"
+
+#: admin/user.php:53
+msgid "Edit User"
+msgstr "编辑用户"
+
+#: admin/user.php:66
+msgid "User deleted."
+msgstr "用户删除成功。"
+
+#: admin/user.php:68
+msgid "User delete fail."
+msgstr "用户删除失败。"
+
+#: admin/user.php:101
+msgid "The username already exists."
+msgstr "用户名已存在，请重新输入用户名。"
+
+#: admin/user.php:105
+#: admin/profile.php:40
+msgid "Please enter an e-mail address."
+msgstr "请输入一个电子邮件地址。"
+
+#: admin/user.php:111
+msgid "Please enter your password."
+msgstr "请您输入密码。"
+
+#: admin/user.php:112
+msgid "Please enter your password twice."
+msgstr "请您再次输入密码。"
+
+#: admin/user.php:113
+#: admin/profile.php:45
+msgid "Please enter the same password in the two password fields."
+msgstr "请在两处密码框中输入一致的密码。"
+
+#: admin/user.php:139
+#: admin/profile.php:63
+msgid "User updated."
+msgstr "用户资料更新成功。"
+
+#: admin/user.php:144
+msgid "User created."
+msgstr "用户添加成功。"
+
+#: admin/user.php:163
+msgid "Users deleted."
+msgstr "用户删除成功。"
+
+#: admin/user.php:173
+#: admin/admin-header-menu.php:36
+#: admin/admin.php:195
+msgctxt "user"
+msgid "Add New"
+msgstr "添加用户"
+
+#: admin/user.php:232
+msgid "Status"
+msgstr "状态"
+
+#: admin/user.php:233
+msgid "Registered"
+msgstr "注册日期"
+
+#: admin/user.php:264
+#: admin/profile.php:87
+msgid "Nickname"
+msgstr "昵称"
+
+#: admin/user.php:272
+#: admin/profile.php:95
+msgid "Website"
+msgstr "个人主页"
+
+#: admin/user.php:277
+#: admin/profile.php:99
+msgid "Biographical Info"
+msgstr "个人说明"
+
+#: admin/user.php:279
+#: admin/profile.php:101
+msgid "Share a little biographical information to fill out your profile. This may be shown publicly."
+msgstr "共享您的一些信息。这个可能会被公开。"
+
+#: admin/user.php:283
+msgid "New Password"
+msgstr "新密码"
+
+#: admin/user.php:283
+#: admin/profile.php:105
+msgid "(twice)"
+msgstr "(两次)"
+
+#: admin/user.php:285
+#: admin/profile.php:107
+msgid "If you would like to change the password type a new one. Otherwise leave this blank."
+msgstr "如果您想修改您的密码请输入一个新密码，否则请留空。"
+
+#: admin/user.php:286
+#: admin/profile.php:108
+msgid "Type your new password again."
+msgstr "输入新密码。"
+
+#: admin/user.php:291
+msgid "(twice,required)"
+msgstr "(两次，必填)"
+
+#: admin/user.php:295
+msgid "Send Password?"
+msgstr "发送密码？"
+
+#: admin/user.php:296
+msgid "Send this password to the new user by email."
+msgstr "通过电子邮件发送新用户的密码。"
+
+#: admin/user.php:300
+msgid "Role"
+msgstr "权限"
+
+#: admin/user.php:308
+msgid "Add User"
+msgstr "添加用户"
+
+#: admin/user.php:311
+msgid "Update User"
+msgstr "更新用户"
+
+#: admin/admin-header-menu.php:14
+#: admin/admin-header-menu.php:15
+#: admin/post.php:26
+#: admin/admin.php:168
+msgid "Posts"
+msgstr "文章管理"
+
+#: admin/admin-header-menu.php:16
+#: admin/post.php:269
+#: admin/admin.php:170
+msgctxt "post"
+msgid "Add New"
+msgstr "添加文章"
+
+#: admin/admin-header-menu.php:18
+msgid "Post Tags"
+msgstr "关键词管理"
+
+#: admin/admin-header-menu.php:21
+#: admin/admin-header-menu.php:22
+#: admin/admin.php:176
+msgid "Topics"
+msgstr "专题管理"
+
+#: admin/admin-header-menu.php:23
+#: admin/admin.php:178
+msgctxt "topic"
+msgid "Add New"
+msgstr "添加专题"
+
+#: admin/admin-header-menu.php:29
+#: admin/admin.php:188
+msgctxt "model"
+msgid "Import"
+msgstr "导入模型"
+
+#: admin/admin-header-menu.php:37
+msgid "Your Profile"
+msgstr "我的配置"
+
+#: admin/admin-header-menu.php:40
+#: admin/admin-header-menu.php:41
+msgid "Modules"
+msgstr "模块管理"
+
+#: admin/admin-header-menu.php:42
+msgctxt "module"
+msgid "Add New"
+msgstr "添加模块"
+
+#: admin/admin-header-menu.php:45
+msgid "Tools"
+msgstr "系统工具"
+
+#: admin/admin-header-menu.php:46
+msgid "Upgrade"
+msgstr "升级"
+
+#: admin/admin-header-menu.php:49
+#: admin/admin.php:200
+msgid "Settings"
+msgstr "设置管理"
+
+#: admin/admin-header-menu.php:50
+msgid "General"
+msgstr "常规"
+
+#: admin/post.php:37
+msgid "Add New Post"
+msgstr "添加新文章"
+
+#: admin/post.php:50
+msgid "Edit Post"
+msgstr "编辑文章"
+
+#: admin/post.php:62
+msgid "Post deleted."
+msgstr "文章删除成功。"
+
+#: admin/post.php:64
+msgid "Post delete fail."
+msgstr "文章删除失败。"
+
+#: admin/post.php:80
+msgid "Posts deleted."
+msgstr "文章删除成功。"
+
+#: admin/post.php:102
+msgctxt "post"
+msgid "The title field is empty."
+msgstr "标题字段不能为空。"
+
+#: admin/post.php:103
+#, php-format
+msgctxt "post"
+msgid "The title field length must be %d-%d characters."
+msgstr "标题长度必须%d至%d个字符。"
+
+#: admin/post.php:107
+msgctxt "post"
+msgid "The path field is empty."
+msgstr "路径不能为空。"
+
+#: admin/post.php:153
+msgid "Post updated."
+msgstr "文章更新成功。"
+
+#: admin/post.php:164
+msgid "Post created."
+msgstr "文章添加成功。"
+
+#: admin/post.php:228
+msgid "Browse..."
+msgstr "浏览..."
+
+#: admin/post.php:334
+#: admin/post.php:405
+msgctxt "post"
+msgid "Title"
+msgstr "标题"
+
+#: admin/post.php:335
+#: admin/post.php:389
+msgctxt "post"
+msgid "Model"
+msgstr "模型"
+
+#: admin/post.php:336
+#: admin/post.php:416
+msgctxt "post"
+msgid "Path"
+msgstr "路径"
+
+#: admin/post.php:337
+#: admin/post.php:399
+msgctxt "post"
+msgid "Categories"
+msgstr "分类"
+
+#: admin/post.php:338
+msgctxt "post"
+msgid "Date"
+msgstr "日期"
+
+#: admin/post.php:339
+msgctxt "post"
+msgid "State"
+msgstr "状态"
+
+#: admin/post.php:408
+msgid "Auto get keywords"
+msgstr "自动获取关键词"
+
+#: admin/post.php:412
+msgctxt "post"
+msgid "Content"
+msgstr "内容"
+
+#: admin/post.php:429
+msgid "More attribute"
+msgstr "更多属性"
+
+#: admin/post.php:433
+msgctxt "post"
+msgid "Page Template"
+msgstr "页面模板"
+
+#: admin/post.php:442
+msgctxt "post"
+msgid "Keywords"
+msgstr "关键词"
+
+#: admin/post.php:443
+msgid "Get"
+msgstr "获取"
+
+#: admin/post.php:446
+msgctxt "post"
+msgid "Description"
+msgstr "Meta简述"
+
+#: admin/post.php:453
+msgid "Add Post"
+msgstr "添加文章"
+
+#: admin/post.php:456
+msgid "Update Post"
+msgstr "更新文章"
+
+#: admin/admin-footer.php:8
+msgid "Thank you for creating with <a href=\"http://lazycms.net/\" target=\"_blank\">LazyCMS</a>."
+msgstr "感谢使用 <a href=\"http://lazycms.net/\" target=\"_blank\">LazyCMS</a> 进行创作。"
+
+#: admin/admin-footer.php:8
+msgid "<a href=\"http://docs.lazycms.net/\" target=\"_blank\">Documentation</a>"
+msgstr "<a href=\"http://docs.lazycms.net/\" target=\"_blank\">官方文档</a>"
+
+#: admin/admin-footer.php:8
+msgid "<a href=\"http://forums.lazycms.net/\" target=\"_blank\">Support Forums</a>"
+msgstr "<a href=\"http://forums.lazycms.net/\" target=\"_blank\">支持论坛</a>"
+
+#: admin/admin-footer.php:10
+#, php-format
+msgid "Version <span>%s</span>"
+msgstr "版本 <span>%s</span>"
+
+#: admin/admin-header.php:39
+msgid "Visit Site"
+msgstr "访问网站"
+
+#: admin/admin-header.php:43
+msgid "Logout"
+msgstr "退出"
+
+#: admin/admin.php:54
+#: admin/admin.php:56
+#: admin/admin.php:61
+msgid "Restricted access, please contact the administrator."
+msgstr "受限制的访问，请联系管理员。"
+
+#: admin/admin.php:59
+#: admin/admin.php:61
+msgid "Restricted access"
+msgstr "限制访问"
+
+#: admin/admin.php:171
+msgctxt "post"
+msgid "List"
+msgstr "文章列表"
+
+#: admin/admin.php:172
+msgctxt "post"
+msgid "Edit"
+msgstr "编辑文章"
+
+#: admin/admin.php:173
+msgctxt "post"
+msgid "Delete"
+msgstr "删除文章"
+
+#: admin/admin.php:177
+msgctxt "topic"
+msgid "List"
+msgstr "专题列表"
+
+#: admin/admin.php:179
+msgctxt "topic"
+msgid "Edit"
+msgstr "编辑专题"
+
+#: admin/admin.php:180
+msgctxt "topic"
+msgid "Delete"
+msgstr "删除专题"
+
+#: admin/admin.php:184
+msgctxt "model"
+msgid "List"
+msgstr "模型列表"
+
+#: admin/admin.php:186
+msgctxt "model"
+msgid "Edit"
+msgstr "编辑模型"
+
+#: admin/admin.php:187
+msgctxt "model"
+msgid "Delete"
+msgstr "删除模型"
+
+#: admin/admin.php:189
+msgctxt "model"
+msgid "Export"
+msgstr "导出模型"
+
+#: admin/admin.php:194
+msgctxt "user"
+msgid "List"
+msgstr "用户列表"
+
+#: admin/admin.php:196
+msgctxt "user"
+msgid "Edit"
+msgstr "编辑用户"
+
+#: admin/admin.php:197
+msgctxt "user"
+msgid "Delete"
+msgstr "删除用户"
+
+#: admin/admin.php:201
+msgctxt "settings"
+msgid "General"
+msgstr "常规设置"
+
+#: admin/profile.php:67
+msgid "Profile"
+msgstr "我的配置"
+
+#: admin/profile.php:114
+msgid "Update Profile"
+msgstr "更新资料"
+
+#: admin/options/general.php:32
+msgid "Please enter the site name."
+msgstr "请输入网站的名称。"
+
+#: admin/options/general.php:36
+msgid "Settings saved."
+msgstr "设置已保存。"
+
+#: admin/options/general.php:39
+msgid "General Settings"
+msgstr "常规设置"
+
+#: admin/options/general.php:50
+msgid "Site name"
+msgstr "站点名"
+
+#: admin/options/general.php:54
+msgid "Template"
+msgstr "模板"
+
+#: admin/options/general.php:58
+msgid "Template suffix"
+msgstr "模板后缀"
+
+#: admin/options/general.php:62
+msgid "HTML file suffix"
+msgstr "网页文件后缀"
+
+#: admin/options/general.php:68
+msgid "Save Changes"
+msgstr "保存更改"
+
+#~ msgid "HTML Save the directory"
+#~ msgstr "网页保存目录"
+#~ msgid "Must be \"/\" end, required"
+#~ msgstr "必须以“/”结尾，必填"
 #~ msgid "Writing"
 #~ msgstr "撰写"
 #~ msgid "Fragment"

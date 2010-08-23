@@ -125,6 +125,9 @@ switch ($action) {
 	            }
 	            admin_success(__('Categories deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
 	            break;
+            default:
+                admin_alert(__('Parameter is invalid.'));
+                break;
 	    }
 	    break;
     default:
@@ -166,6 +169,7 @@ function table_nav() {
     echo     '<select name="actions">';
     echo         '<option value="">'.__('Bulk Actions').'</option>';
     echo         '<option value="create">'.__('Create').'</option>';
+    echo         '<option value="recreate">'.__('Recreate').'</option>';
     echo         '<option value="delete">'.__('Delete').'</option>';
     echo     '</select>';
     echo     '<button type="button">'.__('Apply').'</button>';
@@ -231,7 +235,8 @@ function category_manage_page($action) {
     $name    = isset($_SORT['name'])?$_SORT['name']:null;
     $path    = isset($_SORT['path'])?$_SORT['path']:null;
     $list    = isset($_SORT['list'])?$_SORT['list']:null;
-    $page    = isset($_SORT['page'])?$_SORT['page']:null;
+    $keywords = isset($_SORT['keywords'])?$_SORT['keywords']:null;
+    $description = isset($_SORT['description'])?$_SORT['description']:null;
     $modules = LCModel::getModels(1);
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
@@ -270,6 +275,14 @@ function category_manage_page($action) {
     echo                   '</select>';
     echo               '</td>';
     echo           '</tr>';
+    echo           '<tr>';
+    echo               '<th><label for="keywords">'._x('Keywords','sort').'</label></th>';
+    echo               '<td><input type="text" size="70" name="keywords" id="keywords" value="'.$keywords.'" /></td>';
+    echo           '</tr>';
+    echo           '<tr>';
+    echo               '<th><label for="description">'._x('Description','sort').'</label></th>';
+    echo               '<td><textarea cols="70" rows="5" id="description" name="description">'.$description.'</textarea></td>';
+    echo           '</tr>'; 
     echo       '</table>';
     echo     '</fieldset>';
     if ($action=='add') {

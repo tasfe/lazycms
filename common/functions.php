@@ -731,7 +731,7 @@ function pinyin($string) {
         }
     	return $result;
     } else {
-        if (preg_match_all('/./u',$string,$args)) {
+        if (preg_match_all('/./us',$string,$args)) {
         	foreach ($args[0] as $arg) {
         	    if (preg_match('/[\x80-\xff]./',$arg)) {
         		    $result .= pinyin($arg);
