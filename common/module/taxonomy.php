@@ -64,8 +64,34 @@ class LCTerm {
             $termid = $db->insert('#@_term',array(
                 'name' => $name,
             ));
+            // 清理缓存
+            FCache::delete('terms.dicts');
         }
         return $termid;
+    }
+    /**
+     * 根据词库取得措辞
+     *
+     * @param string $content
+     * @param int $max_len
+     * @param bool $save_other
+     * @return array
+     */
+    function getTerms($content,$max_len=8,$save_other=false) {
+        $ckey  = 'terms.dicts';
+        $dicts = FCache::get($ckey);
+        if (empty($dicts)) {
+            $db = get_conn(); $dicts = array();
+            // 读取关键词列表
+            $rs = $db->query("SELECT `name` FROM `#@_term`");
+            while ($data = $db->fetch($rs)) {
+                $dicts[] = $data['name'];
+            }
+            FCache::set($ckey,$dicts);
+        }
+        require_file(COM_PATH.'/system/splitword.php');
+        $splitword = new SplitWord($dicts);
+        return $splitword->get($content,$max_len,$save_other);
     }
 }
 

@@ -39,7 +39,7 @@ class SplitWord {
     // 英文
     var $_en_chars   = array('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0','ａ','ｂ','ｃ','ｄ','ｅ','ｆ','ｇ','ｈ','ｉ','ｊ','ｋ','ｌ','ｍ','ｎ','ｏ','ｐ','ｑ','ｒ','ｓ','ｔ','ｕ','ｖ','ｗ','ｘ','ｙ','ｚ','Ａ','Ｂ','Ｃ','Ｄ','Ｅ','Ｆ','Ｇ','Ｈ','Ｉ','Ｊ','Ｋ','Ｌ','Ｍ','Ｎ','Ｏ','Ｐ','Ｑ','Ｒ','Ｓ','Ｔ','Ｕ','Ｖ','Ｗ','Ｘ','Ｙ','Ｚ','０','１','２','３','４','５','６','７','８','９');
     // 标点符号列表
-    var $_punc_marks = array("\r","\n","\t",'`','~','!','@','#','$','%','^','&','*','(',')','-','_','+','=','|','\\','\'','"',';',':','/','?','.','>',',','<','[','{',']','}','·','～','！','＠','＃','￥','％','……','＆','×','（','）','－','——','＝','＋','＼','｜','【','｛','】','｝','‘','“','”','；','：','、','？','。','》','，','《',' ','　');
+    var $_punct_marks = array("\r","\n","\t",'`','~','!','@','#','$','%','^','&','*','(',')','-','_','+','=','|','\\','\'','"',';',':','/','?','.','>',',','<','[','{',']','}','·','～','！','＠','＃','￥','％','……','＆','×','（','）','－','——','＝','＋','＼','｜','【','｛','】','｝','‘','“','”','；','：','、','？','。','》','，','《',' ','　');
 
     function SplitWord() {
         $args = func_get_args();
@@ -92,37 +92,33 @@ class SplitWord {
         $substring  = array();
         $cn_tmp_str = '';
         $en_tmp_str = '';
-
+        
         for($i=0;$i<$strlen;$i++) {
-            $char = mb_substr($content,$i,1,$this->_encoding); 
-            if (isset($this->_punc_marks[$char])) {
+            $char = mb_substr($content,$i,1,$this->_encoding);
+            if (in_array($char,$this->_punct_marks)) {
                 // 一连串的中文放入待分词的词组
                 if ($cn_tmp_str != '') {
                     // 遇到标点了,根据设置的标点断句最短的词组长度判断是否直接分词
-                    $substring[] = array(
-                        $cn_tmp_str => (mb_strlen($cn_tmp_str,$this->_encoding) <= $this->_minLen ? 1 : 0),
-                    );
+                    $substring[] = array($cn_tmp_str, (mb_strlen($cn_tmp_str,$this->_encoding) <= $this->_minLen ? 1 : 0));
                     $cn_tmp_str  = '';
                 }
                 // 一连串的英语字母或数字可以直接返回分词结果
                 if ($en_tmp_str != '') {
-                    $substring[] = array($en_tmp_str => 1);
+                    $substring[] = array($en_tmp_str, 1);
                     $en_tmp_str  = '';
                 }
-            } else if(isset($this->_en_chars[$char])) {
+            } else if(in_array($char,$this->_en_chars)) {
                 // 遇到英文或数字了,可以给中文句子断句了
                 if ($cn_tmp_str != '') {
                     // 遇到标点了,根据设置的标点断句最短的词组长度判断是否直接分词
-                    $substring[] = array(
-                        $cn_tmp_str => (mb_strlen($cn_tmp_str,$this->_encoding) <= $this->_minLen ? 1 : 0),
-                    );
+                    $substring[] = array($cn_tmp_str, (mb_strlen($cn_tmp_str,$this->_encoding) <= $this->_minLen ? 1 : 0));
                     $cn_tmp_str = '';
                 }
                 $en_tmp_str.= $char;
             } else {
                 // 遇到中文了,可以给英文句子或数字断句了
                 if ($en_tmp_str != '') {
-                    $substring[] = array($en_tmp_str => 1);
+                    $substring[] = array($en_tmp_str, 1);
                     $en_tmp_str  = '';
                 }
                 $cn_tmp_str.= $char;
@@ -132,11 +128,9 @@ class SplitWord {
         // 追加没有添加到子句中的中英文句子
         if ($cn_tmp_str != '') {
             // 要判断一下后面没有英文词组,这样句子是在没有标点符号的情况下结束了
-            $substring[] = array(
-                $cn_tmp_str => ($en_tmp_str == '' && (mb_strlen($cn_tmp_str,$this->_encoding) <= $this->_minLen) ? 1 : 0),
-            );
+            $substring[] = array($cn_tmp_str, ($en_tmp_str == '' && (mb_strlen($cn_tmp_str,$this->_encoding) <= $this->_minLen) ? 1 : 0));
         }
-        if ($en_tmp_str != '') $substring[] = array($en_tmp_str => 1);
+        if ($en_tmp_str != '') $substring[] = array($en_tmp_str, 1);
         return $substring;
     }
     /**
@@ -151,15 +145,15 @@ class SplitWord {
         $result = array();
         // 使用标点将长句分成短句
         $subsens = $this->_init($content);
-
-        foreach ($subsens as $sen=>$v) {
-            if ($v==1) {
-                $result[] = trim($sen);
+        
+        foreach ($subsens as $item) {
+            if ($item[1]==1) {
+                $result[] = trim($item[0]);
                 continue;
             } else {
-                $sentence = $sen;
+                $sentence = $item[0];
             }
-
+            
             // i,j是扫描的指针.n是本次扫描的子串字数上界
             $i = $j = $n = 0;
             // 每次取子串最长字数,默认为8个字.m越大分词越慢,但是越准确
@@ -201,7 +195,7 @@ class SplitWord {
 
                 if(!$find) {
                     // 当前单个字无法匹配,而且它是高频词
-                    if (isset($this->_hf_dicts[$sub_str])) {
+                    if (in_array($sub_str,$this->_hf_dicts)) {
                         // 临时字符串中只有一个字,遇到高频词可以进行断句,所以要判断一下临时队列
                         if (mb_strlen($tmp_str,$this->_encoding) == 1) {
                             $tmp_str = ''; //清空它
