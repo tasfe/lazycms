@@ -89,6 +89,7 @@ switch ($action) {
         if ($validate->post()) {
             $mcode    = isset($_POST['model'])?$_POST['model']:null;
             $model    = LCModel::getModelByCode($mcode);
+            $sortid   = isset($_POST['sortid'])?$_POST['sortid']:0;
             $category = isset($_POST['category'])?$_POST['category']:array();
             $title    = isset($_POST['title'])?$_POST['title']:null;
             $autokeys = isset($_POST['autokeys'])?$_POST['autokeys']:null;
@@ -126,15 +127,16 @@ switch ($action) {
             if (!$validate->is_error()) {
                 // 自动获取关键词
                 if ($autokeys) {
-                    
+                    $keywords = LCTerm::getTerms($title);
                 }
                 
                 // 获取数据
                 $data = array(
+                    'sortid'   => $sortid,
                     'category' => $category,
                     'model'    => esc_html($mcode),
                     'template' => esc_html($template),
-                    'keywords' => esc_html($keywords),
+                    'keywords' => $keywords,
                     'description' => esc_html($description),
                 );
                 // 获取模型字段值
@@ -362,6 +364,7 @@ function post_manage_page($action) {
     } else {
         $model   = array_pop(array_slice($models,0,1));
     }
+    $sortid   = isset($_DATA['sortid'])?$_DATA['sortid']:null;
     $title    = isset($_DATA['title'])?$_DATA['title']:null;
     $content  = isset($_DATA['content'])?$_DATA['content']:null;
     $path     = isset($_DATA['path'])?$_DATA['path']:$model['path'];
@@ -398,14 +401,14 @@ function post_manage_page($action) {
     echo               '<tr class="taxonomyid">';
     echo                   '<th><label for="taxonomyid">'._x('Categories','post').'</label></th>';
     echo                   '<td>';
-    echo                       categories_tree($categories);
+    echo                       categories_tree($sortid,$categories);
     echo                   '</td>';
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="title">'._x('Title','post').'<span class="description">'.__('(required)').'</span></label></th>';
     echo                   '<td>';
     echo                       '<input id="title" name="title" type="text" size="70" value="'.$title.'" />';
-    echo                       '&nbsp;<label for="autokeys"><input type="checkbox" value="1" id="autokeys" name="autokeys">'.__('Auto get keywords').'</label>';
+    echo                       '&nbsp;<label for="autokeys"><input type="checkbox" value="1" id="autokeys" name="autokeys" checked="checked">'.__('Auto get keywords').'</label>';
     echo                   '</td>';
     echo               '</tr>';
     echo               '<tr>';
@@ -466,16 +469,22 @@ function post_manage_page($action) {
  * @param  $trees
  * @return string
  */
-function categories_tree($categories=array(),$trees=null) {
+function categories_tree($sortid,$categories=array(),$trees=null) {
     static $func = null; if (!$func) $func = __FUNCTION__;
     $hl = sprintf('<ul class="%s">',is_null($trees) ? 'categories' : 'children');
-    if ($trees===null) $trees = LCTaxonomy::getTaxonomysTree();
+    if ($trees===null) {
+        $checked = empty($sortid)?' checked="checked"':'';
+        $hl.= sprintf('<li><input type="radio" name="sortid" id="sortid" value="0"%s /><label for="sortid">'.__('Uncategorized').'</label></li>',$checked);
+        $trees = LCTaxonomy::getTaxonomysTree();
+    }
     foreach ($trees as $i=>$tree) {
-        $checked = instr($tree['taxonomyid'],$categories)?'checked="checked"':'';
-        $hl.= sprintf('<li><label class="selectit" for="category-%d">',$tree['taxonomyid']);
-        $hl.= sprintf('<input type="checkbox" id="category-%d" name="category[]" value="%d"%s/>%s</label>',$tree['taxonomyid'],$tree['taxonomyid'],$checked,$tree['name']);
+        $checked = instr($tree['taxonomyid'],$categories)?' checked="checked"':'';
+        $main_checked = $tree['taxonomyid']==$sortid?' checked="checked"':'';
+        $hl.= sprintf('<li><input type="radio" name="sortid" value="%d"%s />',$tree['taxonomyid'],$main_checked);
+        $hl.= sprintf('<label class="selectit" for="category-%d">',$tree['taxonomyid']);
+        $hl.= sprintf('<input type="checkbox" id="category-%d" name="category[]" value="%d"%s />%s</label>',$tree['taxonomyid'],$tree['taxonomyid'],$checked,$tree['name']);
     	if (isset($tree['subs'])) {
-    		$hl.= $func($categories,$tree['subs']);
+    		$hl.= $func($sortid,$categories,$tree['subs']);
     	}
         $hl.= '</li>';
     }

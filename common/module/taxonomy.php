@@ -91,7 +91,12 @@ class LCTerm {
         }
         require_file(COM_PATH.'/system/splitword.php');
         $splitword = new SplitWord($dicts);
-        return $splitword->get($content,$max_len,$save_other);
+        $keywords  = $splitword->get($content,$max_len,$save_other);
+        if (empty($keywords)) {
+            return null;
+        } else {
+            return $keywords;
+        }
     }
 }
 

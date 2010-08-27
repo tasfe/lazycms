@@ -71,16 +71,20 @@ class LCPost {
             if (isset($data['keywords'])) {
                 $taxonomies = array();
                 if ($data['keywords']) {
-                    // 替换掉全角逗号和全角空格
-                    $data['keywords'] = str_replace(array('，','　'),array(',',' '),$data['keywords']);
-                    // 先用,分隔关键词
-                    $keywords = explode(',',$data['keywords']);
-                    // 分隔失败，使用空格分隔关键词
-                    if (count($keywords)==1) $keywords = explode(' ',$data['keywords']);
+                    if (is_array($data['keywords'])) {
+                        $keywords = $data['keywords'];
+                    } else {
+                        // 替换掉全角逗号和全角空格
+                        $data['keywords'] = str_replace(array('，','　'),array(',',' '),$data['keywords']);
+                        // 先用,分隔关键词
+                        $keywords = explode(',',$data['keywords']);
+                        // 分隔失败，使用空格分隔关键词
+                        if (count($keywords)==1) $keywords = explode(' ',$data['keywords']);
+                    }
                     // 移除重复的关键词
                     $keywords = array_unique($keywords);
-                    // 去除关键词两边的空格
-                    array_walk($keywords,create_function('&$s','$s=trim($s);'));
+                    // 去除关键词两边的空格，转义HTML
+                    array_walk($keywords,create_function('&$s','$s=esc_html(trim($s));'));
                     // 强力插入关键词
                     foreach($keywords as $key) {
                         $taxonomy = LCTaxonomy::addTaxonomy('post_tag',$key);
