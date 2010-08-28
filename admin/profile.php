@@ -21,7 +21,7 @@
 // 接客了！。。。
 require dirname(__FILE__).'/admin.php';
 // 得到客人信息
-$_ADMIN = LCUser::current();
+$_ADMIN = user_current();
 // 姿势
 $action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
 $referer = referer(PHP_FILE,false);
@@ -59,7 +59,7 @@ if ($validate->post()) {
                'pass' => md5($password.$_ADMIN['authcode'])
             ));
         }
-        LCUser::editUser($userid,$user_info);
+        user_edit($userid,$user_info);
         admin_success(__('User updated.'),"LazyCMS.redirect('".$referer."');");
     }
 } else {

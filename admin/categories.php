@@ -21,7 +21,7 @@
 // 接客了！。。。
 require dirname(__FILE__).'/admin.php';
 // 得到客人信息
-$_ADMIN = LCUser::current();
+$_ADMIN = user_current();
 // 标题
 admin_head('title',  __('Categories'));
 admin_head('styles', array('css/categories'));
@@ -58,7 +58,7 @@ switch ($action) {
 	// 删除
     case 'delete':
         $taxonomyid = isset($_GET['taxonomyid'])?$_GET['taxonomyid']:null;
-        if (LCTaxonomy::deleteTaxonomyById($taxonomyid)) {
+        if (taxonomy_delete($taxonomyid)) {
         	admin_success(__('Category deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
         } else {
             admin_error(__('Category delete fail.'));
@@ -93,7 +93,7 @@ switch ($action) {
                         'path'   => esc_html($path),
                         'list'   => esc_html($list),
                     );
-                    LCTaxonomy::editTaxonomy($taxonomyid,$info);
+                    taxonomy_edit($taxonomyid,$info);
                     admin_success(__('Category updated.'),"LazyCMS.redirect('".PHP_FILE."');");
                 } 
                 // 强力插入了
@@ -101,7 +101,7 @@ switch ($action) {
                     $path   = esc_html($path);
                     $parent = esc_html($parent);
                     $name   = esc_html($name);
-                    LCTaxonomy::addTaxonomy('category',$name,$parent,array(
+                    taxonomy_add('category',$name,$parent,array(
                         'path'  => esc_html($path),
                         'list'  => esc_html($list),
                     ));
@@ -121,7 +121,7 @@ switch ($action) {
 	        // 删除
 	        case 'delete':
 	            foreach ($listids as $taxonomyid) {
-	            	LCTaxonomy::deleteTaxonomyById($taxonomyid);
+	            	taxonomy_delete($taxonomyid);
 	            }
 	            admin_success(__('Categories deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
 	            break;
@@ -132,7 +132,7 @@ switch ($action) {
 	    break;
     default:
 	    admin_head('loadevents','sort_list_init');
-	    $sorts = LCTaxonomy::getTaxonomysTree();
+	    $sorts = taxonomy_get_trees();
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'._x('Add New','sort').'</a></h2>';
@@ -229,7 +229,7 @@ function category_manage_page($action) {
     $referer = referer(PHP_FILE);
     $taxonomyid  = isset($_GET['taxonomyid'])?$_GET['taxonomyid']:0;
     if ($action!='add') {
-    	$_SORT  = LCTaxonomy::getTaxonomyById($taxonomyid);
+    	$_SORT  = taxonomy_get_byid($taxonomyid);
     }
     $parent  = isset($_SORT['parent'])?$_SORT['parent']:null;
     $name    = isset($_SORT['name'])?$_SORT['name']:null;
@@ -237,7 +237,7 @@ function category_manage_page($action) {
     $list    = isset($_SORT['list'])?$_SORT['list']:null;
     $keywords = isset($_SORT['keywords'])?$_SORT['keywords']:null;
     $description = isset($_SORT['description'])?$_SORT['description']:null;
-    $modules = LCModel::getModels(1);
+    $modules = model_gets(1);
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?action=save" method="post" name="sortmanage" id="sortmanage">';
@@ -305,7 +305,7 @@ function category_manage_page($action) {
  */
 function options_tree($taxonomyid,$selected=0,$n=0,$trees=null) {
     static $func = null; if (!$func) $func = __FUNCTION__;
-    if ($trees===null) $trees = LCTaxonomy::getTaxonomysTree();
+    if ($trees===null) $trees = taxonomy_get_trees();
     $hl = ''; $space = str_repeat('&nbsp; &nbsp; ',$n);
     foreach ($trees as $tree) {
         $sel  = $selected==$tree['taxonomyid']?' selected="selected"':null;

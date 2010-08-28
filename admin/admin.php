@@ -25,7 +25,6 @@ require ADMIN_PATH.'/../global.php';
 // 后台的目录
 define('ADMIN_ROOT',WEB_ROOT.str_replace('\\','/',substr(ADMIN_PATH,strlen(ABS_PATH)+1)).'/');
 // 加载公共模块
-require_file(COM_PATH.'/module/system.php');
 require_file(COM_PATH.'/module/user.php');
 require_file(COM_PATH.'/module/model.php');
 require_file(COM_PATH.'/module/taxonomy.php');
@@ -40,7 +39,7 @@ require_file(COM_PATH.'/module/post.php');
  */
 function current_user_can($action,$is_redirect=true) {
     global $_ADMIN; $result = false;
-    $user = LCUser::current(false);
+    $user = user_current(false);
     if (isset($user['roles'])) {
     	if (instr($action,$user['roles'])) {
     		$result = true;
@@ -224,7 +223,7 @@ function admin_purview($data=null) {
 function admin_menu($menus) {
     global $parent_file,$_ADMIN;
     // 获取管理员信息
-    if (!isset($_ADMIN)) $_ADMIN = LCUser::current(false);
+    if (!isset($_ADMIN)) $_ADMIN = user_current(false);
     // 自动植入配置
     $is_first = true; $is_last = false;
     // 设置默认参数

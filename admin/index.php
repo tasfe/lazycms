@@ -22,7 +22,7 @@
 require dirname(__FILE__).'/admin.php';
 
 // 取得管理员信息
-$_ADMIN = LCUser::current();
+$_ADMIN = user_current();
 // 设置标题
 admin_head('title',__('Control Panel'));
 // 加载头部

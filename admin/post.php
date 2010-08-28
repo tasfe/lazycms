@@ -21,7 +21,7 @@
 // 接客了！。。。
 require dirname(__FILE__).'/admin.php';
 // 得到客人信息
-$_ADMIN = LCUser::current();
+$_ADMIN = user_current();
 // 标题
 admin_head('title',  __('Posts'));
 admin_head('styles', array('css/post'));
@@ -58,7 +58,7 @@ switch ($action) {
         // 权限检查
 	    current_user_can('post-delete');
         $postid = isset($_GET['postid'])?$_GET['postid']:null;
-        if (LCPost::deletePostById($postid)) {
+        if (post_delete($postid)) {
         	admin_success(__('Post deleted.'),"LazyCMS.redirect('".referer()."');");
         } else {
             admin_error(__('Post delete fail.'));
@@ -75,7 +75,7 @@ switch ($action) {
 	        case 'delete':
 	            current_user_can('post-delete');
 	            foreach ($listids as $postid) {
-	            	LCPost::deletePostById($postid);
+	            	post_delete($postid);
 	            }
 	            admin_success(__('Posts deleted.'),"LazyCMS.redirect('".referer()."');");
 	            break;
@@ -88,7 +88,7 @@ switch ($action) {
 	    $validate = new Validate();
         if ($validate->post()) {
             $mcode    = isset($_POST['model'])?$_POST['model']:null;
-            $model    = LCModel::getModelByCode($mcode);
+            $model    = model_get_bycode($mcode);
             $sortid   = isset($_POST['sortid'])?$_POST['sortid']:0;
             $category = isset($_POST['category'])?$_POST['category']:array();
             $title    = isset($_POST['title'])?$_POST['title']:null;
@@ -127,7 +127,7 @@ switch ($action) {
             if (!$validate->is_error()) {
                 // 自动获取关键词
                 if ($autokeys) {
-                    $keywords = LCTerm::getTerms($title);
+                    $keywords = term_gets($title);
                 }
                 
                 // 获取数据
@@ -151,7 +151,7 @@ switch ($action) {
                     $data['path']    = esc_html($path);
                     $data['title']   = $title;
                     $data['content'] = $content;
-                    LCPost::editPost($postid,$data);
+                    post_edit($postid,$data);
                     $result = __('Post updated.');
                 }
                 // 强力插入
@@ -160,7 +160,7 @@ switch ($action) {
                     $data['author'] = $_ADMIN['userid'];
                     $data['passed'] = 0;
                     $data['datetime'] = time();
-                    if ($post = LCPost::addPost($title,$content,$path,$data)) {
+                    if ($post = post_add($title,$content,$path,$data)) {
                         $postid = $post['postid'];
                     }
                     $result = __('Post created.');
@@ -174,11 +174,11 @@ switch ($action) {
 	case 'extend-attr':
 	    $mcode  = isset($_REQUEST['model'])?$_REQUEST['model']:null;
 	    $postid = isset($_REQUEST['postid'])?$_REQUEST['postid']:0;
-	    $model  = LCModel::getModelByCode($mcode);
+	    $model  = model_get_bycode($mcode);
         $attrs  = null;
 
 	    if ($model) {
-            $post = LCPost::getPostById($postid);
+            $post = post_get($postid);
 	    	foreach ($model['fields'] as $field) {
                 if (isset($post['meta'][$field['n']])) {
                     $field['d'] = $post['meta'][$field['n']];
@@ -265,7 +265,7 @@ switch ($action) {
         } else {
             $sql = "SELECT * FROM `#@_post` {$where} ORDER BY `postid` DESC";
         }
-        $result   = LCPost::getPosts($sql, $page, $size);
+        $result   = post_gets($sql, $page, $size);
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'._x('Add New','post').'</a></h2>';
@@ -350,17 +350,17 @@ function table_thead() {
 function post_manage_page($action) {
     $referer = referer(PHP_FILE);
     $postid  = isset($_GET['postid'])?$_GET['postid']:0;
-    $models  = LCModel::getModels(1);
+    $models  = model_gets(1);
     $suffix  = C('HTMLFileSuffix');
     if ($action=='add') {
         $mcode = isset($_GET['model'])?$_GET['model']:null;
     } else {
-        $_DATA = LCPost::getPostById($postid); 
+        $_DATA = post_get($postid);
         $mcode = $_DATA['model'];
     }
 
     if ($mcode) {
-        $model = LCModel::getModelByCode($mcode);
+        $model = model_get_bycode($mcode);
     } else {
         $model   = array_pop(array_slice($models,0,1));
     }
@@ -475,7 +475,7 @@ function categories_tree($sortid,$categories=array(),$trees=null) {
     if ($trees===null) {
         $checked = empty($sortid)?' checked="checked"':'';
         $hl.= sprintf('<li><input type="radio" name="sortid" id="sortid" value="0"%s /><label for="sortid">'.__('Uncategorized').'</label></li>',$checked);
-        $trees = LCTaxonomy::getTaxonomysTree();
+        $trees = taxonomy_get_trees();
     }
     foreach ($trees as $i=>$tree) {
         $checked = instr($tree['taxonomyid'],$categories)?' checked="checked"':'';

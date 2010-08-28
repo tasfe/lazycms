@@ -21,7 +21,7 @@
 // 接客了！。。。
 require dirname(__FILE__).'/../admin.php';
 // 得到客人信息
-$_ADMIN = LCUser::current();
+$_ADMIN = user_current();
 // 姿势
 $action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
 $referer = referer(PHP_FILE,false);
