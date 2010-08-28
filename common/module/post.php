@@ -64,7 +64,7 @@ function post_edit($postid,$data) {
         $categories = array();
         if (isset($data['category'])) {
             $categories = $data['category'];
-            taxonomy_makeRelation('category',$postid,$data['category']);
+            taxonomy_make_relation('category',$postid,$data['category']);
         }
         // 分析关键词
         if (isset($data['keywords'])) {
@@ -86,12 +86,12 @@ function post_edit($postid,$data) {
                 array_walk($keywords,create_function('&$s','$s=esc_html(trim($s));'));
                 // 强力插入关键词
                 foreach($keywords as $key) {
-                    $taxonomy = taxonomy_addTaxonomy('post_tag',$key);
+                    $taxonomy = taxonomy_add('post_tag',$key);
                     $taxonomies[] = $taxonomy['taxonomyid'];
                 }
             }
             // 创建关系
-            taxonomy_makeRelation('post_tag',$postid,$taxonomies);
+            taxonomy_make_relation('post_tag',$postid,$taxonomies);
 
         }
         unset($data['category'],$data['keywords']);
@@ -137,7 +137,7 @@ function post_gets($sql, $page=0, $size=10){
     $res = $db->query($sql);
     while ($post = $db->fetch($res)) {
         $post['model'] = model_get_bycode($post['model']);
-        $post['category'] = taxonomy_getRelation('category',$post['postid']);
+        $post['category'] = taxonomy_get_relation('category',$post['postid']);
         $posts[] = $post;
     }
     return array(
@@ -165,8 +165,8 @@ function post_get($postid) {
     // 判断文章是否存在
     if ($post = $db->fetch($rs)) {
         // 取得分类关系
-        $post['category'] = taxonomy_getRelation('category',$postid);
-        $post['keywords'] = taxonomy_getRelation('post_tag',$postid);
+        $post['category'] = taxonomy_get_relation('category',$postid);
+        $post['keywords'] = taxonomy_get_relation('post_tag',$postid);
         if ($meta = post_get_meta($post['postid'])) {
             $post['meta'] = $meta;
         }
@@ -255,9 +255,9 @@ function post_delete($postid) {
     if (!$postid) return false;
     if (post_get($postid)) {
         // 删除分类关系
-        $relations = taxonomy_getRelation('category',$postid);
+        $relations = taxonomy_get_relation('category',$postid);
         foreach($relations as $r) {
-            taxonomy_deleteRelation($postid,$r['taxonomyid']);
+            taxonomy_delete_relation($postid,$r['taxonomyid']);
         }
         $db->delete('#@_post_meta',array('postid' => $postid));
         $db->delete('#@_post',array('postid' => $postid));
