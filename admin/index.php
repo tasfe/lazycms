@@ -12,7 +12,7 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
@@ -20,12 +20,30 @@
  */
 // 加载公共文件
 require dirname(__FILE__).'/admin.php';
-
-// 取得管理员信息
+// 查询管理员信息
 $_ADMIN = user_current();
-// 设置标题
-admin_head('title',__('Control Panel'));
-// 加载头部
-include ADMIN_PATH.'/admin-header.php';
-// 加载尾部
-include ADMIN_PATH.'/admin-footer.php';
+// 动作
+$action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
+
+switch ($action) {
+    // 取得关键词
+    case 'getTerms':
+        $content = isset($_REQUEST['content'])?$_REQUEST['content']:null;
+        if ($content) {
+            $terms = term_gets($content);
+        } else {
+            $terms = array();
+        }
+        echo_json('Return',$terms);
+        break;
+    // 默认页面
+    default:
+        // 设置标题
+        admin_head('title',__('Control Panel'));
+        // 加载头部
+        include ADMIN_PATH.'/admin-header.php';
+        // 加载尾部
+        include ADMIN_PATH.'/admin-footer.php';
+        break;
+}
+

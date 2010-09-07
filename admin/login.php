@@ -12,7 +12,7 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
@@ -20,7 +20,7 @@
  */
 // 定义管理后台路径
 defined('ADMIN_PATH') or define('ADMIN_PATH',dirname(__FILE__));
-// 接客了！。。。
+// 加载公共文件
 require ADMIN_PATH.'/admin.php';
 
 // 退出登录

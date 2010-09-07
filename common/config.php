@@ -12,7 +12,7 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
@@ -25,5 +25,3 @@ define('LANGUAGE','zh-CN');
 define('DSN_CONFIG','mysql://root:123@localhost/lazy/test');
 // 缓存文件夹
 define('CACHE_PATH',COM_PATH.'/.cache');
-// debug 模式
-define('DEBUG_MODE',true);

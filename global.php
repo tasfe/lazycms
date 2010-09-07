@@ -12,7 +12,7 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
@@ -23,40 +23,37 @@
 
 if (str_replace('\\','/',__FILE__) === $_SERVER["SCRIPT_FILENAME"]) { die('Restricted access!'); }
 
-// 屏蔽无聊人的闲言碎语
+// 设置正确的错误级别
 error_reporting() < E_ALL & ~E_NOTICE or error_reporting(E_ALL & ~E_NOTICE);
 
-// 确定插入的位置，防止插到菊花
+// 定义项目物理跟路径
 define('ABS_PATH',dirname(__FILE__));
 
-// 确定菊花位置
+// 定义项目物理公共目录
 define('COM_PATH',ABS_PATH.'/common');
 
-// 确定用什么姿势来做爱做的事
+// 加载项目配置
 require COM_PATH.'/config.php';
 
-// 加点料，更容易插入
+// 定义系统常量
 require COM_PATH."/defines.php";
 
-// debug模式
-if (DEBUG_MODE) {
-    // 加载FirePHP类
-    require COM_PATH.'/system/firephp.php';
-}
+// 加载FirePHP类
+require COM_PATH.'/system/firephp.php';
 
-// 加载配套设施，更容易达到高潮
+// 加载公共函数库
 require COM_PATH.'/functions.php';
-// 加载用来确定是几P的功能类
-require COM_PATH.'/system/cookie.php';
-// 加载防止意外受孕功能类
+// 非命令行模式
+if (!IS_CLI) {
+    // 加载cookie库
+    require COM_PATH.'/system/cookie.php';    
+}
+// 加载验证类
 require COM_PATH.'/system/validate.php';
-// 加载高潮缓冲区功能类
+// 加载文件缓存类
 require COM_PATH.'/system/fcache.php';
 
-// 设置意外受孕后的处理方法
-set_error_handler('handler_error');
-
-// 处理那些不老实的爪子，更深层次的防止意外出现
+// 处理系统变量
 if (get_magic_quotes_gpc()) {
     $args = array(& $_GET, & $_POST, & $_COOKIE, & $_FILES, & $_REQUEST);
     while (list($k,$v) = each($args)) {
@@ -65,6 +62,6 @@ if (get_magic_quotes_gpc()) {
     unset($args,$k,$v);
 }
 
-// 将闲杂人等踢出房间
+// 删除没用的系统变量
 unset($_ENV,$HTTP_ENV_VARS,$HTTP_SERVER_VARS,$HTTP_SESSION_VARS,$HTTP_POST_VARS,$HTTP_GET_VARS,$HTTP_POST_FILES,$HTTP_COOKIE_VARS);
 

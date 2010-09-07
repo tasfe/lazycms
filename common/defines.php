@@ -12,7 +12,7 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
@@ -30,28 +30,33 @@ defined('E_STRICT') or define('E_STRICT', 2048);
 define('IS_CGI',!strncasecmp(PHP_SAPI,'cgi',3) ? 1 : 0 );
 define('IS_WIN',strstr(PHP_OS, 'WIN') ? 1 : 0 );
 define('IS_CLI',PHP_SAPI=='cli'? 1   :   0);
+
 // 当前文件名
-if(!IS_CLI) {
-    // 非命令行模式，开启缓冲
-    ob_start();
-    // 当前文件名
-    if(!defined('PHP_FILE')) {
-        if(IS_CGI) {
-            //CGI/FASTCGI模式下
-            $_temp  = explode('.php',$_SERVER["PHP_SELF"]);
-            define('PHP_FILE', rtrim(str_replace($_SERVER["HTTP_HOST"],'',$_temp[0].'.php'),'/'));
-        }else {
-            define('PHP_FILE', rtrim($_SERVER["SCRIPT_NAME"],'/'));
-        }
+if(!defined('PHP_FILE')) {
+    if (IS_CLI) {
+        define('PHP_FILE',$argv[0]);
+    } elseif(IS_CGI) {
+        //CGI/FASTCGI模式下
+        $_temp  = explode('.php',$_SERVER["PHP_SELF"]);
+        define('PHP_FILE', rtrim(str_replace($_SERVER["HTTP_HOST"],'',$_temp[0].'.php'),'/'));
+    } else {
+        define('PHP_FILE', rtrim($_SERVER["SCRIPT_NAME"],'/'));
     }
-    // Web root
-    define('WEB_ROOT',str_replace('\\','/',substr(dirname(PHP_FILE),0,-strlen(substr(realpath('.'),strlen(ABS_PATH)))+1)));
-    // Http scheme
-    define('HTTP_SCHEME',(($scheme=isset($_SERVER['HTTPS'])?$_SERVER['HTTPS']:null)=='off' || empty($scheme))?'http':'https');
-    // Http host
-    define('HTTP_HOST',HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
 }
-// 默认时间格式
-define('DATE_FORMAT','Y-m-d H:i:s');
+// Web root
+define('WEB_ROOT',str_replace('\\','/',substr(dirname(PHP_FILE),0,-strlen(substr(realpath('.'),strlen(ABS_PATH)))+1)));
+// Http scheme
+define('HTTP_SCHEME',(($scheme=isset($_SERVER['HTTPS'])?$_SERVER['HTTPS']:null)=='off' || empty($scheme))?'http':'https');
+// 判断项目执行模式
+IS_CLI ? define('HTTP_HOST','') : ob_start();
+// Http host
+defined('HTTP_HOST') or define('HTTP_HOST',HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
 // System version
 define('LAZY_VERSION','2.0.1');
+
+// 严重错误，停止程序
+define('E_LAZY_ERROR',256);
+// 警告错误，不停止程序
+define('E_LAZY_WARNING',512);
+// 提示错误，不停止程序
+define('E_LAZY_NOTICE',1024);

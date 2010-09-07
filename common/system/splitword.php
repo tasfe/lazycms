@@ -12,7 +12,7 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
@@ -43,7 +43,7 @@ class SplitWord {
 
     function SplitWord() {
         $args = func_get_args();
-		call_user_func_array( array(&$this, '__construct'), $args );
+		return call_user_func_array( array(&$this, '__construct'), $args );
 	}
 
     function __construct($dicts=null){

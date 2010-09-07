@@ -11,7 +11,7 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
@@ -79,3 +79,21 @@ $.ajaxSetup({
 		// 还缺少记录COOKIE
     }
 })(jQuery);
+
+/**
+ * 内容分词
+ * 
+ * @param content
+ * @param callback
+ */
+getTerms = function(content,callback) {
+    var data = [];
+    if (content!='') {
+        $.post(LazyCMS.ADMIN_ROOT + 'index.php',{action:'getTerms',content:content},function(r){
+            data = LazyCMS.ajaxResult(r);
+            if (callback) callback(data);
+        },'json');
+    } else {
+        if (callback) callback(data);
+    }
+}

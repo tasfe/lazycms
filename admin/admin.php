@@ -12,7 +12,7 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
@@ -20,15 +20,15 @@
  */
 // 定义管理后台路径
 defined('ADMIN_PATH') or define('ADMIN_PATH',dirname(__FILE__));
-// 接客了！。。。
+// 加载公共文件
 require ADMIN_PATH.'/../global.php';
 // 后台的目录
 define('ADMIN_ROOT',WEB_ROOT.str_replace('\\','/',substr(ADMIN_PATH,strlen(ABS_PATH)+1)).'/');
 // 加载公共模块
-require_file(COM_PATH.'/module/user.php');
-require_file(COM_PATH.'/module/model.php');
-require_file(COM_PATH.'/module/taxonomy.php');
-require_file(COM_PATH.'/module/post.php');
+require COM_PATH.'/module/user.php';
+require COM_PATH.'/module/model.php';
+require COM_PATH.'/module/taxonomy.php';
+require COM_PATH.'/module/post.php';
 
 /**
  * 验证用户权限
@@ -93,7 +93,7 @@ function admin_css(){
     if (isset($CSS[$loads])) {
     	$loader = $CSS[$loads];
     } else {
-        require_file(COM_PATH.'/system/loader.php');
+        require_once COM_PATH.'/system/loader.php';
     	// 实例化loader类
         $loader = new StylesLoader($language);
         $CSS[$loads] = $loader;
@@ -121,7 +121,7 @@ function admin_script(){
     if (isset($JSS[$loads])) {
     	$loader = $JSS[$loads];
     } else {
-        require_file(COM_PATH.'/system/loader.php');
+        require_once COM_PATH.'/system/loader.php';
     	// 实例化loader类
         $loader = new ScriptsLoader($language);
         $JSS[$loads] = $loader;

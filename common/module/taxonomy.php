@@ -12,7 +12,7 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
@@ -88,7 +88,7 @@ function term_gets($content,$max_len=8,$save_other=false) {
         }
         FCache::set($ckey,$dicts);
     }
-    require_file(COM_PATH.'/system/splitword.php');
+    require_once COM_PATH.'/system/splitword.php';
     $splitword = new SplitWord($dicts);
     $keywords  = $splitword->get($content,$max_len,$save_other);
     if (empty($keywords)) {

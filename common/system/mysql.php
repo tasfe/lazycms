@@ -12,7 +12,7 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
@@ -25,10 +25,9 @@ define('CLIENT_MULTI_RESULTS', 0x20000);
  * mysql访问类
  *
  */
-class Mysql{
+class Mysql {
 	// public
     var $conn  = null;
-    var $ready = true;
     // private
     var $_host = 'localhost';
     var $_port = 3306;
@@ -39,9 +38,19 @@ class Mysql{
     var $_prefix = null;
     var $_scheme = 'mysql';
 
+    function __construct($config,$pconnect=false) {
+        $this->config($config);
+        $this->connect($pconnect);
+        $this->select_db();
+    }
+
     function Mysql() {
-		// 添加PHP4下的析构函数
+        // 添加PHP4下的析构函数
         register_shutdown_function( array(&$this, '__destruct') );
+
+        // 调用PHP的构造函数
+        $args = func_get_args();
+		return call_user_func_array( array(&$this, '__construct'), $args );
     }
 
     function __destruct(){
@@ -67,24 +76,25 @@ class Mysql{
         }
     }
     /**
-     * 连接MySQL
+     * 连接Mysql
      *
+     * @param bool $pconnect    是否需要长连接
+     * @return bool|void
      */
-    function connect(){
-        // 取得连接模式
-        $pconnect = $this->_mode;
+    function connect($pconnect=false){
         // 连接数据库
         if (function_exists('mysql_pconnect') && $pconnect) {
             $this->conn = @mysql_pconnect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,CLIENT_MULTI_RESULTS);
         } elseif (function_exists('mysql_connect')) {
             $this->conn = @mysql_connect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,false,CLIENT_MULTI_RESULTS);
         } else {
-            $this->ready = false; trigger_error(__('-_-!! Please open the mysql extension!'),E_USER_ERROR);
+            return throw_error(__('-_-!! Please open the mysql extension!'),E_LAZY_ERROR);
         }
         // 验证连接是否正确
         if (!$this->conn) {
-            $this->ready = false; trigger_error(__('Database connect error, please check the database settings!'),E_USER_ERROR);
+            return throw_error(__('Database connect error, please check the database settings!'),E_LAZY_ERROR);
         }
+        return $this->conn;
     }
     /**
      * 选择数据库
@@ -97,7 +107,7 @@ class Mysql{
         if (empty($db)) $db = $this->_name;
         // 选择数据库
         if (!mysql_select_db($db,$this->conn)) {
-            $this->ready = false; trigger_error(sprintf(__('%s database not found!'),$db),E_USER_ERROR);
+            return throw_error(sprintf(__('%s database not found!'),$db),E_LAZY_ERROR);
         }
         // MYSQL数据库的设置
         if (version_compare($this->version(), '4.1', '>=')) {
@@ -106,8 +116,10 @@ class Mysql{
 	            mysql_query("SET sql_mode='';",$this->conn);
 	        }
         } else {
-        	$this->ready = false; trigger_error(__('mysql database version lower than 4.1, please upgrade mysql!'),E_USER_WARNING);
+            return throw_error(__('mysql database version lower than 4.1, please upgrade mysql!'),E_LAZY_ERROR);
         }
+        
+        return true;
     }
     /**
      * 指定函数执行SQL语句
@@ -137,7 +149,7 @@ class Mysql{
                 $this->close();$this->connect(); $this->select_db();
                 $result = $this->query($sql,$bind,'RETRY'.$type);
             } elseif($type != 'SILENT' && substr($type, 5) != 'SILENT') {
-                trigger_error(sprintf(__('MySQL Query Error:<br/>SQL:%s<br/>%s'),$sql,$this->error()),E_USER_WARNING);
+                return throw_error(sprintf(__('MySQL Query Error:<br/>SQL:%s<br/>%s'),$sql,$this->error()),E_LAZY_ERROR);
             }
         }
         if ($func=='mysql_unbuffered_query') {
@@ -145,29 +157,6 @@ class Mysql{
                 $result = $this->insert_id();
             } else {
                 $result = $this->affected_rows();
-            }
-        }
-        $endtime = microtime(true);
-        // 记录sql日志
-        if (DEBUG_MODE && !IS_CLI) {
-            static $logs = array(); $QUERY_STRING = '';
-    	    parse_str($_SERVER['QUERY_STRING'],$_QUERY);
-    	    if (!empty($_QUERY)) $QUERY_STRING = "QUERY:".http_build_query($_QUERY);
-    	    if (empty($_POST)) {
-    	        $QUERY_STRING.= "\r\n";
-                $POST_STRING  = '';
-    	    } else {
-    	        $QUERY_STRING.= "\t\t";
-    	        $POST_STRING = "POST:".http_build_query($_POST)."\r\n";
-    	    }
-    	    $key = md5($QUERY_STRING.$POST_STRING);
-    	    $folder  = ABS_PATH.'/logs/sql/'.date('Y-m-d'); mkdirs($folder);
-            $logfile = $folder.'/'.str_replace(array('/','.php'),array('_',''),ltrim(PHP_FILE,'/')).'.log';
-    	    if (isset($logs[$key])) {
-            	error_log(($endtime-$stattime)."\tSQL:".$sql."\r\n",3,$logfile);
-            } else {
-                $logs[$key] = true;
-                error_log('['.date("y-m-d H:i:s")."]\t".$QUERY_STRING.$POST_STRING.($endtime-$stattime)."\tSQL:".$sql."\r\n",3,$logfile);
             }
         }
         return $result;

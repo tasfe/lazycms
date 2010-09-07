@@ -12,21 +12,21 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-// 接客了！。。。
+// 加载公共文件
 require dirname(__FILE__).'/admin.php';
-// 得到客人信息
+// 查询管理员信息
 $_ADMIN = user_current();
 // 标题
 admin_head('title',  __('Posts'));
 admin_head('styles', array('css/post'));
 admin_head('scripts',array('js/post'));
-// 姿势
+// 动作
 $action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
 
 switch ($action) {
@@ -126,7 +126,7 @@ switch ($action) {
             // 安全有保证，做爱做的事吧！
             if (!$validate->is_error()) {
                 // 自动获取关键词
-                if ($autokeys) {
+                if ($autokeys && empty($keywords)) {
                     $keywords = term_gets($title);
                 }
                 
@@ -443,7 +443,7 @@ function post_manage_page($action) {
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="keywords">'._x('Keywords','post').'</label></th>';
-    echo                   '<td><input type="text" size="70" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button">'.__('Get').'</button></td>';
+    echo                   '<td><input type="text" size="70" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" rel="keywords">'.__('Get').'</button></td>';
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="description">'._x('Description','post').'</label></th>';

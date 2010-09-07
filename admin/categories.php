@@ -12,21 +12,21 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-// 接客了！。。。
+// 加载公共文件
 require dirname(__FILE__).'/admin.php';
-// 得到客人信息
+// 查询管理员信息
 $_ADMIN = user_current();
 // 标题
 admin_head('title',  __('Categories'));
 admin_head('styles', array('css/categories'));
 admin_head('scripts',array('js/categories'));
-// 姿势
+// 动作
 $action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
 // 所属
 $parent_file = 'categories.php';
@@ -285,6 +285,7 @@ function category_manage_page($action) {
     echo           '</tr>'; 
     echo       '</table>';
     echo     '</fieldset>';
+
     if ($action=='add') {
         echo   '<p class="submit"><button type="submit">'.__('Add Category').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'.__('Back').'</button></p>';
     } else {

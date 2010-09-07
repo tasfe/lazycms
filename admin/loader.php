@@ -12,7 +12,7 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
@@ -28,7 +28,7 @@ defined('ADMIN_PATH') or define('ADMIN_PATH',dirname(__FILE__));
 // 加载公共文件
 require ADMIN_PATH.'/admin.php'; error_reporting(0);
 // 加载Loader
-require_file(COM_PATH.'/system/loader.php');
+require COM_PATH.'/system/loader.php';
 // 获取相关变量
 $type = isset($_GET['type'])?$_GET['type']:null;
 $lang = isset($_GET['lang'])?$_GET['lang']:null;

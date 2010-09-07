@@ -12,7 +12,7 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
@@ -201,7 +201,7 @@ function user_add($name,$pass,$email,$data=null) {
        'pass' => $pass,
        'mail' => $email,
        'status' => 0,
-       'registered' => date(DATE_FORMAT,time()),
+       'registered' => date('Y-m-d H:i:s',time()),
     ));
     // 生成authcode
     $authcode = authcode($userid);

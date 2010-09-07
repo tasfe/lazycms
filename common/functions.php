@@ -12,7 +12,7 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
@@ -81,18 +81,12 @@ function format_path($path,$data=null) {
  */
 function get_conn($DSN=null,$pconnect=false){
     static $_db = array();
-    if (is_null($DSN)) { $DSN = DSN_CONFIG; } $dsn = md5($DSN);
-    if (isset($_db[$dsn]) && is_object($_db[$dsn])) return $_db[$dsn];
+    if (is_null($DSN)) $DSN = DSN_CONFIG; $guid = guid($DSN);
+    if (isset($_db[$guid]) && is_object($_db[$guid])) return $_db[$guid];
     if ($config = parse_dsn($DSN)) {
-        $config['mode'] = $pconnect;
-        require_file(COM_PATH.'/system/mysql.php');
-    	$_db[$dsn] = new Mysql();
-    	$_db[$dsn]->config($config);
-        $_db[$dsn]->connect();
-        $_db[$dsn]->select_db();
-        if ($_db[$dsn]->ready) {
-        	return $_db[$dsn];
-        }
+        require_once COM_PATH.'/system/mysql.php';
+    	$_db[$guid] = new Mysql($config,$pconnect);
+    	return $_db[$guid];
     }
     return false;
 }
@@ -188,10 +182,13 @@ function error_page($title,$content,$is_full=false) {
  * @param string $errfile	错误文件
  * @param int	 $errline	错误行号
  */
-function handler_error($errno, $errstr, $errfile, $errline){//E_NOTICE
-    if (error_reporting() == 0 || in_array($errno,array(E_STRICT))) return false;
-    $errfile = replace_root($errfile); $errstr = replace_root($errstr);
-    $string = $file = null; $traces = debug_backtrace();
+function throw_error($errstr,$errno=0){
+    $string  = $file = null;
+    $traces  = debug_backtrace();
+    $error   = $traces[0]; unset($traces[0]);
+    $errstr  = replace_root($errstr);
+    $errfile = replace_root($error['file']);
+    $errline = replace_root($error['line']);
     foreach($traces as $i=>$trace) {
         $file  = isset($trace['file']) ? replace_root($trace['file']) : $file;
         $line  = isset($trace['line']) ? $trace['line'] : null;
@@ -229,13 +226,23 @@ function handler_error($errno, $errstr, $errfile, $errline){//E_NOTICE
     // 记录日志
     $file = ABS_PATH.'/error.log'; error_log($message,3,$file);
 
-    // 输出日志
+    // 屏蔽错误
+    if (error_reporting() === 0) return true;
+    
+    // 清理之前已输出的HTML代码
     ob_end_clean();
-
-    if (!is_ajax()) {
-    	$output = error_page(__('System Error'),$output,true);
+    // 如果是ajax模式，按照ajax方式输出
+    if (is_ajax()) {
+        
+    } else {
+        $output = error_page(__('System Error'),$output,true);
     }
-    exit($output);
+    // 输出错误信息
+    if ($errno === E_LAZY_ERROR) {
+        exit($output);
+    }
+    
+    return false;
 }
 /**
  * 输出ajax规范的json字符串
@@ -642,39 +649,6 @@ function file_exists_case($filename) {
     return false;
 }
 /**
- * 等同于 include_once
- *
- * @param string    $path    被包含文件的路径
- * @return mixed
- */
-function include_file($path) {
-    static $_files = array();
-    if (file_exists_case($path)) {
-        if (!isset($_files[$path]))
-            $_files[$path] = include $path;
-        return $_files[$path];
-    }
-    return false;
-}
-/**
- * 等同于 require_once
- *
- * @param string    $path    被包含文件的路径
- * @return bool
- */
-function require_file($path){
-    static $_files = array();
-    if (file_exists_case($path)) {
-        if (!isset($_files[$path])) {
-            require $path;
-            $_files[$path] = true;
-            return true;
-        }
-        return false;
-    }
-    return false;
-}
-/**
  * 给用户生成唯一CODE
  *
  * @param string $data
@@ -682,7 +656,7 @@ function require_file($path){
  */
 function authcode($data=null){
     $ipaddr = $_SERVER['REMOTE_ADDR'];
-    $randid = strtoupper(md5($data.$ipaddr.$_SERVER['HTTP_USER_AGENT']));
+    $randid = $data.$ipaddr.$_SERVER['HTTP_USER_AGENT'];
     return guid($randid);
 }
 /**
@@ -691,8 +665,19 @@ function authcode($data=null){
  * @param  $randid  字符串
  * @return string   guid
  */
-function guid($randid=null){
-    $randid = is_null($randid)?strtoupper(md5(uniqid(mt_rand(), true))):$randid;
+function guid($mix=null){
+    if (is_null($mix)) {
+        $randid = uniqid(mt_rand(),true);
+    } else {
+        if (is_object($mix) && function_exists('spl_object_hash')) {
+            $randid = spl_object_hash($mix);
+        } elseif (is_resource($mix)) {
+            $randid = get_resource_type($mix).strval($mix);
+        } else {
+            $randid = serialize($mix);
+        }
+    }
+    $randid = strtoupper(md5($randid));
     $hyphen = chr(45);
     $result = array();
     $result[] = substr($randid, 0, 8);
@@ -909,7 +894,7 @@ function _x($str,$context=null) {
 		$language = language();
 		$mo_file  = COM_PATH."/locale/{$language}.mo";
 		if (!file_exists_case($mo_file)) return $str;
-		require_file(COM_PATH.'/system/l10n.php');
+		require_once COM_PATH.'/system/l10n.php';
 		$_l10n = new L10n();
 	    $ckey = 'L10n.'.$language.'.entries';
 	    // 取出缓存
@@ -956,7 +941,7 @@ if (!function_exists('json_encode')) {
     function json_encode($value){
         static $_json = null;
         if (!$_json) {
-            require_file(COM_PATH.'/system/json.php');
+            require_once COM_PATH.'/system/json.php';
             $_json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
         }
         return $_json->encode($value);
@@ -967,7 +952,7 @@ if (!function_exists('json_decode')) {
     function json_decode($json){
         static $_json = null;
         if (!$_json) {
-            require_file(COM_PATH.'/system/json.php');
+            require_once COM_PATH.'/system/json.php';
             $_json = new Services_JSON();
         }
         return $_json->decode($json);

@@ -12,21 +12,21 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-// 接客了！。。。
+// 加载公共文件
 require dirname(__FILE__).'/admin.php';
-// 得到客人信息
+// 查询管理员信息
 $_ADMIN = user_current();
 // 标题
 admin_head('title',  __('Models'));
 admin_head('styles', array('css/model'));
 admin_head('scripts',array('js/model'));
-// 姿势
+// 动作
 $action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
 
 switch ($action) {
