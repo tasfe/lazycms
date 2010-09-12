@@ -76,7 +76,7 @@ class Mysql {
     function connect(){
         // 连接数据库
         if (function_exists('mysql_pconnect') && $this->_pconnect) {
-            $this->conn = @mysql_pconnect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,CLIENT_MULTI_RESULTS);
+            $this->conn = mysql_pconnect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,CLIENT_MULTI_RESULTS);
         } elseif (function_exists('mysql_connect')) {
             $this->conn = mysql_connect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,false,CLIENT_MULTI_RESULTS);
         } else {

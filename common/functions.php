@@ -244,7 +244,7 @@ function throw_error($errstr,$errno=E_LAZY_NOTICE,$errfile=null,$errline=0){
             // 格式化为HTML
             $html = str_replace("\t",str_repeat('&nbsp; ',2),nl2br(esc_html($log)));
             // 不是ajax请求，格式化成HTML完成页面
-            $html = is_ajax() ? $html : error_page(__('System Error').': '.$errno,$html,true);
+            $html = is_ajax() ? $html : error_page(__('System Error'),$html,true);
             // 输出错误信息，并停止程序
             echo $html; exit();
             break;
@@ -252,7 +252,7 @@ function throw_error($errstr,$errno=E_LAZY_NOTICE,$errfile=null,$errline=0){
             // 格式化为HTML
             $html = str_replace("\t",str_repeat('&nbsp; ',2),nl2br(esc_html($log)));
             // 不是ajax请求，格式化成HTML完成页面
-            $html = is_ajax() ? $html : error_page(__('System Error').': '.$errno,$html,true);
+            $html = is_ajax() ? $html : error_page(__('System Error'),$html,true);
             echo $html;
             break;
         default: break;
