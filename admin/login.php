@@ -31,7 +31,6 @@ if ($action=='logout') {
 } else {
 	$language = language();
 }
-
 // 实例化验证类
 $validate = new Validate();
 // 只验证 POST 方式提交

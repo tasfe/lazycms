@@ -88,8 +88,6 @@ switch ($type) {
         $out = preg_replace('/^(\\s*WEB_ROOT).+/m',"$1: '".WEB_ROOT."',",$out);
 		break;
 }
-// 压缩代码
-$out = ob_compress($out);
 // 输出内容
 echo $out;
 

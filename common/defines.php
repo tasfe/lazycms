@@ -22,11 +22,16 @@ defined('COM_PATH') or die('Restricted access!');
 /**
  * LazyCMS 系统定义文件
  */
+// 严重错误，停止程序
+define('E_LAZY_ERROR',1);
+// 警告错误，不停止程序
+define('E_LAZY_WARNING',2);
+// 提示错误，不停止程序
+define('E_LAZY_NOTICE',4);
 // 系统信息
 if(version_compare(PHP_VERSION,'6.0.0','<') ) {
     @set_magic_quotes_runtime(0);
 }
-defined('E_STRICT') or define('E_STRICT', 2048); 
 define('IS_CGI',!strncasecmp(PHP_SAPI,'cgi',3) ? 1 : 0 );
 define('IS_WIN',strstr(PHP_OS, 'WIN') ? 1 : 0 );
 define('IS_CLI',PHP_SAPI=='cli'? 1   :   0);
@@ -47,16 +52,7 @@ if(!defined('PHP_FILE')) {
 define('WEB_ROOT',str_replace('\\','/',substr(dirname(PHP_FILE),0,-strlen(substr(realpath('.'),strlen(ABS_PATH)))+1)));
 // Http scheme
 define('HTTP_SCHEME',(($scheme=isset($_SERVER['HTTPS'])?$_SERVER['HTTPS']:null)=='off' || empty($scheme))?'http':'https');
-// 判断项目执行模式
-IS_CLI ? define('HTTP_HOST','') : ob_start();
 // Http host
-defined('HTTP_HOST') or define('HTTP_HOST',HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
+IS_CLI ? define('HTTP_HOST','') : define('HTTP_HOST',HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
 // System version
 define('LAZY_VERSION','2.0.1');
-
-// 严重错误，停止程序
-define('E_LAZY_ERROR',256);
-// 警告错误，不停止程序
-define('E_LAZY_WARNING',512);
-// 提示错误，不停止程序
-define('E_LAZY_NOTICE',1024);

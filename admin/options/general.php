@@ -51,6 +51,13 @@ if ($validate->post()) {
     echo               '<td><input id="SiteName" name="SiteName" type="text" size="50" value="'.C('SiteName').'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
+    echo               '<th><label>'.__('Compress').'<span class="description">'.__('(required)').'</span></label></th>';
+    echo               '<td>';
+    echo                   '<label><input name="Compress" type="radio" value="1"'.(C('Compress')?' checked="checked"':'').' />'.__('Enable').'</label>';
+    echo                   '<label><input name="Compress" type="radio" value="0"'.(!C('Compress')?' checked="checked"':'').' />'.__('Disable').'</label>';
+    echo               '</td>';
+    echo           '</tr>';
+    echo           '<tr>';
     echo               '<th><label for="Template">'.__('Template').'<span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td><input id="Template" name="Template" type="text" size="20" value="'.C('Template').'" /></td>';
     echo           '</tr>';

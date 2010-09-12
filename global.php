@@ -20,11 +20,8 @@
  */
 // 检查环境是否适合做爱做的事
 !version_compare(PHP_VERSION, '4.3.3', '<') or die('PHP version lower than 4.3.3, upgrade PHP!<br/>&lt;<a href="http://php.net/downloads.php" target="_blank">http://php.net/downloads.php</a>&gt;');
-
-if (str_replace('\\','/',__FILE__) === $_SERVER["SCRIPT_FILENAME"]) { die('Restricted access!'); }
-
-// 设置正确的错误级别
-error_reporting() < E_ALL & ~E_NOTICE or error_reporting(E_ALL & ~E_NOTICE);
+// 禁止直接访问此文件
+str_replace('\\','/',__FILE__) != $_SERVER["SCRIPT_FILENAME"] or die('Restricted access!');
 
 // 定义项目物理跟路径
 define('ABS_PATH',dirname(__FILE__));
@@ -38,20 +35,24 @@ require COM_PATH.'/config.php';
 // 定义系统常量
 require COM_PATH."/defines.php";
 
-// 加载FirePHP类
-require COM_PATH.'/system/firephp.php';
-
 // 加载公共函数库
 require COM_PATH.'/functions.php';
-// 非命令行模式
-if (!IS_CLI) {
-    // 加载cookie库
-    require COM_PATH.'/system/cookie.php';    
-}
 // 加载验证类
 require COM_PATH.'/system/validate.php';
+// 加载cookie库
+require COM_PATH.'/system/cookie.php';
 // 加载文件缓存类
 require COM_PATH.'/system/fcache.php';
+
+// 非命令行模式
+if (!IS_CLI) {
+    // 判断是否开启gzip压缩
+    if (C('Compress')) {
+        ob_start('ob_compress');
+    } else {
+        ob_start();
+    }
+}
 
 // 处理系统变量
 if (get_magic_quotes_gpc()) {

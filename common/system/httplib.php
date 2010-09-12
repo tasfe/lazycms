@@ -26,12 +26,7 @@ define('HTTPLIB_CONNECT_FAILURE',600);
 define('HTTPLIB_USER_AGENT','LazyCMS/'.LAZY_VERSION.' (compatible; Httplib/0.1; +http://www.lazycms.com/httplib.html)');
 
 class Httplib {
-    /*var $header,$response;
-    var $url,$method,$timeout;
-    var $host,$port,$path,$query,$referer;*/
-    var $is_response;
-    var $disable_curl, $disable_fopen, $disable_streams, $disable_fsockopen;
-
+    var $is_response, $disable_curl, $disable_fopen, $disable_streams, $disable_fsockopen;
 
     function __construct(){ }
 
@@ -65,7 +60,25 @@ class Httplib {
         }
         return $result;
     }
-    
+    /**
+     * post
+     * 
+     * @param  $url
+     * @param array $args
+     * @return array|bool|mixed|void
+     */
+    function post($url,$args=array()) {
+        $defaults = array('method' => 'POST');
+        $args     = array_merge($args,$defaults);
+        return $this->request($url,$args);
+    }
+    /**
+     * 执行请求
+     *
+     * @param  $url         路径
+     * @param array $args   参数
+     * @return array|bool|mixed|void
+     */
     function request($url=null,$args=array()) {
         $defaults = array(
             'method'      => 'GET',
@@ -76,42 +89,60 @@ class Httplib {
             'headers'     => array(),
             'body'        => null,
             'httpversion' => '1.0',
+			'decompress'  => true,
         );
-        $opts = array_merge($defaults,$args);
+        $r = array_merge($defaults,$args);
         if (empty($url)) return throw_error(__('A valid URL was not provided.'),E_LAZY_ERROR);
-        if (is_null($opts['headers'])) $opts['headers'] = array();
-        // TODO headers 不是数组时需要处理
-
-        // 处理user-agent
-        if ( isset($opts['headers']['User-Agent']) ) {
-			$opts['user-agent'] = $opts['headers']['User-Agent'];
-			unset($args['headers']['User-Agent']);
-		} else if( isset($opts['headers']['user-agent']) ) {
-			$opts['user-agent'] = $opts['headers']['user-agent'];
-			unset($opts['headers']['user-agent']);
+        if (is_null($r['headers'])) $r['headers'] = array();
+        // headers 不是数组时需要处理
+        if (!is_array($r['headers'])) {
+			$headers = Httplib::process_headers($r['headers']);
+			$r['headers'] = $headers['headers'];
 		}
+        // 处理user-agent
+        if ( isset($r['headers']['User-Agent']) ) {
+			$r['user-agent'] = $r['headers']['User-Agent'];
+			unset($args['headers']['User-Agent']);
+		} else if( isset($r['headers']['user-agent']) ) {
+			$r['user-agent'] = $r['headers']['user-agent'];
+			unset($r['headers']['user-agent']);
+		}
+        // Construct Cookie: header if any cookies are set
+		Httplib::build_cookie_header( $r );
+        // 判断是否支持gzip
+        if ( Httplib::is_available() )
+			$r['headers']['Accept-Encoding'] = Httplib::accept_encoding();
+
         // 判断数据处理类型
-        if (empty($opts['body'])) {
-			if(($opts['method'] == 'POST') && !isset($opts['headers']['Content-Length']))
-                $opts['headers']['Content-Length'] = 0;
+        if (empty($r['body'])) {
+			if(($r['method'] == 'POST') && !isset($r['headers']['Content-Length']))
+                $r['headers']['Content-Length'] = 0;
         } else {
-            if (is_array($opts['body'])) {
-				$opts['body'] = http_build_query($opts['body'],null,'&');
-				$opts['headers']['Content-Type'] = 'application/x-www-form-urlencoded';
-				$opts['headers']['Content-Length'] = strlen($opts['body']);
+            if (is_array($r['body'])) {
+				$r['body'] = http_build_query($r['body'],null,'&');
+				$r['headers']['Content-Type'] = 'application/x-www-form-urlencoded';
+				$r['headers']['Content-Length'] = strlen($r['body']);
 			}
-            if (!isset($opts['headers']['Content-Length']) && !isset($opts['headers']['content-length']))
-                $opts['headers']['Content-Length'] = strlen($opts['body']);
+            if (!isset($r['headers']['Content-Length']) && !isset($r['headers']['content-length']))
+                $r['headers']['Content-Length'] = strlen($r['body']);
         } 
-        $transports = $this->transports($opts);
+        $transports = $this->transports($r);
         $response   = array();
         foreach ((array)$transports as $transport) {
-            $response = call_user_func(array(&$this,'request_'.$transport),$url,$opts);
-            if ($this->is_response) break;
+            if (method_exists($this,'request_'.$transport)) {
+                $response = call_user_func(array(&$this,'request_'.$transport),$url,$r);
+                if (is_array($response)) return $response;
+            }
         }
         return $response;
     }
-    
+    /**
+     * fsockopen
+     *
+     * @param  $url
+     * @param  $args
+     * @return array|bool|mixed|void
+     */
     function request_fsockopen($url,$args) {
         $response = array(
             'headers'  => array(),
@@ -150,9 +181,18 @@ class Httplib {
 		} else {
 			$str_headers.= $args['headers'];
 		}
+        // referer
+        if (!isset($args['headers']['referer']))
+            $str_headers.= sprintf("Referer: %s\r\n",$aurl['referer']);
+
+        // connection
+        if (!isset($args['headers']['connection']))
+            $str_headers.= "Connection: Close\r\n";
+        
         $str_headers.= "\r\n";
 
         if (!is_null($args['body'])) $str_headers.= $args['body'];
+        
         // 提交
 		fwrite($handle, $str_headers);
         // 非阻塞模式
@@ -160,10 +200,15 @@ class Httplib {
 			fclose($handle);
             return $response;
         }
+
         // 读取服务器返回数据
         $str_response = '';
-		while (!feof($handle)) $str_response.= fread($handle, 4096);
+		while (!feof($handle)) {
+            $str_response.= fread($handle, 4096);
+        }
+        
 		fclose($handle);
+
         // 处理服务器返回的结果
         $process = $this->process_response($str_response);
         // 处理headers
@@ -182,16 +227,19 @@ class Httplib {
 		}
         // If the body was chunk encoded, then decode it.
 		if (!empty($process['body']) && isset($headers['headers']['transfer-encoding']) && 'chunked' == $headers['headers']['transfer-encoding'])
-			$process['body'] = $this->decode_chunked($process['body']);
+			$process['body'] = Httplib::decode_chunked($process['body']);
+
+        if ( true === $args['decompress'] && true === $this->should_decode($headers['headers']) )
+			$process['body'] = Httplib::decompress( $process['body'] );
 
         $response['headers']  = $headers['headers'];
         $response['body']     = $process['body'];
         $response['response'] = $headers['response'];
         $response['cookies']  = $headers['cookies'];
-
-        $this->is_response = true;
+        
         return $response;
     }
+    
     /**
      * 解析URL
      *
@@ -219,6 +267,145 @@ class Httplib {
         }
         $aurl['referer'] = implode('',$referer);
         return $aurl;
+    }
+    /**
+     * 创建cookie header
+     *
+     * @param  $r
+     * @return void
+     */
+    function build_cookie_header( &$r ) {
+		if ( ! empty($r['cookies']) ) {
+			$cookies_header = '';
+			foreach ( (array) $r['cookies'] as $cookie ) {
+                if (!empty($cookie['name']) && empty($cookie['value'])) {
+                    $cookies_header .= $cookie['name'] . '=' . urlencode( $cookie['value'] ) . '; ';
+                }
+			}
+			$cookies_header = substr( $cookies_header, 0, -2 );
+			$r['headers']['cookie'] = $cookies_header;
+		}
+	}
+    /**
+     * 判断是否需要解码
+     *
+     * @param  $headers
+     * @return bool
+     */
+    function should_decode($headers) {
+		if ( is_array( $headers ) ) {
+			if ( array_key_exists('content-encoding', $headers) && ! empty( $headers['content-encoding'] ) )
+				return true;
+		} else if ( is_string( $headers ) ) {
+			return ( stripos($headers, 'content-encoding:') !== false );
+		}
+
+		return false;
+	}
+    /**
+     * 处理http头
+     *
+     * @param  $headers
+     * @return
+     */
+    function process_headers($headers) {
+        // split headers, one per array element
+		if ( is_string($headers) ) {
+			// tolerate line terminator: CRLF = LF (RFC 2616 19.3)
+			$headers = str_replace("\r\n", "\n", $headers);
+			// unfold folded header fields. LWS = [CRLF] 1*( SP | HT ) <US-ASCII SP, space (32)>, <US-ASCII HT, horizontal-tab (9)> (RFC 2616 2.2)
+			$headers = preg_replace('/\n[ \t]/', ' ', $headers);
+			// create the headers array
+			$headers = explode("\n", $headers);
+		}
+
+		$response = array('code' => 0, 'message' => '');
+
+		// If a redirection has taken place, The headers for each page request may have been passed.
+		// In this case, determine the final HTTP header and parse from there.
+		for ( $i = count($headers)-1; $i >= 0; $i-- ) {
+			if ( !empty($headers[$i]) && false === strpos($headers[$i], ':') ) {
+				$headers = array_splice($headers, $i);
+				break;
+			}
+		}
+        
+		$cookies = array();
+		$new_headers = array();
+		foreach ( $headers as $temp_header ) {
+			if ( empty($temp_header) )
+				continue;
+
+			if ( false === strpos($temp_header, ':') ) {
+				list( , $response['code'], $response['message']) = explode(' ', $temp_header, 3);
+				continue;
+			}
+
+			list($key, $value) = explode(':', $temp_header, 2);
+
+			if ( !empty( $value ) ) {
+				$key = strtolower( $key );
+				if ( isset( $new_headers[$key] ) ) {
+					if ( !is_array($new_headers[$key]) )
+						$new_headers[$key] = array($new_headers[$key]);
+					$new_headers[$key][] = trim( $value );
+				} else {
+					$new_headers[$key] = trim( $value );
+				}
+				if ( 'set-cookie' == strtolower( $key ) )
+					$cookies[] = Httplib::process_cookie( $value );
+			}
+		}
+
+		return array('response' => $response, 'headers' => $new_headers, 'cookies' => $cookies);
+    }
+    /**
+     * 处理cookie
+     *
+     * @param  $data
+     * @return array|bool
+     */
+    function process_cookie($data) {
+        $result = array();
+        if ( is_string( $data ) ) {
+			// Assume it's a header string direct from a previous request
+			$pairs = explode( ';', $data );
+
+			// Special handling for first pair; name=value. Also be careful of "=" in value
+			$name  = trim( substr( $pairs[0], 0, strpos( $pairs[0], '=' ) ) );
+			$value = substr( $pairs[0], strpos( $pairs[0], '=' ) + 1 );
+			$result['name']  = $name;
+			$result['value'] = urldecode( $value );
+			array_shift( $pairs ); //Removes name=value from items.
+
+			// Set everything else as a property
+			foreach ( $pairs as $pair ) {
+				$pair = rtrim($pair);
+				if ( empty($pair) ) //Handles the cookie ending in ; which results in a empty final pair
+					continue;
+
+				list( $key, $val ) = strpos( $pair, '=' ) ? explode( '=', $pair ) : array( $pair, '' );
+				$key = strtolower( trim( $key ) );
+				if ( 'expires' == $key )
+					$val = strtotime( $val );
+				$result[$key] = $val;
+			}
+		} else {
+			if ( !isset( $data['name'] ) )
+				return false;
+
+			// Set properties based directly on parameters
+			$result['name']   = $data['name'];
+			$result['value']  = isset( $data['value'] ) ? $data['value'] : '';
+			$result['path']   = isset( $data['path'] ) ? $data['path'] : '';
+			$result['domain'] = isset( $data['domain'] ) ? $data['domain'] : '';
+
+			if ( isset( $data['expires'] ) )
+				$result['expires'] = is_int( $data['expires'] ) ? $data['expires'] : strtotime( $data['expires'] );
+			else
+				$result['expires'] = null;
+		}
+        return $result;
     }
     /**
      * 处理返回的内容
@@ -278,4 +465,101 @@ class Httplib {
 		}
 		return $newstr;
     }
+    /**
+     * Decompression of deflated string.
+	 *
+	 * Will attempt to decompress using the RFC 1950 standard, and if that fails
+	 * then the RFC 1951 standard deflate will be attempted. Finally, the RFC
+	 * 1952 standard gzip decode will be attempted. If all fail, then the
+	 * original compressed string will be returned.
+     *
+     * @param  $compressed
+     * @param  $length
+     * @return bool|string
+     */
+    function decompress( $compressed, $length = null ) {
+
+		if ( empty($compressed) )
+			return $compressed;
+
+		if ( false !== ( $decompressed = @gzinflate( $compressed ) ) )
+			return $decompressed;
+
+		if ( false !== ( $decompressed = Httplib::gzinflate( $compressed ) ) )
+			return $decompressed;
+
+		if ( false !== ( $decompressed = @gzuncompress( $compressed ) ) )
+			return $decompressed;
+
+		if ( function_exists('gzdecode') ) {
+			$decompressed = @gzdecode( $compressed );
+
+			if ( false !== $decompressed )
+				return $decompressed;
+		}
+
+		return $compressed;
+	}
+    /**
+     * Decompression of deflated string while staying compatible with the majority of servers.
+	 *
+	 * Certain Servers will return deflated data with headers which PHP's gziniflate()
+	 * function cannot handle out of the box. The following function lifted from
+	 * http://au2.php.net/manual/en/function.gzinflate.php#77336 will attempt to deflate
+	 * the various return forms used.
+     *
+     * @param  $gz_data
+     * @return bool|string
+     */
+    function gzinflate($gz_data) {
+		if ( substr($gz_data, 0, 3) == "\x1f\x8b\x08" ) {
+			$i = 10;
+			$flg = ord( substr($gz_data, 3, 1) );
+			if ( $flg > 0 ) {
+				if ( $flg & 4 ) {
+					list($xlen) = unpack('v', substr($gz_data, $i, 2) );
+					$i = $i + 2 + $xlen;
+				}
+				if ( $flg & 8 )
+					$i = strpos($gz_data, "\0", $i) + 1;
+				if ( $flg & 16 )
+					$i = strpos($gz_data, "\0", $i) + 1;
+				if ( $flg & 2 )
+					$i = $i + 2;
+			}
+			return gzinflate( substr($gz_data, $i, -8) );
+		} else {
+			return false;
+		}
+	}
+    /**
+     * Whether decompression and compression are supported by the PHP version.
+	 *
+	 * Each function is tested instead of checking for the zlib extension, to
+	 * ensure that the functions all exist in the PHP version and aren't
+	 * disabled.
+     *
+     * @return bool
+     */
+    function is_available() {
+		return ( function_exists('gzuncompress') || function_exists('gzdeflate') || function_exists('gzinflate') );
+	}
+    /**
+	 * What encoding types to accept and their priority values.
+	 *
+	 * @return string Types of encoding to accept.
+	 */
+	function accept_encoding() {
+		$type = array();
+		if ( function_exists( 'gzinflate' ) )
+			$type[] = 'deflate;q=1.0';
+
+		if ( function_exists( 'gzuncompress' ) )
+			$type[] = 'compress;q=0.5';
+
+		if ( function_exists( 'gzdecode' ) )
+			$type[] = 'gzip;q=0.5';
+
+		return implode(', ', $type);
+	}
 }

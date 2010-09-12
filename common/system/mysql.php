@@ -28,20 +28,32 @@ define('CLIENT_MULTI_RESULTS', 0x20000);
 class Mysql {
 	// public
     var $conn  = null;
+    var $ready = null;
+    var $sql   = null;
     // private
     var $_host = 'localhost';
     var $_port = 3306;
     var $_user = 'root';
     var $_pwd  = '';
     var $_name = 'test';
-    var $_mode = false;
     var $_prefix = null;
     var $_scheme = 'mysql';
-
+    var $_throw  = true;
+    var $_pconnect = false;
+    var $_goneaway = 3; 
+    /**
+     * 初始化连接
+     *
+     * @param  $config          数据库设置
+     * @param bool $pconnect    是否需要长连接
+     * @return void
+     */
     function __construct($config,$pconnect=false) {
         $this->config($config);
-        $this->connect($pconnect);
-        $this->select_db();
+        $this->config('pconnect',$pconnect);
+        if ($this->connect()) {
+            $this->select_db();
+        }
     }
 
     function Mysql() {
@@ -57,33 +69,13 @@ class Mysql {
     	$this->close();
     }
     /**
-     * 设置数据库连接参数
-     *
-     * @param mixed $config
-     * @return string
-     */
-    function config($config) {
-    	if (is_array($config)) {
-    		foreach ($config as $k=>$v) {
-    			if (!empty($v)) {
-    				$property = "_{$k}";
-    				$this->$property = $v;
-    			}
-    		}
-        } else {
-        	$property = "_{$config}";
-            return isset($this->$property)?$this->$property:null;
-        }
-    }
-    /**
      * 连接Mysql
      *
-     * @param bool $pconnect    是否需要长连接
      * @return bool|void
      */
-    function connect($pconnect=false){
+    function connect(){
         // 连接数据库
-        if (function_exists('mysql_pconnect') && $pconnect) {
+        if (function_exists('mysql_pconnect') && $this->_pconnect) {
             $this->conn = @mysql_pconnect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,CLIENT_MULTI_RESULTS);
         } elseif (function_exists('mysql_connect')) {
             $this->conn = @mysql_connect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,false,CLIENT_MULTI_RESULTS);
@@ -92,7 +84,11 @@ class Mysql {
         }
         // 验证连接是否正确
         if (!$this->conn) {
-            return throw_error(__('Database connect error, please check the database settings!'),E_LAZY_ERROR);
+            if ($this->_throw) {
+                return throw_error(__('Database connect error, please check the database settings!'),E_LAZY_ERROR);
+            } else {
+                return false;
+            }
         }
         return $this->conn;
     }
@@ -106,8 +102,12 @@ class Mysql {
         if (!$this->conn) $this->connect();
         if (empty($db)) $db = $this->_name;
         // 选择数据库
-        if (!mysql_select_db($db,$this->conn)) {
-            return throw_error(sprintf(__('%s database not found!'),$db),E_LAZY_ERROR);
+        if (! ($this->ready = mysql_select_db($db,$this->conn))) {
+            if ($this->_throw) {
+                return throw_error(sprintf(__('%s database not found!'),$db),E_LAZY_ERROR);
+            } else {
+                return false;
+            }
         }
         // MYSQL数据库的设置
         if (version_compare($this->version(), '4.1', '>=')) {
@@ -129,34 +129,53 @@ class Mysql {
      * @param string $type	类型
      * @return resource
      */
-    function query($sql,$bind='`*([BIND_NULL])*`',$type=''){
-    	$stattime = microtime(true);
+    function query($sql,$bind=null){
+        // 参数个数
+        $args_num = func_num_args();
         // 替换占位符
     	if (is_array($bind)) {
     		$sql = vsprintf($sql,$this->escape($bind));
-    	} elseif ($bind!=='`*([BIND_NULL])*`') {
+    	} elseif ($args_num == 2) {
     		$sql = sprintf($sql,$this->escape($bind));
-    	} 
+    	}
+
         $sql = preg_replace('/`(#@_)(\w+)`/i','`'.$this->_prefix.'$2`',$sql);
         if ( preg_match("/^\\s*(insert|delete|update|replace|alter) /i",$sql) ) {
         	$func = 'mysql_unbuffered_query';
         } else {
         	$func = 'mysql_query';
         }
-        $this->last_query = $sql;
+        $this->sql = $sql;
         if (!($result = $func($sql,$this->conn))) {
-            if (in_array($this->errno(),array(2006,2013)) && substr($type,0,5) != 'RETRY') {
-                $this->close();$this->connect(); $this->select_db();
-                $result = $this->query($sql,$bind,'RETRY'.$type);
-            } elseif($type != 'SILENT' && substr($type, 5) != 'SILENT') {
-                return throw_error(sprintf(__('MySQL Query Error:<br/>SQL:%s<br/>%s'),$sql,$this->error()),E_LAZY_ERROR);
+            if (in_array($this->errno(),array(2006,2013)) && ($this->_goneaway-- > 0)) {
+                $this->close(); $this->connect(); $this->select_db();
+                if ($args_num == 1) {
+                    $result = $this->query($sql);
+                } else {
+                    $result = $this->query($sql,$bind);
+                }
+            } else {
+                // 重置计数
+                $this->_goneaway = 3;
+
+                if ($this->_throw) {
+                    return throw_error(sprintf(__('MySQL Query Error:<br/>SQL:%s<br/>%s'),$sql,$this->error()),E_LAZY_ERROR);
+                } else {
+                    return false;
+                }
             }
         }
-        if ($func=='mysql_unbuffered_query') {
-            if ( preg_match("/^\\s*(insert|replace) /i",$sql) ) {
-                $result = $this->insert_id();
-            } else {
-                $result = $this->affected_rows();
+        // 查询正常
+        if ($result) {
+            // 重置计数
+            $this->_goneaway = 3;
+            // 返回结果
+            if ($func == 'mysql_unbuffered_query') {
+                if ( preg_match("/^\\s*(insert|replace) /i",$sql) ) {
+                    $result = $this->insert_id();
+                } else {
+                    $result = $this->affected_rows();
+                }
             }
         }
         return $result;
@@ -402,6 +421,32 @@ class Mysql {
 
         return "'{$str}'";
 	}
+    /**
+     * 设置数据库连接参数
+     *
+     * @param mixed $config
+     * @return string
+     */
+    function config($config,$value=null) {
+        // 批量赋值
+    	if (is_array($config)) {
+    		foreach ($config as $k=>$v) {
+                $this->config($k,$v);
+    		}
+            return $config;
+        }
+        // 取值
+        if ($config && func_num_args()==1) {
+            $property = "_{$config}";
+            return isset($this->$property)?$this->$property:null;
+        }
+        // 单个赋值
+        else {
+            $property = "_{$config}";
+            $this->$property = $value;
+            return $value;
+        }
+    }
 	/**
      * 转义SQL关键字
      *

@@ -75,15 +75,17 @@ function format_path($path,$data=null) {
 /**
  * 取得数据库连接对象
  *
- * @param string $DSN	    DSN format: mysql://root:123456@localhost:3306/lazy/lazycms
- * @param bool   $pconnect  是否使用长连接，默认不使用
+ * @param string $DSN	        DSN format: mysql://root:123456@localhost:3306/lazy/lazycms
+ * @param bool   $pconnect      是否使用长连接，默认不使用
+ * @param bool   $throw_error   是否抛出异常
  * @return object
  */
-function get_conn($DSN=null,$pconnect=false){
+function get_conn($DSN=null,$pconnect=false,$throw_error=true){
     static $_db = array();
     if (is_null($DSN)) $DSN = DSN_CONFIG; $guid = guid($DSN);
     if (isset($_db[$guid]) && is_object($_db[$guid])) return $_db[$guid];
     if ($config = parse_dsn($DSN)) {
+        $config['throw'] = $throw_error;
         require_once COM_PATH.'/system/mysql.php';
     	$_db[$guid] = new Mysql($config,$pconnect);
     	return $_db[$guid];
@@ -175,14 +177,13 @@ function error_page($title,$content,$is_full=false) {
     return $hl;
 }
 /**
- * 系统错误处理函数
+ * 异常处里函数
  *
- * @param int 	 $errno		错误类型
- * @param string $errstr	错误消息
- * @param string $errfile	错误文件
- * @param int	 $errline	错误行号
+ * @param  $errstr          错误消息
+ * @param int $errno        异常类型
+ * @return bool
  */
-function throw_error($errstr,$errno=0){
+function throw_error($errstr,$errno=E_LAZY_NOTICE){
     $string  = $file = null;
     $traces  = debug_backtrace();
     $error   = $traces[0]; unset($traces[0]);
@@ -216,32 +217,34 @@ function throw_error($errstr,$errno=0){
         $string.=")\r\n";
     }
 
-    $message = "[Message]:\r\n\t{$errstr}\r\n";
-    $message.= "[File]:\r\n\t{$errfile} ({$errline})\r\n";
-    $message.= "[Trace]:\r\n{$string}\r\n";
-
-    $output  = nl2br(esc_html($message));
-    $output  = str_replace("\t",str_repeat('&nbsp; ',2),$output);
-
+    $log = "[Message]:\r\n\t{$errstr}\r\n";
+    $log.= "[File]:\r\n\t{$errfile} ({$errline})\r\n";
+    $log.= $string?"[Trace]:\r\n{$string}\r\n":'';
     // 记录日志
-    $file = ABS_PATH.'/error.log'; error_log($message,3,$file);
-
+    error_log($log,3,ABS_PATH.'/error.log');
     // 屏蔽错误
-    if (error_reporting() === 0) return true;
+    if (error_reporting() === 0) return false;
     
-    // 清理之前已输出的HTML代码
-    ob_end_clean();
-    // 如果是ajax模式，按照ajax方式输出
-    if (is_ajax()) {
-        
-    } else {
-        $output = error_page(__('System Error'),$output,true);
+    // 格式化为HTML
+    $html = str_replace("\t",str_repeat('&nbsp; ',2),nl2br(esc_html($log)));
+    // 不是ajax请求，格式化成HTML完成页面
+    $html = is_ajax() ? $html : error_page(__('System Error'),$html,true);
+    // 处里错误
+    switch ($errno) {
+        case E_LAZY_ERROR:
+            // 清理之前已输出的HTML代码
+            ob_clean();
+            // 输出错误信息，并停止程序
+            echo $html; exit();
+            break;
+        case E_LAZY_WARNING:
+
+        case E_LAZY_NOTICE:
+            
+        default:
+            echo $html;
+            break;
     }
-    // 输出错误信息
-    if ($errno === E_LAZY_ERROR) {
-        exit($output);
-    }
-    
     return false;
 }
 /**
@@ -253,8 +256,8 @@ function throw_error($errstr,$errno=0){
 function echo_json($code,$data,$args=null){
     $result = array('CODE'=>$code,'DATA'=>$data);
     $result = is_array($args)?array_merge($result,$args):$result;
-    header('Content-Type: application/json; charset=utf-8');
-    ob_end_flush(); exit(json_encode($result));
+    headers_sent() or header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($result); ob_flush(); exit();
 }
 /**
  * 防止浏览器缓存
@@ -809,7 +812,7 @@ function language() {
  * @return mixed
  */
 function C($key,$value=null){
-    $db = get_conn(); $ckey = 'cfg.'; $args = null;
+    $ckey = 'cfg.'; $args = null;
     // 批量赋值
     if(is_array($key)) {
         foreach ($key as $k=>$v) {
@@ -826,50 +829,20 @@ function C($key,$value=null){
         $module = 'System';
     	$code   = $key;
     }
-    // 参数赋值
-    if($key && !is_null($value)) {
-        $key = $module.'.'.$code;
-        // 保存到缓存
-        FCache::set($ckey.$key,$value);
-        // 获取变量类型
-        $var_type = gettype($value);
-        // 判断是否需要序列化
-        $value = is_need_serialize($value) ? serialize($value) : $value;
-        // 查询数据库里是否已经存在
-        $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_option` WHERE `module`=%s AND `code`=%s",array(esc_sql($module),esc_sql($code))));
-        // update
-        if ($length > 0) {
-        	$db->update('#@_option',array(
-        	   'value' => $value,
-        	   'type'  => $var_type,
-        	),array(
-                'module' => $module,
-                'code'   => $code,
-            ));
-        }
-        // insert
-        else {
-            // 保存到数据库里
-            $db->insert('#@_option',array(
-                'module' => $module,
-                'code'   => $code,
-                'value'  => $value,
-                'type'   => $var_type,
-            ));
-        }
-        return true;
-    }
     // 取值
-    elseif ($key && is_null($value)) {
+    if($key && func_num_args()==1) {
+        $db    = get_conn(null,false,false);
         $key   = $module.'.'.$code;
         // 先从缓存里取值
         $value = FCache::get($ckey.$key);
         if (empty($value)) {
-            $result = $db->query("SELECT * FROM `#@_option` WHERE `module`=%s AND `code`=%s LIMIT 0,1;",array($module,$code));
-            if ($data = $db->fetch($result)) {
-                $value = is_need_unserialize($data['type']) ? unserialize($data['value']) : $data['value'];
-                // 保存到缓存
-                FCache::set($ckey.$key,$value);
+            if ($db->ready) {
+                $result = $db->query("SELECT * FROM `#@_option` WHERE `module`=%s AND `code`=%s LIMIT 0,1;",array($module,$code));
+                if ($data = $db->fetch($result)) {
+                    $value = is_need_unserialize($data['type']) ? unserialize($data['value']) : $data['value'];
+                    // 保存到缓存
+                    FCache::set($ckey.$key,$value);
+                }
             }
         }
         // 支持多维数组取值
@@ -879,6 +852,49 @@ function C($key,$value=null){
         	}
         }
         return $value;
+    }
+    // 参数赋值
+    else {
+        $db  = get_conn();
+        $key = $module.'.'.$code;
+        // 删除属性
+        if (is_null($value)) {
+            FCache::delete($key);
+            $db->delete('#@_option',array(
+                'module' => $module,
+                'code'   => $code,
+            ));
+        } else {
+            // 保存到缓存
+            FCache::set($ckey.$key,$value);
+            // 获取变量类型
+            $var_type = gettype($value);
+            // 判断是否需要序列化
+            $value = is_need_serialize($value) ? serialize($value) : $value;
+            // 查询数据库里是否已经存在
+            $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_option` WHERE `module`=%s AND `code`=%s",array(esc_sql($module),esc_sql($code))));
+            // update
+            if ($length > 0) {
+                $db->update('#@_option',array(
+                   'value' => $value,
+                   'type'  => $var_type,
+                ),array(
+                    'module' => $module,
+                    'code'   => $code,
+                ));
+            }
+            // insert
+            else {
+                // 保存到数据库里
+                $db->insert('#@_option',array(
+                    'module' => $module,
+                    'code'   => $code,
+                    'value'  => $value,
+                    'type'   => $var_type,
+                ));
+            }
+        }
+        return true;
     }
     return null;
 }
@@ -1178,9 +1194,4 @@ function micro_time($get_as_float=false){
         return ((float)$usec + (float)$sec);
     }
     return microtime($get_as_float);
-}
-
-// 兼容 FirePHP 输出函数
-if (!function_exists('fb')) {
-    function fb(){ }
 }
