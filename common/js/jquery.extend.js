@@ -195,7 +195,7 @@
 
                     // ajax submit
                     $.ajax({
-                        cache: false, url: url,dataType:'json',
+                        cache: false, url: url, dataType:'json',
                         type: _this.attr('method') && _this.attr('method').toUpperCase() || 'POST',
                         data: _this.serializeArray(),
                         success: function(data){

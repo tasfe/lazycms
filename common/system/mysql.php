@@ -78,10 +78,11 @@ class Mysql {
         if (function_exists('mysql_pconnect') && $this->_pconnect) {
             $this->conn = @mysql_pconnect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,CLIENT_MULTI_RESULTS);
         } elseif (function_exists('mysql_connect')) {
-            $this->conn = @mysql_connect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,false,CLIENT_MULTI_RESULTS);
+            $this->conn = mysql_connect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,false,CLIENT_MULTI_RESULTS);
         } else {
             return throw_error(__('-_-!! Please open the mysql extension!'),E_LAZY_ERROR);
         }
+        
         // 验证连接是否正确
         if (!$this->conn) {
             if ($this->_throw) {
@@ -130,6 +131,14 @@ class Mysql {
      * @return resource
      */
     function query($sql,$bind=null){
+        // 验证连接是否正确
+        if (!$this->conn) {
+            if ($this->_throw) {
+                return throw_error(__('Supplied argument is not a valid MySQL-Link resource.'),E_LAZY_ERROR);
+            } else {
+                return false;
+            }
+        }
         // 参数个数
         $args_num = func_num_args();
         // 替换占位符
@@ -159,7 +168,7 @@ class Mysql {
                 $this->_goneaway = 3;
 
                 if ($this->_throw) {
-                    return throw_error(sprintf(__('MySQL Query Error:<br/>SQL:%s<br/>%s'),$sql,$this->error()),E_LAZY_ERROR);
+                    return throw_error(sprintf(__("MySQL Query Error:%s\r\n\t%s"),$sql,$this->error()),E_LAZY_ERROR);
                 } else {
                     return false;
                 }

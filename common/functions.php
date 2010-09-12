@@ -82,7 +82,8 @@ function format_path($path,$data=null) {
  */
 function get_conn($DSN=null,$pconnect=false,$throw_error=true){
     static $_db = array();
-    if (is_null($DSN)) $DSN = DSN_CONFIG; $guid = guid($DSN);
+    $guid = guid(array($DSN,$pconnect,$throw_error));
+    if (is_null($DSN)) $DSN = DSN_CONFIG;
     if (isset($_db[$guid]) && is_object($_db[$guid])) return $_db[$guid];
     if ($config = parse_dsn($DSN)) {
         $config['throw'] = $throw_error;
@@ -177,19 +178,32 @@ function error_page($title,$content,$is_full=false) {
     return $hl;
 }
 /**
+ * 系统异常处理
+ *
+ * @param  $errno
+ * @param  $errstr
+ * @param  $errfile
+ * @param  $errline
+ * @return bool
+ */
+function handler_error($errno,$errstr,$errfile,$errline) {
+    if (E_STRICT===$errno) return true;
+    return throw_error($errstr,$errno,$errfile,$errline);
+}
+/**
  * 异常处里函数
  *
  * @param  $errstr          错误消息
  * @param int $errno        异常类型
  * @return bool
  */
-function throw_error($errstr,$errno=E_LAZY_NOTICE){
+function throw_error($errstr,$errno=E_LAZY_NOTICE,$errfile=null,$errline=0){
     $string  = $file = null;
     $traces  = debug_backtrace();
     $error   = $traces[0]; unset($traces[0]);
     $errstr  = replace_root($errstr);
-    $errfile = replace_root($error['file']);
-    $errline = replace_root($error['line']);
+    $errfile = replace_root($errfile ? $errfile : $error['file']);
+    $errline = replace_root($errline ? $errline : $error['line']);
     foreach($traces as $i=>$trace) {
         $file  = isset($trace['file']) ? replace_root($trace['file']) : $file;
         $line  = isset($trace['line']) ? $trace['line'] : null;
@@ -224,26 +238,24 @@ function throw_error($errstr,$errno=E_LAZY_NOTICE){
     error_log($log,3,ABS_PATH.'/error.log');
     // 屏蔽错误
     if (error_reporting() === 0) return false;
-    
-    // 格式化为HTML
-    $html = str_replace("\t",str_repeat('&nbsp; ',2),nl2br(esc_html($log)));
-    // 不是ajax请求，格式化成HTML完成页面
-    $html = is_ajax() ? $html : error_page(__('System Error'),$html,true);
     // 处里错误
     switch ($errno) {
         case E_LAZY_ERROR:
-            // 清理之前已输出的HTML代码
-            ob_clean();
+            // 格式化为HTML
+            $html = str_replace("\t",str_repeat('&nbsp; ',2),nl2br(esc_html($log)));
+            // 不是ajax请求，格式化成HTML完成页面
+            $html = is_ajax() ? $html : error_page(__('System Error').': '.$errno,$html,true);
             // 输出错误信息，并停止程序
             echo $html; exit();
             break;
-        case E_LAZY_WARNING:
-
-        case E_LAZY_NOTICE:
-            
-        default:
+        case E_LAZY_WARNING: case E_LAZY_NOTICE:
+            // 格式化为HTML
+            $html = str_replace("\t",str_repeat('&nbsp; ',2),nl2br(esc_html($log)));
+            // 不是ajax请求，格式化成HTML完成页面
+            $html = is_ajax() ? $html : error_page(__('System Error').': '.$errno,$html,true);
             echo $html;
             break;
+        default: break;
     }
     return false;
 }
@@ -461,7 +473,8 @@ function stripslashes_deep($params) {
  * @param bool   $force_gzip	强制使用gzip，默认true
  */
 function ob_compress($content,$level=3,$force_gzip=true){
-    if (!headers_sent() && !ini_get('zlib.output_compression') && 'ob_gzhandler' != ini_get('output_handler')) {
+    $length = strlen($content);
+    if (false == headers_sent() && false == ini_get('zlib.output_compression') && 'ob_gzhandler' != ini_get('output_handler')) {
         header('Vary: Accept-Encoding'); // Handle proxies
         if ( false !== strpos( strtolower($_SERVER['HTTP_ACCEPT_ENCODING']), 'deflate') && function_exists('gzdeflate') && ! $force_gzip ) {
             header('Content-Encoding: deflate');
@@ -470,7 +483,7 @@ function ob_compress($content,$level=3,$force_gzip=true){
             header('Content-Encoding: gzip');
             $content = gzencode( $content, $level );
         }
-        header("Content-Length: ".strlen($content));
+        header("Content-Length: ".$length);
     }
     return $content;
 }

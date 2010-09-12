@@ -43,16 +43,8 @@ require COM_PATH.'/system/validate.php';
 require COM_PATH.'/system/cookie.php';
 // 加载文件缓存类
 require COM_PATH.'/system/fcache.php';
-
-// 非命令行模式
-if (!IS_CLI) {
-    // 判断是否开启gzip压缩
-    if (C('Compress')) {
-        ob_start('ob_compress');
-    } else {
-        ob_start();
-    }
-}
+// 处理错误
+set_error_handler('handler_error');
 
 // 处理系统变量
 if (get_magic_quotes_gpc()) {

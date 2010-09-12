@@ -39,7 +39,7 @@ if ($validate->post()) {
     admin_head('title',__('General Settings'));
     admin_head('scripts',array('js/options'));
     admin_head('loadevents','options_init');
-    
+
     include ADMIN_PATH.'/admin-header.php';
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
@@ -50,13 +50,13 @@ if ($validate->post()) {
     echo               '<th><label for="SiteName">'.__('Site name').'<span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td><input id="SiteName" name="SiteName" type="text" size="50" value="'.C('SiteName').'" /></td>';
     echo           '</tr>';
-    echo           '<tr>';
+    /*echo           '<tr>';
     echo               '<th><label>'.__('Compress').'<span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td>';
     echo                   '<label><input name="Compress" type="radio" value="1"'.(C('Compress')?' checked="checked"':'').' />'.__('Enable').'</label>';
     echo                   '<label><input name="Compress" type="radio" value="0"'.(!C('Compress')?' checked="checked"':'').' />'.__('Disable').'</label>';
     echo               '</td>';
-    echo           '</tr>';
+    echo           '</tr>';*/
     echo           '<tr>';
     echo               '<th><label for="Template">'.__('Template').'<span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td><input id="Template" name="Template" type="text" size="20" value="'.C('Template').'" /></td>';
