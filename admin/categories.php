@@ -67,24 +67,23 @@ switch ($action) {
     // 保存
 	case 'save':
         $taxonomyid  = isset($_POST['taxonomyid'])?$_POST['taxonomyid']:0;
-	    $validate = new Validate();
-        if ($validate->post()) {
+        if (validate_is_post()) {
             $parent = isset($_POST['parent'])?$_POST['parent']:'0';
             $name   = isset($_POST['name'])?$_POST['name']:null;
             $path   = isset($_POST['path'])?$_POST['path']:null;
             $list   = isset($_POST['list'])?$_POST['list']:null;
 
-            $validate->check(array(
+            validate_check(array(
                 array('name',VALIDATE_EMPTY,_x('The name field is empty.','sort')),
                 array('name',VALIDATE_LENGTH,_x('The name field length must be %d-%d characters.','sort'),1,30),
             ));
             
-            $validate->check(array(
+            validate_check(array(
                 array('path',VALIDATE_EMPTY,_x('The path field is empty.','sort')),
             ));
 
             // 安全有保证，做爱做的事吧！
-            if (!$validate->is_error()) {
+            if (validate_is_ok()) {
                 // 编辑
                 if ($taxonomyid) {
                     $info = array(

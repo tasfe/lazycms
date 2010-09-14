@@ -73,8 +73,8 @@ switch ($action) {
         $modelid = isset($_POST['modelid'])?$_POST['modelid']:null;
 	    $purview = $modelid?'model-edit':'model-new';
 	    current_user_can($purview);
-	    $validate = new Validate();
-        if ($validate->post()) {
+
+        if (validate_is_post()) {
             $name     = isset($_POST['name'])?$_POST['name']:null;
             $code     = isset($_POST['code'])?$_POST['code']:null;
             $path     = isset($_POST['path'])?$_POST['path']:null;
@@ -83,7 +83,7 @@ switch ($action) {
             $fields   = isset($_POST['field'])?$_POST['field']:null;
             $language = isset($_POST['language'])?$_POST['language']:language();
             
-            $validate->check(array(
+            validate_check(array(
                 // 模型名不能为空
                 array('name',VALIDATE_EMPTY,_x('The name field is empty.','model')),
                 // 模型名长度必须是2-30个字符
@@ -100,7 +100,7 @@ switch ($action) {
                 $is_exist = model_get_bycode(sprintf('%s:%s',$language,$code))?false:true;
             }
             
-            $validate->check(array(
+            validate_check(array(
                 // 模型标识不能为空
                 array('code',VALIDATE_EMPTY,_x('The code field is empty.','model')),
                 // 模型标识长度必须是2-30个字符
@@ -109,12 +109,12 @@ switch ($action) {
                 array('code',$is_exist,_x('The code already exists.','model')),
             ));
             
-            $validate->check(array(
+            validate_check(array(
                 array('path',VALIDATE_EMPTY,_x('The path field is empty.','model')),
             ));
 
             // 安全有保证，做爱做的事吧！
-            if (!$validate->is_error()) {
+            if (validate_is_ok()) {
                 $info = array(
                     'code'     => esc_html($code),
                     'name'     => esc_html($name),

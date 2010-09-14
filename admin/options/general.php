@@ -26,11 +26,10 @@ $_ADMIN = user_current();
 $action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
 $referer = referer(PHP_FILE,false);
 // 保存
-$validate = new Validate();
-if ($validate->post()) {
+if (validate_is_post()) {
     $options = $_POST; unset($options['referer']);
-    $validate->check('SiteName',VALIDATE_EMPTY,__('Please enter the site name.'));
-    if (!$validate->is_error()) {
+    validate_check('SiteName',VALIDATE_EMPTY,__('Please enter the site name.'));
+    if (validate_is_ok()) {
         C($options);
     }
     admin_success(__('Settings saved.'),"LazyCMS.redirect('".$referer."');");

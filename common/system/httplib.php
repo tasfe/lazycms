@@ -909,3 +909,123 @@ class Httplib {
         return $r;
     }
 }
+
+/**
+ * 取得httplib实例
+ *
+ * @return Httplib
+ */
+function &_httplib_get_object() {
+	static $http;
+	if ( is_null($http) )
+		$http = new Httplib();
+	return $http;
+}
+/**
+ * 远程request
+ *
+ * @param  $url
+ * @param array $args
+ * @return array|bool|mixed|void
+ */
+function httplib_request($url,$args=array()) {
+    $http = _httplib_get_object();
+    return $http->request($url,$args);
+}
+/**
+ * get
+ *
+ * @param  $url
+ * @param array $args
+ * @return array|bool|mixed|void
+ */
+function httplib_get($url,$args=array()) {
+    $http = _httplib_get_object();
+    return $http->get($url,$args);
+}
+/**
+ * head
+ *
+ * @param  $url
+ * @param array $args
+ * @return array|bool|mixed|void
+ */
+function httplib_head($url,$args=array()) {
+    $http = _httplib_get_object();
+    return $http->head($url,$args);
+}
+/**
+ * post
+ *
+ * @param  $url
+ * @param array $args
+ * @return array|bool|mixed|void
+ */
+function httplib_post($url,$args=array()) {
+    $http = _httplib_get_object();
+    return $http->post($url,$args);
+}
+/**
+ * 取得 status code
+ *
+ * @param  $response
+ * @return string
+ */
+function httplib_retrieve_response_code(&$response) {
+	if ( ! $response || ! isset($response['response']) || ! is_array($response['response']))
+		return '';
+
+	return $response['response']['code'];
+}
+/**
+ * 取得 status message
+ *
+ * @param  $response
+ * @return string
+ */
+function httplib_retrieve_response_message(&$response) {
+	if ( ! $response || ! isset($response['response']) || ! is_array($response['response']))
+		return '';
+
+	return $response['response']['message'];
+}
+/**
+ * 取得 header
+ *
+ * @param  $response
+ * @param  $header
+ * @return string
+ */
+function httplib_retrieve_header(&$response, $header) {
+	if ( ! $response || ! isset($response['headers']) || ! is_array($response['headers']))
+		return '';
+
+	if ( isset($response['headers'][$header]) )
+		return $response['headers'][$header];
+
+	return '';
+}
+/**
+ * 取得 headers
+ *
+ * @param  $response
+ * @return array
+ */
+function httplib_retrieve_headers(&$response) {
+	if ( ! $response || ! isset($response['headers']) || ! is_array($response['headers']))
+		return array();
+
+	return $response['headers'];
+}
+/**
+ * 取得 body
+ *
+ * @param  $response
+ * @return string
+ */
+function httplib_retrieve_body(&$response) {
+	if ( ! $response || ! isset($response['body']) )
+		return '';
+
+	return $response['body'];
+}

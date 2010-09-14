@@ -192,3 +192,41 @@ class Validate {
         $i++;
     }
 }
+/**
+ * 取得验证实例
+ *
+ * @return Validate
+ */
+function &_validate_get_object() {
+    static $validate;
+	if ( is_null($validate) )
+		$validate = new Validate();
+	return $validate;
+}
+/**
+ * 判断是否为post提交
+ * 
+ * @return bool
+ */
+function validate_is_post() {
+    $validate = _validate_get_object();
+    return $validate->post();
+}
+/**
+ * 设置验证规则
+ *
+ * @return bool
+ */
+function validate_check() {
+    $validate = _validate_get_object();
+    return $validate->check(func_get_args());
+}
+/**
+ * 是否验证通过
+ *
+ * @return bool
+ */
+function validate_is_ok() {
+    $validate = _validate_get_object();
+    return !$validate->is_error();
+}

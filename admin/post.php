@@ -85,8 +85,8 @@ switch ($action) {
 	case 'save':
         $postid = isset($_POST['postid'])?$_POST['postid']:0;
 	    current_user_can($postid?'post-edit':'post-new');
-	    $validate = new Validate();
-        if ($validate->post()) {
+	    
+        if (validate_is_post()) {
             $mcode    = isset($_POST['model'])?$_POST['model']:null;
             $model    = model_get_bycode($mcode);
             $sortid   = isset($_POST['sortid'])?$_POST['sortid']:0;
@@ -99,12 +99,12 @@ switch ($action) {
             $keywords = isset($_POST['keywords'])?$_POST['keywords']:null;
             $description = isset($_POST['description'])?$_POST['description']:null;
             
-            $validate->check(array(
+            validate_check(array(
                 array('title',VALIDATE_EMPTY,_x('The title field is empty.','post')),
                 array('title',VALIDATE_LENGTH,_x('The title field length must be %d-%d characters.','post'),1,255),
             ));
 
-            $validate->check(array(
+            validate_check(array(
                 array('path',VALIDATE_EMPTY,_x('The path field is empty.','post')),
             ));
 
@@ -119,12 +119,12 @@ switch ($action) {
                         $VRS = explode('|',rtrim($rule,';')); array_unshift($VRS,$field['n']);
                         $last_rules[] = $VRS;
                     }
-                    $validate->check($last_rules);
+                    validate_check($last_rules);
                 }
             }
 
             // 安全有保证，做爱做的事吧！
-            if (!$validate->is_error()) {
+            if (validate_is_ok()) {
                 // 自动获取关键词
                 if ($autokeys && empty($keywords)) {
                     $keywords = term_gets($title);

@@ -31,25 +31,24 @@ if ($action=='logout') {
 } else {
 	$language = language();
 }
-// 实例化验证类
-$validate = new Validate();
+
 // 只验证 POST 方式提交
-if ($validate->post()) {
+if (validate_is_post()) {
     $username   = isset($_POST['username'])?$_POST['username']:null;
     $userpass   = isset($_POST['userpass'])?$_POST['userpass']:null;
     $language   = isset($_POST['language'])?$_POST['language']:null;
     $rememberme = isset($_POST['rememberme'])?$_POST['rememberme']:null;
     // 验证用户名
-    $validate->check(array(
+    validate_check(array(
         // 用户名不能为空
         array('username',VALIDATE_EMPTY,__('The username field is empty.')),
         // 用户名长度必须是2-30个字符
         array('username',VALIDATE_LENGTH,__('The username field length must be %d-%d characters.'),2,30)
     ));
     // 验证密码
-    $validate->check('userpass',VALIDATE_EMPTY,__('The password field is empty.'));
+    validate_check('userpass',VALIDATE_EMPTY,__('The password field is empty.'));
     // 验证通过
-    if (!$validate->is_error()) {
+    if (validate_is_ok()) {
         // 提交到数据库验证用户名和密码
         if ($user = user_login($username,$userpass)) {
             $expire = $rememberme=='forever'?365*86400:0;

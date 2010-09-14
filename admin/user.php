@@ -72,8 +72,8 @@ switch ($action) {
 	case 'save':
 	    $userid = isset($_POST['userid'])?$_POST['userid']:null;
 	    current_user_can($userid?'user-edit':'user-new');
-	    $validate = new Validate();
-        if ($validate->post()) {
+	    
+        if (validate_is_post()) {
             $username  = isset($_POST['username'])?$_POST['username']:null;
             $password  = isset($_POST['password1'])?$_POST['password1']:null;
             $password2 = isset($_POST['password2'])?$_POST['password2']:null;
@@ -92,7 +92,7 @@ switch ($action) {
                 $is_exist = user_get_byname($username)?false:true;
             }
             // 验证用户名
-            $validate->check(array(
+            validate_check(array(
                 // 用户名不能为空
                 array('username',VALIDATE_EMPTY,__('The username field is empty.')),
                 // 用户名长度必须是2-30个字符
@@ -101,20 +101,20 @@ switch ($action) {
                 array('username',$is_exist,__('The username already exists.')),
             ));
             // 验证email
-            $validate->check(array(
+            validate_check(array(
                 array('email',VALIDATE_EMPTY,__('Please enter an e-mail address.')),
                 array('email',VALIDATE_IS_EMAIL,__('The e-mail address isn\'t correct.'))
             ));
             // 验证密码
             if ((!$userid) || $password) {
-                $validate->check(array(
+                validate_check(array(
                     array('password1',VALIDATE_EMPTY,__('Please enter your password.')),
                     array('password2',VALIDATE_EMPTY,__('Please enter your password twice.')),
                     array('password1',VALIDATE_EQUAL,__('Please enter the same password in the two password fields.'),'password2'),
                 ));
             }
             // 验证通过
-            if (!$validate->is_error()) {
+            if (validate_is_ok()) {
                 $username = esc_html($username);
                 $email    = esc_html($email);
                 $user_info = array(

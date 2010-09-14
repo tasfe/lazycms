@@ -26,8 +26,8 @@ $_ADMIN = user_current();
 $action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
 $referer = referer(PHP_FILE,false);
 // 保存我的配置
-$validate = new Validate();
-if ($validate->post()) {
+
+if (validate_is_post()) {
     $userid    = isset($_ADMIN['userid'])?$_ADMIN['userid']:null;
     $password  = isset($_POST['password1'])?$_POST['password1']:null;
     $password2 = isset($_POST['password2'])?$_POST['password2']:null;
@@ -36,17 +36,17 @@ if ($validate->post()) {
     $url       = isset($_POST['url'])?$_POST['url']:null;
     $desc      = isset($_POST['description'])?$_POST['description']:null;
     // 验证email
-    $validate->check(array(
+    validate_check(array(
         array('email',VALIDATE_EMPTY,__('Please enter an e-mail address.')),
         array('email',VALIDATE_IS_EMAIL,__('The e-mail address isn\'t correct.'))
     ));
     // 验证密码
     if ($password || $password2) {
-        $validate->check('password1',VALIDATE_EQUAL,__('Please enter the same password in the two password fields.'),'password2');
+        validate_check('password1',VALIDATE_EQUAL,__('Please enter the same password in the two password fields.'),'password2');
     }
 
     // 验证通过
-    if (!$validate->is_error()) {
+    if (validate_is_ok()) {
         $user_info = array(
             'url'  => esc_html($url),
             'mail' => esc_html($email),
