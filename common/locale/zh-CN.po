@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-12 21:57+0800\n"
+"POT-Creation-Date: 2010-09-14 18:55+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.net>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
@@ -17,229 +17,230 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: common/functions.php:165
+#: common/functions.php:166
 msgid "Back"
 msgstr "返回"
 
-#: common/functions.php:231
+#: common/functions.php:247
+#: common/functions.php:255
 #: common/system/loader.php:74
 msgid "System Error"
 msgstr "系统错误"
 
-#: common/functions.php:291
+#: common/functions.php:303
 #, php-format
 msgid "<a href=\"%s\">%d seconds after goto %s.</a>"
 msgstr "<a href=\"%s\">%d 秒后转向 %s。</a>"
 
-#: common/functions.php:309
+#: common/functions.php:321
 msgid "Redirecting..."
 msgstr "正在重定向..."
 
-#: common/functions.php:742
+#: common/functions.php:836
 msgid "Afrikaans"
 msgstr "布尔文(南非洲的荷兰文)"
 
-#: common/functions.php:743
+#: common/functions.php:837
 msgid "Albanian"
 msgstr "阿尔巴尼亚文"
 
-#: common/functions.php:744
+#: common/functions.php:838
 msgid "Arabic"
 msgstr "阿拉伯文"
 
-#: common/functions.php:745
+#: common/functions.php:839
 msgid "Belarusian"
 msgstr "白俄罗斯语"
 
-#: common/functions.php:746
+#: common/functions.php:840
 msgid "Bulgarian"
 msgstr "保加利亚文"
 
-#: common/functions.php:747
+#: common/functions.php:841
 msgid "Catalan"
 msgstr "加泰罗尼亚语"
 
-#: common/functions.php:748
+#: common/functions.php:842
 msgid "Chinese (Simplified)"
 msgstr "中文(简体)"
 
-#: common/functions.php:749
+#: common/functions.php:843
 msgid "Chinese (Traditional)"
 msgstr "中文(繁体)"
 
-#: common/functions.php:750
+#: common/functions.php:844
 msgid "Croatian"
 msgstr "克罗地亚文"
 
-#: common/functions.php:751
+#: common/functions.php:845
 msgid "Czech"
 msgstr "捷克语"
 
-#: common/functions.php:752
+#: common/functions.php:846
 msgid "Danish"
 msgstr "丹麦语"
 
-#: common/functions.php:753
+#: common/functions.php:847
 msgid "Dutch"
 msgstr "荷兰语"
 
-#: common/functions.php:754
+#: common/functions.php:848
 msgid "English"
 msgstr "英语"
 
-#: common/functions.php:755
+#: common/functions.php:849
 msgid "Estonian"
 msgstr "爱沙尼亚语"
 
-#: common/functions.php:756
+#: common/functions.php:850
 msgid "Filipino"
 msgstr "菲律宾文"
 
-#: common/functions.php:757
+#: common/functions.php:851
 msgid "Finnish"
 msgstr "芬兰语"
 
-#: common/functions.php:758
+#: common/functions.php:852
 msgid "French"
 msgstr "法语"
 
-#: common/functions.php:759
+#: common/functions.php:853
 msgid "Galician"
 msgstr "加利西亚语"
 
-#: common/functions.php:760
+#: common/functions.php:854
 msgid "German"
 msgstr "德语"
 
-#: common/functions.php:761
+#: common/functions.php:855
 msgid "Greek"
 msgstr "希腊语"
 
-#: common/functions.php:762
+#: common/functions.php:856
 msgid "Hebrew"
 msgstr "希伯来语"
 
-#: common/functions.php:763
+#: common/functions.php:857
 msgid "Hindi"
 msgstr "印度文"
 
-#: common/functions.php:764
+#: common/functions.php:858
 msgid "Hungarian"
 msgstr "匈牙利语"
 
-#: common/functions.php:765
+#: common/functions.php:859
 msgid "Icelandic"
 msgstr "冰岛语"
 
-#: common/functions.php:766
+#: common/functions.php:860
 msgid "Indonesian"
 msgstr "印尼文"
 
-#: common/functions.php:767
+#: common/functions.php:861
 msgid "Irish"
 msgstr "爱尔兰文"
 
-#: common/functions.php:768
+#: common/functions.php:862
 msgid "Italian"
 msgstr "意大利语"
 
-#: common/functions.php:769
+#: common/functions.php:863
 msgid "Japanese"
 msgstr "日语"
 
-#: common/functions.php:770
+#: common/functions.php:864
 msgid "Korean"
 msgstr "朝鲜语"
 
-#: common/functions.php:771
+#: common/functions.php:865
 msgid "Latvian"
 msgstr "拉脱维亚语"
 
-#: common/functions.php:772
+#: common/functions.php:866
 msgid "Lithuanian"
 msgstr "立陶宛语"
 
-#: common/functions.php:773
+#: common/functions.php:867
 msgid "Macedonian"
 msgstr "马其顿文"
 
-#: common/functions.php:774
+#: common/functions.php:868
 msgid "Malay"
 msgstr "马来文"
 
-#: common/functions.php:775
+#: common/functions.php:869
 msgid "Maltese"
 msgstr "马耳他文"
 
-#: common/functions.php:776
+#: common/functions.php:870
 msgid "Norwegian"
 msgstr "挪威语"
 
-#: common/functions.php:777
+#: common/functions.php:871
 msgid "Persian"
 msgstr "波斯语"
 
-#: common/functions.php:778
+#: common/functions.php:872
 msgid "Polish"
 msgstr "波兰语"
 
-#: common/functions.php:779
+#: common/functions.php:873
 msgid "Portuguese"
 msgstr "葡萄牙语"
 
-#: common/functions.php:780
+#: common/functions.php:874
 msgid "Romanian"
 msgstr "罗马尼亚语"
 
-#: common/functions.php:781
+#: common/functions.php:875
 msgid "Russian"
 msgstr "俄语"
 
-#: common/functions.php:782
+#: common/functions.php:876
 msgid "Serbian"
 msgstr "塞尔维亚文"
 
-#: common/functions.php:783
+#: common/functions.php:877
 msgid "Slovak"
 msgstr "斯洛伐克文"
 
-#: common/functions.php:784
+#: common/functions.php:878
 msgid "Slovenian"
 msgstr "斯洛文尼亚文"
 
-#: common/functions.php:785
+#: common/functions.php:879
 msgid "Spanish"
 msgstr "西班牙语"
 
-#: common/functions.php:786
+#: common/functions.php:880
 msgid "Swahili"
 msgstr "非洲的斯瓦希里文"
 
-#: common/functions.php:787
+#: common/functions.php:881
 msgid "Swedish"
 msgstr "瑞典语"
 
-#: common/functions.php:788
+#: common/functions.php:882
 msgid "Thai"
 msgstr "泰文"
 
-#: common/functions.php:789
+#: common/functions.php:883
 msgid "Turkish"
 msgstr "土耳其文"
 
-#: common/functions.php:790
+#: common/functions.php:884
 msgid "Ukrainian"
 msgstr "乌克兰文"
 
-#: common/functions.php:791
+#: common/functions.php:885
 msgid "Vietnamese"
 msgstr "越南文"
 
-#: common/functions.php:792
+#: common/functions.php:886
 msgid "Welsh"
 msgstr "威尔士语"
 
-#: common/functions.php:793
+#: common/functions.php:887
 msgid "Yiddish"
 msgstr "意第绪语"
 
@@ -328,35 +329,47 @@ msgctxt "field"
 msgid "The name already exists."
 msgstr "字段名已存在，请重新输入字段名。"
 
-#: common/system/httplib.php:95
+#: common/system/httplib.php:126
 msgid "A valid URL was not provided."
 msgstr "没有提供一个有效的URL。"
 
-#: common/system/httplib.php:225
+#: common/system/httplib.php:255
+#: common/system/httplib.php:357
+#: common/system/httplib.php:373
 msgid "Too many redirects."
 msgstr "太多的重定向。"
+
+#: common/system/httplib.php:433
+#: common/system/httplib.php:531
+#, php-format
+msgid "Could not open handle for fopen() to %s"
+msgstr "无法打开处理fopen()函数到 %s"
 
 #: common/system/mysql.php:83
 msgid "-_-!! Please open the mysql extension!"
 msgstr "-_-!! 请打开mysql扩展！"
 
-#: common/system/mysql.php:88
+#: common/system/mysql.php:89
 msgid "Database connect error, please check the database settings!"
 msgstr "数据库连接错误，请检查数据库设置！"
 
-#: common/system/mysql.php:107
+#: common/system/mysql.php:108
 #, php-format
 msgid "%s database not found!"
 msgstr "%s 数据库不存在！"
 
-#: common/system/mysql.php:119
+#: common/system/mysql.php:120
 msgid "mysql database version lower than 4.1, please upgrade mysql!"
 msgstr "mysql数据库版本低于4.1，请升级mysql！"
 
-#: common/system/mysql.php:162
+#: common/system/mysql.php:137
+msgid "Supplied argument is not a valid MySQL-Link resource."
+msgstr "提供的参数不是一个有效的MySQL的链接资源。"
+
+#: common/system/mysql.php:171
 #, php-format
-msgid "MySQL Query Error:<br/>SQL:%s<br/>%s"
-msgstr "MySQL 查询错误：<br/>SQL:%s<br/>%s"
+msgid "MySQL Query Error:%s"
+msgstr "MySQL 查询错误：%s"
 
 #: common/module/model.php:199
 msgid "Input"
@@ -420,102 +433,102 @@ msgstr "分类删除成功。"
 msgid "Category delete fail."
 msgstr "分类删除失败。"
 
-#: admin/categories.php:78
+#: admin/categories.php:77
 msgctxt "sort"
 msgid "The name field is empty."
 msgstr "分类名称不能为空。"
 
-#: admin/categories.php:79
+#: admin/categories.php:78
 #, php-format
 msgctxt "sort"
 msgid "The name field length must be %d-%d characters."
 msgstr "分类名称长度必须%d至%d个字符。"
 
-#: admin/categories.php:83
+#: admin/categories.php:82
 msgctxt "sort"
 msgid "The path field is empty."
 msgstr "列表目录不能为空。"
 
-#: admin/categories.php:97
+#: admin/categories.php:96
 msgid "Category updated."
 msgstr "分类更新成功。"
 
-#: admin/categories.php:108
+#: admin/categories.php:107
 msgid "Category created."
 msgstr "分类添加成功。"
 
-#: admin/categories.php:118
+#: admin/categories.php:117
 #: admin/model.php:145
 #: admin/user.php:154
 #: admin/post.php:72
 msgid "Did not select any item."
 msgstr "没有选择任何一项。"
 
-#: admin/categories.php:126
+#: admin/categories.php:125
 msgid "Categories deleted."
 msgstr "分类删除成功。"
 
-#: admin/categories.php:129
+#: admin/categories.php:128
 msgid "Parameter is invalid."
 msgstr "参数错误。"
 
-#: admin/categories.php:138
+#: admin/categories.php:137
 msgctxt "sort"
 msgid "Add New"
 msgstr "添加分类"
 
-#: admin/categories.php:170
+#: admin/categories.php:169
 #: admin/model.php:321
 #: admin/user.php:217
 #: admin/post.php:321
 msgid "Bulk Actions"
 msgstr "批量操作"
 
-#: admin/categories.php:171
-#: admin/categories.php:207
+#: admin/categories.php:170
+#: admin/categories.php:206
 #: admin/post.php:322
 msgid "Create"
 msgstr "生成"
 
-#: admin/categories.php:172
+#: admin/categories.php:171
 msgid "Recreate"
 msgstr "重新生成"
 
-#: admin/categories.php:175
+#: admin/categories.php:174
 #: admin/model.php:327
 #: admin/user.php:220
 #: admin/post.php:325
 msgid "Apply"
 msgstr "应用"
 
-#: admin/categories.php:185
-#: admin/categories.php:254
+#: admin/categories.php:184
+#: admin/categories.php:253
 msgctxt "sort"
 msgid "Name"
 msgstr "分类名称"
 
-#: admin/categories.php:186
-#: admin/categories.php:258
+#: admin/categories.php:185
+#: admin/categories.php:257
 msgctxt "sort"
 msgid "Path"
 msgstr "列表目录"
 
-#: admin/categories.php:187
+#: admin/categories.php:186
 msgctxt "sort"
 msgid "Posts"
 msgstr "文章数"
 
-#: admin/categories.php:247
+#: admin/categories.php:246
 msgctxt "sort"
 msgid "Parent"
 msgstr "上级目录"
 
-#: admin/categories.php:249
+#: admin/categories.php:248
 msgid "None"
 msgstr "无"
 
-#: admin/categories.php:254
-#: admin/categories.php:258
+#: admin/categories.php:253
+#: admin/categories.php:257
 #: admin/model.php:377
 #: admin/model.php:385
 #: admin/user.php:260
@@ -526,47 +539,47 @@ msgstr "无"
 msgid "(required)"
 msgstr "(必填)"
 
-#: admin/categories.php:260
+#: admin/categories.php:259
 msgid "Category ID"
 msgstr "分类ID"
 
-#: admin/categories.php:261
+#: admin/categories.php:260
 #: admin/model.php:388
 #: admin/post.php:422
 msgid "MD5 Value"
 msgstr "MD5值"
 
-#: admin/categories.php:262
+#: admin/categories.php:261
 #: admin/model.php:389
 #: admin/post.php:423
 msgid "Pinyin"
 msgstr "拼音"
 
-#: admin/categories.php:270
+#: admin/categories.php:269
 #: admin/model.php:397
 msgid "List Template"
 msgstr "列表模板"
 
-#: admin/categories.php:273
+#: admin/categories.php:272
 #: admin/post.php:439
 msgid "Use the model set"
 msgstr "使用模型设置"
 
-#: admin/categories.php:279
+#: admin/categories.php:278
 msgctxt "sort"
 msgid "Keywords"
 msgstr "关键词"
 
-#: admin/categories.php:283
+#: admin/categories.php:282
 msgctxt "sort"
 msgid "Description"
 msgstr "Meta简述"
 
-#: admin/categories.php:290
+#: admin/categories.php:289
 msgid "Add Category"
 msgstr "添加分类"
 
-#: admin/categories.php:293
+#: admin/categories.php:292
 msgid "Update Category"
 msgstr "更新分类"
 
@@ -883,61 +896,61 @@ msgstr "删除字段"
 msgid "Control Panel"
 msgstr "控制面板"
 
-#: admin/login.php:45
+#: admin/login.php:44
 #: admin/user.php:97
 msgid "The username field is empty."
 msgstr "用户名不能为空。"
 
-#: admin/login.php:47
+#: admin/login.php:46
 #: admin/user.php:99
 #, php-format
 msgid "The username field length must be %d-%d characters."
 msgstr "用户名长度必须%d至%d个字符。"
 
-#: admin/login.php:50
+#: admin/login.php:49
 msgid "The password field is empty."
 msgstr "密码不能为空。"
 
-#: admin/login.php:60
+#: admin/login.php:59
 msgid "Username or password error!"
 msgstr "用户名或者密码错误！"
 
-#: admin/login.php:72
-#: admin/login.php:79
+#: admin/login.php:71
+#: admin/login.php:78
 msgid "Administrator Login"
 msgstr "管理员登录"
 
-#: admin/login.php:77
+#: admin/login.php:76
 #, php-format
 msgid "<p>LazyCMS is a new kind,open source, free content management system.</p><p>Runtime:PHP 4.3.3+、MySQL 4.1+</p><p><a href=\"%s\">Back Home</a></p>"
 msgstr "<p>LazyCMS是一种新型的、开源、免费的内容管理系统。</p><p>运行环境：PHP 4.3.3+、MySQL 4.1+</p><p><a href=\"%s\">返回首页</a></p>"
 
-#: admin/login.php:80
+#: admin/login.php:79
 #: admin/user.php:230
 #: admin/user.php:260
 #: admin/profile.php:83
 msgid "Username"
 msgstr "用户名"
 
-#: admin/login.php:81
+#: admin/login.php:80
 #: admin/user.php:291
 #: admin/profile.php:105
 msgid "Password"
 msgstr "密码"
 
-#: admin/login.php:82
+#: admin/login.php:81
 msgid "Language"
 msgstr "语言"
 
-#: admin/login.php:84
+#: admin/login.php:83
 msgid "Default"
 msgstr "默认"
 
-#: admin/login.php:89
+#: admin/login.php:88
 msgid "Remember Me"
 msgstr "记住我的登录信息"
 
-#: admin/login.php:90
+#: admin/login.php:89
 msgid "Login"
 msgstr "登入"
 
@@ -1384,50 +1397,44 @@ msgstr "我的配置"
 msgid "Update Profile"
 msgstr "更新资料"
 
-#: admin/options/general.php:32
+#: admin/options/general.php:31
 msgid "Please enter the site name."
 msgstr "请输入网站的名称。"
 
-#: admin/options/general.php:36
+#: admin/options/general.php:35
 msgid "Settings saved."
 msgstr "设置已保存。"
 
-#: admin/options/general.php:39
+#: admin/options/general.php:38
 msgid "General Settings"
 msgstr "常规设置"
 
-#: admin/options/general.php:50
+#: admin/options/general.php:49
 msgid "Site name"
 msgstr "站点名"
 
-#: admin/options/general.php:54
-msgid "Compress"
-msgstr "压缩"
-
-#: admin/options/general.php:56
-msgid "Enable"
-msgstr "启用"
-
-#: admin/options/general.php:57
-msgid "Disable"
-msgstr "禁用"
-
-#: admin/options/general.php:61
+#: admin/options/general.php:60
 msgid "Template"
 msgstr "模板"
 
-#: admin/options/general.php:65
+#: admin/options/general.php:64
 msgid "Template suffix"
 msgstr "模板后缀"
 
-#: admin/options/general.php:69
+#: admin/options/general.php:68
 msgid "HTML file suffix"
 msgstr "网页文件后缀"
 
-#: admin/options/general.php:75
+#: admin/options/general.php:74
 msgid "Save Changes"
 msgstr "保存更改"
 
+#~ msgid "Compress"
+#~ msgstr "压缩"
+#~ msgid "Enable"
+#~ msgstr "启用"
+#~ msgid "Disable"
+#~ msgstr "禁用"
 #~ msgid "HTML Save the directory"
 #~ msgstr "网页保存目录"
 #~ msgid "Must be \"/\" end, required"

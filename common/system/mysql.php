@@ -168,7 +168,7 @@ class Mysql {
                 $this->_goneaway = 3;
 
                 if ($this->_throw) {
-                    return throw_error(sprintf(__("MySQL Query Error:%s\r\n\t%s"),$sql,$this->error()),E_LAZY_ERROR);
+                    return throw_error(sprintf(__("MySQL Query Error:%s"),$sql."\r\n\t".$this->error()),E_LAZY_ERROR);
                 } else {
                     return false;
                 }
