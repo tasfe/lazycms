@@ -93,6 +93,11 @@ function post_manage_init() {
 function post_manage_extend_attr(model,postid) {
     var wrap = this,params = {action:'extend-attr',model:model};
         params = typeof(postid)!='undefined' ? $.extend(params,{postid:postid}) : params;
+
+    if (model == '') {
+        $('tbody.extend-attr',wrap).empty();
+        return false;
+    }
     $.post(LazyCMS.ADMIN_ROOT+'post.php',params,function(r){
 		var data = LazyCMS.ajaxResult(r);
 		if (data) {

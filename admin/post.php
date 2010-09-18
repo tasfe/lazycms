@@ -18,36 +18,56 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
+// 文件名
+$php_file = isset($php_file) ? $php_file : 'post.php';
 // 加载公共文件
 require dirname(__FILE__).'/admin.php';
 // 查询管理员信息
 $_ADMIN = user_current();
 // 标题
-admin_head('title',  __('Posts'));
+if ('page.php' == $php_file) {
+    admin_head('title',  __('Pages'));
+} else {
+    admin_head('title',  __('Posts'));
+}
 admin_head('styles', array('css/post'));
 admin_head('scripts',array('js/post'));
 // 动作
-$action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
+$action = isset($_REQUEST['action'])?$_REQUEST['action']:null;
 
 switch ($action) {
     // 强力插入
     case 'new':
-	    current_user_can('post-new');
-	    // 重置标题
-	    admin_head('title',__('Add New Post'));
+        if ('page.php' == $php_file) {
+            current_user_can('page-new');
+            admin_head('title',__('Add New Page'));
+        } else {
+            current_user_can('post-new');
+            admin_head('title',__('Add New Post'));
+        }
 	    admin_head('loadevents','post_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
 	    post_manage_page('add');	    
 	    include ADMIN_PATH.'/admin-footer.php';
 	    break;
-	// 活塞式运动，你懂得。。。
+	// 编辑
 	case 'edit':
-        // 所属
-        $parent_file = 'post.php';
-        // 权限检查
-	    current_user_can('post-edit');
-	    // 重置标题
-	    admin_head('title',__('Edit Post'));
+        if ('page.php' == $php_file) {
+            // 所属
+            $parent_file = 'page.php';
+            // 权限检查
+            current_user_can('page-edit');
+            // 重置标题
+            admin_head('title',__('Edit Page'));
+        } else {
+            // 所属
+            $parent_file = 'post.php';
+            // 权限检查
+            current_user_can('post-edit');
+            // 重置标题
+            admin_head('title',__('Edit Post'));
+        }
+
 	    admin_head('loadevents','post_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
 	    post_manage_page('edit');	    
@@ -238,9 +258,15 @@ switch ($action) {
         echo $attrs;
 	    break;
     default:
-	    current_user_can('post-list');
+        if ('page.php' == $php_file) {
+            current_user_can('page-list');
+            $add_new = _x('Add New','page');
+        } else {
+            current_user_can('post-list');
+            $add_new = _x('Add New','post');
+        }
         admin_head('loadevents','post_list_init');
-        $page  = isset($_REQUEST['page'])?$_REQUEST['page']:1;
+	    $page  = isset($_REQUEST['page'])?$_REQUEST['page']:1;
         $size  = isset($_REQUEST['size'])?$_REQUEST['size']:10;
         $model = isset($_REQUEST['model'])?$_REQUEST['model']:'';
         $category = isset($_REQUEST['category'])?$_REQUEST['category']:'';
@@ -258,6 +284,12 @@ switch ($action) {
             $query['category'] = $category;
             $condition[] = "(`tr`.`taxonomyid`=".esc_sql($category).")";
         }
+        $field = $category?'`p`.`sortid`':'`sortid`';
+        if ('page.php' == $php_file) {
+            $condition[] = "({$field}='-1')";
+        } else {
+            $condition[] = "({$field}<>'-1')";
+        }
         $where = $condition?' WHERE '.implode(' AND ' , $condition):'';
         $page_url = PHP_FILE.'?'.http_build_query($query);
         if ($category) {
@@ -268,7 +300,7 @@ switch ($action) {
         $result   = post_gets($sql, $page, $size);
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'._x('Add New','post').'</a></h2>';
+        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'.$add_new.'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?action=bulk" method="post" name="postlist" id="postlist">';
         table_nav($page_url,$result);
         echo       '<table class="data-table" cellspacing="0">';
@@ -294,13 +326,15 @@ switch ($action) {
                 echo    '<td><strong><a href="'.$edit_url.'">'.$post['title'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
                 echo    '<td><a href="'.$model_url.'">'.$post['model']['name'].'</a></td>';
                 echo    '<td><a href="javascript:;">'.WEB_ROOT.$post['path'].'</a></td>';
-                echo    '<td>'.implode(',' , $categories).'</td>';
+                if ('page.php' != $php_file) {
+                   echo '<td>'.implode(',' , $categories).'</td>';
+                }
                 echo    '<td>'.date('Y-m-d H:i:s',$post['datetime']).'</td>';
                 echo    '<td>'.$post['passed'].'</td>';
                 echo '</tr>';
             }
         } else {
-            echo           '<tr><td colspan="6" class="tc">'.__('No record!').'</td></tr>';
+            echo           '<tr><td colspan="7" class="tc">'.__('No record!').'</td></tr>';
         }
         echo           '</tbody>';
         echo       '</table>';
@@ -331,12 +365,15 @@ function table_nav($url,$result) {
  *
  */
 function table_thead() {
+    global $php_file;
     echo '<tr>';
     echo     '<th class="check-column"><input type="checkbox" name="select" value="all" /></th>';
     echo     '<th>'._x('Title','post').'</th>';
     echo     '<th>'._x('Model','post').'</th>';
     echo     '<th>'._x('Path','post').'</th>';
-    echo     '<th>'._x('Categories','post').'</th>';
+    if ('page.php' != $php_file) {
+        echo '<th>'._x('Categories','post').'</th>';
+    }
     echo     '<th>'._x('Date','post').'</th>';
     echo     '<th>'._x('State','post').'</th>';
     echo '</tr>';
@@ -348,6 +385,7 @@ function table_thead() {
  * @param string $action
  */
 function post_manage_page($action) {
+    global $php_file;
     $referer = referer(PHP_FILE);
     $postid  = isset($_GET['postid'])?$_GET['postid']:0;
     $models  = model_gets(1);
@@ -362,7 +400,9 @@ function post_manage_page($action) {
     if ($mcode) {
         $model = model_get_bycode($mcode);
     } else {
-        $model   = array_pop(array_slice($models,0,1));
+        $model = array(
+            'path' => '%PY'.$suffix
+        );
     }
     $sortid   = isset($_DATA['sortid'])?$_DATA['sortid']:null;
     $title    = isset($_DATA['title'])?$_DATA['title']:null;
@@ -391,6 +431,7 @@ function post_manage_page($action) {
         echo           '<tr>';
         echo               '<th><label for="model">'._x('Model','post').'</label></th>';
         echo               '<td><select name="model" id="model">';
+        echo                   '<option value="">'.__('&mdash; Select &mdash;').'</option>';
         foreach ($models as $m) {
             $selected = $m['langcode']==$model['langcode']?'selected="selected"':'';
         	echo               '<option value="'.$m['langcode'].'"'.$selected.'>'.$m['name'].'</option>';
@@ -398,12 +439,18 @@ function post_manage_page($action) {
         echo               '</select></td>';
         echo           '</tr>';
     }
-    echo               '<tr class="taxonomyid">';
-    echo                   '<th><label for="taxonomyid">'._x('Categories','post').'</label></th>';
-    echo                   '<td>';
-    echo                       categories_tree($sortid,$categories);
-    echo                   '</td>';
-    echo               '</tr>';
+    $hidden = '';
+    if ('page.php' == $php_file) {
+        $hidden = '<input type="hidden" name="sortid" value="-1" />';
+    } else {
+        echo           '<tr class="taxonomyid">';
+        echo               '<th><label for="taxonomyid">'._x('Categories','post').'</label></th>';
+        echo               '<td>';
+        echo                   categories_tree($sortid,$categories);
+        echo               '</td>';
+        echo           '</tr>';
+    }
+    
     echo               '<tr>';
     echo                   '<th><label for="title">'._x('Title','post').'<span class="description">'.__('(required)').'</span></label></th>';
     echo                   '<td>';
@@ -453,9 +500,10 @@ function post_manage_page($action) {
     echo       '</table>';
     echo '</fieldset>';
     if ($action=='add') {
+        echo   $hidden;
         echo   '<p class="submit"><button type="submit">'.__('Add Post').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'.__('Back').'</button></p>';
     } else {
-        echo   '<input type="hidden" name="postid" value="'.$postid.'" />';
+        echo   '<input type="hidden" name="postid" value="'.$postid.'" />'.$hidden;
         echo   '<p class="submit"><button type="submit">'.__('Update Post').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'.__('Back').'</button></p>';
     }
     echo   '</form>';

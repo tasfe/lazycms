@@ -81,15 +81,14 @@ function format_path($path,$data=null) {
  * @return object
  */
 function get_conn($DSN=null,$pconnect=false,$throw_error=true){
-    static $_db = array();
+    static $db; if (is_null($DSN)) $DSN = DSN_CONFIG; 
     $guid = guid(array($DSN,$pconnect,$throw_error));
-    if (is_null($DSN)) $DSN = DSN_CONFIG;
-    if (isset($_db[$guid]) && is_object($_db[$guid])) return $_db[$guid];
+    if (isset($db[$guid]) && is_object($db[$guid])) return $db[$guid];
     if ($config = parse_dsn($DSN)) {
         $config['throw'] = $throw_error;
         require_once COM_PATH.'/system/mysql.php';
-    	$_db[$guid] = new Mysql($config,$pconnect);
-    	return $_db[$guid];
+    	$db[$guid] = new Mysql($config,$pconnect);
+    	return $db[$guid];
     }
     return false;
 }
@@ -385,10 +384,30 @@ function esc_html($str){
     if(empty($str)) {
         return $str;
     } elseif (is_array($str)) {
-    	return array_map('esc_html', $str);
-    } else {
-        return htmlspecialchars($str);
+		$str = array_map('esc_html', $str);
+	} elseif (is_object($str)) {
+		$vars = get_object_vars($str);
+		foreach ($vars as $key=>$data) {
+			$str->{$key} = esc_html($data);
+		}
+	} else {
+        $str = htmlspecialchars($str);
     }
+    return $str;
+}
+/**
+ * 格式化为XML
+ *
+ * @param  $content
+ * @return mixed
+ */
+function xmlencode($content){
+    if (strlen($content) == 0) return $content;
+    return str_replace(
+        array('&',"'",'"','>','<'),
+        array('&amp;','&apos;','&quot;','&gt;','&lt;'),
+        $content
+    );
 }
 /**
  * 判断是否为UTF-8编码
@@ -992,64 +1011,11 @@ function C($key,$value=null){
     }
     return null;
 }
-/**
- * 本地化翻译函数
- *
- * @param string $str
- * @return string
- */
-function _x($str,$context=null) {
-	static $_l10n;
-	if (!is_object($_l10n)) {
-		$language = language();
-		$mo_file  = COM_PATH."/locale/{$language}.mo";
-		if (!file_exists_case($mo_file)) return $str;
-		require_once COM_PATH.'/system/l10n.php';
-		$_l10n = new L10n();
-	    $ckey = 'L10n.'.$language.'.entries';
-	    // 取出缓存
-	    $tables = FCache::get($ckey);
-	    // 判断文件过期
-	    $cache_file = FCache::file($ckey);
-	    if (file_exists_case($cache_file)) {
-	       defined('DATACACHE_EXPIRE') or define('DATACACHE_EXPIRE',0);
-	       // mo文件的修改时间大于缓存文件的过期时间
-	       if (filemtime($mo_file)+DATACACHE_EXPIRE > filemtime($cache_file)) {
-	           $tables = null;
-	       }
-	    }
-	    // 缓存结果不存在
-		if (empty($tables)) {
-		    $_l10n->load_file($mo_file);
-		    FCache::set($ckey,$_l10n->entries);
-		} else {
-		    $_l10n->entries = $tables;
-		}
-	}
-	return $_l10n->translate($str,$context);
-}
-/**
- *  简写的翻译函数
- *
- * @param  $string
- * @return string
- */
-function __($string){
-    return _x($string);
-}
 
-/**
- * 输出字符串
- *
- * @param string $str
- */
-function _e($str){
-    echo _x($str);
-}
 
 if (!function_exists('json_encode')) {
     function json_encode($value){
-        static $_json = null;
+        global $_json;
         if (!$_json) {
             require_once COM_PATH.'/system/json.php';
             $_json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
@@ -1060,10 +1026,10 @@ if (!function_exists('json_encode')) {
 
 if (!function_exists('json_decode')) {
     function json_decode($json){
-        static $_json = null;
+        global $_json;
         if (!$_json) {
             require_once COM_PATH.'/system/json.php';
-            $_json = new Services_JSON();
+            $_json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
         }
         return $_json->decode($json);
     }

@@ -26,13 +26,13 @@ define('HTTPLIB_CONNECT_FAILURE',600);
 define('HTTPLIB_USER_AGENT','LazyCMS/'.LAZY_VERSION.' (compatible; Httplib/0.1; +http://www.lazycms.com/httplib.html)');
 
 class Httplib {
-    var $is_response, $disable_curl, $disable_fopen, $disable_streams, $disable_fsockopen;
+    var $disable_curl, $disable_fopen, $disable_streams, $disable_fsockopen;
 
     function __construct(){ }
 
     function Httplib() {
         $args = func_get_args();
-		return call_user_func_array( array(&$this, '__construct'), $args );
+		call_user_func_array( array(&$this, '__construct'), $args );
     }
     /**
      * get

@@ -18,10 +18,15 @@
             array(__('Post Tags'),'tags.php','tags'),
         )),
 
-        'topics' => array(__('Topics'),'topic.php','a6',array(
+        'pages' => array(__('Pages'),'page.php','b5',array(
+            array(__('Pages'),'page.php','page-list'),
+            array(_x('Add New','page'),'page.php?action=new','page-new'),
+        )),
+
+        /*'topics' => array(__('Topics'),'topic.php','a6',array(
             array(__('Topics'),'topic.php','topic-list'),
             array(_x('Add New','topic'),'topic.php?action=new','topic-new'),
-        )),
+        )),*/
 
         'models' => array(__('Models'),'model.php','a7',array(
             array(__('Models'),'model.php','model-list'),

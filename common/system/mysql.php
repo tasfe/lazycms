@@ -62,7 +62,7 @@ class Mysql {
 
         // 调用PHP的构造函数
         $args = func_get_args();
-		return call_user_func_array( array(&$this, '__construct'), $args );
+		call_user_func_array( array(&$this, '__construct'), $args );
     }
 
     function __destruct(){
@@ -434,7 +434,7 @@ class Mysql {
      * 设置数据库连接参数
      *
      * @param mixed $config
-     * @return string
+     * @return mixed
      */
     function config($config,$value=null) {
         // 批量赋值
@@ -442,7 +442,7 @@ class Mysql {
     		foreach ($config as $k=>$v) {
                 $this->config($k,$v);
     		}
-            return $config;
+            return true;
         }
         // 取值
         if ($config && func_num_args()==1) {

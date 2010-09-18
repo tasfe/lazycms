@@ -43,6 +43,10 @@ require COM_PATH.'/system/validate.php';
 require COM_PATH.'/system/cookie.php';
 // 加载文件缓存类
 require COM_PATH.'/system/fcache.php';
+// 加载本地化语言类库
+require COM_PATH.'/system/l10n.php';
+// 加载默认语言包
+load_textdomain();
 // 处理错误
 set_error_handler('handler_error');
 

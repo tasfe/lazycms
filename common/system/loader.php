@@ -209,7 +209,7 @@ class StylesLoader extends LazyLoader {
 
     function StylesLoader() {
         $args = func_get_args();
-		return call_user_func_array( array(&$this, '__construct'), $args );
+		call_user_func_array( array(&$this, '__construct'), $args );
     }
 }
 
@@ -222,6 +222,6 @@ class ScriptsLoader extends LazyLoader {
 
     function ScriptsLoader() {
         $args = func_get_args();
-		return call_user_func_array( array(&$this, '__construct'), $args );
+		call_user_func_array( array(&$this, '__construct'), $args );
     }
 }

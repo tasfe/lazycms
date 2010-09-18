@@ -148,7 +148,7 @@ switch ($action) {
         if ($sorts) {
             echo            display_tr_tree($sorts);
         } else {
-            echo           '<tr><td colspan="5" class="tc">'.__('No record!').'</td></tr>';
+            echo           '<tr><td colspan="4" class="tc">'.__('No record!').'</td></tr>';
         }
         echo           '</tbody>';
         echo       '</table>';
@@ -245,7 +245,7 @@ function category_manage_page($action) {
     echo           '<tr>';
     echo               '<th><label for="parent">'._x('Parent','sort').'</label></th>';
     echo               '<td><select name="parent" id="parent">';
-    echo                   '<option value="0" path="" model="">--- '.__('None').' ---</option>';
+    echo                   '<option value="0" path="" model="">'.__('&mdash; no parent &mdash;').'</option>';
     echo                    options_tree($taxonomyid,$parent);
     echo               '</select></td>';
     echo           '</tr>';

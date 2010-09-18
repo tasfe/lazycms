@@ -24,7 +24,10 @@ defined('ADMIN_PATH') or define('ADMIN_PATH',dirname(__FILE__));
 require ADMIN_PATH.'/../global.php';
 // 后台的目录
 define('ADMIN_ROOT',WEB_ROOT.str_replace('\\','/',substr(ADMIN_PATH,strlen(ABS_PATH)+1)).'/');
+// 加载模版处里类
+require COM_PATH.'/system/template.php';
 // 加载公共模块
+require COM_PATH.'/module/system.php';
 require COM_PATH.'/module/user.php';
 require COM_PATH.'/module/model.php';
 require COM_PATH.'/module/taxonomy.php';
@@ -166,10 +169,18 @@ function admin_purview($data=null) {
         'post' => array(
             '_LABEL_'     => __('Posts'),
             'categories'  => __('Categories'),
+            'tags'        => __('Post Tags'),
             'post-new'    => _x('Add New','post'),
             'post-list'   => _x('List','post'),
             'post-edit'   => _x('Edit','post'),
             'post-delete' => _x('Delete','post'),
+        ),
+        'page' => array(
+            '_LABEL_'     => __('Pages'),
+            'page-list'   => _x('List','page'),
+            'page-new'    => _x('Add New','page'),
+            'page-edit'   => _x('Edit','page'),
+            'page-delete' => _x('Delete','page'),
         ),
         'topic' => array(
             '_LABEL_'     => __('Topics'),
@@ -241,6 +252,7 @@ function admin_menu($menus) {
     } else {
         $parent_file = ADMIN_ROOT.(strpos($parent_file,'?')!==false?$parent_file:$parent_file.'?action=default');
     }
+
     $menus_tree = array();
     // 预处理菜单
     while (list($k,$menu) = each($menus)) {

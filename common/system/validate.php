@@ -218,8 +218,9 @@ function validate_is_post() {
  * @return bool
  */
 function validate_check() {
+    $args = func_get_args();
     $validate = _validate_get_object();
-    return $validate->check(func_get_args());
+    return $validate->check($args);
 }
 /**
  * 是否验证通过
@@ -229,4 +230,15 @@ function validate_check() {
 function validate_is_ok() {
     $validate = _validate_get_object();
     return !$validate->is_error();
+}
+/**
+ * 验证方法
+ *
+ * @param  $str     需要验证的字符串
+ * @param  $type    验证类型，常量或者正则表达式
+ * @return bool
+ */
+function validate_is($str,$type) {
+    $validate = _validate_get_object();
+    return $validate->is($str,$type);
 }
