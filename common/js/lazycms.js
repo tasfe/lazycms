@@ -237,38 +237,33 @@ var LazyCMS = window.LazyCMS = window.CMS = {
     },
     /**
      * 统一处理ajax返回结果
-     *
-     * @param result    ajax result
+     * 
+     * @param data      ajax response
+     * @param status    
+     * @param xhr
      */
-    ajaxResult: function(result) {
-        if ($.isPlainObject(result)) {
-            var code = result.CODE, data = result.DATA;
-            switch (code) {
-                // 提示
-                case 'Success': case 'Error': case 'Alert':
-                    LazyCMS.alert(data,function(){
-                        // 调用脚本
-                        try { eval(result.CALL) } catch (e) {}
-                    },code);
-                    break;
-                // 跳转
-                case 'Redirect':
-                    LazyCMS.redirect(data.Location,data.Time,data.Message);
-                    break;
-                // 处理验证异常
-                case 'Validate':
-                    $(document).error(data);
-                    break;
-                // 返回结果
-                case 'Return':
-                    return data;
-                    break;
-                // 默认返回结果对象
-                default:
-                    return result;
-                    break;
-
-            }
+    ajaxSuccess: function(data, status, xhr) {
+        var result = null, code = xhr.getResponseHeader('X-LazyCMS-Code'); 
+        switch (code) {
+            // 提示
+            case 'Success': case 'Error': case 'Alert':
+                LazyCMS.alert(data,function(){
+                    // 调用脚本
+                    try { eval(xhr.getResponseHeader('X-LazyCMS-Eval')) } catch (e) {}
+                },code);
+                break;
+            // 跳转
+            case 'Redirect':
+                LazyCMS.redirect(data.Location, data.Time, data.Message);
+                break;
+            // 处理验证异常
+            case 'Validate':
+                $(document).error(data);
+                break;
+            // 返回结果
+            case 'Return': default:
+                result = data;
+                break;
         }
         return result;
     },

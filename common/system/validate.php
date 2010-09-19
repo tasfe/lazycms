@@ -172,7 +172,7 @@ class Validate {
         if ($this->_error){
             if ($is_echo) {
                 if (is_ajax()) {
-                    echo_json('Validate',$this->_error);
+                    ajax_echo('Validate',$this->_error);
                 }
             }
             return $this->_error;

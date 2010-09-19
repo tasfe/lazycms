@@ -192,13 +192,33 @@ switch ($action) {
 	    break;
 	// 获取扩展字段
 	case 'extend-attr':
+        $model  = null;
 	    $mcode  = isset($_REQUEST['model'])?$_REQUEST['model']:null;
 	    $postid = isset($_REQUEST['postid'])?$_REQUEST['postid']:0;
-	    $model  = model_get_bycode($mcode);
-        $attrs  = null;
-
-	    if ($model) {
+        $suffix = C('HTMLFileSuffix');
+        if ($postid) {
             $post = post_get($postid);
+        }
+        if ($mcode) {
+            header('Select: ok');
+            $model = model_get_bycode($mcode);
+            $path  = isset($post['path'])?$post['path']:$model['path'];
+        } else {
+            $path  = '%PY'.$suffix;
+            header('Select: no');
+        }
+
+        echo '<tr>';
+        echo    '<th><label for="path">'._x('Path','post').'<span class="description">'.__('(required)').'</span></label></th>';
+        echo    '<td><input id="path" name="path" type="text" size="70" value="'.$path.'" /><span class="rules">';
+        echo        '<a href="#%ID'.$suffix.'">['.__('Post ID').']</a>';
+        echo        '<a href="#%MD5'.$suffix.'">['.__('MD5 Value').']</a>';
+        echo        '<a href="#%PY'.$suffix.'">['.__('Pinyin').']</a>';
+        echo    '</span></td>';
+        echo '</tr>';
+        
+	    if ($model) {
+            $attrs = null;
 	    	foreach ($model['fields'] as $field) {
                 if (isset($post['meta'][$field['n']])) {
                     $field['d'] = $post['meta'][$field['n']];
@@ -254,8 +274,9 @@ switch ($action) {
                 $attrs.=     '</td>';
                 $attrs.= '</tr>';
 	    	}
+            echo $attrs;
 	    }
-        echo $attrs;
+
 	    break;
     default:
         if ('page.php' == $php_file) {
@@ -399,15 +420,10 @@ function post_manage_page($action) {
 
     if ($mcode) {
         $model = model_get_bycode($mcode);
-    } else {
-        $model = array(
-            'path' => '%PY'.$suffix
-        );
     }
     $sortid   = isset($_DATA['sortid'])?$_DATA['sortid']:null;
     $title    = isset($_DATA['title'])?$_DATA['title']:null;
     $content  = isset($_DATA['content'])?$_DATA['content']:null;
-    $path     = isset($_DATA['path'])?$_DATA['path']:$model['path'];
     $template = isset($_DATA['template'])?$_DATA['template']:null;
     $description = isset($_DATA['description'])?$_DATA['description']:null;
     // 取得分类关系
@@ -461,14 +477,6 @@ function post_manage_page($action) {
     echo               '<tr>';
     echo                   '<th><label for="content">'._x('Content','post').'</label></th>';
     echo                   '<td><textarea cols="120" rows="15" id="content" name="content">'.$content.'</textarea></td>';
-    echo               '</tr>';
-    echo               '<tr>';
-    echo                   '<th><label for="path">'._x('Path','post').'<span class="description">'.__('(required)').'</span></label></th>';
-    echo                   '<td><input id="path" name="path" type="text" size="70" value="'.$path.'" /><span class="rules">';
-    echo                       '<a href="#%ID'.$suffix.'">['.__('Post ID').']</a>';
-    echo                       '<a href="#%MD5'.$suffix.'">['.__('MD5 Value').']</a>';
-    echo                       '<a href="#%PY'.$suffix.'">['.__('Pinyin').']</a>';
-    echo                   '</span></td>';
     echo               '</tr>';
     echo           '</tbody>';
     echo           '<tbody class="extend-attr"></tbody>';

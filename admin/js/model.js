@@ -35,18 +35,14 @@ function model_list_init() {
 		var url = this.href;
 		LazyCMS.confirm(_('Confirm Delete?'),function(r){
 			if (r) {
-				$.getJSON(url,function(data){
-					LazyCMS.ajaxResult(data);
-				});
+				$.getJSON(url);
 			}
 		});
 		
 		return false;
 	});
 	// 绑定提交事件
-	form.actions(function(data){
-        LazyCMS.ajaxResult(data);
-    });
+	form.actions();
 }
 // 添加用户页面初始化
 function model_manage_init() {
@@ -135,9 +131,7 @@ function model_manage_init() {
 		});
 	});
     // 提交事件
-    $('form#modelmanage').ajaxSubmit(function(data){
-        LazyCMS.ajaxResult(data);
-    });
+    $('form#modelmanage').ajaxSubmit();
 	// 绑定添加事件
 	$('button.addnew',wrap).click(function(){
 		model_field_manage();
@@ -251,10 +245,10 @@ function model_field_manage(id,params) {
                     return false;
                 }
                 $('tbody tr.empty',wrap).remove();
-                if ($('#field_is_help').attr('checked')==true) {
+                if ($('#field_is_help').attr('checked') == true) {
                     selector+= ',textarea[name=h]';
                 }
-                if ($('#field_is_verify').attr('checked')==true) {
+                if ($('#field_is_verify').attr('checked') == true) {
                     selector+= ',textarea[name=v]';
                 }
                 switch (type) {

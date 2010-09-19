@@ -45,7 +45,16 @@ if ($.browser.msie && $.browser.version == '6.0') {
 
 // 设置全局 AJAX 默认选项
 $.ajaxSetup({
-    beforeSend: function(s){
+    beforeSend: function(xhr, s){
+        // 接管success
+        s.orisuccess = s.success;
+        // 自定义success
+        s.success = function(data, status, xhr) {
+            var data = LazyCMS.ajaxSuccess.apply(this,arguments);
+            if (data && s.orisuccess) {
+                s.orisuccess.call(this, data, status, xhr);
+            }
+        }
         LazyCMS.Loading.css({'z-index':$('*').maxIndex() + 1}).appendTo('body');
     },
     error:function(xhr,status,error) {
@@ -90,8 +99,7 @@ getTerms = function(content,callback) {
     var data = [];
     if (content!='') {
         $.post(LazyCMS.ADMIN_ROOT + 'index.php',{action:'getTerms',content:content},function(r){
-            data = LazyCMS.ajaxResult(r);
-            if (callback) callback(data);
+            if (callback) callback(r);
         },'json');
     } else {
         if (callback) callback(data);

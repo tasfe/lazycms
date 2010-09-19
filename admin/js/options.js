@@ -19,7 +19,5 @@
  */
 // 我的配置页面初始化
 function options_init() {
-	$('form#options').ajaxSubmit(function(data){
-        LazyCMS.ajaxResult(data);
-    });
+	$('form#options').ajaxSubmit();
 }

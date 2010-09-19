@@ -261,14 +261,18 @@ function throw_error($errstr,$errno=E_LAZY_NOTICE,$errfile=null,$errline=0){
 /**
  * 输出ajax规范的json字符串
  *
- * @param string $code
- * @param mixed  $data
+ * @param  $code
+ * @param  $data
+ * @param  $eval
+ * @return void
  */
-function echo_json($code,$data,$args=null){
-    $result = array('CODE'=>$code,'DATA'=>$data);
-    $result = is_array($args)?array_merge($result,$args):$result;
-    headers_sent() or header('Content-Type: application/json; charset=utf-8');
-    echo json_encode($result); ob_flush(); exit();
+function ajax_echo($code,$data,$eval=null){
+    if (!headers_sent()) {
+        if ($code) header('X-LazyCMS-Code: '.$code);
+        if ($eval) header('X-LazyCMS-Eval: '.$eval);
+        header('Content-Type: application/json; charset=utf-8');
+    }
+    echo json_encode($data); ob_flush(); exit();
 }
 /**
  * 防止浏览器缓存
@@ -305,7 +309,7 @@ function redirect($url,$time=0,$msg='') {
         $data = array('Location' => $url);
         if ($time) $data = array_merge($data,array('Time' => $time));
         if ($time && $msg)  $data = array_merge($data,array('Message' => $msg));
-        echo_json('Redirect',$data);
+        ajax_echo('Redirect',$data);
     } else {
     	if (!headers_sent()) {
     		if(0===$time) {

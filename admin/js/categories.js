@@ -35,18 +35,14 @@ function sort_list_init() {
 		var url = this.href;
 		LazyCMS.confirm(_('Confirm Delete?'),function(r){
 			if (r) {
-				$.getJSON(url,function(data){
-					LazyCMS.ajaxResult(data);
-				});
+				$.getJSON(url);
 			}
 		});
 		
 		return false;
 	});
 	// 绑定提交事件
-	form.actions(function(data){
-        LazyCMS.ajaxResult(data);
-    });
+	form.actions();
 }
 function sort_manage_init() {
     var wrap = $('#sortmanage'),sortid = $('input:hidden[name=sortid]',wrap).val();
@@ -63,7 +59,5 @@ function sort_manage_init() {
 	    $('input[name=path]',wrap).insertVal(val); return false;
 	});
     // 提交事件
-    $('form#sortmanage').ajaxSubmit(function(data){
-        LazyCMS.ajaxResult(data);
-    });
+    $('form#sortmanage').ajaxSubmit();
 }

@@ -35,18 +35,14 @@ function post_list_init() {
 		var url = this.href;
 		LazyCMS.confirm(_('Confirm Delete?'),function(r){
 			if (r) {
-                $.getJSON(url,function(data){
-                    LazyCMS.ajaxResult(data);
-                });
+                $.getJSON(url);
 			}
 		});
 		
 		return false;
 	});
 	// 绑定提交事件
-	form.actions(function(data){
-        LazyCMS.ajaxResult(data);
-    });
+	form.actions();
 }
 // 添加用户页面初始化
 function post_manage_init() {
@@ -61,11 +57,7 @@ function post_manage_init() {
 	    // 初始化
 	    post_manage_extend_attr.call(wrap,mcode,postid);
 	}
-	// 绑定规则点击
-	$('span.rules > a',wrap).click(function(){
-	    var val = this.href.replace(self.location,'').replace('#','');
-	    $('input[name=path]',wrap).val(val); return false;
-	});
+
 	// 绑定展开事件
 	$('fieldset').each(function(i){
 	    var fieldset = $(this);
@@ -85,24 +77,20 @@ function post_manage_init() {
         });
     });
 	// 提交事件
-    $('form#postmanage').ajaxSubmit(function(data){
-        LazyCMS.ajaxResult(data);
-    });
+    $('form#postmanage').ajaxSubmit();
 }
 // 获取扩展字段
 function post_manage_extend_attr(model,postid) {
     var wrap = this,params = {action:'extend-attr',model:model};
         params = typeof(postid)!='undefined' ? $.extend(params,{postid:postid}) : params;
 
-    if (model == '') {
-        $('tbody.extend-attr',wrap).empty();
-        return false;
-    }
-    $.post(LazyCMS.ADMIN_ROOT+'post.php',params,function(r){
-		var data = LazyCMS.ajaxResult(r);
-		if (data) {
-			$('tbody.extend-attr',wrap).html(data);
-			LazyCMS.selectEdit();
-		}
+    $.post(LazyCMS.ADMIN_ROOT+'post.php',params,function(data) {
+		$('tbody.extend-attr',wrap).html(data);
+        // 绑定规则点击
+        $('span.rules > a',wrap).click(function(){
+            var val = this.href.replace(self.location,'').replace('#','');
+            $('input[name=path]',wrap).insertVal(val); return false;
+        });
+        LazyCMS.selectEdit();
     });
 }

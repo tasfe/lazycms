@@ -51,11 +51,12 @@ function current_user_can($action,$is_redirect=true) {
     // 权限不足
     if (!$result && $is_redirect) {
     	if (is_ajax()) {
+            $alert = __('Restricted access, please contact the administrator.');
     		// 显示未登录的提示警告
             if (is_accept_json()) {
-        	    echo_json('Alert',__('Restricted access, please contact the administrator.'));
+        	    ajax_echo('Alert', $alert);
             } else {
-                exit(__('Restricted access, please contact the administrator.'));
+                echo $alert; exit();
             }
     	} else {
     	    admin_head('title',__('Restricted access'));
@@ -144,19 +145,16 @@ function admin_script(){
  * 输出后台警告信息
  *
  * @param string $message
- * @param string $url
+ * @param string $eval
  */
-function admin_alert($message,$call=null){
-    $call = $call ? array('CALL' => $call) : null;
-    echo_json('Alert',$message,$call);
+function admin_alert($message,$eval=null){
+    ajax_echo('Alert',$message,$eval);
 }
-function admin_success($message,$call=null){
-    $call = $call ? array('CALL' => $call) : null;
-    echo_json('Success',$message,$call);
+function admin_success($message,$eval=null){
+    ajax_echo('Success',$message,$eval);
 }
-function admin_error($message,$call=null){
-    $call = $call ? array('CALL' => $call) : null;
-    echo_json('Error',$message,$call);
+function admin_error($message,$eval=null){
+    ajax_echo('Error',$message,$eval);
 }
 /**
  * 权限列表

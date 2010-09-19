@@ -19,7 +19,5 @@
  */
 $(document).ready(function(){
     $("input#username").focus();
-    $('form#login').ajaxSubmit(function(data){
-        LazyCMS.ajaxResult(data);
-    });
+    $('form#login').ajaxSubmit();
 });
