@@ -243,7 +243,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
      * @param xhr
      */
     ajaxSuccess: function(data, status, xhr) {
-        var result = null, code = xhr.getResponseHeader('X-LazyCMS-Code'); 
+        var code = xhr.getResponseHeader('X-LazyCMS-Code');
         switch (code) {
             // 提示
             case 'Success': case 'Error': case 'Alert':
@@ -262,10 +262,10 @@ var LazyCMS = window.LazyCMS = window.CMS = {
                 break;
             // 返回结果
             case 'Return': default:
-                result = data;
                 break;
         }
-        return result;
+        if ('Return' != code) data = null;
+        return data;
     },
     /**
      * 模拟的弹出框

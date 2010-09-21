@@ -293,6 +293,9 @@ class Httplib {
 		curl_setopt( $handle, CURLOPT_RETURNTRANSFER, true );
 		curl_setopt( $handle, CURLOPT_USERAGENT, $r['user-agent'] );
 		curl_setopt( $handle, CURLOPT_MAXREDIRS, $r['redirection'] );
+        if (!isset($r['headers']['referer'])) {
+            curl_setopt( $handle, CURLOPT_REFERER, $aurl['referer'] );
+        }
 
         switch ( $r['method'] ) {
 			case 'HEAD':

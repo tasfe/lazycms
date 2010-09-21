@@ -65,6 +65,11 @@ function post_manage_init() {
 	        fieldset.toggleClass('closed');
 	    });
 	});
+    // 绑定规则点击
+    $('span.rules > a',wrap).click(function(){
+        var val = this.href.replace(self.location,'').replace('#','');
+        $('input[name=path]',wrap).insertVal(val); return false;
+    });
     // 绑定获取关键词事件
     $('button[rel=keywords]',wrap).click(function(){
         $('input#keywords').val('Loading...');
@@ -81,16 +86,23 @@ function post_manage_init() {
 }
 // 获取扩展字段
 function post_manage_extend_attr(model,postid) {
-    var wrap = this,params = {action:'extend-attr',model:model};
+    var wrap = this, template = $('#template',wrap), path = '',
+        params = {action:'extend-attr',model:model};    
         params = typeof(postid)!='undefined' ? $.extend(params,{postid:postid}) : params;
 
-    $.post(LazyCMS.ADMIN_ROOT+'post.php',params,function(data) {
-		$('tbody.extend-attr',wrap).html(data);
-        // 绑定规则点击
-        $('span.rules > a',wrap).click(function(){
-            var val = this.href.replace(self.location,'').replace('#','');
-            $('input[name=path]',wrap).insertVal(val); return false;
-        });
+    $.post(LazyCMS.ADMIN_ROOT+'post.php',params,function(data, status, xhr) {
+        $('tbody.extend-attr',wrap).html(data);
+        if (path = xhr.getResponseHeader('X-LazyCMS-Path')) {
+            $('input#path',wrap).val(path);
+        }
+        // 控制是否显示模版使用模型设置
+        if (xhr.getResponseHeader('X-LazyCMS-Model')) {
+            if (false === $('option[value=""]',template).is('option')) {
+                template.prepend('<option value="">' + _('Use the model set') + '</option>');
+            }
+        } else {
+            $('option[value=""]',template).remove();
+        }
         LazyCMS.selectEdit();
     });
 }

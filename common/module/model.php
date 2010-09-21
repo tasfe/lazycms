@@ -91,7 +91,7 @@ function model_get($param,$type=0,$language=null) {
         if (is_array($fields)) {
             foreach ($fields as $i=>$field_str) {
                 parse_str($field_str,$field);
-                $field['_n_'] = '_'.$field['n'].'_';
+                $field['_n'] = '_'.$field['n'];
                 $model['fields'][$i+1] = $field;
             }
         }

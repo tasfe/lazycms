@@ -127,6 +127,14 @@ switch ($action) {
             validate_check(array(
                 array('path',VALIDATE_EMPTY,_x('The path field is empty.','post')),
             ));
+            // 自动截取简述
+            if (empty($description)) {
+                $description = mb_substr(strip_tags($content),0,255,'UTF-8');
+            } else {
+                validate_check(array(
+                    array('description',VALIDATE_LENGTH,_x('Description the field up to 255 characters.','post'),0,255),
+                ));
+            }           
 
             // 验证自定义的字段
             if ($model['fields']) {
@@ -136,7 +144,7 @@ switch ($action) {
                     $rules = explode("\n",$field['v']);
                     foreach($rules as $rule) {
                         if (strpos($rule,'|')===false) continue;
-                        $VRS = explode('|',rtrim($rule,';')); array_unshift($VRS,$field['n']);
+                        $VRS = explode('|',rtrim($rule,';')); array_unshift($VRS,$field['_n']);
                         $last_rules[] = $VRS;
                     }
                     validate_check($last_rules);
@@ -145,6 +153,8 @@ switch ($action) {
 
             // 安全有保证，做爱做的事吧！
             if (validate_is_ok()) {
+                // 处理路径
+                $path = esc_html(trim($path,'/'));
                 // 自动获取关键词
                 if ($autokeys && empty($keywords)) {
                     $keywords = term_gets($title);
@@ -162,13 +172,17 @@ switch ($action) {
                 // 获取模型字段值
                 if ($model['fields']) {
                     foreach($model['fields'] as $field) {
-                        $data['meta'][$field['n']] = isset($_POST[$field['_n_']])?$_POST[$field['_n_']]:null;
+                        $data['meta'][$field['n']] = isset($_POST[$field['_n']])?$_POST[$field['_n']]:null;
                     }
                 }
-                
+
+                // 下载远程图片
+
+                // 删除站外连接
+                //$content = preg_replace('/<a([^>]*)href=["\']*(?!'.preg_quote(HTTP_HOST,'/').')([^>]*)>(.*)<\/a>/isU','$3',$content);
                 // 更新
                 if ($postid) {
-                    $data['path']    = esc_html($path);
+                    $data['path']    = $path;
                     $data['title']   = $title;
                     $data['content'] = $content;
                     post_edit($postid,$data);
@@ -176,7 +190,6 @@ switch ($action) {
                 }
                 // 强力插入
                 else {
-                    $path = esc_html($path);
                     $data['author'] = $_ADMIN['userid'];
                     $data['passed'] = 0;
                     $data['datetime'] = time();
@@ -185,14 +198,18 @@ switch ($action) {
                     }
                     $result = __('Post created.');
                 }
-                // TODO 生成文章
-                admin_success($result,"LazyCMS.redirect('".PHP_FILE."');");
+                // 生成文章
+                if (post_create($postid)) {
+                    admin_success($result,"LazyCMS.redirect('".PHP_FILE."');");
+                } else {
+                    admin_success($result.__('File create failed.'),"LazyCMS.redirect('".PHP_FILE."');");
+                }
             }
         }
 	    break;
 	// 获取扩展字段
 	case 'extend-attr':
-        $model  = null;
+        $model  = null; $hl = '';
 	    $mcode  = isset($_REQUEST['model'])?$_REQUEST['model']:null;
 	    $postid = isset($_REQUEST['postid'])?$_REQUEST['postid']:0;
         $suffix = C('HTMLFileSuffix');
@@ -200,83 +217,72 @@ switch ($action) {
             $post = post_get($postid);
         }
         if ($mcode) {
-            header('Select: ok');
+            // 输出header
+            header('X-LazyCMS-Model: '.$mcode);
             $model = model_get_bycode($mcode);
             $path  = isset($post['path'])?$post['path']:$model['path'];
         } else {
-            $path  = '%PY'.$suffix;
-            header('Select: no');
+            $path  = isset($post['path'])?$post['path']:'%PY'.$suffix;
         }
-
-        echo '<tr>';
-        echo    '<th><label for="path">'._x('Path','post').'<span class="description">'.__('(required)').'</span></label></th>';
-        echo    '<td><input id="path" name="path" type="text" size="70" value="'.$path.'" /><span class="rules">';
-        echo        '<a href="#%ID'.$suffix.'">['.__('Post ID').']</a>';
-        echo        '<a href="#%MD5'.$suffix.'">['.__('MD5 Value').']</a>';
-        echo        '<a href="#%PY'.$suffix.'">['.__('Pinyin').']</a>';
-        echo    '</span></td>';
-        echo '</tr>';
-        
+        header('X-LazyCMS-Path: '.$path);
 	    if ($model) {
-            $attrs = null;
 	    	foreach ($model['fields'] as $field) {
                 if (isset($post['meta'][$field['n']])) {
                     $field['d'] = $post['meta'][$field['n']];
                 }
-	    		$attrs.= '<tr>';
-                $attrs.=    '<th><label for="'.$field['_n_'].'">'.$field['l'];
+	    		$hl.= '<tr>';
+                $hl.=    '<th><label for="'.$field['_n'].'">'.$field['l'];
                 if (!empty($field['h'])) {
-                    $attrs.=    '<span class="description">'.$field['h'].'</span>';
+                    $hl.=    '<span class="description">'.$field['h'].'</span>';
                 }
-                $attrs.=        '</label>';
-                $attrs.=    '</th>';
-                $attrs.=    '<td>';
+                $hl.=        '</label>';
+                $hl.=    '</th>';
+                $hl.=    '<td>';
                 switch ($field['t']) {
                     case 'input':
-                        $attrs.= '<input id="'.$field['_n_'].'" name="'.$field['_n_'].'" type="text" style="width:'.$field['w'].'" maxlength="'.$field['c'].'" value="'.$field['d'].'" />';
+                        $hl.= '<input id="'.$field['_n'].'" name="'.$field['_n'].'" type="text" style="width:'.$field['w'].'" maxlength="'.$field['c'].'" value="'.$field['d'].'" />';
                         break;
                     case 'textarea':
-                        $attrs.= '<textarea name="'.$field['_n_'].'" id="'.$field['_n_'].'" style="width:'.$field['w'].'" rows="8">'.$field['d'].'</textarea>';
+                        $hl.= '<textarea name="'.$field['_n'].'" id="'.$field['_n'].'" style="width:'.$field['w'].'" rows="8">'.$field['d'].'</textarea>';
                         break;
                     case 'select':
                         $values = explode("\n",$field['s']);
-                        $attrs.= '<select name="'.$field['_n_'].'" id="'.$field['_n_'].'" edit="true" style="width:'.$field['w'].'">';
+                        $hl.= '<select name="'.$field['_n'].'" id="'.$field['_n'].'" edit="true" style="width:'.$field['w'].'">';
                         foreach ($values as $k=>$v) {
                             $v = trim($v);
                             if ($v!='') {
                                 $vs = explode(':',$v);
                                 $vs = array_map('esc_html',$vs); $vs[1] = isset($vs[1])?$vs[1]:$vs[0];
                                 $selected = !empty($field['d']) ? (strval($vs[0])==strval($field['d']) ? ' selected="selected"' : null) : null;
-                                $attrs.= '<option value="'.$vs[0].'"'.$selected.'>'.$vs[1].'</option>';
+                                $hl.= '<option value="'.$vs[0].'"'.$selected.'>'.$vs[1].'</option>';
                             }
                         }
-                        $attrs.= '</select>';
+                        $hl.= '</select>';
                         break;
                     case 'radio': case 'checkbox':
                         $values = explode("\n",$field['s']);
-                        $attrs.= '<div id="'.$field['_n_'].'" style="width:'.$field['w'].'">';
+                        $hl.= '<div id="'.$field['_n'].'" style="width:'.$field['w'].'">';
                         foreach ($values as $k=>$v) {
                             $v = trim($v);
                             if ($v!='') {
                                 $vs = explode(':',$v);
                                 $vs = array_map('esc_html',$vs); $vs[1] = isset($vs[1])?$vs[1]:$vs[0];
                                 $checked = !empty($field['d']) ? (instr($vs[0],$field['d']) ? ' checked="checked"' : null) : null;
-                                $attrs.= '<label><input name="'.$field['_n_'].($field['t']=='checkbox'?'['.$k.']':null).'" type="'.$field['t'].'" value="'.$vs[0].'"'.$checked.' />'.$vs[1].'</label>';
+                                $hl.= '<label><input name="'.$field['_n'].($field['t']=='checkbox'?'['.$k.']':null).'" type="'.$field['t'].'" value="'.$vs[0].'"'.$checked.' />'.$vs[1].'</label>';
                             }
                         }
-                        $attrs.= '</div>';
+                        $hl.= '</div>';
                         break;
                     case 'upfile':
-                        $attrs.= '<input id="'.$field['_n_'].'" name="'.$field['_n_'].'" type="text" style="width:'.$field['w'].'" />&nbsp;<button type="button">'.__('Browse...').'</button>';
+                        $hl.= '<input id="'.$field['_n'].'" name="'.$field['_n'].'" type="text" style="width:'.$field['w'].'" />&nbsp;<button type="button">'.__('Browse...').'</button>';
                         break;
                 }
                 
-                $attrs.=     '</td>';
-                $attrs.= '</tr>';
+                $hl.=     '</td>';
+                $hl.= '</tr>';
 	    	}
-            echo $attrs;
 	    }
-
+        admin_return($hl);
 	    break;
     default:
         if ('page.php' == $php_file) {
@@ -420,9 +426,14 @@ function post_manage_page($action) {
 
     if ($mcode) {
         $model = model_get_bycode($mcode);
+    } else {
+        $model = array(
+            'path' => '%PY'.$suffix
+        );
     }
     $sortid   = isset($_DATA['sortid'])?$_DATA['sortid']:null;
     $title    = isset($_DATA['title'])?$_DATA['title']:null;
+    $path     = isset($_DATA['path'])?$_DATA['path']:$model['path'];
     $content  = isset($_DATA['content'])?$_DATA['content']:null;
     $template = isset($_DATA['template'])?$_DATA['template']:null;
     $description = isset($_DATA['description'])?$_DATA['description']:null;
@@ -478,6 +489,14 @@ function post_manage_page($action) {
     echo                   '<th><label for="content">'._x('Content','post').'</label></th>';
     echo                   '<td><textarea cols="120" rows="15" id="content" name="content">'.$content.'</textarea></td>';
     echo               '</tr>';
+    echo               '<tr>';
+    echo                   '<th><label for="path">'._x('Path','post').'<span class="description">'.__('(required)').'</span></label></th>';
+    echo                   '<td><input id="path" name="path" type="text" size="70" value="'.$path.'" /><span class="rules">';
+    echo                       '<a href="#%ID'.$suffix.'">['.__('Post ID').']</a>';
+    echo                       '<a href="#%MD5'.$suffix.'">['.__('MD5 Value').']</a>';
+    echo                       '<a href="#%PY'.$suffix.'">['.__('Pinyin').']</a>';
+    echo                   '</span></td>';
+    echo               '</tr>';
     echo           '</tbody>';
     echo           '<tbody class="extend-attr"></tbody>';
     echo       '</table>';
@@ -501,7 +520,7 @@ function post_manage_page($action) {
     echo                   '<td><input type="text" size="70" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" rel="keywords">'.__('Get').'</button></td>';
     echo               '</tr>';
     echo               '<tr>';
-    echo                   '<th><label for="description">'._x('Description','post').'</label></th>';
+    echo                   '<th><label for="description">'._x('Description','post').'<br /><span class="description">'.__('(Maximum of 250)').'</span></label></th>';
     echo                   '<td><textarea cols="70" rows="5" id="description" name="description">'.$description.'</textarea></td>';
     echo               '</tr>';    
     echo           '</tbody>';

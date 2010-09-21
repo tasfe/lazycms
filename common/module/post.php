@@ -259,6 +259,11 @@ function post_delete($postid) {
         foreach($relations as $r) {
             taxonomy_delete_relation($postid,$r['taxonomyid']);
         }
+        // 删除关键词关系
+        $relations = taxonomy_get_relation('post_tag',$postid);
+        foreach($relations as $r) {
+            taxonomy_delete_relation($postid,$r['taxonomyid']);
+        }
         $db->delete('#@_post_meta',array('postid' => $postid));
         $db->delete('#@_post',array('postid' => $postid));
         // 清理缓存
@@ -266,4 +271,54 @@ function post_delete($postid) {
         return true;
     }
     return false;
+}
+/**
+ * 生成页面
+ *
+ * @param  $postid
+ * @return bool
+ */
+function post_create($postid) {
+    $db = get_conn();
+    $postid = intval($postid);
+    if (!$postid) return false;
+    if ($post = post_get($postid)) {
+        $model = model_get_bycode($post['model']);
+        // 使用模型设置
+        if (empty($post['template'])) {
+            $post['template'] = $model['page'];
+        }
+        // 处理关键词
+        if (!empty($post['keywords'])) {
+            $keywords = array();
+            foreach($post['keywords'] as $v) {
+                $keywords[] = $v['name'];
+            }
+            $post['keywords'] = implode(',', $keywords);
+        }
+        
+        $html = tpl_loadfile(ABS_PATH.'/'.C('Template').'/'.esc_html($post['template']));
+                tpl_clean();
+                tpl_value(array(
+                    'postid'   => $post['postid'],
+                    'path'     => WEB_ROOT.$post['path'],
+                    'title'    => $post['title'],
+                    'content'  => $post['content'],
+                    'datetime' => $post['datetime'],
+                    'keywords' => $post['keywords'],
+                    'description' => $post['description'],
+                ));
+                // 设置自定义字段
+                foreach((array)$post['meta'] as $k=>$v) {
+                    tpl_value('model.'.$k, $v);
+                }
+        $html = tpl_parse($html);
+        // 生成的文件路径
+        $file = ABS_PATH.'/'.$post['path'];
+        // 创建目录
+        mkdirs(dirname($file));
+        // 保存文件
+        file_put_contents($file,$html);
+    }
+    return true;
 }

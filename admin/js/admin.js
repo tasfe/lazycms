@@ -51,7 +51,7 @@ $.ajaxSetup({
         // 自定义success
         s.success = function(data, status, xhr) {
             var data = LazyCMS.ajaxSuccess.apply(this,arguments);
-            if (data && s.orisuccess) {
+            if (null!==data && s.orisuccess) {
                 s.orisuccess.call(this, data, status, xhr);
             }
         }

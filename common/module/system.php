@@ -53,6 +53,11 @@ function system_tpl_plugin($tag_name,$tag) {
         case 'cms': case 'lazycms':
             $result = '<span id="lazycms">Powered by: <a href="http://lazycms.com/" style="font-weight:bold" target="_blank">LazyCMS</a> <span>'.LAZY_VERSION.'</span></span>';
             break;
+        case 'jquery':
+            $version = mid($tag,'ver="','"');
+            $version = $version ? $version : '1.4.2';
+            $result  = 'http://ajax.googleapis.com/ajax/libs/jquery/'.$version.'/jquery.min.js';
+            break;
         default:
             $result = null;
             break;

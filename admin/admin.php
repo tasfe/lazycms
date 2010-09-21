@@ -51,12 +51,12 @@ function current_user_can($action,$is_redirect=true) {
     // 权限不足
     if (!$result && $is_redirect) {
     	if (is_ajax()) {
-            $alert = __('Restricted access, please contact the administrator.');
+            $text = __('Restricted access, please contact the administrator.');
     		// 显示未登录的提示警告
             if (is_accept_json()) {
-        	    ajax_echo('Alert', $alert);
+        	    admin_alert($text);
             } else {
-                echo $alert; exit();
+                echo $text; exit();
             }
     	} else {
     	    admin_head('title',__('Restricted access'));
@@ -155,6 +155,9 @@ function admin_success($message,$eval=null){
 }
 function admin_error($message,$eval=null){
     ajax_echo('Error',$message,$eval);
+}
+function admin_return($data) {
+    return ajax_echo('Return', $data);
 }
 /**
  * 权限列表

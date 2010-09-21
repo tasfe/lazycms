@@ -86,6 +86,7 @@ class LazyLoader {
                                     'Recommended:'      => __('Recommended:'),
                                     'Confirm Logout?'   => __('Confirm Logout?'),
                                     'Confirm Delete?'   => __('Confirm Delete?'),
+                                    'Use the model set' => __('Use the model set'),
                                     '(Recommended to upgrade to IE 7.0 +)' => __('(Recommended to upgrade to IE 7.0 +)'),
                                 )),
             'admin'         => array(ADMIN_PATH.'/js/admin.js',array('common')),

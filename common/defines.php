@@ -22,6 +22,8 @@ defined('COM_PATH') or die('Restricted access!');
 /**
  * LazyCMS 系统定义文件
  */
+// System version
+define('LAZY_VERSION','2.0.1');
 // 严重错误，停止程序
 define('E_LAZY_ERROR',10);
 // 警告错误，不停止程序
@@ -52,9 +54,14 @@ if(!defined('PHP_FILE')) {
 define('WEB_ROOT',str_replace('\\','/',substr(dirname(PHP_FILE),0,-strlen(substr(realpath('.'),strlen(ABS_PATH)))+1)));
 // Http scheme
 define('HTTP_SCHEME',(($scheme=isset($_SERVER['HTTPS'])?$_SERVER['HTTPS']:null)=='off' || empty($scheme))?'http':'https');
-// Http host
-IS_CLI ? define('HTTP_HOST','') : define('HTTP_HOST',HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
 // 非命令行模式
-if (!IS_CLI) { ob_start(); }
-// System version
-define('LAZY_VERSION','2.0.1');
+if (!IS_CLI) {
+    ob_start();
+    if (!headers_sent()) {
+        header('X-Powered-By: LazyCMS/'.LAZY_VERSION.' (Lukin)');
+    }
+    // Http host
+    define('HTTP_HOST',HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
+} else {
+    define('HTTP_HOST','');
+}

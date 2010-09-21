@@ -45,10 +45,7 @@ class Template {
                 $html = str_replace($r[0][$i],Template::load_file($base.$file),$html);
             }
         }
-        // 追加jQuery库
-        $jquery = "\n<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js\"></script>";
-        //$jquery = '';
-        $html = preg_replace('/<title>(.+)<\/title>/isU',"<meta name=\"generator\" content=\"LazyCMS ".LAZY_VERSION."\"/>\n\${0}".$jquery,$html);
+        $html = preg_replace('/<title>/isU',"<meta name=\"generator\" content=\"LazyCMS ".LAZY_VERSION."\"/>\n\${0}",$html);
         // 格式化图片、css、js路径
         $html = preg_replace('/(<(((script|link|img|input|embed|object|base|area|map|table|td|th|tr).+?(src|href|background))|((param).+?(src|value)))=([^\/]+?))((images|scripts)\/.{0,}?\>)/i','${1}'.WEB_ROOT.C('Template').'/${10}',$html);
         return $html;

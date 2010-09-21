@@ -264,7 +264,7 @@ switch ($action) {
 	    $hl.= '<div class="buttons"><button type="button" rel="save">'.__('Save').'</button><button type="button" rel="close">'.__('Cancel').'</button></div>';
 	    $hl.= '<input type="hidden" name="id" value="'.$id.'" />';
 	    $hl.= '</form></div>';
-	    echo $hl;
+	    admin_return($hl);
 	    break;
 	default:
 	    current_user_can('model-list');

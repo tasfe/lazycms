@@ -62,3 +62,4 @@ if (get_magic_quotes_gpc()) {
 // 删除没用的系统变量
 unset($_ENV,$HTTP_ENV_VARS,$HTTP_SERVER_VARS,$HTTP_SESSION_VARS,$HTTP_POST_VARS,$HTTP_GET_VARS,$HTTP_POST_FILES,$HTTP_COOKIE_VARS);
 
+

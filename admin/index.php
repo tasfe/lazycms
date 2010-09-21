@@ -34,7 +34,7 @@ switch ($action) {
         } else {
             $terms = array();
         }
-        ajax_echo('Return',$terms);
+        admin_return(empty($terms) ? '' : $terms);
         break;
     // 默认页面
     default:
