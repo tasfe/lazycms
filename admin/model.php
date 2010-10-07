@@ -217,10 +217,10 @@ switch ($action) {
 	    $hl.= '<a href="javascript:;" class="help"><img class="f1 os" src="'.ADMIN_ROOT.'images/white.gif" /></a>';
 	    $hl.= '<form id="model-field-table">';
 	    $hl.= '<table class="model-field-table">';
-	    $hl.=    '<tr><th><label for="field_l">'._x('Label','model').'</label></th><td><input id="field_l" name="l" type="text" size="35" value="'.$l.'" />';
+	    $hl.=    '<tr><th><label for="field_l">'._x('Label','model').'</label></th><td><input class="text" id="field_l" name="l" type="text" size="35" value="'.$l.'" />';
 	    $hl.=    '<label for="field_is_help"><input type="checkbox" id="field_is_help"'.($h?' checked="checked"':null).' />'.__('Need help').'</label></td></tr>';
-	    $hl.=    '<tr id="field_help" class="hide"><th class="vt"><label for="field_h">'._x('Help','model').'</label></th><td><textarea name="h" id="field_h" rows="2" cols="45">'.$h.'</textarea></td></tr>';
-	    $hl.=    '<tr><th><label for="field_n">'._x('Field','model').'</label></th><td><input id="field_n" name="n" type="text" size="30" value="'.$n.'" />';
+	    $hl.=    '<tr id="field_help" class="hide"><th class="vt"><label for="field_h">'._x('Help','model').'</label></th><td><textarea class="text" name="h" id="field_h" rows="2" cols="45">'.$h.'</textarea></td></tr>';
+	    $hl.=    '<tr><th><label for="field_n">'._x('Field','model').'</label></th><td><input class="text" id="field_n" name="n" type="text" size="30" value="'.$n.'" />';
 	    $hl.=    '<label for="can_search"><input type="checkbox" id="can_search" name="so" value="1"'.($so?' checked="checked"':null).' />'.__('Can search').'</label></td></tr>';
 	    $hl.=    '<tr><th><label for="field_t">'._x('Type','model').'</label></th><td>';
 	    $hl.=        '<select id="field_t" name="t">'; $types = model_get_types();
@@ -243,9 +243,9 @@ switch ($action) {
             $hl.=       '<option value="'.$val.'">'.$text.'</option>';
         }
 	    $hl.=        '</select>&nbsp;<a href="javascript:;" rule="+"><img class="b3 os" src="'.ADMIN_ROOT.'images/white.gif" /></a><a href="javascript:;" rule="-"><img class="b4 os" src="'.ADMIN_ROOT.'images/white.gif" /></a>';
-	    $hl.=        '<br/><textarea name="v" id="field_v" rows="3" cols="45">'.$v.'</textarea></td>';
+	    $hl.=        '<br/><textarea class="text" name="v" id="field_v" rows="3" cols="45">'.$v.'</textarea></td>';
 	    $hl.=    '</tr>';
-	    $hl.=    '<tr id="field_serialize" class="hide"><th class="vt"><label for="field_s">'._x('Serialize','model').'</label></th><td><textarea name="s" id="field_s" rows="3" cols="45">'.$s.'</textarea></td></tr>';
+	    $hl.=    '<tr id="field_serialize" class="hide"><th class="vt"><label for="field_s">'._x('Serialize','model').'</label></th><td><textarea class="text" name="s" id="field_s" rows="3" cols="45">'.$s.'</textarea></td></tr>';
 	    $hl.=    '<tr id="field_attrs" class="hide"><th class="vt"><label>'.__('Attributes').'</label></th><td>';
 	    $hl.=        '<label><input type="checkbox" name="a[break]"'.(isset($a['break'])&&$a['break']?' checked="checked"':null).' value="1" /> '.__('Insert Pagebreak').'</label>';
 	    $hl.=        '<label><input type="checkbox" name="a[dlink]"'.(isset($a['dlink'])&&$a['dlink']?' checked="checked"':null).' value="1" /> '.__('Delete link').'</label>';
@@ -259,7 +259,7 @@ switch ($action) {
         }
 	    $hl.=        '</select></td>';
 	    $hl.=    '</tr>';
-	    $hl.=    '<tr id="field_default" class="hide"><th><label for="field_d">'._x('Default','model').'</label></th><td><input id="field_d" name="d" type="text" size="40" value="'.$d.'" /></td></tr>';
+	    $hl.=    '<tr id="field_default" class="hide"><th><label for="field_d">'._x('Default','model').'</label></th><td><input class="text" id="field_d" name="d" type="text" size="40" value="'.$d.'" /></td></tr>';
 	    $hl.= '</table>';
 	    $hl.= '<div class="buttons"><button type="button" rel="save">'.__('Save').'</button><button type="button" rel="close">'.__('Cancel').'</button></div>';
 	    $hl.= '<input type="hidden" name="id" value="'.$id.'" />';
@@ -375,15 +375,15 @@ function model_manage_page($action) {
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="name">'._x('Name','model').'<span class="description">'.__('(required)').'</span></label></th>';
-    echo               '<td><input id="name" name="name" type="text" size="20" value="'.$name.'" /></td>';
+    echo               '<td><input class="text" id="name" name="name" type="text" size="20" value="'.$name.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="code">'._x('Code','model').'<span class="description">'.__('(required,only)').'</span></label></th>';
-    echo               '<td><input id="code" name="code" type="text" size="20" value="'.$code.'" /></td>';
+    echo               '<td><input class="text" id="code" name="code" type="text" size="20" value="'.$code.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="path">'._x('Path','model').'<span class="description">'.__('(required)').'</span></label></th>';
-    echo               '<td><input id="path" name="path" type="text" size="70" value="'.$path.'" /><div class="rules">';
+    echo               '<td><input class="text" id="path" name="path" type="text" size="70" value="'.$path.'" /><div class="rules">';
     echo                   '<a href="#%ID'.$suffix.'">['.__('Post ID').']</a>';
     echo                   '<a href="#%MD5'.$suffix.'">['.__('MD5 Value').']</a>';
     echo                   '<a href="#%PY'.$suffix.'">['.__('Pinyin').']</a>';

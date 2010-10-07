@@ -251,11 +251,11 @@ function category_manage_page($action) {
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="name">'._x('Name','sort').'<span class="description">'.__('(required)').'</span></label></th>';
-    echo               '<td><input id="name" name="name" type="text" size="30" value="'.$name.'" /></td>';
+    echo               '<td><input class="text" id="name" name="name" type="text" size="30" value="'.$name.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="path">'._x('Path','sort').'<span class="description">'.__('(required)').'</span></label></th>';
-    echo               '<td><input id="path" name="path" type="text" size="70" value="'.$path.'" /><div class="rules">';
+    echo               '<td><input class="text" id="path" name="path" type="text" size="70" value="'.$path.'" /><div class="rules">';
     echo                   '<a href="#%ID">['.__('Category ID').']</a>';
     echo                   '<a href="#%MD5">['.__('MD5 Value').']</a>';
     echo                   '<a href="#%PY">['.__('Pinyin').']</a>';
@@ -276,11 +276,11 @@ function category_manage_page($action) {
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="keywords">'._x('Keywords','sort').'</label></th>';
-    echo               '<td><input type="text" size="70" name="keywords" id="keywords" value="'.$keywords.'" /></td>';
+    echo               '<td><input class="text" type="text" size="70" name="keywords" id="keywords" value="'.$keywords.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="description">'._x('Description','sort').'</label></th>';
-    echo               '<td><textarea cols="70" rows="5" id="description" name="description">'.$description.'</textarea></td>';
+    echo               '<td><textarea class="text" cols="70" rows="5" id="description" name="description">'.$description.'</textarea></td>';
     echo           '</tr>'; 
     echo       '</table>';
     echo     '</fieldset>';

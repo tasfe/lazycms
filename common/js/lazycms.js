@@ -426,6 +426,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
         $('select[edit=true]').each(function(i){
             try {
                 var s = $(this); if (s.is('select')==false) { return ; }
+                    //s.wrapAll('<span class="selectedit"></span>');
                 var v = (s.attr('default')!='' && (typeof s.attr('default'))!='undefined')?s.attr('default'):s.val();
                 var i = $('<input type="text" name="' + s.attr('name') + '" value="' + v + '" />')
                     .dblclick(function(){ $(this).select(); })
@@ -445,7 +446,9 @@ var LazyCMS = window.LazyCMS = window.CMS = {
                             c.attr(k,v);
                         }
                     });
+
                     s.replaceWith(c);
+
             } catch (e) {}
         });
     }

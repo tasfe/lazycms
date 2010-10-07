@@ -240,10 +240,10 @@ switch ($action) {
                 $hl.=    '<td>';
                 switch ($field['t']) {
                     case 'input':
-                        $hl.= '<input id="'.$field['_n'].'" name="'.$field['_n'].'" type="text" style="width:'.$field['w'].'" maxlength="'.$field['c'].'" value="'.$field['d'].'" />';
+                        $hl.= '<input class="text" id="'.$field['_n'].'" name="'.$field['_n'].'" type="text" style="width:'.$field['w'].'" maxlength="'.$field['c'].'" value="'.$field['d'].'" />';
                         break;
                     case 'textarea':
-                        $hl.= '<textarea name="'.$field['_n'].'" id="'.$field['_n'].'" style="width:'.$field['w'].'" rows="8">'.$field['d'].'</textarea>';
+                        $hl.= '<textarea class="text" name="'.$field['_n'].'" id="'.$field['_n'].'" style="width:'.$field['w'].'" rows="8">'.$field['d'].'</textarea>';
                         break;
                     case 'select':
                         $values = explode("\n",$field['s']);
@@ -274,7 +274,7 @@ switch ($action) {
                         $hl.= '</div>';
                         break;
                     case 'upfile':
-                        $hl.= '<input id="'.$field['_n'].'" name="'.$field['_n'].'" type="text" style="width:'.$field['w'].'" />&nbsp;<button type="button">'.__('Browse...').'</button>';
+                        $hl.= '<input class="text" id="'.$field['_n'].'" name="'.$field['_n'].'" type="text" style="width:'.$field['w'].'" />&nbsp;<button type="button">'.__('Browse...').'</button>';
                         break;
                 }
                 
@@ -481,17 +481,17 @@ function post_manage_page($action) {
     echo               '<tr>';
     echo                   '<th><label for="title">'._x('Title','post').'<span class="description">'.__('(required)').'</span></label></th>';
     echo                   '<td>';
-    echo                       '<input id="title" name="title" type="text" size="70" value="'.$title.'" />';
+    echo                       '<input class="text" id="title" name="title" type="text" size="70" value="'.$title.'" />';
     echo                       '&nbsp;<label for="autokeys"><input type="checkbox" value="1" id="autokeys" name="autokeys" checked="checked">'.__('Auto get keywords').'</label>';
     echo                   '</td>';
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="content">'._x('Content','post').'</label></th>';
-    echo                   '<td><textarea cols="120" rows="15" id="content" name="content">'.$content.'</textarea></td>';
+    echo                   '<td><textarea class="text" cols="100" rows="15" id="content" name="content">'.$content.'</textarea></td>';
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="path">'._x('Path','post').'<span class="description">'.__('(required)').'</span></label></th>';
-    echo                   '<td><input id="path" name="path" type="text" size="70" value="'.$path.'" /><span class="rules">';
+    echo                   '<td><input class="text" id="path" name="path" type="text" size="70" value="'.$path.'" /><span class="rules">';
     echo                       '<a href="#%ID'.$suffix.'">['.__('Post ID').']</a>';
     echo                       '<a href="#%MD5'.$suffix.'">['.__('MD5 Value').']</a>';
     echo                       '<a href="#%PY'.$suffix.'">['.__('Pinyin').']</a>';
@@ -517,11 +517,11 @@ function post_manage_page($action) {
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="keywords">'._x('Keywords','post').'</label></th>';
-    echo                   '<td><input type="text" size="70" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" rel="keywords">'.__('Get').'</button></td>';
+    echo                   '<td><input class="text" type="text" size="70" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" rel="keywords">'.__('Get').'</button></td>';
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="description">'._x('Description','post').'<br /><span class="description">'.__('(Maximum of 250)').'</span></label></th>';
-    echo                   '<td><textarea cols="70" rows="5" id="description" name="description">'.$description.'</textarea></td>';
+    echo                   '<td><textarea class="text" cols="70" rows="5" id="description" name="description">'.$description.'</textarea></td>';
     echo               '</tr>';    
     echo           '</tbody>';
     echo       '</table>';

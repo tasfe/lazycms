@@ -258,19 +258,19 @@ function user_manage_page($action) {
     echo       '<table class="form-table">';
     echo           '<tr>';
     echo               '<th><label for="username">'.__('Username').'<span class="description">'.__('(required)').'</span></label></th>';
-    echo               '<td><input id="username" name="username" type="text" size="20" value="'.$username.'" /></td>';
+    echo               '<td><input class="text" id="username" name="username" type="text" size="20" value="'.$username.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="nickname">'.__('Nickname').'</label></th>';
-    echo               '<td><input id="nickname" name="nickname" type="text" size="20" value="'.$nickname.'" /></td>';
+    echo               '<td><input class="text" id="nickname" name="nickname" type="text" size="20" value="'.$nickname.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="email">'.__('E-mail').'<span class="description">'.__('(required)').'</span></label></th>';
-    echo               '<td><input id="email" name="email" type="text" size="40" value="'.$email.'" /></td>';
+    echo               '<td><input class="text" id="email" name="email" type="text" size="40" value="'.$email.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="url">'.__('Website').'</label></th>';
-    echo               '<td><input id="url" name="url" type="text" size="60" value="'.$url.'" /></td>';
+    echo               '<td><input class="text" id="url" name="url" type="text" size="60" value="'.$url.'" /></td>';
     echo           '</tr>';
     if ($action!='add') {
     	echo       '<tr>';
@@ -281,15 +281,15 @@ function user_manage_page($action) {
         echo       '</tr>';
         echo       '<tr>';
         echo           '<th><label for="password1">'.__('New Password').'<span class="description">'.__('(twice)').'</span></label></th>';
-        echo           '<td><input id="password1" name="password1" type="password" size="20" />';
+        echo           '<td><input class="text" id="password1" name="password1" type="password" size="20" />';
         echo               '<span class="description">'.__('If you would like to change the password type a new one. Otherwise leave this blank.').'</span>';
-        echo               '<br/><input id="password2" name="password2" type="password" size="20" /><span class="description">'.__('Type your new password again.').'</span>';
+        echo               '<br/><input class="text" id="password2" name="password2" type="password" size="20" /><span class="description">'.__('Type your new password again.').'</span>';
         echo           '</td>';
         echo       '</tr>';;
     } else {
         echo       '<tr>';
         echo           '<th><label for="password1">'.__('Password').'<span class="description">'.__('(twice,required)').'</span></label></th>';
-        echo           '<td><input id="password1" name="password1" type="password" size="20" /><br/><input id="password2" name="password2" type="password" size="20" /></td>';
+        echo           '<td><input class="text" id="password1" name="password1" type="password" size="20" /><br/><input class="text" id="password2" name="password2" type="password" size="20" /></td>';
         echo       '</tr>';
         echo       '<tr>';
         echo           '<th><label for="send_password">'.__('Send Password?').'</label></th>';

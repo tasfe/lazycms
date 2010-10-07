@@ -23,10 +23,11 @@ LazyCMS.Loading = $('<div class="loading"><img class="os" src="' + LazyCMS.ADMIN
 // IE6.0下的动作
 if ($.browser.msie && $.browser.version == '6.0') {
 	$(document).ready(function(){
-		LazyCMS.dialog({
+		/*
+        LazyCMS.dialog({
 			title:_('Upgrade Tips'),name: 'upgreade_tip', className:'tips', masked:false, float:'rb',
 			body: '<strong>' + _('Current:') + '</strong>IE ' + $.browser.version + _('(Recommended to upgrade to IE 7.0 +)') + '<br /><strong>' + _('Recommended:') + '</strong>IE 7.0+, FF 2+, Safari 3.0+'			
-		});
+		});*/
 		var load_move = function(){
 			LazyCMS.Loading.css({
 				position:'absolute',
@@ -41,7 +42,6 @@ if ($.browser.msie && $.browser.version == '6.0') {
 		}
 	});
 }
-
 
 // 设置全局 AJAX 默认选项
 $.ajaxSetup({

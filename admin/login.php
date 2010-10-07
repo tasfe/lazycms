@@ -76,8 +76,8 @@ echo    '<form id="login" name="login" method="post" action="'.sprintf('%s?actio
 echo        '<div class="col1">'.sprintf(__('<p>LazyCMS is a new kind,open source, free content management system.</p><p>Runtime:PHP 4.3.3+、MySQL 4.1+</p><p><a href="%s">Back Home</a></p>'),WEB_ROOT).'</div>';
 echo        '<dl class="col2">';
 echo            '<dt>'.__('Administrator Login').'</dt>';
-echo            '<dd><label>'.__('Username').'</label><br/><input class="username" type="text" name="username" id="username" tabindex="1" /></dd>';
-echo            '<dd><label>'.__('Password').'</label><br/><input class="password" type="password" name="userpass" id="userpass" tabindex="2" /></dd>';
+echo            '<dd><label>'.__('Username').'</label><br/><input class="username text" type="text" name="username" id="username" tabindex="1" /></dd>';
+echo            '<dd><label>'.__('Password').'</label><br/><input class="password text" type="password" name="userpass" id="userpass" tabindex="2" /></dd>';
 echo            '<dd><label>'.__('Language').'</label><br/>';
 echo                '<select name="language" id="language">';
 echo                    '<option value="default">'.__('Default').'</option>';

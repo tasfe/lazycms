@@ -23,7 +23,6 @@ body { font-size: 12px; line-height: 1.5; height:100%; }
 button{ min-width:70px; *min-width:auto; }
 input,select,button { vertical-align:middle; }
 
-
 /* Utility Classes
 ----------------------------------------------------------------------------------------------------*/
 /* http://sonspring.com/journal/clearing-floats */
@@ -45,7 +44,7 @@ input,select,button { vertical-align:middle; }
 .show{display:block;}
 
 /* text */
-.in{ border:solid 1px #7F9DB9; padding:2px; }
+input.text,textarea.text,select{ background-color:#FFF; border:solid 1px #7F9DB9; -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px; padding:2px; }
 
 /* loading */
 .loading{ border:solid 1px #666666; background:#FFFFDF; padding:1px; padding-right:10px;}

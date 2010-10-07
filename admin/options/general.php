@@ -47,7 +47,7 @@ if (validate_is_post()) {
     echo       '<table class="form-table">';
     echo           '<tr>';
     echo               '<th><label for="SiteName">'.__('Site name').'<span class="description">'.__('(required)').'</span></label></th>';
-    echo               '<td><input id="SiteName" name="SiteName" type="text" size="50" value="'.C('SiteName').'" /></td>';
+    echo               '<td><input class="text" id="SiteName" name="SiteName" type="text" size="50" value="'.C('SiteName').'" /></td>';
     echo           '</tr>';
     /*echo           '<tr>';
     echo               '<th><label>'.__('Compress').'<span class="description">'.__('(required)').'</span></label></th>';
@@ -58,15 +58,15 @@ if (validate_is_post()) {
     echo           '</tr>';*/
     echo           '<tr>';
     echo               '<th><label for="Template">'.__('Template').'<span class="description">'.__('(required)').'</span></label></th>';
-    echo               '<td><input id="Template" name="Template" type="text" size="20" value="'.C('Template').'" /></td>';
+    echo               '<td><input class="text" id="Template" name="Template" type="text" size="20" value="'.C('Template').'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="TemplateSuffixs">'.__('Template suffix').'<span class="description">'.__('(required)').'</span></label></th>';
-    echo               '<td><input id="TemplateSuffixs" name="TemplateSuffixs" type="text" size="50" value="'.C('TemplateSuffixs').'" /></td>';
+    echo               '<td><input class="text" id="TemplateSuffixs" name="TemplateSuffixs" type="text" size="50" value="'.C('TemplateSuffixs').'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="HTMLFileSuffix">'.__('HTML file suffix').'<span class="description">'.__('(required)').'</span></label></th>';
-    echo               '<td><input id="HTMLFileSuffix" name="HTMLFileSuffix" type="text" size="10" value="'.C('HTMLFileSuffix').'" /></td>';
+    echo               '<td><input class="text" id="HTMLFileSuffix" name="HTMLFileSuffix" type="text" size="10" value="'.C('HTMLFileSuffix').'" /></td>';
     echo           '</tr>';
     echo       '</table>';
     echo     '</fieldset>';

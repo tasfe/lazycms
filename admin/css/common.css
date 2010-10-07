@@ -58,7 +58,7 @@ a:hover   { text-decoration: underline; }
 	.form-table th{ width:160px; padding:10px; text-align:left; vertical-align:top; font-weight:normal; }
 	.form-table td{ line-height:20px; margin-bottom:9px; padding:4px 10px 12px; }
 	.form-table td label{ margin-right:5px; }
-	.form-table td .rules { margin-left:5px; }
+	.form-table td .rules { }
 	.form-table td .rules a { color:#666666; }
 
 /* 数据表格
