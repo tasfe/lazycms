@@ -230,6 +230,7 @@ switch ($action) {
 	    }
 	    $hl.=        '</select>';
 	    $hl.=        '<label for="field_w">'.__('Width').'</label><select name="w" id="field_w" edit="true" default="'.$w.'">';
+        $hl.=          '<option value="auto">'.__('Auto').'</option>';
 	    for($i=1;$i<=16;$i++){
             $hl.=      '<option value="'.($i*50).'px">'.($i*50).'px</option>';
         }

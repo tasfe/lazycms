@@ -150,7 +150,7 @@ function model_field_manage(id,params) {
         var title = _('Add New','model','field');
             title = id?_('Edit','model','field'):title;
 		LazyCMS.dialog({
-            name:'field', title:title, /*styles:{ 'width':'450px' },*/ top:100, body:r, remove:function() {
+            name:'field', title:title, styles:{ 'width':'430px' }, top:100, body:r, remove:function() {
                 LazyCMS.removeDialog('field'); $('#field-index-' + id + ' textarea').removeClass('edit');
             }
         },function(){
@@ -160,48 +160,32 @@ function model_field_manage(id,params) {
             $('#field-index-' + id + ' textarea').addClass('edit');
             
             var dialog = this, switch_type = function(type){
-                $('#field_serialize,#field_attrs,#field_length,#field_default',dialog).hide(0,function(){
-                    LazyCMS.selectEdit();
-                });
+                $('#field_serialize,#field_attrs,#field_length,#field_default',dialog).hide();
                 switch (type) {
                     case 'input':
-                        $('#field_length,#field_default',dialog).show(0,function(){
-                            LazyCMS.selectEdit();
-                        });
+                        $('#field_length,#field_default',dialog).show();
                        break;
                     case 'textarea':
-                        $('#field_default',dialog).show(0,function(){
-                            LazyCMS.selectEdit();
-                        });
+                        $('#field_default',dialog).show();
                        break;
                     case 'radio': case 'checkbox': case 'select':
-                        $('#field_serialize,#field_default',dialog).show(0,function(){
-                            LazyCMS.selectEdit();
-                        });
+                        $('#field_serialize,#field_default',dialog).show();
                        break;
                     case 'basic': case 'editor':
-                        $('#field_attrs,#field_default',dialog).show(0,function(){
-                            LazyCMS.selectEdit();
-                        });
+                        $('#field_attrs,#field_default',dialog).show();
                        break;
                     case 'date':
-                        $('#field_default',dialog).show(0,function(){
-                            LazyCMS.selectEdit();
-                        });
+                        $('#field_default',dialog).show();
                        break;
                 }
             },
             // 切换显示帮助
             switch_help = function(){
-                $('#field_help',dialog).toggle(0,function(){
-                    LazyCMS.selectEdit();
-                });
+                $('#field_help',dialog).toggle();
             },
             // 切换显示验证规则
             switch_verify = function(){
-                $('#field_verify',dialog).toggle(0,function(){
-                    LazyCMS.selectEdit();
-                });
+                $('#field_verify',dialog).toggle();
             };
             switch_type($('#field_t').val());
             // 绑定验证按钮
@@ -222,6 +206,7 @@ function model_field_manage(id,params) {
             $('#field_t').change(function(){
                 switch_type(this.value);
             });
+            LazyCMS.eselect();
             // 绑定保存按钮
             $('button[rel=save]',this).click(function(){
                 var error = [],fields = [], type = $('#field_t').val(), index = 0, selector = 'input[name=l],input[name=n],input[name=so],select[name=t],[name=w]',
@@ -241,7 +226,6 @@ function model_field_manage(id,params) {
                 }
                 if (error.length > 0) {
                     $(dialog).error(error);
-                    LazyCMS.selectEdit();
                     return false;
                 }
                 $('tbody tr.empty',wrap).remove();

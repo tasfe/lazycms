@@ -103,6 +103,6 @@ function post_manage_extend_attr(model,postid) {
         } else {
             $('option[value=""]',template).remove();
         }
-        LazyCMS.selectEdit();
+        LazyCMS.eselect();
     });
 }

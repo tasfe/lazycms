@@ -414,40 +414,38 @@ var LazyCMS = window.LazyCMS = window.CMS = {
      *
      * @example: <select edit="true" default="value"></select>
      */
-    selectEdit: function(){
-        // 重新调整位置
-        $('select[edit=yes]').each(function(){
+    eselect:function() {
+        $('select[edit=true]').each(function(){
             try {
-                var s = $(this); if (s.is('select')==false) { return ; }
-                $(this).prev().css({width:(s.width() - 18) + 'px',top:s.position().top+'px'});
-            } catch (e) {}
-        });
-        // 替换控件
-        $('select[edit=true]').each(function(i){
-            try {
-                var s = $(this); if (s.is('select')==false) { return ; }
-                    //s.wrapAll('<span class="selectedit"></span>');
-                var v = (s.attr('default')!='' && (typeof s.attr('default'))!='undefined')?s.attr('default'):s.val();
-                var i = $('<input type="text" name="' + s.attr('name') + '" value="' + v + '" />')
-                    .dblclick(function(){ $(this).select(); })
-                    .css({width:(s.width() - 18) + 'px',height:(s.height() - 2) + 'px',position:'absolute',top:s.position().top+'px',border:'none',margin:($.browser.msie?1:2)+'px 0 0 1px',padding:($.browser.msie?2:0)+'px 0 0 2px'})
-                    .insertBefore(s);
-                // 取得所有属性
-                var attrs = s.getAttrs();
-                
-                var c = $('<select name="edit_select_' + s.attr('name') + '" edit="yes">' + s.html() + '</select>')
-                    .change(function(){ $(this).prev().val(this.value);}).val(i.val());
-                    if (s.attr('id')!=='') { c.attr('id',s.attr('id')); }
-                    i.blur(function(){
-                        c.val(this.value);
-                    });
+                var that  = $(this); if (that.is('select')===false) return ;
+                var name  = that.attr('name');
+                var val   = (that.attr('default')!='' && (typeof that.attr('default'))!='undefined') ? that.attr('default') : that.val();
+                var input = $('<input class="text" type="text" name="' + name + '" value="' + val + '" />');
+                var width = +that.outerWidth()-20;
+                    if ($.browser.msie && $.browser.version == '6.0') {
+                        input.width(width);
+                        input.height(that.height());
+                    } else {
+                        input.width(width);
+                        input.height(that.outerHeight());
+                    }
+                    input.css({'margin-right':'2px'});
+                    that.wrapAll('<span class="eselect" style="display:inline-block; width:' + (+that.outerWidth()+width+8) + 'px;"></span>');
+                    that.parent().prepend(input);
+                var select = $('<select name="eselect_' + name + '" edit="yes">' + that.html() + '</select>')
+                    .change(function(){
+                        $(this).prev().val(this.value);
+                    })
+                    .val(val);
+                    if (that.attr('id')!=='') select.attr('id',that.attr('id'));
+
+                var attrs  = that.getAttrs();
                     $.each(attrs,function(k,v){
                         if ($.inArray(k,['id','name','edit'])==-1 && v){
-                            c.attr(k,v);
+                            select.attr(k,v);
                         }
                     });
-
-                    s.replaceWith(c);
+                    that.replaceWith(select);
 
             } catch (e) {}
         });
