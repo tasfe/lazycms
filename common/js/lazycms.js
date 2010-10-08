@@ -81,7 +81,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
      */
     alert: function(message,callback,code) {
         var position,IE6_hacker;
-        if (!$.isFunction(callback)) {
+        if (callback && !$.isFunction(callback)) {
             code = callback;
         }
         if (code) {

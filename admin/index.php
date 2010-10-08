@@ -42,26 +42,7 @@ switch ($action) {
         admin_head('title',__('Control Panel'));
         // 加载头部
         include ADMIN_PATH.'/admin-header.php';
-        echo '<div class="wrap">';
-        echo    'aaaaaaaa<select edit="true" default="ccc" id="test1" name="test1">';
-        echo        '<option value="aaa">aaa</option>';
-        echo        '<option value="bbb">bbb</option>';
-        echo        '<option value="ccc">ccc</option>';
-        echo        '<option value="ddd">ddd</option>';
-        echo    '</select>';
-        /*echo '<span class="eselect">';
-        echo    '<input class="text" type="text" name="eselect_test" id="eselect_test" />';
-        echo    '<span class="select">';
-        echo        '<select edit="true" default="ccc" id="test" name="test">';
-        echo            '<option value="aaa">aaa</option>';
-        echo            '<option value="bbb">bbb</option>';
-        echo            '<option value="ccc">ccc</option>';
-        echo            '<option value="ddd">ddd</option>';
-        echo        '</select>';
-        echo    '</span>';
-        echo '</span>';*/
-        echo '</div>';
-        echo '<script type="text/javascript">LazyCMS.eselect();</script>';
+
         // 加载尾部
         include ADMIN_PATH.'/admin-footer.php';
         break;

@@ -55,6 +55,8 @@ function system_tpl_plugin($tag_name,$tag) {
             break;
         case 'jquery':
             $version = mid($tag,'ver="','"');
+            if (!$version)
+                $version = mid($tag,"ver='","'");
             $version = $version ? $version : '1.4.2';
             $result  = 'http://ajax.googleapis.com/ajax/libs/jquery/'.$version.'/jquery.min.js';
             break;

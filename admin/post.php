@@ -348,11 +348,17 @@ switch ($action) {
                 }
                 $actions = '<span class="edit"><a href="'.$edit_url.'">'.__('Edit').'</a> | </span>';
                 $actions.= '<span class="delete"><a href="'.PHP_FILE.'?action=delete&postid='.$post['postid'].'">'.__('Delete').'</a></span>';
+                // 检查文件是否已生成
+                if (file_exists_case(ABS_PATH.'/'.$post['path'])) {
+                    $post_href = '<a href="'.WEB_ROOT.$post['path'].'" target="_blank">'.WEB_ROOT.$post['path'].'</a>';
+                } else {
+                    $post_href = '<a href="javascript:;">'.WEB_ROOT.$post['path'].'</a>';
+                }
                 echo '<tr>';
                 echo    '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$post['postid'].'" /></td>';
                 echo    '<td><strong><a href="'.$edit_url.'">'.$post['title'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
                 echo    '<td><a href="'.$model_url.'">'.$post['model']['name'].'</a></td>';
-                echo    '<td><a href="javascript:;">'.WEB_ROOT.$post['path'].'</a></td>';
+                echo    '<td>'.$post_href.'</td>';
                 if ('page.php' != $php_file) {
                    echo '<td>'.implode(',' , $categories).'</td>';
                 }

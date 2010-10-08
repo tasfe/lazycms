@@ -103,6 +103,8 @@ class Template {
      * @return array
      */
     function value($key=null,$val=null) {
+        // 获取全部变量
+        if (func_num_args()==0) return $this->_vars;
         // 批量赋值
     	if (is_array($key)) {
     		foreach ($key as $k=>$v) {
@@ -227,11 +229,12 @@ class Template {
      * @return mixed
      */
     function process_vars($html){
-        if (preg_match_all('/\{\$([^\}]+)\}/',$html,$r)) {
+        if (preg_match_all('/\{\$([\w\.]++)\b[^\}]*+\}/',$html,$r)) {
             $tags = $r[1];
             foreach ($r[0] as $k => $tag) {
                 // 不区分大小写
                 $tags[$k] = strtolower($tags[$k]);
+
                 // 解析变量
                 $value = $this->value($tags[$k]);
                 // 应用插件解析
@@ -253,10 +256,13 @@ class Template {
      * @return array|mixed|string
      */
     function process_attr($value,$tag) {
+        $tag    = strtolower($tag);
         $result = $value;
         // size
         if (stripos($tag,'size=') !== false) {
             $size = mid($tag,'size="','"');
+            if (!$size)
+                $size = mid($tag,"size='","'");
             if (validate_is($size,VALIDATE_IS_NUMERIC)) {
                 if (intval(mb_strlen($value,'UTF-8')) > intval($size)) {
                     $result = mb_substr($value, 0, $size, 'UTF-8') . '...';
@@ -268,6 +274,8 @@ class Template {
         // datemode
         if (is_numeric($value) && stripos($tag,'mode=')!==false) {
             $date = mid($tag,'mode="','"');
+            if (!$date)
+                $date = mid($tag,"mode='","'");
             if (strlen($date) > 0) {
                 switch (strval($date)) {
                     case '0':
@@ -284,7 +292,9 @@ class Template {
         }
         // code
         if (stripos($tag,'code=') !== false) {
-            $code = strtolower(mid($tag,'code="','"'));
+            $code = mid($tag,'code="','"');
+            if (!$code)
+                $code = mid($tag,"code='","'");
             if (strlen($result) > 0) {
                 switch ($code) {
                     case 'javascript': case 'js':
@@ -305,6 +315,8 @@ class Template {
         // apply
         if (stripos($tag,'func=') !== false) {
             $func = mid($tag,'func="','"');
+            if (!$func)
+                $func = mid($tag,"func='","'");
             if (strlen($func) > 0) {
                 if (stripos($func,'@me') !== false) {
                     $func = preg_replace("/'@me'|\"@me\"|@me/isU",'$result',$func);
@@ -365,6 +377,8 @@ function tpl_clean() {
  */
 function tpl_value($key=null,$val=null) {
     $tpl = _tpl_get_object();
+    if (func_num_args()==0)
+        return $tpl->value();
     return $tpl->value($key, $val);
 }
 /**

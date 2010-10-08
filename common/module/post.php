@@ -312,6 +312,7 @@ function post_create($postid) {
                 foreach((array)$post['meta'] as $k=>$v) {
                     tpl_value('model.'.$k, $v);
                 }
+        
         $html = tpl_parse($html);
         // 生成的文件路径
         $file = ABS_PATH.'/'.$post['path'];

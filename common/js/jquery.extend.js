@@ -233,7 +233,9 @@
                     });
                 }
 
-                if (actions=='') return ;
+                if (actions=='') {
+                    return LazyCMS.alert(_('Did not select any action!'),'Error');
+                }
 
                 $('input:checkbox[name^=listids]:checked',form).each(function(){
                     listids.push(this.value);
