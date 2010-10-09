@@ -414,7 +414,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
      *
      * @example: <select edit="true" default="value"></select>
      */
-    eselect:function() {
+    eselect: function() {
         $('select[edit=true]').each(function(){
             try {
                 var that  = $(this); if (that.is('select')===false) return ;
@@ -449,6 +449,22 @@ var LazyCMS = window.LazyCMS = window.CMS = {
 
             } catch (e) {}
         });
+    },
+    // 执行动作请求
+    postAction: function(url,action,listid) {
+        var listids = [];
+        if ($.isArray(listid)) {
+            listids = listid;
+        } else {
+            listids.push(listid);
+        }
+        var params = {'listids':listids};
+        if ($.isPlainObject(action)) {
+            params = $.extend(params,action);
+        } else {
+            params = $.extend(params,{action:action});
+        }
+        return $.post(LazyCMS.ADMIN_ROOT + url,params);
     }
 };
 // 等同于PHP parse_str

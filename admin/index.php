@@ -23,9 +23,9 @@ require dirname(__FILE__).'/admin.php';
 // 查询管理员信息
 $_ADMIN = user_current();
 // 动作
-$action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
+$method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 
-switch ($action) {
+switch ($method) {
     // 取得关键词
     case 'getTerms':
         $content = isset($_REQUEST['content'])?$_REQUEST['content']:null;

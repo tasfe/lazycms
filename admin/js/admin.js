@@ -98,7 +98,7 @@ $.ajaxSetup({
 getTerms = function(content,callback) {
     var data = [];
     if (content!='') {
-        $.post(LazyCMS.ADMIN_ROOT + 'index.php',{action:'getTerms',content:content},function(r){
+        $.post(LazyCMS.ADMIN_ROOT + 'index.php',{method:'getTerms',content:content},function(r){
             if (callback) callback(r);
         },'json');
     } else {

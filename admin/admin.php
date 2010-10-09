@@ -241,17 +241,17 @@ function admin_menu($menus) {
     // 设置默认参数
     if (!empty($_SERVER['QUERY_STRING'])) {
         parse_str($_SERVER['QUERY_STRING'],$query);
-        if (!isset($query['action'])) {
-            $query = array_merge(array('action' => 'default'),$query);
+        if (!isset($query['method'])) {
+            $query = array_merge(array('method' => 'default'),$query);
         }
         $query = '?'.http_build_query($query);
     } else {
-        $query = '?action=default';
+        $query = '?method=default';
     }
     if (!isset($parent_file)) {
     	$parent_file = PHP_FILE.$query;
     } else {
-        $parent_file = ADMIN_ROOT.(strpos($parent_file,'?')!==false?$parent_file:$parent_file.'?action=default');
+        $parent_file = ADMIN_ROOT.(strpos($parent_file,'?')!==false?$parent_file:$parent_file.'?method=default');
     }
 
     $menus_tree = array();
@@ -263,7 +263,7 @@ function admin_menu($menus) {
                 $has_submenu = true;
                 foreach ($menu[3] as $href) {
                     $href[1]   = ADMIN_ROOT.$href[1];
-                    $url_query = strpos($href[1],'?')!==false?$href[1]:$href[1].'?action=default';
+                    $url_query = strpos($href[1],'?')!==false?$href[1]:$href[1].'?method=default';
                     $href[3]   = !strncasecmp($parent_file,$url_query,strlen($url_query))?true:false;
                     $is_expand = !strncasecmp($parent_file,$url_query,strlen($url_query))?true:$is_expand;
                     // 子菜单需要权限才能访问，且用户要有权限

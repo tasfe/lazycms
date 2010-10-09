@@ -30,17 +30,6 @@ function sort_list_init() {
         $('td',this).css({'background-color':'#FFFFFF'});
         $('.row-actions',this).css({'visibility': 'hidden'});
     });
-	// 绑定删除事件
-	$('span.delete a',form).click(function(){
-		var url = this.href;
-		LazyCMS.confirm(_('Confirm Delete?'),function(r){
-			if (r) {
-				$.getJSON(url);
-			}
-		});
-		
-		return false;
-	});
 	// 绑定提交事件
 	form.actions();
 }
@@ -60,4 +49,13 @@ function sort_manage_init() {
 	});
     // 提交事件
     $('form#sortmanage').ajaxSubmit();
+}
+
+// 删除分类
+function sort_delete(sortid){
+    LazyCMS.confirm(_('Confirm Delete?'),function(r){
+        if (r) {
+            LazyCMS.postAction('categories.php', {method:'bulk', action:'delete'}, sortid);
+        }
+    });
 }

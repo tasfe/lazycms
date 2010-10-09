@@ -137,7 +137,10 @@ function post_gets($sql, $page=0, $size=10){
     $res = $db->query($sql);
     while ($post = $db->fetch($res)) {
         $post['model'] = model_get_bycode($post['model']);
-        $post['category'] = taxonomy_get_relation('category',$post['postid']);
+        $post['category'] = taxonomy_get_relation('category',$post['postid'],$rel_ids);
+        if ($post['sortid'] && !in_array($post['sortid'],$rel_ids)) {
+            array_unshift($post['category'],taxonomy_get_byid($post['sortid']));
+        }
         $posts[] = $post;
     }
     return array(
@@ -253,7 +256,13 @@ function post_delete($postid) {
     $db = get_conn();
     $postid = intval($postid);
     if (!$postid) return false;
-    if (post_get($postid)) {
+    if ($post = post_get($postid)) {
+        // 删除文件
+        if (file_exists_case(ABS_PATH.'/'.$post['path'])) {
+            if (!unlink(ABS_PATH.'/'.$post['path'])) {
+                return false;
+            }
+        }
         // 删除分类关系
         $relations = taxonomy_get_relation('category',$postid);
         foreach($relations as $r) {
@@ -289,14 +298,13 @@ function post_create($postid) {
             $post['template'] = $model['page'];
         }
         // 处理关键词
-        if (!empty($post['keywords'])) {
+        if (is_array($post['keywords'])) {
             $keywords = array();
             foreach($post['keywords'] as $v) {
                 $keywords[] = $v['name'];
             }
             $post['keywords'] = implode(',', $keywords);
         }
-        
         $html = tpl_loadfile(ABS_PATH.'/'.C('Template').'/'.esc_html($post['template']));
                 tpl_clean();
                 tpl_value(array(
@@ -309,8 +317,10 @@ function post_create($postid) {
                     'description' => $post['description'],
                 ));
                 // 设置自定义字段
-                foreach((array)$post['meta'] as $k=>$v) {
-                    tpl_value('model.'.$k, $v);
+                if (isset($post['meta'])) {
+                    foreach((array)$post['meta'] as $k=>$v) {
+                        tpl_value('model.'.$k, $v);
+                    }
                 }
         
         $html = tpl_parse($html);

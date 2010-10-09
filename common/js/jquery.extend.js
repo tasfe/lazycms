@@ -217,7 +217,7 @@
         $('.table-nav',form).each(function(i){
             var _this  = $(this);
             $('button[type=button]',_this).click(function(){
-                var button  = $(this), listids = [] ,actions = $('select[name=actions]',_this).val(),
+                var button  = $(this), listids = [] ,action = $('select[name=actions]',_this).val(),
                 // 提交方法
                 submit = function(url,data) {
                     button.attr('disabled',true);
@@ -233,7 +233,7 @@
                     });
                 }
 
-                if (actions=='') {
+                if (action=='') {
                     return LazyCMS.alert(_('Did not select any action!'),'Error');
                 }
 
@@ -241,12 +241,12 @@
                     listids.push(this.value);
                 });
 
-                switch (actions) {
+                switch (action) {
                     case 'delete':
                        LazyCMS.confirm(_('Confirm Delete?'),function(r){
                            if (r) {
                                submit(url,{
-                                   'actions':actions,
+                                   'action':action,
                                    'listids':listids
                                });
                            }
@@ -254,7 +254,7 @@
                        break;
                    default:
                        submit(url,{
-                           'actions':actions,
+                           'action':action,
                            'listids':listids
                        });
                        break;

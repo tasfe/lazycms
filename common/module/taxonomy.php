@@ -136,7 +136,6 @@ function taxonomy_get_byid($taxonomyid) {
     $value = FCache::get($prefix.$taxonomyid);
     if (!empty($value)) return $value;
     $rs = $db->query("SELECT * FROM `#@_term_taxonomy` WHERE `taxonomyid`=%s LIMIT 0,1;",$taxonomyid);
-    // 判断用户是否存在
     if ($taxonomy = $db->fetch($rs)) {
         if ($term = term_get_byid($taxonomy['termid'])) {
             $taxonomy = array_merge($taxonomy,$term);
@@ -171,12 +170,13 @@ function taxonomy_get_meta($taxonomyid) {
 /**
  * 取得一个对象的分类
  *
- * @param  $type
- * @param  $objectid
+ * @param string $type
+ * @param int $objectid
+ * @param array &$rel_ids
  * @return array
  */
-function taxonomy_get_relation($type,$objectid) {
-    static $taxonomies = array();
+function taxonomy_get_relation($type, $objectid, &$rel_ids=null) {
+    static $taxonomies = array(); $rel_ids = array();
     $db = get_conn(); $result = array();
     if (!isset($taxonomies[$type])) {
         $tt_ids = array();
@@ -189,6 +189,7 @@ function taxonomy_get_relation($type,$objectid) {
     $in_tt_ids = $taxonomies[$type];
     $rs = $db->query("SELECT DISTINCT `tr`.`taxonomyid` AS `taxonomyid`,`tr`.`order` AS `order` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%s AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
     while ($taxonomy = $db->fetch($rs)) {
+        $rel_ids[] = $taxonomy['taxonomyid'];
         $result[$taxonomy['order']] = taxonomy_get_byid($taxonomy['taxonomyid']);
     }
     ksort($result);

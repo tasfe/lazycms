@@ -23,7 +23,6 @@ require dirname(__FILE__).'/admin.php';
 // 查询管理员信息
 $_ADMIN = user_current();
 // 动作
-$action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
 $referer = referer(PHP_FILE,false);
 // 保存我的配置
 

@@ -1,0 +1,106 @@
+/**
+ * +---------------------------------------------------------------------------+
+ * | LL                             LLLL   LL     L   LLLL               LLLL  |
+ * | LL                            LL   L  LLL   LL  LL   L             LL  LL |
+ * | LL      LLLL   LLLLL  LL  LL  LL      LLLL LLL  LL         LL  LL      LL |
+ * | LL         LL     LL  LL  LL  LL      L LLL LL  LLLLL      LL  LL     LL  |
+ * | LL      LLLLL    LL    LLLL   LL      L  L  LL   LLLLL     LL  LL    LL   |
+ * | LL     LL  LL   LL     LLLL   LL      L     LL      LL      LLLL    LL    |
+ * | LL     LL  LL  LL       LL    LL   L  L     LL  L   LL      LLLL   LL     |
+ * | LLLLLL  LLLLL  LLLLL    LL     LLLL   L     LL   LLLL        LL    LLLLLL |
+ * |                        LL                                                 |
+ * |                        LL                                                 |
+ * +---------------------------------------------------------------------------+
+ * | Copyright (C) 2007-2008 LazyCMS.net All rights reserved.                  |
+ * +---------------------------------------------------------------------------+
+ * | LazyCMS is free software. This version use Apache License 2.0             |
+ * | See LICENSE.txt for copyright notices and details.                        |
+ * +---------------------------------------------------------------------------+
+ */
+@charset "utf-8";
+/* 全局样式 */
+body { height:100%; margin:0; background: #F7FBFF; text-align:left;}
+body,td,th,p,div { color: #333333; line-height: 130%; font-family: Verdana; font-size: 12px;}
+dl,dt,dd,form{ margin:0; padding:0;}
+img,input,button,select{ vertical-align:middle; }
+img{ border:none; }
+	
+/* 连接样式 */
+a:link    { color: #0B55C4; text-decoration: none; }
+a:visited { color: #0B55C4; text-decoration: none; }
+a:hover   { text-decoration: underline; }
+
+.wrapper{ width:940px; margin:0 auto; position:relative; clear:both; }
+
+/* 头部 */
+#top {width:100%; height:70px; margin:0; display:table; clear:both; background:#eff8ff url(top-bg.png) repeat-x 0 0;border-bottom:1px solid #c6d9e7; color:#333333; text-align:left;}
+	#top a{ color:#333333;}
+    #top .logo{ width:180px; padding:5px 10px 0 5px; float:left; text-align:left;}
+    #top .logo a { display:block; text-align:center;}
+	/* 系统菜单 */
+	#menu, #menu ul, #menu li { list-style: none; margin: 0; padding: 0; }
+	#menu { display:table; zoom:1; float:left; margin:41px 0 0 5px; }
+	#menu li { position:relative; top:1px; z-index:100; float:left; line-height:24px; white-space: nowrap; margin-right:5px; }
+	#menu li a { font-size:14px; padding:3px 20px 0px 20px; border:solid 1px #c6d9e7; display:block; background:url(buttons-bg.png) repeat-x 0 -1px; text-decoration:none; letter-spacing:2px;}
+	#menu li a.active { color:#003683; background:#F7FBFF; font-weight:bold; border-top:solid 1px #3BB2F4; border-bottom:solid 1px #F7FBFF; background-image:url(menu_selected.png); background-repeat:repeat-x; background-position:0 0; }
+
+/* header */
+#header{ height:250px; margin:20px auto 0 auto; zoom:1; overflow:hidden; background:url(header-bg.gif) no-repeat left top; }
+	#intro{ width:570px; float:left; padding:20px 30px; }
+		#intro h2{ margin:0; padding:0; font-size:16px; color:#0B5B98; line-height:1; }
+		#intro h2 em{ font-size:24px; font-style:normal; }
+		#intro p{ line-height:150%; margin:10px 0 15px 0; text-indent:2em; }
+		#intro ul{ width:570px; height:130px;  list-style:none; margin:0; padding:0; }
+		#intro li{ width:110px; height:125px; margin:0; padding:0; background:url(header-icon-bg.gif) no-repeat; text-align:center; letter-spacing:3px; color:#999999; }
+		#intro li img{ display:block; margin:5px 5px 8px 5px; }
+		#intro li.agile{ float:left; margin-left:30px; }
+		#intro li.brevity{ float:left; margin-left:90px; }
+		* html #intro li.brevity{ margin-left:60px; }
+		#intro li.free{ float:right; margin-right:30px; }
+		
+		
+	#download{ width:260px; height:230px; margin:10px 5px 0 0; padding:20px 20px 0 20px; border-top:solid 2px #E2F0F6; float:left; background:url(download-bg.gif) no-repeat left top; }
+		#download h3{ color:#0B5B98; margin:0px; padding:0; font-size:14px; letter-spacing:1px; }
+		#download p{ margin:10px 0; padding:0; }
+		#download .compression{ background:#FFFFFF; border:solid 1px #C6D9E7; height:55px; padding-top:5px; margin-bottom:10px; }
+		#download .compression a.radioToggle{ margin:5px 5px 0 10px; float:left; width:16px; height:16px; text-indent:-999px; display:block; background:url(dl-radio.png) no-repeat; overflow:hidden; }
+		#download .compression a.checked{ background-image:url(dl-radio-checked.png); }
+		#download .compression .clear{ clear:both; }
+		#download .compression input{ display:none; }
+		#download .compression label{ float:left; height:25px; line-height:25px; display:block; }
+		
+		#download button{ width:260px; height:45px; font-size:14px; text-align:left; border:none; background:url(download.png) no-repeat; font-weight:bold; color:#006600; }
+		#download button span { margin-left:50px; }
+		#download button em { font-style:normal; }
+		#download .version{ text-align:right;}
+	
+/* content */
+#content{ margin:10px auto 0 auto; zoom:1; overflow:auto; clear:both; }
+	#content .container{ border:1px solid #c6d9e7; background:#FFFFFF; }
+	#content .container h3{ color:#0B5B98; height:24px; line-height:24px; margin:0; padding:0 10px; font-size:14px; border-bottom:1px solid #C6D9E7; background:url(buttons-bg.png) repeat-x 0 -2px; letter-spacing:1px; }	
+	
+	#feature{ width:630px; height:300px; float:left; }
+		#feature ul{ padding:0; margin:0; list-style:none; }
+		#feature li{ float:left; width:209px; }
+		#feature li h4{ margin:20px 0 10px 15px; padding:0; font-size:14px; color:#006600; }
+		#feature li p{ height:220px; margin:0 0 0 15px; padding:0 15px 0 0; color:#999999; }
+		#feature li.bk1 p{ border-right:solid 1px #D8E6F0; }
+		#feature li.bk2 p{ border-right:solid 1px #D8E6F0; }
+		#feature li.bk3{}
+	
+	#updates { width:300px; height:300px; overflow:hidden; float:right; }
+		#updates ul{ width:284px; height:270px; list-style:none; margin:0; padding:5px 3px 0 13px; overflow:auto; }
+		#updates p { font-family:"宋体"; line-height:120%; margin:0; padding:0; text-indent:0; }
+		#updates a.revision { font-weight:bold; margin-right:1em; }
+		#updates p.comments { margin-bottom:3px; margin-left:4em; }
+
+/* links */
+#links{ margin-top:10px; clear:both; }
+	#links a{ color:#666666; margin-left:6px;}
+	#links a:hover{ text-decoration:none; color:#0B55C4;}
+
+/* footer */
+#footer{ margin-top:10px; padding:10px; text-align:center; background:url(footer.gif) no-repeat top center; }
+	#footer .menu{ margin:10px 0; }
+	#footer .menu a{ color:#666666; margin-left:6px;}
+	#footer .menu a:hover{ text-decoration:none; color:#0B55C4;}

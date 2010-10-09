@@ -30,17 +30,6 @@ function post_list_init() {
         $('td',this).css({'background-color':'#FFFFFF'});
         $('.row-actions',this).css({'visibility': 'hidden'});
     });
-	// 绑定删除事件
-	$('span.delete a',form).click(function(){
-		var url = this.href;
-		LazyCMS.confirm(_('Confirm Delete?'),function(r){
-			if (r) {
-                $.getJSON(url);
-			}
-		});
-		
-		return false;
-	});
 	// 绑定提交事件
 	form.actions();
 }
@@ -87,7 +76,7 @@ function post_manage_init() {
 // 获取扩展字段
 function post_manage_extend_attr(model,postid) {
     var wrap = this, template = $('#template',wrap), path = '',
-        params = {action:'extend-attr',model:model};    
+        params = {method:'extend-attr',model:model};    
         params = typeof(postid)!='undefined' ? $.extend(params,{postid:postid}) : params;
 
     $.post(LazyCMS.ADMIN_ROOT+'post.php',params,function(data, status, xhr) {
@@ -105,4 +94,16 @@ function post_manage_extend_attr(model,postid) {
         }
         LazyCMS.eselect();
     });
+}
+// 
+function post_create(postid) {
+    return LazyCMS.postAction('post.php', {method:'bulk', action:'create'}, postid);
+}
+// 
+function post_delete(postid){
+    LazyCMS.confirm(_('Confirm Delete?'),function(r){
+        if (r) {
+            LazyCMS.postAction('post.php', {method:'bulk', action:'delete'}, postid);
+        }
+    }); 
 }

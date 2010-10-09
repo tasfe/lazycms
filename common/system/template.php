@@ -252,7 +252,7 @@ class Template {
      * 解析标签属性
      *
      * @param  $value    标签名称
-     * @param  $tag         整个标签字符串
+     * @param  $tag      整个标签字符串
      * @return array|mixed|string
      */
     function process_attr($value,$tag) {

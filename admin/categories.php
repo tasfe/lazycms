@@ -27,13 +27,13 @@ admin_head('title',  __('Categories'));
 admin_head('styles', array('css/categories'));
 admin_head('scripts',array('js/categories'));
 // 动作
-$action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
+$method  = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 // 所属
 $parent_file = 'categories.php';
 // 权限检查
 current_user_can('categories');
 
-switch ($action) {
+switch ($method) {
     // 强力插入
     case 'new':
 	    // 重置标题
@@ -55,15 +55,6 @@ switch ($action) {
 	    category_manage_page('edit');
         include ADMIN_PATH.'/admin-footer.php';
 	    break;
-	// 删除
-    case 'delete':
-        $taxonomyid = isset($_GET['taxonomyid'])?$_GET['taxonomyid']:null;
-        if (taxonomy_delete($taxonomyid)) {
-        	admin_success(__('Category deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
-        } else {
-            admin_error(__('Category delete fail.'));
-        }
-        break;
     // 保存
 	case 'save':
         $taxonomyid  = isset($_POST['taxonomyid'])?$_POST['taxonomyid']:0;
@@ -72,6 +63,7 @@ switch ($action) {
             $name   = isset($_POST['name'])?$_POST['name']:null;
             $path   = isset($_POST['path'])?$_POST['path']:null;
             $list   = isset($_POST['list'])?$_POST['list']:null;
+            $description = isset($_POST['description'])?$_POST['description']:null;
 
             validate_check(array(
                 array('name',VALIDATE_EMPTY,_x('The name field is empty.','sort')),
@@ -81,6 +73,13 @@ switch ($action) {
             validate_check(array(
                 array('path',VALIDATE_EMPTY,_x('The path field is empty.','sort')),
             ));
+            
+            if ($description) {
+                validate_check(array(
+                    array('description',VALIDATE_LENGTH,__('Description the field up to 255 characters.'),0,255),
+                ));
+            }
+
 
             // 安全有保证，做爱做的事吧！
             if (validate_is_ok()) {
@@ -91,6 +90,7 @@ switch ($action) {
                         'name'   => esc_html($name),
                         'path'   => esc_html($path),
                         'list'   => esc_html($list),
+                        'description' => esc_html($description),
                     );
                     taxonomy_edit($taxonomyid,$info);
                     admin_success(__('Category updated.'),"LazyCMS.redirect('".PHP_FILE."');");
@@ -103,6 +103,7 @@ switch ($action) {
                     taxonomy_add('category',$name,$parent,array(
                         'path'  => esc_html($path),
                         'list'  => esc_html($list),
+                        'description' => esc_html($description),
                     ));
                     admin_success(__('Category created.'),"LazyCMS.redirect('".PHP_FILE."');");
                 }
@@ -111,12 +112,12 @@ switch ($action) {
 	    break;
 	// 批量动作
 	case 'bulk':
-	    $actions = isset($_POST['actions'])?$_POST['actions']:null;
+	    $action  = isset($_POST['action'])?$_POST['action']:null;
 	    $listids = isset($_POST['listids'])?$_POST['listids']:null;
 	    if (empty($listids)) {
 	    	admin_error(__('Did not select any item.'));
 	    }
-	    switch ($actions) {
+	    switch ($action) {
 	        // 删除
 	        case 'delete':
 	            foreach ($listids as $taxonomyid) {
@@ -134,8 +135,8 @@ switch ($action) {
 	    $sorts = taxonomy_get_trees();
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'._x('Add New','sort').'</a></h2>';
-        echo   '<form action="'.PHP_FILE.'?action=bulk" method="post" name="sortlist" id="sortlist">';
+        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?method=new">'._x('Add New','sort').'</a></h2>';
+        echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="sortlist" id="sortlist">';
         table_nav();
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
@@ -202,10 +203,10 @@ function display_tr_tree($sorts,$n=0) {
             'PY'  => $sort['name'],
             'MD5' => $sort['taxonomyid'],
         ));
-        $href    = PHP_FILE.'?action=edit&taxonomyid='.$sort['taxonomyid'];
+        $href    = PHP_FILE.'?method=edit&taxonomyid='.$sort['taxonomyid'];
         $actions = '<span class="create"><a href="javascript:;">'.__('Create').'</a> | </span>';
         $actions.= '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a> | </span>';
-        $actions.= '<span class="delete"><a href="'.PHP_FILE.'?action=delete&taxonomyid='.$sort['taxonomyid'].'">'.__('Delete').'</a></span>';
+        $actions.= '<span class="delete"><a href="javascript:;" onclick="sort_delete('.$sort['taxonomyid'].')">'.__('Delete').'</a></span>';
         $hl.= '<tr>';
         $hl.=   '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$sort['taxonomyid'].'" /></td>';
         $hl.=   '<td><span class="space">'.$space.'</span><strong><a href="'.$href.'">'.$sort['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
@@ -239,7 +240,7 @@ function category_manage_page($action) {
     $modules = model_gets(1);
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
-    echo   '<form action="'.PHP_FILE.'?action=save" method="post" name="sortmanage" id="sortmanage">';
+    echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="sortmanage" id="sortmanage">';
     echo     '<fieldset>';
     echo       '<table class="form-table">';
     echo           '<tr>';
@@ -279,7 +280,7 @@ function category_manage_page($action) {
     echo               '<td><input class="text" type="text" size="70" name="keywords" id="keywords" value="'.$keywords.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="description">'._x('Description','sort').'</label></th>';
+    echo               '<th><label for="description">'._x('Description','sort').'<br /><span class="description">'.__('(Maximum of 250)').'</span></label></th>';
     echo               '<td><textarea class="text" cols="70" rows="5" id="description" name="description">'.$description.'</textarea></td>';
     echo           '</tr>'; 
     echo       '</table>';

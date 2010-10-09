@@ -27,9 +27,9 @@ admin_head('title',  __('Models'));
 admin_head('styles', array('css/model'));
 admin_head('scripts',array('js/model'));
 // 动作
-$action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
+$method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 
-switch ($action) {
+switch ($method) {
     // 强力插入
 	case 'new':
 	    // 权限检查
@@ -57,17 +57,6 @@ switch ($action) {
 	    model_manage_page('edit');
         include ADMIN_PATH.'/admin-footer.php';
 	    break;
-    // 删除
-    case 'delete':
-        // 权限检查
-	    current_user_can('model-delete');
-        $modelid = isset($_GET['modelid'])?$_GET['modelid']:null;
-        if (model_delete($modelid)) {
-        	admin_success(__('Model deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
-        } else {
-            admin_error(__('Model delete fail.'));
-        }
-        break;
 	// 保存
 	case 'save':
         $modelid = isset($_POST['modelid'])?$_POST['modelid']:null;
@@ -139,12 +128,12 @@ switch ($action) {
 	    break;
 	// 批量动作
 	case 'bulk':
-	    $actions = isset($_POST['actions'])?$_POST['actions']:null;
+	    $action  = isset($_POST['action'])?$_POST['action']:null;
 	    $listids = isset($_POST['listids'])?$_POST['listids']:null;
 	    if (empty($listids)) {
 	    	admin_error(__('Did not select any item.'));
 	    }
-	    switch ($actions) {
+	    switch ($action) {
 	        // 删除
 	        case 'delete':
 	            current_user_can('model-delete');
@@ -273,8 +262,8 @@ switch ($action) {
 	    $models = model_gets();
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'._x('Add New','model').'</a></h2>';
-        echo   '<form action="'.PHP_FILE.'?action=bulk" method="post" name="modellist" id="modellist">';
+        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?method=new">'._x('Add New','model').'</a></h2>';
+        echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="modellist" id="modellist">';
         table_nav();
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
@@ -286,12 +275,12 @@ switch ($action) {
         echo           '<tbody>';
         if ($models) {
             foreach ($models as $model) {
-                $href = PHP_FILE.'?action=edit&modelid='.$model['modelid'];
+                $href = PHP_FILE.'?method=edit&modelid='.$model['modelid'];
                 $actions = '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a> | </span>';
-                $actions.= '<span class="export"><a href="'.PHP_FILE.'?action=export&modelid='.$model['modelid'].'">'.__('Export').'</a> | </span>';
-                $actions.= '<span class="enabled"><a href="'.PHP_FILE.'?action=enabled&modelid='.$model['modelid'].'">'.__('Enabled').'</a> | </span>';
-                $actions.= '<span class="disabled"><a href="'.PHP_FILE.'?action=disabled&modelid='.$model['modelid'].'">'.__('Disabled').'</a> | </span>';
-                $actions.= '<span class="delete"><a href="'.PHP_FILE.'?action=delete&modelid='.$model['modelid'].'">'.__('Delete').'</a></span>';
+                $actions.= '<span class="export"><a href="'.PHP_FILE.'?method=export&modelid='.$model['modelid'].'">'.__('Export').'</a> | </span>';
+                $actions.= '<span class="enabled"><a href="'.PHP_FILE.'?method=enabled&modelid='.$model['modelid'].'">'.__('Enabled').'</a> | </span>';
+                $actions.= '<span class="disabled"><a href="'.PHP_FILE.'?method=disabled&modelid='.$model['modelid'].'">'.__('Disabled').'</a> | </span>';
+                $actions.= '<span class="delete"><a href="javascript:;" onclick="model_delete('.$model['modelid'].')">'.__('Delete').'</a></span>';
                 echo       '<tr>';
                 echo           '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$model['modelid'].'" /></td>';
                 echo           '<td><strong><a href="'.$href.'">'.$model['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
@@ -364,7 +353,7 @@ function model_manage_page($action) {
     $fields   = isset($_MODEL['fields'])?$_MODEL['fields']:null;
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
-    echo   '<form action="'.PHP_FILE.'?action=save" method="post" name="modelmanage" id="modelmanage">';
+    echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="modelmanage" id="modelmanage">';
     echo     '<fieldset>';
     echo       '<table class="form-table">';
     echo           '<tr>';

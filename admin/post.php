@@ -32,10 +32,10 @@ if ('page.php' == $php_file) {
 }
 admin_head('styles', array('css/post'));
 admin_head('scripts',array('js/post'));
-// 动作
-$action = isset($_REQUEST['action'])?$_REQUEST['action']:null;
+// 方法
+$method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 
-switch ($action) {
+switch ($method) {
     // 强力插入
     case 'new':
         if ('page.php' == $php_file) {
@@ -73,26 +73,21 @@ switch ($action) {
 	    post_manage_page('edit');	    
 	    include ADMIN_PATH.'/admin-footer.php';
 	    break;
-    // 删除
-    case 'delete':
-        // 权限检查
-	    current_user_can('post-delete');
-        $postid = isset($_GET['postid'])?$_GET['postid']:null;
-        if (post_delete($postid)) {
-        	admin_success(__('Post deleted.'),"LazyCMS.redirect('".referer()."');");
-        } else {
-            admin_error(__('Post delete fail.'));
-        }
-        break;
     // 批量动作
 	case 'bulk':
-	    $actions = isset($_POST['actions'])?$_POST['actions']:null;
+	    $action  = isset($_POST['action'])?$_POST['action']:null;
 	    $listids = isset($_POST['listids'])?$_POST['listids']:null;
 	    if (empty($listids)) {
 	    	admin_error(__('Did not select any item.'));
 	    }
-	    switch ($actions) {
-	        case 'delete':
+	    switch ($action) {
+	        case 'create':
+	            foreach ($listids as $postid) {
+	            	post_create($postid);
+	            }
+	            admin_success(__('Posts created.'),"LazyCMS.redirect('".referer()."');");
+	            break;
+            case 'delete':
 	            current_user_can('post-delete');
 	            foreach ($listids as $postid) {
 	            	post_delete($postid);
@@ -132,7 +127,7 @@ switch ($action) {
                 $description = mb_substr(strip_tags($content),0,255,'UTF-8');
             } else {
                 validate_check(array(
-                    array('description',VALIDATE_LENGTH,_x('Description the field up to 255 characters.','post'),0,255),
+                    array('description',VALIDATE_LENGTH,__('Description the field up to 255 characters.'),0,255),
                 ));
             }           
 
@@ -296,7 +291,7 @@ switch ($action) {
 	    $page  = isset($_REQUEST['page'])?$_REQUEST['page']:1;
         $size  = isset($_REQUEST['size'])?$_REQUEST['size']:10;
         $model = isset($_REQUEST['model'])?$_REQUEST['model']:'';
-        $category = isset($_REQUEST['category'])?$_REQUEST['category']:'';
+        $category = isset($_REQUEST['category'])?$_REQUEST['category']:null;
         $query = array(
             'page' => '$',
             'size' => $size,
@@ -307,28 +302,32 @@ switch ($action) {
             $field = $category?'`p`.`model`':'`model`';
             $condition[] = "({$field}=".esc_sql($model).")";
         }
-        if ($category) {
+        if ($category!==null) {
             $query['category'] = $category;
             $condition[] = "(`tr`.`taxonomyid`=".esc_sql($category).")";
         }
-        $field = $category?'`p`.`sortid`':'`sortid`';
+        $field = $category!==null?'`p`.`sortid`':'`sortid`';
         if ('page.php' == $php_file) {
             $condition[] = "({$field}='-1')";
-        } else {
+        } elseif($category===null) {
             $condition[] = "({$field}<>'-1')";
         }
-        $where = $condition?' WHERE '.implode(' AND ' , $condition):'';
-        $page_url = PHP_FILE.'?'.http_build_query($query);
-        if ($category) {
-            $sql = "SELECT DISTINCT * FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` {$where} ORDER BY `p`.`postid` DESC";
-        } else {
-            $sql = "SELECT * FROM `#@_post` {$where} ORDER BY `postid` DESC";
+        $where = $condition ? ' WHERE '.implode(' AND ' , $condition) : '';
+        if ($category!==null && $where) {
+            $where.= " OR ({$field}=".esc_sql($category).")";
         }
-        $result   = post_gets($sql, $page, $size);
+        $page_url = PHP_FILE.'?'.http_build_query($query);
+        if ($category!==null) {
+            $sql = "SELECT DISTINCT(`postid`),`sortid`,`model`,`path`,`title`,`datetime`,`passed` FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` {$where} GROUP BY `p`.`postid` ORDER BY `p`.`postid` DESC";
+        } else {
+            $sql = "SELECT `postid`,`sortid`,`model`,`path`,`title`,`datetime`,`passed` FROM `#@_post` {$where} ORDER BY `postid` DESC";
+        }
+        
+        $result  = post_gets($sql, $page, $size);
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'.$add_new.'</a></h2>';
-        echo   '<form action="'.PHP_FILE.'?action=bulk" method="post" name="postlist" id="postlist">';
+        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?method=new">'.$add_new.'</a></h2>';
+        echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="postlist" id="postlist">';
         table_nav($page_url,$result);
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
@@ -340,27 +339,38 @@ switch ($action) {
         echo           '<tbody>';
         if (0 < $result['length']) {
             foreach ($result['posts'] as $post) {
-                $edit_url   = PHP_FILE.'?action=edit&postid='.$post['postid'];
-                $model_url  = PHP_FILE.'?model='.$post['model']['langcode'];
+                $edit_url   = PHP_FILE.'?method=edit&postid='.$post['postid'];
                 $categories = array();
                 foreach($post['category'] as $category) {
                     $categories[] = '<a href="'.PHP_FILE.'?category='.$category['taxonomyid'].'">'.$category['name'].'</a>';
                 }
                 $actions = '<span class="edit"><a href="'.$edit_url.'">'.__('Edit').'</a> | </span>';
-                $actions.= '<span class="delete"><a href="'.PHP_FILE.'?action=delete&postid='.$post['postid'].'">'.__('Delete').'</a></span>';
-                // 检查文件是否已生成
-                if (file_exists_case(ABS_PATH.'/'.$post['path'])) {
-                    $post_href = '<a href="'.WEB_ROOT.$post['path'].'" target="_blank">'.WEB_ROOT.$post['path'].'</a>';
-                } else {
-                    $post_href = '<a href="javascript:;">'.WEB_ROOT.$post['path'].'</a>';
-                }
+                $actions.= '<span class="create"><a href="javascript:;" onclick="post_create('.$post['postid'].')">'.__('Create').'</a> | </span>';
+                $actions.= '<span class="delete"><a href="javascript:;" onclick="post_delete('.$post['postid'].')">'.__('Delete').'</a></span>';
+
                 echo '<tr>';
                 echo    '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$post['postid'].'" /></td>';
                 echo    '<td><strong><a href="'.$edit_url.'">'.$post['title'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
-                echo    '<td><a href="'.$model_url.'">'.$post['model']['name'].'</a></td>';
-                echo    '<td>'.$post_href.'</td>';
+                if (empty($post['model'])) {
+                    echo '<td><a href="javascript:;">'.__('None').'</a></td>';
+                } else {
+                    echo '<td><a href="'.PHP_FILE.'?model='.$post['model']['langcode'].'">'.$post['model']['name'].'</a></td>';
+                }
+
+                // 检查文件是否已生成
+                if (file_exists_case(ABS_PATH.'/'.$post['path'])) {
+                    echo '<td><img class="b6 os" src="'.ADMIN_ROOT.'images/white.gif" /><a href="'.WEB_ROOT.$post['path'].'" target="_blank">'.WEB_ROOT.$post['path'].'</a></td>';
+                } else {
+                    echo '<td><img class="b7 os" src="'.ADMIN_ROOT.'images/white.gif" /><a href="javascript:;" onclick="post_create('.$post['postid'].')">'.WEB_ROOT.$post['path'].'</a></td>';
+                }
+
                 if ('page.php' != $php_file) {
-                   echo '<td>'.implode(',' , $categories).'</td>';
+                    if (empty($categories)) {
+                        echo '<td><a href="'.PHP_FILE.'?category=0">'.__('None').'</a></td>';
+                    } else {
+                        echo '<td>'.implode(',' , $categories).'</td>';
+                    }
+
                 }
                 echo    '<td>'.date('Y-m-d H:i:s',$post['datetime']).'</td>';
                 echo    '<td>'.$post['passed'].'</td>';
@@ -456,7 +466,7 @@ function post_manage_page($action) {
     $keywords = implode(',',$keywords);
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
-    echo   '<form action="'.PHP_FILE.'?action=save" method="post" name="postmanage" id="postmanage">';
+    echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="postmanage" id="postmanage">';
     echo   '<fieldset>';
     echo       '<table class="form-table">';
     echo           '<tbody class="fixed-attr">';

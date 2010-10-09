@@ -30,16 +30,6 @@ function user_list_init() {
         $('td',this).css({'background-color':'#FFFFFF'});
         $('.row-actions',this).css({'visibility': 'hidden'});
     });
-	// 绑定删除事件
-	$('span.delete a',form).click(function(){
-		var url = this.href;
-		LazyCMS.confirm(_('Confirm Delete?'),function(r){
-			if (r) {
-				$.getJSON(url);
-			}
-		});
-		return false;
-	});
 	// 绑定提交事件
 	form.actions();
     
@@ -63,4 +53,12 @@ function user_manage_init() {
 // 我的配置页面初始化
 function user_profile_init() {
 	$('form#profile').ajaxSubmit();
+}
+// 删除用户
+function user_delete(userid){
+    LazyCMS.confirm(_('Confirm Delete?'),function(r){
+        if (r) {
+            LazyCMS.postAction('user.php', {method:'bulk', action:'delete'}, userid);
+        }
+    });
 }

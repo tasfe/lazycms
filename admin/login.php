@@ -24,8 +24,8 @@ defined('ADMIN_PATH') or define('ADMIN_PATH',dirname(__FILE__));
 require ADMIN_PATH.'/admin.php';
 
 // 退出登录
-$action   = isset($_GET['action'])?$_GET['action']:null;
-if ($action=='logout') {
+$method   = isset($_GET['method'])?$_GET['method']:null;
+if ($method=='logout') {
     Cookie::delete('authcode');
     redirect('login.php'); exit();
 } else {
@@ -72,7 +72,7 @@ echo '<title>LazyCMS '.__('Administrator Login').'</title>'; admin_css('css/logi
 echo '<link rel="shortcut icon" href="favicon.ico" />';
 echo '</head>';
 echo '<body>';
-echo    '<form id="login" name="login" method="post" action="'.sprintf('%s?action=login',PHP_FILE).'">';
+echo    '<form id="login" name="login" method="post" action="'.sprintf('%s?method=login',PHP_FILE).'">';
 echo        '<div class="col1">'.sprintf(__('<p>LazyCMS is a new kind,open source, free content management system.</p><p>Runtime:PHP 4.3.3+、MySQL 4.1+</p><p><a href="%s">Back Home</a></p>'),WEB_ROOT).'</div>';
 echo        '<dl class="col2">';
 echo            '<dt>'.__('Administrator Login').'</dt>';

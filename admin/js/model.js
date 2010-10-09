@@ -30,19 +30,16 @@ function model_list_init() {
         $('td',this).css({'background-color':'#FFFFFF'});
         $('.row-actions',this).css({'visibility': 'hidden'});
     });
-	// 绑定删除事件
-	$('span.delete a',form).click(function(){
-		var url = this.href;
-		LazyCMS.confirm(_('Confirm Delete?'),function(r){
-			if (r) {
-				$.getJSON(url);
-			}
-		});
-		
-		return false;
-	});
 	// 绑定提交事件
 	form.actions();
+}
+// 删除模型
+function model_delete(modelid){
+    LazyCMS.confirm(_('Confirm Delete?'),function(r){
+        if (r) {
+            LazyCMS.postAction('model.php', {method:'bulk', action:'delete'}, modelid);
+        }
+    });
 }
 // 添加用户页面初始化
 function model_manage_init() {
@@ -146,7 +143,7 @@ function model_manage_init() {
 function model_field_manage(id,params) {
 	var wrap = model_manage_init.wrap, actions = model_manage_init.actions, table_drag = model_manage_init.table_drag, set_rules  = model_manage_init.set_rules;
 		id = id || '', params = $.extend(params||{},(params?{id:id}:{}));
-	$.post(LazyCMS.ADMIN_ROOT + 'model.php?action=field',params,function(r){
+	$.post(LazyCMS.ADMIN_ROOT + 'model.php?method=field',params,function(r){
         var title = _('Add New','model','field');
             title = id?_('Edit','model','field'):title;
 		LazyCMS.dialog({

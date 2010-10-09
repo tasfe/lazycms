@@ -51,7 +51,7 @@ function system_tpl_plugin($tag_name,$tag) {
             $result = LANGUAGE;
             break;
         case 'cms': case 'lazycms':
-            $result = '<span id="lazycms">Powered by: <a href="http://lazycms.com/" style="font-weight:bold" target="_blank">LazyCMS</a> <span>'.LAZY_VERSION.'</span></span>';
+            $result = '<span id="lazycms">Powered by: <a href="http://lazycms.com/" style="font-weight:bold" target="_blank">LazyCMS</a> '.LAZY_VERSION.'</span>';
             break;
         case 'jquery':
             $version = mid($tag,'ver="','"');

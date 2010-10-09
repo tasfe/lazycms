@@ -40,7 +40,7 @@ if ($loadevents) {
             </a>
         </h1>
         <div id="header-menu"><strong><a href="<?php echo ADMIN_ROOT.'profile.php';?>"><?php echo $_ADMIN['name'];?></a></strong>
-             | <a href="<?php echo ADMIN_ROOT.'login.php?action=logout';?>" onclick="return $(this).logout();"><?php _e('Logout');?></a>
+             | <a href="<?php echo ADMIN_ROOT.'login.php?method=logout';?>" onclick="return $(this).logout();"><?php _e('Logout');?></a>
         </div>
     </div>
 

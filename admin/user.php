@@ -27,9 +27,9 @@ admin_head('title',  __('Users'));
 admin_head('styles', array('css/user'));
 admin_head('scripts',array('js/user'));
 // 动作
-$action  = isset($_REQUEST['action'])?$_REQUEST['action']:null;
+$method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 
-switch ($action) {
+switch ($method) {
     // 强力插入
 	case 'new':
 	    // 权限检查
@@ -57,17 +57,6 @@ switch ($action) {
 	    user_manage_page('edit');
         include ADMIN_PATH.'/admin-footer.php';
 	    break;
-    // 删除用户
-    case 'delete':
-        // 权限检查
-	    current_user_can('user-delete');
-        $userid = isset($_GET['userid'])?$_GET['userid']:null;
-        if (user_delete($userid)) {
-        	admin_success(__('User deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
-        } else {
-            admin_error(__('User delete fail.'));
-        }
-        break;
 	// 保存用户
 	case 'save':
 	    $userid = isset($_POST['userid'])?$_POST['userid']:null;
@@ -148,12 +137,12 @@ switch ($action) {
 	    break;
 	// 批量动作
 	case 'bulk':
-	    $actions = isset($_POST['actions'])?$_POST['actions']:null;
+	    $action  = isset($_POST['action'])?$_POST['action']:null;
 	    $listids = isset($_POST['listids'])?$_POST['listids']:null;
 	    if (empty($listids)) {
 	    	admin_error(__('Did not select any item.'));
 	    }
-	    switch ($actions) {
+	    switch ($action) {
 	        case 'delete':
 	            current_user_can('user-delete');
 	            foreach ($listids as $userid) {
@@ -170,8 +159,8 @@ switch ($action) {
 	    $admins = user_get_admins();
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?action=new">'._x('Add New','user').'</a></h2>';
-        echo   '<form action="'.PHP_FILE.'?action=bulk" method="post" name="userlist" id="userlist">';
+        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?method=new">'._x('Add New','user').'</a></h2>';
+        echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="userlist" id="userlist">';
         table_nav();
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
@@ -186,9 +175,9 @@ switch ($action) {
             	$href = ADMIN_ROOT.'profile.php?referer='.PHP_FILE;
             	$actions = '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a></span>';
             } else {
-                $href = PHP_FILE.'?action=edit&userid='.$admin['userid'];
+                $href = PHP_FILE.'?method=edit&userid='.$admin['userid'];
                 $actions = '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a> | </span>';
-                $actions.= '<span class="delete"><a href="'.PHP_FILE.'?action=delete&userid='.$admin['userid'].'">'.__('Delete').'</a></span>';
+                $actions.= '<span class="delete"><a href="javascript:;" onclick="user_delete('.$admin['userid'].')">'.__('Delete').'</a></span>';
             }
             echo           '<tr>';
             echo               '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$admin['userid'].'" /></td>';
@@ -253,7 +242,7 @@ function user_manage_page($action) {
     $roles    = isset($_USER['roles'])?$_USER['roles']:null;
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
-    echo   '<form action="'.PHP_FILE.'?action=save" method="post" name="usermanage" id="usermanage">';
+    echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="usermanage" id="usermanage">';
     echo     '<fieldset>';
     echo       '<table class="form-table">';
     echo           '<tr>';
