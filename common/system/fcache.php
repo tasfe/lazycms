@@ -21,7 +21,7 @@
 defined('COM_PATH') or die('Restricted access!');
 
 // 默认的缓存目录
-defined('CACHE_PATH') or define('CACHE_PATH',dirname(__FILE__).'/.cache');
+defined('CACHE_PATH') or define('CACHE_PATH',COM_PATH.'/.cache');
 // 默认过期时间
 define('DATACACHE_EXPIRE',31536000);
 /**

@@ -26,7 +26,13 @@ $_ADMIN = user_current();
 $referer = referer(PHP_FILE,false);
 // 保存
 if (validate_is_post()) {
-    $options = $_POST; unset($options['referer']);
+    $options = $_POST;
+    foreach($options as $k=>$v) {
+        if (!strncasecmp($k,'eselect_',8)) {
+            unset($options[$k]); continue;
+        }
+    }
+    unset($options['referer']);
     validate_check('SiteName',VALIDATE_EMPTY,__('Please enter the site name.'));
     if (validate_is_ok()) {
         C($options);
@@ -56,8 +62,20 @@ if (validate_is_post()) {
     echo               '</td>';
     echo           '</tr>';*/
     echo           '<tr>';
-    echo               '<th><label for="Template">'.__('Template').'<span class="description">'.__('(required)').'</span></label></th>';
-    echo               '<td><input class="text" id="Template" name="Template" type="text" size="20" value="'.C('Template').'" /></td>';
+    echo               '<th><label for="Language">'._x('Language','setting').'</label></th>';
+    echo               '<td>';
+    echo                   '<select name="Language" id="Language">';
+    echo                       '<option value="en"'.(C('Language')=='en'?' selected="selected"':null).'>'.__('English').'</option>';
+    echo                       options('@.locale','lang','<option value="#value#"#selected#>#name#</option>',C('Language'));
+    echo                   '</select>';
+    echo               '</td>';
+    echo           '</tr>';
+    echo           '<tr>';
+    echo               '<th><label for="Template">'._x('Template','setting').'<span class="description">'.__('(required)').'</span></label></th>';
+    echo               '<td><select name="Template" id="Template">';
+    echo                       options(TEMPLATE,'dir','<option value="#value#"#selected#>#name#</option>',C('Template'));
+    echo                   '</select>';
+    echo               '</td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="TemplateSuffixs">'.__('Template suffix').'<span class="description">'.__('(required)').'</span></label></th>';
@@ -65,7 +83,12 @@ if (validate_is_post()) {
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="HTMLFileSuffix">'.__('HTML file suffix').'<span class="description">'.__('(required)').'</span></label></th>';
-    echo               '<td><input class="text" id="HTMLFileSuffix" name="HTMLFileSuffix" type="text" size="10" value="'.C('HTMLFileSuffix').'" /></td>';
+    echo               '<td><select name="HTMLFileSuffix" id="HTMLFileSuffix" edit="true" default="'.C('HTMLFileSuffix').'">';
+    foreach(array('.htm','.html','.shtml','.php','.xml','.wml') as $suffix) {
+        echo                   '<option value="'.$suffix.'">'.$suffix.'</option>';
+    }
+    echo                   '</select>';
+    echo               '</td>';
     echo           '</tr>';
     echo       '</table>';
     echo     '</fieldset>';

@@ -394,7 +394,7 @@ function model_manage_page($action) {
     echo               '<th><label for="listtemplate">'.__('List Template').'</label></th>';
     echo               '<td>';
     echo                   '<select id="listtemplate" name="list">';
-    echo                        options(C('Template'),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$list);
+    echo                        options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$list);
     echo                   '</select>';
     echo               '</td>';
     echo           '</tr>';
@@ -402,7 +402,7 @@ function model_manage_page($action) {
     echo               '<th><label for="pagetemplate">'.__('Page Template').'</label></th>';
     echo               '<td>';
     echo                   '<select id="pagetemplate" name="page">';
-    echo                        options(C('Template'),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$page);
+    echo                        options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$page);
     echo                   '</select>';
     echo               '</td>';
     echo           '</tr>';

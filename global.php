@@ -45,11 +45,8 @@ require COM_PATH.'/system/cookie.php';
 require COM_PATH.'/system/fcache.php';
 // 加载本地化语言类库
 require COM_PATH.'/system/l10n.php';
-// 加载默认语言包
-load_textdomain();
 // 处理错误
 set_error_handler('handler_error');
-
 // 处理系统变量
 if (get_magic_quotes_gpc()) {
     $args = array(& $_GET, & $_POST, & $_COOKIE, & $_FILES, & $_REQUEST);
@@ -58,7 +55,8 @@ if (get_magic_quotes_gpc()) {
     }
     unset($args,$k,$v);
 }
-
+// 加载默认语言包
+load_textdomain();
 // 删除没用的系统变量
 unset($_ENV,$HTTP_ENV_VARS,$HTTP_SERVER_VARS,$HTTP_SESSION_VARS,$HTTP_POST_VARS,$HTTP_GET_VARS,$HTTP_POST_FILES,$HTTP_COOKIE_VARS);
 

@@ -19,4 +19,8 @@
  * +---------------------------------------------------------------------------+
  */
 require dirname(__FILE__).'/global.php';
-redirect(WEB_ROOT.'admin/');
+if (file_exists_case(ABS_PATH.'/install.php')) {
+    redirect(WEB_ROOT.'install.php');
+} else {
+    redirect(WEB_ROOT.'admin/');
+}

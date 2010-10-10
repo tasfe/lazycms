@@ -277,7 +277,7 @@ function category_manage_page($action) {
     echo               '<td>';
     echo                   '<select id="listtemplate" name="list">';
     echo                       $modules?'<option value="">'.__('Use the model set').'</option>':null;
-    echo                       options(C('Template'),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$list);
+    echo                       options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$list);
     echo                   '</select>';
     echo               '</td>';
     echo           '</tr>';

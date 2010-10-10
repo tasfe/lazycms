@@ -110,7 +110,7 @@ function post_edit($postid,$data) {
             post_edit_meta($postid,$meta_rows);
         }
         // 清理缓存
-        post_clear_cache($postid);
+        post_clean_cache($postid);
         return array_merge($post,$data);
     }
     return null;
@@ -247,7 +247,7 @@ function post_edit_meta($postid,$data) {
  * @param  $postid
  * @return bool
  */
-function post_clear_cache($postid) {
+function post_clean_cache($postid) {
     return FCache::delete('post.'.$postid);
 }
 /**
@@ -280,7 +280,7 @@ function post_delete($postid) {
         $db->delete('#@_post_meta',array('postid' => $postid));
         $db->delete('#@_post',array('postid' => $postid));
         // 清理缓存
-        post_clear_cache($postid);
+        post_clean_cache($postid);
         return true;
     }
     return false;
@@ -309,7 +309,7 @@ function post_create($postid) {
             }
             $post['keywords'] = implode(',', $keywords);
         }
-        $html = tpl_loadfile(ABS_PATH.'/'.C('Template').'/'.esc_html($post['template']));
+        $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html($post['template']));
                 tpl_clean();
                 tpl_value(array(
                     'postid'   => $post['postid'],

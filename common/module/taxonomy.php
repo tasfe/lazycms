@@ -299,7 +299,7 @@ function taxonomy_edit($taxonomyid,$data) {
         if ($taxonomy_rows) $db->update('#@_term_taxonomy',$taxonomy_rows,array('taxonomyid'=>$taxonomyid));
         if ($meta_rows) taxonomy_edit_meta($taxonomyid,$meta_rows);
         // 清理缓存
-        taxonomy_clear_cache($taxonomyid);
+        taxonomy_clean_cache($taxonomyid);
         return array_merge($taxonomy,$data);
     }
     return null;
@@ -350,7 +350,7 @@ function taxonomy_edit_meta($taxonomyid,$data) {
  * @param int $taxonomyid
  * @return bool
  */
-function taxonomy_clear_cache($taxonomyid) {
+function taxonomy_clean_cache($taxonomyid) {
     $taxonomyid = intval($taxonomyid);
     return FCache::delete('taxonomy.'.$taxonomyid);
 }
@@ -372,7 +372,7 @@ function taxonomy_delete($taxonomyid) {
         // 删除分类信息
         $db->delete('#@_term_taxonomy',array('taxonomyid' => $taxonomyid));
         // 清理缓存
-        taxonomy_clear_cache($taxonomyid);
+        taxonomy_clean_cache($taxonomyid);
         return true;
     }
     return false;

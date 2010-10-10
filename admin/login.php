@@ -24,7 +24,7 @@ defined('ADMIN_PATH') or define('ADMIN_PATH',dirname(__FILE__));
 require ADMIN_PATH.'/admin.php';
 
 // 退出登录
-$method   = isset($_GET['method'])?$_GET['method']:null;
+$method = isset($_GET['method'])?$_GET['method']:null;
 if ($method=='logout') {
     Cookie::delete('authcode');
     redirect('login.php'); exit();
@@ -73,7 +73,7 @@ echo '<link rel="shortcut icon" href="favicon.ico" />';
 echo '</head>';
 echo '<body>';
 echo    '<form id="login" name="login" method="post" action="'.sprintf('%s?method=login',PHP_FILE).'">';
-echo        '<div class="col1">'.sprintf(__('<p>LazyCMS is a new kind,open source, free content management system.</p><p>Runtime:PHP 4.3.3+、MySQL 4.1+</p><p><a href="%s">Back Home</a></p>'),WEB_ROOT).'</div>';
+echo        '<div class="col1">'.sprintf(__('<p>LazyCMS is free, open source content management system.</p><p>Runtime:PHP 4.3.3+、MySQL 4.1+</p><p><a href="%s">Back Home</a></p>'),WEB_ROOT).'</div>';
 echo        '<dl class="col2">';
 echo            '<dt>'.__('Administrator Login').'</dt>';
 echo            '<dd><label>'.__('Username').'</label><br/><input class="username text" type="text" name="username" id="username" tabindex="1" /></dd>';

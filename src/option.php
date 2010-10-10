@@ -28,6 +28,8 @@ FCache::flush();
 
 // 网站标题
 C('SiteName','LazyCMS v2.0 演示站');
+// 默认语言
+C('Language','zh-CN');
 // 模板地址
 C('Template','themes');
 // 模板文件后缀

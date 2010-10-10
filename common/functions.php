@@ -77,18 +77,16 @@ function format_path($path,$data=null) {
  *
  * @param string $DSN	        DSN format: mysql://root:123456@localhost:3306/lazy/lazycms
  * @param bool   $pconnect      是否使用长连接，默认不使用
- * @param bool   $throw_error   是否抛出异常
  * @return object
  */
-function get_conn($DSN=null,$pconnect=false,$throw_error=true){
+function get_conn($DSN=null,$pconnect=false){
     static $db; if (is_null($DSN)) $DSN = DSN_CONFIG; 
-    $guid = guid(array($DSN,$pconnect,$throw_error));
+    $guid = guid(array($DSN,$pconnect));
     if (isset($db[$guid]) && is_object($db[$guid])) return $db[$guid];
     if ($config = parse_dsn($DSN)) {
-        $config['throw'] = $throw_error;
         require_once COM_PATH.'/system/mysql.php';
     	$db[$guid] = new Mysql($config,$pconnect);
-    	return $db[$guid];
+        return $db[$guid];
     }
     return false;
 }
@@ -919,7 +917,14 @@ function code2lang($code){
 function language() {
     $ck_lang = Cookie::get('language');
     $ck_lang = preg_replace( '/[^a-z0-9,_-]+/i', '', $ck_lang );
-	return $ck_lang && $ck_lang!='default' ? $ck_lang : LANGUAGE;
+    if ($ck_lang && $ck_lang=='default') {
+        if (PHP_FILE==WEB_ROOT.'install.php') {
+            $ck_lang = stripos($_SERVER['HTTP_ACCEPT_LANGUAGE'],'zh-cn')!==false ? 'zh-CN' : 'en';
+        } else {
+            $ck_lang = C('Language');
+        }
+    }
+    return $ck_lang;
 }
 /**
  * 查询配置
@@ -946,20 +951,18 @@ function C($key,$value=null){
         $module = 'System';
     	$code   = $key;
     }
+    $db  = get_conn();
+    $key = $module.'.'.$code;
     // 取值
     if($key && func_num_args()==1) {
-        $db    = get_conn(null,false,false);
-        $key   = $module.'.'.$code;
         // 先从缓存里取值
         $value = FCache::get($ckey.$key);
         if (empty($value)) {
-            if ($db->ready) {
-                $result = $db->query("SELECT * FROM `#@_option` WHERE `module`=%s AND `code`=%s LIMIT 0,1;",array($module,$code));
-                if ($data = $db->fetch($result)) {
-                    $value = is_need_unserialize($data['type']) ? unserialize($data['value']) : $data['value'];
-                    // 保存到缓存
-                    FCache::set($ckey.$key,$value);
-                }
+            $result = $db->query("SELECT * FROM `#@_option` WHERE `module`=%s AND `code`=%s LIMIT 0,1;",array($module,$code));
+            if ($data = $db->fetch($result)) {
+                $value = is_need_unserialize($data['type']) ? unserialize($data['value']) : $data['value'];
+                // 保存到缓存
+                FCache::set($ckey.$key,$value);
             }
         }
         // 支持多维数组取值
@@ -972,8 +975,6 @@ function C($key,$value=null){
     }
     // 参数赋值
     else {
-        $db  = get_conn();
-        $key = $module.'.'.$code;
         // 删除属性
         if (is_null($value)) {
             FCache::delete($key);

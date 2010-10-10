@@ -216,9 +216,13 @@ function admin_purview($data=null) {
             'plugin-new'    => _x('Add New','plugin'),
             'plugin-delete' => _x('Delete','plugin'),
         ),
+        'tools' => array(
+            '_LABEL_'       => __('Tools'),
+            'clean-cache'   => __('Clean cache'),
+        ),
         'settings' => array(
             '_LABEL_'        => __('Settings'),
-            'option-general' => _x('General','settings'),
+            'option-general' => _x('General','setting'),
         )
     );
     $hl = '<div class="role-list">';

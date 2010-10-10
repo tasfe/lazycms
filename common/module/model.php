@@ -146,7 +146,7 @@ function model_edit($modelid,$data) {
             $db->update('#@_model',$data,array('modelid'=>$modelid));
         }
         // 清理用户缓存
-        model_clear_cache($modelid);
+        model_clean_cache($modelid);
         return array_merge($model,$data);
     }
     return null;
@@ -157,7 +157,7 @@ function model_edit($modelid,$data) {
  * @param int $modelid
  * @return bool
  */
-function model_clear_cache($modelid) {
+function model_clean_cache($modelid) {
     if ($model = model_get_byid($modelid)) {
         $ckey = 'model.';
         foreach (array('modelid','code') as $field) {
@@ -181,7 +181,7 @@ function model_delete($modelid) {
     $modelid = intval($modelid);
     if (!$modelid) return false;
     if (model_get_byid($modelid)) {
-        model_clear_cache($modelid);
+        model_clean_cache($modelid);
         $db->delete('#@_model',array('modelid'=>$modelid));
         // TODO: 删除其他数据
         return true;

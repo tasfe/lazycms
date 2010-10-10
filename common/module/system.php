@@ -45,10 +45,10 @@ function system_tpl_plugin($tag_name,$tag) {
             $result = LAZY_VERSION;
             break;
         case 'theme': case 'templet': case 'template':
-            $result = C('Template');
+            $result = WEB_ROOT.system_themes_path();
             break;
         case 'lang': case 'language':
-            $result = LANGUAGE;
+            $result = C('Language');
             break;
         case 'cms': case 'lazycms':
             $result = '<span id="lazycms">Powered by: <a href="http://lazycms.com/" style="font-weight:bold" target="_blank">LazyCMS</a> '.LAZY_VERSION.'</span>';
@@ -65,4 +65,12 @@ function system_tpl_plugin($tag_name,$tag) {
             break;
     }
     return $result;
+}
+/**
+ * 查询模版路径
+ *
+ * @return string
+ */
+function system_themes_path() {
+    return TEMPLATE.'/'.C('Template');
 }

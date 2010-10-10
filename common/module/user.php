@@ -243,7 +243,7 @@ function user_edit($userid,$data) {
             user_edit_meta($userid,$meta_rows);
         }
         // 清理用户缓存
-        user_clear_cache($userid);
+        user_clean_cache($userid);
         return array_merge($user,$data);
     }
     return null;
@@ -294,7 +294,7 @@ function user_edit_meta($userid,$data) {
  * @param int $userid
  * @return bool
  */
-function user_clear_cache($userid) {
+function user_clean_cache($userid) {
     if ($user = user_get_byid($userid)) {
         $ckey = 'user.';
         foreach (array('userid','name','authcode') as $field) {
@@ -314,7 +314,7 @@ function user_delete($userid) {
     $userid = intval($userid);
     if (!$userid) return false;
     if (user_get_byid($userid)) {
-        user_clear_cache($userid);
+        user_clean_cache($userid);
         $db->delete('#@_user',array('userid' => $userid));
         $db->delete('#@_user_meta',array('userid' => $userid));
         return true;

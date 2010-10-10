@@ -65,3 +65,5 @@ if (!IS_CLI) {
 } else {
     define('HTTP_HOST','');
 }
+// 模版目录
+defined('TEMPLATE') or define('TEMPLATE','themes');

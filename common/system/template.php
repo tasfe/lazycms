@@ -37,7 +37,7 @@ class Template {
      */
     function load($html) {
         // 处理 include 标签
-        $tags = array(); $base = ABS_PATH.'/'.C('Template').'/';
+        $tags = array(); $base = ABS_PATH.'/'.system_themes_path().'/';
         if (preg_match_all('/\{include[^\}]*file=([^\}]*)\/\}/isU',$html,$r)) {
             $tags = $r[1];
             foreach ($tags as $i=>$tag) {
@@ -47,7 +47,7 @@ class Template {
         }
         $html = preg_replace('/<title>/isU',"<meta name=\"generator\" content=\"LazyCMS ".LAZY_VERSION."\"/>\n\${0}",$html);
         // 格式化图片、css、js路径
-        $html = preg_replace('/(<(((script|link|img|input|embed|object|base|area|map|table|td|th|tr).+?(src|href|background))|((param).+?(src|value)))=([^\/]+?))((images|scripts)\/.{0,}?\>)/i','${1}'.WEB_ROOT.C('Template').'/${10}',$html);
+        $html = preg_replace('/(<(((script|link|img|input|embed|object|base|area|map|table|td|th|tr).+?(src|href|background))|((param).+?(src|value)))=([^\/]+?))((images|scripts)\/.{0,}?\>)/i','${1}'.WEB_ROOT.system_themes_path().'/${10}',$html);
         return $html;
     }
     /**
