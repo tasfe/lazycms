@@ -41,6 +41,10 @@ function model_delete(modelid){
         }
     });
 }
+// 修改模型状态模型
+function model_state(action,modelid){
+    return LazyCMS.postAction('model.php', {method:'bulk', action:action}, modelid);
+}
 // 添加用户页面初始化
 function model_manage_init() {
 	var wrap = $('#fields'),

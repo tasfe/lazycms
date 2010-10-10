@@ -8,18 +8,6 @@
 <script type="text/javascript" src="{$jquery}"></script>
 <script type="text/javascript" src="images/script.js"></script>
 <link href="images/style.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript">
-$(document).ready(function(){
-	$('#download label,.radioToggle').click(function(){
-		var thisToggle = $(this).is('.radioToggle') ? $(this) : $(this).prev();
-		var checkBox = thisToggle.prev();
-			checkBox.trigger('click');
-		$('.radioToggle').removeClass('checked');
-		thisToggle.addClass('checked');
-		return false;
-	});
-});
-</script>
 </head>
 
 <body>

@@ -159,7 +159,7 @@ switch ($method) {
 	    $admins = user_get_admins();
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?method=new">'._x('Add New','user').'</a></h2>';
+        echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'._x('Add New','user').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="userlist" id="userlist">';
         table_nav();
         echo       '<table class="data-table" cellspacing="0">';

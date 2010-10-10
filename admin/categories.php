@@ -107,6 +107,7 @@ switch ($method) {
                     ));
                     admin_success(__('Category created.'),"LazyCMS.redirect('".PHP_FILE."');");
                 }
+                // 生成列表页
             }
         }
 	    break;
@@ -135,7 +136,7 @@ switch ($method) {
 	    $sorts = taxonomy_get_trees();
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?method=new">'._x('Add New','sort').'</a></h2>';
+        echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'._x('Add New','sort').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="sortlist" id="sortlist">';
         table_nav();
         echo       '<table class="data-table" cellspacing="0">';
@@ -210,7 +211,12 @@ function display_tr_tree($sorts,$n=0) {
         $hl.= '<tr>';
         $hl.=   '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$sort['taxonomyid'].'" /></td>';
         $hl.=   '<td><span class="space">'.$space.'</span><strong><a href="'.$href.'">'.$sort['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
-        $hl.=   '<td><a href="'.$path.'" target="_blank">'.$path.'</a></td>';
+        // 检测目录是否已生成
+        if (file_exists_case(ABS_PATH.'/'.$sort['path'])) {
+            $hl.= '<td><img class="b6 os" src="'.ADMIN_ROOT.'images/white.gif" /><a href="'.$path.'" target="_blank">'.$path.'</a></td>';
+        } else {
+            $hl.= '<td><img class="b7 os" src="'.ADMIN_ROOT.'images/white.gif" /><a href="javascript:;">'.$path.'</a></td>';
+        }
         $hl.=   '<td>'.$sort['count'].'</td>';
         $hl.= '</tr>';
         if (isset($sort['subs'])) {

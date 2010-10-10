@@ -28,7 +28,7 @@ tpl_add_plugin('system_tpl_plugin');
  *
  * @param  $tag_name
  * @param  $tag
- * @return mixed
+ * @return mixed    null 说明没有解析成功，会继续
  */
 function system_tpl_plugin($tag_name,$tag) {
     switch ($tag_name) {

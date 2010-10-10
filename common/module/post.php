@@ -59,6 +59,10 @@ function post_edit($postid,$data) {
                 'PY'  => $post['title'],
                 'MD5' => $postid,
             ));
+            // 删除旧文件
+            if ($data['path']!=$post['path'] && file_exists_case(ABS_PATH.'/'.$post['path'])) {
+                unlink(ABS_PATH.'/'.$post['path']);
+            }
         }
         // 更新分类关系
         $categories = array();
@@ -123,7 +127,7 @@ function post_edit($postid,$data) {
 function post_gets($sql, $page=0, $size=10){
     $db = get_conn(); $posts = array();
     $count_sql = preg_replace('/SELECT (.+) FROM/iU','SELECT COUNT(*) FROM',$sql,1);
-    $count_sql = preg_replace('/ORDER BY (.+) (ASC|DESC)/i','',$sql,1);
+    $count_sql = preg_replace('/ORDER BY (.+) (ASC|DESC)/i','',$count_sql,1);
     $total = $db->result($count_sql);
     $pages = ceil($total/$size);
     $pages = ((int)$pages == 0) ? 1 : $pages;
@@ -134,7 +138,7 @@ function post_gets($sql, $page=0, $size=10){
     }
     if ((int)$page > (int)$pages) $page = $pages;
     $sql.= sprintf(' LIMIT %d OFFSET %d;',$size,($page-1)*$size);
-    $res = $db->query($sql);
+    $res = $db->query($sql);//var_dump($sql);
     while ($post = $db->fetch($res)) {
         $post['model'] = model_get_bycode($post['model']);
         $post['category'] = taxonomy_get_relation('category',$post['postid'],$rel_ids);

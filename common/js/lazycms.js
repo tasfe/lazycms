@@ -464,7 +464,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
         } else {
             params = $.extend(params,{action:action});
         }
-        return $.post(LazyCMS.ADMIN_ROOT + url,params);
+        return $.post(LazyCMS.ADMIN_ROOT + url,params,null,'json');
     }
 };
 // 等同于PHP parse_str

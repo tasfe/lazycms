@@ -71,33 +71,40 @@ switch ($method) {
             $page     = isset($_POST['page'])?$_POST['page']:null;
             $fields   = isset($_POST['field'])?$_POST['field']:null;
             $language = isset($_POST['language'])?$_POST['language']:language();
-            
+            $langcode = sprintf('%s:%s',$language,$code);
+
             validate_check(array(
                 // 模型名不能为空
                 array('name',VALIDATE_EMPTY,_x('The name field is empty.','model')),
                 // 模型名长度必须是2-30个字符
                 array('name',VALIDATE_LENGTH,_x('The name field length must be %d-%d characters.','model'),1,30),
             ));
-            
+
+
             if ($modelid) {
-            	$model = model_get_byid($modelid); $is_exist = true;
-            	if ($code != $model['code']) {
-            		$is_exist = model_get_bycode(sprintf('%s:%s',$language,$code))?false:true;
-            	}
-            	unset($model);
+                // 模型存在
+                if ($model = model_get_bycode($langcode)) {
+                    if ($model['modelid']==$modelid) {
+                        $is_exist = false;
+                    } else {
+                        $is_exist = true;
+                    }
+                } else {
+                    $is_exist = false;
+                }
             } else {
-                $is_exist = model_get_bycode(sprintf('%s:%s',$language,$code))?false:true;
+                $is_exist = model_get_bycode($langcode) ? true : false;
             }
-            
+
             validate_check(array(
                 // 模型标识不能为空
                 array('code',VALIDATE_EMPTY,_x('The code field is empty.','model')),
                 // 模型标识长度必须是2-30个字符
                 array('code',VALIDATE_LENGTH,_x('The code field length must be %d-%d characters.','model'),1,30),
                 // 模型标识已存在
-                array('code',$is_exist,_x('The code already exists.','model')),
+                array('code',!$is_exist,_x('The code already exists.','model')),
             ));
-            
+
             validate_check(array(
                 array('path',VALIDATE_EMPTY,_x('The path field is empty.','model')),
             ));
@@ -262,7 +269,7 @@ switch ($method) {
 	    $models = model_gets();
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?method=new">'._x('Add New','model').'</a></h2>';
+        echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'._x('Add New','model').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="modellist" id="modellist">';
         table_nav();
         echo       '<table class="data-table" cellspacing="0">';
@@ -278,15 +285,15 @@ switch ($method) {
                 $href = PHP_FILE.'?method=edit&modelid='.$model['modelid'];
                 $actions = '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a> | </span>';
                 $actions.= '<span class="export"><a href="'.PHP_FILE.'?method=export&modelid='.$model['modelid'].'">'.__('Export').'</a> | </span>';
-                $actions.= '<span class="enabled"><a href="'.PHP_FILE.'?method=enabled&modelid='.$model['modelid'].'">'.__('Enabled').'</a> | </span>';
-                $actions.= '<span class="disabled"><a href="'.PHP_FILE.'?method=disabled&modelid='.$model['modelid'].'">'.__('Disabled').'</a> | </span>';
+                $actions.= '<span class="enabled"><a href="javascript:;" onclick="model_state(\'enabled\','.$model['modelid'].')">'.__('Enabled').'</a> | </span>';
+                $actions.= '<span class="disabled"><a href="javascript:;" onclick="model_state(\'disabled\','.$model['modelid'].')">'.__('Disabled').'</a> | </span>';
                 $actions.= '<span class="delete"><a href="javascript:;" onclick="model_delete('.$model['modelid'].')">'.__('Delete').'</a></span>';
                 echo       '<tr>';
                 echo           '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$model['modelid'].'" /></td>';
                 echo           '<td><strong><a href="'.$href.'">'.$model['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
                 echo           '<td>'.$model['code'].'</td>';
                 echo           '<td>'.code2lang($model['language']).'</td>';
-                echo           '<td>'.$model['state'].'</td>';
+                echo           '<td><img class="b'.($model['state']+8).' os" src="'.ADMIN_ROOT.'images/white.gif" /></td>';
                 echo       '</tr>';
             }
         } else {
@@ -374,13 +381,13 @@ function model_manage_page($action) {
     echo           '<tr>';
     echo               '<th><label for="path">'._x('Path','model').'<span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td><input class="text" id="path" name="path" type="text" size="70" value="'.$path.'" /><div class="rules">';
-    echo                   '<a href="#%ID'.$suffix.'">['.__('Post ID').']</a>';
-    echo                   '<a href="#%MD5'.$suffix.'">['.__('MD5 Value').']</a>';
-    echo                   '<a href="#%PY'.$suffix.'">['.__('Pinyin').']</a>';
-    echo                   '<a href="#%Y">['.strftime('%Y').']</a>';
-    echo                   '<a href="#%m">['.strftime('%m').']</a>';
-    echo                   '<a href="#%d">['.strftime('%d').']</a>';
-    echo                   '<a href="#%a">['.strftime('%a').']</a>';
+    echo                   '<a href="#%ID'.$suffix.'" title="%ID">['.__('Post ID').']</a>';
+    echo                   '<a href="#%MD5'.$suffix.'" title="%MD5">['.__('MD5 Value').']</a>';
+    echo                   '<a href="#%PY'.$suffix.'" title="%PY">['.__('Pinyin').']</a>';
+    echo                   '<a href="#%Y" title="%Y">['.strftime('%Y').']</a>';
+    echo                   '<a href="#%m" title="%m">['.strftime('%m').']</a>';
+    echo                   '<a href="#%d" title="%d">['.strftime('%d').']</a>';
+    echo                   '<a href="#%a" title="%a">['.strftime('%a').']</a>';
     echo               '</div></td>';
     echo           '</tr>';
     echo           '<tr>';

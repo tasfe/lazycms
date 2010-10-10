@@ -167,30 +167,33 @@ function admin_return($data) {
 function admin_purview($data=null) {
     if (!is_array($data)) $data = array();
     $purview = array(
-        'post' => array(
+        'cpanel' => array(
+            '_LABEL_'   => __('Control Panel'),
+            'upgrade'   => __('Upgrade'),
+        ),
+        'posts' => array(
             '_LABEL_'     => __('Posts'),
             'categories'  => __('Categories'),
-            'tags'        => __('Post Tags'),
             'post-new'    => _x('Add New','post'),
             'post-list'   => _x('List','post'),
             'post-edit'   => _x('Edit','post'),
             'post-delete' => _x('Delete','post'),
         ),
-        'page' => array(
+        'pages' => array(
             '_LABEL_'     => __('Pages'),
             'page-list'   => _x('List','page'),
             'page-new'    => _x('Add New','page'),
             'page-edit'   => _x('Edit','page'),
             'page-delete' => _x('Delete','page'),
         ),
-        'topic' => array(
+        /*'topic' => array(
             '_LABEL_'     => __('Topics'),
             'topic-list'   => _x('List','topic'),
             'topic-new'    => _x('Add New','topic'),
             'topic-edit'   => _x('Edit','topic'),
             'topic-delete' => _x('Delete','topic'),
-        ),
-        'model' => array(
+        ),*/
+        'models' => array(
             '_LABEL_'      => __('Models'),
             'model-list'   => _x('List','model'),
             'model-new'    => _x('Add New','model'),
@@ -200,12 +203,18 @@ function admin_purview($data=null) {
             'model-export' => _x('Export','model'),
             'model-fields' => _x('Fields','model'),
         ),
-        'user' => array(
+        'users' => array(
             '_LABEL_'     => __('Users'),
             'user-list'   => _x('List','user'),
             'user-new'    => _x('Add New','user'),
             'user-edit'   => _x('Edit','user'),
             'user-delete' => _x('Delete','user'),
+        ),
+        'plugins' => array(
+            '_LABEL_'       => __('Plugins'),
+            'plugin-list'   => _x('List','plugin'),
+            'plugin-new'    => _x('Add New','plugin'),
+            'plugin-delete' => _x('Delete','plugin'),
         ),
         'settings' => array(
             '_LABEL_'        => __('Settings'),

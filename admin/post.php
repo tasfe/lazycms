@@ -317,16 +317,19 @@ switch ($method) {
             $where.= " OR ({$field}=".esc_sql($category).")";
         }
         $page_url = PHP_FILE.'?'.http_build_query($query);
+        // 排序方式
+        $order = 'page.php'==$php_file ? 'ASC' : 'DESC';
+
         if ($category!==null) {
-            $sql = "SELECT DISTINCT(`postid`),`sortid`,`model`,`path`,`title`,`datetime`,`passed` FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` {$where} GROUP BY `p`.`postid` ORDER BY `p`.`postid` DESC";
+            $sql = "SELECT DISTINCT(`postid`),`sortid`,`model`,`path`,`title`,`datetime`,`passed` FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` {$where} GROUP BY `p`.`postid` ORDER BY `p`.`postid` {$order}";
         } else {
-            $sql = "SELECT `postid`,`sortid`,`model`,`path`,`title`,`datetime`,`passed` FROM `#@_post` {$where} ORDER BY `postid` DESC";
+            $sql = "SELECT `postid`,`sortid`,`model`,`path`,`title`,`datetime`,`passed` FROM `#@_post` {$where} ORDER BY `postid` {$order}";
         }
-        
+
         $result  = post_gets($sql, $page, $size);
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="btn" href="'.PHP_FILE.'?method=new">'.$add_new.'</a></h2>';
+        echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'.$add_new.'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="postlist" id="postlist">';
         table_nav($page_url,$result);
         echo       '<table class="data-table" cellspacing="0">';
@@ -373,7 +376,7 @@ switch ($method) {
 
                 }
                 echo    '<td>'.date('Y-m-d H:i:s',$post['datetime']).'</td>';
-                echo    '<td>'.$post['passed'].'</td>';
+                echo    '<td><img class="c'.($post['passed']+8).' os" src="'.ADMIN_ROOT.'images/white.gif" /></td>';
                 echo '</tr>';
             }
         } else {
@@ -476,7 +479,7 @@ function post_manage_page($action) {
         echo               '<td><select name="model" id="model">';
         echo                   '<option value="">'.__('&mdash; Select &mdash;').'</option>';
         foreach ($models as $m) {
-            $selected = $m['langcode']==$model['langcode']?'selected="selected"':'';
+            $selected = isset($model['langcode']) && $m['langcode']==$model['langcode']?'selected="selected"':'';
         	echo               '<option value="'.$m['langcode'].'"'.$selected.'>'.$m['name'].'</option>';
         }
         echo               '</select></td>';

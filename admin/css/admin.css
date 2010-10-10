@@ -21,7 +21,7 @@
 /* Basic HTML
 ----------------------------------------------------------------------------------------------------*/
 html { height:100%; }
-body { font-family: Verdana; color: #333333; background:#FAFAFA; padding:0; margin:0; }
+body { font-family: Arial,sans-serif; font-size:12px; color: #333333; background:#FAFAFA; padding:0; margin:0; }
 
 /* Header
 ----------------------------------------------------------------------------------------------------*/
@@ -93,7 +93,7 @@ body { font-family: Verdana; color: #333333; background:#FAFAFA; padding:0; marg
 	#admin-content .wrap p{ margin:1em 0; line-height:140%; }
 
 	#admin-content .wrap h2{ color:#093E56; margin:10px 0 5px 0; font-family:Georgia,"Times New Roman","Bitstream Charter",Times,serif; text-shadow:0 1px 0 #FFFFFF;}
-	#admin-content .wrap h2 a{ font-size:12px; font-style: normal; margin-left:10px; background:#C6D9E7; color:#666; -moz-border-radius:3px; -webkit-border-radius:3px; -khtml-border-radius:3px; border-radius:3px; display:inline-block;  padding:1px 6px; }
+	#admin-content .wrap h2 a{ margin-left:10px; vertical-align:middle; }
 	#admin-content .wrap h2 a:hover{ text-decoration: none; }
 	#admin-content .wrap .description{ color:#666666; font-style:italic; }
 	#admin-content .wrap .submit{ margin-top:15px; }
@@ -107,6 +107,7 @@ body { font-family: Verdana; color: #333333; background:#FAFAFA; padding:0; marg
 	#admin-content .wrap fieldset:hover .toggle{ display:block; }
 	#admin-content .wrap fieldset .toggle{ display:none; _display:block; width:25px; height:25px; position:absolute; top:1px; right:0; cursor: default; background: url(../images/menu-current-bgs.png) no-repeat left -95px; }
 	#admin-content .wrap fieldset h3 { cursor:pointer; font-size:12px; font-weight:bold; line-height:1; margin:0; padding:7px 9px; color:#093E56; background:url(../images/blue-grad.png) repeat-x scroll left top;}
+    #admin-content .wrap .submit button{ margin-right:5px; }
     	
     
 /* Footer

@@ -7,7 +7,10 @@
      */
     admin_menu(array(
 
-        'cpanel' => array(__('Control Panel'),'index.php','a1'),
+        'cpanel' => array(__('Control Panel'),'index.php','a1',array(
+            array(__('Control Panel'),'index.php'),
+            array(__('Upgrade'),'upgrade.php','upgrade'),
+        )),
 
         '------------------------------------------------------------',
         
@@ -15,7 +18,6 @@
             array(__('Posts'),'post.php','post-list'),
             array(_x('Add New','post'),'post.php?method=new','post-new'),
             array(__('Categories'),'categories.php','categories'),
-            array(__('Post Tags'),'tags.php','tags'),
         )),
 
         'pages' => array(__('Pages'),'page.php','b5',array(
@@ -42,14 +44,14 @@
             array(__('Your Profile'),'profile.php'),
         )),
         
-        'modules' => array(__('Modules'),'module.php','a3',array(
-            array(__('Modules'),'module.php','module-list'),
-            array(_x('Add New','module'),'module.php?method=new','module-new'),
+        'plugins' => array(__('Plugins'),'plugins.php','a3',array(
+            array(__('Plugins'),'plugins.php','plugin-list'),
+            array(_x('Add New','plugin'),'plugins.php?method=new','plugin-new'),
         )),
         
-        'tools' => array(__('Tools'),'tools.php','a8',array(
-            array(__('Upgrade'),'upgrade.php','upgrade'),
-        )),
+        /*'tools' => array(__('Tools'),'tools.php','a8',array(
+
+        )),*/
 
         'options'  => array(__('Settings'),'options/general.php','a5',array(
             array(__('General'),'options/general.php','option-general'),

@@ -40,7 +40,7 @@ a:hover   { text-decoration: underline; }
 	/* 系统菜单 */
 	#menu, #menu ul, #menu li { list-style: none; margin: 0; padding: 0; }
 	#menu { display:table; zoom:1; float:left; margin:41px 0 0 5px; }
-	#menu li { position:relative; top:1px; z-index:100; float:left; line-height:24px; white-space: nowrap; margin-right:5px; }
+	#menu li { position:relative; top:1px; z-index:100; float:left; line-height:24px; white-space: nowrap; margin-right:10px; }
 	#menu li a { font-size:14px; padding:3px 20px 0px 20px; border:solid 1px #c6d9e7; display:block; background:url(buttons-bg.png) repeat-x 0 -1px; text-decoration:none; letter-spacing:2px;}
 	#menu li a.active { color:#003683; background:#F7FBFF; font-weight:bold; border-top:solid 1px #3BB2F4; border-bottom:solid 1px #F7FBFF; background-image:url(menu_selected.png); background-repeat:repeat-x; background-position:0 0; }
 

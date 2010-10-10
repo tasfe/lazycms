@@ -28,6 +28,7 @@ fieldset#fields { background: #fff; border:1px solid #CCC; padding:0; -moz-borde
 	fieldset#fields.closed .fields-data{ display:none; }
 	fieldset#fields .fields-data .actions,fieldset#fields .fields-data .fields-table{ margin:5px; }
 	fieldset#fields .fields-data .actions .tip { margin-left:5px; color:#a52a2a; }
+	fieldset#fields .fields-data .actions button { margin-right:5px; }
 
 table.model-field-table{ border:0 none; clear:both; margin-bottom:0px; border-collapse:collapse; }
 	table.model-field-table input{ margin:1px 0; }
