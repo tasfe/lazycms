@@ -287,7 +287,7 @@ CREATE TABLE `#@_model` (
   `list` varchar(50) DEFAULT NULL,
   `page` varchar(50) DEFAULT NULL,
   `fields` longtext NOT NULL,
-  `state` enum('0','1') NOT NULL DEFAULT '1',
+  `state` enum('0','1') NOT NULL DEFAULT '0',
   PRIMARY KEY (`modelid`),
   KEY `code` (`code`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
@@ -299,7 +299,7 @@ CREATE TABLE `#@_post` (
   `path` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
   `content` longtext,
-  `passed` tinyint(1) NOT NULL DEFAULT '1',
+  `passed` tinyint(1) NOT NULL DEFAULT '0',
   `datetime` int(11) NOT NULL DEFAULT '0',
   `template` varchar(50) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,

@@ -165,7 +165,9 @@ class Mysql {
                 $query = str_replace("'@{$i}@'", $v, $query);
             }
         }
-        $query = vsprintf($query, $this->escape($args));
+        if ($args) {
+            $query = vsprintf($query, $this->escape($args));
+        }
         return $query;
     }
     /**
@@ -657,10 +659,6 @@ class Mysql {
 			$str = mysql_real_escape_string( $str, $this->conn );
 		else
 			$str = addslashes( $str );
-
-		if (is_numeric($str)) {
-            return $str;
-        }
 
         return "'{$str}'";
 	}

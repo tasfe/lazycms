@@ -153,7 +153,7 @@ switch ($method) {
 	        case 'enabled':
 	            foreach ($listids as $modelid) {
 	            	model_edit($modelid,array(
-	            	  'state' => 1
+	            	  'state' => 0
 	            	));
 	            }
 	            admin_success(__('Models enabled.'),"LazyCMS.redirect('".PHP_FILE."');");
@@ -162,7 +162,7 @@ switch ($method) {
 	        case 'disabled':
 	            foreach ($listids as $modelid) {
 	            	model_edit($modelid,array(
-	            	  'state' => 0
+	            	  'state' => 1
 	            	));
 	            }
 	            admin_success(__('Models disabled.'),"LazyCMS.redirect('".PHP_FILE."');");

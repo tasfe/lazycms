@@ -54,7 +54,7 @@ button, .button {
     border-radius:2px;-webkit-border-radius:2px;-moz-border-radius:2px;-khtml-border-radius:2px;
     font:normal normal normal 12px/12px Arial,sans-serif;
     color:#000;
-    text-align:middle;text-decoration:none;text-shadow:0 1px 1px rgba(255,255,255,1);
+    text-align:center; text-decoration:none;text-shadow:0 1px 1px rgba(255,255,255,1);
     background:#eee;background-image:-webkit-gradient(linear,0 0,0 100%,from(#fff),to(#ddd));background:-moz-linear-gradient(top,#fff,#ddd);filter:progid:DXImageTransform.Microsoft.Gradient(EndColorstr='#dddddd',StartColorstr='#ffffff',GradientType=0);
     cursor:pointer;
     margin:0; _margin-bottom:1px;

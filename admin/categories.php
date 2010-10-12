@@ -243,7 +243,7 @@ function category_manage_page($action) {
     $list    = isset($_SORT['list'])?$_SORT['list']:null;
     $keywords = isset($_SORT['keywords'])?$_SORT['keywords']:null;
     $description = isset($_SORT['description'])?$_SORT['description']:null;
-    $modules = model_gets(1);
+    $modules = model_gets(0);
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="sortmanage" id="sortmanage">';

@@ -434,7 +434,7 @@ function post_manage_page($action) {
     global $php_file;
     $referer = referer(PHP_FILE);
     $postid  = isset($_GET['postid'])?$_GET['postid']:0;
-    $models  = model_gets(1);
+    $models  = model_gets(0);
     $suffix  = C('HTMLFileSuffix');
     if ($action=='add') {
         $mcode = isset($_GET['model'])?$_GET['model']:null;
