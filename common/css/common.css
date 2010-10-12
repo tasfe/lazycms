@@ -20,7 +20,6 @@
 /* Basic HTML
 ----------------------------------------------------------------------------------------------------*/
 body { font-size: 12px; line-height: 1.5; height:100%; }
-button{ min-width:70px; *min-width:auto; }
 input,select,button { vertical-align:middle; }
 
 /* Utility Classes
@@ -48,10 +47,11 @@ input.text,textarea.text,select{ background-color:#FFF; border:solid 1px #7F9DB9
 
 /* button */
 button, .button {
+    min-width:70px; *min-width:auto;
     border-width:1px;
     border-style:solid;
     border-color:#bbb #999 #999 #bbb;
-    border-radius:2px;-webkit-border-radius:2px;-moz-border-radius:2px;
+    border-radius:2px;-webkit-border-radius:2px;-moz-border-radius:2px;-khtml-border-radius:2px;
     font:normal normal normal 12px/12px Arial,sans-serif;
     color:#000;
     text-align:middle;text-decoration:none;text-shadow:0 1px 1px rgba(255,255,255,1);
@@ -60,7 +60,8 @@ button, .button {
     margin:0; _margin-bottom:1px;
     display:-moz-inline-box;display:inline-block;
     *overflow:visible;
-    padding:2px 8px 2px; padding:6px 0px 3px\9; *padding:3px 8px 2px; _padding:3px 8px 2px;
+    padding:2px 8px 2px; padding:6px 8px 3px\9; *padding:3px 8px 2px; _padding:3px 8px 2px;
+
 }
 button:visited, .button:visited{color:#666}
 button:focus, .button:focus, button:hover, .button:hover{border-color:#666}

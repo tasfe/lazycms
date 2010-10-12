@@ -7,7 +7,7 @@ $scripts = admin_head('scripts')?admin_head('scripts'):array();
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo $title;?> &lsaquo; <?php echo C('SiteName');?>  &#8212; LazyCMS</title>
+<title><?php echo $title;?> &lsaquo; <?php echo C('SiteTitle');?>  &#8212; LazyCMS</title>
 <?php
 // 加载CSS
 call_user_func_array('admin_css',array_merge(array('css/admin'),$styles));
@@ -35,7 +35,7 @@ if ($loadevents) {
         <img id="header-logo" src="<?php echo ADMIN_ROOT.'images/logo.png';?>" alt="LazyCMS <?php echo LAZY_VERSION;?>" />
         <h1 id="header-visit">
             <a href="<?php echo WEB_ROOT;?>" target="_blank">
-                <span><?php echo C('SiteName');?></span>
+                <span><?php echo C('SiteTitle');?></span>
                 <em><?php _e('Visit Site');?></em>
             </a>
         </h1>

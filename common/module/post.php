@@ -165,7 +165,7 @@ function post_gets($sql, $page=0, $size=10){
 function post_get($postid) {
     $db = get_conn();
     $ckey  = sprintf('post.%s',$postid);
-    $value = FCache::get($ckey);
+    $value = fcache_get($ckey);
     if (!empty($value)) return $value;
 
     $rs = $db->query("SELECT * FROM `#@_post` WHERE `postid`=%s LIMIT 0,1;",$postid);
@@ -178,7 +178,7 @@ function post_get($postid) {
             $post['meta'] = $meta;
         }
         // 保存到缓存
-        FCache::set($ckey,$post);
+        fcache_set($ckey,$post);
         return $post;
     }
     return null;
@@ -248,7 +248,7 @@ function post_edit_meta($postid,$data) {
  * @return bool
  */
 function post_clean_cache($postid) {
-    return FCache::delete('post.'.$postid);
+    return fcache_delete('post.'.$postid);
 }
 /**
  * 删除一片文章

@@ -30,13 +30,15 @@ define('ABS_PATH',dirname(__FILE__));
 define('COM_PATH',ABS_PATH.'/common');
 
 // 加载项目配置
-require COM_PATH.'/config.php';
+if (is_file(COM_PATH.'/config.php'))
+    require COM_PATH.'/config.php';
 
 // 定义系统常量
 require COM_PATH."/defines.php";
-
 // 加载公共函数库
 require COM_PATH.'/functions.php';
+// 加载数据库访问类
+require COM_PATH.'/system/mysql.php';
 // 加载验证类
 require COM_PATH.'/system/validate.php';
 // 加载cookie库

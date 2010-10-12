@@ -53,6 +53,7 @@ class LazyLoader {
             'user'   => array(ADMIN_PATH.'/css/user.css',array('admin_common')),
             'model'  => array(ADMIN_PATH.'/css/model.css',array('admin_common')),
             'post'   => array(ADMIN_PATH.'/css/post.css',array('admin_common')),
+            'install' => array(ADMIN_PATH.'/css/install.css',array('admin_common')),
             'categories' => array(ADMIN_PATH.'/css/categories.css',array('admin_common')),
         );
         // 追加语言相关的CSS
@@ -81,9 +82,6 @@ class LazyLoader {
                                     'Edit'      => __('Edit'),
                                     'Delete'    => __('Delete'),
                                     'No record!'        => __('No record!'),
-                                    'Upgrade Tips'      => __('Upgrade Tips'),
-                                    'Current:'          => __('Current:'),
-                                    'Recommended:'      => __('Recommended:'),
                                     'Confirm Logout?'   => __('Confirm Logout?'),
                                     'Confirm Delete?'   => __('Confirm Delete?'),
                                     'Use the model set' => __('Use the model set'),
@@ -104,6 +102,7 @@ class LazyLoader {
             'categories'    => array(ADMIN_PATH.'/js/categories.js',array('admin')),
             'post'          => array(ADMIN_PATH.'/js/post.js',array('admin')),
             'options'       => array(ADMIN_PATH.'/js/options.js',array('admin')),
+            'install'       => array(ADMIN_PATH.'/js/install.js',array('admin')),
         );
         // 追加语言相关的JS
         if ($this->language) {

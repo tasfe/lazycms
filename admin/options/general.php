@@ -33,7 +33,7 @@ if (validate_is_post()) {
         }
     }
     unset($options['referer']);
-    validate_check('SiteName',VALIDATE_EMPTY,__('Please enter the site name.'));
+    validate_check('SiteTitle',VALIDATE_EMPTY,__('Please enter the site name.'));
     if (validate_is_ok()) {
         C($options);
     }
@@ -51,8 +51,8 @@ if (validate_is_post()) {
     echo     '<fieldset>';
     echo       '<table class="form-table">';
     echo           '<tr>';
-    echo               '<th><label for="SiteName">'.__('Site name').'<span class="description">'.__('(required)').'</span></label></th>';
-    echo               '<td><input class="text" id="SiteName" name="SiteName" type="text" size="50" value="'.C('SiteName').'" /></td>';
+    echo               '<th><label for="SiteTitle">'.__('Site Title').'<span class="description">'.__('(required)').'</span></label></th>';
+    echo               '<td><input class="text" id="SiteTitle" name="SiteTitle" type="text" size="50" value="'.C('SiteTitle').'" /></td>';
     echo           '</tr>';
     /*echo           '<tr>';
     echo               '<th><label>'.__('Compress').'<span class="description">'.__('(required)').'</span></label></th>';

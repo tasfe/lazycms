@@ -28,7 +28,6 @@ define('CLIENT_MULTI_RESULTS', 0x20000);
 class Mysql {
 	// public
     var $conn  = null;
-    var $ready = null;
     var $sql   = null;
     // private
     var $_host = 'localhost';
@@ -38,7 +37,6 @@ class Mysql {
     var $_name = 'test';
     var $_prefix = null;
     var $_scheme = 'mysql';
-    var $_throw  = true;
     var $_pconnect = false;
     var $_goneaway = 3; 
     /**
@@ -48,11 +46,16 @@ class Mysql {
      * @param bool $pconnect    是否需要长连接
      * @return void
      */
-    function __construct($config,$pconnect=false) {
-        $this->config($config);
-        $this->config('pconnect',$pconnect);
-        if ($this->connect()) {
-            $this->select_db();
+    function __construct($config=null, $pconnect=false) {
+        if (!extension_loaded('mysql')) {
+            return throw_error(__('Your PHP installation appears to be missing the MySQL extension which is required by LazyCMS.'),E_LAZY_ERROR);
+        }
+        if (!empty($config)) {
+            $this->config($config);
+            $this->config('pconnect',$pconnect);
+            if ($this->connect()) {
+                $this->select_db();
+            }
         }
     }
 
@@ -79,17 +82,11 @@ class Mysql {
             $this->conn = mysql_pconnect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,CLIENT_MULTI_RESULTS);
         } elseif (function_exists('mysql_connect')) {
             $this->conn = mysql_connect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,false,CLIENT_MULTI_RESULTS);
-        } else {
-            return throw_error(__('-_-!! Please open the mysql extension!'),E_LAZY_ERROR);
         }
         
         // 验证连接是否正确
         if (!$this->conn) {
-            if ($this->_throw) {
-                return throw_error(__('Database connect error, please check the database settings!'),E_LAZY_ERROR);
-            } else {
-                return false;
-            }
+            return throw_error(__('Database connect error, please check the database settings!'),E_LAZY_ERROR);
         }
         return $this->conn;
     }
@@ -103,12 +100,8 @@ class Mysql {
         if (!$this->conn) $this->connect();
         if (empty($db)) $db = $this->_name;
         // 选择数据库
-        if (! ($this->ready = mysql_select_db($db,$this->conn))) {
-            if ($this->_throw) {
-                return throw_error(sprintf(__('%s database not found!'),$db),E_LAZY_ERROR);
-            } else {
-                return false;
-            }
+        if (!mysql_select_db($db,$this->conn)) {
+            return throw_error(sprintf(__('%s database not found!'),$db),E_LAZY_ERROR);
         }
         // MYSQL数据库的设置
         if (version_compare($this->version(), '4.1', '>=')) {
@@ -117,7 +110,7 @@ class Mysql {
 	            mysql_query("SET sql_mode='';",$this->conn);
 	        }
         } else {
-            return throw_error(__('mysql database version lower than 4.1, please upgrade mysql!'),E_LAZY_ERROR);
+            return throw_error(__('MySQL database version lower than 4.1, please upgrade MySQL!'),E_LAZY_ERROR);
         }
         
         return true;
@@ -133,11 +126,7 @@ class Mysql {
     function query($sql,$bind=null){
         // 验证连接是否正确
         if (!$this->conn) {
-            if ($this->_throw) {
-                return throw_error(__('Supplied argument is not a valid MySQL-Link resource.'),E_LAZY_ERROR);
-            } else {
-                return false;
-            }
+            return throw_error(__('Supplied argument is not a valid MySQL-Link resource.'),E_LAZY_ERROR);
         }
         // 参数个数
         $args_num = func_num_args();
@@ -166,12 +155,7 @@ class Mysql {
             } else {
                 // 重置计数
                 $this->_goneaway = 3;
-
-                if ($this->_throw) {
-                    return throw_error(sprintf(__("MySQL Query Error:%s"),$sql."\r\n\t".$this->error()),E_LAZY_ERROR);
-                } else {
-                    return false;
-                }
+                return throw_error(sprintf(__("MySQL Query Error:%s"),$sql."\r\n\t".$this->error()),E_LAZY_ERROR);
             }
         }
         // 查询正常
@@ -292,6 +276,19 @@ class Mysql {
         	$result[] = $rs['Field'];
         }
         return $result;
+    }
+    /**
+     * 检查是否存在数据库
+     *
+     * @param  $dbname
+     * @return bool
+     */
+    function is_database($dbname){
+        $res = $this->query("SHOW DATABASES;");
+        while ($rs = $this->fetch($res)) {
+        	if ($dbname == $rs['Database']) return true;
+        }
+        return false;
     }
     /**
      * 判断数据表是否存在

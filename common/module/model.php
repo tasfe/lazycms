@@ -71,7 +71,7 @@ function model_get($param,$type=0,$language=null) {
     } else {
         $ckey = $ckeys[$type];
     }
-    $value = FCache::get($ckey.$param);
+    $value = fcache_get($ckey.$param);
     if (!empty($value)) return $value;
 
     switch($type){
@@ -96,7 +96,7 @@ function model_get($param,$type=0,$language=null) {
             }
         }
         // 保存到缓存
-        FCache::set($ckey.$param,$model);
+        fcache_set($ckey.$param,$model);
         return $model;
     }
     return null;
@@ -162,9 +162,9 @@ function model_clean_cache($modelid) {
         $ckey = 'model.';
         foreach (array('modelid','code') as $field) {
             if ($field=='modelid') {
-                FCache::delete(sprintf('%s%s.%s',$ckey,$field,$model[$field]));
+                fcache_delete(sprintf('%s%s.%s',$ckey,$field,$model[$field]));
             } else {
-                FCache::delete(sprintf('%s%s.%s.%s',$ckey,$field,$model['language'],$model[$field]));
+                fcache_delete(sprintf('%s%s.%s.%s',$ckey,$field,$model['language'],$model[$field]));
             }
         }
     }

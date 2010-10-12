@@ -30,6 +30,7 @@ defined('COM_PATH') or die('Restricted access!');
  * @return array|null
  */
 function parse_dsn($DSN){
+    if (empty($DSN)) return null;
     if (preg_match('/^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@([\w\-\.]+)(:(\d+))?(\/([\w\-]+)\/([\w\-]+)|\/([\w\-]+))$/i',trim($DSN),$info)) {
         return array(
             'host'  => isset($info[5])?$info[5]:null,
@@ -80,14 +81,20 @@ function format_path($path,$data=null) {
  * @return object
  */
 function get_conn($DSN=null,$pconnect=false){
-    static $db; if (is_null($DSN)) $DSN = DSN_CONFIG; 
-    $guid = guid(array($DSN,$pconnect));
+    static $db; $guid = guid(array($DSN,$pconnect));
     if (isset($db[$guid]) && is_object($db[$guid])) return $db[$guid];
-    if ($config = parse_dsn($DSN)) {
-        require_once COM_PATH.'/system/mysql.php';
-    	$db[$guid] = new Mysql($config,$pconnect);
-        return $db[$guid];
+    $config = parse_dsn($DSN);
+    if (empty($config)) {
+        $config = array(
+            'host'  => DB_HOST,
+            'user'  => DB_USER,
+            'pwd'   => DB_PWD,
+            'name'  => DB_NAME,
+            'prefix'=> DB_PREFIX,
+        );
     }
+    $db[$guid] = new Mysql($config,$pconnect);
+    return $db[$guid];
     return false;
 }
 /**
@@ -195,6 +202,7 @@ function handler_error($errno,$errstr,$errfile,$errline) {
  * @return bool
  */
 function throw_error($errstr,$errno=E_LAZY_NOTICE,$errfile=null,$errline=0){
+    if (error_reporting() === 0) return false;
     $string  = $file = null;
     $traces  = debug_backtrace();
     $error   = $traces[0]; unset($traces[0]);
@@ -233,8 +241,6 @@ function throw_error($errstr,$errno=E_LAZY_NOTICE,$errfile=null,$errline=0){
     $log.= $string?"[Trace]:\r\n{$string}\r\n":'';
     // 记录日志
     error_log($log,3,ABS_PATH.'/error.log');
-    // 屏蔽错误
-    if (error_reporting() === 0) return false;
     // 处里错误
     switch ($errno) {
         case E_LAZY_ERROR:
@@ -746,7 +752,7 @@ function pinyin($string) {
         if (class_exists('FCache')) {
             $prefix = 'pinyin.';
             $en_str = md5($string);
-            $result = FCache::get($prefix . $en_str);
+            $result = fcache_get($prefix . $en_str);
         }
 
         if (empty($result)) {
@@ -758,7 +764,7 @@ function pinyin($string) {
             }
             
             if (class_exists('FCache')) {
-                FCache::set($prefix . $en_str, $result);
+                fcache_set($prefix . $en_str, $result);
             }
         }
     	return $result;
@@ -918,10 +924,19 @@ function language() {
     $ck_lang = Cookie::get('language');
     $ck_lang = preg_replace( '/[^a-z0-9,_-]+/i', '', $ck_lang );
     if ($ck_lang && $ck_lang=='default') {
-        if (PHP_FILE==WEB_ROOT.'install.php') {
-            $ck_lang = stripos($_SERVER['HTTP_ACCEPT_LANGUAGE'],'zh-cn')!==false ? 'zh-CN' : 'en';
-        } else {
-            $ck_lang = C('Language');
+        $ck_lang = C('Language');
+    }
+
+    if (empty($ck_lang) && isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+        $ck_lang = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+        if (($pos=strpos($ck_lang,',')) !== false) {
+            $ck_lang = substr($ck_lang,0,$pos);
+        }
+        // 需要转换大小写
+        if (strtolower($ck_lang)=='zh-cn') {
+            $ck_lang = 'zh-CN';
+        } elseif (strtolower($ck_lang)=='zh-tw') {
+            $ck_lang = 'zh-TW';
         }
     }
     return $ck_lang;
@@ -951,18 +966,20 @@ function C($key,$value=null){
         $module = 'System';
     	$code   = $key;
     }
-    $db  = get_conn();
+    $db  = @get_conn();
     $key = $module.'.'.$code;
     // 取值
     if($key && func_num_args()==1) {
         // 先从缓存里取值
-        $value = FCache::get($ckey.$key);
+        $value = fcache_get($ckey.$key);
         if (empty($value)) {
-            $result = $db->query("SELECT * FROM `#@_option` WHERE `module`=%s AND `code`=%s LIMIT 0,1;",array($module,$code));
-            if ($data = $db->fetch($result)) {
-                $value = is_need_unserialize($data['type']) ? unserialize($data['value']) : $data['value'];
-                // 保存到缓存
-                FCache::set($ckey.$key,$value);
+            if ($db->errno()==0) {
+                $result = $db->query("SELECT * FROM `#@_option` WHERE `module`=%s AND `code`=%s LIMIT 0,1;",array($module,$code));
+                if ($data = $db->fetch($result)) {
+                    $value = is_need_unserialize($data['type']) ? unserialize($data['value']) : $data['value'];
+                    // 保存到缓存
+                    fcache_set($ckey.$key,$value);
+                }
             }
         }
         // 支持多维数组取值
@@ -977,14 +994,14 @@ function C($key,$value=null){
     else {
         // 删除属性
         if (is_null($value)) {
-            FCache::delete($key);
+            fcache_delete($key);
             $db->delete('#@_option',array(
                 'module' => $module,
                 'code'   => $code,
             ));
         } else {
             // 保存到缓存
-            FCache::set($ckey.$key,$value);
+            fcache_set($ckey.$key,$value);
             // 获取变量类型
             $var_type = gettype($value);
             // 判断是否需要序列化
@@ -1016,7 +1033,6 @@ function C($key,$value=null){
     }
     return null;
 }
-
 
 if (!function_exists('json_encode')) {
     function json_encode($value){

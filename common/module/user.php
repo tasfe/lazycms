@@ -127,7 +127,7 @@ function user_get($param,$type=0){
     $db = get_conn(); if ((int)$type>2) return null;
     $ckeys = array('user.userid.','user.name.','user.authcode.');
     $ckey  = $ckeys[$type];
-    $value = FCache::get($ckey.$param);
+    $value = fcache_get($ckey.$param);
     if (!empty($value)) return $value;
 
     switch($type){
@@ -148,7 +148,7 @@ function user_get($param,$type=0){
             $user = array_merge($user,$meta);
         }
         // 保存到缓存
-        FCache::set($ckey.$param,$user);
+        fcache_set($ckey.$param,$user);
         return $user;
     }
     return null;
@@ -298,7 +298,7 @@ function user_clean_cache($userid) {
     if ($user = user_get_byid($userid)) {
         $ckey = 'user.';
         foreach (array('userid','name','authcode') as $field) {
-            FCache::delete($ckey.$field.'.'.$user[$field]);
+            fcache_delete($ckey.$field.'.'.$user[$field]);
         }
     }
     return true;

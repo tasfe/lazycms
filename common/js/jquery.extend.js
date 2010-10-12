@@ -198,8 +198,8 @@
                         cache: false, url: url, dataType:'json',
                         type: _this.attr('method') && _this.attr('method').toUpperCase() || 'POST',
                         data: _this.serializeArray(),
-                        success: function(data){
-                            if ($.isFunction(callback)) callback.call(_this,data);
+                        success: function(data, status, xhr){
+                            if ($.isFunction(callback)) callback.call(_this,data, status, xhr);
                         },
                         complete: function(){
                             button.attr('disabled',false); LazyCMS.Loading.remove();

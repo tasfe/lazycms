@@ -136,3 +136,19 @@ class FCache {
         return rmdirs(CACHE_PATH);
     }
 }
+
+function fcache_file($key) {
+    return FCache::file($key);
+}
+function fcache_set($key, $data, $expire=0) {
+    return FCache::set($key, $data, $expire);
+}
+function fcache_get($key) {
+    return FCache::get($key);
+}
+function fcache_delete($key) {
+    return FCache::delete($key);
+}
+function fcache_flush() {
+    return FCache::flush();
+}

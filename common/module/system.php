@@ -33,7 +33,7 @@ tpl_add_plugin('system_tpl_plugin');
 function system_tpl_plugin($tag_name,$tag) {
     switch ($tag_name) {
         case 'sitename':
-            $result = C('SiteName');
+            $result = C('SiteTitle');
             break;
         case 'inst': case 'webroot':
             $result = WEB_ROOT;

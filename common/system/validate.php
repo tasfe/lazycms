@@ -139,7 +139,7 @@ class Validate {
                 $pattern = '/^\d+$/';
                 break;
             case VALIDATE_IS_LETTERS: case 'IS_LETTERS':
-                $pattern = '/^[A-Za-z]+$/';
+                $pattern = '/^[a-z]+$/i';
                 break;
             case VALIDATE_IS_EMAIL: case 'IS_EMAIL':
                 $pattern = '/^\w+([\-\+\.]\w+)*@\w+([\-\.]\w+)*\.\w+([\-\.]\w+)*$/i';

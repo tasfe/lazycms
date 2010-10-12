@@ -19,11 +19,18 @@
  * +---------------------------------------------------------------------------+
  */
 // 定义管理后台路径
-defined('ADMIN_PATH') or define('ADMIN_PATH',dirname(__FILE__));
+defined('ADMIN_PATH') or define('ADMIN_PATH', dirname(__FILE__));
 // 加载公共文件
 require ADMIN_PATH.'/../global.php';
 // 后台的目录
 define('ADMIN_ROOT',WEB_ROOT.str_replace('\\','/',substr(ADMIN_PATH,strlen(ABS_PATH)+1)).'/');
+
+// 检查是否已配置
+defined('NO_REDIRECT') or define('NO_REDIRECT', false);
+if (!NO_REDIRECT && !file_exists_case(COM_PATH.'/config.php')) {
+    redirect(ADMIN_ROOT.'install.php'); exit();
+}
+
 // 加载模版处里类
 require COM_PATH.'/system/template.php';
 // 加载公共模块

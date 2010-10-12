@@ -58,8 +58,10 @@ $.ajaxSetup({
         LazyCMS.Loading.css({'z-index':$('*').maxIndex() + 1}).appendTo('body');
     },
     error:function(xhr,status,error) {
+        var title = $.parseJSON(xhr.getResponseHeader('X-Dialog-title'));
+            title = title || _('System Error');
         LazyCMS.dialog({
-            title:_('System Error'), styles:{ overflow:'auto', width:'700px',height:'350px' }, body:xhr.responseText
+            title:title, styles:{ overflow:'auto', width:'700px',height:'350px' }, body: xhr.responseText
         });
         LazyCMS.Loading.remove();
     },

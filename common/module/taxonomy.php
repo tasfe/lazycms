@@ -64,7 +64,7 @@ function term_add($name) {
             'name' => $name,
         ));
         // 清理缓存
-        FCache::delete('terms.dicts');
+        fcache_delete('terms.dicts');
     }
     return $termid;
 }
@@ -78,7 +78,7 @@ function term_add($name) {
  */
 function term_gets($content,$max_len=8,$save_other=false) {
     $ckey  = 'terms.dicts';
-    $dicts = FCache::get($ckey);
+    $dicts = fcache_get($ckey);
     if (empty($dicts)) {
         $db = get_conn(); $dicts = array();
         // 读取关键词列表
@@ -86,7 +86,7 @@ function term_gets($content,$max_len=8,$save_other=false) {
         while ($data = $db->fetch($rs)) {
             $dicts[] = $data['name'];
         }
-        FCache::set($ckey,$dicts);
+        fcache_set($ckey,$dicts);
     }
     require_once COM_PATH.'/system/splitword.php';
     $splitword = new SplitWord($dicts);
@@ -133,7 +133,7 @@ function taxonomy_get_trees($parentid=0,$type='category') {
 function taxonomy_get_byid($taxonomyid) {
     $db = get_conn(); $prefix = 'taxonomy.';
     $taxonomyid = intval($taxonomyid);
-    $value = FCache::get($prefix.$taxonomyid);
+    $value = fcache_get($prefix.$taxonomyid);
     if (!empty($value)) return $value;
     $rs = $db->query("SELECT * FROM `#@_term_taxonomy` WHERE `taxonomyid`=%s LIMIT 0,1;",$taxonomyid);
     if ($taxonomy = $db->fetch($rs)) {
@@ -144,7 +144,7 @@ function taxonomy_get_byid($taxonomyid) {
             $taxonomy = array_merge($taxonomy,$meta);
         }
         // 保存到缓存
-        FCache::set($prefix.$taxonomyid,$taxonomy);
+        fcache_set($prefix.$taxonomyid,$taxonomy);
         return $taxonomy;
     }
     return null;
@@ -352,7 +352,7 @@ function taxonomy_edit_meta($taxonomyid,$data) {
  */
 function taxonomy_clean_cache($taxonomyid) {
     $taxonomyid = intval($taxonomyid);
-    return FCache::delete('taxonomy.'.$taxonomyid);
+    return fcache_delete('taxonomy.'.$taxonomyid);
 }
 /**
  * 删除分类

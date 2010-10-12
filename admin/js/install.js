@@ -1,4 +1,3 @@
-<?php
 /**
  * +---------------------------------------------------------------------------+
  * | LL                             LLLL   LL     L   LLLL               LLLL  |
@@ -18,37 +17,39 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-require dirname(__FILE__).'/global.php';
-// 安装程序版本
-define('INSTALL_VERSION','0.1');
-
-$method = isset($_GET['method'])?$_GET['method']:null;
-
-switch ($method) {
-    default:
-        setup_main();
+function install_init() {
+    $('form#setup').ajaxSubmit(function(){
+        $('.dialog .buttons button').text(_('Rock it!'));
+    });
+    $('#passowrd1').val('').keyup( install_check_pass_strength );
+    $('#passowrd2').val('').keyup( install_check_pass_strength );
 }
+// 验证密码强弱
+function install_check_pass_strength() {
+    var pass1 = $('#passowrd1').val(), user = $('#adminname').val(), pass2 = $('#passowrd2').val(), strength;
 
+    $('#pass-strength-result').removeClass('short bad good strong');
+    if ( ! pass1 ) {
+        $('#pass-strength-result').html( _('Strength indicator') );
+        return;
+    }
 
+    strength = password_strength(user, pass1, pass2);
 
-function setup_main() {
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php _e('LazyCMS Setup');?> <?php echo 'ver '.INSTALL_VERSION;?></title>
-<script type="text/javascript" src="<?php echo WEB_ROOT.'common/js/jquery.js'?>"></script>
-<script type="text/javascript">
-    
-</script>
-<style type="text/css">
-
-</style>
-</head>
-
-<body>
-
-</body>
-</html>
-<?php }?>
+    switch ( strength ) {
+        case 2:
+            $('#pass-strength-result').addClass('bad').html( _('Weak') );
+            break;
+        case 3:
+            $('#pass-strength-result').addClass('good').html( _('Medium') );
+            break;
+        case 4:
+            $('#pass-strength-result').addClass('strong').html( _('Strong') );
+            break;
+        case 5:
+            $('#pass-strength-result').addClass('short').html( _('Mismatch') );
+            break;
+        default:
+            $('#pass-strength-result').addClass('short').html( _('Very weak') );
+    }
+}

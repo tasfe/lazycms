@@ -51,7 +51,7 @@ a:hover   { text-decoration: underline; }
 /* 表单table
 ----------------------------------------------------------------------------------------------------*/
 .form-table{ width:100%; border:0 none; clear:both; margin-bottom:0px; margin-top:0.5em; border-collapse:collapse; }
-	.form-table input{ margin:1px 0; }
+    .form-table input{ margin:1px 0; }
 	.form-table label{ cursor:pointer; }
     .form-table label input{ margin-right:3px; }
 	.form-table th, .form-table td { border:none; }
