@@ -161,7 +161,7 @@ function user_get($param,$type=0){
  */
 function user_get_meta($userid) {
     $db = get_conn(); $result = array(); $userid = intval($userid);
-    $rs = $db->query("SELECT * FROM `#@_user_meta` WHERE `userid`=%s;",$userid);
+    $rs = $db->query("SELECT * FROM `#@_user_meta` WHERE `userid`=%d;",$userid);
     while ($row = $db->fetch($rs)) {
         if (is_need_unserialize($row['type'])) {
            $result[$row['key']] = unserialize($row['value']);

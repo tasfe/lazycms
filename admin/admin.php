@@ -50,11 +50,19 @@ require COM_PATH.'/module/post.php';
 function current_user_can($action,$is_redirect=true) {
     global $_ADMIN; $result = false;
     $user = user_current(false);
-    if (isset($user['roles'])) {
-    	if (instr($action,$user['roles'])) {
-    		$result = true;
-    	}
+    if (isset($user['Administrator']) && isset($user['roles'])) {
+        // 超级管理员
+        if($user['Administrator']=='Yes' && $user['roles']=='ALL') {
+            $result = true;
+        }
+        // 普通管理员
+        elseif ($user['Administrator']=='Yes') {
+            if (instr($action,(array)$user['roles'])) {
+                $result = true;
+            }
+        }
     }
+
     // 权限不足
     if (!$result && $is_redirect) {
     	if (is_ajax()) {
@@ -172,7 +180,6 @@ function admin_return($data) {
  * @return array
  */
 function admin_purview($data=null) {
-    if (!is_array($data)) $data = array();
     $purview = array(
         'cpanel' => array(
             '_LABEL_'   => __('Control Panel'),
@@ -237,7 +244,11 @@ function admin_purview($data=null) {
         $title = $pv['_LABEL_']; unset($pv['_LABEL_']);
         $roles = null; $parent_checked = ' checked="checked"';
         foreach ($pv as $sk=>$spv) {
-            $checked = instr($sk,$data)?' checked="checked"':null;
+            if ($data=='ALL') {
+                $checked = ' checked="checked"';
+            } else {
+                $checked = instr($sk,$data)?' checked="checked"':null;
+            }
             $parent_checked = empty($checked)?'':$parent_checked;
         	$roles.= '<label><input type="checkbox" name="roles[]" rel="'.$k.'" value="'.$sk.'"'.$checked.' /> '.$spv.'</label>';
         }
@@ -287,7 +298,7 @@ function admin_menu($menus) {
                     $href[3]   = !strncasecmp($parent_file,$url_query,strlen($url_query))?true:false;
                     $is_expand = !strncasecmp($parent_file,$url_query,strlen($url_query))?true:$is_expand;
                     // 子菜单需要权限才能访问，且用户要有权限
-                    if (isset($href[2]) && instr($href[2],$_ADMIN['roles'])) {
+                    if (isset($href[2]) && (instr($href[2],$_ADMIN['roles']) || $_ADMIN['roles']=='ALL')) {
                         $submenus[] = $href;
                     }
                     // 子菜单存在，不需要权限

@@ -116,6 +116,59 @@ class Mysql {
         return true;
     }
     /**
+	 * Prepares a SQL query for safe execution. Uses sprintf()-like syntax.
+	 *
+	 * The following directives can be used in the query format string:
+	 *   %d (decimal number)
+	 *   %s (string)
+	 *   %% (literal percentage sign - no argument needed)
+	 *
+	 * Both %d and %s are to be left unquoted in the query string and they need an argument passed for them.
+	 * Literals (%) as parts of the query must be properly written as %%.
+	 *
+	 * This function only supports a small subset of the sprintf syntax; it only supports %d (decimal number), %s (string).
+	 * Does not support sign, padding, alignment, width or precision specifiers.
+	 * Does not support argument numbering/swapping.
+	 *
+	 * May be called like {@link http://php.net/sprintf sprintf()} or like {@link http://php.net/vsprintf vsprintf()}.
+	 *
+	 * Both %d and %s should be left unquoted in the query string.
+	 *
+	 *
+	 * @param string $query Query statement with sprintf()-like placeholders
+	 * @param array|mixed $args The array of variables to substitute into the query's placeholders if being called like
+	 * 	{@link http://php.net/vsprintf vsprintf()}, or the first variable to substitute into the query's placeholders if
+	 * 	being called like {@link http://php.net/sprintf sprintf()}.
+	 * @param mixed $args,... further variables to substitute into the query's placeholders if being called like
+	 * 	{@link http://php.net/sprintf sprintf()}.
+	 * @return null|false|string Sanitized query string, null if there is no query, false if there is an error and string
+	 * 	if there was something to prepare
+	 */
+    function prepare($query = null) { // ( $query, *$args )
+        if ( is_null( $query ) ) return ;
+        $args = func_get_args(); array_shift( $args );
+        // If args were passed as an array (as in vsprintf), move them up
+		if ( isset( $args[0] ) && is_array($args[0]) ) $args = $args[0];
+
+        $query = str_replace( "'%s'", '%s', $query ); // in case someone mistakenly already singlequoted it
+		$query = str_replace( '"%s"', '%s', $query ); // doublequote unquoting
+        $query = preg_replace( '/(?<!%)%s/', "%s", $query ); // quote the strings, avoiding escaped strings like %%s
+        // 处理表前缀
+        if (preg_match_all("/'[^']+'/",$query,$r)) {
+            foreach($r[0] as $i=>$v) {
+                $query = preg_replace('/'.preg_quote($v,'/').'/',"'@{$i}@'",$query,1);
+            }
+        }
+        $query = preg_replace('/(?<![^\s])(`*)#@_([\w`]+\s*)/iU','$1'.$this->_prefix.'$2',$query);
+        if (isset($r[0]) && !empty($r[0])) {
+            foreach($r[0] as $i=>$v) {
+                $query = str_replace("'@{$i}@'", $v, $query);
+            }
+        }
+        $query = vsprintf($query, $this->escape($args));
+        return $query;
+    }
+    /**
      * 指定函数执行SQL语句
      *
      * @param string $sql	sql语句
@@ -123,22 +176,16 @@ class Mysql {
      * @param string $type	类型
      * @return resource
      */
-    function query($sql,$bind=null){
+    function query($sql){
         // 验证连接是否正确
         if (!$this->conn) {
             return throw_error(__('Supplied argument is not a valid MySQL-Link resource.'),E_LAZY_ERROR);
         }
-        // 参数个数
-        $args_num = func_num_args();
-        // 替换占位符
-    	if (is_array($bind)) {
-    		$sql = vsprintf($sql,$this->escape($bind));
-    	} elseif ($args_num == 2) {
-    		$sql = sprintf($sql,$this->escape($bind));
-    	}
+        $args = func_get_args();
+        
+        $sql = call_user_func_array(array(&$this,'prepare'), $args);
 
-        $sql = preg_replace('/`(#@_)(\w+)`/i','`'.$this->_prefix.'$2`',$sql);
-        if ( preg_match("/^\\s*(insert|delete|update|replace|alter) /i",$sql) ) {
+        if ( preg_match("/^\\s*(insert|delete|update|replace|alter table|create) /i",$sql) ) {
         	$func = 'mysql_unbuffered_query';
         } else {
         	$func = 'mysql_query';
@@ -147,11 +194,7 @@ class Mysql {
         if (!($result = $func($sql,$this->conn))) {
             if (in_array($this->errno(),array(2006,2013)) && ($this->_goneaway-- > 0)) {
                 $this->close(); $this->connect(); $this->select_db();
-                if ($args_num == 1) {
-                    $result = $this->query($sql);
-                } else {
-                    $result = $this->query($sql,$bind);
-                }
+                $result = call_user_func_array(array(&$this,'query'), $args);
             } else {
                 // 重置计数
                 $this->_goneaway = 3;
@@ -173,6 +216,199 @@ class Mysql {
         }
         return $result;
     }
+    /**
+     * 增量的变更表差异
+     *
+     * @param  $queries
+     * @param bool $execute
+     * @return array
+     */
+    function delta($queries, $execute = true) {
+        // Separate individual queries into an array
+        if ( !is_array($queries) ) {
+            $queries = explode( ';', $queries );
+            if ('' == $queries[count($queries) - 1]) array_pop($queries);
+        }
+
+        $cqueries = array(); // Creation Queries
+        $iqueries = array(); // Insertion Queries
+        $for_update = array();
+
+        // Create a tablename index for an array ($cqueries) of queries
+        foreach($queries as $qry) {
+            $qry = $this->prepare($qry);
+            if (preg_match("|CREATE TABLE ([^ ]*)|", $qry, $matches)) {
+                $cqueries[trim( strtolower($matches[1]), '`' )] = $qry;
+                $for_update[$matches[1]] = 'Created table ' . $matches[1];
+            } else if (preg_match("|CREATE DATABASE ([^ ]*)|", $qry, $matches)) {
+                array_unshift($cqueries, $qry);
+            } else if (preg_match("|INSERT INTO ([^ ]*)|", $qry, $matches)) {
+                $iqueries[] = $qry;
+            } else if (preg_match("|UPDATE ([^ ]*)|", $qry, $matches)) {
+                $iqueries[] = $qry;
+            } else {
+                // Unrecognized query type
+            }
+        }
+
+        // Check to see which tables and fields exist
+        $show_tables_res = $this->query("SHOW TABLES;");
+	    while ($data = $this->fetch($show_tables_res,0)) {
+            $table = $data[0];
+            // If a table query exists for the database table...
+            if (isset($cqueries[strtolower($table)])) {
+                // Clear the field and index arrays
+                $cfields = $indices = array();
+                // Get all of the field names in the query from between the parens
+                preg_match("/\((.*)\)/ms", $cqueries[strtolower($table)], $match2);
+                $qryline = trim($match2[1]);
+
+                // Separate field lines into an array
+                $flds = explode("\n", $qryline);
+
+                // For every field line specified in the query
+				foreach ($flds as $fld) {
+					// Extract the field name
+					preg_match("/^([^ ]*)/", trim($fld), $fvals);
+					$fieldname = isset($fvals[1]) ? $fvals[1]: '';//trim( $fvals[1], '`' );
+
+					// Verify the found field name
+					$validfield = true;
+					switch (strtolower($fieldname)) {
+					case '':
+					case 'primary':
+					case 'index':
+					case 'fulltext':
+					case 'unique':
+					case 'key':
+						$validfield = false;
+						$indices[] = trim(trim($fld), ", \n");
+						break;
+					}
+					$fld = trim($fld);
+
+					// If it's a valid field, add it to the field array
+					if ($validfield) {
+                        $fieldname = strtolower(trim( $fieldname, '`' ));
+						$cfields[$fieldname] = trim($fld, ", \n");
+					}
+				}
+
+                // Fetch the table column structure from the database
+                $describe_res = $this->query("DESCRIBE {$table};");
+                while ($tablefield = $this->fetch($describe_res)) {
+                    // If the table field exists in the field array...
+                    if (isset($cfields[strtolower($tablefield['Field'])])) {
+						// Get the field type from the query
+						preg_match("/`".$tablefield['Field']."` ([^ ]*( unsigned)?)/i", $cfields[strtolower($tablefield['Field'])], $matches);
+						$fieldtype = isset($matches[1]) ? $matches[1] : '';
+
+						// Is actual field type different from the field type in query?
+						if ($tablefield['Type'] != $fieldtype) {
+							// Add a query to change the column type
+							$cqueries[] = "ALTER TABLE `{$table}` CHANGE COLUMN `".$tablefield['Field']."` " . $cfields[strtolower($tablefield['Field'])];
+							$for_update[$table.'.'.$tablefield['Field']] = "Changed type of {$table}.".$tablefield['Field']." from ".$tablefield['Type']." to {$fieldtype}";
+						}
+
+						// Get the default value from the array
+						if (preg_match("/ DEFAULT '(.*)'/i", $cfields[strtolower($tablefield['Field'])], $matches)) {
+							$default_value = $matches[1];
+							if ($tablefield['Default'] != $default_value) {
+								// Add a query to change the column's default value
+								$cqueries[] = "ALTER TABLE `{$table}` ALTER COLUMN `".$tablefield['Field']."` SET DEFAULT '{$default_value}'";
+								$for_update[$table.'.'.$tablefield['Field']] = "Changed default value of {$table}.".$tablefield['Field']." from ".$tablefield['Default']." to {$default_value}";
+							}
+						}
+
+						// Remove the field from the array (so it's not added)
+						unset($cfields[strtolower($tablefield['Field'])]);
+					} else {
+						// This field exists in the table, but not in the creation queries?
+					}
+                }
+
+                // For every remaining field specified for the table
+				foreach ($cfields as $fieldname => $fielddef) {
+					// Push a query line into $cqueries that adds the field to that table
+					$cqueries[] = "ALTER TABLE `{$table}` ADD COLUMN {$fielddef}";
+					$for_update[$table.'.'.$fieldname] = "Added column {$table}.{$fieldname}";
+				}
+
+                // Index stuff goes here
+				// Fetch the table index structure from the database
+                $tableindices   = array();
+                $show_index_res = $this->query("SHOW INDEX FROM {$table};");
+                while ($index = $this->fetch($show_index_res)) {
+                    $tableindices[] = $index;
+                }
+
+                if (!empty($tableindices)) {
+					// Clear the index array
+					unset($index_ary);
+
+					// For every index in the table
+					foreach ($tableindices as $tableindex) {
+						// Add the index to the index data array
+						$keyname = $tableindex['Key_name'];
+						$index_ary[$keyname]['columns'][] = array('fieldname' => $tableindex['Column_name'], 'subpart' => $tableindex['Sub_part']);
+						$index_ary[$keyname]['unique'] = ($tableindex['Non_unique'] == 0)?true:false;
+					}
+
+					// For each actual index in the index array
+					foreach ($index_ary as $index_name => $index_data) {
+						// Build a create string to compare to the query
+						$index_string = '';
+						if ($index_name == 'PRIMARY') {
+							$index_string .= 'PRIMARY ';
+						} else if($index_data['unique']) {
+							$index_string .= 'UNIQUE ';
+						}
+						$index_string .= 'KEY ';
+						if ($index_name != 'PRIMARY') {
+							$index_string .= '`'.$index_name.'` ';
+						}
+						$index_columns = '';
+						// For each column in the index
+						foreach ($index_data['columns'] as $column_data) {
+							if ($index_columns != '') $index_columns .= ',';
+							// Add the field to the column list string
+							$index_columns .= '`'.$column_data['fieldname'].'`';
+							if ($column_data['subpart'] != '') {
+								$index_columns .= '(`'.$column_data['subpart'].'`)';
+							}
+						}
+						// Add the column list to the index create string
+						$index_string .= '('.$index_columns.')';
+						if (!(($aindex = array_search($index_string, $indices)) === false)) {
+							unset($indices[$aindex]);
+						}
+					}
+				}
+
+                // For every remaining index specified for the table
+				foreach ( (array) $indices as $index ) {
+					// Push a query line into $cqueries that adds the index to that table
+					$cqueries[] = "ALTER TABLE `{$table}` ADD {$index}";
+					$for_update[$table.'.'.$fieldname] = "Added index {$table} {$index}";
+				}
+
+				// Remove the original table creation query from processing
+				unset($cqueries[strtolower($table)]);
+				unset($for_update[strtolower($table)]);
+            } else {
+				// This table exists in the database, but not in the creation queries?
+			}
+        }
+
+        $allqueries = array_merge($cqueries, $iqueries);
+        if ($execute) {
+            foreach ($allqueries as $query) {
+                $this->query($query);
+            }
+        }
+        return $for_update;
+    }
+
     /**
      * 等同于 mysql_result
      *
@@ -285,8 +521,8 @@ class Mysql {
      */
     function is_database($dbname){
         $res = $this->query("SHOW DATABASES;");
-        while ($rs = $this->fetch($res)) {
-        	if ($dbname == $rs['Database']) return true;
+        while ($rs = $this->fetch($res,0)) {
+        	if ($dbname == $rs[0]) return true;
         }
         return false;
     }
@@ -416,12 +652,13 @@ class Mysql {
 		return $data;
     }
     function _real_escape($str) {
-		if ( $this->conn )
+		
+        if ( $this->conn )
 			$str = mysql_real_escape_string( $str, $this->conn );
 		else
 			$str = addslashes( $str );
 
-		if (is_int($str) || is_float($str)) {
+		if (is_numeric($str)) {
             return $str;
         }
 

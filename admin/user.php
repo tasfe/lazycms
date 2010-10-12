@@ -76,6 +76,7 @@ switch ($method) {
             	if ($username != $user['name']) {
             		$is_exist = user_get_byname($username)?false:true;
             	}
+                if ($user['roles']=='ALL') $roldes = 'ALL';
             	unset($user);
             } else {
                 $is_exist = user_get_byname($username)?false:true;
@@ -92,14 +93,14 @@ switch ($method) {
             // 验证email
             validate_check(array(
                 array('email',VALIDATE_EMPTY,__('Please enter an e-mail address.')),
-                array('email',VALIDATE_IS_EMAIL,__('The e-mail address isn\'t correct.'))
+                array('email',VALIDATE_IS_EMAIL,__('You must provide an e-mail address.'))
             ));
             // 验证密码
             if ((!$userid) || $password) {
                 validate_check(array(
                     array('password1',VALIDATE_EMPTY,__('Please enter your password.')),
                     array('password2',VALIDATE_EMPTY,__('Please enter your password twice.')),
-                    array('password1',VALIDATE_EQUAL,__('Please enter the same password in the two password fields.'),'password2'),
+                    array('password1',VALIDATE_EQUAL,__('Your passwords do not match. Please try again.'),'password2'),
                 ));
             }
             // 验证通过

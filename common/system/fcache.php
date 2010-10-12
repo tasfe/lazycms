@@ -113,6 +113,7 @@ class FCache {
                 return $data;
         	}
         }
+        return null;
     }
     /**
      * 删除一个key值

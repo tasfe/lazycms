@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-12 18:19+0800\n"
+"POT-Creation-Date: 2010-10-13 00:57+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.net>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "X-Poedit-Language: Chinese\n"
 "X-Poedit-Country: CHINA\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_en:1,2;_x:1,2c;_ex:1,2c\n"
 "X-Poedit-Basepath: /home/lukin/Projects/lazycms\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -354,11 +354,11 @@ msgstr "%s 数据库不存在！"
 msgid "MySQL database version lower than 4.1, please upgrade MySQL!"
 msgstr "MySQL数据库版本低于4.1，请升级MySQL！"
 
-#: common/system/mysql.php:129
+#: common/system/mysql.php:182
 msgid "Supplied argument is not a valid MySQL-Link resource."
 msgstr "提供的参数不是一个有效的MySQL的链接资源。"
 
-#: common/system/mysql.php:158
+#: common/system/mysql.php:201
 #, php-format
 msgid "MySQL Query Error:%s"
 msgstr "MySQL 查询错误：%s"
@@ -405,6 +405,7 @@ msgstr "您现在已经退出，请重新登录！"
 
 #: admin/categories.php:26
 #: admin/admin-header-menu.php:20
+#: admin/admin.php:190
 msgid "Categories"
 msgstr "分类管理"
 
@@ -447,7 +448,7 @@ msgstr "分类添加成功。"
 
 #: admin/categories.php:119
 #: admin/model.php:141
-#: admin/user.php:143
+#: admin/user.php:144
 #: admin/post.php:81
 msgid "Did not select any item."
 msgstr "没有选择任何项目。"
@@ -467,7 +468,7 @@ msgstr "添加分类"
 
 #: admin/categories.php:171
 #: admin/model.php:318
-#: admin/user.php:206
+#: admin/user.php:207
 #: admin/post.php:401
 msgid "Bulk Actions"
 msgstr "批量操作"
@@ -485,7 +486,7 @@ msgstr "重新生成"
 
 #: admin/categories.php:176
 #: admin/model.php:324
-#: admin/user.php:209
+#: admin/user.php:210
 #: admin/post.php:405
 msgid "Apply"
 msgstr "应用"
@@ -520,8 +521,8 @@ msgstr "&mdash; 无父级 &mdash;"
 #: admin/categories.php:264
 #: admin/model.php:374
 #: admin/model.php:382
-#: admin/user.php:249
-#: admin/user.php:257
+#: admin/user.php:250
+#: admin/user.php:258
 #: admin/post.php:501
 #: admin/post.php:512
 msgid "(required)"
@@ -574,6 +575,7 @@ msgstr "更新分类"
 #: admin/model.php:26
 #: admin/admin-header-menu.php:33
 #: admin/admin-header-menu.php:34
+#: admin/admin.php:211
 msgid "Models"
 msgstr "模型管理"
 
@@ -663,13 +665,12 @@ msgid "Same the two fields."
 msgstr "两个字段值不相等。"
 
 #: admin/model.php:206
-#: admin/user.php:220
-#: admin/user.php:257
+#: admin/user.php:221
+#: admin/user.php:258
 msgid "E-mail"
 msgstr "电子邮箱"
 
 #: admin/model.php:206
-#: admin/user.php:95
 msgid "The e-mail address isn't correct."
 msgstr "电子邮件地址不正确。"
 
@@ -787,6 +788,7 @@ msgstr "默认值"
 
 #: admin/model.php:272
 #: admin/admin-header-menu.php:35
+#: admin/admin.php:213
 msgctxt "model"
 msgid "Add New"
 msgstr "添加模型"
@@ -853,6 +855,7 @@ msgid "Click to toggle"
 msgstr "点击切换"
 
 #: admin/model.php:413
+#: admin/admin.php:218
 msgctxt "model"
 msgid "Fields"
 msgstr "字段管理"
@@ -878,225 +881,246 @@ msgstr "您必须接受LazyCMS的许可协议，才能继续安装。"
 msgid "\"Table Prefix\" can only contain numbers, letters, and underscores."
 msgstr "“表名前缀”只能含有数字、字母以及下划线。"
 
-#: admin/install.php:66
-#: admin/install.php:68
+#: admin/install.php:36
+msgid "You must provide a valid username."
+msgstr "请输入您的管理员名称。"
+
+#: admin/install.php:38
+#: admin/user.php:103
+msgid "Your passwords do not match. Please try again."
+msgstr "您两次输入的密码不符，请重试。"
+
+#: admin/install.php:41
+#: admin/user.php:95
+msgid "Please enter an e-mail address."
+msgstr "请输入一个电子邮件地址。"
+
+#: admin/install.php:42
+#: admin/user.php:96
+msgid "You must provide an e-mail address."
+msgstr "请输入一个有效的电子邮件地址。"
+
+#: admin/install.php:75
+#: admin/install.php:77
 msgid "Error establishing a database connection"
 msgstr "数据库连接错误"
 
-#: admin/install.php:69
+#: admin/install.php:78
 #, php-format
 msgid "This either means that the username and password information in your <code>common/config.php</code> file is incorrect or we can't contact the database server at <code>%s</code>."
-msgstr "您在 <code>commom/config.php</code> 文件中提供的数据库用户名和密码可能不正确，或者无法连接到 <code>%s</code> 上数据库服务器，"
+msgstr "您在 <code>commom/config.php</code> 文件中提供的数据库用户名和密码可能不正确，或者无法连接到 <code>%s</code> 上的数据库服务器，"
 
-#: admin/install.php:69
+#: admin/install.php:78
 msgid "This could mean your host's database server is down."
 msgstr "这意味着您的主机数据库服务器已停止工作。"
 
-#: admin/install.php:71
+#: admin/install.php:80
 msgid "Are you sure you have the correct username and password?"
 msgstr "您确认您提供的用户名和密码正确么？"
 
-#: admin/install.php:72
+#: admin/install.php:81
 msgid "Are you sure that you have typed the correct hostname?"
 msgstr "您确认您提供的主机名正确么？"
 
-#: admin/install.php:73
+#: admin/install.php:82
 msgid "Are you sure that the database server is running?"
 msgstr "您确认数据库服务器正常运行么？"
 
-#: admin/install.php:75
+#: admin/install.php:84
 msgid "If you're unsure what these terms mean you should probably contact your host."
 msgstr "如果您无法确定这些问题，请联系您的主机管理员。"
 
-#: admin/install.php:75
+#: admin/install.php:84
 msgid "If you still need help you can always visit the <a href=\"http://lazycms.com/support/\">LazyCMS Support Forums</a>."
 msgstr "如果您仍需帮助，请访问 <a href=\"http://lazycms.com/support/\">LazyCMS 支持论坛</a>。"
 
-#: admin/install.php:80
-#: admin/install.php:82
+#: admin/install.php:90
+#: admin/install.php:92
 msgid "Can't select database"
 msgstr "无法选择数据库"
 
-#: admin/install.php:83
+#: admin/install.php:93
 #, php-format
 msgid "We were able to connect to the database server (which means your username and password is okay) but not able to select the <code>%s</code> database."
 msgstr "我们可以和数据库服务器建立连接（说明您提供的用户名和密码正确），但是我们无法选择 <code>%s</code> 数据库。"
 
-#: admin/install.php:85
+#: admin/install.php:95
 msgid "Are you sure it exists?"
 msgstr "您确认数据库存在？"
 
-#: admin/install.php:86
+#: admin/install.php:96
 #, php-format
 msgid "Does the user <code>%s</code> have permission to use the <code>%s</code> database?"
 msgstr "您确认用户 <code>%s</code> 拥有使用 <code>%s</code> 数据库的权限？"
 
-#: admin/install.php:87
+#: admin/install.php:97
 #, php-format
 msgid "On some systems the name of your database is prefixed with your username, so it would be like <code>%s_%s</code>. Could that be the problem?"
 msgstr "在某些系统上您的数据库名可能还包含了您用户名的前缀，例如 <code>%s_%s</code>，问题会不会出在这里？"
 
-#: admin/install.php:89
+#: admin/install.php:99
 msgid "If you don't know how to set up a database you should <strong>contact your host</strong>."
 msgstr "如果您不知道如何设置一个数据库，您应该<strong>联系您的主机管理员</strong>。"
 
-#: admin/install.php:89
+#: admin/install.php:99
 msgid "If all else fails you may find help at the <a href=\"http://lazycms.com/support/\">LazyCMS Support Forums</a>."
 msgstr "如果所有办法还没有解决您的问题，您可以在 <a href=\"http://lazycms.com/support/\">LazyCMS 支持论坛</a>上寻求帮助。"
 
-#: admin/install.php:95
+#: admin/install.php:105
 msgid "Sorry, I need a common/config.sample.php file to work from. Please re-upload this file from your LazyCMS installation."
 msgstr "抱歉，我需要 common/config.sample.php 文件作为向导工作的基础，请重新上传此文件。"
 
-#: admin/install.php:127
+#: admin/install.php:161
 msgid "All right sparky! You've made it through of the installation. If you are ready, time now to&hellip;"
 msgstr "非常好！您已顺利完成安装。若您准备好了，现在就去 &hellip;"
 
-#: admin/install.php:137
-#: admin/install.php:154
+#: admin/install.php:178
+msgid "My Site"
+msgstr "我的站点"
+
+#: admin/install.php:194
+#: admin/install.php:211
 msgid "LazyCMS Setup"
 msgstr "LazyCMS安装"
 
-#: admin/install.php:141
-#: admin/install.php:177
+#: admin/install.php:198
+#: admin/install.php:234
 msgid "Strength indicator"
 msgstr "强度"
 
-#: admin/install.php:142
+#: admin/install.php:199
 msgid "Very weak"
 msgstr "非常弱"
 
-#: admin/install.php:143
+#: admin/install.php:200
 msgid "Weak"
 msgstr "弱"
 
-#: admin/install.php:144
+#: admin/install.php:201
 msgid "Medium"
 msgstr "中"
 
-#: admin/install.php:145
+#: admin/install.php:202
 msgid "Strong"
 msgstr "强"
 
-#: admin/install.php:146
+#: admin/install.php:203
 msgid "Mismatch"
 msgstr "不匹配"
 
-#: admin/install.php:147
+#: admin/install.php:204
 msgid "Rock it!"
 msgstr "摇滚吧！"
 
-#: admin/install.php:157
+#: admin/install.php:214
 msgid "Welcome to LazyCMS! Below you should enter your database connection details. If you're not sure about these, contact your host."
 msgstr "欢迎使用LazyCMS！ 请在下方输入数据库相关信息。若您不清楚，请咨询主机提供商。"
 
-#: admin/install.php:159
+#: admin/install.php:216
 msgid "Database Configuration"
 msgstr "数据库配置"
 
-#: admin/install.php:161
+#: admin/install.php:218
 msgid "Database Name"
 msgstr "数据库名"
 
-#: admin/install.php:161
+#: admin/install.php:218
 msgid "The name of the database you want to run LazyCMS in."
 msgstr "您希望 LazyCMS 使用哪个数据库运行？"
 
-#: admin/install.php:162
-msgid "User Name"
-msgstr "用户名"
-
-#: admin/install.php:162
-msgid "Your MySQL username"
-msgstr "您的 MySQL 用户名"
-
-#: admin/install.php:163
-#: admin/login.php:80
-#: admin/user.php:280
-msgid "Password"
-msgstr "密码"
-
-#: admin/install.php:163
-msgid "...and MySQL password."
-msgstr "... 以及 MySQL 密码。"
-
-#: admin/install.php:164
-msgid "Database Host"
-msgstr "数据库主机"
-
-#: admin/install.php:164
-msgid "You should be able to get this info from your web host, if <code>localhost</code> does not work."
-msgstr "通常情况下，应填写 <code>localhost</code>，若测试连接失败，请联系主机提供商咨询。"
-
-#: admin/install.php:165
-msgid "Table prefix"
-msgstr "表名前缀"
-
-#: admin/install.php:165
-msgid "If you want to run multiple LazyCMS installations in a single database, change this."
-msgstr "若您希望在一个数据库中存放多个 LazyCMS 的数据，请修改本项以做区分。"
-
-#: admin/install.php:169
-msgid "Please provide the following information. Don’t worry, you can always change these settings later."
-msgstr "您需要填写一些基本信息。无需担心填错，这些信息以后可以再次修改。"
-
-#: admin/install.php:171
-msgid "Information needed"
-msgstr "需要您提供的信息"
-
-#: admin/install.php:173
-msgid "Site Title"
-msgstr "站点标题"
-
-#: admin/install.php:174
+#: admin/install.php:219
+#: admin/install.php:231
 msgid "UserName"
 msgstr "用户名"
 
-#: admin/install.php:174
-msgid "Usernames can have only alphanumeric characters, spaces, underscores, hyphens, periods and the @ symbol."
-msgstr "用户名只能包含字母、数字、空格、下划线、连字符（-）、句号和 @ 符号。"
+#: admin/install.php:219
+msgid "Your MySQL username"
+msgstr "您的 MySQL 用户名"
 
-#: admin/install.php:176
+#: admin/install.php:220
+#: admin/login.php:80
+#: admin/user.php:281
+msgid "Password"
+msgstr "密码"
+
+#: admin/install.php:220
+msgid "...and MySQL password."
+msgstr "... 以及 MySQL 密码。"
+
+#: admin/install.php:221
+msgid "Database Host"
+msgstr "数据库主机"
+
+#: admin/install.php:221
+msgid "You should be able to get this info from your web host, if <code>localhost</code> does not work."
+msgstr "通常情况下，应填写 <code>localhost</code>，若测试连接失败，请联系主机提供商咨询。"
+
+#: admin/install.php:222
+msgid "Table prefix"
+msgstr "表名前缀"
+
+#: admin/install.php:222
+msgid "If you want to run multiple LazyCMS installations in a single database, change this."
+msgstr "若您希望在一个数据库中存放多个 LazyCMS 的数据，请修改本项以做区分。"
+
+#: admin/install.php:226
+msgid "Please provide the following information. Don’t worry, you can always change these settings later."
+msgstr "您需要填写一些基本信息。无需担心填错，这些信息以后可以再次修改。"
+
+#: admin/install.php:228
+msgid "Information needed"
+msgstr "需要您提供的信息"
+
+#: admin/install.php:230
+msgid "Site Title"
+msgstr "站点标题"
+
+#: admin/install.php:231
+msgid "Administrator account."
+msgstr "管理员帐户。"
+
+#: admin/install.php:233
 msgid "Password, twice"
 msgstr "密码，两次"
 
-#: admin/install.php:176
+#: admin/install.php:233
 msgid "A password will be automatically generated for you if you leave this blank."
 msgstr "若您留空密码栏，LazyCMS 将会为您生成一个密码。"
 
-#: admin/install.php:178
+#: admin/install.php:235
 msgid "Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! \" ? $ % ^ & )."
 msgstr "提示：您的密码最好至少包含 7 个字符。为了保证密码强度，使用大小写字母，数字和符号，例如 ! \" ? $ % ^ & )。"
 
-#: admin/install.php:180
+#: admin/install.php:237
 msgid "Your E-mail"
 msgstr "电子邮箱"
 
-#: admin/install.php:180
+#: admin/install.php:237
 msgid "Double-check your email address before continuing."
 msgstr "请仔细检查邮件地址后继续。"
 
-#: admin/install.php:185
+#: admin/install.php:242
 msgid "I accept the <a href=\"../LICENSE.txt\" target=\"_blank\">License</a>"
 msgstr "我接受LazyCMS的<a href=\"../LICENSE.txt\" target=\"_blank\">许可协议</a>"
 
-#: admin/install.php:186
+#: admin/install.php:243
 msgid "Install LazyCMS"
 msgstr "安装 LazyCMS"
 
 #: admin/index.php:42
 #: admin/admin-header-menu.php:10
 #: admin/admin-header-menu.php:11
+#: admin/admin.php:185
 msgid "Control Panel"
 msgstr "控制面板"
 
 #: admin/login.php:44
-#: admin/user.php:86
+#: admin/user.php:87
 msgid "The username field is empty."
 msgstr "用户名不能为空。"
 
 #: admin/login.php:46
-#: admin/user.php:88
+#: admin/user.php:89
 #, php-format
 msgid "The username field length must be %d-%d characters."
 msgstr "用户名长度必须%d至%d个字符。"
@@ -1120,8 +1144,8 @@ msgid "<p>LazyCMS is free, open source content management system.</p><p>Runtime:
 msgstr "<p>LazyCMS是免费、开源的内容管理系统。</p><p>运行环境：PHP 4.3.3+、MySQL 4.1+</p><p><a href=\"%s\">返回首页</a></p>"
 
 #: admin/login.php:79
-#: admin/user.php:219
-#: admin/user.php:249
+#: admin/user.php:220
+#: admin/user.php:250
 msgid "Username"
 msgstr "用户名"
 
@@ -1144,6 +1168,7 @@ msgstr "登入"
 #: admin/user.php:26
 #: admin/admin-header-menu.php:41
 #: admin/admin-header-menu.php:42
+#: admin/admin.php:221
 msgid "Users"
 msgstr "用户管理"
 
@@ -1155,120 +1180,116 @@ msgstr "添加新用户"
 msgid "Edit User"
 msgstr "编辑用户"
 
-#: admin/user.php:90
+#: admin/user.php:91
 msgid "The username already exists."
 msgstr "用户名已存在，请重新输入用户名。"
 
-#: admin/user.php:94
-msgid "Please enter an e-mail address."
-msgstr "请输入一个电子邮件地址。"
-
-#: admin/user.php:100
+#: admin/user.php:101
 msgid "Please enter your password."
 msgstr "请您输入密码。"
 
-#: admin/user.php:101
+#: admin/user.php:102
 msgid "Please enter your password twice."
 msgstr "请您再次输入密码。"
 
-#: admin/user.php:102
-msgid "Please enter the same password in the two password fields."
-msgstr "请在两处密码框中输入一致的密码。"
-
-#: admin/user.php:128
+#: admin/user.php:129
 msgid "User updated."
 msgstr "用户资料更新成功。"
 
-#: admin/user.php:133
+#: admin/user.php:134
 msgid "User created."
 msgstr "用户添加成功。"
 
-#: admin/user.php:152
+#: admin/user.php:153
 msgid "Users deleted."
 msgstr "用户删除成功。"
 
-#: admin/user.php:162
+#: admin/user.php:163
 #: admin/admin-header-menu.php:43
+#: admin/admin.php:223
 msgctxt "user"
 msgid "Add New"
 msgstr "添加用户"
 
-#: admin/user.php:221
+#: admin/user.php:222
 msgid "Status"
 msgstr "状态"
 
-#: admin/user.php:222
+#: admin/user.php:223
 msgid "Registered"
 msgstr "注册日期"
 
-#: admin/user.php:253
+#: admin/user.php:254
 msgid "Nickname"
 msgstr "昵称"
 
-#: admin/user.php:261
+#: admin/user.php:262
 msgid "Website"
 msgstr "个人主页"
 
-#: admin/user.php:266
+#: admin/user.php:267
 msgid "Biographical Info"
 msgstr "个人说明"
 
-#: admin/user.php:268
+#: admin/user.php:269
 msgid "Share a little biographical information to fill out your profile. This may be shown publicly."
 msgstr "共享您的一些信息。这个可能会被公开。"
 
-#: admin/user.php:272
+#: admin/user.php:273
 msgid "New Password"
 msgstr "新密码"
 
-#: admin/user.php:272
+#: admin/user.php:273
 msgid "(twice)"
 msgstr "(两次)"
 
-#: admin/user.php:274
+#: admin/user.php:275
 msgid "If you would like to change the password type a new one. Otherwise leave this blank."
 msgstr "如果您想修改您的密码请输入一个新密码，否则请留空。"
 
-#: admin/user.php:275
+#: admin/user.php:276
 msgid "Type your new password again."
 msgstr "输入新密码。"
 
-#: admin/user.php:280
+#: admin/user.php:281
 msgid "(twice,required)"
 msgstr "(两次，必填)"
 
-#: admin/user.php:284
+#: admin/user.php:285
 msgid "Send Password?"
 msgstr "发送密码？"
 
-#: admin/user.php:285
+#: admin/user.php:286
 msgid "Send this password to the new user by email."
 msgstr "通过电子邮件发送新用户的密码。"
 
-#: admin/user.php:289
+#: admin/user.php:290
 msgid "Role"
 msgstr "权限"
 
-#: admin/user.php:297
+#: admin/user.php:298
 msgid "Add User"
 msgstr "添加用户"
 
-#: admin/user.php:300
+#: admin/user.php:301
 msgid "Update User"
 msgstr "更新用户"
 
 #: admin/admin-header-menu.php:12
+#: admin/admin.php:186
 msgid "Upgrade"
 msgstr "更新"
 
 #: admin/admin-header-menu.php:17
 #: admin/admin-header-menu.php:18
 #: admin/post.php:31
+#: admin/admin.php:189
 msgid "Posts"
 msgstr "文章管理"
 
 #: admin/admin-header-menu.php:19
 #: admin/post.php:288
+#: admin/admin.php:191
 msgctxt "post"
 msgid "Add New"
 msgstr "添加文章"
@@ -1276,16 +1297,19 @@ msgstr "添加文章"
 #: admin/admin-header-menu.php:23
 #: admin/admin-header-menu.php:24
 #: admin/post.php:29
+#: admin/admin.php:197
 msgid "Pages"
 msgstr "页面管理"
 
 #: admin/admin-header-menu.php:25
 #: admin/post.php:285
+#: admin/admin.php:199
 msgctxt "page"
 msgid "Add New"
 msgstr "添加页面"
 
 #: admin/admin-header-menu.php:36
+#: admin/admin.php:216
 msgctxt "model"
 msgid "Import"
 msgstr "导入模型"
@@ -1296,23 +1320,28 @@ msgstr "我的配置"
 
 #: admin/admin-header-menu.php:47
 #: admin/admin-header-menu.php:48
+#: admin/admin.php:228
 msgid "Plugins"
 msgstr "插件管理"
 
 #: admin/admin-header-menu.php:49
+#: admin/admin.php:230
 msgctxt "plugin"
 msgid "Add New"
 msgstr "添加新插件"
 
 #: admin/admin-header-menu.php:52
+#: admin/admin.php:234
 msgid "Tools"
 msgstr "系统工具"
 
 #: admin/admin-header-menu.php:53
+#: admin/admin.php:235
 msgid "Clean cache"
 msgstr "清除缓存"
 
 #: admin/admin-header-menu.php:56
+#: admin/admin.php:238
 msgid "Settings"
 msgstr "设置管理"
 
@@ -1488,92 +1517,92 @@ msgstr "访问网站"
 msgid "Logout"
 msgstr "退出"
 
-#: admin/admin.php:61
-#: admin/admin.php:71
+#: admin/admin.php:69
+#: admin/admin.php:79
 msgid "Restricted access, please contact the administrator."
 msgstr "受限制的访问，请联系管理员。"
 
-#: admin/admin.php:69
-#: admin/admin.php:71
+#: admin/admin.php:77
+#: admin/admin.php:79
 msgid "Restricted access"
 msgstr "限制访问"
 
-#: admin/admin.php:185
+#: admin/admin.php:192
 msgctxt "post"
 msgid "List"
 msgstr "文章列表"
 
-#: admin/admin.php:186
+#: admin/admin.php:193
 msgctxt "post"
 msgid "Edit"
 msgstr "编辑文章"
 
-#: admin/admin.php:187
+#: admin/admin.php:194
 msgctxt "post"
 msgid "Delete"
 msgstr "删除文章"
 
-#: admin/admin.php:191
+#: admin/admin.php:198
 msgctxt "page"
 msgid "List"
 msgstr "页面列表"
 
-#: admin/admin.php:193
+#: admin/admin.php:200
 msgctxt "page"
 msgid "Edit"
 msgstr "编辑页面"
 
-#: admin/admin.php:194
+#: admin/admin.php:201
 msgctxt "page"
 msgid "Delete"
 msgstr "删除页面"
 
-#: admin/admin.php:205
+#: admin/admin.php:212
 msgctxt "model"
 msgid "List"
 msgstr "模型列表"
 
-#: admin/admin.php:207
+#: admin/admin.php:214
 msgctxt "model"
 msgid "Edit"
 msgstr "编辑模型"
 
-#: admin/admin.php:208
+#: admin/admin.php:215
 msgctxt "model"
 msgid "Delete"
 msgstr "删除模型"
 
-#: admin/admin.php:210
+#: admin/admin.php:217
 msgctxt "model"
 msgid "Export"
 msgstr "导出模型"
 
-#: admin/admin.php:215
+#: admin/admin.php:222
 msgctxt "user"
 msgid "List"
 msgstr "用户列表"
 
-#: admin/admin.php:217
+#: admin/admin.php:224
 msgctxt "user"
 msgid "Edit"
 msgstr "编辑用户"
 
-#: admin/admin.php:218
+#: admin/admin.php:225
 msgctxt "user"
 msgid "Delete"
 msgstr "删除用户"
 
-#: admin/admin.php:222
+#: admin/admin.php:229
 msgctxt "plugin"
 msgid "List"
 msgstr "插件列表"
 
-#: admin/admin.php:224
+#: admin/admin.php:231
 msgctxt "plugin"
 msgid "Delete"
 msgstr "删除插件"
 
-#: admin/admin.php:232
+#: admin/admin.php:239
 msgctxt "setting"
 msgid "General"
 msgstr "常规"
@@ -1620,6 +1649,15 @@ msgstr "网页后缀"
 msgid "Save Changes"
 msgstr "保存更改"
 
+#~ msgid ""
+#~ "Usernames can have only alphanumeric characters, spaces, underscores, "
+#~ "hyphens, periods and the @ symbol."
+#~ msgstr ""
+#~ "用户名只能包含字母、数字、空格、下划线、连字符（-）、句号和 @ 符号。"
+#~ msgid "User Name"
+#~ msgstr "用户名"
+#~ msgid "Please enter the same password in the two password fields."
+#~ msgstr "请在两处密码框中输入一致的密码。"
 #~ msgid "-_-!! Please open the MySQL extension!"
 #~ msgstr "-_-!! 请打开MySQL扩展！"
 #~ msgid "Welcome to LazyCMS!"
