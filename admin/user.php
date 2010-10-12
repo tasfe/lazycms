@@ -184,7 +184,7 @@ switch ($method) {
             echo               '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$admin['userid'].'" /></td>';
             echo               '<td><strong><a href="'.$href.'">'.$admin['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
             echo               '<td>'.$admin['mail'].'</td>';
-            echo               '<td>'.$admin['status'].'</td>';
+            echo               '<td><img class="b'.($admin['status']+8).' os" src="'.ADMIN_ROOT.'images/white.gif" /></td>';
             echo               '<td>'.$admin['registered'].'</td>';
             echo           '</tr>';
         }
