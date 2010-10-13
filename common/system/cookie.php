@@ -20,7 +20,7 @@
  */ 
 defined('COM_PATH') or die('Restricted access!');
 // 定义域名
-defined('COOKIE_DOMAIN') or define('COOKIE_DOMAIN',$_SERVER['HTTP_HOST']);
+defined('COOKIE_DOMAIN') or define('COOKIE_DOMAIN','');
 /**
  * Cookie 管理类
  *
