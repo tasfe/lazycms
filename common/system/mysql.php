@@ -152,7 +152,7 @@ class Mysql {
 
         $query = str_replace( "'%s'", '%s', $query ); // in case someone mistakenly already singlequoted it
 		$query = str_replace( '"%s"', '%s', $query ); // doublequote unquoting
-        $query = preg_replace( '/(?<!%)%s/', "%s", $query ); // quote the strings, avoiding escaped strings like %%s
+        $query = preg_replace( '/(?<!%)%s/', "'%s'", $query ); // quote the strings, avoiding escaped strings like %%s
         // 处理表前缀
         if (preg_match_all("/'[^']+'/",$query,$r)) {
             foreach($r[0] as $i=>$v) {
@@ -459,7 +459,7 @@ class Mysql {
         $sql = "INSERT INTO "
              . $this->identifier($table)
              . ' (' . implode(', ', $cols) . ') '
-             . 'VALUES (' . implode(', ', $vals) . ')';
+             . "VALUES ('" . implode("', '", $vals) . "')";
 
              return $this->query($sql);
     }
@@ -475,7 +475,7 @@ class Mysql {
         // extract and quote col names from the array keys
         $set = array();
         foreach ($sets as $col => $val) {
-            $set[] = $this->identifier($col).' = '.$this->escape($val);
+            $set[] = $this->identifier($col)." = '".$this->escape($val)."'";
         }
         $where = $this->where($where);
         // build the statement
@@ -629,7 +629,7 @@ class Mysql {
         }
         $cond = array();
         foreach ($data as $field => $value) {
-            $cond[] = '(' . $this->identifier($field) .'='. $this->escape($value) . ')';
+            $cond[] = "(" . $this->identifier($field) ." = '". $this->escape($value) . "')";
         }
         $sql = implode(' AND ', $cond);
         return $sql;
@@ -660,7 +660,7 @@ class Mysql {
 		else
 			$str = addslashes( $str );
 
-        return "'{$str}'";
+        return $str;
 	}
     /**
      * 设置数据库连接参数

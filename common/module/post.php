@@ -138,7 +138,7 @@ function post_gets($sql, $page=0, $size=10){
     }
     if ((int)$page > (int)$pages) $page = $pages;
     $sql.= sprintf(' LIMIT %d OFFSET %d;',$size,($page-1)*$size);
-    $res = $db->query($sql);//var_dump($sql);
+    $res = $db->query($sql);
     while ($post = $db->fetch($res)) {
         $post['model'] = model_get_bycode($post['model']);
         $post['category'] = taxonomy_get_relation('category',$post['postid'],$rel_ids);
@@ -168,7 +168,7 @@ function post_get($postid) {
     $value = fcache_get($ckey);
     if (!empty($value)) return $value;
 
-    $rs = $db->query("SELECT * FROM `#@_post` WHERE `postid`=%s LIMIT 0,1;",$postid);
+    $rs = $db->query("SELECT * FROM `#@_post` WHERE `postid`=%d LIMIT 0,1;",$postid);
     // 判断文章是否存在
     if ($post = $db->fetch($rs)) {
         // 取得分类关系
@@ -191,7 +191,7 @@ function post_get($postid) {
  */
 function post_get_meta($postid) {
     $db = get_conn(); $result = array(); $postid = intval($postid);
-    $rs = $db->query("SELECT * FROM `#@_post_meta` WHERE `postid`=%s;",$postid);
+    $rs = $db->query("SELECT * FROM `#@_post_meta` WHERE `postid`=%d;",$postid);
     while ($row = $db->fetch($rs)) {
         if (is_need_unserialize($row['type'])) {
            $result[$row['key']] = unserialize($row['value']);
@@ -217,7 +217,7 @@ function post_edit_meta($postid,$data) {
         // 判断是否需要序列化
         $value = is_need_serialize($value) ? serialize($value) : $value;
         // 查询数据库里是否已经存在
-        $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_post_meta` WHERE `postid`=%s AND `key`=%s;",array($postid,esc_sql($key))));
+        $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_post_meta` WHERE `postid`=%d AND `key`='%s';",array($postid,esc_sql($key))));
         // update
         if ($length > 0) {
             $db->update('#@_post_meta',array(

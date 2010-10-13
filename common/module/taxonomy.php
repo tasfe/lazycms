@@ -28,7 +28,7 @@ defined('COM_PATH') or die('Restricted access!');
  */
 function term_get_byid($termid) {
     $db = get_conn(); $termid = intval($termid);
-    $rs = $db->query("SELECT * FROM `#@_term` WHERE `termid`=%s LIMIT 0,1;",$termid);
+    $rs = $db->query("SELECT * FROM `#@_term` WHERE `termid`=%d LIMIT 0,1;",$termid);
     // 判断用户是否存在
     if ($term = $db->fetch($rs)) {
         return $term;
@@ -43,7 +43,7 @@ function term_get_byid($termid) {
  */
 function term_get_byname($name) {
     $db = get_conn();
-    $rs = $db->query("SELECT * FROM `#@_term` WHERE `name`=%s LIMIT 0,1;",$name);
+    $rs = $db->query("SELECT * FROM `#@_term` WHERE `name`='%s' LIMIT 0,1;",$name);
     // 判断用户是否存在
     if ($term = $db->fetch($rs)) {
         return $term;
@@ -58,7 +58,7 @@ function term_get_byname($name) {
  */
 function term_add($name) {
     $db = get_conn();
-    $termid = $db->result(sprintf("SELECT `termid` FROM `#@_term` WHERE `name`=%s LIMIT 0,1;",esc_sql($name)));
+    $termid = $db->result(sprintf("SELECT `termid` FROM `#@_term` WHERE `name`='%s' LIMIT 0,1;",esc_sql($name)));
     if (!$termid) {
         $termid = $db->insert('#@_term',array(
             'name' => $name,
@@ -107,7 +107,7 @@ function term_gets($content,$max_len=8,$save_other=false) {
  */
 function taxonomy_get_trees($parentid=0,$type='category') {
     $db = get_conn(); $result = array(); $un = array(); $parentid = intval($parentid);
-    $rs = $db->query("SELECT * FROM `#@_term_taxonomy` WHERE `type`=%s;",$type);
+    $rs = $db->query("SELECT * FROM `#@_term_taxonomy` WHERE `type`='%s';",$type);
     while ($row = $db->fetch($rs)) {
         $result[$row['taxonomyid']] = taxonomy_get_byid($row['taxonomyid']);
     }
@@ -135,7 +135,7 @@ function taxonomy_get_byid($taxonomyid) {
     $taxonomyid = intval($taxonomyid);
     $value = fcache_get($prefix.$taxonomyid);
     if (!empty($value)) return $value;
-    $rs = $db->query("SELECT * FROM `#@_term_taxonomy` WHERE `taxonomyid`=%s LIMIT 0,1;",$taxonomyid);
+    $rs = $db->query("SELECT * FROM `#@_term_taxonomy` WHERE `taxonomyid`=%d LIMIT 0,1;",$taxonomyid);
     if ($taxonomy = $db->fetch($rs)) {
         if ($term = term_get_byid($taxonomy['termid'])) {
             $taxonomy = array_merge($taxonomy,$term);
@@ -157,7 +157,7 @@ function taxonomy_get_byid($taxonomyid) {
  */
 function taxonomy_get_meta($taxonomyid) {
     $db = get_conn(); $result = array(); $taxonomyid = intval($taxonomyid);
-    $rs = $db->query("SELECT * FROM `#@_term_taxonomy_meta` WHERE `taxonomyid`=%s;",$taxonomyid);
+    $rs = $db->query("SELECT * FROM `#@_term_taxonomy_meta` WHERE `taxonomyid`=%d;",$taxonomyid);
     while ($row = $db->fetch($rs)) {
         if (is_need_unserialize($row['type'])) {
            $result[$row['key']] = unserialize($row['value']);
@@ -180,14 +180,14 @@ function taxonomy_get_relation($type, $objectid, &$rel_ids=null) {
     $db = get_conn(); $result = array();
     if (!isset($taxonomies[$type])) {
         $tt_ids = array();
-        $rs = $db->query("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `type`=%s;",$type);
+        $rs = $db->query("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `type`='%s';",$type);
         while ($tt = $db->fetch($rs)) {
             $tt_ids[] = $tt['taxonomyid'];
         }
         $taxonomies[$type] = "'" . implode("', '", $tt_ids) . "'";
     }
     $in_tt_ids = $taxonomies[$type];
-    $rs = $db->query("SELECT DISTINCT `tr`.`taxonomyid` AS `taxonomyid`,`tr`.`order` AS `order` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%s AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
+    $rs = $db->query("SELECT DISTINCT `tr`.`taxonomyid` AS `taxonomyid`,`tr`.`order` AS `order` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%d AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
     while ($taxonomy = $db->fetch($rs)) {
         $rel_ids[] = $taxonomy['taxonomyid'];
         $result[$taxonomy['order']] = taxonomy_get_byid($taxonomy['taxonomyid']);
@@ -205,7 +205,7 @@ function taxonomy_get_relation($type, $objectid, &$rel_ids=null) {
  */
 function taxonomy_make_relation($type,$objectid,$taxonomies) {
     $db = get_conn(); $tt_ids = array(); $taxonomies = (array) $taxonomies;
-    $rs = $db->query("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `type`=%s;",$type);
+    $rs = $db->query("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `type`='%s';",$type);
     while ($tt = $db->fetch($rs)) {
         $tt_ids[] = $tt['taxonomyid'];
     }
@@ -213,13 +213,13 @@ function taxonomy_make_relation($type,$objectid,$taxonomies) {
     $tt_ids = array_diff($tt_ids,$taxonomies);
     $in_tt_ids = "'" . implode("', '", $tt_ids) . "'";
     // 先删除关系
-    $rs = $db->query("SELECT DISTINCT `tr`.`taxonomyid` AS `taxonomyid` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%s AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
+    $rs = $db->query("SELECT DISTINCT `tr`.`taxonomyid` AS `taxonomyid` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%d AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
     while ($taxonomy = $db->fetch($rs)) {
         taxonomy_delete_relation($objectid,$taxonomy['taxonomyid']);
     }
     // 然后添加分类关系
     foreach($taxonomies as $order=>$taxonomyid) {
-        $is_exist = $db->result(sprintf("SELECT COUNT(*) FROM `#@_term_relation` WHERE `taxonomyid`=%s AND `objectid`=%s;",esc_sql($taxonomyid),esc_sql($objectid)));
+        $is_exist = $db->result(sprintf("SELECT COUNT(*) FROM `#@_term_relation` WHERE `taxonomyid`=%d AND `objectid`=%d;",esc_sql($taxonomyid),esc_sql($objectid)));
         if (0 < $is_exist) {
             $db->update('#@_term_relation',array(
                 'order' => $order,
@@ -263,7 +263,7 @@ function taxonomy_delete_relation($objectid,$taxonomyid) {
 function taxonomy_add($type,$name,$parentid=0,$data=null) {
     $db = get_conn(); $parentid = intval($parentid);
     $data = is_array($data) ? $data : array();
-    $taxonomyid = $db->result(sprintf("SELECT `taxonomyid` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term` AS `t` ON `tt`.`termid`=`t`.`termid` WHERE `tt`.`type`=%s AND `t`.`name`=%s LIMIT 0,1;",esc_sql($type),esc_sql($name)));
+    $taxonomyid = $db->result(sprintf("SELECT `taxonomyid` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term` AS `t` ON `tt`.`termid`=`t`.`termid` WHERE `tt`.`type`='%s' AND `t`.`name`='%s' LIMIT 0,1;",esc_sql($type),esc_sql($name)));
     if (!$taxonomyid) {
         $taxonomyid = $db->insert('#@_term_taxonomy',array(
            'type'   => $type,
@@ -320,7 +320,7 @@ function taxonomy_edit_meta($taxonomyid,$data) {
         // 判断是否需要序列化
         $value = is_need_serialize($value) ? serialize($value) : $value;
         // 查询数据库里是否已经存在
-        $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_term_taxonomy_meta` WHERE `taxonomyid`=%s AND `key`=%s;",array($taxonomyid,esc_sql($key))));
+        $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_term_taxonomy_meta` WHERE `taxonomyid`=%d AND `key`='%s';",array($taxonomyid,esc_sql($key))));
         // update
         if ($length > 0) {
             $db->update('#@_term_taxonomy_meta',array(

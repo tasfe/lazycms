@@ -740,47 +740,7 @@ function guid($mix=null){
     $result[] = substr($randid, 20, 12);
     return implode($hyphen,$result);
 }
-/**
- * 取得拼音
- *
- * @param string $string
- * @return string
- */
-function pinyin($string) {
-    $db = get_conn(); $result = null;
-    if (mb_strlen($string,'UTF-8')==1) {
-        if (class_exists('FCache')) {
-            $prefix = 'pinyin.';
-            $en_str = md5($string);
-            $result = fcache_get($prefix . $en_str);
-        }
 
-        if (empty($result)) {
-            $result = $db->result("SELECT `key` FROM `#@_pinyin` WHERE FIND_IN_SET(".esc_sql($string).",`value`) LIMIT 0,1;");
-            if ($result) {
-                $result = ucfirst($result);
-            } else {
-                $result = $string;
-            }
-            
-            if (class_exists('FCache')) {
-                fcache_set($prefix . $en_str, $result);
-            }
-        }
-    	return $result;
-    } else {
-        if (preg_match_all('/./us',$string,$args)) {
-        	foreach ($args[0] as $arg) {
-        	    if (preg_match('/[\x80-\xff]./',$arg)) {
-        		    $result .= pinyin($arg);
-        	    } else {
-        	        $result .= $arg;
-        	    }
-        	}
-        }
-        return $result;
-    }
-}
 /**
  * 查询HTTP状态的描述
  *
@@ -974,7 +934,7 @@ function C($key,$value=null){
         $value = fcache_get($ckey.$key);
         if (empty($value)) {
             if ($db->errno()==0) {
-                $result = $db->query("SELECT * FROM `#@_option` WHERE `module`=%s AND `code`=%s LIMIT 0,1;",array($module,$code));
+                $result = $db->query("SELECT * FROM `#@_option` WHERE `module`='%s' AND `code`='%s' LIMIT 0,1;",array($module,$code));
                 if ($data = $db->fetch($result)) {
                     $value = is_need_unserialize($data['type']) ? unserialize($data['value']) : $data['value'];
                     // 保存到缓存
@@ -1007,7 +967,7 @@ function C($key,$value=null){
             // 判断是否需要序列化
             $value = is_need_serialize($value) ? serialize($value) : $value;
             // 查询数据库里是否已经存在
-            $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_option` WHERE `module`=%s AND `code`=%s",array(esc_sql($module),esc_sql($code))));
+            $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_option` WHERE `module`='%s' AND `code`='%s'",array(esc_sql($module),esc_sql($code))));
             // update
             if ($length > 0) {
                 $db->update('#@_option',array(

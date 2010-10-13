@@ -132,13 +132,13 @@ function user_get($param,$type=0){
 
     switch($type){
         case 0:
-            $where = sprintf("`userid`=%s",esc_sql($param));
+            $where = sprintf("`userid`=%d",esc_sql($param));
             break;
         case 1:
-            $where = sprintf("`name`=%s",esc_sql($param));
+            $where = sprintf("`name`='%s'",esc_sql($param));
             break;
         case 2:
-            $where = sprintf("`authcode`=%s",esc_sql($param));
+            $where = sprintf("`authcode`='%s'",esc_sql($param));
             break;
     }
     $rs = $db->query("SELECT * FROM `#@_user` WHERE {$where} LIMIT 0,1;");
@@ -264,7 +264,7 @@ function user_edit_meta($userid,$data) {
         // 判断是否需要序列化
         $value = is_need_serialize($value) ? serialize($value) : $value;
         // 查询数据库里是否已经存在
-        $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_user_meta` WHERE `userid`=%s AND `key`=%s;",array($userid,esc_sql($key))));
+        $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_user_meta` WHERE `userid`=%d AND `key`='%s';",array($userid,esc_sql($key))));
         // update
         if ($length > 0) {
             $db->update('#@_user_meta',array(

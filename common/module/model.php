@@ -76,10 +76,10 @@ function model_get($param,$type=0,$language=null) {
 
     switch($type){
         case 0:
-            $where = sprintf("WHERE `modelid`=%s",esc_sql($param));
+            $where = sprintf("WHERE `modelid`=%d",esc_sql($param));
             break;
         case 1:
-            $where = sprintf("WHERE `language`=%s AND `code`=%s",esc_sql($language),esc_sql($param));
+            $where = sprintf("WHERE `language`='%s' AND `code`='%s'",esc_sql($language),esc_sql($param));
             break;
     }
     $rs = $db->query("SELECT * FROM `#@_model` {$where} LIMIT 0,1;");
@@ -108,7 +108,7 @@ function model_get($param,$type=0,$language=null) {
  */
 function model_gets($state=null) {
     $db = get_conn(); $result = array(); $conditions = array();
-    $where = is_null($state) ? null : sprintf("WHERE `state`=%s",esc_sql($state));
+    $where = is_null($state) ? null : sprintf("WHERE `state`='%s'",esc_sql($state));
     $rs = $db->query("SELECT * FROM `#@_model` {$where} ORDER BY `modelid` ASC;");
     while ($row = $db->fetch($rs)) {
         $result[] = model_get_byid($row['modelid']);
