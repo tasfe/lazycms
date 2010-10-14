@@ -31,10 +31,9 @@ defined('COM_PATH') or die('Restricted access!');
  */
 function parse_dsn($DSN){
     if (empty($DSN)) return null;
-    if (preg_match('/^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@([\w\-\.]+)(:(\d+))?(\/([\w\-]+)\/([\w\-]+)|\/([\w\-]+))$/i',trim($DSN),$info)) {
+    if (preg_match('/^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@([\w\-\.]+(:(\d+))?)(\/([\w\-]+)\/([\w\-]+)|\/([\w\-]+))$/i',trim($DSN),$info)) {
         return array(
             'host'  => isset($info[5])?$info[5]:null,
-            'port'  => isset($info[7])?$info[7]:null,
             'user'  => isset($info[2])?$info[2]:null,
             'pwd'   => isset($info[4])?$info[4]:null,
             'name'  => isset($info[11])?$info[11]:$info[10],
@@ -85,17 +84,18 @@ function get_conn($DSN=null,$pconnect=false){
     if (isset($db[$guid]) && is_object($db[$guid])) return $db[$guid];
     $config = parse_dsn($DSN);
     if (empty($config)) {
-        $config = array(
-            'host'  => DB_HOST,
-            'user'  => DB_USER,
-            'pwd'   => DB_PWD,
-            'name'  => DB_NAME,
-            'prefix'=> DB_PREFIX,
-        );
+        if (defined('DB_HOST') && defined('DB_USER') && defined('DB_PWD') && defined('DB_NAME') && defined('DB_PREFIX')) {
+            $config = array(
+                'host'  => DB_HOST,
+                'user'  => DB_USER,
+                'pwd'   => DB_PWD,
+                'name'  => DB_NAME,
+                'prefix'=> DB_PREFIX,
+            );
+        }
     }
     $db[$guid] = new Mysql($config,$pconnect);
     return $db[$guid];
-    return false;
 }
 /**
  * 分页函数
@@ -140,6 +140,51 @@ function page_list($url,$page,$total,$length){
         $pages.= '<a href="'.str_replace('$',$page+1,$url).'">&raquo;</a>';
     }
     return '<div class="pages">'.$pages.'</div>';
+}
+/**
+ * 输出编辑器
+ *
+ * @param  $id
+ * @param  $content
+ * @param  $options see http://xheditor.com/manual/2#chapter2
+ * @return string
+ */
+function editor($id,$content,$options=null) {
+    $defaults = array(
+        'width' => '700',
+        'height'=> '280',
+        'toobar' => 'full',
+        'emotPath' => WEB_ROOT.'common/images/emots/',
+        'editorRoot' => WEB_ROOT.'common/editor/',
+    );
+    
+    $options = $options ? array_merge($defaults, $options) : $defaults;
+
+    if (isset($options['tools'])) unset($options['toobar']);
+
+    if (isset($options['toobar'])) {
+        switch ($options['toobar']) {
+            case 'full':
+                $options['tools'] = 'Source,Preview,Pastetext,|,Blocktag,Fontface,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,'.
+                                    'BackColor,Removeformat,|,Align,List,Outdent,Indent,|,Link,Unlink,Img,Flash,Flv,Emot,Table,Map,|,'.
+                                    'Fullscreen,About';
+                break;
+            case 'simple':
+                $options['tools'] = 'simple';
+                break;
+            case 'mini':
+                $options['tools'] = 'mini';
+                break;
+        }
+    }
+
+    $ht = '<script type="text/javascript">';
+    $ht.= '$(function(){';
+    $ht.= '$(\'textarea[name='.$id.']\').xheditor($.extend('.json_encode($options).',{"plugins":xplugins}));';
+    $ht.= '});';
+    $ht.= '</script>';
+    $ht.= '<textarea class="text" id="'.$id.'" name="'.$id.'">'.esc_html($content).'</textarea>';;
+    return $ht;
 }
 /**
  * 错误页面
@@ -933,7 +978,7 @@ function C($key,$value=null){
         // 先从缓存里取值
         $value = fcache_get($ckey.$key);
         if (empty($value)) {
-            if ($db->errno()==0) {
+            if ($db->conn && $db->errno()==0) {
                 $result = $db->query("SELECT * FROM `#@_option` WHERE `module`='%s' AND `code`='%s' LIMIT 0,1;",array($module,$code));
                 if ($data = $db->fetch($result)) {
                     $value = is_need_unserialize($data['type']) ? unserialize($data['value']) : $data['value'];

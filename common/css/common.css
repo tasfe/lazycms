@@ -68,7 +68,6 @@ button:focus, .button:focus, button:hover, .button:hover{border-color:#666}
 button:active, .button:active, .button-active{color:#000;background-color:#bbb;border-color:#999 #bbb #bbb #999;background-image:-webkit-gradient(linear,0 0,0 100%,from(#ddd),to(#fff));background-image:-moz-linear-gradient(top,#ddd,#fff);filter:progid:DXImageTransform.Microsoft.Gradient(EndColorstr='#ffffff',StartColorstr='#dddddd',GradientType=0)}
 a.button, span.button, div.button{ padding:4px 8px 5px; padding:5px 8px 3px\9; }
 
-
 /* loading */
 .loading{ border:solid 1px #666666; background:#FFFFDF; padding:1px; padding-right:10px;}
 

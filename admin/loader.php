@@ -61,6 +61,7 @@ switch ($type) {
         		    $content = get_file($src) . "\n";
         		    if (!strncasecmp($src,COM_PATH,strlen(COM_PATH))) {
         		    	$content = str_replace('../images/',WEB_ROOT.'common/images/',$content);
+                        $content = str_replace('../editor/',WEB_ROOT.'common/editor/',$content);
         		    } else {
         		    	$content = str_replace('../images/',ADMIN_ROOT.'images/',$content);
         		    }

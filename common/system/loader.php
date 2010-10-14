@@ -46,15 +46,15 @@ class LazyLoader {
             'reset'  => array(COM_PATH.'/css/reset.css'),
             'icons'  => array(COM_PATH.'/css/icons.css'),
             'common' => array(COM_PATH.'/css/common.css',array('reset','icons')),
-            
-            'admin_common' => array(ADMIN_PATH.'/css/common.css',array('reset','icons','common')),
-            'login'  => array(ADMIN_PATH.'/css/login.css',array('admin_common')),
-            'admin'  => array(ADMIN_PATH.'/css/admin.css',array('admin_common')),
-            'user'   => array(ADMIN_PATH.'/css/user.css',array('admin_common')),
-            'model'  => array(ADMIN_PATH.'/css/model.css',array('admin_common')),
-            'post'   => array(ADMIN_PATH.'/css/post.css',array('admin_common')),
-            'install' => array(ADMIN_PATH.'/css/install.css',array('admin_common')),
-            'categories' => array(ADMIN_PATH.'/css/categories.css',array('admin_common')),
+            'login'  => array(ADMIN_PATH.'/css/login.css',array('admin.common')),
+            'admin'  => array(ADMIN_PATH.'/css/admin.css',array('admin.common')),
+            'user'   => array(ADMIN_PATH.'/css/user.css',array('admin.common')),
+            'model'  => array(ADMIN_PATH.'/css/model.css',array('admin.common')),
+            'post'   => array(ADMIN_PATH.'/css/post.css',array('admin.common')),
+            'install' => array(ADMIN_PATH.'/css/install.css',array('admin.common')),
+            'categories' => array(ADMIN_PATH.'/css/categories.css',array('admin.common')),
+            'admin.common' => array(ADMIN_PATH.'/css/common.css',array('reset','icons','common','xheditor.plugins')),
+            'xheditor.plugins' => array(COM_PATH.'/css/xheditor.plugins.css'),
         );
         // 追加语言相关的CSS
         if ($this->language) {
@@ -71,6 +71,8 @@ class LazyLoader {
         $scripts = array(
             'jquery'        => array(COM_PATH.'/js/jquery.js'),
             'jquery.extend' => array(COM_PATH.'/js/jquery.extend.js'),
+            'xheditor'      => array(COM_PATH.'/editor/xheditor.js',array('jquery','xheditor.plugins')),
+            'xheditor.plugins' => array(COM_PATH.'/js/xheditor.plugins.js'),
             'common'        => array(COM_PATH.'/js/lazycms.js',array('jquery','jquery.extend'),array(
                                     'System Error' => __('System Error'),
                                     'Alert'     => __('Alert'),
@@ -103,6 +105,7 @@ class LazyLoader {
             'post'          => array(ADMIN_PATH.'/js/post.js',array('admin')),
             'options'       => array(ADMIN_PATH.'/js/options.js',array('admin')),
             'install'       => array(ADMIN_PATH.'/js/install.js',array('admin')),
+
         );
         // 追加语言相关的JS
         if ($this->language) {

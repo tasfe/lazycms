@@ -30,11 +30,10 @@ class Mysql {
     var $conn  = null;
     var $sql   = null;
     // private
-    var $_host = 'localhost';
-    var $_port = 3306;
-    var $_user = 'root';
-    var $_pwd  = '';
-    var $_name = 'test';
+    var $_host = null;
+    var $_user = null;
+    var $_pwd  = null;
+    var $_name = null;
     var $_prefix = null;
     var $_scheme = 'mysql';
     var $_pconnect = false;
@@ -77,11 +76,14 @@ class Mysql {
      * @return bool|void
      */
     function connect(){
+        // 检验数据库链接参数
+        if (!$this->_host || !$this->_user)
+            return throw_error(__('Database connect error, please check the database settings!'),E_LAZY_ERROR);
         // 连接数据库
         if (function_exists('mysql_pconnect') && $this->_pconnect) {
-            $this->conn = mysql_pconnect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,CLIENT_MULTI_RESULTS);
+            $this->conn = mysql_pconnect($this->_host,$this->_user,$this->_pwd,CLIENT_MULTI_RESULTS);
         } elseif (function_exists('mysql_connect')) {
-            $this->conn = mysql_connect($this->_host.':'.$this->_port,$this->_user,$this->_pwd,false,CLIENT_MULTI_RESULTS);
+            $this->conn = mysql_connect($this->_host,$this->_user,$this->_pwd,false,CLIENT_MULTI_RESULTS);
         }
         
         // 验证连接是否正确
@@ -181,6 +183,7 @@ class Mysql {
     function query($sql){
         // 验证连接是否正确
         if (!$this->conn) {
+            var_dump($this->conn);
             return throw_error(__('Supplied argument is not a valid MySQL-Link resource.'),E_LAZY_ERROR);
         }
         $args = func_get_args();

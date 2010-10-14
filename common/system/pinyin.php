@@ -33,7 +33,7 @@ class PinYin {
 
     function PinYin() {
         $args = func_get_args();
-		call_user_func_array( array(&$this, '__construct'), $args );
+        call_user_func_array( array(&$this, '__construct'), $args );
     }
     /**
      * 转换
@@ -150,9 +150,9 @@ class PinYin {
     }
 }
 /**
- * 取得验证实例
+ * 取得实例
  *
- * @return Validate
+ * @return $pinyin
  */
 function &_pinyin_get_object() {
     static $pinyin;

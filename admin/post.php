@@ -38,6 +38,7 @@ $method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 switch ($method) {
     // 强力插入
     case 'new':
+        admin_head('scripts',array('js/xheditor','js/post'));
         if ('page.php' == $php_file) {
             current_user_can('page-new');
             admin_head('title',__('Add New Page'));
@@ -52,6 +53,7 @@ switch ($method) {
 	    break;
 	// 编辑
 	case 'edit':
+        admin_head('scripts',array('js/xheditor','js/post'));
         if ('page.php' == $php_file) {
             // 所属
             $parent_file = 'page.php';
@@ -506,7 +508,7 @@ function post_manage_page($action) {
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="content">'._x('Content','post').'</label></th>';
-    echo                   '<td><textarea class="text" cols="100" rows="15" id="content" name="content">'.$content.'</textarea></td>';
+    echo                   '<td>'.editor('content',$content).'</td>';
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="path">'._x('Path','post').'<span class="description">'.__('(required)').'</span></label></th>';

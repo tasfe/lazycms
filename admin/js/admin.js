@@ -97,7 +97,7 @@ $.ajaxSetup({
  * @param content
  * @param callback
  */
-getTerms = function(content,callback) {
+var getTerms = window.getTerms = function(content,callback) {
     var data = [];
     if (content!='') {
         $.post(LazyCMS.ADMIN_ROOT + 'index.php',{method:'getTerms',content:content},function(r){
@@ -106,4 +106,4 @@ getTerms = function(content,callback) {
     } else {
         if (callback) callback(data);
     }
-}
+};

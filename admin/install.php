@@ -24,165 +24,159 @@ defined('ADMIN_PATH') or define('ADMIN_PATH',dirname(__FILE__));
 define('NO_REDIRECT',true);
 // 加载公共文件
 require ADMIN_PATH.'/admin.php';
-// 检查 config.php 是否存在
-$config_exist = file_exists_case(COM_PATH.'/config.php');
-
-
-if (validate_is_post()) {
-    validate_check('license',VALIDATE_EMPTY,__('You must accept the license before they can continue the installation!'));
-
-    validate_check('prefix', '/^[\w]+$/i', __('"Table Prefix" can only contain numbers, letters, and underscores.'));
-
-    validate_check('adminname',VALIDATE_EMPTY,__('You must provide a valid username.'));
-
-    validate_check('password1',VALIDATE_EQUAL,__('Your passwords do not match. Please try again.'),'password2');
-
-    validate_check(array(
-        array('email',VALIDATE_EMPTY,__('Please enter an e-mail address.')),
-        array('email',VALIDATE_IS_EMAIL,__('You must provide an e-mail address.'))
-    ));
-
-    if (validate_is_ok()) {
-        fcache_flush();
-        if (!$config_exist) {
-            $dbname = isset($_POST['dbname'])?$_POST['dbname']:null;
-            $uname  = isset($_POST['uname'])?$_POST['uname']:null;
-            $pwd    = isset($_POST['pwd'])?$_POST['pwd']:null;
-            $dbhost = isset($_POST['dbhost'])?$_POST['dbhost']:null;
-            $prefix = isset($_POST['prefix'])?$_POST['prefix']:null;
-            $db = new Mysql();
-            $db->config(array(
-                'name'   => $dbname,
-                'host'   => $dbhost,
-                'user'   => $uname,
-                'pwd'    => $pwd,
-                'prefix' => $prefix,
-            ));
-            // 链接成功
-            if (@$db->connect()) {
-                // 检查数据库版本
-                if (!version_compare($db->version(), '4.1', '>=')) {
-                    admin_error(__('MySQL database version lower than 4.1, please upgrade MySQL!'));
-                }
-                // 数据库没有创建，自动创建数据库
-                if (!$db->is_database($dbname)) {
-                    $db->query("CREATE DATABASE `{$dbname}` CHARACTER SET utf8 COLLATE utf8_general_ci;");
-                }
-                @$db->select_db();
-            }
-            // 数据库链接错误
-            if ($db->errno()==1045) {
-                header('X-Dialog-title: '.json_encode(__('Error establishing a database connection')));
-                echo '<div style="padding:0 20px;">';
-                echo '<h2>'.__('Error establishing a database connection').'</h2>';
-                echo '<p>'.sprintf(__('This either means that the username and password information in your <code>common/config.php</code> file is incorrect or we can\'t contact the database server at <code>%s</code>.'),$dbhost).' '.__('This could mean your host\'s database server is down.').'</p>';
-                echo '<ul>';
-	            echo    '<li>'.__('Are you sure you have the correct username and password?').'</li>';
-	            echo    '<li>'.__('Are you sure that you have typed the correct hostname?').'</li>';
-	            echo    '<li>'.__('Are you sure that the database server is running?').'</li>';
-                echo '</ul>';
-                echo '<p>'.__('If you\'re unsure what these terms mean you should probably contact your host.').' '.__('If you still need help you can always visit the <a href="http://lazycms.com/support/">LazyCMS Support Forums</a>.').'</p>';
-                echo '</div>';
-                exit();
-            }
-            // 无法选择数据库
-            elseif ($db->errno()==1049) {
-                header('X-Dialog-title: '.json_encode(__('Can\'t select database')));
-                echo '<div style="padding:0 20px;">';
-                echo '<h2>'.__('Can\'t select database').'</h2>';
-                echo '<p>'.sprintf(__('We were able to connect to the database server (which means your username and password is okay) but not able to select the <code>%s</code> database.'),$dbname).'</p>';
-                echo '<ul>';
-	            echo    '<li>'.__('Are you sure it exists?').'</li>';
-	            echo    '<li>'.sprintf(__('Does the user <code>%s</code> have permission to use the <code>%s</code> database?'),$uname,$dbname).'</li>';
-	            echo    '<li>'.sprintf(__('On some systems the name of your database is prefixed with your username, so it would be like <code>%s_%s</code>. Could that be the problem?'),$uname,$dbname).'</li>';
-                echo '</ul>';
-                echo '<p>'.__('If you don\'t know how to set up a database you should <strong>contact your host</strong>.').' '.__('If all else fails you may find help at the <a href="http://lazycms.com/support/">LazyCMS Support Forums</a>.').'</p>';
-                echo '</div>';
-                exit();
-            }
-            // 检查 config.sample.php 文件是否存在
-            if (!file_exists_case(COM_PATH.'/config.sample.php')) {
-                admin_error(__('Sorry, I need a common/config.sample.php file to work from. Please re-upload this file from your LazyCMS installation.'));
-            }
-            // 替换变量
-            $configs = file(COM_PATH.'/config.sample.php');
-            foreach ($configs as $num => $line) {
-                switch(substr($line,0,16)) {
-                    case "define('DB_NAME'":
-                        $configs[$num] = str_replace("database_name_here", $dbname, $line);
-                        break;
-                    case "define('DB_HOST'":
-                        $configs[$num] = str_replace("localhost", $dbhost, $line);
-                        break;
-                    case "define('DB_USER'":
-                        $configs[$num] = str_replace("username_here", $uname, $line);
-                        break;
-                    case "define('DB_PWD',":
-                        $configs[$num] = str_replace("password_here", $pwd, $line);
-                        break;
-                    case "define('DB_PREFI":
-                        $configs[$num] = str_replace("lazy_", $prefix, $line);
-                        break;
-                }
-            }
-            // 检查是否具有写入权限
-            if (is_writable(COM_PATH.'/')) {
-                $config = implode('', $configs);
-                file_put_contents(COM_PATH.'/config.php', $config);
-                // 定义数据库链接
-                define('DB_NAME',$dbname);
-                define('DB_HOST',$dbhost);
-                define('DB_USER',$uname);
-                define('DB_PWD',$pwd);
-                define('DB_PREFIX',$prefix);
-            }
-        } else {
-            $db = get_conn();
-        }
-        $query = install_schema();
-        // 创建数据表
-        $db->delta($query);
-        // 安装默认设置
-        install_defaults();
-        // 保存用户填写的信息
-        $sitetitle = isset($_POST['sitetitle'])?$_POST['sitetitle']:'';
-        $adminname = isset($_POST['adminname'])?$_POST['adminname']:'';
-        $password  = isset($_POST['password1'])?$_POST['password1']:'';
-        $email     = isset($_POST['email'])?$_POST['email']:'';
-
-        if ($sitetitle) C('SiteTitle',$sitetitle);
-        // 添加管理员
-        user_add($adminname,$password,$email,array(
-            'url'  => esc_html(HTTP_HOST),
-            'nickname' => esc_html($adminname),
-            'roles' => 'ALL',
-            'Administrator' => 'Yes'
-        ));
-        admin_success(__('All right sparky! You\'ve made it through of the installation. If you are ready, time now to&hellip;'), "LazyCMS.redirect('".ADMIN_ROOT."');");
-
-    }
+// 检查系统是否已经安装
+if (installed()) {
+    redirect(ADMIN_ROOT);
 }
+// 系统需要安装
+else {
+    // 检查 config.php 是否存在
+    $config_exist = file_exists_case(COM_PATH.'/config.php');
 
-// 安装默认设置
-function install_defaults() {
-    global $db;
-    // 默认设置
-    $options = array(
-        // 2.0
-        'Template' => 'default',
-        'TemplateSuffixs' => 'htm,html',
-        'HTMLFileSuffix' => '.html',
-        'Language' => 'zh-CN',
-        'SiteTitle' => __('My Site'),
-    );
-    // 覆盖或升级设置
-    foreach($options as $k=>$v) {
-        if (C($k)===null) {
-            C($k,$v);
+    if (validate_is_post()) {
+        validate_check('license',VALIDATE_EMPTY,__('You must accept the license before they can continue the installation!'));
+
+        validate_check('prefix', '/^[\w]+$/i', __('"Table Prefix" can only contain numbers, letters, and underscores.'));
+
+        validate_check('adminname',VALIDATE_EMPTY,__('You must provide a valid username.'));
+
+        validate_check('password1',VALIDATE_EQUAL,__('Your passwords do not match. Please try again.'),'password2');
+
+        validate_check(array(
+            array('email',VALIDATE_EMPTY,__('Please enter an e-mail address.')),
+            array('email',VALIDATE_IS_EMAIL,__('You must provide an e-mail address.'))
+        ));
+
+        if (validate_is_ok()) {
+            fcache_flush();
+            if (!$config_exist) {
+                $dbname = isset($_POST['dbname'])?$_POST['dbname']:null;
+                $uname  = isset($_POST['uname'])?$_POST['uname']:null;
+                $pwd    = isset($_POST['pwd'])?$_POST['pwd']:null;
+                $dbhost = isset($_POST['dbhost'])?$_POST['dbhost']:null;
+                $prefix = isset($_POST['prefix'])?$_POST['prefix']:null;
+                $db = new Mysql();
+                $db->config(array(
+                    'name'   => $dbname,
+                    'host'   => $dbhost,
+                    'user'   => $uname,
+                    'pwd'    => $pwd,
+                    'prefix' => $prefix,
+                ));
+                // 链接成功
+                if (@$db->connect()) {
+                    // 检查数据库版本
+                    if (!version_compare($db->version(), '4.1', '>=')) {
+                        admin_error(__('MySQL database version lower than 4.1, please upgrade MySQL!'));
+                    }
+                    // 数据库没有创建，自动创建数据库
+                    if (!$db->is_database($dbname)) {
+                        $db->query("CREATE DATABASE `{$dbname}` CHARACTER SET utf8 COLLATE utf8_general_ci;");
+                    }
+                    @$db->select_db();
+                }
+                // 数据库链接错误
+                if ($db->errno()==1045) {
+                    header('X-Dialog-title: '.json_encode(__('Error establishing a database connection')));
+                    echo '<div style="padding:0 20px;">';
+                    echo '<h2>'.__('Error establishing a database connection').'</h2>';
+                    echo '<p>'.sprintf(__('This either means that the username and password information in your <code>common/config.php</code> file is incorrect or we can\'t contact the database server at <code>%s</code>.'),$dbhost).' '.__('This could mean your host\'s database server is down.').'</p>';
+                    echo '<ul>';
+                    echo    '<li>'.__('Are you sure you have the correct username and password?').'</li>';
+                    echo    '<li>'.__('Are you sure that you have typed the correct hostname?').'</li>';
+                    echo    '<li>'.__('Are you sure that the database server is running?').'</li>';
+                    echo '</ul>';
+                    echo '<p>'.__('If you\'re unsure what these terms mean you should probably contact your host.').' '.__('If you still need help you can always visit the <a href="http://lazycms.com/support/">LazyCMS Support Forums</a>.').'</p>';
+                    echo '</div>';
+                    exit();
+                }
+                // 无法选择数据库
+                elseif ($db->errno()==1049) {
+                    header('X-Dialog-title: '.json_encode(__('Can\'t select database')));
+                    echo '<div style="padding:0 20px;">';
+                    echo '<h2>'.__('Can\'t select database').'</h2>';
+                    echo '<p>'.sprintf(__('We were able to connect to the database server (which means your username and password is okay) but not able to select the <code>%s</code> database.'),$dbname).'</p>';
+                    echo '<ul>';
+                    echo    '<li>'.__('Are you sure it exists?').'</li>';
+                    echo    '<li>'.sprintf(__('Does the user <code>%s</code> have permission to use the <code>%s</code> database?'),$uname,$dbname).'</li>';
+                    echo    '<li>'.sprintf(__('On some systems the name of your database is prefixed with your username, so it would be like <code>%s_%s</code>. Could that be the problem?'),$uname,$dbname).'</li>';
+                    echo '</ul>';
+                    echo '<p>'.__('If you don\'t know how to set up a database you should <strong>contact your host</strong>.').' '.__('If all else fails you may find help at the <a href="http://lazycms.com/support/">LazyCMS Support Forums</a>.').'</p>';
+                    echo '</div>';
+                    exit();
+                }
+                // 检查 config.sample.php 文件是否存在
+                if (!file_exists_case(COM_PATH.'/config.sample.php')) {
+                    admin_error(__('Sorry, I need a common/config.sample.php file to work from. Please re-upload this file from your LazyCMS installation.'));
+                }
+                // 替换变量
+                $configs = file(COM_PATH.'/config.sample.php');
+                foreach ($configs as $num => $line) {
+                    switch(substr($line,0,16)) {
+                        case "define('DB_NAME'":
+                            $configs[$num] = str_replace("database_name_here", $dbname, $line);
+                            break;
+                        case "define('DB_HOST'":
+                            $configs[$num] = str_replace("localhost", $dbhost, $line);
+                            break;
+                        case "define('DB_USER'":
+                            $configs[$num] = str_replace("username_here", $uname, $line);
+                            break;
+                        case "define('DB_PWD',":
+                            $configs[$num] = str_replace("password_here", $pwd, $line);
+                            break;
+                        case "define('DB_PREFI":
+                            $configs[$num] = str_replace("lazy_", $prefix, $line);
+                            break;
+                    }
+                }
+                // 检查是否具有写入权限
+                if (is_writable(COM_PATH.'/')) {
+                    $config = implode('', $configs);
+                    file_put_contents(COM_PATH.'/config.php', $config);
+                    // 定义数据库链接
+                    define('DB_NAME',$dbname);
+                    define('DB_HOST',$dbhost);
+                    define('DB_USER',$uname);
+                    define('DB_PWD',$pwd);
+                    define('DB_PREFIX',$prefix);
+                }
+            } else {
+                $db = get_conn();
+            }
+            $query = install_schema();
+            // 创建数据表
+            $db->delta($query);
+            // 安装默认设置
+            install_defaults();
+            // 保存用户填写的信息
+            $sitetitle = isset($_POST['sitetitle'])?$_POST['sitetitle']:'';
+            $adminname = isset($_POST['adminname'])?$_POST['adminname']:'';
+            $password  = isset($_POST['password1'])?$_POST['password1']:'';
+            $email     = isset($_POST['email'])?$_POST['email']:'';
+
+            if ($sitetitle) C('SiteTitle',$sitetitle);
+            // 管理员存在，修改管理员信息
+            if ($admin = user_get_byname($adminname)) {
+                user_edit($admin['userid'],array(
+                    'pass' => md5($password.$admin['authcode']),
+                    'mail' => esc_html($email),
+                    'roles' => 'ALL',
+                    'Administrator' => 'Yes'
+                ));
+            }
+            // 添加管理员
+            else {
+                user_add($adminname,$password,$email,array(
+                    'url'  => esc_html(HTTP_HOST),
+                    'nickname' => esc_html($adminname),
+                    'roles' => 'ALL',
+                    'Administrator' => 'Yes'
+                ));
+            }
+            admin_success(__('All right sparky! You\'ve made it through of the installation. If you are ready, time now to&hellip;'), "LazyCMS.redirect('".ADMIN_ROOT."');");
         }
     }
-
-    return true;
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -228,7 +222,7 @@ function install_defaults() {
             <tr><th class="w150"><label for="sitetitle"><?php _e('Site Title');?></label></th><td><input class="text" type="text" name="sitetitle" id="sitetitle" /></td><td>&nbsp;</td></tr>
             <tr><th><label for="adminname"><?php _e('UserName');?></label></th><td><input class="text" type="text" name="adminname" id="adminname" /></td><td><?php _e('Administrator account.');?></td></tr>
             <tr>
-                <th><label for="password1"><?php _e('Password, twice');?></label><p><?php _e('A password will be automatically generated for you if you leave this blank.');?></p></th>
+                <th><label for="password1"><?php _e('Password, twice');?></label></th>
                 <td><input class="text" type="password" name="password1" id="password1" /><br /><input class="text" type="password" name="password2" id="password2" /><br /><div id="pass-strength-result"><?php _e('Strength indicator');?></div></td>
                 <td><?php _e('Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! " ? $ % ^ & ).');?></td>
             </tr>
@@ -342,5 +336,31 @@ CREATE TABLE `#@_term_taxonomy_meta` (
   PRIMARY KEY (`metaid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 SQL;
+}
+// 安装默认设置
+function install_defaults() {
+    global $db;
+    // 默认设置
+    $options = array(
+        // 2.0
+        'Template' => 'default',
+        'TemplateSuffixs' => 'htm,html',
+        'HTMLFileSuffix' => '.html',
+        'Language' => 'zh-CN',
+        'SiteTitle' => __('My Site'),
+        'Installed' => time(),
+    );
+    // 覆盖或升级设置
+    foreach($options as $k=>$v) {
+        if (C($k)===null) {
+            C($k,$v);
+        }
+    }
+
+    return true;
+}
+// 判断系统是否已安装
+function installed() {
+    if (C('Installed')) return true;
 }
 ?>

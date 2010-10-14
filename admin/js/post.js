@@ -70,6 +70,7 @@ function post_manage_init() {
             }
         });
     });
+    
 	// 提交事件
     $('form#postmanage').ajaxSubmit();
 }
