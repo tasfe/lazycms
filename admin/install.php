@@ -51,6 +51,7 @@ else {
 
         if (validate_is_ok()) {
             fcache_flush();
+            $writable = true;
             if (!$config_exist) {
                 $dbname = isset($_POST['dbname'])?$_POST['dbname']:null;
                 $uname  = isset($_POST['uname'])?$_POST['uname']:null;
@@ -133,7 +134,7 @@ else {
                     }
                 }
                 // 检查是否具有写入权限
-                if (is_writable(COM_PATH.'/')) {
+                if ($writable = is_writable(COM_PATH.'/')) {
                     $config = implode('', $configs);
                     file_put_contents(COM_PATH.'/config.php', $config);
                 }
@@ -176,7 +177,11 @@ else {
                     'Administrator' => 'Yes'
                 ));
             }
-            admin_success(__('All right sparky! You\'ve made it through of the installation. If you are ready, time now to&hellip;'), "LazyCMS.redirect('".ADMIN_ROOT."');");
+            if ($writable) {
+                admin_success(__('All right sparky! You\'ve made it through of the installation. If you are ready, time now to&hellip;'), "LazyCMS.redirect('".ADMIN_ROOT."');");
+            } else {
+                admin_alert(__('config.php is not writeable, manually modified.'), "LazyCMS.redirect('".ADMIN_ROOT."');");
+            }
         }
     }
 }
