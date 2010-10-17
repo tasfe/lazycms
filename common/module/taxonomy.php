@@ -327,8 +327,10 @@ function taxonomy_edit($taxonomyid,$data) {
                 'MD5' => $taxonomyid,
             ));
             // 删除旧文件夹
-            if ($data['path']!=$taxonomy['path'] && is_dir(ABS_PATH.'/'.$taxonomy['path'])) {
-                rmdirs(ABS_PATH.'/'.$taxonomy['path']);
+            if (!empty($taxonomy['path'])) {
+                if ($data['path']!=$taxonomy['path'] && is_dir(ABS_PATH.'/'.$taxonomy['path'])) {
+                    rmdirs(ABS_PATH.'/'.$taxonomy['path']);
+                }
             }
         }
         // 分析关键词

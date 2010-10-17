@@ -136,13 +136,13 @@ else {
                 if (is_writable(COM_PATH.'/')) {
                     $config = implode('', $configs);
                     file_put_contents(COM_PATH.'/config.php', $config);
-                    // 定义数据库链接
-                    define('DB_NAME',$dbname);
-                    define('DB_HOST',$dbhost);
-                    define('DB_USER',$uname);
-                    define('DB_PWD',$pwd);
-                    define('DB_PREFIX',$prefix);
                 }
+                // 定义数据库链接
+                define('DB_NAME',$dbname);
+                define('DB_HOST',$dbhost);
+                define('DB_USER',$uname);
+                define('DB_PWD',$pwd);
+                define('DB_PREFIX',$prefix);
             } else {
                 $db = get_conn();
             }
@@ -359,7 +359,6 @@ SQL;
 }
 // 安装默认设置
 function install_defaults() {
-    global $db;
     // 默认设置
     $options = array(
         // 2.0
