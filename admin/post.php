@@ -540,7 +540,7 @@ function post_manage_page($action) {
     echo                   '<th><label for="template">'._x('Page Template','post').'</label></th>';
     echo                   '<td>';
     echo                       '<select id="template" name="template">';
-    echo                           $models?'<option value="">'.__('Use the category set').'</option>':null;
+    echo                           $models?'<option value="">'.__('Use the model set').'</option>':null;
     echo                           options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$template);
     echo                       '</select>';
     echo                   '</td>';

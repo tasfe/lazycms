@@ -38,7 +38,7 @@ function post_manage_init() {
 	var wrap = $('#postmanage'),
         categories = function(sortid) {
             $('#template > option:eq(0)',wrap).text(
-                (+sortid==0 ? _('Use the model set') : _('Use the category set'))
+                ((isNaN(+sortid) || +sortid==0) ? _('Use the model set') : _('Use the category set'))
             );
         };
     // 控制是否显示模版使用模型设置

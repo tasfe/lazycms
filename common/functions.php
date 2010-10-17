@@ -100,8 +100,12 @@ function get_conn($DSN=null,$pconnect=false){
             );
         }
     }
-    $db[$guid] = new Mysql($config,$pconnect);
-    return $db[$guid];
+    // 实例话mysql类
+    $mysql = new Mysql($config,$pconnect);
+    if ($mysql->conn && $mysql->errno()==0) {
+        $db[$guid] = $mysql;
+    }    
+    return $mysql;
 }
 /**
  * 分页函数
@@ -996,22 +1000,22 @@ function C($key,$value=null){
     $key = $module.'.'.$code;
     // 取值
     if($key && func_num_args()==1) {
+        // 数据库链接有问题
+        if (!($db->conn && $db->errno()==0)) return null; 
         // 先从缓存里取值
         $value = fcache_get($ckey.$key);
-        if (empty($value)) {
-            if ($db->conn && $db->errno()==0) {
-                if ($db->is_table('#@_option')) {
-                    $result = $db->query("SELECT * FROM `#@_option` WHERE `module`='%s' AND `code`='%s' LIMIT 0,1;",array($module,$code));
-                    if ($data = $db->fetch($result)) {
-                        $value = is_need_unserialize($data['type']) ? unserialize($data['value']) : $data['value'];
-                        // 保存到缓存
-                        fcache_set($ckey.$key,$value);
-                    }
+        if ($value === null) {
+            if ($db->is_table('#@_option')) {
+                $result = $db->query("SELECT `value`,`value` FROM `#@_option` WHERE `module`='%s' AND `code`='%s' LIMIT 0,1;",array($module,$code));
+                if ($data = $db->fetch($result)) {
+                    $value = is_need_unserialize($data['type']) ? unserialize($data['value']) : $data['value'];
+                    // 保存到缓存
+                    fcache_set($ckey.$key,$value);
                 }
             }
         }
         // 支持多维数组取值
-        if (!empty($args)) {
+        if (!empty($args) && is_array($value)) {
         	foreach ($args as $arg) {
         		$value = $value[$arg];
         	}
@@ -1035,7 +1039,7 @@ function C($key,$value=null){
             // 判断是否需要序列化
             $value = is_need_serialize($value) ? serialize($value) : $value;
             // 查询数据库里是否已经存在
-            $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_option` WHERE `module`='%s' AND `code`='%s'",array(esc_sql($module),esc_sql($code))));
+            $length = (int) $db->result(vsprintf("SELECT COUNT(`id`) FROM `#@_option` WHERE `module`='%s' AND `code`='%s'",array(esc_sql($module),esc_sql($code))));
             // update
             if ($length > 0) {
                 $db->update('#@_option',array(
