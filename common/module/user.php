@@ -127,8 +127,8 @@ function user_get($param,$type=0){
     $db = get_conn(); if ((int)$type>2) return null;
     $ckeys = array('user.userid.','user.name.','user.authcode.');
     $ckey  = $ckeys[$type];
-    $value = fcache_get($ckey.$param);
-    if (!empty($value)) return $value;
+    $user  = fcache_get($ckey.$param);
+    if ($user !== null) return $user;
 
     switch($type){
         case 0:
@@ -149,6 +149,7 @@ function user_get($param,$type=0){
         }
         // 保存到缓存
         fcache_set($ckey.$param,$user);
+
         return $user;
     }
     return null;
@@ -313,7 +314,11 @@ function user_delete($userid) {
     $db = get_conn();
     $userid = intval($userid);
     if (!$userid) return false;
-    if (user_get_byid($userid)) {
+    if ($user = user_get_byid($userid)) {
+        // 超级管理员不能删除
+        if ($user['Administrator']=='Yes' && $user['roles']=='ALL')
+            return false;
+
         user_clean_cache($userid);
         $db->delete('#@_user',array('userid' => $userid));
         $db->delete('#@_user_meta',array('userid' => $userid));

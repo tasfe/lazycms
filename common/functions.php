@@ -22,6 +22,10 @@ defined('COM_PATH') or die('Restricted access!');
 /**
  * LazyCMS 公用函数库
  */
+// 判断系统是否已安装
+function installed() {
+    if (C('Installed')) return true;
+}
 /**
  * 解析DSN
  *
@@ -56,8 +60,8 @@ function parse_dsn($DSN){
  * @return string
  */
 function format_path($path,$data=null) {
-    $py = $id = $md5 = null;
     if (is_array($data)) {
+        $py = $id = $md5 = null;
         foreach ($data as $k=>$v) {
             if (empty($v)) continue;
             if ($k=='PY') {
@@ -65,10 +69,12 @@ function format_path($path,$data=null) {
             } elseif ($k=='ID') {
                 $id = $v;
             } elseif ($k=='MD5') {
-                $md5 = strtoupper(md5($path.$v));
+                $md5 = md5($path.$v);
             }
         }
-        $path = str_replace(array('%PY','%ID','%MD5'),array($py,$id,$md5),$path);
+        if ($py)  $path = str_replace('%PY',  $py,  $path);
+        if ($id)  $path = str_replace('%ID',  $id,  $path);
+        if ($md5) $path = str_replace('%MD5', $md5, $path);
     }
     return strftime($path);
 }
@@ -449,6 +455,37 @@ function esc_html($str){
     return $str;
 }
 /**
+ * 全概率计算函数
+ *
+ * @param  $ps  array('a'=>0.5,'b'=>0.2,'c'=>0.4)
+ * @return array key
+ */
+function random($ps){
+    static $arr = array(); $key = md5(serialize($ps));
+    if (!isset($arr[$key])) {
+        $max = array_sum($ps);
+        foreach ($ps as $k=>$v) {
+            $v = $v / $max * 10000;
+            for ($i=0; $i<$v; $i++) $arr[$key][] = $k;
+        }
+    }
+    return $arr[$key][mt_rand(0,count($arr[$key])-1)];
+}
+/**
+ * 随机字符串
+ *
+ * @param int $length
+ * @param string $charlist
+ * @return string
+ */
+function str_rand($length=6,$charlist='0123456789abcdefghijklmnopqrstopwxyz'){
+    $charcount = strlen($charlist); $str = null;
+    for ($i=0;$i<$length;$i++) {
+        $str.= $charlist[mt_rand(0,$charcount-1)];
+    }
+    return $str;
+}
+/**
  * 格式化为XML
  *
  * @param  $content
@@ -675,10 +712,10 @@ function auto_charset($data,$from,$to){
         return $data;
     }
     if (is_string($data) ) {
-        if (function_exists('mb_convert_encoding')) {
-            return mb_convert_encoding ($data, $to, $from);
-        } elseif(function_exists('iconv')) {
+        if(function_exists('iconv')) {
             return iconv($from,$to,$data);
+        } elseif (function_exists('mb_convert_encoding')) {
+            return mb_convert_encoding ($data, $to, $from);
         } else {
             return $data;
         }
@@ -701,10 +738,11 @@ function auto_charset($data,$from,$to){
  * 批量创建目录
  *
  * @param string $path   文件夹路径
+ *
  * @param int    $mode   权限
  * @return bool
  */
-function mkdirs($path, $mode = 0777){
+function mkdirs($path, $mode = 0775){
     if (!is_dir($path)) {
         mkdirs(dirname($path), $mode);
         return @mkdir($path, $mode);
@@ -728,23 +766,6 @@ function rmdirs($path){
         closedir($dh);
     }
     return @rmdir($path);
-}
-/**
- * 区分大小写的文件存在判断
- *
- * @param string $filename
- * @return bool
- */
-function file_exists_case($filename) {
-    if (is_file($filename)) {
-        if (IS_WIN) {
-            if (basename(realpath($filename)) != basename($filename)) {
-                return false;
-            }
-        }
-        return true;
-    }
-    return false;
 }
 /**
  * 给用户生成唯一CODE
@@ -979,11 +1000,13 @@ function C($key,$value=null){
         $value = fcache_get($ckey.$key);
         if (empty($value)) {
             if ($db->conn && $db->errno()==0) {
-                $result = $db->query("SELECT * FROM `#@_option` WHERE `module`='%s' AND `code`='%s' LIMIT 0,1;",array($module,$code));
-                if ($data = $db->fetch($result)) {
-                    $value = is_need_unserialize($data['type']) ? unserialize($data['value']) : $data['value'];
-                    // 保存到缓存
-                    fcache_set($ckey.$key,$value);
+                if ($db->is_table('#@_option')) {
+                    $result = $db->query("SELECT * FROM `#@_option` WHERE `module`='%s' AND `code`='%s' LIMIT 0,1;",array($module,$code));
+                    if ($data = $db->fetch($result)) {
+                        $value = is_need_unserialize($data['type']) ? unserialize($data['value']) : $data['value'];
+                        // 保存到缓存
+                        fcache_set($ckey.$key,$value);
+                    }
                 }
             }
         }

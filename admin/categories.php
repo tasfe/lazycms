@@ -59,19 +59,28 @@ switch ($method) {
 	case 'save':
         $taxonomyid  = isset($_POST['taxonomyid'])?$_POST['taxonomyid']:0;
         if (validate_is_post()) {
+            // 路径两边不允许出现 斜杠
+            if (isset($_POST['path']))
+                $_POST['path'] = trim($_POST['path'],'/');
+            
             $parent = isset($_POST['parent'])?$_POST['parent']:'0';
             $name   = isset($_POST['name'])?$_POST['name']:null;
             $path   = isset($_POST['path'])?$_POST['path']:null;
             $list   = isset($_POST['list'])?$_POST['list']:null;
+            $page   = isset($_POST['page'])?$_POST['page']:null;
+            $keywords = isset($_POST['keywords'])?$_POST['keywords']:null;
             $description = isset($_POST['description'])?$_POST['description']:null;
 
             validate_check(array(
                 array('name',VALIDATE_EMPTY,_x('The name field is empty.','sort')),
                 array('name',VALIDATE_LENGTH,_x('The name field length must be %d-%d characters.','sort'),1,30),
             ));
-            
+            // 验证路径
+            $path_exists = taxonomy_path_exists($taxonomyid,format_path($path,array('PY'=>$name)));
             validate_check(array(
                 array('path',VALIDATE_EMPTY,_x('The path field is empty.','sort')),
+                array('path',VALIDATE_IS_PATH,sprintf(_x('The path can not contain any of the following characters %s','sort'),'* : < > | \\')),
+                array('path',(!$path_exists),_x('The path already exists.','sort')),
             ));
             
             if ($description) {
@@ -79,7 +88,6 @@ switch ($method) {
                     array('description',VALIDATE_LENGTH,__('Description the field up to 255 characters.'),0,255),
                 ));
             }
-
 
             // 安全有保证，做爱做的事吧！
             if (validate_is_ok()) {
@@ -90,6 +98,8 @@ switch ($method) {
                         'name'   => esc_html($name),
                         'path'   => esc_html($path),
                         'list'   => esc_html($list),
+                        'page'   => esc_html($page),
+                        'keywords' => esc_html($keywords),
                         'description' => esc_html($description),
                     );
                     taxonomy_edit($taxonomyid,$info);
@@ -103,6 +113,8 @@ switch ($method) {
                     taxonomy_add('category',$name,$parent,array(
                         'path'  => esc_html($path),
                         'list'  => esc_html($list),
+                        'page'  => esc_html($page),
+                        'keywords' => esc_html($keywords),
                         'description' => esc_html($description),
                     ));
                     admin_success(__('Category created.'),"LazyCMS.redirect('".PHP_FILE."');");
@@ -212,7 +224,7 @@ function display_tr_tree($sorts,$n=0) {
         $hl.=   '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$sort['taxonomyid'].'" /></td>';
         $hl.=   '<td><span class="space">'.$space.'</span><strong><a href="'.$href.'">'.$sort['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
         // 检测目录是否已生成
-        if (file_exists_case(ABS_PATH.'/'.$sort['path'])) {
+        if (is_file(ABS_PATH.'/'.$sort['path'])) {
             $hl.= '<td><img class="b6 os" src="'.ADMIN_ROOT.'images/white.gif" /><a href="'.$path.'" target="_blank">'.$path.'</a></td>';
         } else {
             $hl.= '<td><img class="b7 os" src="'.ADMIN_ROOT.'images/white.gif" /><a href="javascript:;">'.$path.'</a></td>';
@@ -241,9 +253,10 @@ function category_manage_page($action) {
     $name    = isset($_SORT['name'])?$_SORT['name']:null;
     $path    = isset($_SORT['path'])?$_SORT['path']:null;
     $list    = isset($_SORT['list'])?$_SORT['list']:null;
+    $page    = isset($_SORT['page'])?$_SORT['page']:null;
     $keywords = isset($_SORT['keywords'])?$_SORT['keywords']:null;
     $description = isset($_SORT['description'])?$_SORT['description']:null;
-    $modules = model_gets(0);
+    $models = model_gets(0);
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="sortmanage" id="sortmanage">';
@@ -263,21 +276,25 @@ function category_manage_page($action) {
     echo           '<tr>';
     echo               '<th><label for="path">'._x('Path','sort').'<span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td><input class="text" id="path" name="path" type="text" size="70" value="'.$path.'" /><div class="rules">';
-    echo                   '<a href="#%ID">['.__('Category ID').']</a>';
-    echo                   '<a href="#%MD5">['.__('MD5 Value').']</a>';
-    echo                   '<a href="#%PY">['.__('Pinyin').']</a>';
-    echo                   '<a href="#%Y">['.strftime('%Y').']</a>';
-    echo                   '<a href="#%m">['.strftime('%m').']</a>';
-    echo                   '<a href="#%d">['.strftime('%d').']</a>';
-    echo                   '<a href="#%a">['.strftime('%a').']</a>';
+    echo                   '<a href="#%ID" title="%ID">['.__('Category ID').']</a>';
+    echo                   '<a href="#%MD5" title="%MD5">['.__('MD5 Value').']</a>';
+    echo                   '<a href="#%PY" title="%PY">['.__('Pinyin').']</a>';
     echo               '</div></td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="listtemplate">'.__('List Template').'</label></th>';
     echo               '<td>';
     echo                   '<select id="listtemplate" name="list">';
-    echo                       $modules?'<option value="">'.__('Use the model set').'</option>':null;
     echo                       options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$list);
+    echo                   '</select>';
+    echo               '</td>';
+    echo           '</tr>';
+    echo           '<tr>';
+    echo               '<th><label for="pagetemplate">'.__('Page Template').'</label></th>';
+    echo               '<td>';
+    echo                   '<select id="pagetemplate" name="page">';
+    echo                       $models?'<option value="">'.__('Use the model set').'</option>':null;
+    echo                       options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$page);
     echo                   '</select>';
     echo               '</td>';
     echo           '</tr>';

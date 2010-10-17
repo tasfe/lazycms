@@ -40,8 +40,8 @@ class FCache {
     function file($key) {
         $md5_key = md5($key); $folders = array();
         for ($i=1;$i<=3;$i++) $folders[] = substr($md5_key,0,$i);
-        $folder = sprintf('%s/%s',CACHE_PATH,implode('/',$folders),$md5_key);
-        $file   = sprintf('%s/%s.cache',$folder,$md5_key); mkdirs($folder);
+        $file   = sprintf('%s/%s/%s.cache',CACHE_PATH,implode('/',$folders),$md5_key);
+        $floder = dirname($file); mkdirs($floder);
         return $file;
     }
     /**

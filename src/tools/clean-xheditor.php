@@ -254,7 +254,7 @@ function rmdirs($path){
 function mkdirs($path, $mode = 0777){
     if (!is_dir($path)) {
         mkdirs(dirname($path), $mode);
-        return @mkdir($path, $mode);
+        return mkdir($path, $mode);
     }
     return true;
 }

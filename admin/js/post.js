@@ -35,7 +35,18 @@ function post_list_init() {
 }
 // 添加用户页面初始化
 function post_manage_init() {
-	var wrap = $('#postmanage');
+	var wrap = $('#postmanage'),
+        categories = function(sortid) {
+            $('#template > option:eq(0)',wrap).text(
+                (+sortid==0 ? _('Use the model set') : _('Use the category set'))
+            );
+        };
+    // 控制是否显示模版使用模型设置
+    $('.categories input[name=sortid]',wrap).click(function(){
+        categories(this.value);
+    });
+    categories($('ul.categories input[name=sortid]:checked',wrap).val());
+    // 绑定模型选择事件
 	if ($('select[name=model]',wrap).is('select')) {
         var postid = $('input[name=postid]',wrap).val(),
             mcode  = $('select[name=model]',wrap).val();
@@ -55,7 +66,7 @@ function post_manage_init() {
 	    });
 	});
     // 绑定规则点击
-    $('span.rules > a',wrap).click(function(){
+    $('div.rules > a',wrap).click(function(){
         var val = this.href.replace(self.location,'').replace('#','');
         $('input[name=path]',wrap).insertVal(val); return false;
     });
@@ -76,7 +87,7 @@ function post_manage_init() {
 }
 // 获取扩展字段
 function post_manage_extend_attr(model,postid) {
-    var wrap = this, template = $('#template',wrap), path = '',
+    var wrap = this, path = '',
         params = {method:'extend-attr',model:model};    
         params = typeof(postid)!='undefined' ? $.extend(params,{postid:postid}) : params;
 
@@ -84,14 +95,6 @@ function post_manage_extend_attr(model,postid) {
         $('tbody.extend-attr',wrap).html(data);
         if (path = xhr.getResponseHeader('X-LazyCMS-Path')) {
             $('input#path',wrap).val(path);
-        }
-        // 控制是否显示模版使用模型设置
-        if (xhr.getResponseHeader('X-LazyCMS-Model')) {
-            if (false === $('option[value=""]',template).is('option')) {
-                template.prepend('<option value="">' + _('Use the model set') + '</option>');
-            }
-        } else {
-            $('option[value=""]',template).remove();
         }
         LazyCMS.eselect();
     });

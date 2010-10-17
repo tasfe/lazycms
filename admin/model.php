@@ -67,7 +67,6 @@ switch ($method) {
             $name     = isset($_POST['name'])?$_POST['name']:null;
             $code     = isset($_POST['code'])?$_POST['code']:null;
             $path     = isset($_POST['path'])?$_POST['path']:null;
-            $list     = isset($_POST['list'])?$_POST['list']:null;
             $page     = isset($_POST['page'])?$_POST['page']:null;
             $fields   = isset($_POST['field'])?$_POST['field']:null;
             $language = isset($_POST['language'])?$_POST['language']:language();
@@ -115,7 +114,6 @@ switch ($method) {
                     'code'     => esc_html($code),
                     'name'     => esc_html($name),
                     'path'     => esc_html($path),
-                    'list'     => esc_html($list),
                     'page'     => esc_html($page),
                     'fields'   => serialize($fields),
                     'language' => esc_html($language),
@@ -389,14 +387,6 @@ function model_manage_page($action) {
     echo                   '<a href="#%d" title="%d">['.strftime('%d').']</a>';
     echo                   '<a href="#%a" title="%a">['.strftime('%a').']</a>';
     echo               '</div></td>';
-    echo           '</tr>';
-    echo           '<tr>';
-    echo               '<th><label for="listtemplate">'.__('List Template').'</label></th>';
-    echo               '<td>';
-    echo                   '<select id="listtemplate" name="list">';
-    echo                        options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$list);
-    echo                   '</select>';
-    echo               '</td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="pagetemplate">'.__('Page Template').'</label></th>';

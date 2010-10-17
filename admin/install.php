@@ -31,12 +31,14 @@ if (installed()) {
 // 系统需要安装
 else {
     // 检查 config.php 是否存在
-    $config_exist = file_exists_case(COM_PATH.'/config.php');
+    $config_exist = is_file(COM_PATH.'/config.php');
 
     if (validate_is_post()) {
         validate_check('license',VALIDATE_EMPTY,__('You must accept the license before they can continue the installation!'));
 
-        validate_check('prefix', '/^[\w]+$/i', __('"Table Prefix" can only contain numbers, letters, and underscores.'));
+        if (!$config_exist) {
+            validate_check('prefix', '/^[\w]+$/i', __('"Table Prefix" can only contain numbers, letters, and underscores.'));
+        }
 
         validate_check('adminname',VALIDATE_EMPTY,__('You must provide a valid username.'));
 
@@ -106,7 +108,7 @@ else {
                     exit();
                 }
                 // 检查 config.sample.php 文件是否存在
-                if (!file_exists_case(COM_PATH.'/config.sample.php')) {
+                if (!is_file(COM_PATH.'/config.sample.php')) {
                     admin_error(__('Sorry, I need a common/config.sample.php file to work from. Please re-upload this file from your LazyCMS installation.'));
                 }
                 // 替换变量
@@ -243,97 +245,115 @@ else {
 function install_schema() {
     return <<<SQL
 CREATE TABLE `#@_option` (
-  `module` varchar(50) NOT NULL,
-  `code` varchar(255) NOT NULL,
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `module` char(20) NOT NULL,
+  `code` char(50) NOT NULL,
   `value` longtext,
   `type` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `opt_idx` (`code`,`module`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-CREATE TABLE `#@_user` (
-  `userid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `pass` varchar(50) NOT NULL,
-  `mail` varchar(150) NOT NULL,
-  `status` tinyint(1) DEFAULT '0',
-  `registered` timestamp NULL DEFAULT '0000-00-00 00:00:00',
-  `authcode` varchar(36) DEFAULT NULL,
-  PRIMARY KEY (`userid`),
-  UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+CREATE TABLE `#@_user` (
+  `userid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` char(20) NOT NULL,
+  `pass` char(32) NOT NULL,
+  `mail` char(150) NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  `registered` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `authcode` char(36) NOT NULL,
+  PRIMARY KEY (`userid`),
+  UNIQUE KEY `name` (`name`),
+  KEY `authcode` (`authcode`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
 CREATE TABLE `#@_user_meta` (
   `metaid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `userid` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `key` varchar(50) NOT NULL,
-  `value` longtext,
-  `type` varchar(20) NOT NULL,
+  `userid` int(10) unsigned NOT NULL DEFAULT '0',
+  `key` char(50) NOT NULL,
+  `value` longtext NOT NULL,
+  `type` varchar(10) NOT NULL,
   PRIMARY KEY (`metaid`),
   KEY `userid` (`userid`),
   KEY `key` (`key`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
 CREATE TABLE `#@_model` (
-  `modelid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `language` varchar(20) NOT NULL DEFAULT 'en',
-  `code` varchar(50) NOT NULL,
+  `modelid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `language` char(10) NOT NULL DEFAULT 'en',
+  `code` char(50) NOT NULL,
   `name` varchar(50) NOT NULL,
-  `path` varchar(255) NOT NULL,
-  `list` varchar(50) DEFAULT NULL,
-  `page` varchar(50) DEFAULT NULL,
+  `path` char(255) NOT NULL,
+  `page` varchar(50) NOT NULL,
   `fields` longtext NOT NULL,
-  `state` enum('0','1') NOT NULL DEFAULT '0',
+  `state` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`modelid`),
-  KEY `code` (`code`)
+  UNIQUE KEY `code` (`language`,`code`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
 CREATE TABLE `#@_post` (
   `postid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `sortid` int(11) NOT NULL DEFAULT '0',
-  `model` varchar(50) NOT NULL,
-  `author` bigint(20) NOT NULL DEFAULT '0',
-  `path` varchar(255) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `content` longtext,
+  `model` char(75) NOT NULL,
+  `author` int(11) NOT NULL DEFAULT '0',
+  `path` char(255) NOT NULL,
+  `title` char(255) NOT NULL,
+  `content` longtext NOT NULL,
   `passed` tinyint(1) NOT NULL DEFAULT '0',
   `datetime` int(11) NOT NULL DEFAULT '0',
-  `template` varchar(50) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`postid`)
+  `template` varchar(50) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  PRIMARY KEY (`postid`),
+  UNIQUE KEY `path` (`path`),
+  KEY `model` (`sortid`,`model`),
+  KEY `title` (`title`),
+  KEY `author` (`author`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
 CREATE TABLE `#@_post_meta` (
   `metaid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `postid` bigint(20) unsigned NOT NULL,
-  `key` varchar(50) NOT NULL,
+  `key` char(50) NOT NULL,
   `value` longtext,
-  `type` varchar(20) NOT NULL,
+  `type` varchar(10) NOT NULL,
   PRIMARY KEY (`metaid`),
-  UNIQUE KEY `postid_key_idx` (`postid`,`key`),
   KEY `postid` (`postid`),
   KEY `key` (`key`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
 CREATE TABLE `#@_term` (
   `termid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
+  `name` char(35) NOT NULL,
   PRIMARY KEY (`termid`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
 CREATE TABLE `#@_term_relation` (
   `objectid` bigint(20) unsigned NOT NULL,
-  `taxonomyid` bigint(20) unsigned NOT NULL,
-  `order` bigint(20) unsigned NOT NULL DEFAULT '0'
+  `taxonomyid` int(10) unsigned NOT NULL,
+  `order` smallint(5) unsigned NOT NULL DEFAULT '0',
+  KEY `taxonomyid` (`taxonomyid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 CREATE TABLE `#@_term_taxonomy` (
-  `taxonomyid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `taxonomyid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `termid` bigint(20) unsigned NOT NULL,
-  `type` varchar(50) NOT NULL DEFAULT 'category',
-  `parent` bigint(20) NOT NULL DEFAULT '0',
-  `count` bigint(20) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`taxonomyid`)
+  `type` char(20) NOT NULL DEFAULT 'category',
+  `parent` int(10) unsigned NOT NULL DEFAULT '0',
+  `count` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`taxonomyid`),
+  KEY `type` (`type`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
 CREATE TABLE `#@_term_taxonomy_meta` (
   `metaid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `taxonomyid` bigint(20) unsigned NOT NULL,
-  `key` varchar(50) DEFAULT NULL,
+  `taxonomyid` int(10) unsigned NOT NULL,
+  `key` char(50) NOT NULL,
   `value` longtext,
-  `type` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`metaid`)
+  `type` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`metaid`),
+  KEY `taxonomyid` (`taxonomyid`),
+  KEY `key` (`key`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 SQL;
 }
@@ -358,9 +378,5 @@ function install_defaults() {
     }
 
     return true;
-}
-// 判断系统是否已安装
-function installed() {
-    if (C('Installed')) return true;
 }
 ?>

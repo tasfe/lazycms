@@ -115,14 +115,17 @@ switch ($method) {
             $template = isset($_POST['template'])?$_POST['template']:null;
             $keywords = isset($_POST['keywords'])?$_POST['keywords']:null;
             $description = isset($_POST['description'])?$_POST['description']:null;
-            
+
             validate_check(array(
                 array('title',VALIDATE_EMPTY,_x('The title field is empty.','post')),
                 array('title',VALIDATE_LENGTH,_x('The title field length must be %d-%d characters.','post'),1,255),
             ));
-
+            // 验证路径
+            $path_exists = post_path_exists($postid,format_path($path,array('PY'=>$title)));
             validate_check(array(
                 array('path',VALIDATE_EMPTY,_x('The path field is empty.','post')),
+                array('path',VALIDATE_IS_PATH,sprintf(_x('The path can not contain any of the following characters %s','post'),'* : < > | \\')),
+                array('path',(!$path_exists),_x('The path already exists.','post')),
             ));
             // 自动截取简述
             if (empty($description)) {
@@ -151,12 +154,15 @@ switch ($method) {
             // 安全有保证，做爱做的事吧！
             if (validate_is_ok()) {
                 // 处理路径
-                $path = esc_html(trim($path,'/'));
+                $path = esc_html(rtrim($path,'/'));
                 // 自动获取关键词
                 if ($autokeys && empty($keywords)) {
                     $keywords = term_gets($title);
                 }
-                
+                // 添加主分类
+                if ($sortid > 0) {
+                    array_unshift($category,$sortid);
+                }
                 // 获取数据
                 $data = array(
                     'sortid'   => $sortid,
@@ -214,8 +220,6 @@ switch ($method) {
             $post = post_get($postid);
         }
         if ($mcode) {
-            // 输出header
-            header('X-LazyCMS-Model: '.$mcode);
             $model = model_get_bycode($mcode);
             $path  = isset($post['path'])?$post['path']:$model['path'];
         } else {
@@ -270,6 +274,15 @@ switch ($method) {
                         }
                         $hl.= '</div>';
                         break;
+                    case 'basic': case 'editor':
+                        $options = array();
+                        $options['width'] = $field['w'];
+                        if ($field['t']=='basic') {
+                            $options['toobar'] = 'simple';
+                            $options['height'] = '120';
+                        }
+                        $hl.= editor($field['_n'],$field['d'],$options);
+                        break;
                     case 'upfile':
                         $hl.= '<input class="text" id="'.$field['_n'].'" name="'.$field['_n'].'" type="text" style="width:'.$field['w'].'" />&nbsp;<button type="button">'.__('Browse...').'</button>';
                         break;
@@ -298,37 +311,28 @@ switch ($method) {
             'page' => '$',
             'size' => $size,
         );
-        $condition = array();
-        if ($model) {
-            $query['model'] = $model;
-            $field = $category?'`p`.`model`':'`model`';
-            $condition[] = "({$field}=".esc_sql($model).")";
-        }
-        if ($category!==null) {
-            $query['category'] = $category;
-            $condition[] = "(`tr`.`taxonomyid`=".esc_sql($category).")";
-        }
-        $field = $category!==null?'`p`.`sortid`':'`sortid`';
-        if ('page.php' == $php_file) {
-            $condition[] = "({$field}='-1')";
-        } elseif($category===null) {
-            $condition[] = "({$field}<>'-1')";
-        }
-        $where = $condition ? ' WHERE '.implode(' AND ' , $condition) : '';
-        if ($category!==null && $where) {
-            $where.= " OR ({$field}=".esc_sql($category).")";
-        }
+        // 分页地址
         $page_url = PHP_FILE.'?'.http_build_query($query);
         // 排序方式
         $order = 'page.php'==$php_file ? 'ASC' : 'DESC';
 
-        if ($category!==null) {
-            $sql = "SELECT DISTINCT(`postid`),`sortid`,`model`,`path`,`title`,`datetime`,`passed` FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` {$where} GROUP BY `p`.`postid` ORDER BY `p`.`postid` {$order}";
+        $conditions = array();
+        if ('page.php' == $php_file) {
+            $conditions[] = "`sortid`='-1'";
         } else {
-            $sql = "SELECT `postid`,`sortid`,`model`,`path`,`title`,`datetime`,`passed` FROM `#@_post` {$where} ORDER BY `postid` {$order}";
+            $conditions[] = "`sortid`<>'-1'";
         }
-
-        $result  = post_gets($sql, $page, $size);
+        // 根据分类筛选
+        if ($category) {
+            $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE `taxonomyid`='%s' ORDER BY `objectid` {$order}",esc_sql($category));
+        } else {
+            // 根据模型筛选
+            if ($model) $conditions[] = sprintf("`model` = '%s'",esc_sql($model));
+            // 没有任何筛选条件
+            $where = ' WHERE '.implode(' AND ' , $conditions);
+            $sql = "SELECT `postid` FROM `#@_post` {$where} ORDER BY `postid` {$order}";
+        }
+        $result = post_gets($sql, $page, $size);
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'.$add_new.'</a></h2>';
@@ -344,6 +348,11 @@ switch ($method) {
         echo           '<tbody>';
         if (0 < $result['length']) {
             foreach ($result['posts'] as $post) {
+                if (strncmp($post['path'],'/',1) === 0) {
+                    $post['path'] = ltrim($post['path'], '/');
+                } elseif ($post['sortid'] > 0) {
+                    $post['path'] = $post['category'][$post['sortid']]['path'].'/'.$post['path'];
+                }
                 $edit_url   = PHP_FILE.'?method=edit&postid='.$post['postid'];
                 $categories = array();
                 foreach($post['category'] as $category) {
@@ -363,7 +372,7 @@ switch ($method) {
                 }
 
                 // 检查文件是否已生成
-                if (file_exists_case(ABS_PATH.'/'.$post['path'])) {
+                if (is_file(ABS_PATH.'/'.$post['path'])) {
                     echo '<td><img class="b6 os" src="'.ADMIN_ROOT.'images/white.gif" /><a href="'.WEB_ROOT.$post['path'].'" target="_blank">'.WEB_ROOT.$post['path'].'</a></td>';
                 } else {
                     echo '<td><img class="b7 os" src="'.ADMIN_ROOT.'images/white.gif" /><a href="javascript:;" onclick="post_create('.$post['postid'].')">'.WEB_ROOT.$post['path'].'</a></td>';
@@ -445,13 +454,7 @@ function post_manage_page($action) {
         $mcode = $_DATA['model'];
     }
 
-    if ($mcode) {
-        $model = model_get_bycode($mcode);
-    } else {
-        $model = array(
-            'path' => '%PY'.$suffix
-        );
-    }
+    $model    = $mcode ? model_get_bycode($mcode) : array_pop(array_slice($models,0,1));
     $sortid   = isset($_DATA['sortid'])?$_DATA['sortid']:null;
     $title    = isset($_DATA['title'])?$_DATA['title']:null;
     $path     = isset($_DATA['path'])?$_DATA['path']:$model['path'];
@@ -461,7 +464,10 @@ function post_manage_page($action) {
     // 取得分类关系
     $categories  = array();
     if (isset($_DATA['category'])) {
-        foreach($_DATA['category'] as $category) $categories[] = $category['taxonomyid'];
+        foreach($_DATA['category'] as $category) {
+            if ($category['taxonomyid']==$sortid) continue;
+            $categories[] = $category['taxonomyid'];
+        }
     }
     // 获取关键词
     $keywords = array();
@@ -479,7 +485,6 @@ function post_manage_page($action) {
         echo           '<tr>';
         echo               '<th><label for="model">'._x('Model','post').'</label></th>';
         echo               '<td><select name="model" id="model">';
-        echo                   '<option value="">'.__('&mdash; Select &mdash;').'</option>';
         foreach ($models as $m) {
             $selected = isset($model['langcode']) && $m['langcode']==$model['langcode']?'selected="selected"':'';
         	echo               '<option value="'.$m['langcode'].'"'.$selected.'>'.$m['name'].'</option>';
@@ -512,11 +517,15 @@ function post_manage_page($action) {
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="path">'._x('Path','post').'<span class="description">'.__('(required)').'</span></label></th>';
-    echo                   '<td><input class="text" id="path" name="path" type="text" size="70" value="'.$path.'" /><span class="rules">';
+    echo                   '<td><input class="text" id="path" name="path" type="text" size="80" value="'.$path.'" /><div class="rules">';
     echo                       '<a href="#%ID'.$suffix.'">['.__('Post ID').']</a>';
     echo                       '<a href="#%MD5'.$suffix.'">['.__('MD5 Value').']</a>';
     echo                       '<a href="#%PY'.$suffix.'">['.__('Pinyin').']</a>';
-    echo                   '</span></td>';
+    echo                       '<a href="#%Y" title="%Y">['.strftime('%Y').']</a>';
+    echo                       '<a href="#%m" title="%m">['.strftime('%m').']</a>';
+    echo                       '<a href="#%d" title="%d">['.strftime('%d').']</a>';
+    echo                       '<a href="#%a" title="%a">['.strftime('%a').']</a>';
+    echo                   '</div></td>';
     echo               '</tr>';
     echo           '</tbody>';
     echo           '<tbody class="extend-attr"></tbody>';
@@ -531,7 +540,7 @@ function post_manage_page($action) {
     echo                   '<th><label for="template">'._x('Page Template','post').'</label></th>';
     echo                   '<td>';
     echo                       '<select id="template" name="template">';
-    echo                           $models?'<option value="">'.__('Use the model set').'</option>':null;
+    echo                           $models?'<option value="">'.__('Use the category set').'</option>':null;
     echo                           options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$template);
     echo                       '</select>';
     echo                   '</td>';
@@ -570,7 +579,7 @@ function categories_tree($sortid,$categories=array(),$trees=null) {
     $hl = sprintf('<ul class="%s">',is_null($trees) ? 'categories' : 'children');
     if ($trees===null) {
         $checked = empty($sortid)?' checked="checked"':'';
-        $hl.= sprintf('<li><input type="radio" name="sortid" id="sortid" value="0"%s /><label for="sortid">'.__('Uncategorized').'</label></li>',$checked);
+        $hl.= sprintf('<li><input type="radio" name="sortid" value="0"%s /><label for="sortid">'.__('Uncategorized').'</label></li>',$checked);
         $trees = taxonomy_get_trees();
     }
     foreach ($trees as $i=>$tree) {

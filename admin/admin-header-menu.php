@@ -49,7 +49,7 @@
             array(_x('Add New','plugin'),'plugins.php?method=new','plugin-new'),
         )),
         
-        'tools' => array(__('Tools'),'tools.php','a8',array(
+        'tools' => array(__('Tools'),'tools/clean-cache.php','a8',array(
             array(__('Clean cache'),'tools/clean-cache.php','clean-cache'),
         )),
 

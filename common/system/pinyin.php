@@ -51,11 +51,11 @@ class PinYin {
                 $q = ord(substr($str,++$i,1)); 
                 $p = $p * 256 + $q - 65536;
             }
-            $ret.= $ucfirst ? ucfirst($this->_pinyin($p)) : $this->_pinyin($p);
+            $ret.= $this->_pinyin($p,$ucfirst);
         }
         return $ret;
     }
-    function _pinyin($num){
+    function _pinyin($num,$ucfirst=true){
         if ($num > 0 && $num < 160){
             return chr($num);
         } elseif ($num < -20319 || $num > -10247) {
@@ -64,7 +64,7 @@ class PinYin {
             foreach ($this->tables as $k=>$v) {
                 if (intval($v) <= intval($num)) break;
             }
-            return $k;
+            return $ucfirst ? ucfirst($k) : $k;
         }
     }
     function utf82gb($str){

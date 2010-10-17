@@ -87,6 +87,7 @@ class LazyLoader {
                                     'Confirm Logout?'   => __('Confirm Logout?'),
                                     'Confirm Delete?'   => __('Confirm Delete?'),
                                     'Use the model set' => __('Use the model set'),
+                                    'Use the category set' => __('Use the category set'),
                                     'Did not select any action!' => __('Did not select any action!'),
                                 )),
             'admin'         => array(ADMIN_PATH.'/js/admin.js',array('common')),
@@ -185,7 +186,7 @@ class LazyLoader {
         	    }
         	}
         	$file = $rule[0];
-        	if (!isset($files[$file]) && file_exists_case($file)) {
+        	if (!isset($files[$file]) && is_file($file)) {
                 // 读取相关语言文字
                 if (isset($rule[2]) && !empty($rule[2])) {
                     $jsL10n[$group] = $rule[2];

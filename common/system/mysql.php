@@ -183,7 +183,6 @@ class Mysql {
     function query($sql){
         // 验证连接是否正确
         if (!$this->conn) {
-            var_dump($this->conn);
             return throw_error(__('Supplied argument is not a valid MySQL-Link resource.'),E_LAZY_ERROR);
         }
         $args = func_get_args();
@@ -241,15 +240,15 @@ class Mysql {
 
         // Create a tablename index for an array ($cqueries) of queries
         foreach($queries as $qry) {
-            $qry = $this->prepare($qry);
-            if (preg_match("|CREATE TABLE ([^ ]*)|", $qry, $matches)) {
+            $qry = trim($this->prepare($qry));
+            if (preg_match("/CREATE TABLE ([^ ]*)/", $qry, $matches)) {
                 $cqueries[trim( strtolower($matches[1]), '`' )] = $qry;
                 $for_update[$matches[1]] = 'Created table ' . $matches[1];
-            } else if (preg_match("|CREATE DATABASE ([^ ]*)|", $qry, $matches)) {
+            } else if (preg_match("/CREATE DATABASE ([^ ]*)/", $qry, $matches)) {
                 array_unshift($cqueries, $qry);
-            } else if (preg_match("|INSERT INTO ([^ ]*)|", $qry, $matches)) {
+            } else if (preg_match("/INSERT INTO ([^ ]*)/", $qry, $matches)) {
                 $iqueries[] = $qry;
-            } else if (preg_match("|UPDATE ([^ ]*)|", $qry, $matches)) {
+            } else if (preg_match("/UPDATE ([^ ]*)/", $qry, $matches)) {
                 $iqueries[] = $qry;
             } else {
                 // Unrecognized query type
@@ -300,7 +299,7 @@ class Mysql {
 				}
 
                 // Fetch the table column structure from the database
-                $describe_res = $this->query("DESCRIBE {$table};");
+                $describe_res = $this->query("DESCRIBE `{$table}`;");
                 while ($tablefield = $this->fetch($describe_res)) {
                     // If the table field exists in the field array...
                     if (isset($cfields[strtolower($tablefield['Field'])])) {
@@ -342,7 +341,7 @@ class Mysql {
                 // Index stuff goes here
 				// Fetch the table index structure from the database
                 $tableindices   = array();
-                $show_index_res = $this->query("SHOW INDEX FROM {$table};");
+                $show_index_res = $this->query("SHOW INDEX FROM `{$table}`;");
                 while ($index = $this->fetch($show_index_res)) {
                     $tableindices[] = $index;
                 }
@@ -541,7 +540,10 @@ class Mysql {
      */
     function is_table($table){
         $res = $this->query("SHOW TABLES FROM `{$this->_name}`;");
-        while ($rs = $this->fetch($res)) {
+        if (!strncasecmp($table,'#@_',3))
+            $table = str_replace('#@_',$this->_prefix,$table);
+        
+        while ($rs = $this->fetch($res,0)) {
         	if ($table == $rs[0]) return true;
         }
         return false;
@@ -625,7 +627,7 @@ class Mysql {
      */
     function where($data) {
         if (empty($data)) {
-            return ;
+            return '';
         }
         if (is_string($data)) {
             return $data;

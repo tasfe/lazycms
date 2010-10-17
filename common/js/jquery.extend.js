@@ -101,11 +101,16 @@
      *          ]
      */
     $.fn.error = function(data) {
-        var wrap = this ,s = '<ul>',elm;
+        var wrap = this, s = '<ul>', elm, xheLayout;
         $.each(data,function(i){
             elm = $('[name=' + this.id + ']',wrap);
             if (elm.length > 0) {
-                elm.addClass(elm.get(0).tagName.toLowerCase() + '_error');
+                xheLayout = elm.next().next().find('.xheLayout');
+                if (elm.is('textarea') && xheLayout.is('table')) {
+                    xheLayout.addClass(elm.get(0).tagName.toLowerCase() + '_error');
+                } else {
+                    elm.addClass(elm.get(0).tagName.toLowerCase() + '_error');
+                }
             }
             s+= '<li>' + this.text + '</li>';
         });

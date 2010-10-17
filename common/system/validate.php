@@ -34,6 +34,8 @@ define('VALIDATE_IS_LIST','IS_LIST');
 define('VALIDATE_IS_CNUS','IS_CNUS');
 // 字母、数字、下划线、杠、逗号、[、]
 define('VALIDATE_IS_CNUSO','IS_CNUSO');
+// 文件路径
+define('VALIDATE_IS_PATH','IS_PATH');
 
 // 不能为空
 define('VALIDATE_EMPTY','EMPTY');
@@ -155,6 +157,9 @@ class Validate {
                 break;
             case VALIDATE_IS_CNUSO: case 'IS_CNUSO':
                 $pattern = '/^[\w\,\/\-\[\]]+$/i';
+                break;
+            case VALIDATE_IS_PATH: case 'IS_PATH':
+                $pattern = '/^[^\:\*\<\>\|\\\\]+$/';
                 break;
             default: // 自定义正则
                 $pattern = $type;

@@ -27,7 +27,7 @@ define('ADMIN_ROOT',WEB_ROOT.str_replace('\\','/',substr(ADMIN_PATH,strlen(ABS_P
 
 // 检查是否已配置
 defined('NO_REDIRECT') or define('NO_REDIRECT', false);
-if (!NO_REDIRECT && !file_exists_case(COM_PATH.'/config.php')) {
+if (!NO_REDIRECT && (!is_file(COM_PATH.'/config.php') || !installed())) {
     redirect(ADMIN_ROOT.'install.php'); exit();
 }
 

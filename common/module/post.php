@@ -37,20 +37,21 @@ function post_add($title,$content,$path,$data=null) {
        'path'    => $path,
     ));
     $data['path'] = $path;
-    return post_edit($postid,$data);
+    return post_edit($postid,$data,$cache=false);
 }
 /**
  * 更新文章信息
  *
- * @param  $postid
- * @param  $data
+ * @param int $postid
+ * @param array $data
+ * @param bool $cache   是否使用缓存
  * @return array
  */
-function post_edit($postid,$data) {
+function post_edit($postid,$data,$cache=true) {
     $db = get_conn();
     $postid = intval($postid);
     $post_rows = $meta_rows = array();
-    if ($post = post_get($postid)) {
+    if ($post = post_get($postid,$cache)) {
         $data = is_array($data) ? $data : array();
         // 格式化路径
         if (isset($data['path'])) {
@@ -60,8 +61,15 @@ function post_edit($postid,$data) {
                 'MD5' => $postid,
             ));
             // 删除旧文件
-            if ($data['path']!=$post['path'] && file_exists_case(ABS_PATH.'/'.$post['path'])) {
-                unlink(ABS_PATH.'/'.$post['path']);
+            if ($data['path'] != $post['path']) {
+                if (strncmp($post['path'],'/',1) === 0) {
+                    $post['path'] = ltrim($post['path'], '/');
+                } elseif ($post['sortid'] > 0) {
+                    $taxonomy = taxonomy_get_byid($post['sortid']);
+                    $post['path'] = $taxonomy['path'].'/'.$post['path'];
+                }
+                if (is_file(ABS_PATH.'/'.$post['path']))
+                    unlink(ABS_PATH.'/'.$post['path']);
             }
         }
         // 更新分类关系
@@ -90,13 +98,11 @@ function post_edit($postid,$data) {
                 array_walk($keywords,create_function('&$s','$s=esc_html(trim($s));'));
                 // 强力插入关键词
                 foreach($keywords as $key) {
-                    $taxonomy = taxonomy_add('post_tag',$key);
-                    $taxonomies[] = $taxonomy['taxonomyid'];
+                    $taxonomies[] = taxonomy_add_tag($key);
                 }
             }
             // 创建关系
             taxonomy_make_relation('post_tag',$postid,$taxonomies);
-
         }
         unset($data['category'],$data['keywords']);
         $meta_rows = empty($data['meta']) ? array() : $data['meta']; unset($data['meta']);
@@ -110,7 +116,7 @@ function post_edit($postid,$data) {
             post_edit_meta($postid,$meta_rows);
         }
         // 清理缓存
-        post_clean_cache($postid);
+        if ($cache) post_clean_cache($postid);
         return array_merge($post,$data);
     }
     return null;
@@ -140,11 +146,22 @@ function post_gets($sql, $page=0, $size=10){
     $sql.= sprintf(' LIMIT %d OFFSET %d;',$size,($page-1)*$size);
     $res = $db->query($sql);
     while ($post = $db->fetch($res)) {
+        $post = post_get($post['postid']);
+        // 解析模型数据
         $post['model'] = model_get_bycode($post['model']);
-        $post['category'] = taxonomy_get_relation('category',$post['postid'],$rel_ids);
-        if ($post['sortid'] && !in_array($post['sortid'],$rel_ids)) {
-            array_unshift($post['category'],taxonomy_get_byid($post['sortid']));
+        // 查询分类数据
+        $categories = array();
+        foreach($post['category'] as $taxonomyid) {
+            $categories[$taxonomyid] = taxonomy_get_byid($taxonomyid);
         }
+        $post['category'] = $categories;
+        // 查询关键词数据
+        $keywords = array();
+        foreach($post['keywords'] as $taxonomyid) {
+            $keywords[$taxonomyid] = taxonomy_get_byid($taxonomyid);
+        }
+        $post['keywords'] = $keywords;
+        
         $posts[] = $post;
     }
     return array(
@@ -157,16 +174,34 @@ function post_gets($sql, $page=0, $size=10){
     );
 }
 /**
- * 查找指定的文章
+ * 判断路径是否存在
  *
  * @param  $postid
+ * @param  $path    必须是format_path()格式化过的路径
+ * @return bool
+ */
+function post_path_exists($postid,$path) {
+    if (strpos($path,'%ID')!==false && strpos($path,'%MD5')!==false) return false;
+    $db = get_conn();
+    if ($postid) {
+        $sql = sprintf("SELECT COUNT(`postid`) FROM `#@_post` WHERE `path`='%s' AND `postid`<>'%d';", esc_sql($path), esc_sql($postid));
+    } else {
+        $sql = sprintf("SELECT COUNT(`postid`) FROM `#@_post` WHERE `path`='%s';",esc_sql($path));
+    }
+    return !($db->result($sql) == 0);
+}
+/**
+ * 查找指定的文章
+ *
+ * @param int $postid
+ * @param bool $cache   是否使用缓存
  * @return array
  */
-function post_get($postid) {
-    $db = get_conn();
-    $ckey  = sprintf('post.%s',$postid);
-    $value = fcache_get($ckey);
-    if (!empty($value)) return $value;
+function post_get($postid, $cache=true) {
+    $db   = get_conn();
+    $ckey = sprintf('post.%s',$postid);
+    $post = $cache ? fcache_get($ckey) : null;
+    if ($post !== null) return $post;
 
     $rs = $db->query("SELECT * FROM `#@_post` WHERE `postid`=%d LIMIT 0,1;",$postid);
     // 判断文章是否存在
@@ -178,7 +213,8 @@ function post_get($postid) {
             $post['meta'] = $meta;
         }
         // 保存到缓存
-        fcache_set($ckey,$post);
+        if ($cache) fcache_set($ckey,$post);
+        
         return $post;
     }
     return null;
@@ -262,20 +298,20 @@ function post_delete($postid) {
     if (!$postid) return false;
     if ($post = post_get($postid)) {
         // 删除文件
-        if (file_exists_case(ABS_PATH.'/'.$post['path'])) {
+        if (is_file(ABS_PATH.'/'.$post['path'])) {
             if (!unlink(ABS_PATH.'/'.$post['path'])) {
                 return false;
             }
         }
         // 删除分类关系
         $relations = taxonomy_get_relation('category',$postid);
-        foreach($relations as $r) {
-            taxonomy_delete_relation($postid,$r['taxonomyid']);
+        foreach($relations as $taxonomyid) {
+            taxonomy_delete_relation($postid,$taxonomyid);
         }
         // 删除关键词关系
         $relations = taxonomy_get_relation('post_tag',$postid);
-        foreach($relations as $r) {
-            taxonomy_delete_relation($postid,$r['taxonomyid']);
+        foreach($relations as $taxonomyid) {
+            taxonomy_delete_relation($postid,$taxonomyid);
         }
         $db->delete('#@_post_meta',array('postid' => $postid));
         $db->delete('#@_post',array('postid' => $postid));
@@ -296,18 +332,34 @@ function post_create($postid) {
     $postid = intval($postid);
     if (!$postid) return false;
     if ($post = post_get($postid)) {
-        $model = model_get_bycode($post['model']);
-        // 使用模型设置
+        // 查询模版，文章设置->分类设置->模型设置
         if (empty($post['template'])) {
-            $post['template'] = $model['page'];
+            // 使用分类设置
+            if ($post['sortid'] > 0) {
+                $taxonomy = taxonomy_get_byid($post['sortid']);
+                $post['template'] = $taxonomy['page'];
+            }
+            // 使用模型设置
+            if (empty($post['template'])) {
+                $model = model_get_bycode($post['model']);
+                $post['template'] = $model['page'];
+            }
         }
         // 处理关键词
         if (is_array($post['keywords'])) {
             $keywords = array();
-            foreach($post['keywords'] as $v) {
-                $keywords[] = $v['name'];
+            foreach($post['keywords'] as $taxonomyid) {
+                $taxonomy = taxonomy_get_byid($taxonomyid);
+                $keywords[] = $taxonomy['name'];
             }
             $post['keywords'] = implode(',', $keywords);
+        }
+        // 处理生成路径
+        if (strncmp($post['path'],'/',1) === 0) {
+            $post['path'] = ltrim($post['path'], '/');
+        } elseif ($post['sortid'] > 0) {
+            $taxonomy = taxonomy_get_byid($post['sortid']);
+            $post['path'] = $taxonomy['path'].'/'.$post['path'];
         }
         $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html($post['template']));
                 tpl_clean();
