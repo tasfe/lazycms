@@ -42,7 +42,7 @@ switch ($method) {
         admin_head('title',__('Control Panel'));
         // 加载头部
         include ADMIN_PATH.'/admin-header.php';
-
+        
         // 加载尾部
         include ADMIN_PATH.'/admin-footer.php';
         break;

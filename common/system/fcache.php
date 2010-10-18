@@ -53,28 +53,33 @@ class FCache {
      * @return bool
      */
     function set($key, $data, $expire=0) {
-        $hash_file = FCache::file($key);
-        $fp = @fopen($hash_file, "wb");
+        $result      = false;
+        $hash_file   = $this->file($key);
+        $error_level = error_reporting(0);
+        $fp = fopen($hash_file, "wb");
     	if ($fp) {
-    	    @flock($fp, LOCK_EX);
+    	    flock($fp, LOCK_EX);
     	    // 保存数据类型
-    	    @fwrite($fp, str_pad(gettype($data),10,' ',STR_PAD_RIGHT) , 10);
+    	    fwrite($fp, str_pad(gettype($data),10,' ',STR_PAD_RIGHT) , 10);
     	    $mqr = get_magic_quotes_runtime();
             if ($mqr) set_magic_quotes_runtime(0);
             // 判断是否需要序列化
             if (is_need_serialize($data)) {
                 $data = serialize($data);
             }
-            @fwrite($fp, $data);
+            fwrite($fp, $data);
             if ($mqr) set_magic_quotes_runtime($mqr);
-            @flock($fp, LOCK_UN);
-            @fclose($fp);
+            flock($fp, LOCK_UN);
+            fclose($fp);
             // 默认永不过期
-            $expire = $expire===0?DATACACHE_EXPIRE:$expire;
+            $expire = $expire===0 ? DATACACHE_EXPIRE : $expire;
             // 写入过期时间
-            touch($hash_file, time() + abs($expire)); 
-            return true;
+            touch($hash_file, time() + abs($expire));
+            
+            $result = true;
     	}
+        error_reporting($error_level);
+        return $result;
     }
     /**
      * 取得一个缓存结果
@@ -83,37 +88,39 @@ class FCache {
      * @return array|string
      */
     function get($key) {
-        $hash_file = FCache::file($key);
+        $data        = null;
+        $hash_file   = $this->file($key);
+        $error_level = error_reporting(0);
         if (is_file($hash_file)) {
-        	$fp = @fopen($hash_file, "rb");
-        	@flock($fp, LOCK_SH);
+        	$fp = fopen($hash_file, "rb");
+        	flock($fp, LOCK_SH);
         	if ($fp) {
         	    clearstatcache();
-                $length = @filesize($hash_file);
+                $length = filesize($hash_file);
                 $mqr = get_magic_quotes_runtime();
                 if ($mqr) set_magic_quotes_runtime(0);
-                $vartype = trim(@fread($fp, 10));
+                $vartype = trim(fread($fp, 10));
                 $length  = $length - 10;
                 if ($length) {
-                    $data = @fread($fp, $length);
+                    $data = fread($fp, $length);
                 } else {
                     $data = '';
                 }
                 if ($mqr) set_magic_quotes_runtime($mqr);
-                @flock($fp, LOCK_UN);
-                @fclose($fp);
+                flock($fp, LOCK_UN);
+                fclose($fp);
                 if (is_need_unserialize($vartype)) {
                 	$data = unserialize($data);
                 }
                 // 检查文件是否过期
-                $last_time = @filemtime($hash_file);
+                $last_time = filemtime($hash_file);
                 if ($last_time < time()) {
-                	@unlink($hash_file);
+                	unlink($hash_file);
                 }
-                return $data;
         	}
         }
-        return null;
+        error_reporting($error_level);
+        return $data;
     }
     /**
      * 删除一个key值
@@ -122,9 +129,11 @@ class FCache {
      * @return bool
      */
     function delete($key) {
-        $hash_file = FCache::file($key);
+        $hash_file = $this->file($key);
         if (is_file($hash_file)) {
-        	@unlink($hash_file);
+            $error_level = error_reporting(0);
+        	unlink($hash_file);
+            error_reporting($error_level);
         	return true;
         }
     }
@@ -137,19 +146,35 @@ class FCache {
         return rmdirs(CACHE_PATH);
     }
 }
+/**
+ * 实例化对象
+ *
+ * @return FCache
+ */
+function &_fcache_get_object() {
+    static $fcache;
+	if ( is_null($fcache) )
+		$fcache = new FCache();
+	return $fcache;
+}
 
 function fcache_file($key) {
-    return FCache::file($key);
+    $fcache = _fcache_get_object();
+    return $fcache->file($key);
 }
 function fcache_set($key, $data, $expire=0) {
-    return FCache::set($key, $data, $expire);
+    $fcache = _fcache_get_object();
+    return $fcache->set($key, $data, $expire);
 }
 function fcache_get($key) {
-    return FCache::get($key);
+    $fcache = _fcache_get_object();
+    return $fcache->get($key);
 }
 function fcache_delete($key) {
-    return FCache::delete($key);
+    $fcache = _fcache_get_object();
+    return $fcache->delete($key);
 }
 function fcache_flush() {
-    return FCache::flush();
+    $fcache = _fcache_get_object();
+    return $fcache->flush();
 }

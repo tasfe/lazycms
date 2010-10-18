@@ -22,6 +22,8 @@
 defined('ADMIN_PATH') or define('ADMIN_PATH', dirname(__FILE__));
 // 加载公共文件
 require ADMIN_PATH.'/../global.php';
+// 开始执行时间
+define('START_TIME',micro_time(true));
 // 后台的目录
 define('ADMIN_ROOT',WEB_ROOT.str_replace('\\','/',substr(ADMIN_PATH,strlen(ABS_PATH)+1)).'/');
 
@@ -112,7 +114,7 @@ function admin_css(){
     if (isset($CSS[$loads])) {
     	$loader = $CSS[$loads];
     } else {
-        require_once COM_PATH.'/system/loader.php';
+        require_file(COM_PATH.'/system/loader.php');
     	// 实例化loader类
         $loader = new StylesLoader($language);
         $CSS[$loads] = $loader;
@@ -140,7 +142,7 @@ function admin_script(){
     if (isset($JSS[$loads])) {
     	$loader = $JSS[$loads];
     } else {
-        require_once COM_PATH.'/system/loader.php';
+        require_file(COM_PATH.'/system/loader.php');
     	// 实例化loader类
         $loader = new ScriptsLoader($language);
         $JSS[$loads] = $loader;

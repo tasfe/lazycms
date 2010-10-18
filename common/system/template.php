@@ -42,7 +42,7 @@ class Template {
             $tags = $r[1];
             foreach ($tags as $i=>$tag) {
                 $file = trim($tag,'"\' ');
-                $html = str_replace($r[0][$i],Template::load_file($base.$file),$html);
+                $html = str_replace($r[0][$i],$this->load_file($base.$file),$html);
             }
         }
         $html = preg_replace('/<title>/isU',"<meta name=\"generator\" content=\"LazyCMS ".LAZY_VERSION."\"/>\n\${0}",$html);
@@ -57,7 +57,7 @@ class Template {
      * @return mixed
      */
     function load_file($file) {
-        return Template::load(file_get_contents($file));
+        return $this->load(file_get_contents($file));
     }
     /**
      * 添加插件
@@ -206,9 +206,9 @@ class Template {
      * @return
      */
     function process_blocks($html) {
-        $blocks = Template::parse_blocks($html); //print_r($blocks);
+        $blocks = $this->parse_blocks($html); //print_r($blocks);
         foreach ($blocks as $block) {
-            $html = Template::process_block($html,$block);
+            $html = $this->process_block($html,$block);
         }
         return $html;
     }
@@ -216,7 +216,7 @@ class Template {
         $tag = substr($html, $block['inner_start'], $block['inner_end']-$block['inner_start']);
         if (isset($block['sub'])) {
             foreach ($block['sub'] as $sub) {
-                $tag = Template::process_block($tag,$sub);
+                $tag = $this->process_block($tag,$sub);
             }
         }
         $html = substr($html, 0, $block['outer_start']).$tag.substr($html, $block['outer_end']);
@@ -242,7 +242,7 @@ class Template {
                     $value = $this->apply_plugins($tags[$k], $tag);
                 }
                 // 处理变量属性
-                $value = Template::process_attr($value, $tag);
+                $value = $this->process_attr($value, $tag);
                 $html  = str_replace($tag, $value, $html);
             }
         }

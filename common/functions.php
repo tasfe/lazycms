@@ -749,7 +749,10 @@ function auto_charset($data,$from,$to){
 function mkdirs($path, $mode = 0775){
     if (!is_dir($path)) {
         mkdirs(dirname($path), $mode);
-        return @mkdir($path, $mode);
+        $error_level = error_reporting(0);
+        $result      = mkdir($path, $mode);
+        error_reporting($error_level);
+        return $result;
     }
     return true;
 }
@@ -760,16 +763,37 @@ function mkdirs($path, $mode = 0775){
  * @return bool
  */
 function rmdirs($path){
-    if ($dh=@opendir($path)) {
+    $error_level = error_reporting(0);
+    if ($dh = opendir($path)) {
         while (false !== ($file=readdir($dh))) {
-            if ($file != "." && $file != "..") {
+            if ($file != '.' && $file != '..') {
                 $file_path = $path.'/'.$file;
-                is_dir($file_path) ? rmdirs($file_path) : @unlink($file_path);
+                is_dir($file_path) ? rmdirs($file_path) : unlink($file_path);
             }
         }
         closedir($dh);
     }
-    return @rmdir($path);
+    $result = rmdir($path);
+    error_reporting($error_level);
+    return $result;
+}
+/**
+ * 代替 require_once
+ *
+ * @param  $path
+ * @return bool
+ */
+function require_file($path){
+    static $paths = array();
+    if (is_file($path)) {
+        if (!isset($paths[$path])) {
+            require $path;
+            $paths[$path] = true;
+            return true;
+        }
+        return false;
+    }
+    return false;
 }
 /**
  * 给用户生成唯一CODE
@@ -951,7 +975,7 @@ function code2lang($code){
  * @return string
  */
 function language() {
-    $ck_lang = Cookie::get('language');
+    $ck_lang = cookie_get('language');
     $ck_lang = preg_replace( '/[^a-z0-9,_-]+/i', '', $ck_lang );
     if ($ck_lang && $ck_lang=='default') {
         $ck_lang = C('Language');
@@ -1070,7 +1094,7 @@ if (!function_exists('json_encode')) {
     function json_encode($value){
         global $_json;
         if (!$_json) {
-            require_once COM_PATH.'/system/json.php';
+            require_file(COM_PATH.'/system/json.php');
             $_json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
         }
         return $_json->encode($value);
@@ -1081,7 +1105,7 @@ if (!function_exists('json_decode')) {
     function json_decode($json){
         global $_json;
         if (!$_json) {
-            require_once COM_PATH.'/system/json.php';
+            require_file(COM_PATH.'/system/json.php');
             $_json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
         }
         return $_json->decode($json);

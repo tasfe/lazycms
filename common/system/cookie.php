@@ -26,7 +26,7 @@ defined('COOKIE_DOMAIN') or define('COOKIE_DOMAIN','');
  *
  * @author  Lukin <my@lukin.cn>
  */
-class Cookie{
+class Cookie {
     /**
      * 判断cookie是否存在
      *
@@ -68,6 +68,34 @@ class Cookie{
      */
     function delete($name,$path='/',$domain='') {
         if(empty($domain)) { $domain = COOKIE_DOMAIN; }
-        Cookie::set($name,'',time()-3600,$path,$domain);
+        $this->set($name,'',time()-3600,$path,$domain);
     }
+}
+/**
+ * 实例化对象
+ *
+ * @return FCache
+ */
+function &_cookie_get_object() {
+    static $cookie;
+	if ( is_null($cookie) )
+		$cookie = new Cookie();
+	return $cookie;
+}
+
+function cookie_isset($name) {
+    $cookie = _cookie_get_object();
+    return $cookie->is_set($name);
+}
+function cookie_get($name) {
+    $cookie = _cookie_get_object();
+    return $cookie->get($name);
+}
+function cookie_set($name,$value,$expire=0,$path='/',$domain='') {
+    $cookie = _cookie_get_object();
+    return $cookie->set($name,$value,$expire,$path,$domain);
+}
+function cookie_delete($name,$path='/',$domain='') {
+    $cookie = _cookie_get_object();
+    return $cookie->delete($name,$path,$domain);
 }

@@ -82,7 +82,7 @@ class L10n {
      */
     function header_after($header) {
         if ('Plural-Forms' == $header) {
-			list( $nplurals, $expression ) = $this->nplurals_and_expression_from_header($this->get_header('Plural-Forms'));
+			list( $nplurals, $expression ) = $this->nplurals_and_expression_from_header($this->headers('Plural-Forms'));
 			$this->_nplurals = $nplurals;
 			$this->_gettext_select_plural_form = $this->make_plural_form_function($nplurals, $expression);
 		}

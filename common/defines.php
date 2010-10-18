@@ -36,8 +36,8 @@ if(version_compare(PHP_VERSION,'6.0.0','<') ) {
 }
 defined('E_STRICT') or define('E_STRICT',2048);
 define('IS_CGI',!strncasecmp(PHP_SAPI,'cgi',3) ? 1 : 0 );
-define('IS_WIN',strstr(PHP_OS, 'WIN') ? 1 : 0 );
-define('IS_CLI',PHP_SAPI=='cli'? 1   :   0);
+define('IS_WIN',DIRECTORY_SEPARATOR == '\\' );
+define('IS_CLI',PHP_SAPI=='cli' ?  1 : 0);
 // 当前文件名
 if(!defined('PHP_FILE')) {
     if (IS_CLI) {

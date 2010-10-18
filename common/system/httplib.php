@@ -43,7 +43,7 @@ class Httplib {
      */
     function get($url,$args=array()) {
         $defaults = array('method' => 'GET');
-        $args     = Httplib::parse_args($args,$defaults);
+        $args     = $this->parse_args($args,$defaults);
         return $this->request($url,$args);
     }
     /**
@@ -55,7 +55,7 @@ class Httplib {
      */
     function post($url,$args=array()) {
         $defaults = array('method' => 'POST');
-        $args     = Httplib::parse_args($args,$defaults);
+        $args     = $this->parse_args($args,$defaults);
         return $this->request($url,$args);
     }
     /**
@@ -67,7 +67,7 @@ class Httplib {
      */
     function head($url,$args=array()) {
         $defaults = array('method' => 'HEAD');
-        $args     = Httplib::parse_args($args,$defaults);
+        $args     = $this->parse_args($args,$defaults);
         return $this->request($url,$args);
     }
     /**
@@ -122,12 +122,12 @@ class Httplib {
             'httpversion' => '1.0',
 			'decompress'  => true,
         );
-        $r = Httplib::parse_args($args,$defaults);
+        $r = $this->parse_args($args,$defaults);
         if (empty($url)) return throw_error(__('A valid URL was not provided.'),E_LAZY_ERROR);
         if (is_null($r['headers'])) $r['headers'] = array();
         // headers 不是数组时需要处理
         if (!is_array($r['headers'])) {
-			$headers = Httplib::process_headers($r['headers']);
+			$headers = $this->process_headers($r['headers']);
 			$r['headers'] = $headers['headers'];
 		}
         // 处理user-agent
@@ -142,10 +142,10 @@ class Httplib {
             $r['headers']['Accept'] = '*/*';
         
         // Construct Cookie: header if any cookies are set
-		Httplib::build_cookie_header( $r );
+		$this->build_cookie_header( $r );
         // 判断是否支持gzip
-        if ( Httplib::is_compress() )
-			$r['headers']['Accept-Encoding'] = Httplib::accept_encoding();
+        if ( $this->is_compress() )
+			$r['headers']['Accept-Encoding'] = $this->accept_encoding();
 
         // 判断数据处理类型
         if (empty($r['body'])) {
@@ -184,11 +184,14 @@ class Httplib {
     function request_fsockopen($url,$agrs) {
         $r = $agrs;
         // 解析url
-        $aurl = Httplib::parse_url($url); $host = $aurl['host']; if ('localhost' == strtolower($host)) $host = '127.0.0.1';
+        $aurl = $this->parse_url($url); $host = $aurl['host']; if ('localhost' == strtolower($host)) $host = '127.0.0.1';
         // 连接服务器
         $start_delay = time();
-        $handle      = @fsockopen($host, $aurl['port'], $errno, $errstr, $r['timeout']);
+        $error_level = error_reporting(0);
+        $handle      = fsockopen($host, $aurl['port'], $errno, $errstr, $r['timeout']);
         $end_delay   = time();
+        error_reporting($error_level);
+        
         // 连接错误
         if (false === $handle) return throw_error(sprintf('%s: %s',$errno,$errstr),E_LAZY_WARNING);
         // 连接时间超过超时时间，暂时禁用当前方法
@@ -240,9 +243,9 @@ class Httplib {
 		fclose($handle);
 
         // 处理服务器返回的结果
-        $process = Httplib::process_response($str_response);
+        $process = $this->process_response($str_response);
         // 处理headers
-        $headers = Httplib::process_headers($process['headers']);
+        $headers = $this->process_headers($process['headers']);
         // 响应代码是400范围内？
 		if ((int)$headers['response']['code'] >= 400 && (int)$headers['response']['code'] < 500)
             return throw_error($headers['response']['code'].': '.$headers['response']['message'],E_LAZY_WARNING);
@@ -257,10 +260,14 @@ class Httplib {
 		}
         // If the body was chunk encoded, then decode it.
 		if (!empty($process['body']) && isset($headers['headers']['transfer-encoding']) && 'chunked' == $headers['headers']['transfer-encoding'])
-			$process['body'] = Httplib::decode_chunked($process['body']);
+			$process['body'] = $this->decode_chunked($process['body']);
 
-        if ( true === $r['decompress'] && true === Httplib::should_decode($headers['headers']) )
-			$process['body'] = Httplib::decompress( $process['body'] );
+        if ( true === $r['decompress'] && true === $this->should_decode($headers['headers']) ) {
+            $error_level     = error_reporting(0);
+			$process['body'] = $this->decompress( $process['body'] );
+            error_reporting($error_level);
+        }
+
 
         return array(
             'headers'   => $headers['headers'],
@@ -279,7 +286,7 @@ class Httplib {
     function request_curl($url,$agrs) {
         $r = $agrs;
         // 解析url
-        $aurl = Httplib::parse_url($url); $host = $aurl['host']; if ('localhost' == strtolower($host)) $host = '127.0.0.1';
+        $aurl = $this->parse_url($url); $host = $aurl['host']; if ('localhost' == strtolower($host)) $host = '127.0.0.1';
 
         $handle = curl_init();
 
@@ -352,7 +359,7 @@ class Httplib {
 				$header_parts = explode("\r\n\r\n", $headers);
 				$headers = $header_parts[ count($header_parts) -1 ];
 			}
-			$headers = Httplib::process_headers($headers);
+			$headers = $this->process_headers($headers);
 		} else {
 			if ( $curl_error = curl_error($handle) )
                 return throw_error($curl_error,E_LAZY_WARNING);
@@ -377,8 +384,11 @@ class Httplib {
 			}
 		}
 
-		if ( true === $r['decompress'] && true === Httplib::should_decode($headers['headers']) )
-			$the_body = Httplib::decompress( $the_body );
+		if ( true === $r['decompress'] && true === $this->should_decode($headers['headers']) ) {
+            $error_level = error_reporting(0);
+            $the_body    = $this->decompress( $the_body );
+            error_reporting($error_level);
+        }
 
         return array(
             'headers'   => $headers['headers'],
@@ -397,7 +407,7 @@ class Httplib {
     function request_fopen($url,$agrs) {
         $r = $agrs;
         // 解析url
-        $aurl = Httplib::parse_url($url); $host = $aurl['host']; if ('localhost' == strtolower($host)) $host = '127.0.0.1';
+        $aurl = $this->parse_url($url); $host = $aurl['host']; if ('localhost' == strtolower($host)) $host = '127.0.0.1';
         
         if ( 'http' != $aurl['scheme'] && 'https' != $aurl['scheme'] )
 			$url = str_replace($aurl['scheme'], 'http', $url);
@@ -406,7 +416,7 @@ class Httplib {
 			$r['headers'] = array();
 
 		if ( is_string($r['headers']) ) {
-			$headers = Httplib::process_headers($r['headers']);
+			$headers = $this->process_headers($r['headers']);
 			$r['headers'] = $headers['headers'];
 		}
 
@@ -424,10 +434,14 @@ class Httplib {
             // connection
             if (!isset($r['headers']['connection']))
                 $user_agent_extra_headers.= "\r\nConnection: Close";
-            
-			@ini_set('user_agent', $r['user-agent'] . $user_agent_extra_headers);
+
+            $error_level = error_reporting(0);
+			ini_set('user_agent', $r['user-agent'] . $user_agent_extra_headers);
+            error_reporting($error_level);
 		} else {
-			@ini_set('user_agent', $r['user-agent']);
+            $error_level = error_reporting(0);
+			ini_set('user_agent', $r['user-agent']);
+            error_reporting($error_level);
 		}
 
         $handle = fopen($url, 'r');
@@ -441,7 +455,9 @@ class Httplib {
 
 		if ( ! $r['blocking'] ) {
 			fclose($handle);
-			@ini_set('user_agent', $initial_user_agent); //Clean up any extra headers added
+            $error_level = error_reporting(0);
+			ini_set('user_agent', $initial_user_agent); //Clean up any extra headers added
+            error_reporting($error_level);
 			return array('headers'=>array(),'body'=>'','response'=>array('code'=>false,'message'=>false),'cookies'=>array());
 		}
 
@@ -462,16 +478,21 @@ class Httplib {
 		}
 
 		fclose($handle);
+        
+        $error_level = error_reporting(0);
+		ini_set('user_agent', $initial_user_agent); //Clean up any extra headers added
+        error_reporting($error_level);
 
-		@ini_set('user_agent', $initial_user_agent); //Clean up any extra headers added
-
-		$headers = Httplib::process_headers($the_headers);
+		$headers = $this->process_headers($the_headers);
 
 		if ( ! empty( $str_response ) && isset( $headers['headers']['transfer-encoding'] ) && 'chunked' == $headers['headers']['transfer-encoding'] )
-			$str_response = Httplib::decode_chunked($str_response);
+			$str_response = $this->decode_chunked($str_response);
 
-		if ( true === $r['decompress'] && true === Httplib::should_decode($headers['headers']) )
-			$str_response = Httplib::decompress( $str_response );
+		if ( true === $r['decompress'] && true === $this->should_decode($headers['headers']) ) {
+            $error_level  = error_reporting(0);
+            $str_response = $this->decompress( $str_response );
+            error_reporting($error_level);
+        }
 
 		return array(
             'headers'   => $headers['headers'],
@@ -490,7 +511,7 @@ class Httplib {
     function request_streams($url,$agrs) {
         $r = $agrs;
         // 解析url
-        $aurl = Httplib::parse_url($url); $host = $aurl['host']; if ('localhost' == strtolower($host)) $host = '127.0.0.1';
+        $aurl = $this->parse_url($url); $host = $aurl['host']; if ('localhost' == strtolower($host)) $host = '127.0.0.1';
 
         // Convert Header array to string.
 		$str_headers = '';
@@ -550,15 +571,19 @@ class Httplib {
 
 		$headers = array();
 		if ( isset( $meta['wrapper_data']['headers'] ) )
-			$headers = Httplib::process_headers($meta['wrapper_data']['headers']);
+			$headers = $this->process_headers($meta['wrapper_data']['headers']);
 		else
-			$headers = Httplib::process_headers($meta['wrapper_data']);
+			$headers = $this->process_headers($meta['wrapper_data']);
 
 		if ( ! empty( $str_response ) && isset( $headers['headers']['transfer-encoding'] ) && 'chunked' == $headers['headers']['transfer-encoding'] )
-			$str_response = Httplib::decode_chunked($str_response);
+			$str_response = $this->decode_chunked($str_response);
 
-		if ( true === $r['decompress'] && true === Httplib::should_decode($headers['headers']) )
-			$str_response = Httplib::decompress( $str_response );
+		if ( true === $r['decompress'] && true === $this->should_decode($headers['headers']) ) {
+            $error_level  = error_reporting(0);
+            $str_response = $this->decompress( $str_response );
+            error_reporting($error_level);
+        }
+
 
         return array(
             'headers'   => $headers['headers'],
@@ -650,7 +675,8 @@ class Httplib {
 
 		// If a redirection has taken place, The headers for each page request may have been passed.
 		// In this case, determine the final HTTP header and parse from there.
-		for ( $i = count($headers)-1; $i >= 0; $i-- ) {
+        $count = count($headers)-1;
+		for ( $i = $count; $i >= 0; $i-- ) {
 			if ( !empty($headers[$i]) && false === strpos($headers[$i], ':') ) {
 				$headers = array_splice($headers, $i);
 				break;
@@ -680,7 +706,7 @@ class Httplib {
 					$new_headers[$key] = trim( $value );
 				}
 				if ( 'set-cookie' == strtolower( $key ) )
-					$cookies[] = Httplib::process_cookie( $value );
+					$cookies[] = $this->process_cookie( $value );
 			}
 		}
 
@@ -805,20 +831,19 @@ class Httplib {
      * @return bool|string
      */
     function decompress( $compressed, $length = null ) {
-
 		if ( empty($compressed) )
 			return $compressed;
 
-		if ( false !== ( $decompressed = @gzinflate( $compressed ) ) )
+		if ( false !== ( $decompressed = gzinflate( $compressed ) ) )
 			return $decompressed;
 
-		if ( false !== ( $decompressed = Httplib::gzinflate( $compressed ) ) )
+		if ( false !== ( $decompressed = $this->gzinflate( $compressed ) ) )
 			return $decompressed;
 
-		if ( false !== ( $decompressed = @gzuncompress( $compressed ) ) )
+		if ( false !== ( $decompressed = gzuncompress( $compressed ) ) )
 			return $decompressed;
         
-		if ( false !== ( $decompressed = @gzdecode( $compressed ) ) )
+		if ( false !== ( $decompressed = gzdecode( $compressed ) ) )
 		    return $decompressed;
 
 		return $compressed;

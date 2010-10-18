@@ -28,7 +28,7 @@ defined('COM_PATH') or die('Restricted access!');
 function user_current($is_redirect=true){
     $user = null;
     // 取得 authcode
-    $authcode = cookie::get('authcode');
+    $authcode = cookie_get('authcode');
     $is_login = $authcode?true:false;
     // 执行用户验证
     if ($is_login) {

@@ -26,7 +26,7 @@ require ADMIN_PATH.'/admin.php';
 // 退出登录
 $method = isset($_GET['method'])?$_GET['method']:null;
 if ($method=='logout') {
-    Cookie::delete('authcode');
+    cookie_delete('authcode');
     redirect('login.php'); exit();
 } else {
 	$language = language();
@@ -52,8 +52,8 @@ if (validate_is_post()) {
         // 提交到数据库验证用户名和密码
         if ($user = user_login($username,$userpass)) {
             $expire = $rememberme=='forever'?365*86400:0;
-            Cookie::set('authcode',$user['authcode'],$expire);
-            Cookie::set('language',$language,$expire);
+            cookie_set('authcode',$user['authcode'],$expire);
+            cookie_set('language',$language,$expire);
             redirect('index.php');
         } else {
             admin_alert(__('Username or password error!'));

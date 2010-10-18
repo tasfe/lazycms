@@ -119,7 +119,7 @@ class Validate {
                     $error = $text;
                     break;
                 default:
-                    if (!Validate::is($value,$type)) $error = $text;
+                    if (!$this->is($value,$type)) $error = $text;
                     break;
             }
             // 没有错误信息

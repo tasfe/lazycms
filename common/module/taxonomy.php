@@ -86,7 +86,7 @@ function term_gets($content,$max_len=8,$save_other=false) {
         }
         fcache_set($ckey,$dicts);
     }
-    require_once COM_PATH.'/system/splitword.php';
+    require_file(COM_PATH.'/system/splitword.php');
     $splitword = new SplitWord($dicts);
     $keywords  = $splitword->get($content,$max_len,$save_other);
     if (empty($keywords)) {
