@@ -107,7 +107,7 @@ function taxonomy_get_trees($parentid=0,$type='category') {
     $db = get_conn(); $result = array(); $un = array(); $parentid = intval($parentid);
     $rs = $db->query("SELECT * FROM `#@_term_taxonomy` WHERE `type`='%s';",$type);
     while ($row = $db->fetch($rs)) {
-        $result[$row['taxonomyid']] = taxonomy_get_byid($row['taxonomyid']);
+        $result[$row['taxonomyid']] = taxonomy_get($row['taxonomyid']);
     }
     // 将数组转变成树，因为使用了引用，所以不会占用太多的内存
     foreach ($result as $id => $item) {
@@ -145,7 +145,7 @@ function taxonomy_path_exists($taxonomyid,$path) {
  * @param int $taxonomyid
  * @return array|null
  */
-function taxonomy_get_byid($taxonomyid) {
+function taxonomy_get($taxonomyid) {
     $db = get_conn(); $prefix = 'taxonomy.';
     $taxonomyid = intval($taxonomyid);
     $taxonomy   = fcache_get($prefix.$taxonomyid);
@@ -318,7 +318,7 @@ function taxonomy_add_tag($name) {
 function taxonomy_edit($taxonomyid,$data) {
     $db = get_conn(); $taxonomy_rows = $term_rows = $meta_rows = array();
     $data = is_array($data) ? $data : array();
-    if ($taxonomy = taxonomy_get_byid($taxonomyid)) {
+    if ($taxonomy = taxonomy_get($taxonomyid)) {
         // 格式化路径
         if (isset($data['path'])) {
             $data['path'] = format_path($data['path'],array(
@@ -432,7 +432,7 @@ function taxonomy_delete($taxonomyid) {
     $db = get_conn();
     $taxonomyid = intval($taxonomyid);
     if (!$taxonomyid) return false;
-    if (taxonomy_get_byid($taxonomyid)) {
+    if (taxonomy_get($taxonomyid)) {
         // 删除分类关系
         $db->delete('#@_term_relation',array('taxonomyid' => $taxonomyid));
         // 删除分类扩展信息
@@ -444,4 +444,69 @@ function taxonomy_delete($taxonomyid) {
         return true;
     }
     return false;
+}
+
+function taxonomy_create($taxonomyid) {
+    $taxonomyid = intval($taxonomyid);
+    if (!$taxonomyid) return false;
+    if ($taxonomy = taxonomy_get($taxonomyid)) {
+        $page   = 1;
+        // 载入模版
+        $html   = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html($taxonomy['list']));
+        // 标签块信息
+        $block  = tpl_get_block($html,'post,list','list');
+        // 每页条数
+        $number = tpl_get_attr($block['tag'],'number');
+        // 排序方式
+        $order  = tpl_get_attr($block['tag'],'order');
+
+        $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE `taxonomyid`=%d ORDER BY `objectid` %s", esc_sql($taxonomyid), esc_sql($order));
+        
+        $result = post_gets($sql, $page, $number); //print_r($result);
+        $inner = '';
+        if ($result['length'] > 0) {
+            foreach ($result['posts'] as $post) {
+                tpl_clean();
+                tpl_value(array(
+                    'postid'   => $post['postid'],
+                    'title'    => $post['title'],
+                    'content'  => $post['content'],
+                    'path'     => WEB_ROOT.$post['path'],
+                    'datetime' => $post['datetime'],
+                    'keywords' => $post['keywords'],
+                    'description' => $post['description'],
+                ));
+                // 设置自定义字段
+                if (isset($post['meta'])) {
+                    foreach((array)$post['meta'] as $k=>$v) {
+                        tpl_value('model.'.$k, $v);
+                    }
+                }
+                $single = tpl_parse($block['inner']);
+                // TODO 解析二级内嵌标签
+                $inner .= $single;
+            }
+        }
+        $html = str_replace($block['tag'],$inner,$html);
+        // 处理全局变量
+        tpl_clean();
+        tpl_value(array(
+            'sortid'   => $taxonomy['taxonomyid'],
+            'termid'   => $taxonomy['termid'],
+            'title'    => $taxonomy['name'],
+            'path'     => WEB_ROOT.$taxonomy['path'],
+            'count'    => $taxonomy['count'],
+            'keywords' => $taxonomy['keywords'],
+            'description' => $taxonomy['description'],
+        ));
+        $html = tpl_parse($html);
+        echo $html;
+        // 生成的文件路径
+        //$file = ABS_PATH.'/'.$taxonomy['path'].C('HTMLFileSuffix');
+        // 创建目录
+        //mkdirs(dirname($file));
+        // 保存文件
+        //return file_put_contents($file,$html);
+    }
+    return true;
 }

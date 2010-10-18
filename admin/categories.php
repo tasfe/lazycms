@@ -247,7 +247,7 @@ function category_manage_page($action) {
     $referer = referer(PHP_FILE);
     $taxonomyid  = isset($_GET['taxonomyid'])?$_GET['taxonomyid']:0;
     if ($action!='add') {
-    	$_SORT  = taxonomy_get_byid($taxonomyid);
+    	$_SORT = taxonomy_get($taxonomyid);
     }
     $parent  = isset($_SORT['parent'])?$_SORT['parent']:null;
     $name    = isset($_SORT['name'])?$_SORT['name']:null;

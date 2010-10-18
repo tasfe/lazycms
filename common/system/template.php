@@ -38,8 +38,8 @@ class Template {
     function load($html) {
         // 处理 include 标签
         $tags = array(); $base = ABS_PATH.'/'.system_themes_path().'/';
-        if (preg_match_all('/\{include[^\}]*file=([^\}]*)\/\}/isU',$html,$r)) {
-            $tags = $r[1];
+        if (preg_match_all('/\{(inc|include)[^\}]*file=([^\}]*)\/\}/isU',$html,$r)) {
+            $tags = $r[2];
             foreach ($tags as $i=>$tag) {
                 $file = trim($tag,'"\' ');
                 $html = str_replace($r[0][$i],$this->load_file($base.$file),$html);
@@ -124,20 +124,20 @@ class Template {
         }
     }
     /**
-     * 解析标签块
+     * 解析多层嵌套标签
      *
      * @param  $html
      * @return array
      */
-    function parse_blocks($html){
+    function get_blocks($html){
         $result = array();
         // 匹配出所有的块标签
         if (preg_match_all('/\{[\w+\:\-]+\b[^\}]*(?<!\/)\}|\{\/[\w+\:\-]+\}/isU',$html,$r)) {
             $content  = $html;
-            $position = $tag_len = $i = $j = 0;
+            $position = $tag_len = $id = 0;
             $matches  = $r[0];
-            $tmp_stack  = array();
-            $tmp_result = array();
+            $stacks   = array();
+            $result   = array();
             // 遍历标签
             foreach($matches as $match) {
                 // 查找标签是否存在
@@ -148,50 +148,38 @@ class Template {
                     $tag_len = strlen($match);
                     // 入栈
                     if (preg_match('/\{([\w+\:\-]+)\b[^\}]*\}/isU',$match,$tag)) {
-                        $j++;
-                        $tmp_stack[] = array(
-                            'id'    => 0,
-                            'tag'   => $tag[1],
-                            'outer_start' => $position,
+                        $stacks[] = array(
+                            'id'    => ++$id,
+                            'name'  => $tag[1],
+                            'start' => $position,
                             'inner_start' => $position + $tag_len,
                         );
                     }
                     // 出栈
                     else {
-                        $j--;
-                        $data              = array_pop($tmp_stack);
-                        $data['inner_end'] = $position;
-                        $data['outer_end'] = $position + $tag_len;
-                        $data['parent'] = $j;
+                        $data           = array_pop($stacks);
+                        $parent         = array_pop(array_slice($stacks,count($stacks)-1,1));
+                        $data['offset'] = $data['inner_start'] - $data['start'];
+                        $data['length'] = $position - $data['inner_start'];
+                        $data['end']    = $position + $tag_len;
+                        $data['pid']    = isset($parent['id']) ? $parent['id'] : 0;
+                        $data['tag']    = substr($html,$data['start'],$data['end']-$data['start']);
 
-                        $tmp_result[$i][$j+1] = $data;
-                        if ($j == 0) {
-                            ksort($tmp_result[$i]);
-                            $i++;
-                        }
+                        unset($data['start'],$data['inner_start'],$data['end']);
+
+
+                        $result[$data['id']] = $data;
+                        
                     }
                     // 截取剩余代码
                     $content = substr($content,$index + $tag_len);
                 }
             }
-            // 合并处理节点
-            $i = 0; unset($content);
-            foreach($tmp_result as $key=>$val) {
-                foreach($val as $k=>$v) {
-                    $n = $k + $i;
-                    if ($v['parent'] > 0) {
-                        $v['parent']+= $i;
-                    }
-                    $v['id']    = $n;
-                    $result[$n] = $v;
-                }
-                $i = $k;
-            }
             // 将数组转变成树，因为使用了引用，所以不会占用太多的内存
             $un = array();
-            foreach ($result as $id => $item) {
-                if ($item['parent']) {
-                    $result[$item['parent']]['sub'][$id] = &$result[$id];
+            foreach ($result as $id=>$item) {
+                if ($item['pid']) {
+                    $result[$item['pid']]['sub'][$id] = &$result[$id];
                     $un[] = $id;
                 }
             }
@@ -200,27 +188,30 @@ class Template {
         return $result;
     }
     /**
-     * 处理标签块
+     * 取得单个标签块
      *
-     * @param  $html
-     * @return
+     * @param string &$html
+     * @param string $tag_name
+     * @param string $type
+     * @return array|null
      */
-    function process_blocks($html) {
-        $blocks = $this->parse_blocks($html); //print_r($blocks);
+    function get_block(&$html,$tag_name,$type='list') {
+        $result = null;
+        // 取得所有块标签
+        $blocks = $this->get_blocks($html);
+        // 处理所有标签
         foreach ($blocks as $block) {
-            $html = $this->process_block($html,$block);
-        }
-        return $html;
-    }
-    function process_block($html, $block) {
-        $tag = substr($html, $block['inner_start'], $block['inner_end']-$block['inner_start']);
-        if (isset($block['sub'])) {
-            foreach ($block['sub'] as $sub) {
-                $tag = $this->process_block($tag,$sub);
+            // 取得指定的标签块
+            if (instr($block['name'],$tag_name) && $this->get_attr($block['tag'],'type')==$type) {
+                $block['inner'] = substr($block['tag'], $block['offset'], $block['length']);
+                unset($block['offset'], $block['length'], $block['pid']); $result = $block;
+            }
+            // 不属于本函数处理的范围，利用扩展处理
+            else {
+                $html = str_replace($block['tag'], tpl_apply_plugins($block['name'],$block['tag']), $html);
             }
         }
-        $html = substr($html, 0, $block['outer_start']).$tag.substr($html, $block['outer_end']);
-        return $html;
+        return $result;
     }
     /**
      * 解析变量
@@ -256,13 +247,10 @@ class Template {
      * @return array|mixed|string
      */
     function process_attr($value,$tag) {
-        $tag    = strtolower($tag);
         $result = $value;
         // size
         if (stripos($tag,'size=') !== false) {
-            $size = mid($tag,'size="','"');
-            if (!$size)
-                $size = mid($tag,"size='","'");
+            $size = $this->get_attr($tag,'size');
             if (validate_is($size,VALIDATE_IS_NUMERIC)) {
                 if (intval(mb_strlen($value,'UTF-8')) > intval($size)) {
                     $result = mb_substr($value, 0, $size, 'UTF-8') . '...';
@@ -273,9 +261,7 @@ class Template {
         }
         // datemode
         if (is_numeric($value) && stripos($tag,'mode=')!==false) {
-            $date = mid($tag,'mode="','"');
-            if (!$date)
-                $date = mid($tag,"mode='","'");
+            $date = $this->get_attr($tag,'mode');
             if (strlen($date) > 0) {
                 switch (strval($date)) {
                     case '0':
@@ -292,9 +278,7 @@ class Template {
         }
         // code
         if (stripos($tag,'code=') !== false) {
-            $code = mid($tag,'code="','"');
-            if (!$code)
-                $code = mid($tag,"code='","'");
+            $code = $this->get_attr($tag,'code');
             if (strlen($result) > 0) {
                 switch ($code) {
                     case 'javascript': case 'js':
@@ -314,9 +298,7 @@ class Template {
         }
         // apply
         if (stripos($tag,'func=') !== false) {
-            $func = mid($tag,'func="','"');
-            if (!$func)
-                $func = mid($tag,"func='","'");
+            $func = $this->get_attr($tag,'func');
             if (strlen($func) > 0) {
                 if (stripos($func,'@me') !== false) {
                     $func = preg_replace("/'@me'|\"@me\"|@me/isU",'$result',$func);
@@ -326,6 +308,19 @@ class Template {
         }
 
         return $result;
+    }
+    /**
+     * 取得一个属性值
+     *
+     * @param  $tag
+     * @param  $attr
+     * @return string
+     */
+    function get_attr($tag,$attr) {
+        $value = mid($tag, $attr.'="','"');
+        if (!$value)
+            $value = mid($tag, $attr."='","'");
+        return $value;
     }
 }
 /**
@@ -360,6 +355,17 @@ function tpl_add_plugin($func) {
     return $tpl->add_plugin($func);
 }
 /**
+ * 使用插件
+ * 
+ * @param  $tag_name
+ * @param  $tag
+ * @return mixed
+ */
+function tpl_apply_plugins($tag_name, $tag) {
+    $tpl = _tpl_get_object();
+    return $tpl->apply_plugins($tag_name, $tag);
+}
+/**
  * 清理内部数组
  *
  * @return void
@@ -382,14 +388,45 @@ function tpl_value($key=null,$val=null) {
     return $tpl->value($key, $val);
 }
 /**
+ * 取得嵌套标签数据
+ *
+ * @param  $html
+ * @return array
+ */
+function tpl_get_blocks($html) {
+    $tpl = _tpl_get_object();
+    return $tpl->get_blocks($html);
+}
+/**
+ * 取得单个标签块
+ *
+ * @param  $html
+ * @param  $tag_name
+ * @param string $type
+ * @return array|null
+ */
+function tpl_get_block(&$html,$tag_name,$type='list') {
+    $tpl = _tpl_get_object();
+    return $tpl->get_block($html,$tag_name,$type);
+}
+/**
+ * 取得属性
+ *
+ * @param  $tag
+ * @param  $attr
+ * @return string
+ */
+function tpl_get_attr($tag, $attr) {
+    $tpl = _tpl_get_object();
+    return $tpl->get_attr($tag, $attr);
+}
+/**
  * 解析模版
  *
  * @param  $html
  * @return mixed
  */
 function tpl_parse($html) {
-    $tpl  = _tpl_get_object();
-    //$html = $tpl->process_blocks($html);
-    $html = $tpl->process_vars($html);
-    return $html;
+    $tpl = _tpl_get_object();
+    return $tpl->process_vars($html);
 }

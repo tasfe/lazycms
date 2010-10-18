@@ -42,8 +42,15 @@ function post_manage_init() {
             );
         };
     // 控制是否显示模版使用模型设置
-    $('.categories input[name=sortid]',wrap).click(function(){
-        categories(this.value);
+    $('.categories input:radio[name=sortid]',wrap).click(function(){
+        categories(this.value); $(this).next().find('input:checkbox:checked').attr('checked',false);
+    });
+    $('.categories input:checkbox[name^=category]',wrap).click(function(){
+        var prev = $(this).parent().prev('input:radio:checked');
+        if (prev.is('input')) {
+            prev.attr('checked',false);
+            $(this).parents('.categories').find('input:radio[value=0]').attr('checked',true);
+        }
     });
     categories($('ul.categories input[name=sortid]:checked',wrap).val());
     // 绑定模型选择事件

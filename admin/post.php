@@ -306,7 +306,7 @@ switch ($method) {
 	    $page  = isset($_REQUEST['page'])?$_REQUEST['page']:1;
         $size  = isset($_REQUEST['size'])?$_REQUEST['size']:10;
         $model = isset($_REQUEST['model'])?$_REQUEST['model']:'';
-        $category = isset($_REQUEST['category'])?$_REQUEST['category']:null;
+        $category = isset($_REQUEST['category'])?$_REQUEST['category']:0;
         $query = array(
             'page' => '$',
             'size' => $size,
@@ -324,7 +324,7 @@ switch ($method) {
         }
         // 根据分类筛选
         if ($category) {
-            $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE `taxonomyid`='%s' ORDER BY `objectid` {$order}",esc_sql($category));
+            $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE `taxonomyid`=%d ORDER BY `objectid` {$order}",esc_sql($category));
         } else {
             // 根据模型筛选
             if ($model) $conditions[] = sprintf("`model` = '%s'",esc_sql($model));
@@ -348,11 +348,6 @@ switch ($method) {
         echo           '<tbody>';
         if (0 < $result['length']) {
             foreach ($result['posts'] as $post) {
-                if (strncmp($post['path'],'/',1) === 0) {
-                    $post['path'] = ltrim($post['path'], '/');
-                } elseif ($post['sortid'] > 0) {
-                    $post['path'] = $post['category'][$post['sortid']]['path'].'/'.$post['path'];
-                }
                 $edit_url   = PHP_FILE.'?method=edit&postid='.$post['postid'];
                 $categories = array();
                 foreach($post['category'] as $category) {
@@ -451,6 +446,7 @@ function post_manage_page($action) {
         $mcode = isset($_GET['model'])?$_GET['model']:null;
     } else {
         $_DATA = post_get($postid);
+        post_process($_DATA,'keywords');
         $mcode = $_DATA['model'];
     }
 
@@ -460,6 +456,7 @@ function post_manage_page($action) {
     $path     = isset($_DATA['path'])?$_DATA['path']:$model['path'];
     $content  = isset($_DATA['content'])?$_DATA['content']:null;
     $template = isset($_DATA['template'])?$_DATA['template']:null;
+    $keywords = isset($_DATA['keywords'])?$_DATA['keywords']:null;
     $description = isset($_DATA['description'])?$_DATA['description']:null;
     // 取得分类关系
     $categories  = array();
@@ -469,12 +466,6 @@ function post_manage_page($action) {
             $categories[] = $category['taxonomyid'];
         }
     }
-    // 获取关键词
-    $keywords = array();
-    if (isset($_DATA['keywords'])) {
-        foreach($_DATA['keywords'] as $keyword) $keywords[] = $keyword['name'];
-    }
-    $keywords = implode(',',$keywords);
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="postmanage" id="postmanage">';
