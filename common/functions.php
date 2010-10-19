@@ -110,23 +110,28 @@ function get_conn($DSN=null,$pconnect=false){
 /**
  * 分页函数
  *
- * @param string $url        url中必须包含$特殊字符，用来代替页数
- * @param int    $page      当前页数
- * @param int    $total     总页数
- * @param int    $length    记录总数
+ * @param string $url   url中必须包含$特殊字符，用来代替页数
+ * @param int $page     当前页数
+ * @param int $total    总页数
+ * @param int $length   记录总数
+ * @param bool $static  是否静态页面，静态页面首页的1丢弃
  * @return string
  */
-function page_list($url,$page,$total,$length){
+function page_list($url,$page,$total,$length,$static=false){
     $pages = null;
-    if (strpos($url,'%24')!==false) { $url = str_replace('%24','$',$url); }
-    if (strpos($url,'$')==0 || $length==0) { return ; }
+    if (strpos($url,'%24') !==false )
+        $url = str_replace('%24','$',$url);
+    if (strpos($url,'$')===false || $length==0)
+        return ;
+
+    $start = $static ? '' : 1;
     if ($page > 2) {
         $pages.= '<a href="'.str_replace('$',$page-1,$url).'">&laquo;</a>';
     } elseif ($page==2) {
-        $pages.= '<a href="'.str_replace('$',1,$url).'">&laquo;</a>';
+        $pages.= '<a href="'.str_replace('$',$start,$url).'">&laquo;</a>';
     }
     if ($page > 3) {
-        $pages.= '<a href="'.str_replace('$',1,$url).'">1</a><span>&#8230;</span>';
+        $pages.= '<a href="'.str_replace('$',$start,$url).'">1</a><span>&#8230;</span>';
     }
     $before = $page-2;
     $after  = $page+7;
@@ -136,7 +141,7 @@ function page_list($url,$page,$total,$length){
                 $pages.= '<span class="active">'.$i.'</span>';
             } else {
                 if ($i==1) {
-                    $pages.= '<a href="'.str_replace('$',1,$url).'">'.$i.'</a>';
+                    $pages.= '<a href="'.str_replace('$',$start,$url).'">'.$i.'</a>';
                 } else {
                     $pages.= '<a href="'.str_replace('$',$i,$url).'">'.$i.'</a>';
                 }
@@ -620,7 +625,7 @@ function ob_compress($content,$level=3,$force_gzip=true){
  * @return string
  */
 function mid($content,$start,$end,$clear=null){
-    if (empty($content) || empty($start) || empty($end)) { return ; }
+    if (empty($content) || empty($start) || empty($end)) { return null; }
     if ((!strncmp($start,'(',1)) && substr($start,-1)==')') {
         if (preg_match("/{$start}/isU",$content,$args)) {
             $start = $args[0];
@@ -632,7 +637,7 @@ function mid($content,$start,$end,$clear=null){
         }
     }
     $start_len = strlen($start); $result = null;
-    $start_pos = strpos(strtolower($content),strtolower($start)); if ($start_pos===false) { return ; }
+    $start_pos = strpos(strtolower($content),strtolower($start)); if ($start_pos===false) { return null; }
     $end_pos   = strpos(strtolower(substr($content,-(strlen($content)-$start_pos-$start_len))),strtolower($end));
     if ($start_pos!==false && $end_pos!==false) {
         $result = trim(substr($content,$start_pos+$start_len,$end_pos));

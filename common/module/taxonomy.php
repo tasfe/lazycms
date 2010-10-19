@@ -446,67 +446,103 @@ function taxonomy_delete($taxonomyid) {
     return false;
 }
 
+/**
+ * 生成分类列表
+ *
+ * @param  $taxonomyid
+ * @return bool
+ */
 function taxonomy_create($taxonomyid) {
     $taxonomyid = intval($taxonomyid);
     if (!$taxonomyid) return false;
     if ($taxonomy = taxonomy_get($taxonomyid)) {
-        $page   = 1;
+        $page   = 1; $inner = '';
+        $suffix = C('HTMLFileSuffix');
         // 载入模版
         $html   = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html($taxonomy['list']));
         // 标签块信息
         $block  = tpl_get_block($html,'post,list','list');
-        // 每页条数
-        $number = tpl_get_attr($block['tag'],'number');
-        // 排序方式
-        $order  = tpl_get_attr($block['tag'],'order');
+        if ($block) {
+            // 每页条数
+            $number = tpl_get_attr($block['tag'],'number');
+            // 排序方式
+            $order  = tpl_get_attr($block['tag'],'order');
 
-        $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE `taxonomyid`=%d ORDER BY `objectid` %s", esc_sql($taxonomyid), esc_sql($order));
-        
-        $result = post_gets($sql, $page, $number); //print_r($result);
-        $inner = '';
-        if ($result['length'] > 0) {
-            foreach ($result['posts'] as $post) {
-                tpl_clean();
-                tpl_value(array(
-                    'postid'   => $post['postid'],
-                    'title'    => $post['title'],
-                    'content'  => $post['content'],
-                    'path'     => WEB_ROOT.$post['path'],
-                    'datetime' => $post['datetime'],
-                    'keywords' => $post['keywords'],
-                    'description' => $post['description'],
-                ));
-                // 设置自定义字段
-                if (isset($post['meta'])) {
-                    foreach((array)$post['meta'] as $k=>$v) {
-                        tpl_value('model.'.$k, $v);
-                    }
-                }
-                $single = tpl_parse($block['inner']);
-                // TODO 解析二级内嵌标签
-                $inner .= $single;
+            $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE `taxonomyid`=%d ORDER BY `objectid` %s", esc_sql($taxonomyid), esc_sql($order));
+
+            $result = post_gets($sql, $page, $number,'sortid,path');
+            // 解析分页标签
+            if (stripos($html,'{pagelist')!==false) {
+                $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU',
+                    page_list(WEB_ROOT.$taxonomy['path'].'/index$'.$suffix, $page, $result['pages'], $result['length'], true),
+                    $html
+                );
             }
+            // 数据存在
+            if ($result['length'] > 0) {
+                foreach ($result['posts'] as $post) {
+                    // 清理模版内部变量
+                    tpl_clean();
+                    // 设置文章变量
+                    $vars = array(
+                        'postid'   => $post['postid'],
+                        'title'    => $post['title'],
+                        'content'  => $post['content'],
+                        'path'     => WEB_ROOT.$post['path'],
+                        'datetime' => $post['datetime'],
+                        'keywords' => $post['keywords'],
+                        'description' => $post['description'],
+                    );
+                    // 设置分类变量
+                    $vars['sortid']   = $post['sortid'];
+                    $vars['sortname'] = $post['sort']['name'];
+                    $vars['sortpath'] = WEB_ROOT.$post['sort']['path'].'/index'.$suffix;
+                    tpl_vars($vars);
+                    // 设置自定义字段
+                    if (isset($post['meta'])) {
+                        foreach((array)$post['meta'] as $k=>$v) {
+                            tpl_vars('model.'.$k, $v);
+                        }
+                    }
+                    // 取得标签块内容
+                    $block['inner'] = tpl_get_block_inner($block);
+                    // 解析二级内嵌标签
+                    foreach ((array)$block['sub'] as $sblock) {
+                        $sblock['name'] = strtolower($sblock['name']);
+                        switch($sblock['name']) {
+                            // TODO 解析图片标签
+                            case 'images':
+                                $block['inner'] = str_replace($sblock['tag'],'',$block['inner']);
+                                break;
+                        }
+                    }
+                    // 解析变量
+                    $inner.= tpl_parse($block['inner']);
+                }
+            }
+            $html = str_replace($block['tag'],$inner,$html);
         }
-        $html = str_replace($block['tag'],$inner,$html);
-        // 处理全局变量
+        // 所需要的标签和数据都不存在，不需要生成页面
+        if ($inner == '') return true;
+        // 清理模版内部变量
         tpl_clean();
-        tpl_value(array(
+        tpl_vars(array(
             'sortid'   => $taxonomy['taxonomyid'],
+            'sortname' => $taxonomy['name'],
+            'sortpath' => WEB_ROOT.$taxonomy['path'].'/index'.$suffix,
             'termid'   => $taxonomy['termid'],
-            'title'    => $taxonomy['name'],
-            'path'     => WEB_ROOT.$taxonomy['path'],
             'count'    => $taxonomy['count'],
+            'title'    => $taxonomy['name'],
             'keywords' => $taxonomy['keywords'],
             'description' => $taxonomy['description'],
         ));
         $html = tpl_parse($html);
-        echo $html;
         // 生成的文件路径
-        //$file = ABS_PATH.'/'.$taxonomy['path'].C('HTMLFileSuffix');
+        $file = ABS_PATH.'/'.$taxonomy['path'].'/index' . ($page==1 ? '' : $page) . $suffix;
         // 创建目录
-        //mkdirs(dirname($file));
+        mkdirs(dirname($file));
         // 保存文件
-        //return file_put_contents($file,$html);
+        return file_put_contents($file,$html);
     }
     return true;
 }

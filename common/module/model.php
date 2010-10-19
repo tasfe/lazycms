@@ -183,7 +183,6 @@ function model_delete($modelid) {
     if (model_get_byid($modelid)) {
         model_clean_cache($modelid);
         $db->delete('#@_model',array('modelid'=>$modelid));
-        // TODO: 删除其他数据
         return true;
     }
     return false;

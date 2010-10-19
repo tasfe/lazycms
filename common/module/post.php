@@ -119,14 +119,16 @@ function post_edit($postid,$data,$cache=true) {
 /**
  * 取得post
  *
- * @param  $res
- * @param  $sql
- * @param int $page
- * @param int $size
+ * @param string $sql       sql语句
+ * @param int $page         当前页
+ * @param int $size         每页大小
+ * @param string $option    文章变量处理选项 see function post_process()
  * @return array
  */
-function post_gets($sql, $page=1, $size=10){
-    $db = get_conn(); $posts = array(); $page = $page<1 ? 1 : $page;
+function post_gets($sql, $page=1, $size=10,$option='model,path,category'){
+    $db = get_conn(); $posts = array();
+    $page = $page<1 ? 1  : $page;
+    $size = $size<1 ? 10 : $size;
     $count_sql = preg_replace('/SELECT (.+) FROM/iU','SELECT COUNT(*) FROM',$sql,1);
     $count_sql = preg_replace('/ORDER BY (.+) (ASC|DESC)/i','',$count_sql,1);
     $total = $db->result($count_sql);
@@ -142,7 +144,7 @@ function post_gets($sql, $page=1, $size=10){
     $res = $db->query($sql);
     while ($post = $db->fetch($res)) {
         $post = post_get($post['postid']);
-        post_process($post,'model,path,category');
+        post_process($post,$option);
         $posts[] = $post;
     }
     return array(
@@ -204,10 +206,14 @@ function post_get($postid, $cache=true) {
  * 处理文章
  *
  * @param array &$post
- * @param string $option model,path,category,template,keywords
+ * @param string $option model,path,category,template,keywords,sortid
  * @return void
  */
 function post_process(&$post,$option=null) {
+    // 解析分类
+    if (instr('sortid',$option) && $post['sortid']>0) {
+        $post['sort'] = taxonomy_get($post['sortid']);
+    }
     // 解析模型数据
     if (instr('model',$option) && !empty($post['model'])) {
         $post['model'] = model_get_bycode($post['model']);
@@ -368,7 +374,7 @@ function post_create($postid) {
         // 加载模版
         $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html($post['template']));
                 tpl_clean();
-                tpl_value(array(
+                tpl_vars(array(
                     'postid'   => $post['postid'],
                     'title'    => $post['title'],
                     'content'  => $post['content'],
@@ -380,7 +386,7 @@ function post_create($postid) {
                 // 设置自定义字段
                 if (isset($post['meta'])) {
                     foreach((array)$post['meta'] as $k=>$v) {
-                        tpl_value('model.'.$k, $v);
+                        tpl_vars('model.'.$k, $v);
                     }
                 }
         

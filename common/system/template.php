@@ -102,7 +102,7 @@ class Template {
      * @param  $val
      * @return array
      */
-    function value($key=null,$val=null) {
+    function vars($key=null,$val=null) {
         // 获取全部变量
         if (func_num_args()==0) return $this->_vars;
         // 批量赋值
@@ -202,9 +202,8 @@ class Template {
         // 处理所有标签
         foreach ($blocks as $block) {
             // 取得指定的标签块
-            if (instr($block['name'],$tag_name) && $this->get_attr($block['tag'],'type')==$type) {
-                $block['inner'] = substr($block['tag'], $block['offset'], $block['length']);
-                unset($block['offset'], $block['length'], $block['pid']); $result = $block;
+            if (instr(strtolower($block['name']),$tag_name) && $this->get_attr($block['tag'],'type')==$type) {
+                $result = $block;
             }
             // 不属于本函数处理的范围，利用扩展处理
             else {
@@ -212,6 +211,15 @@ class Template {
             }
         }
         return $result;
+    }
+    /**
+     * 取得标签块的内容
+     *
+     * @param  $block
+     * @return string
+     */
+    function get_block_inner($block) {
+        return substr($block['tag'], $block['offset'], $block['length']);
     }
     /**
      * 解析变量
@@ -227,7 +235,7 @@ class Template {
                 $tags[$k] = strtolower($tags[$k]);
 
                 // 解析变量
-                $value = $this->value($tags[$k]);
+                $value = $this->vars($tags[$k]);
                 // 应用插件解析
                 if (null === $value) {
                     $value = $this->apply_plugins($tags[$k], $tag);
@@ -249,64 +257,56 @@ class Template {
     function process_attr($value,$tag) {
         $result = $value;
         // size
-        if (stripos($tag,'size=') !== false) {
-            $size = $this->get_attr($tag,'size');
-            if (validate_is($size,VALIDATE_IS_NUMERIC)) {
-                if (intval(mb_strlen($value,'UTF-8')) > intval($size)) {
-                    $result = mb_substr($value, 0, $size, 'UTF-8') . '...';
-                } else{
-                    $result = $value;
-                }
+        $size = $this->get_attr($tag,'size');
+        if ($size && validate_is($size,VALIDATE_IS_NUMERIC)) {
+            if (intval(mb_strlen($value,'UTF-8')) > intval($size)) {
+                $result = mb_substr($value, 0, $size, 'UTF-8') . '...';
+            } else{
+                $result = $value;
             }
         }
         // datemode
-        if (is_numeric($value) && stripos($tag,'mode=')!==false) {
-            $date = $this->get_attr($tag,'mode');
-            if (strlen($date) > 0) {
-                switch (strval($date)) {
-                    case '0':
-                        $result = date('Y-n-j G:i:s',$value);
-                        break;
-                    case '1':
-                        $result = date('Y-m-d H:i:s',$value);
-                        break;
-                    default:
-                        $result = date($date,$value);
-                        break;
-                }
+        $date = $this->get_attr($tag,'mode');
+        if (strlen($date) > 0 && is_numeric($value)) {
+            switch (strval($date)) {
+                case '0':
+                    $result = date('Y-n-j G:i:s',$value);
+                    break;
+                case '1':
+                    $result = date('Y-m-d H:i:s',$value);
+                    break;
+                default:
+                    $result = date($date,$value);
+                    break;
             }
         }
         // code
-        if (stripos($tag,'code=') !== false) {
-            $code = $this->get_attr($tag,'code');
-            if (strlen($result) > 0) {
-                switch ($code) {
-                    case 'javascript': case 'js':
-                        $result = sprintf('document.writeln("%s");',str_replace(array("\r", "\n"), array('', '\n'), addslashes($result)));
-                        break;
-                    case 'xmlencode': case 'xml':
-                        $result = xmlencode($result);
-                        break;
-                    case 'urlencode': case 'url':
-                        $result = rawurlencode($result);
-                        break;
-                    case 'htmlencode':
-                        $result = esc_html($result);
-                        break;
-                }
+        $code = $this->get_attr($tag,'code');
+        if (strlen($result) > 0 && $code) {
+            $code = strtolower($code);
+            switch ($code) {
+                case 'javascript': case 'js':
+                    $result = sprintf('document.writeln("%s");',str_replace(array("\r", "\n"), array('', '\n'), addslashes($result)));
+                    break;
+                case 'xmlencode': case 'xml':
+                    $result = xmlencode($result);
+                    break;
+                case 'urlencode': case 'url':
+                    $result = rawurlencode($result);
+                    break;
+                case 'htmlencode':
+                    $result = esc_html($result);
+                    break;
             }
         }
         // apply
-        if (stripos($tag,'func=') !== false) {
-            $func = $this->get_attr($tag,'func');
-            if (strlen($func) > 0) {
-                if (stripos($func,'@me') !== false) {
-                    $func = preg_replace("/'@me'|\"@me\"|@me/isU",'$result',$func);
-                }
-                $result = eval('return '.$func.';');
+        $func = $this->get_attr($tag,'func');
+        if (strlen($func) > 0 && $func) {
+            if (stripos($func,'@me') !== false) {
+                $func = preg_replace("/'@me'|\"@me\"|@me/isU",'$result',$func);
             }
+            $result = eval('return '.$func.';');
         }
-
         return $result;
     }
     /**
@@ -381,11 +381,11 @@ function tpl_clean() {
  * @param  $val
  * @return array
  */
-function tpl_value($key=null,$val=null) {
+function tpl_vars($key=null,$val=null) {
     $tpl = _tpl_get_object();
     if (func_num_args()==0)
-        return $tpl->value();
-    return $tpl->value($key, $val);
+        return $tpl->vars();
+    return $tpl->vars($key, $val);
 }
 /**
  * 取得嵌套标签数据
@@ -408,6 +408,16 @@ function tpl_get_blocks($html) {
 function tpl_get_block(&$html,$tag_name,$type='list') {
     $tpl = _tpl_get_object();
     return $tpl->get_block($html,$tag_name,$type);
+}
+/**
+ * 取得标签块内容
+ *
+ * @param  $block
+ * @return string
+ */
+function tpl_get_block_inner($block) {
+    $tpl = _tpl_get_object();
+    return $tpl->get_block_inner($block);
 }
 /**
  * 取得属性

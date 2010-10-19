@@ -205,7 +205,7 @@ switch ($method) {
                 if (post_create($postid)) {
                     admin_success($result,"LazyCMS.redirect('".PHP_FILE."');");
                 } else {
-                    admin_success($result.__('File create failed.'),"LazyCMS.redirect('".PHP_FILE."');");
+                    admin_alert($result.__('File create failed.'),"LazyCMS.redirect('".PHP_FILE."');");
                 }
             }
         }

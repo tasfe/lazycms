@@ -103,23 +103,29 @@ switch ($method) {
                         'description' => esc_html($description),
                     );
                     taxonomy_edit($taxonomyid,$info);
-                    admin_success(__('Category updated.'),"LazyCMS.redirect('".PHP_FILE."');");
+                    $result = __('Category updated.');
                 } 
                 // 强力插入了
                 else {
-                    $path   = esc_html($path);
-                    $parent = esc_html($parent);
-                    $name   = esc_html($name);
-                    taxonomy_add('category',$name,$parent,array(
+                    $path     = esc_html($path);
+                    $parent   = esc_html($parent);
+                    $name     = esc_html($name);
+                    $taxonomy = taxonomy_add('category',$name,$parent,array(
                         'path'  => esc_html($path),
                         'list'  => esc_html($list),
                         'page'  => esc_html($page),
                         'keywords' => esc_html($keywords),
                         'description' => esc_html($description),
                     ));
-                    admin_success(__('Category created.'),"LazyCMS.redirect('".PHP_FILE."');");
+                    $taxonomyid = $taxonomy['taxonomyid'];
+                    $result = __('Category created.');
                 }
                 // 生成列表页
+                if (taxonomy_create($taxonomyid)) {
+                    admin_success($result,"LazyCMS.redirect('".PHP_FILE."');");
+                } else {
+                    admin_alert($result.__('File create failed.'),"LazyCMS.redirect('".PHP_FILE."');");
+                }
             }
         }
 	    break;
@@ -211,11 +217,7 @@ function display_tr_tree($sorts,$n=0) {
     static $func = null; if (!$func) $func = __FUNCTION__; 
     $hl = ''; $space = str_repeat('&mdash; ',$n);
     foreach ($sorts as $sort) {
-        $path = WEB_ROOT.format_path($sort['path'],array(
-            'ID'  => $sort['taxonomyid'],
-            'PY'  => $sort['name'],
-            'MD5' => $sort['taxonomyid'],
-        ));
+        $path    = WEB_ROOT.$sort['path'].'/';
         $href    = PHP_FILE.'?method=edit&taxonomyid='.$sort['taxonomyid'];
         $actions = '<span class="create"><a href="javascript:;">'.__('Create').'</a> | </span>';
         $actions.= '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a> | </span>';
@@ -224,7 +226,7 @@ function display_tr_tree($sorts,$n=0) {
         $hl.=   '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$sort['taxonomyid'].'" /></td>';
         $hl.=   '<td><span class="space">'.$space.'</span><strong><a href="'.$href.'">'.$sort['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
         // 检测目录是否已生成
-        if (is_file(ABS_PATH.'/'.$sort['path'])) {
+        if (is_dir(ABS_PATH.'/'.$sort['path'])) {
             $hl.= '<td><img class="b6 os" src="'.ADMIN_ROOT.'images/white.gif" /><a href="'.$path.'" target="_blank">'.$path.'</a></td>';
         } else {
             $hl.= '<td><img class="b7 os" src="'.ADMIN_ROOT.'images/white.gif" /><a href="javascript:;">'.$path.'</a></td>';
