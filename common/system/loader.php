@@ -52,6 +52,7 @@ class LazyLoader {
             'model'  => array(ADMIN_PATH.'/css/model.css',array('admin.common')),
             'post'   => array(ADMIN_PATH.'/css/post.css',array('admin.common')),
             'install' => array(ADMIN_PATH.'/css/install.css',array('admin.common')),
+            'publish' => array(ADMIN_PATH.'/css/publish.css',array('admin.common')),
             'categories' => array(ADMIN_PATH.'/css/categories.css',array('admin.common')),
             'admin.common' => array(ADMIN_PATH.'/css/common.css',array('reset','icons','common','xheditor.plugins')),
             'xheditor.plugins' => array(COM_PATH.'/css/xheditor.plugins.css'),

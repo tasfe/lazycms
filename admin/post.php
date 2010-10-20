@@ -568,7 +568,7 @@ function post_manage_page($action) {
 function categories_tree($sortid,$categories=array(),$trees=null) {
     static $func = null; if (!$func) $func = __FUNCTION__;
     $hl = sprintf('<ul class="%s">',is_null($trees) ? 'categories' : 'children');
-    if ($trees===null) {
+    if ($trees === null) {
         $checked = empty($sortid)?' checked="checked"':'';
         $hl.= sprintf('<li><input type="radio" name="sortid" value="0"%s /><label for="sortid">'.__('Uncategorized').'</label></li>',$checked);
         $trees = taxonomy_get_trees();

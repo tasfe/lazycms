@@ -9,6 +9,7 @@
 
         'cpanel' => array(__('Control Panel'),'index.php','a1',array(
             array(__('Control Panel'),'index.php'),
+            array(__('Publish Posts'),'publish.php','publish'),
             array(__('Upgrade'),'upgrade.php','upgrade'),
         )),
 

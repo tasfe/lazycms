@@ -187,8 +187,8 @@ function table_nav() {
     echo '<div class="table-nav">';
     echo     '<select name="actions">';
     echo         '<option value="">'.__('Bulk Actions').'</option>';
-    echo         '<option value="create">'.__('Create').'</option>';
-    echo         '<option value="recreate">'.__('Recreate').'</option>';
+    echo         '<option value="create">'.__('Create List').'</option>';
+    echo         '<option value="createall">'.__('Create Post and List').'</option>';
     echo         '<option value="delete">'.__('Delete').'</option>';
     echo     '</select>';
     echo     '<button type="button">'.__('Apply').'</button>';
@@ -219,7 +219,7 @@ function display_tr_tree($sorts,$n=0) {
     foreach ($sorts as $sort) {
         $path    = WEB_ROOT.$sort['path'].'/';
         $href    = PHP_FILE.'?method=edit&taxonomyid='.$sort['taxonomyid'];
-        $actions = '<span class="create"><a href="javascript:;">'.__('Create').'</a> | </span>';
+        $actions = '<span class="create"><a href="javascript:;">'.__('Create List').'</a> | </span>';
         $actions.= '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a> | </span>';
         $actions.= '<span class="delete"><a href="javascript:;" onclick="sort_delete('.$sort['taxonomyid'].')">'.__('Delete').'</a></span>';
         $hl.= '<tr>';
@@ -335,15 +335,10 @@ function options_tree($taxonomyid,$selected=0,$n=0,$trees=null) {
     $hl = ''; $space = str_repeat('&nbsp; &nbsp; ',$n);
     foreach ($trees as $tree) {
         $sel  = $selected==$tree['taxonomyid']?' selected="selected"':null;
-        $path = format_path($tree['path'],array(
-            'ID'  => $tree['taxonomyid'],
-            'PY'  => $tree['name'],
-            'MD5' => $tree['taxonomyid'],
-        ));
         if ($taxonomyid==$tree['taxonomyid']) {
             $hl.= '<optgroup label="'.$space.'├ '.$tree['name'].'"></optgroup>';
         } else {
-            $hl.= '<option value="'.$tree['taxonomyid'].'"'.$sel.' path="'.$path.'">'.$space.'├ '.$tree['name'].'</option>';
+            $hl.= '<option value="'.$tree['taxonomyid'].'"'.$sel.' path="'.$tree['path'].'/">'.$space.'├ '.$tree['name'].'</option>';
         }
     	if (isset($tree['subs'])) {
     		$hl.= $func($taxonomyid,$selected,$n+1,$tree['subs']);

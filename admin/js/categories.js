@@ -39,7 +39,7 @@ function sort_manage_init() {
     $('select[name=parent]',wrap).change(function(){
         var selected = $('option:selected',this);
         if (typeof(sortid)=='undefined') {
-            $('input[name=path]',wrap).val(selected.attr('path') + (selected.attr('path')==''?'':'/') );
+            $('input[name=path]',wrap).val(selected.attr('path'));
         }
     });
     // 绑定规则点击

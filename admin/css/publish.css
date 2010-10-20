@@ -1,0 +1,24 @@
+/**
+ * +---------------------------------------------------------------------------+
+ * | LL                             LLLL   LL     L   LLLL               LLLL  |
+ * | LL                            LL   L  LLL   LL  LL   L             LL  LL |
+ * | LL      LLLL   LLLLL  LL  LL  LL      LLLL LLL  LL         LL  LL      LL |
+ * | LL         LL     LL  LL  LL  LL      L LLL LL  LLLLL      LL  LL     LL  |
+ * | LL      LLLLL    LL    LLLL   LL      L  L  LL   LLLLL     LL  LL    LL   |
+ * | LL     LL  LL   LL     LLLL   LL      L     LL      LL      LLLL    LL    |
+ * | LL     LL  LL  LL       LL    LL   L  L     LL  L   LL      LLLL   LL     |
+ * | LLLLLL  LLLLL  LLLLL    LL     LLLL   L     LL   LLLL        LL    LLLLLL |
+ * |                        LL                                                 |
+ * |                        LL                                                 |
+ * +---------------------------------------------------------------------------+
+ * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
+ * +---------------------------------------------------------------------------+
+ * | LazyCMS is free software. This version use Apache License 2.0             |
+ * | See LICENSE.txt for copyright notices and details.                        |
+ * +---------------------------------------------------------------------------+
+ */
+
+ul.categories{ width:450px; max-height:200px; position:relative; border:1px solid #7F9DB9; -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px; border-collapse:separate; overflow:auto; padding:5px; margin:0; _height:expression(this.scrollHeight > 200 ? "200px" : "auto"); }
+ul.categories li{ list-style:none; }
+ul.categories li input{ margin-right:3px; }
+ul.categories ul.children{ padding:0; margin:0 0 0 15px; }

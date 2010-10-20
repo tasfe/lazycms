@@ -183,6 +183,7 @@ function admin_purview($data=null) {
     $purview = array(
         'cpanel' => array(
             '_LABEL_'   => __('Control Panel'),
+            'publish'   => __('Publish Posts'),
             'upgrade'   => __('Upgrade'),
         ),
         'posts' => array(

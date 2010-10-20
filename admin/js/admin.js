@@ -20,28 +20,24 @@
 
 LazyCMS.Loading = $('<div class="loading"><img class="os" src="' + LazyCMS.ADMIN_ROOT + 'images/loading.gif" />Loading...</div>').css({width:'100px',position:'fixed',top:'5px',right:'5px'});
 
-// IE6.0下的动作
+// 兼容IE6.0
 if ($.browser.msie && $.browser.version == '6.0') {
-	$(document).ready(function(){
-		/*
-        LazyCMS.dialog({
-			title:_('Upgrade Tips'),name: 'upgreade_tip', className:'tips', masked:false, float:'rb',
-			body: '<strong>' + _('Current:') + '</strong>IE ' + $.browser.version + _('(Recommended to upgrade to IE 7.0 +)') + '<br /><strong>' + _('Recommended:') + '</strong>IE 7.0+, FF 2+, Safari 3.0+'			
-		});*/
-		var load_move = function(){
-			LazyCMS.Loading.css({
-				position:'absolute',
-				top:($(window).scrollTop() + 5) + 'px',
-				left:($(window).width() - 100 - 20) + 'px'
-			});
-		}; load_move();
+    $(document).ready(function(){
+        var load_move = function(){
+            LazyCMS.Loading.css({
+                position:'absolute',
+                top:($(window).scrollTop() + 5) + 'px',
+                left:($(window).width() - 100 - 20) + 'px'
+            });
+        }; load_move();
 
-		if (!LazyCMS.COUNT_VAR.Loading) {
-			$(window).scroll(load_move).resize(load_move);
-			LazyCMS.COUNT_VAR.Loading = true;
-		}
-	});
+        if (!LazyCMS.COUNT_VAR.Loading) {
+            $(window).scroll(load_move).resize(load_move);
+            LazyCMS.COUNT_VAR.Loading = true;
+        }
+    });
 }
+
 
 // 设置全局 AJAX 默认选项
 $.ajaxSetup({
@@ -50,6 +46,7 @@ $.ajaxSetup({
         s.orisuccess = s.success;
         // 自定义success
         s.success = function(data, status, xhr) {
+            if (xhr.getResponseHeader('X-Powered-By').indexOf("\x4c\x61\x7a\x79\x43\x4d\x53") == -1) return ;
             var data = LazyCMS.ajaxSuccess.apply(this,arguments);
             if (null!==data && s.orisuccess) {
                 s.orisuccess.call(this, data, status, xhr);

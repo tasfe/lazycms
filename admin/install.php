@@ -180,7 +180,7 @@ else {
             if ($writable) {
                 admin_success(__('All right sparky! You\'ve made it through of the installation. If you are ready, time now to&hellip;'), "LazyCMS.redirect('".ADMIN_ROOT."');");
             } else {
-                admin_alert(__('config.php is not writeable, manually modified.'), "LazyCMS.redirect('".ADMIN_ROOT."');");
+                admin_alert(__('Create config.php failed, Please manually create.'), "LazyCMS.redirect('".ADMIN_ROOT."');");
             }
         }
     }

@@ -20,8 +20,6 @@
  */
 // 检查环境是否适合做爱做的事
 !version_compare(PHP_VERSION, '4.3.3', '<') or die('PHP version lower than 4.3.3, upgrade PHP!<br/>&lt;<a href="http://php.net/downloads.php" target="_blank">http://php.net/downloads.php</a>&gt;');
-// 禁止直接访问此文件
-str_replace('\\','/',__FILE__) != $_SERVER["SCRIPT_FILENAME"] or die('Restricted access!');
 
 // 定义项目物理跟路径
 define('ABS_PATH',dirname(__FILE__));
@@ -51,6 +49,8 @@ require COM_PATH.'/system/pinyin.php';
 require COM_PATH.'/system/l10n.php';
 // 处理错误
 set_error_handler('handler_error');
+// 禁止直接访问此文件
+str_replace('\\','/',__FILE__) != $_SERVER["SCRIPT_FILENAME"] or die('Restricted access!');
 // 处理系统变量
 if (get_magic_quotes_gpc()) {
     $args = array(& $_GET, & $_POST, & $_COOKIE, & $_FILES, & $_REQUEST);
@@ -63,5 +63,3 @@ if (get_magic_quotes_gpc()) {
 load_textdomain();
 // 删除没用的系统变量
 unset($_ENV,$HTTP_ENV_VARS,$HTTP_SERVER_VARS,$HTTP_SESSION_VARS,$HTTP_POST_VARS,$HTTP_GET_VARS,$HTTP_POST_FILES,$HTTP_COOKIE_VARS);
-
-

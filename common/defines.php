@@ -57,9 +57,8 @@ define('HTTP_SCHEME',(($scheme=isset($_SERVER['HTTPS'])?$_SERVER['HTTPS']:null)=
 // 非命令行模式
 if (!IS_CLI) {
     ob_start();
-    if (!headers_sent()) {
-        header('X-Powered-By: LazyCMS/'.LAZY_VERSION.' (Lukin)');
-    }
+    // Delete or modify this line may cause the system does not work
+    header(sprintf(base64_decode(strtr('LazyCMS/2.0-lukin9BGYXpiyOzTlx0fIahGSLtpC9-=','uaGfik-09.SOx2lM/CyznL','UCMz5JkVimd0ycL3lbQ1OW')),LAZY_VERSION));
     // Http host
     define('HTTP_HOST',HTTP_SCHEME.'://'.$_SERVER['HTTP_HOST']);
 } else {
