@@ -37,7 +37,7 @@ switch ($method) {
     // 发布进程管理
     case 'list':
         admin_head('title',__('Process list'));
-        
+        $publish = publish_gets();
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'._x('Add New','publish').'</a></h2>';
@@ -51,7 +51,22 @@ switch ($method) {
         table_thead();
         echo           '</tfoot>';
         echo           '<tbody>';
-        echo           '<tr><td colspan="8" class="tc">'.__('No record!').'</td></tr>';
+        if ($publish) {
+            foreach ($publish as $pubid=>$data) {
+                echo       '<tr>';
+                echo           '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$pubid.'" /></td>';
+                echo           '<td>'.$data['type'].'</td>';
+                echo           '<td>'.number_format($data['total']).'</td>';
+                echo           '<td>'.number_format($data['complete']).'</td>';
+                echo           '<td>'.($data['begintime']>0 ? date('Y-m-d H:i:s',$data['begintime']) : '-------- --------').'</td>';
+                echo           '<td>'.($data['elapsetime']>0 ? date('H:i:s',$data['elapsetime']) : '--:--:--').'</td>';
+                echo           '<td>'.($data['endtime']>0 ? date('Y-m-d H:i:s',$data['endtime']) : '-------- --------').'</td>';
+                echo           '<td>'.$data['state'].'</td>';
+                echo       '</tr>';
+            }
+        } else {
+            echo           '<tr><td colspan="8" class="tc">'.__('No record!').'</td></tr>';
+        }
         echo           '</tbody>';
         echo       '</table>';
         table_nav();
@@ -68,20 +83,27 @@ switch ($method) {
 	    }
         // 添加生成所有页面进程
         if (instr('createpages',$actions)) {
-            print_r($actions);
+            publish_add('Pages','publish_pages');
         }
         // 添加生成所有文章进程
         if (instr('createposts',$actions)) {
-            print_r($actions);
+            publish_add('Posts','publish_posts');
+        }
+        // 添加生成所列表进程
+        if (instr('createlists',$actions)) {
+            publish_add('Lists','publish_lists');
         }
         // 添加生成所有文章和列表进程
-        if (instr('createlists',$actions)) {
-            print_r($actions);
+        if (instr('createpostslists',$actions)) {
+            publish_add('Post&Lists','publish_posts_lists');
         }
+        // 需要异步请求执行 publish_exec();
+        admin_success(__('Publish process has created.'),"LazyCMS.redirect('".PHP_FILE."?method=list');");
         break;
     // 发布页面
     default:
-        $referer = referer(PHP_FILE);
+        $referer    = referer(PHP_FILE);
+        $categories = taxonomy_get_trees();
         admin_head('loadevents','publish_init');
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
@@ -96,15 +118,18 @@ switch ($method) {
         echo                '<td>';
         echo                    '<label for="createpages"><input type="checkbox" name="action[]" value="createpages" id="createpages">'.__('Create all Pages').'</label>';
         echo                    '<label for="createposts"><input type="checkbox" name="action[]" value="createposts" id="createposts">'.__('Create all Posts').'</label>';
-        echo                    '<label for="createlists"><input type="checkbox" name="action[]" value="createlists" id="createlists">'.__('Create all Posts and Lists').'</label>';
+        echo                    '<label for="createlists"><input type="checkbox" name="action[]" value="createlists" id="createlists">'.__('Create all Lists').'</label>';
+        echo                    '<label for="createpostslists"><input type="checkbox" name="action[]" value="createpostslists" id="createpostslists">'.__('Create all Posts and Lists').'</label>';
         echo                '</td>';
         echo           '</tr>';
-        echo           '<tr>';
-        echo                '<td><strong>'.__('Select you want to publish the category:').'</strong></td>';
-        echo           '</tr>';
-        echo           '<tr>';
-        echo                '<td>'.categories_tree().'</td>';
-        echo           '</tr>';
+        if ($categories) {
+            echo       '<tr>';
+            echo            '<td><strong>'.__('Select you want to publish the category:').'</strong></td>';
+            echo       '</tr>';
+            echo       '<tr>';
+            echo            '<td>'.categories_tree($categories).'</td>';
+            echo       '</tr>';
+        }
         echo           '<tr>';
         echo                '<td>';
         echo                    '<label for="checkall"><input type="checkbox" name="select" value="all" id="checkall">'.__('Select / Deselect').'</label>';
@@ -158,8 +183,9 @@ function table_thead() {
  * @return string
  */
 function categories_tree($trees=null) {
-    static $func = null; if (!$func) $func = __FUNCTION__;
-    $hl = sprintf('<ul class="%s">',is_null($trees) ? 'categories' : 'children');
+    static $func = null;
+    $hl = sprintf('<ul class="%s">',is_null($func) ? 'categories' : 'children');
+    if (!$func) $func = __FUNCTION__;
     if ($trees === null) $trees = taxonomy_get_trees();
     foreach ($trees as $i=>$tree) {
         $hl.= sprintf('<li><label class="selectit" for="category-%d">',$tree['taxonomyid']);

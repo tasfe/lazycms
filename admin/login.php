@@ -68,7 +68,7 @@ if (validate_is_post()) {
 // 登录页面
 echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 echo '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-echo '<title>LazyCMS '.__('Administrator Login').'</title>'; admin_css('css/login'); admin_script('js/login');
+echo '<title>LazyCMS '.__('Administrator Login').'</title>'; admin_css('css/login'); admin_script('js/common'); admin_script('js/login');
 echo '<link rel="shortcut icon" href="favicon.ico" />';
 echo '</head>';
 echo '<body>';

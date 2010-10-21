@@ -722,6 +722,7 @@ function iconvs($from,$to,$data){
     }
     if (is_string($data) ) {
         if(function_exists('iconv')) {
+            $to = substr($to,-8)=='//IGNORE' ? $to : $to.'//IGNORE';
             return iconv($from,$to,$data);
         } elseif (function_exists('mb_convert_encoding')) {
             return mb_convert_encoding ($data, $to, $from);

@@ -49,11 +49,11 @@ class LazyLoader {
             'style'  => array(ADMIN_PATH.'/css/style.css',array('reset','icons','common')),
             'admin'  => array(ADMIN_PATH.'/css/admin.css',array('style')),
             'login'  => array(ADMIN_PATH.'/css/login.css',array('style')),
+            'install' => array(ADMIN_PATH.'/css/install.css',array('style')),
 
             'user'   => array(ADMIN_PATH.'/css/user.css'),
             'model'  => array(ADMIN_PATH.'/css/model.css'),
-            'post'   => array(ADMIN_PATH.'/css/post.css'),
-            'install' => array(ADMIN_PATH.'/css/install.css'),
+            'post'   => array(ADMIN_PATH.'/css/post.css',array('xheditor.plugins')),
             'publish' => array(ADMIN_PATH.'/css/publish.css'),
             'categories' => array(ADMIN_PATH.'/css/categories.css'),
             'xheditor.plugins' => array(COM_PATH.'/css/xheditor.plugins.css'),
@@ -91,7 +91,9 @@ class LazyLoader {
                                     'Use the category set' => __('Use the category set'),
                                     'Did not select any action!' => __('Did not select any action!'),
                                 )),
-            'login'         => array(ADMIN_PATH.'/js/login.js',array('common')),
+            'login'         => array(ADMIN_PATH.'/js/login.js'),
+            'install'       => array(ADMIN_PATH.'/js/install.js'),
+            
             'user'          => array(ADMIN_PATH.'/js/user.js'),
             'model'         => array(ADMIN_PATH.'/js/model.js',array(),array(
                                     'field' => array(
@@ -105,7 +107,6 @@ class LazyLoader {
             'categories'    => array(ADMIN_PATH.'/js/categories.js'),
             'post'          => array(ADMIN_PATH.'/js/post.js'),
             'options'       => array(ADMIN_PATH.'/js/options.js'),
-            'install'       => array(ADMIN_PATH.'/js/install.js'),
             'publish'       => array(ADMIN_PATH.'/js/publish.js'),
             'xheditor'      => array(COM_PATH.'/editor/xheditor.js',array('xheditor.plugins')),
             'xheditor.plugins' => array(COM_PATH.'/js/xheditor.plugins.js'),

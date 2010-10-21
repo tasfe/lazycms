@@ -4,13 +4,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php echo esc_html(strip_tags(admin_head('title')));?> &lsaquo; <?php echo C('SiteTitle');?>  &#8212; LazyCMS</title>
 <?php
-$language = language();
 // 加载核心CSS
-admin_css('css/admin','css/'.$language);
+admin_css('css/admin');
 // 加载模块CSS
 admin_css(admin_head('styles'));
 // 加载JS核心库
-admin_script('js/common','js/'.$language);
+admin_script('js/common');
 // 加载模块JS库
 admin_script(admin_head('scripts'));
 ?>

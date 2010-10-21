@@ -191,7 +191,9 @@ else {
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php _e('LazyCMS Setup');?></title>
-<?php admin_css('css/install'); admin_script('js/install');?>
+<?php
+admin_css('css/install'); admin_script('js/common'); admin_script('js/install');
+?>
 <script type="text/javascript">
     LazyCMS.L10n.common = $.extend(LazyCMS.L10n.common,{
         'Strength indicator': "<?php _e('Strength indicator');?>",
@@ -202,7 +204,8 @@ else {
         'Mismatch': "<?php _e('Mismatch');?>",
         'Rock it!': "<?php _e('Rock it!');?>"
     });
-    LazyCMS.addLoadEvent(install_init);
+    
+    $(document).ready(install_init);
 </script>
 </head>
 
@@ -242,7 +245,6 @@ else {
         <button type="submit"><?php _e('Install LazyCMS');?></button>
     </p>
 </form>
-<script type="text/javascript">if(typeof LazyCMS!='undefined' && typeof LazyCMS.init=='function') LazyCMS.init();</script>
 </body>
 </html>
 <?php
@@ -327,7 +329,7 @@ CREATE TABLE `#@_post_meta` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `#@_publish` (
-  `publishid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `pubid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `type` char(20) NOT NULL,
   `total` int(10) unsigned NOT NULL DEFAULT '0',
   `complete` int(10) unsigned NOT NULL DEFAULT '0',
@@ -337,7 +339,7 @@ CREATE TABLE `#@_publish` (
   `elapsetime` int(10) unsigned NOT NULL DEFAULT '0',
   `endtime` int(10) unsigned NOT NULL DEFAULT '0',
   `state` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`publishid`)
+  PRIMARY KEY (`pubid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE `#@_term` (
