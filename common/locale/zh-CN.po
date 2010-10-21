@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-21 00:08+0800\n"
+"POT-Creation-Date: 2010-10-21 14:35+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.net>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
@@ -23,7 +23,7 @@ msgstr "返回"
 
 #: common/functions.php:310
 #: common/functions.php:318
-#: common/system/loader.php:77
+#: common/system/loader.php:78
 msgid "System Error"
 msgstr "系统错误"
 
@@ -244,83 +244,83 @@ msgstr "威尔士语"
 msgid "Yiddish"
 msgstr "意第绪语"
 
-#: common/system/loader.php:78
+#: common/system/loader.php:79
 msgid "Alert"
 msgstr "系统提示"
 
-#: common/system/loader.php:79
+#: common/system/loader.php:80
 msgid "Submit"
 msgstr "确认"
 
-#: common/system/loader.php:80
+#: common/system/loader.php:81
 msgid "Confirm"
 msgstr "操作确认"
 
-#: common/system/loader.php:81
+#: common/system/loader.php:82
 msgid "Cancel"
 msgstr "取消"
 
-#: common/system/loader.php:82
+#: common/system/loader.php:83
 msgid "Save"
 msgstr "保存"
 
-#: common/system/loader.php:83
+#: common/system/loader.php:84
 msgid "Close"
 msgstr "关闭"
 
-#: common/system/loader.php:84
+#: common/system/loader.php:85
 msgid "Edit"
 msgstr "编辑"
 
-#: common/system/loader.php:85
+#: common/system/loader.php:86
 msgid "Delete"
 msgstr "删除"
 
-#: common/system/loader.php:86
+#: common/system/loader.php:87
 msgid "No record!"
 msgstr "没有记录！"
 
-#: common/system/loader.php:87
+#: common/system/loader.php:88
 msgid "Confirm Logout?"
 msgstr "确定要退出吗？"
 
-#: common/system/loader.php:88
+#: common/system/loader.php:89
 msgid "Confirm Delete?"
 msgstr "确定要删除吗？"
 
-#: common/system/loader.php:89
+#: common/system/loader.php:90
 msgid "Use the model set"
 msgstr "使用模型设置"
 
-#: common/system/loader.php:90
+#: common/system/loader.php:91
 msgid "Use the category set"
 msgstr "使用分类设置"
 
-#: common/system/loader.php:91
+#: common/system/loader.php:92
 msgid "Did not select any action!"
 msgstr "没有选择任何操作。"
 
-#: common/system/loader.php:98
+#: common/system/loader.php:99
 msgctxt "field"
 msgid "Add New"
 msgstr "添加字段"
 
-#: common/system/loader.php:99
+#: common/system/loader.php:100
 msgctxt "field"
 msgid "Edit"
 msgstr "编辑字段"
 
-#: common/system/loader.php:101
+#: common/system/loader.php:102
 msgctxt "field"
 msgid "The label field is empty."
 msgstr "表单文字字段为空。"
 
-#: common/system/loader.php:102
+#: common/system/loader.php:103
 msgctxt "field"
 msgid "The name field is empty."
 msgstr "字段名字为空。"
 
-#: common/system/loader.php:103
+#: common/system/loader.php:104
 msgctxt "field"
 msgid "The name already exists."
 msgstr "字段名已存在，请重新输入字段名。"
@@ -492,7 +492,7 @@ msgstr "添加分类"
 
 #: admin/categories.php:189
 #: admin/model.php:316
-#: admin/publish.php:83
+#: admin/publish.php:109
 #: admin/user.php:207
 #: admin/post.php:407
 msgid "Bulk Actions"
@@ -509,7 +509,7 @@ msgstr "生成文章和列表"
 
 #: admin/categories.php:194
 #: admin/model.php:322
-#: admin/publish.php:88
+#: admin/publish.php:114
 #: admin/user.php:210
 #: admin/post.php:411
 msgid "Apply"
@@ -1124,7 +1124,7 @@ msgstr "我接受LazyCMS的<a href=\"../LICENSE.txt\" target=\"_blank\">许可�
 msgid "Install LazyCMS"
 msgstr "安装 LazyCMS"
 
-#: admin/install.php:374
+#: admin/install.php:388
 msgid "My Site"
 msgstr "我的站点"
 
@@ -1134,50 +1134,76 @@ msgid "Publish Posts"
 msgstr "页面发布"
 
 #: admin/publish.php:39
+#: admin/publish.php:68
+msgid "Process list"
+msgstr "进程管理"
+
+#: admin/publish.php:43
+#: admin/publish.php:95
 msgctxt "publish"
 msgid "Add New"
 msgstr "添加进程"
 
-#: admin/publish.php:67
-msgid "Process list"
-msgstr "进程管理"
+#: admin/publish.php:73
+msgid "Select you want to publish the items:"
+msgstr "选择你要发布的项目："
 
-#: admin/publish.php:84
+#: admin/publish.php:77
+msgid "Create all Pages"
+msgstr "生成所有页面"
+
+#: admin/publish.php:78
+msgid "Create all Posts"
+msgstr "生成所有文章"
+
+#: admin/publish.php:79
+msgid "Create all Posts and Lists"
+msgstr "生成所有文章和列表"
+
+#: admin/publish.php:83
+msgid "Select you want to publish the category:"
+msgstr "选择你要发布的类别："
+
+#: admin/publish.php:90
+msgid "Select / Deselect"
+msgstr "全选 / 反选"
+
+#: admin/publish.php:110
 msgid "Stop"
 msgstr "停止"
 
-#: admin/publish.php:85
+#: admin/publish.php:111
 msgid "Start"
 msgstr "开始"
 
-#: admin/publish.php:98
+#: admin/publish.php:124
 msgctxt "publish"
 msgid "Type"
 msgstr "类型"
 
-#: admin/publish.php:99
+#: admin/publish.php:125
 msgctxt "publish"
 msgid "Total"
-msgstr "总文件"
+msgstr "总数量"
 
-#: admin/publish.php:100
+#: admin/publish.php:126
 msgctxt "publish"
 msgid "Complete"
 msgstr "已完成"
 
-#: admin/publish.php:101
+#: admin/publish.php:127
 msgid "Begin Time"
 msgstr "开始时间"
 
-#: admin/publish.php:102
+#: admin/publish.php:128
 msgid "Elapsed time"
 msgstr "已用时间"
 
-#: admin/publish.php:103
+#: admin/publish.php:129
 msgid "End Time"
 msgstr "结束时间"
 
-#: admin/publish.php:104
+#: admin/publish.php:130
 msgctxt "publish"
 msgid "State"
 msgstr "状态"

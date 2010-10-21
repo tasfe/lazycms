@@ -25,7 +25,7 @@ $_ADMIN = user_current();
 // 标题
 admin_head('title',__('Publish Posts'));
 admin_head('styles', array('css/publish'));
-//admin_head('scripts',array('js/publish'));
+admin_head('scripts',array('js/publish'));
 // 动作
 $method  = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 // 所属
@@ -59,27 +59,60 @@ switch ($method) {
         echo '</div>';
         include ADMIN_PATH.'/admin-footer.php';
         break;
+    // 保存进程
+    case 'save':
+        $actions  = isset($_POST['action']) ? $_POST['action'] : null;
+        $category = isset($_POST['category']) ? $_POST['category'] : null;
+        if (empty($actions) && empty($category)) {
+	    	admin_error(__('Did not select any item.'));
+	    }
+        // 添加生成所有页面进程
+        if (instr('createpages',$actions)) {
+            print_r($actions);
+        }
+        // 添加生成所有文章进程
+        if (instr('createposts',$actions)) {
+            print_r($actions);
+        }
+        // 添加生成所有文章和列表进程
+        if (instr('createlists',$actions)) {
+            print_r($actions);
+        }
+        break;
     // 发布页面
     default:
         $referer = referer(PHP_FILE);
+        admin_head('loadevents','publish_init');
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=list">'.__('Process list').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="publish" id="publish">';
         echo     '<fieldset>';
-        echo       '<p>请选择要生成的内容</p>';
         echo       '<table class="form-table">';
         echo           '<tr>';
+        echo                '<td><strong>'.__('Select you want to publish the items:').'</strong></td>';
+        echo           '</tr>';
+        echo           '<tr>';
         echo                '<td>';
-        echo                    '<label for="createpages"><input type="checkbox" name="action[]" value="createpages" id="createpages"> 生成所有页面</label>';
-        echo                    '<label for="createposts"><input type="checkbox" name="action[]" value="createpages" id="createposts"> 生成所有文章</label>';
-        echo                    '<label for="createlists"><input type="checkbox" name="action[]" value="createpages" id="createlists"> 生成文章列表</label>';
-        echo                    categories_tree();
+        echo                    '<label for="createpages"><input type="checkbox" name="action[]" value="createpages" id="createpages">'.__('Create all Pages').'</label>';
+        echo                    '<label for="createposts"><input type="checkbox" name="action[]" value="createposts" id="createposts">'.__('Create all Posts').'</label>';
+        echo                    '<label for="createlists"><input type="checkbox" name="action[]" value="createlists" id="createlists">'.__('Create all Posts and Lists').'</label>';
+        echo                '</td>';
+        echo           '</tr>';
+        echo           '<tr>';
+        echo                '<td><strong>'.__('Select you want to publish the category:').'</strong></td>';
+        echo           '</tr>';
+        echo           '<tr>';
+        echo                '<td>'.categories_tree().'</td>';
+        echo           '</tr>';
+        echo           '<tr>';
+        echo                '<td>';
+        echo                    '<label for="checkall"><input type="checkbox" name="select" value="all" id="checkall">'.__('Select / Deselect').'</label>';
         echo                '</td>';
         echo           '</tr>';
         echo       '</table>';
         echo     '</fieldset>';
-        echo   '<p class="submit"><button type="submit">'._x('Add New','publish').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'.__('Back').'</button></p>';
+        echo   '<p class="submit"><button type="submit">'._x('Add New','publish').'</button> <button type="button" onclick="LazyCMS.redirect(\''.$referer.'\')">'.__('Back').'</button></p>';
         echo   '</form>';
         echo '</div>';
         include ADMIN_PATH.'/admin-footer.php';
@@ -118,7 +151,12 @@ function table_thead() {
     echo '</tr>';
 }
 
-
+/**
+ * 分类列表
+ *
+ * @param  $trees
+ * @return string
+ */
 function categories_tree($trees=null) {
     static $func = null; if (!$func) $func = __FUNCTION__;
     $hl = sprintf('<ul class="%s">',is_null($trees) ? 'categories' : 'children');

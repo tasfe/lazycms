@@ -84,7 +84,7 @@ class PinYin {
             $result .= chr(0x80 | $str>>6 & 0x3F);
             $result .= chr(0x80 | $str & 0x3F);
         }
-        return auto_charset($result, 'UTF-8', 'GB2312');
+        return iconvs('UTF-8', 'GB2312',$result);
     }
     function tables() {
         return array(

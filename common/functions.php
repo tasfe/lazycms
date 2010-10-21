@@ -351,7 +351,7 @@ function no_cache(){
  * 在数组或字符串中查找
  *
  * @param mixed  $needle   需要搜索的字符串
- * @param string $haystack 被搜索的数据，字符串用英文“逗号”分割
+ * @param string|array $haystack 被搜索的数据，字符串用英文“逗号”分割或数组
  * @return bool
  */
 function instr($needle,$haystack){
@@ -708,12 +708,12 @@ function options($path,$ext,$html,$selected=null){
 /**
  * 自动转换字符集 支持数组转换
  *
- * @param mixed  $data
  * @param string $from
  * @param string $to
+ * @param mixed  $data
  * @return mixed
  */
-function auto_charset($data,$from,$to){
+function iconvs($from,$to,$data){
     $from = strtoupper($from)=='UTF8'? 'UTF-8':$from;
     $to   = strtoupper($to)=='UTF8'? 'UTF-8':$to;
     if ( strtoupper($from) === strtoupper($to) || empty($data) || (is_scalar($data) && !is_string($data)) ){
@@ -731,8 +731,8 @@ function auto_charset($data,$from,$to){
     }
     elseif (is_array($data)){
         foreach ( $data as $key => $val ) {
-            $_key        = auto_charset($key,$from,$to);
-            $data[$_key] = auto_charset($val,$from,$to);
+            $_key        = iconvs($from,$to,$key);
+            $data[$_key] = iconvs($from,$to,$val);
             if ($key != $_key ) {
                 unset($data[$key]);
             }

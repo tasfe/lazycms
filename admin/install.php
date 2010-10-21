@@ -326,6 +326,20 @@ CREATE TABLE `#@_post_meta` (
   KEY `key` (`key`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
+CREATE TABLE `#@_publish` (
+  `publishid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `type` char(20) NOT NULL,
+  `total` int(10) unsigned NOT NULL DEFAULT '0',
+  `complete` int(10) unsigned NOT NULL DEFAULT '0',
+  `func` varchar(50) NOT NULL,
+  `args` longtext NOT NULL,
+  `begintime` int(10) unsigned NOT NULL DEFAULT '0',
+  `elapsetime` int(10) unsigned NOT NULL DEFAULT '0',
+  `endtime` int(10) unsigned NOT NULL DEFAULT '0',
+  `state` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`publishid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 CREATE TABLE `#@_term` (
   `termid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` char(35) NOT NULL,

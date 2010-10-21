@@ -546,15 +546,16 @@ function post_manage_page($action) {
     echo               '</tr>';    
     echo           '</tbody>';
     echo       '</table>';
-    echo '</fieldset>';
+    echo   '</fieldset>';
+    echo   '<p class="submit">';
     if ($action=='add') {
-        echo   $hidden;
-        echo   '<p class="submit"><button type="submit">'.__('Add Post').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'.__('Back').'</button></p>';
+        echo   '<button type="submit">'.__('Add Post').'</button>'.$hidden;
     } else {
-        echo   '<input type="hidden" name="postid" value="'.$postid.'" />'.$hidden;
-        echo   '<p class="submit"><button type="submit">'.__('Update Post').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'.__('Back').'</button></p>';
+        echo   '<button type="submit">'.__('Update Post').'</button><input type="hidden" name="postid" value="'.$postid.'" />'.$hidden;
     }
-    echo   '</form>';
+    echo       '<button type="button" onclick="LazyCMS.redirect(\''.$referer.'\')">'.__('Back').'</button>';
+    echo   '</p>';
+    echo  '</form>';
     echo '</div>';
 }
 

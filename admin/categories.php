@@ -311,12 +311,14 @@ function category_manage_page($action) {
     echo       '</table>';
     echo     '</fieldset>';
 
+    echo     '<p class="submit">';
     if ($action=='add') {
-        echo   '<p class="submit"><button type="submit">'.__('Add Category').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'.__('Back').'</button></p>';
+        echo   '<button type="submit">'.__('Add Category').'</button>';
     } else {
-        echo   '<input type="hidden" name="taxonomyid" value="'.$taxonomyid.'" />';
-        echo   '<p class="submit"><button type="submit">'.__('Update Category').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'.__('Back').'</button></p>';
+        echo   '<button type="submit">'.__('Update Category').'</button><input type="hidden" name="taxonomyid" value="'.$taxonomyid.'" />';
     }
+    echo       '<button type="button" onclick="LazyCMS.redirect(\''.$referer.'\')">'.__('Back').'</button>';
+    echo     '</p>';
     echo   '</form>';
     echo '</div>';
 }

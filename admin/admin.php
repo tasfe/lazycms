@@ -39,6 +39,7 @@ require COM_PATH.'/module/user.php';
 require COM_PATH.'/module/model.php';
 require COM_PATH.'/module/taxonomy.php';
 require COM_PATH.'/module/post.php';
+require COM_PATH.'/module/publish.php';
 
 /**
  * 验证用户权限

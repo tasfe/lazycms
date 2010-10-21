@@ -107,6 +107,7 @@ class LazyLoader {
             'post'          => array(ADMIN_PATH.'/js/post.js',array('admin')),
             'options'       => array(ADMIN_PATH.'/js/options.js',array('admin')),
             'install'       => array(ADMIN_PATH.'/js/install.js',array('admin')),
+            'publish'       => array(ADMIN_PATH.'/js/publish.js',array('admin')),
 
         );
         // 追加语言相关的JS

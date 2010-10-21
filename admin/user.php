@@ -294,12 +294,14 @@ function user_manage_page($action) {
     echo           '</tr>';
     echo       '</table>';
     echo   '</fieldset>';
+    echo   '<p class="submit">';
     if ($action=='add') {
-        echo   '<p class="submit"><button type="submit">'.__('Add User').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'.__('Back').'</button></p>';
+        echo   '<button type="submit">'.__('Add User').'</button>';
     } else {
-        echo   '<input type="hidden" name="userid" value="'.$userid.'" />';
-        echo   '<p class="submit"><button type="submit">'.__('Update User').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'.__('Back').'</button></p>';
+        echo   '<button type="submit">'.__('Update User').'</button><input type="hidden" name="userid" value="'.$userid.'" />';
     }
-    echo   '</form>';
+    echo       '<button type="button" onclick="LazyCMS.redirect(\''.$referer.'\')">'.__('Back').'</button>';
+    echo   '</p>';
+    echo  '</form>';
     echo '</div>';
 }

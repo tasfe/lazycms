@@ -438,12 +438,14 @@ function model_manage_page($action) {
     echo           '</tr>';
     echo       '</table>';
     echo     '</fieldset>';
+    echo     '<p class="submit">';
     if ($action=='add') {
-        echo   '<p class="submit"><button type="submit">'.__('Add Model').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'.__('Back').'</button></p>';
+        echo   '<button type="submit">'.__('Add Model').'</button>';
     } else {
-        echo   '<input type="hidden" name="modelid" value="'.$modelid.'" />';
-        echo   '<p class="submit"><button type="submit">'.__('Update Model').'</button> <button type="button" onclick="self.location.replace(\''.$referer.'\')">'.__('Back').'</button></p>';
+        echo   '<button type="submit">'.__('Update Model').'</button><input type="hidden" name="modelid" value="'.$modelid.'" />';
     }
+    echo       '<button type="button" onclick="LazyCMS.redirect(\''.$referer.'\')">'.__('Back').'</button>';
+    echo     '</p>';
     echo   '</form>';
     echo '</div>';
 }
