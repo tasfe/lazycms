@@ -28,10 +28,6 @@ var LazyCMS = window.LazyCMS = window.CMS = {
     WEB_ROOT: '/',
     // Loading...
     Loading: $('<div class="loading">Loading...</div>').css({width:'90px',position:'fixed',top:'5px',right:'5px'}),
-    // 初始化
-    init: function() {
-        // codeing...
-    },
 	// 计数变量
 	COUNT_VAR: {
 		Loading:false,
@@ -41,23 +37,6 @@ var LazyCMS = window.LazyCMS = window.CMS = {
 			Resize:false
 		}
 	},
-    /**
-     * 添加事件
-     *
-     * @param func
-     */
-    addLoadEvent: function(func){
-        if(typeof jQuery!="undefined") {
-            jQuery(document).ready(func);
-        } else if (typeof LazyCMS.init!='function') {
-            LazyCMS.init = func;
-        } else {
-            var old_init = LazyCMS.init;
-                LazyCMS.init = function(){
-                    old_init(); func();
-                }
-        }
-    },
     /**
      * 多语言翻译
      *

@@ -32,7 +32,7 @@ class LazyLoader {
      */
     function set_language($language = ''){
         if ($language) {
-            $this->language = $language; $files[] = $language;
+            $this->language = $language;
         }
 	}
 
@@ -45,21 +45,22 @@ class LazyLoader {
         $styles = array(
             'reset'  => array(COM_PATH.'/css/reset.css'),
             'icons'  => array(COM_PATH.'/css/icons.css'),
-            'common' => array(COM_PATH.'/css/common.css',array('reset','icons')),
-            'login'  => array(ADMIN_PATH.'/css/login.css',array('admin.common')),
-            'admin'  => array(ADMIN_PATH.'/css/admin.css',array('admin.common')),
-            'user'   => array(ADMIN_PATH.'/css/user.css',array('admin.common')),
-            'model'  => array(ADMIN_PATH.'/css/model.css',array('admin.common')),
-            'post'   => array(ADMIN_PATH.'/css/post.css',array('admin.common')),
-            'install' => array(ADMIN_PATH.'/css/install.css',array('admin.common')),
-            'publish' => array(ADMIN_PATH.'/css/publish.css',array('admin.common')),
-            'categories' => array(ADMIN_PATH.'/css/categories.css',array('admin.common')),
-            'admin.common' => array(ADMIN_PATH.'/css/common.css',array('reset','icons','common','xheditor.plugins')),
+            'common' => array(COM_PATH.'/css/common.css'),
+            'style'  => array(ADMIN_PATH.'/css/style.css',array('reset','icons','common')),
+            'admin'  => array(ADMIN_PATH.'/css/admin.css',array('style')),
+            'login'  => array(ADMIN_PATH.'/css/login.css',array('style')),
+
+            'user'   => array(ADMIN_PATH.'/css/user.css'),
+            'model'  => array(ADMIN_PATH.'/css/model.css'),
+            'post'   => array(ADMIN_PATH.'/css/post.css'),
+            'install' => array(ADMIN_PATH.'/css/install.css'),
+            'publish' => array(ADMIN_PATH.'/css/publish.css'),
+            'categories' => array(ADMIN_PATH.'/css/categories.css'),
             'xheditor.plugins' => array(COM_PATH.'/css/xheditor.plugins.css'),
         );
         // 追加语言相关的CSS
         if ($this->language) {
-            $styles[$this->language] = array(sprintf('%s/css/%s.css',ADMIN_PATH,$this->language),array('admin_common'));
+            $styles[$this->language] = array(sprintf('%s/css/%s.css',ADMIN_PATH,$this->language));
         }
         return $styles;
     }
@@ -72,9 +73,8 @@ class LazyLoader {
         $scripts = array(
             'jquery'        => array(COM_PATH.'/js/jquery.js'),
             'jquery.extend' => array(COM_PATH.'/js/jquery.extend.js'),
-            'xheditor'      => array(COM_PATH.'/editor/xheditor.js',array('jquery','xheditor.plugins')),
-            'xheditor.plugins' => array(COM_PATH.'/js/xheditor.plugins.js'),
-            'common'        => array(COM_PATH.'/js/lazycms.js',array('jquery','jquery.extend'),array(
+            'lazycms'       => array(COM_PATH.'/js/lazycms.js'),
+            'common'        => array(ADMIN_PATH.'/js/common.js',array('jquery','jquery.extend','lazycms'),array(
                                     'System Error' => __('System Error'),
                                     'Alert'     => __('Alert'),
                                     'Submit'    => __('Submit'),
@@ -91,10 +91,9 @@ class LazyLoader {
                                     'Use the category set' => __('Use the category set'),
                                     'Did not select any action!' => __('Did not select any action!'),
                                 )),
-            'admin'         => array(ADMIN_PATH.'/js/admin.js',array('common')),
-            'login'         => array(ADMIN_PATH.'/js/login.js',array('admin')),
-            'user'          => array(ADMIN_PATH.'/js/user.js',array('admin')),
-            'model'         => array(ADMIN_PATH.'/js/model.js',array('admin'),array(
+            'login'         => array(ADMIN_PATH.'/js/login.js',array('common')),
+            'user'          => array(ADMIN_PATH.'/js/user.js'),
+            'model'         => array(ADMIN_PATH.'/js/model.js',array(),array(
                                     'field' => array(
                                         'Add New' => _x('Add New','field'),
                                         'Edit'    => _x('Edit','field'),
@@ -103,16 +102,17 @@ class LazyLoader {
                                     'The name field is empty.'  => _x('The name field is empty.','field'),
                                     'The name already exists.'  => _x('The name already exists.','field'),
                                 )),
-            'categories'    => array(ADMIN_PATH.'/js/categories.js',array('admin')),
-            'post'          => array(ADMIN_PATH.'/js/post.js',array('admin')),
-            'options'       => array(ADMIN_PATH.'/js/options.js',array('admin')),
-            'install'       => array(ADMIN_PATH.'/js/install.js',array('admin')),
-            'publish'       => array(ADMIN_PATH.'/js/publish.js',array('admin')),
-
+            'categories'    => array(ADMIN_PATH.'/js/categories.js'),
+            'post'          => array(ADMIN_PATH.'/js/post.js'),
+            'options'       => array(ADMIN_PATH.'/js/options.js'),
+            'install'       => array(ADMIN_PATH.'/js/install.js'),
+            'publish'       => array(ADMIN_PATH.'/js/publish.js'),
+            'xheditor'      => array(COM_PATH.'/editor/xheditor.js',array('xheditor.plugins')),
+            'xheditor.plugins' => array(COM_PATH.'/js/xheditor.plugins.js'),
         );
         // 追加语言相关的JS
         if ($this->language) {
-            $scripts[$this->language] = array(sprintf('%s/js/%s.js',ADMIN_PATH,$this->language),array('admin'));
+            $scripts[$this->language] = array(sprintf('%s/js/%s.js',ADMIN_PATH,$this->language));
         }
         return $scripts;
     }
@@ -156,7 +156,7 @@ class LazyLoader {
         } else {
             $files[$file] = $this->_get_dependence_files($file,$jsL10n);
         }
-        
+
         $is_exist = array();
         foreach ($files as $group => $src) {
             $arr_src = array();

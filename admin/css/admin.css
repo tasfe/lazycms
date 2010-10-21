@@ -23,6 +23,7 @@
 html { height:100%; }
 body { font-family: Arial,sans-serif; font-size:12px; color: #333333; background:#FAFAFA; padding:0; margin:0; }
 
+
 /* Header
 ----------------------------------------------------------------------------------------------------*/
 #header {width:100%; height:50px; margin:0; display:block; clear:both; background:#eff8ff url(../images/lazyadmin-bgs.png) repeat-x 0 -5px;border-bottom:1px solid #c6d9e7; color:#333333; text-align:left;}

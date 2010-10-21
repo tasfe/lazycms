@@ -1,32 +1,38 @@
-<?php
-$title   = esc_html(strip_tags(admin_head('title')));
-$styles  = admin_head('styles')?admin_head('styles'):array();
-$scripts = admin_head('scripts')?admin_head('scripts'):array();
-?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo $title;?> &lsaquo; <?php echo C('SiteTitle');?>  &#8212; LazyCMS</title>
+<title><?php echo esc_html(strip_tags(admin_head('title')));?> &lsaquo; <?php echo C('SiteTitle');?>  &#8212; LazyCMS</title>
 <?php
-// 加载CSS
-call_user_func_array('admin_css',array_merge(array('css/admin'),$styles));
-// 加载JS
-call_user_func_array('admin_script',array_merge(array('js/admin'),$scripts));
+$language = language();
+// 加载核心CSS
+admin_css('css/admin','css/'.$language);
+// 加载模块CSS
+admin_css(admin_head('styles'));
+// 加载JS核心库
+admin_script('js/common','js/'.$language);
+// 加载模块JS库
+admin_script(admin_head('scripts'));
+?>
+<script type="text/javascript">
+//<![CDATA[
+window.addLoadEvent=function(a){if(typeof jQuery!='undefined')jQuery(document).ready(a);else if(typeof LazyOnload!='function')LazyOnload=a;else{var b=LazyOnload;LazyOnload=function(){b();a()}}};
+<?php
 // 执行事件
 $loadevents = admin_head('loadevents');
 if ($loadevents) {
-    echo '<script type="text/javascript">',"\n",'//<![CDATA[',"\n";
     if (is_array($loadevents)) {
     	foreach ($loadevents as $event) {
-    		echo "LazyCMS.addLoadEvent({$event});\n";
+    		echo "addLoadEvent({$event});";
     	}
     } else {
-        echo "LazyCMS.addLoadEvent({$loadevents});\n";
+        echo "addLoadEvent({$loadevents});";
     }
-    echo '//]]>',"\n",'</script>',"\n";
 }
 ?>
+
+//]]>
+</script>
 </head>
 
 <body>

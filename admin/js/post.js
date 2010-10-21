@@ -106,11 +106,11 @@ function post_manage_extend_attr(model,postid) {
         LazyCMS.eselect();
     });
 }
-// 
+// 生成文章
 function post_create(postid) {
     return LazyCMS.postAction('post.php', {method:'bulk', action:'create'}, postid);
 }
-// 
+// 删除文章
 function post_delete(postid){
     LazyCMS.confirm(_('Confirm Delete?'),function(r){
         if (r) {

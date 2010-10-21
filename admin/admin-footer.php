@@ -11,6 +11,6 @@
     <p class="fr" id="footer-upgrade"><?php echo sprintf(__('Version <span>%s</span>'),LAZY_VERSION);?></p>
     <div class="clear"></div>
 </div>
-<script type="text/javascript">if(typeof LazyCMS!='undefined' && typeof LazyCMS.init=='function') LazyCMS.init();</script>
+<script type="text/javascript">if(typeof LazyOnload=='function') LazyOnload();</script>
 </body>
 </html>

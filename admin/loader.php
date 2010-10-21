@@ -33,12 +33,12 @@ require ADMIN_PATH.'/admin.php'; error_reporting(0);
 require COM_PATH.'/system/loader.php';
 // 获取相关变量
 $type = isset($_GET['type'])?$_GET['type']:null;
-$lang = isset($_GET['lang'])?$_GET['lang']:null;
+$lang = isset($_GET['lang'])?$_GET['lang']:language();
 $lang = preg_replace( '/[^a-z0-9,_-]+/i', '', $lang );
 $load = isset($_GET['load'])?$_GET['load']:null;
 $load = preg_replace( '/[^a-z0-9,_-]+/i', '', $load );
 $load = explode(',', $load);
-if ( empty($load) ) exit; $load[] = $lang;
+if ( empty($load) ) exit;
 
 // 缓存日期，默认365天
 $expire = 31536000;
@@ -51,7 +51,7 @@ header("Cache-Control: public, max-age={$expire}");
 $out  = '';
 switch ($type) {
 	case 'css':
-		header('Content-Type: text/css');
+		header('Content-Type: text/css; charset=utf-8');
 		// 实例化loader类
         $loader = new StylesLoader($lang);
         $loads  = $loader->loads($load);

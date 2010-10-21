@@ -98,7 +98,7 @@ function admin_head($key,$value=null) {
     if (!is_null($value)) {
     	$head[$key] = $value;
     }
-    return isset($head[$key])?$head[$key]:null;
+    return isset($head[$key])?$head[$key]:array();
 }
 /**
  * 输出后台加载css连接
@@ -108,14 +108,17 @@ function admin_head($key,$value=null) {
 function admin_css(){
     static $CSS = array(); $files = array();
     $args = func_get_args(); if (empty($args)) return ;
-    foreach ($args as $file) $files[] = !strncasecmp($file,'css/',4) ? substr( $file, 4 ) : $file;
-    $language = language(); $files[] = $language; $loads = implode(',',$files);
+    if (is_array($args[0])) $args = $args[0];
+    foreach ($args as $file) {
+        $files[] = !strncasecmp($file,'css/',4) ? substr( $file, 4 ) : $file;
+    }     
+    $loads = implode(',',$files);
     if (isset($CSS[$loads])) {
     	$loader = $CSS[$loads];
     } else {
         require_file(COM_PATH.'/system/loader.php');
     	// 实例化loader类
-        $loader = new StylesLoader($language);
+        $loader = new StylesLoader(language());
         $CSS[$loads] = $loader;
     }
     // 加载样式表
@@ -124,7 +127,6 @@ function admin_css(){
     printf('<link href="'.ADMIN_ROOT.'loader.php?%s" rel="stylesheet" type="text/css" />',str_replace('%2C',',',http_build_query(array(
         'type' => 'css',
         'load' => $loads,
-        'lang' => $language,
         'ver'  => $version,
     ))));
 }
@@ -136,14 +138,17 @@ function admin_css(){
 function admin_script(){
     static $JSS = array(); $files = array();
     $args = func_get_args(); if (empty($args)) return ;
-    foreach ($args as $file) $files[] = !strncasecmp($file,'js/',3) ? substr($file, 3) : $file;
-    $language = language(); $files[] = $language; $loads = implode(',',$files);
+    if (is_array($args[0])) $args = $args[0];
+    foreach ($args as $file) {
+        $files[] = !strncasecmp($file,'js/',3) ? substr($file, 3) : $file;
+    }
+    $loads = implode(',',$files);
     if (isset($JSS[$loads])) {
     	$loader = $JSS[$loads];
     } else {
         require_file(COM_PATH.'/system/loader.php');
     	// 实例化loader类
-        $loader = new ScriptsLoader($language);
+        $loader = new ScriptsLoader(language());
         $JSS[$loads] = $loader;
     }
     // 加载样式表
@@ -152,7 +157,6 @@ function admin_script(){
     printf('<script type="text/javascript" src="'.ADMIN_ROOT.'loader.php?%s"></script>',str_replace('%2C',',',http_build_query(array(
         'type' => 'js',
         'load' => $loads,
-        'lang' => $language,
         'ver'  => $version,
     ))));
 }
