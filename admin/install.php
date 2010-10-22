@@ -251,6 +251,16 @@ admin_css('css/install'); admin_script('js/common'); admin_script('js/install');
 // 表结构
 function install_schema() {
     return <<<SQL
+CREATE TABLE `lazy_message` (
+  `msgid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `sender` varchar(50) NOT NULL,
+  `authcode` char(36) NOT NULL,
+  `content` varchar(1000) NOT NULL,
+  `datetime` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`msgid`),
+  KEY `authcode` (`authcode`)
+) ENGINE=MEMORY  DEFAULT CHARSET=utf8;
+
 CREATE TABLE `#@_option` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `module` char(20) NOT NULL,
@@ -330,17 +340,16 @@ CREATE TABLE `#@_post_meta` (
 
 CREATE TABLE `#@_publish` (
   `pubid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `type` char(20) NOT NULL,
+  `name` varchar(50) NOT NULL,
   `total` int(10) unsigned NOT NULL DEFAULT '0',
   `complete` int(10) unsigned NOT NULL DEFAULT '0',
   `func` varchar(50) NOT NULL,
-  `args` longtext NOT NULL,
   `begintime` int(10) unsigned NOT NULL DEFAULT '0',
   `elapsetime` int(10) unsigned NOT NULL DEFAULT '0',
   `endtime` int(10) unsigned NOT NULL DEFAULT '0',
   `state` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`pubid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `#@_term` (
   `termid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

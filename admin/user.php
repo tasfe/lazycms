@@ -21,7 +21,7 @@
 // 加载公共文件
 require dirname(__FILE__).'/admin.php';
 // 查询管理员信息
-$_ADMIN = user_current();
+$_USER = user_current();
 // 标题
 admin_head('title',  __('Users'));
 admin_head('styles', array('css/user'));
@@ -147,7 +147,7 @@ switch ($method) {
 	        case 'delete':
 	            current_user_can('user-delete');
 	            foreach ($listids as $userid) {
-	                if ($_ADMIN['userid']==$userid) continue;
+	                if ($_USER['userid']==$userid) continue;
 	            	user_delete($userid);
 	            }
 	            admin_success(__('Users deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
@@ -172,7 +172,7 @@ switch ($method) {
         echo           '</tfoot>';
         echo           '<tbody>';
         foreach ($admins as $admin) {
-            if ($admin['userid']==$_ADMIN['userid']) {
+            if ($admin['userid']==$_USER['userid']) {
             	$href = ADMIN_ROOT.'profile.php?referer='.PHP_FILE;
             	$actions = '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a></span>';
             } else {
@@ -184,7 +184,7 @@ switch ($method) {
             echo               '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$admin['userid'].'" /></td>';
             echo               '<td><strong><a href="'.$href.'">'.$admin['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
             echo               '<td>'.$admin['mail'].'</td>';
-            echo               '<td><img class="b'.($admin['status']+8).' os" src="'.ADMIN_ROOT.'images/white.gif" /></td>';
+            echo               '<td><img class="b'.($admin['status']+8).' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
             echo               '<td>'.$admin['registered'].'</td>';
             echo           '</tr>';
         }

@@ -21,7 +21,7 @@
 // 加载公共文件
 require dirname(__FILE__).'/admin.php';
 // 查询管理员信息
-$_ADMIN = user_current();
+$_USER = user_current();
 // 标题
 admin_head('title',  __('Models'));
 admin_head('styles', array('css/model'));
@@ -208,7 +208,7 @@ switch ($method) {
 	       __('Custom validation')          => 'CUSTOM|'.__('Error Message'),
 	    );
 	    $hl = '<div class="wrapper">';
-	    $hl.= '<a href="javascript:;" class="help"><img class="f1 os" src="'.ADMIN_ROOT.'images/white.gif" /></a>';
+	    $hl.= '<a href="javascript:;" class="help"><img class="f1 os" src="'.ADMIN_ROOT.'images/t.gif" /></a>';
 	    $hl.= '<form id="model-field-table">';
 	    $hl.= '<table class="model-field-table">';
 	    $hl.=    '<tr><th><label for="field_l">'._x('Label','model').'</label></th><td><input class="text" id="field_l" name="l" type="text" size="35" value="'.$l.'" />';
@@ -237,7 +237,7 @@ switch ($method) {
 	    foreach ($verify as $text=>$val) {
             $hl.=       '<option value="'.$val.'">'.$text.'</option>';
         }
-	    $hl.=        '</select>&nbsp;<a href="javascript:;" rule="+"><img class="b3 os" src="'.ADMIN_ROOT.'images/white.gif" /></a><a href="javascript:;" rule="-"><img class="b4 os" src="'.ADMIN_ROOT.'images/white.gif" /></a>';
+	    $hl.=        '</select>&nbsp;<a href="javascript:;" rule="+"><img class="b3 os" src="'.ADMIN_ROOT.'images/t.gif" /></a><a href="javascript:;" rule="-"><img class="b4 os" src="'.ADMIN_ROOT.'images/t.gif" /></a>';
 	    $hl.=        '<br/><textarea class="text" name="v" id="field_v" rows="3" cols="45">'.$v.'</textarea></td>';
 	    $hl.=    '</tr>';
 	    $hl.=    '<tr id="field_serialize" class="hide"><th class="vt"><label for="field_s">'._x('Serialize','model').'</label></th><td><textarea class="text" name="s" id="field_s" rows="3" cols="45">'.$s.'</textarea></td></tr>';
@@ -291,7 +291,7 @@ switch ($method) {
                 echo           '<td><strong><a href="'.$href.'">'.$model['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
                 echo           '<td>'.$model['code'].'</td>';
                 echo           '<td>'.code2lang($model['language']).'</td>';
-                echo           '<td><img class="b'.($model['state']+8).' os" src="'.ADMIN_ROOT.'images/white.gif" /></td>';
+                echo           '<td><img class="b'.($model['state']+8).' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
                 echo       '</tr>';
             }
         } else {

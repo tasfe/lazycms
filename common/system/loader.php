@@ -84,6 +84,9 @@ class LazyLoader {
                                     'Close'     => __('Close'),
                                     'Edit'      => __('Edit'),
                                     'Delete'    => __('Delete'),
+                                    'Send'      => __('Send'),
+                                    'Maximize'  => __('Maximize'),
+                                    'Minimize'  => __('Minimize'),
                                     'No record!'        => __('No record!'),
                                     'Confirm Logout?'   => __('Confirm Logout?'),
                                     'Confirm Delete?'   => __('Confirm Delete?'),
@@ -108,6 +111,7 @@ class LazyLoader {
             'post'          => array(ADMIN_PATH.'/js/post.js'),
             'options'       => array(ADMIN_PATH.'/js/options.js'),
             'publish'       => array(ADMIN_PATH.'/js/publish.js'),
+            'message'       => array(ADMIN_PATH.'/js/message.js'),
             'xheditor'      => array(COM_PATH.'/editor/xheditor.js',array('xheditor.plugins')),
             'xheditor.plugins' => array(COM_PATH.'/js/xheditor.plugins.js'),
         );

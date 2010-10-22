@@ -26,7 +26,7 @@ defined('COM_PATH') or die('Restricted access!');
  * @return bool
  */
 function user_current($is_redirect=true){
-    $user = null;
+    global $_USER; $user = null;
     // 取得 authcode
     $authcode = cookie_get('authcode');
     $is_login = $authcode?true:false;
@@ -47,6 +47,7 @@ function user_current($is_redirect=true){
             redirect(ADMIN_ROOT.'login.php');
         }
     }
+    $_USER = $user;
     return $user;
 }
 /**

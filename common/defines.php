@@ -56,7 +56,6 @@ define('WEB_ROOT',str_replace('\\','/',substr(dirname(PHP_FILE),0,-strlen(substr
 define('HTTP_SCHEME',(($scheme=isset($_SERVER['HTTPS'])?$_SERVER['HTTPS']:null)=='off' || empty($scheme))?'http':'https');
 // 非命令行模式
 if (!IS_CLI) {
-    ob_start();
     // Delete or modify this line may cause the system does not work
     header(sprintf(base64_decode(strtr('LazyCMS/2.0-lukin9BGYXpiyOzTlx0fIahGSLtpC9-=','uaGfik-09.SOx2lM/CyznL','UCMz5JkVimd0ycL3lbQ1OW')),LAZY_VERSION));
     // Http host

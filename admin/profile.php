@@ -21,13 +21,13 @@
 // 加载公共文件
 require dirname(__FILE__).'/admin.php';
 // 查询管理员信息
-$_ADMIN = user_current();
+$_USER = user_current();
 // 动作
 $referer = referer(PHP_FILE,false);
 // 保存我的配置
 
 if (validate_is_post()) {
-    $userid    = isset($_ADMIN['userid'])?$_ADMIN['userid']:null;
+    $userid    = isset($_USER['userid'])?$_USER['userid']:null;
     $password  = isset($_POST['password1'])?$_POST['password1']:null;
     $password2 = isset($_POST['password2'])?$_POST['password2']:null;
     $nickname  = isset($_POST['nickname'])?$_POST['nickname']:null;
@@ -55,7 +55,7 @@ if (validate_is_post()) {
         // 修改暗号
         if ($password) {
             $user_info = array_merge($user_info,array(
-               'pass' => md5($password.$_ADMIN['authcode'])
+               'pass' => md5($password.$_USER['authcode'])
             ));
         }
         user_edit($userid,$user_info);
@@ -67,11 +67,11 @@ if (validate_is_post()) {
     admin_head('styles', array('css/user'));
     admin_head('scripts',array('js/user'));
     admin_head('loadevents','user_profile_init');
-    $username = isset($_ADMIN['name'])?$_ADMIN['name']:null;
-    $nickname = isset($_ADMIN['nickname'])?$_ADMIN['nickname']:null;
-    $email    = isset($_ADMIN['mail'])?$_ADMIN['mail']:null;
-    $url      = isset($_ADMIN['url'])?$_ADMIN['url']:null;
-    $desc     = isset($_ADMIN['description'])?$_ADMIN['description']:null;
+    $username = isset($_USER['name'])?$_USER['name']:null;
+    $nickname = isset($_USER['nickname'])?$_USER['nickname']:null;
+    $email    = isset($_USER['mail'])?$_USER['mail']:null;
+    $url      = isset($_USER['url'])?$_USER['url']:null;
+    $desc     = isset($_USER['description'])?$_USER['description']:null;
     include ADMIN_PATH.'/admin-header.php';
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';

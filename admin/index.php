@@ -21,13 +21,31 @@
 // 加载公共文件
 require dirname(__FILE__).'/admin.php';
 // 查询管理员信息
-$_ADMIN = user_current();
+$_USER = user_current();
 // 动作
 $method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 
 switch ($method) {
+    // 发消息
+    case 'send_msg':
+        $message = isset($_POST['message'])?$_POST['message']:null;
+        if (strlen($message) === 0) {
+            admin_alert(__('Can not send an empty message！'),"\$('#lazy_chat input:text[name=message]').focus();");
+        } else {
+            // 添加消息
+            message_add($message);
+            admin_return(array(
+                'result'   => 'ok'
+            ));
+        }
+        break;
+    // 消息
+    case 'poll':
+        $messages = message_poll();
+        admin_return($messages);
+        break;
     // 取得关键词
-    case 'getTerms':
+    case 'terms':
         $content = isset($_REQUEST['content'])?$_REQUEST['content']:null;
         if ($content) {
             $terms = term_gets($content);

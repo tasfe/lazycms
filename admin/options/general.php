@@ -21,7 +21,7 @@
 // 接客了！。。。
 require dirname(__FILE__).'/../admin.php';
 // 得到客人信息
-$_ADMIN = user_current();
+$_USER = user_current();
 // 姿势
 $referer = referer(PHP_FILE,false);
 // 保存
@@ -54,13 +54,13 @@ if (validate_is_post()) {
     echo               '<th><label for="SiteTitle">'.__('Site Title').'<span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td><input class="text" id="SiteTitle" name="SiteTitle" type="text" size="50" value="'.C('SiteTitle').'" /></td>';
     echo           '</tr>';
-    /*echo           '<tr>';
+    echo           '<tr>';
     echo               '<th><label>'.__('Compress').'<span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td>';
     echo                   '<label><input name="Compress" type="radio" value="1"'.(C('Compress')?' checked="checked"':'').' />'.__('Enable').'</label>';
     echo                   '<label><input name="Compress" type="radio" value="0"'.(!C('Compress')?' checked="checked"':'').' />'.__('Disable').'</label>';
     echo               '</td>';
-    echo           '</tr>';*/
+    echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="Language">'._x('Language','setting').'</label></th>';
     echo               '<td>';

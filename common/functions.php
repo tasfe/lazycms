@@ -284,7 +284,9 @@ function throw_error($errstr,$errno=E_LAZY_NOTICE,$errfile=null,$errline=0){
                 if (is_object($v)) {
                     $arrs[] = implode(' ',get_object_vars($v));
                 } else {
+                    $error_level = error_reporting(0);
                     $vars = print_r($v,true);
+                    error_reporting($error_level);
                     while (strpos($vars,chr(32).chr(32))!==false) {
                         $vars = str_replace(chr(32).chr(32),chr(32),$vars);
                     }
@@ -600,18 +602,23 @@ function stripslashes_deep($value) {
  * @param int    $level			压缩等级，默认3，越大压缩级别越高
  * @param bool   $force_gzip	强制使用gzip，默认true
  */
-function ob_compress($content,$level=3,$force_gzip=true){
-    $length = strlen($content);
-    if (false == headers_sent() && false == ini_get('zlib.output_compression') && 'ob_gzhandler' != ini_get('output_handler')) {
+function ob_compress($content,$level=3,$force_gzip=false){
+    if (strlen($content)>2048
+            && false == headers_sent()
+            && false == ini_get('zlib.output_compression')
+            && 'ob_gzhandler' != ini_get('output_handler')) {
         header('Vary: Accept-Encoding'); // Handle proxies
-        if ( false !== strpos( strtolower($_SERVER['HTTP_ACCEPT_ENCODING']), 'deflate') && function_exists('gzdeflate') && ! $force_gzip ) {
+        if ( false !== strpos( strtolower($_SERVER['HTTP_ACCEPT_ENCODING']), 'deflate')
+                && function_exists('gzdeflate')
+                && ! $force_gzip ) {
             header('Content-Encoding: deflate');
             $content = gzdeflate( $content, $level );
-        } elseif ( false !== strpos( strtolower($_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip') && function_exists('gzencode') ) {
+        } elseif ( false !== strpos( strtolower($_SERVER['HTTP_ACCEPT_ENCODING']), 'gzip')
+                && function_exists('gzencode') ) {
             header('Content-Encoding: gzip');
             $content = gzencode( $content, $level );
         }
-        header("Content-Length: ".$length);
+        header("Content-Length: ".strlen($content));
     }
     return $content;
 }
@@ -808,9 +815,7 @@ function require_file($path){
  * @return string
  */
 function authcode($data=null){
-    $ipaddr = $_SERVER['REMOTE_ADDR'];
-    $randid = $data.$ipaddr.$_SERVER['HTTP_USER_AGENT'];
-    return guid($randid);
+    return guid(HTTP_HOST.$data.$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
 }
 /**
  * 生成guid

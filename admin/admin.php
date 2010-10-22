@@ -40,6 +40,7 @@ require COM_PATH.'/module/model.php';
 require COM_PATH.'/module/taxonomy.php';
 require COM_PATH.'/module/post.php';
 require COM_PATH.'/module/publish.php';
+require COM_PATH.'/module/message.php';
 
 /**
  * 验证用户权限
@@ -49,7 +50,7 @@ require COM_PATH.'/module/publish.php';
  * @return bool
  */
 function current_user_can($action,$is_redirect=true) {
-    global $_ADMIN; $result = false;
+    $result = false;
     $user = user_current(false);
     if (isset($user['Administrator']) && isset($user['roles'])) {
         // 超级管理员
@@ -107,8 +108,11 @@ function admin_head($key,$value=null) {
  */
 function admin_css(){
     static $CSS = array(); $files = array();
-    $args = func_get_args(); if (empty($args)) return ;
-    if (is_array($args[0])) $args = $args[0];
+    $args = func_get_args();
+    if (isset($args[0]) && is_array($args[0]))
+        $args = $args[0];
+    if (empty($args)) return ;
+
     foreach ($args as $file) {
         $files[] = !strncasecmp($file,'css/',4) ? substr( $file, 4 ) : $file;
     }     
@@ -137,8 +141,11 @@ function admin_css(){
  */
 function admin_script(){
     static $JSS = array(); $files = array();
-    $args = func_get_args(); if (empty($args)) return ;
-    if (is_array($args[0])) $args = $args[0];
+    $args = func_get_args();
+    if (isset($args[0]) && is_array($args[0]))
+        $args = $args[0];
+    if (empty($args)) return ;
+    
     foreach ($args as $file) {
         $files[] = !strncasecmp($file,'js/',3) ? substr($file, 3) : $file;
     }
@@ -270,9 +277,9 @@ function admin_purview($data=null) {
  * @return bool
  */
 function admin_menu($menus) {
-    global $parent_file,$_ADMIN;
+    global $parent_file,$_USER;
     // 获取管理员信息
-    if (!isset($_ADMIN)) $_ADMIN = user_current(false);
+    if (!isset($_USER)) $_USER = user_current(false);
     // 自动植入配置
     $is_first = true; $is_last = false;
     // 设置默认参数
@@ -304,7 +311,7 @@ function admin_menu($menus) {
                     $href[3]   = !strncasecmp($parent_file,$url_query,strlen($url_query))?true:false;
                     $is_expand = !strncasecmp($parent_file,$url_query,strlen($url_query))?true:$is_expand;
                     // 子菜单需要权限才能访问，且用户要有权限
-                    if (isset($href[2]) && (instr($href[2],$_ADMIN['roles']) || $_ADMIN['roles']=='ALL')) {
+                    if (isset($href[2]) && (instr($href[2],$_USER['roles']) || $_USER['roles']=='ALL')) {
                         $submenus[] = $href;
                     }
                     // 子菜单存在，不需要权限
@@ -342,7 +349,7 @@ function admin_menu($menus) {
             if ($is_first) $class.= ' first';
             if ($is_last)  $class.= ' last';
             echo '<li id="menu-'.$k.'" class="head'.$class.$menu['current'].$menu['expand'].'">';
-            echo '<a href="'.$menu['link'].'" class="image"><img src="'.ADMIN_ROOT.'images/white.gif" class="'.$menu['icon'].' os" /></a>';
+            echo '<a href="'.$menu['link'].'" class="image"><img src="'.ADMIN_ROOT.'images/t.gif" class="'.$menu['icon'].' os" /></a>';
             echo '<a href="'.$menu['link'].'" class="text'.$class.'">'.$menu['text'].'</a>';
             // 展示子菜单
             if (!empty($menu['submenus'])) {

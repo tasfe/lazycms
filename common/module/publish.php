@@ -23,14 +23,14 @@ defined('COM_PATH') or die('Restricted access!');
 /**
  * 添加发布进程
  *
- * @param string $type
+ * @param string $name
  * @param string $func  callback function args is publish table row.
  * @return int
  */
-function publish_add($type,$func) {
+function publish_add($name,$func) {
     $db = get_conn();
     return $db->insert('#@_publish',array(
-       'type'  => $type,
+       'name'  => $name,
        'func'  => $func,
        'state' => 0,
     ));

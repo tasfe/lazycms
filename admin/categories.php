@@ -21,7 +21,7 @@
 // 加载公共文件
 require dirname(__FILE__).'/admin.php';
 // 查询管理员信息
-$_ADMIN = user_current();
+$_USER = user_current();
 // 标题
 admin_head('title',  __('Categories'));
 admin_head('styles', array('css/categories'));
@@ -227,9 +227,9 @@ function display_tr_tree($sorts,$n=0) {
         $hl.=   '<td><span class="space">'.$space.'</span><strong><a href="'.$href.'">'.$sort['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
         // 检测目录是否已生成
         if (is_dir(ABS_PATH.'/'.$sort['path'])) {
-            $hl.= '<td><img class="b6 os" src="'.ADMIN_ROOT.'images/white.gif" /><a href="'.$path.'" target="_blank">'.$path.'</a></td>';
+            $hl.= '<td><img class="b6 os" src="'.ADMIN_ROOT.'images/t.gif" /><a href="'.$path.'" target="_blank">'.$path.'</a></td>';
         } else {
-            $hl.= '<td><img class="b7 os" src="'.ADMIN_ROOT.'images/white.gif" /><a href="javascript:;">'.$path.'</a></td>';
+            $hl.= '<td><img class="b7 os" src="'.ADMIN_ROOT.'images/t.gif" /><a href="javascript:;">'.$path.'</a></td>';
         }
         $hl.=   '<td>'.$sort['count'].'</td>';
         $hl.= '</tr>';

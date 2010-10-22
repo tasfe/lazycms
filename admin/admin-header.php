@@ -10,8 +10,11 @@ admin_css('css/admin');
 admin_css(admin_head('styles'));
 // 加载JS核心库
 admin_script('js/common');
+// 加载聊天库
+admin_script('js/message');
 // 加载模块JS库
 admin_script(admin_head('scripts'));
+admin_head('loadevents',array('message_init',admin_head('loadevents')));
 ?>
 <script type="text/javascript">
 //<![CDATA[
@@ -29,7 +32,6 @@ if ($loadevents) {
     }
 }
 ?>
-
 //]]>
 </script>
 </head>
@@ -44,7 +46,7 @@ if ($loadevents) {
                 <em><?php _e('Visit Site');?></em>
             </a>
         </h1>
-        <div id="header-menu"><strong><a href="<?php echo ADMIN_ROOT.'profile.php';?>"><?php echo $_ADMIN['name'];?></a></strong>
+        <div id="header-menu"><strong><a href="<?php echo ADMIN_ROOT.'profile.php';?>"><?php echo $_USER['name'];?></a></strong>
              | <a href="<?php echo ADMIN_ROOT.'login.php?method=logout';?>" onclick="return $(this).logout();"><?php _e('Logout');?></a>
         </div>
     </div>

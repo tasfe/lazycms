@@ -41,19 +41,7 @@ if ($.browser.msie && $.browser.version == '6.0') {
 
 // 设置全局 AJAX 默认选项
 $.ajaxSetup({
-    beforeSend: function(xhr, s){
-        // 接管success
-        s.orisuccess = s.success;
-        // 自定义success
-        s.success = function(data, status, xhr) {
-            if (xhr.getResponseHeader('X-Powered-By').indexOf("\x4c\x61\x7a\x79\x43\x4d\x53") == -1) return ;
-            var data = LazyCMS.ajaxSuccess.apply(this,arguments);
-            if (null!==data && s.orisuccess) {
-                s.orisuccess.call(this, data, status, xhr);
-            }
-        }
-        LazyCMS.Loading.css({'z-index':$('*').maxIndex() + 1}).appendTo('body');
-    },
+    beforeSend: LazyCMS.success,
     error:function(xhr,status,error) {
         var title = $.parseJSON(xhr.getResponseHeader('X-Dialog-title'));
             title = title || _('System Error');
@@ -86,21 +74,24 @@ $.ajaxSetup({
         });
 		// 还缺少记录COOKIE
     }
-})(jQuery);
-
-/**
- * 内容分词
- * 
- * @param content
- * @param callback
- */
-var getTerms = window.getTerms = function(content,callback) {
-    var data = [];
-    if (content!='') {
-        $.post(LazyCMS.ADMIN_ROOT + 'index.php',{method:'getTerms',content:content},function(r){
-            if (callback) callback(r);
-        },'json');
-    } else {
-        if (callback) callback(data);
+    /**
+     * 内容分词
+     *
+     * @param content
+     */
+    $.fn.getTerms = function(content) {
+        var data = [], _this = this;
+        if (content!='') {
+            $.post(LazyCMS.ADMIN_ROOT + 'index.php',{method:'terms',content:content},function(r){
+                if (r) {
+                    _this.val(r.join(','));
+                } else {
+                    _this.val('');
+                }
+            },'json');
+        } else {
+            _this.val('');
+        }
+        return this;
     }
-};
+})(jQuery);

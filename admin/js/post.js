@@ -79,14 +79,7 @@ function post_manage_init() {
     });
     // 绑定获取关键词事件
     $('button[rel=keywords]',wrap).click(function(){
-        $('input#keywords').val('Loading...');
-        getTerms($('input#title',wrap).val(),function(r){
-            if (r) {
-                $('input#keywords').val(r.join(','));
-            } else {
-                $('input#keywords').val('');
-            }
-        });
+        $('input#keywords').val('Loading...').getTerms($('input#title',wrap).val());
     });
     
 	// 提交事件

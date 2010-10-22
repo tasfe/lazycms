@@ -21,7 +21,7 @@
 // 加载公共文件
 require dirname(__FILE__).'/admin.php';
 // 查询管理员信息
-$_ADMIN = user_current();
+$_USER = user_current();
 // 标题
 admin_head('title',__('Publish Posts'));
 admin_head('styles', array('css/publish'));
@@ -55,12 +55,12 @@ switch ($method) {
             foreach ($publish as $pubid=>$data) {
                 echo       '<tr>';
                 echo           '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$pubid.'" /></td>';
-                echo           '<td>'.$data['type'].'</td>';
+                echo           '<td>'.$data['name'].'</td>';
                 echo           '<td>'.number_format($data['total']).'</td>';
                 echo           '<td>'.number_format($data['complete']).'</td>';
-                echo           '<td>'.($data['begintime']>0 ? date('Y-m-d H:i:s',$data['begintime']) : '-------- --------').'</td>';
+                echo           '<td>'.($data['begintime']>0 ? date('Y-m-d H:i:s',$data['begintime']) : '-------- --:--:--').'</td>';
                 echo           '<td>'.($data['elapsetime']>0 ? date('H:i:s',$data['elapsetime']) : '--:--:--').'</td>';
-                echo           '<td>'.($data['endtime']>0 ? date('Y-m-d H:i:s',$data['endtime']) : '-------- --------').'</td>';
+                echo           '<td>'.($data['endtime']>0 ? date('Y-m-d H:i:s',$data['endtime']) : '-------- --:--:--').'</td>';
                 echo           '<td>'.$data['state'].'</td>';
                 echo       '</tr>';
             }
@@ -83,19 +83,19 @@ switch ($method) {
 	    }
         // 添加生成所有页面进程
         if (instr('createpages',$actions)) {
-            publish_add('Pages','publish_pages');
+            publish_add(__('Create all Pages'),'publish_pages');
         }
         // 添加生成所有文章进程
         if (instr('createposts',$actions)) {
-            publish_add('Posts','publish_posts');
+            publish_add(__('Create all Posts'),'publish_posts');
         }
         // 添加生成所列表进程
         if (instr('createlists',$actions)) {
-            publish_add('Lists','publish_lists');
+            publish_add(__('Create all Lists'),'publish_lists');
         }
         // 添加生成所有文章和列表进程
         if (instr('createpostslists',$actions)) {
-            publish_add('Post&Lists','publish_posts_lists');
+            publish_add(__('Create all Posts and Lists'),'publish_posts_lists');
         }
         // 需要异步请求执行 publish_exec();
         admin_success(__('Publish process has created.'),"LazyCMS.redirect('".PHP_FILE."?method=list');");

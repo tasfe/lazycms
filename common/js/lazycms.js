@@ -38,6 +38,27 @@ var LazyCMS = window.LazyCMS = window.CMS = {
 		}
 	},
     /**
+     * ajax success
+     * 
+     * @param xhr
+     * @param s
+     */
+    success: function(xhr, s, loading){
+        // 接管success
+        s.orisuccess = s.success;
+        // 自定义success
+        s.success = function(data, status, xhr) {
+            if (xhr.getResponseHeader('X-Powered-By').indexOf("\x4c\x61\x7a\x79\x43\x4d\x53") == -1) return ;
+            var data = LazyCMS.ajaxSuccess.apply(this,arguments);
+            if (null!==data && s.orisuccess) {
+                s.orisuccess.call(this, data, status, xhr);
+            }
+        }
+        if (typeof loading == 'undefined') {
+            LazyCMS.Loading.css({'z-index':$('*').maxIndex() + 1}).appendTo('body');
+        }
+    },
+    /**
      * 多语言翻译
      *
      * @param msgid     英文
@@ -88,7 +109,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
         }
         LazyCMS.dialog({
             name:'alert', title:_('Alert'),close:false,styles:{ 'max-width':'600px', 'min-width':'400px' },
-            top:100, body:message,
+            body:message,
             buttons:[{
                 focus:true,
                 text:_('Submit'),
@@ -114,7 +135,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
     confirm: function(message,callback){
         LazyCMS.dialog({
             name:'confirm', title:_('Confirm'),styles:{ width:'400px' },
-            top:100, body:'<div class="icon" style="background-position:0px -80px;"></div><div class="content"><h6>' + message + '</h6></div>',
+            body:'<div class="icon" style="background-position:0px -80px;"></div><div class="content"><h6>' + message + '</h6></div>',
             buttons:[{
                 focus:true,
                 text:_('Submit'),

@@ -254,7 +254,10 @@ function post_process(&$post,$option=null) {
             $post['path'] = ltrim($post['path'], '/');
         } elseif ($post['sortid'] > 0) {
             $taxonomy = taxonomy_get($post['sortid']);
-            $post['path'] = $taxonomy['path'].'/'.$post['path'];
+            if (isset($taxonomy['path'])) {
+                $post['path'] = $taxonomy['path'].'/'.$post['path'];
+            }
+
         }
     }
 }

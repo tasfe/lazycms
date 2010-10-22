@@ -23,7 +23,7 @@ $php_file = isset($php_file) ? $php_file : 'post.php';
 // 加载公共文件
 require dirname(__FILE__).'/admin.php';
 // 查询管理员信息
-$_ADMIN = user_current();
+$_USER = user_current();
 // 标题
 if ('page.php' == $php_file) {
     admin_head('title',  __('Pages'));
@@ -193,7 +193,7 @@ switch ($method) {
                 }
                 // 强力插入
                 else {
-                    $data['author'] = $_ADMIN['userid'];
+                    $data['author'] = $_USER['userid'];
                     $data['passed'] = 0;
                     $data['datetime'] = time();
                     if ($post = post_add($title,$content,$path,$data)) {
@@ -368,9 +368,9 @@ switch ($method) {
 
                 // 检查文件是否已生成
                 if (is_file(ABS_PATH.'/'.$post['path'])) {
-                    echo '<td><img class="b6 os" src="'.ADMIN_ROOT.'images/white.gif" /><a href="'.WEB_ROOT.$post['path'].'" target="_blank">'.WEB_ROOT.$post['path'].'</a></td>';
+                    echo '<td><img class="b6 os" src="'.ADMIN_ROOT.'images/t.gif" /><a href="'.WEB_ROOT.$post['path'].'" target="_blank">'.WEB_ROOT.$post['path'].'</a></td>';
                 } else {
-                    echo '<td><img class="b7 os" src="'.ADMIN_ROOT.'images/white.gif" /><a href="javascript:;" onclick="post_create('.$post['postid'].')">'.WEB_ROOT.$post['path'].'</a></td>';
+                    echo '<td><img class="b7 os" src="'.ADMIN_ROOT.'images/t.gif" /><a href="javascript:;" onclick="post_create('.$post['postid'].')">'.WEB_ROOT.$post['path'].'</a></td>';
                 }
 
                 if ('page.php' != $php_file) {
@@ -382,7 +382,7 @@ switch ($method) {
 
                 }
                 echo    '<td>'.date('Y-m-d H:i:s',$post['datetime']).'</td>';
-                echo    '<td><img class="c'.($post['passed']+8).' os" src="'.ADMIN_ROOT.'images/white.gif" /></td>';
+                echo    '<td><img class="c'.($post['passed']+8).' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
                 echo '</tr>';
             }
         } else {
@@ -560,19 +560,20 @@ function post_manage_page($action) {
 }
 
 /**
- * 显示分类树
+ * 显示分类数
  *
- * @param int $selected
- * @param  $trees
+ * @param int $sortid
+ * @param array $categories
+ * @param array $trees
  * @return string
  */
 function categories_tree($sortid,$categories=array(),$trees=null) {
     static $func = null; if (!$func) $func = __FUNCTION__;
     $hl = sprintf('<ul class="%s">',is_null($trees) ? 'categories' : 'children');
     if ($trees === null) {
-        $checked = empty($sortid)?' checked="checked"':'';
-        $hl.= sprintf('<li><input type="radio" name="sortid" value="0"%s /><label for="sortid">'.__('Uncategorized').'</label></li>',$checked);
         $trees = taxonomy_get_trees();
+        $checked = (empty($sortid) || empty($trees)) ? ' checked="checked"' : '';
+        $hl.= sprintf('<li><input type="radio" name="sortid" id="sortid" value="0"%s /><label for="sortid">'.__('Uncategorized').'</label></li>',$checked);
     }
     foreach ($trees as $i=>$tree) {
         $checked = instr($tree['taxonomyid'],$categories)?' checked="checked"':'';

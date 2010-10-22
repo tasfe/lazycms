@@ -134,25 +134,33 @@
 		} else if (typeof opts == 'string') {
 			way = opts; opts = {};
 		}
-		opts = $.extend({left:0,top:0,right:0,bottom:0},opts);
-		
-		css = function(way) {
+
+        css = function(way) {
 			var r = {};
 			switch (way) {
 				case 'c': case 'Center':
-					r = { left:($(window).width() - _this.outerWidth())/2 - opts.left,top:($(window).height() - _this.outerHeight())/2 - opts.top };
+					r = {
+                        left:($(window).width() - _this.outerWidth())/2 + (isNaN(+opts.left) ? 0 : opts.left),
+                        top:($(window).height() - _this.outerHeight())/2 + (isNaN(+opts.top) ? 0 : opts.top)
+                    };
 					break;
 				case 'lt': case 'LeftTop':
-					r = { left:opts.left, top:opts.top };
+					r = { left:(isNaN(+opts.left) ? 0 : opts.left), top:(isNaN(+opts.top) ? 0 : opts.top) };
 					break;
 				case 'rt': case 'RightTop':
-					r = { right:opts.right, top:opts.top };
+					r = { right:(isNaN(+opts.right) ? 0 : opts.right), top:(isNaN(+opts.top) ? 0 : opts.top) };
 					break;
 				case 'lb': case 'LeftBottom':
-					r = { left:opts.left, bottom:opts.bottom };
+					r = { left:(isNaN(+opts.left) ? 0 : opts.left), bottom:(isNaN(+opts.bottom) ? 0 : opts.bottom) };
 					break;
 				case 'rb': case 'RightBottom':
-					r = { right:opts.right, bottom:opts.bottom };
+					r = { right:(isNaN(+opts.right) ? 0 : opts.right), bottom:(isNaN(+opts.bottom) ? 0 : opts.bottom) };
+					break;
+                case 'cb': case 'CenterBottom':
+					r = {
+                        left:($(window).width() - _this.outerWidth())/2 + (isNaN(+opts.left) ? 0 : opts.left),
+                        bottom:(isNaN(+opts.bottom) ? 0 : opts.bottom)
+                    };
 					break;
 			
 			}
@@ -165,7 +173,7 @@
 			} else {
 				r = $.extend(r,{ position:'fixed' });
 			}
-			this.css(r);
+			this.css($.extend(r,opts));
 		}
 		var position = function() { css.call(_this,way) }; position();
         // 兼容IE6
@@ -176,11 +184,7 @@
 			}
         }
         // 绑定窗口调整事件
-		
-		if (!LazyCMS.COUNT_VAR.Float.Resize) {
-			$(window).resize(position);
-			LazyCMS.COUNT_VAR.Float.Resize = true;
-		}
+		$(window).resize(position);
         return this;
 	}
     /**
@@ -197,7 +201,6 @@
                     var button = $('button[type=submit]',this).attr('disabled',true);
                     // 取得 action 地址
                     var url = _this.attr('action'); if (url==''||typeof url=='undefined') { url = self.location.href; }
-
                     // ajax submit
                     $.ajax({
                         cache: false, url: url, dataType:'json',
