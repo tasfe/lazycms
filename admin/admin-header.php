@@ -10,11 +10,8 @@ admin_css('css/admin');
 admin_css(admin_head('styles'));
 // 加载JS核心库
 admin_script('js/common');
-// 加载聊天库
-admin_script('js/message');
 // 加载模块JS库
 admin_script(admin_head('scripts'));
-admin_head('loadevents',array('message_init',admin_head('loadevents')));
 ?>
 <script type="text/javascript">
 //<![CDATA[
@@ -31,6 +28,28 @@ if ($loadevents) {
         echo "addLoadEvent({$loadevents});";
     }
 }
+// js语言包
+$js_lang = array_merge(array(
+    'System Error' => __('System Error'),
+    'Alert'     => __('Alert'),
+    'Submit'    => __('Submit'),
+    'Confirm'   => __('Confirm'),
+    'Cancel'    => __('Cancel'),
+    'Save'      => __('Save'),
+    'Close'     => __('Close'),
+    'Edit'      => __('Edit'),
+    'Delete'    => __('Delete'),
+    'Send'      => __('Send'),
+    'Maximize'  => __('Maximize'),
+    'Minimize'  => __('Minimize'),
+    'No record!'        => __('No record!'),
+    'Confirm Logout?'   => __('Confirm Logout?'),
+    'Confirm Delete?'   => __('Confirm Delete?'),
+    'Use the model set' => __('Use the model set'),
+    'Use the category set' => __('Use the category set'),
+    'Did not select any action!' => __('Did not select any action!'),
+),admin_head('jslang'));
+printf('$.extend(LazyCMS.L10n,%s);',json_encode($js_lang));
 ?>
 //]]>
 </script>

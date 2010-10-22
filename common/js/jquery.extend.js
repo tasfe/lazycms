@@ -173,7 +173,7 @@
 			} else {
 				r = $.extend(r,{ position:'fixed' });
 			}
-			this.css($.extend(r,opts));
+			this.css(r);
 		}
 		var position = function() { css.call(_this,way) }; position();
         // 兼容IE6

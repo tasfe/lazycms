@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-22 18:02+0800\n"
+"POT-Creation-Date: 2010-10-22 21:15+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.net>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
@@ -23,7 +23,6 @@ msgstr "返回"
 
 #: common/functions.php:312
 #: common/functions.php:320
-#: common/system/loader.php:78
 msgid "System Error"
 msgstr "系统错误"
 
@@ -244,99 +243,6 @@ msgstr "威尔士语"
 msgid "Yiddish"
 msgstr "意第绪语"
 
-#: common/system/loader.php:79
-msgid "Alert"
-msgstr "系统提示"
-
-#: common/system/loader.php:80
-msgid "Submit"
-msgstr "确认"
-
-#: common/system/loader.php:81
-msgid "Confirm"
-msgstr "操作确认"
-
-#: common/system/loader.php:82
-msgid "Cancel"
-msgstr "取消"
-
-#: common/system/loader.php:83
-msgid "Save"
-msgstr "保存"
-
-#: common/system/loader.php:84
-msgid "Close"
-msgstr "关闭"
-
-#: common/system/loader.php:85
-msgid "Edit"
-msgstr "编辑"
-
-#: common/system/loader.php:86
-msgid "Delete"
-msgstr "删除"
-
-#: common/system/loader.php:87
-msgid "Send"
-msgstr "发送"
-
-#: common/system/loader.php:88
-msgid "Maximize"
-msgstr "最大化"
-
-#: common/system/loader.php:89
-msgid "Minimize"
-msgstr "最小化"
-
-#: common/system/loader.php:90
-msgid "No record!"
-msgstr "没有记录！"
-
-#: common/system/loader.php:91
-msgid "Confirm Logout?"
-msgstr "确定要退出吗？"
-
-#: common/system/loader.php:92
-msgid "Confirm Delete?"
-msgstr "确定要删除吗？"
-
-#: common/system/loader.php:93
-msgid "Use the model set"
-msgstr "使用模型设置"
-
-#: common/system/loader.php:94
-msgid "Use the category set"
-msgstr "使用分类设置"
-
-#: common/system/loader.php:95
-msgid "Did not select any action!"
-msgstr "没有选择任何操作。"
-
-#: common/system/loader.php:103
-msgctxt "field"
-msgid "Add New"
-msgstr "添加字段"
-
-#: common/system/loader.php:104
-msgctxt "field"
-msgid "Edit"
-msgstr "编辑字段"
-
-#: common/system/loader.php:106
-msgctxt "field"
-msgid "The label field is empty."
-msgstr "表单文字字段为空。"
-
-#: common/system/loader.php:107
-msgctxt "field"
-msgid "The name field is empty."
-msgstr "字段名字为空。"
-
-#: common/system/loader.php:108
-msgctxt "field"
-msgid "The name already exists."
-msgstr "字段名已存在，请重新输入字段名。"
-
 #: common/system/httplib.php:126
 msgid "A valid URL was not provided."
 msgstr "没有提供一个有效的URL。"
@@ -484,7 +390,7 @@ msgid "File create failed."
 msgstr "文件创建失败。"
 
 #: admin/categories.php:137
-#: admin/model.php:139
+#: admin/model.php:146
 #: admin/publish.php:82
 #: admin/user.php:144
 msgid "Did not select any item."
@@ -503,8 +409,15 @@ msgctxt "sort"
 msgid "Add New"
 msgstr "添加分类"
 
+#: admin/categories.php:171
+#: admin/model.php:305
+#: admin/model.php:436
+#: admin/publish.php:68
+msgid "No record!"
+msgstr "没有记录！"
+
 #: admin/categories.php:189
-#: admin/model.php:316
+#: admin/model.php:323
 #: admin/publish.php:154
 #: admin/user.php:207
 msgid "Bulk Actions"
@@ -519,8 +432,19 @@ msgstr "生成列表"
 msgid "Create Post and List"
 msgstr "生成文章和列表"
 
+#: admin/categories.php:192
+#: admin/categories.php:224
+#: admin/model.php:295
+#: admin/model.php:327
+#: admin/model.php:425
+#: admin/publish.php:157
+#: admin/user.php:181
+#: admin/user.php:208
+msgid "Delete"
+msgstr "删除"
+
 #: admin/categories.php:194
-#: admin/model.php:322
+#: admin/model.php:329
 #: admin/publish.php:159
 #: admin/user.php:210
 msgid "Apply"
@@ -543,6 +467,14 @@ msgctxt "sort"
 msgid "Posts"
 msgstr "文章数"
 
+#: admin/categories.php:223
+#: admin/model.php:291
+#: admin/model.php:424
+#: admin/user.php:177
+#: admin/user.php:180
+msgid "Edit"
+msgstr "编辑"
+
 #: admin/categories.php:268
 msgctxt "sort"
 msgid "Parent"
@@ -554,8 +486,8 @@ msgstr "&mdash; 无父级 &mdash;"
 
 #: admin/categories.php:275
 #: admin/categories.php:279
-#: admin/model.php:372
-#: admin/model.php:380
+#: admin/model.php:379
+#: admin/model.php:387
 #: admin/user.php:250
 #: admin/user.php:258
 msgid "(required)"
@@ -566,12 +498,12 @@ msgid "Category ID"
 msgstr "分类ID"
 
 #: admin/categories.php:282
-#: admin/model.php:383
+#: admin/model.php:390
 msgid "MD5 Value"
 msgstr "MD5值"
 
 #: admin/categories.php:283
-#: admin/model.php:384
+#: admin/model.php:391
 msgid "Pinyin"
 msgstr "拼音"
 
@@ -580,9 +512,13 @@ msgid "List Template"
 msgstr "列表模板"
 
 #: admin/categories.php:295
-#: admin/model.php:392
+#: admin/model.php:399
 msgid "Page Template"
 msgstr "内容模板"
+
+#: admin/categories.php:298
+msgid "Use the model set"
+msgstr "使用模型设置"
 
 #: admin/categories.php:304
 msgctxt "sort"
@@ -610,287 +546,321 @@ msgstr "更新分类"
 msgid "Models"
 msgstr "模型管理"
 
-#: admin/model.php:38
+#: admin/model.php:30
+#: admin/model.php:479
+msgctxt "field"
+msgid "Add New"
+msgstr "添加字段"
+
+#: admin/model.php:31
+msgctxt "field"
+msgid "Edit"
+msgstr "编辑字段"
+
+#: admin/model.php:32
+msgctxt "field"
+msgid "The label field is empty."
+msgstr "表单文字字段为空。"
+
+#: admin/model.php:33
+msgctxt "field"
+msgid "The name field is empty."
+msgstr "字段名字为空。"
+
+#: admin/model.php:34
+msgctxt "field"
+msgid "The name already exists."
+msgstr "字段名已存在，请重新输入字段名。"
+
+#: admin/model.php:45
 msgid "Add New Model"
 msgstr "添加新模型"
 
-#: admin/model.php:53
+#: admin/model.php:60
 msgid "Edit Model"
 msgstr "编辑模型"
 
-#: admin/model.php:77
+#: admin/model.php:84
 msgctxt "model"
 msgid "The name field is empty."
 msgstr "模型名称不能为空。"
 
-#: admin/model.php:79
+#: admin/model.php:86
 #, php-format
 msgctxt "model"
 msgid "The name field length must be %d-%d characters."
 msgstr "模型名称长度必须%d至%d个字符。"
 
-#: admin/model.php:100
+#: admin/model.php:107
 msgctxt "model"
 msgid "The code field is empty."
 msgstr "模型标识不能为空。"
 
-#: admin/model.php:102
+#: admin/model.php:109
 #, php-format
 msgctxt "model"
 msgid "The code field length must be %d-%d characters."
 msgstr "模型标识长度必须%d至%d个字符。"
 
-#: admin/model.php:104
+#: admin/model.php:111
 msgctxt "model"
 msgid "The code already exists."
 msgstr "模型标识已存在，请重新输入。"
 
-#: admin/model.php:108
+#: admin/model.php:115
 msgctxt "model"
 msgid "The path field is empty."
 msgstr "生成规则不能为空。"
 
-#: admin/model.php:124
+#: admin/model.php:131
 msgid "Model updated."
 msgstr "模型更新成功。"
 
-#: admin/model.php:129
+#: admin/model.php:136
 msgid "Model created."
 msgstr "模型创建成功。"
 
-#: admin/model.php:148
+#: admin/model.php:155
 msgid "Models deleted."
 msgstr "模型删除成功。"
 
-#: admin/model.php:157
+#: admin/model.php:164
 msgid "Models enabled."
 msgstr "模型启用成功。"
 
-#: admin/model.php:166
+#: admin/model.php:173
 msgid "Models disabled."
 msgstr "模型禁用成功。"
 
-#: admin/model.php:201
+#: admin/model.php:208
 msgid "Can't be empty"
 msgstr "不能为空"
 
-#: admin/model.php:201
+#: admin/model.php:208
 msgid "The field value is empty."
 msgstr "这个字段值是空的。"
 
-#: admin/model.php:202
+#: admin/model.php:209
 msgid "Fixed-length"
 msgstr "固定长度"
 
-#: admin/model.php:202
+#: admin/model.php:209
 #, php-format
 msgid "The field value length must be %d-%d characters."
 msgstr "这个字段值长度必须%d至%d个字符。"
 
-#: admin/model.php:203
+#: admin/model.php:210
 msgid "Value1 = Value2"
 msgstr "相同的两个值"
 
-#: admin/model.php:203
+#: admin/model.php:210
 msgid "Same the two fields."
 msgstr "两个字段值不相等。"
 
-#: admin/model.php:204
+#: admin/model.php:211
 #: admin/user.php:221
 #: admin/user.php:258
 msgid "E-mail"
 msgstr "电子邮箱"
 
-#: admin/model.php:204
+#: admin/model.php:211
 msgid "The e-mail address isn't correct."
 msgstr "电子邮件地址不正确。"
 
-#: admin/model.php:205
+#: admin/model.php:212
 msgid "Case-Insensitive letters"
 msgstr "英文字母"
 
-#: admin/model.php:205
+#: admin/model.php:212
 msgid "This field value is not a letter."
 msgstr "这个字段值不是字母。"
 
-#: admin/model.php:206
+#: admin/model.php:213
 msgid "Numeric:[0-9]"
 msgstr "匹配数字"
 
-#: admin/model.php:206
+#: admin/model.php:213
 msgid "This field value is not a number."
 msgstr "这个字段值不是数字。"
 
-#: admin/model.php:207
+#: admin/model.php:214
 msgctxt "model"
 msgid "URL"
 msgstr "匹配网址"
 
-#: admin/model.php:207
+#: admin/model.php:214
 msgid "This field value is not a URL."
 msgstr "这个字段值不是一个超级链接。"
 
-#: admin/model.php:208
+#: admin/model.php:215
 msgid "Custom validation"
 msgstr "自定义验证"
 
-#: admin/model.php:208
+#: admin/model.php:215
 msgid "Error Message"
 msgstr "错误信息"
 
-#: admin/model.php:214
-#: admin/model.php:459
+#: admin/model.php:221
+#: admin/model.php:466
 msgctxt "model"
 msgid "Label"
 msgstr "表单文字"
 
-#: admin/model.php:215
+#: admin/model.php:222
 msgid "Need help"
 msgstr "需要帮助"
 
-#: admin/model.php:216
+#: admin/model.php:223
 msgctxt "model"
 msgid "Help"
 msgstr "帮助信息"
 
-#: admin/model.php:217
-#: admin/model.php:460
+#: admin/model.php:224
+#: admin/model.php:467
 msgctxt "model"
 msgid "Field"
 msgstr "字段名"
 
-#: admin/model.php:218
+#: admin/model.php:225
 msgid "Can search"
 msgstr "可以搜索"
 
-#: admin/model.php:219
-#: admin/model.php:461
+#: admin/model.php:226
+#: admin/model.php:468
 msgctxt "model"
 msgid "Type"
 msgstr "输入类型"
 
-#: admin/model.php:226
+#: admin/model.php:233
 msgid "Width"
 msgstr "宽"
 
-#: admin/model.php:227
+#: admin/model.php:234
 msgid "Auto"
 msgstr "自动"
 
-#: admin/model.php:232
+#: admin/model.php:239
 msgid "Need to verify"
 msgstr "需要验证"
 
-#: admin/model.php:235
+#: admin/model.php:242
 msgid "Verify rule"
 msgstr "验证规则"
 
-#: admin/model.php:243
+#: admin/model.php:250
 msgctxt "model"
 msgid "Serialize"
 msgstr "序列值"
 
-#: admin/model.php:244
+#: admin/model.php:251
 msgid "Attributes"
 msgstr "更多属性"
 
-#: admin/model.php:245
+#: admin/model.php:252
 msgid "Insert Pagebreak"
 msgstr "插入分页符"
 
-#: admin/model.php:246
+#: admin/model.php:253
 msgid "Delete link"
 msgstr "删除站外链接"
 
-#: admin/model.php:247
+#: admin/model.php:254
 msgid "Resize"
 msgstr "调整大小"
 
-#: admin/model.php:250
+#: admin/model.php:257
 msgctxt "model"
 msgid "Length"
 msgstr "长度"
 
-#: admin/model.php:257
-#: admin/model.php:462
+#: admin/model.php:264
+#: admin/model.php:469
 msgctxt "model"
 msgid "Default"
 msgstr "默认值"
 
-#: admin/model.php:270
+#: admin/model.php:266
+msgid "Save"
+msgstr "保存"
+
+#: admin/model.php:266
+msgid "Cancel"
+msgstr "取消"
+
+#: admin/model.php:277
 msgctxt "model"
 msgid "Add New"
 msgstr "添加模型"
 
-#: admin/model.php:285
-#: admin/model.php:317
+#: admin/model.php:292
+#: admin/model.php:324
 msgid "Export"
 msgstr "导出"
 
-#: admin/model.php:286
-#: admin/model.php:318
+#: admin/model.php:293
+#: admin/model.php:325
 msgid "Enabled"
 msgstr "启用"
 
-#: admin/model.php:287
-#: admin/model.php:319
+#: admin/model.php:294
+#: admin/model.php:326
 msgid "Disabled"
 msgstr "禁用"
 
-#: admin/model.php:332
-#: admin/model.php:372
+#: admin/model.php:339
+#: admin/model.php:379
 msgctxt "model"
 msgid "Name"
 msgstr "模型名称"
 
-#: admin/model.php:333
-#: admin/model.php:376
+#: admin/model.php:340
+#: admin/model.php:383
 msgctxt "model"
 msgid "Code"
 msgstr "模型标识"
 
-#: admin/model.php:334
-#: admin/model.php:365
+#: admin/model.php:341
+#: admin/model.php:372
 msgctxt "model"
 msgid "Language"
 msgstr "所属语言"
 
-#: admin/model.php:335
+#: admin/model.php:342
 msgctxt "model"
 msgid "State"
 msgstr "状态"
 
-#: admin/model.php:376
+#: admin/model.php:383
 msgid "(required,only)"
 msgstr "(必填，唯一)"
 
-#: admin/model.php:380
+#: admin/model.php:387
 msgctxt "model"
 msgid "Path"
 msgstr "生成规则"
 
-#: admin/model.php:382
+#: admin/model.php:389
 msgid "Post ID"
 msgstr "文章ID"
 
-#: admin/model.php:402
+#: admin/model.php:409
 msgid "Click to toggle"
 msgstr "点击切换"
 
-#: admin/model.php:403
+#: admin/model.php:410
 msgctxt "model"
 msgid "Fields"
 msgstr "字段管理"
 
-#: admin/model.php:443
+#: admin/model.php:450
 msgid "Add Model"
 msgstr "添加模型"
 
-#: admin/model.php:445
+#: admin/model.php:452
 msgid "Update Model"
 msgstr "更新模型"
 
-#: admin/model.php:471
+#: admin/model.php:478
 msgctxt "field"
 msgid "Delete"
 msgstr "删除字段"
@@ -1001,12 +971,12 @@ msgid "Create config.php failed, Please manually create."
 msgstr "创建config.php文件失败，请手动创建。"
 
 #: admin/install.php:193
-#: admin/install.php:213
+#: admin/install.php:212
 msgid "LazyCMS Setup"
 msgstr "LazyCMS安装"
 
 #: admin/install.php:199
-#: admin/install.php:236
+#: admin/install.php:235
 msgid "Strength indicator"
 msgstr "强度"
 
@@ -1034,98 +1004,98 @@ msgstr "不匹配"
 msgid "Rock it!"
 msgstr "摇滚吧！"
 
-#: admin/install.php:216
+#: admin/install.php:215
 msgid "Welcome to LazyCMS! Below you should enter your database connection details. If you're not sure about these, contact your host."
 msgstr "欢迎使用LazyCMS！ 请在下方输入数据库相关信息。若您不清楚，请咨询主机提供商。"
 
-#: admin/install.php:218
+#: admin/install.php:217
 msgid "Database Configuration"
 msgstr "数据库配置"
 
-#: admin/install.php:220
+#: admin/install.php:219
 msgid "Database Name"
 msgstr "数据库名"
 
-#: admin/install.php:220
+#: admin/install.php:219
 msgid "The name of the database you want to run LazyCMS in."
 msgstr "您希望 LazyCMS 使用哪个数据库运行？"
 
-#: admin/install.php:221
-#: admin/install.php:233
+#: admin/install.php:220
+#: admin/install.php:232
 msgid "UserName"
 msgstr "用户名"
 
-#: admin/install.php:221
+#: admin/install.php:220
 msgid "Your MySQL username"
 msgstr "您的 MySQL 用户名"
 
-#: admin/install.php:222
+#: admin/install.php:221
 #: admin/login.php:80
 #: admin/user.php:281
 msgid "Password"
 msgstr "密码"
 
-#: admin/install.php:222
+#: admin/install.php:221
 msgid "...and MySQL password."
 msgstr "... 以及 MySQL 密码。"
 
-#: admin/install.php:223
+#: admin/install.php:222
 msgid "Database Host"
 msgstr "数据库主机"
 
-#: admin/install.php:223
+#: admin/install.php:222
 msgid "You should be able to get this info from your web host, if <code>localhost</code> does not work."
 msgstr "通常情况下，应填写 <code>localhost</code>，若测试连接失败，请联系主机提供商咨询。"
 
-#: admin/install.php:224
+#: admin/install.php:223
 msgid "Table prefix"
 msgstr "表名前缀"
 
-#: admin/install.php:224
+#: admin/install.php:223
 msgid "If you want to run multiple LazyCMS installations in a single database, change this."
 msgstr "若您希望在一个数据库中存放多个 LazyCMS 的数据，请修改本项以做区分。"
 
-#: admin/install.php:228
+#: admin/install.php:227
 msgid "Please provide the following information. Don’t worry, you can always change these settings later."
 msgstr "您需要填写一些基本信息。无需担心填错，这些信息以后可以再次修改。"
 
-#: admin/install.php:230
+#: admin/install.php:229
 msgid "Information needed"
 msgstr "需要您提供的信息"
 
-#: admin/install.php:232
+#: admin/install.php:231
 msgid "Site Title"
 msgstr "站点标题"
 
-#: admin/install.php:233
+#: admin/install.php:232
 msgid "Administrator account."
 msgstr "管理员帐户。"
 
-#: admin/install.php:235
+#: admin/install.php:234
 msgid "Password, twice"
 msgstr "密码，两次"
 
-#: admin/install.php:237
+#: admin/install.php:236
 msgid "Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! \" ? $ % ^ & )."
 msgstr "提示：您的密码最好至少包含 7 个字符。为了保证密码强度，使用大小写字母，数字和符号，例如 ! \" ? $ % ^ & )。"
 
-#: admin/install.php:239
+#: admin/install.php:238
 msgid "Your E-mail"
 msgstr "电子邮箱"
 
-#: admin/install.php:239
+#: admin/install.php:238
 msgid "Double-check your email address before continuing."
 msgstr "请仔细检查邮件地址后继续。"
 
-#: admin/install.php:244
+#: admin/install.php:243
 msgid "I accept the <a href=\"../LICENSE.txt\" target=\"_blank\">License</a>"
 msgstr "我接受LazyCMS的<a href=\"../LICENSE.txt\" target=\"_blank\">许可协议</a>"
 
-#: admin/install.php:245
+#: admin/install.php:244
 msgid "Install LazyCMS"
 msgstr "安装 LazyCMS"
 
-#: admin/install.php:399
+#: admin/install.php:398
 msgid "My Site"
 msgstr "我的站点"
 
@@ -1629,11 +1599,55 @@ msgstr "<a href=\"http://forums.lazycms.net/\" target=\"_blank\">支持论坛</a
 msgid "Version <span>%s</span>"
 msgstr "版本 <span>%s</span>"
 
+#: admin/admin-header.php:37
+msgid "Alert"
+msgstr "系统提示"
+
+#: admin/admin-header.php:38
+msgid "Submit"
+msgstr "确认"
+
+#: admin/admin-header.php:39
+msgid "Confirm"
+msgstr "操作确认"
+
+#: admin/admin-header.php:42
+msgid "Close"
+msgstr "关闭"
+
+#: admin/admin-header.php:45
+msgid "Send"
+msgstr "发送"
+
 #: admin/admin-header.php:46
+msgid "Maximize"
+msgstr "最大化"
+
+#: admin/admin-header.php:47
+msgid "Minimize"
+msgstr "最小化"
+
+#: admin/admin-header.php:49
+msgid "Confirm Logout?"
+msgstr "确定要退出吗？"
+
+#: admin/admin-header.php:50
+msgid "Confirm Delete?"
+msgstr "确定要删除吗？"
+
+#: admin/admin-header.php:52
+msgid "Use the category set"
+msgstr "使用分类设置"
+
+#: admin/admin-header.php:53
+msgid "Did not select any action!"
+msgstr "没有选择任何操作。"
+
+#: admin/admin-header.php:68
 msgid "Visit Site"
 msgstr "访问网站"
 
-#: admin/admin-header.php:50
+#: admin/admin-header.php:72
 msgid "Logout"
 msgstr "退出"
 

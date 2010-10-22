@@ -62,15 +62,9 @@ var LazyCMS = window.LazyCMS = window.CMS = {
      * 多语言翻译
      *
      * @param msgid     英文
-     * @param context   上下文
-     * @param module    具体模块
      */
-    translate: function(msgid,context,module){
-		context = context || 'common';  module  = module || null;
-		var language = LazyCMS.L10n, context = language[context] || {};
-		if (module) context = context[module] || {};
-		result = context[msgid] || msgid;
-        return result;
+    translate: function(msgid){
+        return LazyCMS.L10n[msgid] || msgid;
     },
     /**
      * 模拟alert
@@ -364,7 +358,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
             }
             dialog.width(width);
         }
-        var overflow = dialog.css('overflow'); dialog.float(opts).css({overflow:''}).show();
+        var overflow = dialog.css('overflow'); dialog.float({float:opts.float,top:styles.top}).css({overflow:''}).show();
         if (overflow=='auto') {
             var wrapper = $('div.wrapper',dialog),
                 paddtop = parseFloat(wrapper.css('padding-top')),
@@ -372,7 +366,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
                 h1_height  = $('h1',dialog).outerHeight();
                 wrapper.css({overflow:'auto',width:wrapper.width(),height:dialog.height()-(paddtop+paddbottom)-h1_height});
         }
-        
+
         // 添加按钮
         if (btnLength > 0) {
             $('.wrapper',dialog).after('<div class="buttons"></div>');

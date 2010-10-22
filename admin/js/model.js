@@ -148,13 +148,12 @@ function model_field_manage(id,params) {
 	var wrap = model_manage_init.wrap, actions = model_manage_init.actions, table_drag = model_manage_init.table_drag, set_rules  = model_manage_init.set_rules;
 		id = id || '', params = $.extend(params||{},(params?{id:id}:{}));
 	$.post(LazyCMS.ADMIN_ROOT + 'model.php?method=field',params,function(r){
-        var title = _('Add New','model','field');
-            title = id?_('Edit','model','field'):title;
+        var title = id ? _('Edit') : _('Add New');
 		LazyCMS.dialog({
-            name:'field', title:title, styles:{ 'width':'430px' }, top:100, body:r, remove:function() {
+            name:'field', title:title, styles:{ 'top':-100, 'width':'430px' }, body:r, remove:function() {
                 LazyCMS.removeDialog('field'); $('#field-index-' + id + ' textarea').removeClass('edit');
             }
-        },function(){
+        },function(r){
             
             if ($('form#model-field-table',this).is('form')==false) return ;
 
@@ -219,11 +218,11 @@ function model_field_manage(id,params) {
                     fields.push(parse_str(this.value).n);
                 });
                 // 开始验证
-                if (label=='') error.push({'id':'l','text':_('The label field is empty.','model')});
+                if (label=='') error.push({'id':'l','text':_('The label field is empty.')});
                 if (name=='') {
-                    error.push({'id':'n','text':_('The name field is empty.','model')});
+                    error.push({'id':'n','text':_('The name field is empty.')});
                 } else if ($.inArray(name,fields)!=-1) {
-                    error.push({'id':'n','text':_('The name already exists.','model')});
+                    error.push({'id':'n','text':_('The name already exists.')});
                 }
                 if (error.length > 0) {
                     $(dialog).error(error);

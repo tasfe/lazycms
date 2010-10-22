@@ -26,6 +26,13 @@ $_USER = user_current();
 admin_head('title',  __('Models'));
 admin_head('styles', array('css/model'));
 admin_head('scripts',array('js/model'));
+admin_head('jslang',array(
+    'Add New' => _x('Add New','field'),
+    'Edit'    => _x('Edit','field'),
+    'The label field is empty.' => _x('The label field is empty.','field'),
+    'The name field is empty.'  => _x('The name field is empty.','field'),
+    'The name already exists.'  => _x('The name already exists.','field'),
+));
 // 动作
 $method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 

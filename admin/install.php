@@ -195,7 +195,7 @@ else {
 admin_css('css/install'); admin_script('js/common'); admin_script('js/install');
 ?>
 <script type="text/javascript">
-    LazyCMS.L10n.common = $.extend(LazyCMS.L10n.common,{
+    $.extend(LazyCMS.L10n,{
         'Strength indicator': "<?php _e('Strength indicator');?>",
         'Very weak': "<?php _e('Very weak');?>",
         'Weak': "<?php _e('Weak');?>",
@@ -204,7 +204,6 @@ admin_css('css/install'); admin_script('js/common'); admin_script('js/install');
         'Mismatch': "<?php _e('Mismatch');?>",
         'Rock it!': "<?php _e('Rock it!');?>"
     });
-    
     $(document).ready(install_init);
 </script>
 </head>
