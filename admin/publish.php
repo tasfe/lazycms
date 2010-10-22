@@ -37,11 +37,12 @@ switch ($method) {
     // 发布进程管理
     case 'list':
         admin_head('title',__('Process list'));
+        admin_head('loadevents','publish_list');
         $publish = publish_gets();
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'._x('Add New','publish').'</a></h2>';
-        echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="publish" id="publish">';
+        echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="publishlist" id="publishlist">';
         table_nav();
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
@@ -53,15 +54,15 @@ switch ($method) {
         echo           '<tbody>';
         if ($publish) {
             foreach ($publish as $pubid=>$data) {
-                echo       '<tr>';
+                echo       '<tr id="publish-'.$pubid.'">';
                 echo           '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$pubid.'" /></td>';
                 echo           '<td>'.$data['name'].'</td>';
                 echo           '<td>'.number_format($data['total']).'</td>';
                 echo           '<td>'.number_format($data['complete']).'</td>';
                 echo           '<td>'.($data['begintime']>0 ? date('Y-m-d H:i:s',$data['begintime']) : '-------- --:--:--').'</td>';
-                echo           '<td>'.($data['elapsetime']>0 ? date('H:i:s',$data['elapsetime']) : '--:--:--').'</td>';
+                echo           '<td>'.($data['begintime']>0 || $data['elapsetime']>0 ? time_format('%H:%i:%s',$data['elapsetime']) : '--:--:--').'</td>';
                 echo           '<td>'.($data['endtime']>0 ? date('Y-m-d H:i:s',$data['endtime']) : '-------- --:--:--').'</td>';
-                echo           '<td>'.$data['state'].'</td>';
+                echo           '<td><img class="c'.($data['state']+1).' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
                 echo       '</tr>';
             }
         } else {
@@ -74,6 +75,23 @@ switch ($method) {
         echo '</div>';
         include ADMIN_PATH.'/admin-footer.php';
         break;
+    // 批量动作
+	case 'bulk':
+	    $action  = isset($_POST['action'])?$_POST['action']:null;
+	    $listids = isset($_POST['listids'])?$_POST['listids']:null;
+	    if (empty($listids)) {
+	    	admin_error(__('Did not select any item.'));
+	    }
+	    switch ($action) {
+            case 'delete':
+                publish_delete($listids);
+	            admin_success(__('Process deleted.'),"LazyCMS.redirect('".referer()."');");
+	            break;
+            default:
+                admin_alert(__('Parameter is invalid.'));
+                break;
+	    }
+	    break;
     // 保存进程
     case 'save':
         $actions  = isset($_POST['action']) ? $_POST['action'] : null;

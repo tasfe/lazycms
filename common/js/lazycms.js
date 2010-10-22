@@ -48,7 +48,9 @@ var LazyCMS = window.LazyCMS = window.CMS = {
         s.orisuccess = s.success;
         // 自定义success
         s.success = function(data, status, xhr) {
-            if (xhr.getResponseHeader('X-Powered-By').indexOf("\x4c\x61\x7a\x79\x43\x4d\x53") == -1) return ;
+            if (xhr && xhr.getResponseHeader('X-Powered-By')) {
+                if (xhr.getResponseHeader('X-Powered-By').indexOf("\x4c\x61\x7a\x79\x43\x4d\x53") == -1) return ;
+            }
             var data = LazyCMS.ajaxSuccess.apply(this,arguments);
             if (null!==data && s.orisuccess) {
                 s.orisuccess.call(this, data, status, xhr);
@@ -102,7 +104,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
             };
         }
         LazyCMS.dialog({
-            name:'alert', title:_('Alert'),close:false,styles:{ 'max-width':'600px', 'min-width':'400px' },
+            name:'alert', title:_('Alert'),close:false,styles:{ 'top':-100, 'max-width':'600px', 'min-width':'400px' },
             body:message,
             buttons:[{
                 focus:true,
@@ -128,7 +130,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
      */
     confirm: function(message,callback){
         LazyCMS.dialog({
-            name:'confirm', title:_('Confirm'),styles:{ width:'400px' },
+            name:'confirm', title:_('Confirm'),styles:{ 'top':-100, width:'400px' },
             body:'<div class="icon" style="background-position:0px -80px;"></div><div class="content"><h6>' + message + '</h6></div>',
             buttons:[{
                 focus:true,

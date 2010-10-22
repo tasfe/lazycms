@@ -96,6 +96,9 @@ switch ($method) {
 	            }
 	            admin_success(__('Posts deleted.'),"LazyCMS.redirect('".referer()."');");
 	            break;
+            default:
+                admin_alert(__('Parameter is invalid.'));
+                break;
 	    }
 	    break;
 	// 保存
@@ -121,7 +124,7 @@ switch ($method) {
                 array('title',VALIDATE_LENGTH,_x('The title field length must be %d-%d characters.','post'),1,255),
             ));
             // 验证路径
-            $path_exists = post_path_exists($postid,format_path($path,array('PY'=>$title)));
+            $path_exists = post_path_exists($postid,path_format($path,array('PY'=>$title)));
             validate_check(array(
                 array('path',VALIDATE_EMPTY,_x('The path field is empty.','post')),
                 array('path',VALIDATE_IS_PATH,sprintf(_x('The path can not contain any of the following characters %s','post'),'* : < > | \\')),
@@ -382,7 +385,7 @@ switch ($method) {
 
                 }
                 echo    '<td>'.date('Y-m-d H:i:s',$post['datetime']).'</td>';
-                echo    '<td><img class="c'.($post['passed']+8).' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
+                echo    '<td><img class="b'.($post['passed']+8).' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
                 echo '</tr>';
             }
         } else {

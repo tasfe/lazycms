@@ -53,11 +53,20 @@ function publish_edit($pubid,$data) {
  */
 function publish_gets() {
     $db = get_conn(); $result = array();
-    $rs = $db->query("SELECT * FROM `#@_publish`;");
+    $rs = $db->query("SELECT * FROM `#@_publish` ORDER BY `pubid` ASC;");
     while ($data = $db->fetch($rs)) {
         $result[$data['pubid']] = $data;
     }
     return $result;
+}
+/**
+ * 检查是否有需要生成的进度
+ *
+ * @return int
+ */
+function publish_check_process() {
+    $db = get_conn();
+    return $db->result("SELECT COUNT(`pubid`) FROM `#@_publish` WHERE (`state`=0 OR `state`=1);");
 }
 /**
  * 执行发布
@@ -67,14 +76,25 @@ function publish_gets() {
 function publish_exec() {
     $db = get_conn();
     // 已经有进程在执行，则退出
-    if (0 > intval($db->result("SELECT COUNT(`pubid`) FROM `#@_publish` WHERE `state`=1;")))
-        return true;
+    if (1 < intval($db->result("SELECT COUNT(`pubid`) FROM `#@_publish` WHERE `state`=1;")))
+        return false;
     // 取出未执行进程，开始执行
-    $rs = $db->query("SELECT * FROM `#@_publish` WHERE `state`=0 LIMIT 1;");
+    $rs = $db->query("SELECT * FROM `#@_publish` WHERE (`state`=0 OR `state`=1) ORDER BY `pubid` ASC LIMIT 1;");
     if ($data = $db->fetch($rs)) {
+        if (!function_exists($data['func'])) {
+            $time = time();
+            $sets = array(
+                'begintime'  => $time,
+                'elapsetime' => 0,
+                'endtime'    => time(),
+                'state'      => 2,
+            );
+            publish_edit($data['pubid'],$sets);
+            return array_merge($data,$sets);
+        }
         return call_user_func($data['func'], $data);
     }
-    return true;
+    return false;
 }
 /**
  * 生成所有单页面
@@ -90,14 +110,14 @@ function publish_pages($data){
         // 没有任何文章需要生成，直接结束
         if (0 >= $total) {
             $time = time();
-            publish_edit($data['pubid'],array(
+            $sets = array(
                 'begintime'  => $time,
                 'elapsetime' => 0,
                 'endtime'    => $time,
                 'state'      => 2,
-            ));
-            publish_exec();
-            return true;
+            );
+            publish_edit($data['pubid'],$sets);
+            return array_merge($data,$sets);
         }
         // 更新需要生成的文档总数
         publish_edit($data['pubid'],array(
@@ -110,19 +130,31 @@ function publish_pages($data){
     if ($row = $db->fetch($rs)) {
         if (post_create($row['postid'])) {
             // 更新进度
-            publish_edit($data['pubid'],array(
+            $sets = array(
                 'complete'   => ++$data['complete'],
                 'elapsetime' => time() - $data['begintime'],
-            ));
+            );
+            publish_edit($data['pubid'],$sets);
         }
     }
     // 生成结束
     else {
-        publish_edit($data['pubid'],array(
+        $sets = array(
             'endtime' => time(),
             'state'   => 2,
-        ));
-        publish_exec();
+        );
+        publish_edit($data['pubid'],$sets);
     }
-    return true;
+    return array_merge($data,$sets);
+}
+/**
+ * 删除进程
+ *
+ * @param  $listids
+ * @return bool
+ */
+function publish_delete($listids) {
+    $db = get_conn(); if (empty($listids)) return false;
+    $listids = is_array($listids) ? implode(',', $listids) : $listids;
+    return $db->query("DELETE FROM `#@_publish` WHERE `pubid` IN({$listids})");
 }

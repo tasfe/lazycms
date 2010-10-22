@@ -28,6 +28,8 @@ if ($loadevents) {
         echo "addLoadEvent({$loadevents});";
     }
 }
+// 检查是否有需要生成的进度
+if (publish_check_process()) echo "addLoadEvent(common_publish);";
 // js语言包
 $js_lang = array_merge(array(
     'System Error' => __('System Error'),

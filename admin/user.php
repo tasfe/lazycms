@@ -152,6 +152,9 @@ switch ($method) {
 	            }
 	            admin_success(__('Users deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
 	            break;
+            default:
+                admin_alert(__('Parameter is invalid.'));
+                break;
 	    }
 	    break;
 	default:
@@ -184,7 +187,7 @@ switch ($method) {
             echo               '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$admin['userid'].'" /></td>';
             echo               '<td><strong><a href="'.$href.'">'.$admin['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
             echo               '<td>'.$admin['mail'].'</td>';
-            echo               '<td><img class="b'.($admin['status']+8).' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
+            echo               '<td><img class="c'.($admin['status']+3).' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
             echo               '<td>'.$admin['registered'].'</td>';
             echo           '</tr>';
         }

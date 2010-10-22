@@ -55,7 +55,7 @@ function post_edit($postid,$data,$cache=true) {
         $data = is_array($data) ? $data : array();
         // 格式化路径
         if (isset($data['path'])) {
-            $data['path'] = format_path($data['path'],array(
+            $data['path'] = path_format($data['path'],array(
                 'ID'  => $postid,
                 'PY'  => $post['title'],
                 'MD5' => $postid,

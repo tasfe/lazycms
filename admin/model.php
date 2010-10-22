@@ -176,6 +176,9 @@ switch ($method) {
 	        case 'export':
 	            // 批量导出，打包成zip
 	            break;
+            default:
+                admin_alert(__('Parameter is invalid.'));
+                break;
 	    }
 	    break;
 	// 导出
@@ -298,7 +301,7 @@ switch ($method) {
                 echo           '<td><strong><a href="'.$href.'">'.$model['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
                 echo           '<td>'.$model['code'].'</td>';
                 echo           '<td>'.code2lang($model['language']).'</td>';
-                echo           '<td><img class="b'.($model['state']+8).' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
+                echo           '<td><img class="c'.($model['state']+3).' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
                 echo       '</tr>';
             }
         } else {

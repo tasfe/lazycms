@@ -59,7 +59,7 @@ function parse_dsn($DSN){
  *          )
  * @return string
  */
-function format_path($path,$data=null) {
+function path_format($path,$data=null) {
     if (is_array($data)) {
         $py = $id = $md5 = null;
         foreach ($data as $k=>$v) {
@@ -77,6 +77,30 @@ function format_path($path,$data=null) {
         if ($md5) $path = str_replace('%MD5', $md5, $path);
     }
     return strftime($path);
+}
+/**
+ * 时间格式化
+ *
+ * @param  $format
+ * @param  $time
+ * @return mixed
+ */
+function time_format($format,$time) {
+    $days   = $time>86400 ? floor($time/86400) : 0;
+    $time   = $time - 86400 * $days;
+    $hour   = $time>=3600 && $time<86400 ? floor($time/3600) : 0;
+    $time   = $time - 86400 * $days - 3600 * $hour;
+    $minute = $time>=60 && $time<3600 ? floor($time/60) : 0;
+    $time   = $time - 86400 * $days - 3600 * $hour - 60 * $minute;
+    $second = $time>0 && $time<60 ? $time : 0;
+    $format = str_replace(array('%%m','%%H','%%i','%%s'), array('$m','$H','$i','$s'),$format);
+    $result = str_replace(array('%m','%H','%i','%s'), array(
+        sprintf('%02d',$days),
+        sprintf('%02d',$hour),
+        sprintf('%02d',$minute),
+        sprintf('%02d',$second)
+    ),$format);
+    return str_replace(array('$m','$H','$i','$s'),array('%m','%H','%i','%s'),$result);
 }
 /**
  * 取得数据库连接对象

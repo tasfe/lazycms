@@ -321,7 +321,7 @@ function taxonomy_edit($taxonomyid,$data) {
     if ($taxonomy = taxonomy_get($taxonomyid)) {
         // 格式化路径
         if (isset($data['path'])) {
-            $data['path'] = format_path($data['path'],array(
+            $data['path'] = path_format($data['path'],array(
                 'ID'  => $taxonomyid,
                 'PY'  => $data['name'],
                 'MD5' => $taxonomyid,

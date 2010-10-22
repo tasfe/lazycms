@@ -20,6 +20,22 @@
 
 LazyCMS.Loading = $('<div class="loading"><img class="os" src="' + LazyCMS.ADMIN_ROOT + 'images/loading.gif" />Loading...</div>').css({width:'100px',position:'fixed',top:'5px',right:'5px'});
 
+// 设置全局 AJAX 默认选项
+$.ajaxSetup({
+    beforeSend: LazyCMS.success,
+    error:function(xhr,status,error) {
+        var title = $.parseJSON(xhr.getResponseHeader('X-Dialog-title'));
+            title = title || _('System Error');
+        LazyCMS.dialog({
+            title:title, styles:{ overflow:'auto', width:'700px',height:'350px' }, body: xhr.responseText
+        });
+        LazyCMS.Loading.remove();
+    },
+    complete: function(){
+        LazyCMS.Loading.remove();
+    }
+});
+
 // 兼容IE6.0
 if ($.browser.msie && $.browser.version == '6.0') {
     $(document).ready(function(){
@@ -37,23 +53,6 @@ if ($.browser.msie && $.browser.version == '6.0') {
         }
     });
 }
-
-
-// 设置全局 AJAX 默认选项
-$.ajaxSetup({
-    beforeSend: LazyCMS.success,
-    error:function(xhr,status,error) {
-        var title = $.parseJSON(xhr.getResponseHeader('X-Dialog-title'));
-            title = title || _('System Error');
-        LazyCMS.dialog({
-            title:title, styles:{ overflow:'auto', width:'700px',height:'350px' }, body: xhr.responseText
-        });
-        LazyCMS.Loading.remove();
-    },
-    complete: function(){
-        LazyCMS.Loading.remove();
-    }
-});
 
 (function ($) {
 	// 退出登录
@@ -94,4 +93,36 @@ $.ajaxSetup({
         }
         return this;
     }
+    /**
+     * 发布文章进度检查
+     */
+    $.fn.publish = function() {
+        var _this = this, form_exist = this.is('form');
+        $.ajax({
+            cache: false, type:'GET', dataType:'json',
+            url: LazyCMS.ADMIN_ROOT + 'index.php?method=publish',
+            beforeSend:function(xhr, s){
+                LazyCMS.success(xhr,s,true);
+            },
+            success: function(r){
+                if (r) {
+                    var tr = $('tr#publish-' + r.pubid,_this);
+                        $('td:eq(2)',tr).text(r.total);
+                        $('td:eq(3)',tr).text(r.complete);
+                        $('td:eq(4)',tr).text(r.begintime);
+                        $('td:eq(5)',tr).text(r.elapsetime);
+                        $('td:eq(6)',tr).text(r.endtime);
+                        $('td:eq(7)',tr).html(r.state);
+                    _this.publish();
+                }
+            }
+        });
+        return this;
+    }
 })(jQuery);
+
+
+// 执行生成进度
+function common_publish() {
+    $('form#publishlist').publish();
+}

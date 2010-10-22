@@ -250,16 +250,6 @@ admin_css('css/install'); admin_script('js/common'); admin_script('js/install');
 // 表结构
 function install_schema() {
     return <<<SQL
-CREATE TABLE `lazy_message` (
-  `msgid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `sender` varchar(50) NOT NULL,
-  `authcode` char(36) NOT NULL,
-  `content` varchar(1000) NOT NULL,
-  `datetime` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`msgid`),
-  KEY `authcode` (`authcode`)
-) ENGINE=MEMORY  DEFAULT CHARSET=utf8;
-
 CREATE TABLE `#@_option` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `module` char(20) NOT NULL,

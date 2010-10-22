@@ -26,23 +26,18 @@ $_USER = user_current();
 $method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 
 switch ($method) {
-    // 发消息
-    case 'send_msg':
-        $message = isset($_POST['message'])?$_POST['message']:null;
-        if (strlen($message) === 0) {
-            admin_alert(__('Can not send an empty message！'),"\$('#lazy_chat input:text[name=message]').focus();");
-        } else {
-            // 添加消息
-            message_add($message);
-            admin_return(array(
-                'result'   => 'ok'
-            ));
+    // 进度
+    case 'publish':
+        $data = publish_exec();
+        if ($data) {
+            $data['total']      = number_format($data['total']);
+            $data['complete']   = number_format($data['complete']);
+            $data['begintime']  = ($data['begintime']>0 ? date('Y-m-d H:i:s',$data['begintime']) : '-------- --:--:--');
+            $data['elapsetime'] = ($data['begintime']>0 || $data['elapsetime']>0 ? time_format('%H:%i:%s',$data['elapsetime']) : '--:--:--');
+            $data['endtime']    = ($data['endtime']>0 ? date('Y-m-d H:i:s',$data['endtime']) : '-------- --:--:--');
+            $data['state']      = '<img class="c'.($data['state']+1).' os" src="'.ADMIN_ROOT.'images/t.gif" />';
         }
-        break;
-    // 消息
-    case 'poll':
-        $messages = message_poll();
-        admin_return($messages);
+        admin_return($data);
         break;
     // 取得关键词
     case 'terms':
