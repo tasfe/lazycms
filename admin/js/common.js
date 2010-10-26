@@ -107,12 +107,24 @@ if ($.browser.msie && $.browser.version == '6.0') {
             success: function(r){
                 if (r) {
                     var tr = $('tr#publish-' + r.pubid,_this);
-                        $('td:eq(2)',tr).text(r.total);
-                        $('td:eq(3)',tr).text(r.complete);
-                        $('td:eq(4)',tr).text(r.begintime);
-                        $('td:eq(5)',tr).text(r.elapsetime);
-                        $('td:eq(6)',tr).text(r.endtime);
-                        $('td:eq(7)',tr).html(r.state);
+                    if (tr.is('tr')) {
+                        var total      = $('td:eq(2)',tr),
+                            complete   = $('td:eq(3)',tr),
+                            rate       = $('td:eq(4)',tr),
+                            elapsetime = $('td:eq(5)',tr),
+                            state      = $('td:eq(6)',tr);
+
+
+                        $('.inner',rate).css('width',r.rate + 'px');
+                        if ($('.text',rate).text().replace('%','') != r.rate)
+                            $('.text',rate).text(r.rate + '%');
+                        complete.text(r.complete);
+                        elapsetime.text(r.elapsetime);
+                        // 没有变化，则不做变更
+                        if (total.text() != r.total)           total.text(r.total);
+                        if (state.html().toLowerCase()
+                                != r.state.toLowerCase())      state.html(r.state);
+                    }
                     _this.publish();
                 }
             }

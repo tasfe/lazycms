@@ -37,21 +37,20 @@ function post_add($title,$content,$path,$data=null) {
        'path'    => $path,
     ));
     $data['path'] = $path;
-    return post_edit($postid,$data,$cache=false);
+    return post_edit($postid,$data);
 }
 /**
  * 更新文章信息
  *
  * @param int $postid
  * @param array $data
- * @param bool $cache   是否使用缓存
  * @return array
  */
-function post_edit($postid,$data,$cache=true) {
+function post_edit($postid,$data) {
     $db = get_conn();
     $postid = intval($postid);
     $post_rows = $meta_rows = array();
-    if ($post = post_get($postid,$cache)) {
+    if ($post = post_get($postid)) {
         $data = is_array($data) ? $data : array();
         // 格式化路径
         if (isset($data['path'])) {
@@ -111,7 +110,7 @@ function post_edit($postid,$data,$cache=true) {
             post_edit_meta($postid,$meta_rows);
         }
         // 清理缓存
-        if ($cache) post_clean_cache($postid);
+        post_clean_cache($postid);
         return array_merge($post,$data);
     }
     return null;
@@ -125,7 +124,7 @@ function post_edit($postid,$data,$cache=true) {
  * @param string $option    文章变量处理选项 see function post_process()
  * @return array
  */
-function post_gets($sql, $page=1, $size=10,$option='model,path,category'){
+function post_gets($sql, $page=1, $size=10,$option='model,path,category',$is_return=true){
     $db = get_conn(); $posts = array();
     $page = $page<1 ? 1  : $page;
     $size = $size<1 ? 10 : $size;
@@ -139,7 +138,7 @@ function post_gets($sql, $page=1, $size=10,$option='model,path,category'){
     } elseif ((int)$page >= (int)$pages) {
         $length = $total - (($pages-1) * $size);
     }
-    if ((int)$page > (int)$pages) $page = $pages;
+    if ($is_return && (int)$page>(int)$pages) $page = $pages;
     $sql.= sprintf(' LIMIT %d OFFSET %d;',$size,($page-1)*$size);
     $res = $db->query($sql);
     while ($post = $db->fetch($res)) {
@@ -177,13 +176,12 @@ function post_path_exists($postid,$path) {
  * 查找指定的文章
  *
  * @param int $postid
- * @param bool $cache   是否使用缓存
  * @return array
  */
-function post_get($postid, $cache=true) {
+function post_get($postid) {
     $db   = get_conn();
     $ckey = sprintf('post.%s',$postid);
-    $post = $cache ? fcache_get($ckey) : null;
+    $post = fcache_get($ckey);
     if ($post !== null) return $post;
 
     $rs = $db->query("SELECT * FROM `#@_post` WHERE `postid`=%d LIMIT 0,1;",$postid);
@@ -196,8 +194,7 @@ function post_get($postid, $cache=true) {
             $post['meta'] = $meta;
         }
         // 保存到缓存
-        if ($cache) fcache_set($ckey,$post);
-
+        fcache_set($ckey,$post);
         return $post;
     }
     return null;

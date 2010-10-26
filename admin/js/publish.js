@@ -21,8 +21,10 @@
 function publish_init() {
 	var form = $('form#publish');
     // 绑定全选事件
-    $('input[name=select]',form).click(function(){
-        $('input[name^=action]:checkbox,input[name^=category]:checkbox,input[name=select]:checkbox',form).attr('checked',this.checked);
+    $('button[rel=select]',form).click(function(){
+        $('input[name^=category]:checkbox',form).each(function(){
+            this.checked = !this.checked;
+        });
     });
     // 提交事件
     form.ajaxSubmit();

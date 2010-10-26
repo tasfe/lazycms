@@ -455,7 +455,7 @@ class Mysql {
         $vals = array();
         foreach ($data as $col => $val) {
             $cols[] = $this->identifier($col);
-            $vals[] = $this->escape($val);
+            $vals[] = is_need_serialize($val) ? serialize($val) : $this->escape($val);
         }
 
         $sql = "INSERT INTO "
@@ -477,7 +477,8 @@ class Mysql {
         // extract and quote col names from the array keys
         $set = array();
         foreach ($sets as $col => $val) {
-            $set[] = $this->identifier($col)." = '".$this->escape($val)."'";
+            $val = is_need_serialize($val) ? serialize($val) : $this->escape($val);
+            $set[] = $this->identifier($col)." = '".$val."'";
         }
         $where = $this->where($where);
         // build the statement

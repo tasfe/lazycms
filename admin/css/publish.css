@@ -21,4 +21,9 @@
 ul.categories{ width:450px; border:1px solid #DFDFDF; -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px; border-collapse:separate; overflow:auto; padding:5px; margin:0; _height:expression(this.scrollHeight > 200 ? "200px" : "auto"); }
 ul.categories li{ list-style:none; }
 ul.categories li input{ margin-right:3px; }
+ul.categories li label em{ margin-left:3px; font-size:9px; }
 ul.categories ul.children{ padding:0; margin:0 0 0 15px; }
+
+.wrap .rate { width:100px; height:16px; border:solid 1px #DFDFDF; position:relative; }
+.wrap .rate .inner{ width:0px; height:16px; background-color:#E0ECF6; }
+.wrap .rate .text{ width:100px; height:16px; line-height:16px; position:absolute; font-size:10px; top:0; left:0; text-align:center; }

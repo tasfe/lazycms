@@ -25,13 +25,15 @@ defined('COM_PATH') or die('Restricted access!');
  *
  * @param string $name
  * @param string $func  callback function args is publish table row.
+ * @param array $args
  * @return int
  */
-function publish_add($name,$func) {
+function publish_add($name,$func,$args=array()) {
     $db = get_conn();
     return $db->insert('#@_publish',array(
        'name'  => $name,
        'func'  => $func,
+       'args'  => $args,
        'state' => 0,
     ));
 }
@@ -53,7 +55,7 @@ function publish_edit($pubid,$data) {
  */
 function publish_gets() {
     $db = get_conn(); $result = array();
-    $rs = $db->query("SELECT * FROM `#@_publish` ORDER BY `pubid` ASC;");
+    $rs = $db->query("SELECT * FROM `#@_publish` ORDER BY `pubid` DESC;");
     while ($data = $db->fetch($rs)) {
         $result[$data['pubid']] = $data;
     }
@@ -79,43 +81,44 @@ function publish_exec() {
     if (1 < intval($db->result("SELECT COUNT(`pubid`) FROM `#@_publish` WHERE `state`=1;")))
         return false;
     // 取出未执行进程，开始执行
-    $rs = $db->query("SELECT * FROM `#@_publish` WHERE (`state`=0 OR `state`=1) ORDER BY `pubid` ASC LIMIT 1;");
+    $rs = $db->query("SELECT * FROM `#@_publish` WHERE (`state`=0 OR `state`=1) ORDER BY `pubid` DESC LIMIT 1;");
     if ($data = $db->fetch($rs)) {
         if (!function_exists($data['func'])) {
-            $time = time();
-            $sets = array(
-                'begintime'  => $time,
-                'elapsetime' => 0,
-                'endtime'    => time(),
-                'state'      => 2,
-            );
+            $sets = array('state' => 2);
             publish_edit($data['pubid'],$sets);
             return array_merge($data,$sets);
         }
-        return call_user_func($data['func'], $data);
+        $args = unserialize($data['args']);
+        unset($data['args']); array_unshift($args,$data);
+        return call_user_func_array($data['func'], $args);
     }
     return false;
 }
 /**
- * 生成所有单页面
+ * 生成所有页面
  *
  * @param  $data
  * @return bool
  */
-function publish_pages($data){
-    $db = get_conn();
+function publish_posts($data,$mode='all'){
+    $db = get_conn(); $where = '';
+    if ($mode == 'pages') {
+        $where = "WHERE `sortid`='-1'";
+    }
+    elseif($mode == 'posts') {
+        $where = "WHERE `sortid`<>'-1'";
+    }
+    // TODO 增加指定分类文章生成
+    else {
+
+    }
+
     // 总数小于等于0时，统计总数并保存
     if (isset($data['total']) && 0 >= $data['total'] && $data['state']==0) {
-        $total = $db->result("SELECT COUNT(`postid`) FROM `#@_post` WHERE `sortid`='-1';");
+        $total = $db->result("SELECT COUNT(`postid`) FROM `#@_post` {$where};");
         // 没有任何文章需要生成，直接结束
         if (0 >= $total) {
-            $time = time();
-            $sets = array(
-                'begintime'  => $time,
-                'elapsetime' => 0,
-                'endtime'    => $time,
-                'state'      => 2,
-            );
+            $sets = array('state' => 2);
             publish_edit($data['pubid'],$sets);
             return array_merge($data,$sets);
         }
@@ -123,27 +126,128 @@ function publish_pages($data){
         publish_edit($data['pubid'],array(
             'total'     => $total,
             'state'     => 1,
-            'begintime' => time(),
         ));
     }
-    $rs = $db->query("SELECT `postid` FROM `#@_post` WHERE `sortid`='-1' LIMIT 1 OFFSET %d;",$data['complete']);
-    if ($row = $db->fetch($rs)) {
-        if (post_create($row['postid'])) {
-            // 更新进度
+    $length = 0;
+    $rs = $db->query("SELECT `postid` FROM `#@_post` {$where} LIMIT 100 OFFSET %d;",$data['complete']);
+    while ($row = $db->fetch($rs)) {
+        post_create($row['postid']);
+        $length++;
+    }
+    // 生成结束
+    if ($length === 0) {
+        $sets = array(
+            'elapsetime' => $data['elapsetime'] + micro_time(true) - BEGIN_TIME,
+            'state'      => 2,
+        );
+        publish_edit($data['pubid'],$sets);
+    } else {
+        // 更新进度
+        $sets = array(
+            'complete'   => $data['complete'] + $length,
+            'elapsetime' => $data['elapsetime'] + micro_time(true) - BEGIN_TIME,
+        );
+        publish_edit($data['pubid'],$sets);
+    }
+    return array_merge($data,$sets);
+}
+/**
+ * 生成列表
+ *
+ * @param array $data
+ * @param array $sortids
+ * @param bool $make_post 是否生成文章
+ * @param int $sortid
+ * @return array
+ */
+function publish_lists($data,$sortids=null,$make_post=false,$sortid=0) {
+    if (isset($data['total']) && 0 >= $data['total'] && $data['state']==0) {
+        $db = get_conn(); $lists = array();
+        $taxonomy_list = $sortids===null ? taxonomy_get_list('category') : $sortids;
+        // 计算要生成的总页数
+        foreach($taxonomy_list as $taxonomyid) {
+            if ($taxonomy = taxonomy_get($taxonomyid)) {
+                // 载入模版
+                $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.$taxonomy['list']);
+                // 标签块信息
+                $block  = tpl_get_block($html,'post,list','list');
+                if ($block) {
+                    // 每页条数
+                    $number = tpl_get_attr($block['tag'],'number');
+                    // 文章总数
+                    $posts = $db->result(sprintf("SELECT COUNT(`objectid`) FROM `#@_term_relation` WHERE `taxonomyid`=%d;", esc_sql($taxonomyid)));
+                    // 总页数
+                    $pages = ceil($posts/$number); $pages = ((int)$pages == 0) ? 1 : $pages;
+                    // 要生成的文档总数
+                    $lists[$taxonomyid] = $pages;
+                }
+            }
+        }
+        $total = array_sum($lists);
+        // 没有任何文章需要生成，直接结束
+        if (0 >= $total) {
+            $sets = array('state' => 2);
+            publish_edit($data['pubid'],$sets);
+            return array_merge($data,$sets);
+        }
+        $keys = array_keys($lists);
+        // 更新需要生成的文档总数
+        $sets = array(
+            'total'      => $total,
+            'state'      => 1,
+            'args'       => array(
+                'lists'  => $lists,
+                'mpost'  => $make_post,
+                'listid' => isset($keys[0]) ? $keys[0] : 0,
+            )
+        );
+        $sortids = $sets['args']['lists'];
+        $sortid  = $sets['args']['listid'];
+        publish_edit($data['pubid'],$sets);
+        $data = array_merge($data,$sets);
+    }
+    // 正在生成的分类ID
+    $generated = 0;
+    // 计算应该生成第几页
+    foreach((array)$sortids as $id=>$v) {
+        if ($id == $sortid) break;
+        $generated+= $v;
+    }
+    $page = $data['complete'] - $generated + 1;
+    // 生成成功
+    if (taxonomy_create($sortid,$page,$make_post)) {
+        // 更新进度
+        $sets = array(
+            'complete'   => ++$data['complete'],
+            'elapsetime' => $data['elapsetime'] + micro_time(true) - BEGIN_TIME,
+        );
+        publish_edit($data['pubid'],$sets);
+    }
+    // 当前分类生成结束
+    else {
+        // 切换到下一个分类
+        $keys = array_keys($sortids);
+        $key  = array_search($sortid, $keys) + 1;
+        if (isset($keys[$key])) {
             $sets = array(
-                'complete'   => ++$data['complete'],
-                'elapsetime' => time() - $data['begintime'],
+                'elapsetime' => $data['elapsetime'] + micro_time(true) - BEGIN_TIME,
+                'args'       => array(
+                    'lists'  => $sortids,
+                    'mpost'  => $make_post,
+                    'listid' => $keys[$key],
+                )
             );
             publish_edit($data['pubid'],$sets);
         }
-    }
-    // 生成结束
-    else {
-        $sets = array(
-            'endtime' => time(),
-            'state'   => 2,
-        );
-        publish_edit($data['pubid'],$sets);
+        // 全部生成结束
+        else {
+            $sets = array(
+                'elapsetime' => $data['elapsetime'] + micro_time(true) - BEGIN_TIME,
+                'state'      => 2,
+            );
+            publish_edit($data['pubid'],$sets);
+        }
+
     }
     return array_merge($data,$sets);
 }

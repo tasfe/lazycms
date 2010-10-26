@@ -54,15 +54,23 @@ switch ($method) {
         echo           '<tbody>';
         if ($publish) {
             foreach ($publish as $pubid=>$data) {
+                if ($data['total']<=0 && $data['state']==2) {
+                    $rate = 100;
+                } else {
+                    $rate = $data['total']<=0 ? 0 : floor($data['complete'] / $data['total'] * 100);
+                }
+
+                $actions = '<span class="pause"><a href="javascript:;">'.__('Pause').'</a> | </span>';
+                $actions.= '<span class="start"><a href="javascript:;">'.__('Start').'</a> | </span>';
+                $actions.= '<span class="delete"><a href="javascript:;">'.__('Delete').'</a></span>';
                 echo       '<tr id="publish-'.$pubid.'">';
                 echo           '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$pubid.'" /></td>';
-                echo           '<td>'.$data['name'].'</td>';
+                echo           '<td><strong>'.$data['name'].'</strong><br/><div class="row-actions">'.$actions.'</div></td>';
                 echo           '<td>'.number_format($data['total']).'</td>';
                 echo           '<td>'.number_format($data['complete']).'</td>';
-                echo           '<td>'.($data['begintime']>0 ? date('Y-m-d H:i:s',$data['begintime']) : '-------- --:--:--').'</td>';
-                echo           '<td>'.($data['begintime']>0 || $data['elapsetime']>0 ? time_format('%H:%i:%s',$data['elapsetime']) : '--:--:--').'</td>';
-                echo           '<td>'.($data['endtime']>0 ? date('Y-m-d H:i:s',$data['endtime']) : '-------- --:--:--').'</td>';
-                echo           '<td><img class="c'.($data['state']+1).' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
+                echo           '<td class="w150"><div class="rate"><div class="inner" style="width:'.$rate.'px"></div><div class="text">'.$rate.'%</div></div></td>';
+                echo           '<td>'.time_format('%H:%i:%s,%ms',$data['elapsetime']).'</td>';
+                echo           '<td><img class="c'.($data['state']+1).' os" src="'.ADMIN_ROOT.'images/t.gif"></td>';
                 echo       '</tr>';
             }
         } else {
@@ -96,24 +104,37 @@ switch ($method) {
     case 'save':
         $actions  = isset($_POST['action']) ? $_POST['action'] : null;
         $category = isset($_POST['category']) ? $_POST['category'] : null;
+        $option   = isset($_POST['option']) ? $_POST['option'] : 'all';
         if (empty($actions) && empty($category)) {
 	    	admin_error(__('Did not select any item.'));
 	    }
-        // 添加生成所有页面进程
-        if (instr('createpages',$actions)) {
-            publish_add(__('Create all Pages'),'publish_pages');
-        }
-        // 添加生成所有文章进程
-        if (instr('createposts',$actions)) {
-            publish_add(__('Create all Posts'),'publish_posts');
-        }
         // 添加生成所列表进程
         if (instr('createlists',$actions)) {
             publish_add(__('Create all Lists'),'publish_lists');
         }
-        // 添加生成所有文章和列表进程
-        if (instr('createpostslists',$actions)) {
-            publish_add(__('Create all Posts and Lists'),'publish_posts_lists');
+        // 添加生成所有文章进程
+        if (instr('createposts',$actions)) {
+            publish_add(__('Create all Posts'),'publish_posts',array('posts'));
+        }
+        // 添加生成所有页面进程
+        if (instr('createpages',$actions)) {
+            publish_add(__('Create all Pages'),'publish_posts',array('pages'));
+        }
+        // 添加列表生成
+        if ($category) {
+            // TODO 修改进程显示的文字
+            // 生成列表和文章
+            if ($option == 'all') {
+                publish_add(__('Create Lists and Posts'),'publish_lists',array($category,true));
+            }
+            // 只生成列表
+            elseif ($option == 'lists') {
+                publish_add(__('Create Lists and Posts'),'publish_lists',array($category,false));
+            }
+            // 只生成文章
+            elseif ($option == 'posts') {
+                publish_add(__('Create all Lists'),'publish_lists',array($category));
+            }
         }
         // 需要异步请求执行 publish_exec();
         admin_success(__('Publish process has created.'),"LazyCMS.redirect('".PHP_FILE."?method=list');");
@@ -137,7 +158,6 @@ switch ($method) {
         echo                    '<label for="createpages"><input type="checkbox" name="action[]" value="createpages" id="createpages">'.__('Create all Pages').'</label>';
         echo                    '<label for="createposts"><input type="checkbox" name="action[]" value="createposts" id="createposts">'.__('Create all Posts').'</label>';
         echo                    '<label for="createlists"><input type="checkbox" name="action[]" value="createlists" id="createlists">'.__('Create all Lists').'</label>';
-        echo                    '<label for="createpostslists"><input type="checkbox" name="action[]" value="createpostslists" id="createpostslists">'.__('Create all Posts and Lists').'</label>';
         echo                '</td>';
         echo           '</tr>';
         if ($categories) {
@@ -145,14 +165,19 @@ switch ($method) {
             echo            '<td><strong>'.__('Select you want to publish the category:').'</strong></td>';
             echo       '</tr>';
             echo       '<tr>';
-            echo            '<td>'.categories_tree($categories).'</td>';
+            echo            '<td>';
+            echo                categories_tree($categories);
+            echo                '<div class="option">';
+            echo                    '<label for="radio_all"><input type="radio" name="option" value="all" id="radio_all" checked="checked">'.__('Create Lists and Posts').'</label>';
+            echo                    '<label for="radio_lists"><input type="radio" name="option" value="lists" id="radio_lists">'.__('Only Create lists').'</label>';
+            echo                    '<label for="radio_posts"><input type="radio" name="option" value="posts" id="radio_posts">'.__('Only Create posts').'</label>';
+            echo                '</div>';
+            echo                '<div class="buttons">';
+            echo                    '<button type="button" rel="select">'.__('Select / Deselect').'</button>';
+            echo                '</div>';
+            echo            '</td>';
             echo       '</tr>';
         }
-        echo           '<tr>';
-        echo                '<td>';
-        echo                    '<label for="checkall"><input type="checkbox" name="select" value="all" id="checkall">'.__('Select / Deselect').'</label>';
-        echo                '</td>';
-        echo           '</tr>';
         echo       '</table>';
         echo     '</fieldset>';
         echo   '<p class="submit"><button type="submit">'._x('Add New','publish').'</button> <button type="button" onclick="LazyCMS.redirect(\''.$referer.'\')">'.__('Back').'</button></p>';
@@ -170,7 +195,7 @@ function table_nav() {
     echo '<div class="table-nav">';
     echo     '<select name="actions">';
     echo         '<option value="">'.__('Bulk Actions').'</option>';
-    echo         '<option value="stop">'.__('Stop').'</option>';
+    echo         '<option value="pause">'.__('Pause').'</option>';
     echo         '<option value="start">'.__('Start').'</option>';
     echo         '<option value="delete">'.__('Delete').'</option>';
     echo     '</select>';
@@ -187,9 +212,8 @@ function table_thead() {
     echo     '<th>'._x('Type','publish').'</th>';
     echo     '<th>'._x('Total','publish').'</th>';
     echo     '<th>'._x('Complete','publish').'</th>';
-    echo     '<th>'.__('Begin Time').'</th>';
+    echo     '<th>'._x('Rate','publish').'</th>';
     echo     '<th>'.__('Elapsed time').'</th>';
-    echo     '<th>'.__('End Time').'</th>';
     echo     '<th>'._x('State','publish').'</th>';
     echo '</tr>';
 }
@@ -207,7 +231,7 @@ function categories_tree($trees=null) {
     if ($trees === null) $trees = taxonomy_get_trees();
     foreach ($trees as $i=>$tree) {
         $hl.= sprintf('<li><label class="selectit" for="category-%d">',$tree['taxonomyid']);
-        $hl.= sprintf('<input type="checkbox" id="category-%d" name="category[]" value="%d" />%s</label>',$tree['taxonomyid'],$tree['taxonomyid'],$tree['name']);
+        $hl.= sprintf('<input type="checkbox" id="category-%d" name="category[]" value="%d" />%s<em>(%d)</em></label>',$tree['taxonomyid'],$tree['taxonomyid'],$tree['name'],$tree['count']);
     	if (isset($tree['subs'])) {
     		$hl.= $func($tree['subs']);
     	}

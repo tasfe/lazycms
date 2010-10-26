@@ -460,15 +460,9 @@ function post_manage_page($action) {
     $content  = isset($_DATA['content'])?$_DATA['content']:null;
     $template = isset($_DATA['template'])?$_DATA['template']:null;
     $keywords = isset($_DATA['keywords'])?$_DATA['keywords']:null;
+    $categories  = isset($_DATA['category'])?$_DATA['category']:array();
     $description = isset($_DATA['description'])?$_DATA['description']:null;
-    // 取得分类关系
-    $categories  = array();
-    if (isset($_DATA['category'])) {
-        foreach($_DATA['category'] as $category) {
-            if ($category['taxonomyid']==$sortid) continue;
-            $categories[] = $category['taxonomyid'];
-        }
-    }
+
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="postmanage" id="postmanage">';
@@ -579,7 +573,7 @@ function categories_tree($sortid,$categories=array(),$trees=null) {
         $hl.= sprintf('<li><input type="radio" name="sortid" id="sortid" value="0"%s /><label for="sortid">'.__('Uncategorized').'</label></li>',$checked);
     }
     foreach ($trees as $i=>$tree) {
-        $checked = instr($tree['taxonomyid'],$categories)?' checked="checked"':'';
+        $checked = instr($tree['taxonomyid'],$categories) && $sortid!=$tree['taxonomyid'] ? ' checked="checked"' : '';
         $main_checked = $tree['taxonomyid']==$sortid?' checked="checked"':'';
         $hl.= sprintf('<li><input type="radio" name="sortid" value="%d"%s />',$tree['taxonomyid'],$main_checked);
         $hl.= sprintf('<label class="selectit" for="category-%d">',$tree['taxonomyid']);

@@ -95,6 +95,20 @@ function term_gets($content,$max_len=8,$save_other=false) {
         return $keywords;
     }
 }
+/**
+ * 取得分类列表
+ *
+ * @param string $type
+ * @return array
+ */
+function taxonomy_get_list($type='category') {
+    $db = get_conn(); $result = array();
+    $rs = $db->query("SELECT * FROM `#@_term_taxonomy` WHERE `type`='%s';",$type);
+    while ($row = $db->fetch($rs)) {
+        $result[] = $row['taxonomyid'];
+    }
+    return $result;
+}
 
 /**
  * 取得分类树
@@ -104,15 +118,15 @@ function term_gets($content,$max_len=8,$save_other=false) {
  * @return array
  */
 function taxonomy_get_trees($parentid=0,$type='category') {
-    $db = get_conn(); $result = array(); $un = array(); $parentid = intval($parentid);
-    $rs = $db->query("SELECT * FROM `#@_term_taxonomy` WHERE `type`='%s';",$type);
-    while ($row = $db->fetch($rs)) {
-        $result[$row['taxonomyid']] = taxonomy_get($row['taxonomyid']);
+    $result = array(); $un = array(); $parentid = intval($parentid);
+    $taxonomy_list = taxonomy_get_list($type);
+    foreach ($taxonomy_list as $taxonomyid) {
+        $result[$taxonomyid] = taxonomy_get($taxonomyid);
     }
     // 将数组转变成树，因为使用了引用，所以不会占用太多的内存
     foreach ($result as $id => $item) {
         if ($item['parent']) {
-            $result[$item['parent']]['subs'][$item['taxonomyid']] = &$result[$id];
+            $result[$item['parent']]['subs'][$id] = &$result[$id];
             $un[] = $id;
         }
     }
@@ -449,17 +463,19 @@ function taxonomy_delete($taxonomyid) {
 /**
  * 生成分类列表
  *
- * @param  $taxonomyid
+ * @param int $taxonomyid
+ * @param int $page
+ * @param bool $make_post   是否生成文章
  * @return bool
  */
-function taxonomy_create($taxonomyid) {
+function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
     $taxonomyid = intval($taxonomyid);
     if (!$taxonomyid) return false;
     if ($taxonomy = taxonomy_get($taxonomyid)) {
-        $page   = 1; $inner = '';
+        $page = $page<1 ? 1 : intval($page); $inner = '';
         $suffix = C('HTMLFileSuffix');
         // 载入模版
-        $html   = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html($taxonomy['list']));
+        $html   = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.$taxonomy['list']);
         // 标签块信息
         $block  = tpl_get_block($html,'post,list','list');
         if ($block) {
@@ -470,7 +486,7 @@ function taxonomy_create($taxonomyid) {
 
             $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE `taxonomyid`=%d ORDER BY `objectid` %s", esc_sql($taxonomyid), esc_sql($order));
 
-            $result = post_gets($sql, $page, $number,'sortid,path');
+            $result = post_gets($sql, $page, $number,'sortid,path',false);
             // 解析分页标签
             if (stripos($html,'{pagelist')!==false) {
                 $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU',
@@ -481,6 +497,8 @@ function taxonomy_create($taxonomyid) {
             // 数据存在
             if ($result['length'] > 0) {
                 foreach ($result['posts'] as $post) {
+                    // 生成文章
+                    if ($make_post) post_create($post['postid']);
                     // 清理模版内部变量
                     tpl_clean();
                     // 设置文章变量
@@ -523,7 +541,7 @@ function taxonomy_create($taxonomyid) {
             $html = str_replace($block['tag'],$inner,$html);
         }
         // 所需要的标签和数据都不存在，不需要生成页面
-        if ($inner == '') return true;
+        if ($inner == '') return false;
         // 清理模版内部变量
         tpl_clean();
         tpl_vars(array(

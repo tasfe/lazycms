@@ -93,14 +93,17 @@ function time_format($format,$time) {
     $minute = $time>=60 && $time<3600 ? floor($time/60) : 0;
     $time   = $time - 86400 * $days - 3600 * $hour - 60 * $minute;
     $second = $time>0 && $time<60 ? $time : 0;
-    $format = str_replace(array('%%m','%%H','%%i','%%s'), array('$m','$H','$i','$s'),$format);
-    $result = str_replace(array('%m','%H','%i','%s'), array(
+    $time   = floor(($time - intval($second)) * 100);
+    $micro  = $time>0 ? $time : 0;
+    $format = str_replace(array('%%ms','%%m','%%H','%%i','%%s'), array('$ms','$m','$H','$i','$s'),$format);
+    $result = str_replace(array('%ms','%m','%H','%i','%s'), array(
+        sprintf('%02d',$micro),
         sprintf('%02d',$days),
         sprintf('%02d',$hour),
         sprintf('%02d',$minute),
-        sprintf('%02d',$second)
+        sprintf('%02d',$second),
     ),$format);
-    return str_replace(array('$m','$H','$i','$s'),array('%m','%H','%i','%s'),$result);
+    return str_replace(array('$ms','$m','$H','$i','$s'),array('%ms','%m','%H','%i','%s'),$result);
 }
 /**
  * 取得数据库连接对象

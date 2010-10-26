@@ -28,14 +28,20 @@ $method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 switch ($method) {
     // 进度
     case 'publish':
-        $data = publish_exec();
+        $data   = publish_exec();
         if ($data) {
+            $data['pubid'] = $data['pubid'];
+            if ($data['total']<=0 && $data['state']==2) {
+                $data['rate']   = 100;
+            } else {
+                $data['rate']   = $data['total']<=0 ? 0 : floor($data['complete'] / $data['total'] * 100);
+            }
             $data['total']      = number_format($data['total']);
             $data['complete']   = number_format($data['complete']);
-            $data['begintime']  = ($data['begintime']>0 ? date('Y-m-d H:i:s',$data['begintime']) : '-------- --:--:--');
-            $data['elapsetime'] = ($data['begintime']>0 || $data['elapsetime']>0 ? time_format('%H:%i:%s',$data['elapsetime']) : '--:--:--');
-            $data['endtime']    = ($data['endtime']>0 ? date('Y-m-d H:i:s',$data['endtime']) : '-------- --:--:--');
-            $data['state']      = '<img class="c'.($data['state']+1).' os" src="'.ADMIN_ROOT.'images/t.gif" />';
+            $data['elapsetime'] = time_format('%H:%i:%s,%ms',$data['elapsetime']);
+            $data['state']      = '<img class="c'.($data['state']+1).' os" src="'.ADMIN_ROOT.'images/t.gif">';
+            // 删除不需要显示的数据
+            unset($data['name'],$data['func'],$data['args']);
         }
         admin_return($data);
         break;
