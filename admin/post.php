@@ -547,10 +547,12 @@ function post_manage_page($action) {
     echo                   '<th><label for="description">'._x('Description','post').'<br /><span class="description">'.__('(Maximum of 250)').'</span></label></th>';
     echo                   '<td><textarea class="text" cols="70" rows="5" id="description" name="description">'.$description.'</textarea></td>';
     echo               '</tr>';
-    echo               '<tr>';
-    echo                   '<th><label>'._x('Other','post').'</label></th>';
-    echo                   '<td><label for="createlists"><input type="checkbox" name="createlists" value="1" id="createlists" />'.__('Update Category Lists').'</label></td>';
-    echo               '</tr>'; 
+    if ('page.php' != $php_file) {
+        echo           '<tr>';
+        echo               '<th><label>'._x('Other','post').'</label></th>';
+        echo               '<td><label for="createlists"><input type="checkbox" name="createlists" value="1" id="createlists" />'.__('Update Category Lists').'</label></td>';
+        echo           '</tr>';
+    }
     echo           '</tbody>';
     echo       '</table>';
     echo   '</fieldset>';
