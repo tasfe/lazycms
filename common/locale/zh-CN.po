@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-27 04:57+0800\n"
+"POT-Creation-Date: 2010-10-27 20:36+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.net>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
@@ -388,88 +388,118 @@ msgstr "文件创建失败。"
 
 #: admin/categories.php:137
 #: admin/model.php:146
-#: admin/publish.php:91
-#: admin/publish.php:108
+#: admin/publish.php:89
+#: admin/publish.php:107
 #: admin/user.php:144
 msgid "Did not select any item."
 msgstr "没有选择任何项目。"
 
 #: admin/categories.php:145
+#: admin/publish.php:114
+#, php-format
+msgid "Create Lists and Posts:%s"
+msgstr "生成列表和文章：%s"
+
+#: admin/categories.php:149
+#: admin/publish.php:118
+#, php-format
+msgid "Create Lists:%s"
+msgstr "生成列表：%s"
+
+#: admin/categories.php:153
+#: admin/publish.php:122
+#, php-format
+msgid "Create Posts:%s"
+msgstr "生成文章：%s"
+
+#: admin/categories.php:155
+#: admin/publish.php:137
+msgid "Publish process successfully created."
+msgstr "发布进程创建成功。"
+
+#: admin/categories.php:162
 msgid "Categories deleted."
 msgstr "分类删除成功。"
 
-#: admin/categories.php:148
+#: admin/categories.php:165
 #: admin/model.php:180
-#: admin/publish.php:99
+#: admin/publish.php:97
 #: admin/user.php:156
 msgid "Parameter is invalid."
 msgstr "参数错误。"
 
-#: admin/categories.php:157
+#: admin/categories.php:174
 msgctxt "sort"
 msgid "Add New"
 msgstr "添加分类"
 
-#: admin/categories.php:171
+#: admin/categories.php:188
 #: admin/model.php:308
 #: admin/model.php:439
-#: admin/publish.php:77
+#: admin/publish.php:75
 msgid "No record!"
 msgstr "没有记录！"
 
-#: admin/categories.php:189
+#: admin/categories.php:206
 #: admin/model.php:326
-#: admin/publish.php:184
+#: admin/publish.php:194
 #: admin/user.php:210
 msgid "Bulk Actions"
 msgstr "批量操作"
 
-#: admin/categories.php:190
-#: admin/categories.php:222
-msgid "Create List"
+#: admin/categories.php:207
+msgid "Create Posts"
+msgstr "生成文章"
+
+#: admin/categories.php:208
+msgid "Create Lists"
 msgstr "生成列表"
 
-#: admin/categories.php:191
-msgid "Create Post and List"
+#: admin/categories.php:209
+msgid "Create Posts and Lists"
 msgstr "生成文章和列表"
 
-#: admin/categories.php:192
-#: admin/categories.php:224
+#: admin/categories.php:210
+#: admin/categories.php:242
 #: admin/model.php:298
 #: admin/model.php:330
 #: admin/model.php:428
-#: admin/publish.php:65
-#: admin/publish.php:187
+#: admin/publish.php:63
+#: admin/publish.php:195
 #: admin/user.php:184
 #: admin/user.php:211
 msgid "Delete"
 msgstr "删除"
 
-#: admin/categories.php:194
+#: admin/categories.php:212
 #: admin/model.php:332
-#: admin/publish.php:189
+#: admin/publish.php:197
 #: admin/user.php:213
 msgid "Apply"
 msgstr "应用"
 
-#: admin/categories.php:204
-#: admin/categories.php:275
+#: admin/categories.php:222
+#: admin/categories.php:293
 msgctxt "sort"
 msgid "Name"
 msgstr "分类名称"
 
-#: admin/categories.php:205
-#: admin/categories.php:279
+#: admin/categories.php:223
+#: admin/categories.php:297
 msgctxt "sort"
 msgid "Path"
 msgstr "列表目录"
 
-#: admin/categories.php:206
+#: admin/categories.php:224
 msgctxt "sort"
 msgid "Posts"
 msgstr "文章数"
 
-#: admin/categories.php:223
+#: admin/categories.php:240
+msgid "Create List"
+msgstr "生成列表"
+
+#: admin/categories.php:241
 #: admin/model.php:294
 #: admin/model.php:427
 #: admin/user.php:180
@@ -477,17 +507,17 @@ msgstr "文章数"
 msgid "Edit"
 msgstr "编辑"
 
-#: admin/categories.php:268
+#: admin/categories.php:286
 msgctxt "sort"
 msgid "Parent"
 msgstr "上级目录"
 
-#: admin/categories.php:270
+#: admin/categories.php:288
 msgid "&mdash; no parent &mdash;"
 msgstr "&mdash; 无父级 &mdash;"
 
-#: admin/categories.php:275
-#: admin/categories.php:279
+#: admin/categories.php:293
+#: admin/categories.php:297
 #: admin/model.php:382
 #: admin/model.php:390
 #: admin/user.php:253
@@ -495,52 +525,52 @@ msgstr "&mdash; 无父级 &mdash;"
 msgid "(required)"
 msgstr "(必填)"
 
-#: admin/categories.php:281
+#: admin/categories.php:299
 msgid "Category ID"
 msgstr "分类ID"
 
-#: admin/categories.php:282
+#: admin/categories.php:300
 #: admin/model.php:393
 msgid "MD5 Value"
 msgstr "MD5值"
 
-#: admin/categories.php:283
+#: admin/categories.php:301
 #: admin/model.php:394
 msgid "Pinyin"
 msgstr "拼音"
 
-#: admin/categories.php:287
+#: admin/categories.php:305
 msgid "List Template"
 msgstr "列表模板"
 
-#: admin/categories.php:295
+#: admin/categories.php:313
 #: admin/model.php:402
 msgid "Page Template"
 msgstr "内容模板"
 
-#: admin/categories.php:298
+#: admin/categories.php:316
 msgid "Use the model set"
 msgstr "使用模型设置"
 
-#: admin/categories.php:304
+#: admin/categories.php:322
 msgctxt "sort"
 msgid "Keywords"
 msgstr "关键词"
 
-#: admin/categories.php:308
+#: admin/categories.php:326
 msgctxt "sort"
 msgid "Description"
 msgstr "Meta简述"
 
-#: admin/categories.php:308
+#: admin/categories.php:326
 msgid "(Maximum of 250)"
 msgstr "最大250个字"
 
-#: admin/categories.php:316
+#: admin/categories.php:334
 msgid "Add Category"
 msgstr "添加分类"
 
-#: admin/categories.php:318
+#: admin/categories.php:336
 msgid "Update Category"
 msgstr "更新分类"
 
@@ -1110,99 +1140,84 @@ msgid "Publish Posts"
 msgstr "页面发布"
 
 #: admin/publish.php:39
-#: admin/publish.php:136
+#: admin/publish.php:146
 msgid "Process list"
 msgstr "进程管理"
 
 #: admin/publish.php:44
-#: admin/publish.php:170
+#: admin/publish.php:180
 msgctxt "publish"
 msgid "Add New"
 msgstr "添加进程"
 
-#: admin/publish.php:63
-#: admin/publish.php:185
-msgid "Pause"
-msgstr "暂停"
-
-#: admin/publish.php:64
-#: admin/publish.php:186
-msgid "Start"
-msgstr "开始"
-
-#: admin/publish.php:96
+#: admin/publish.php:94
 msgid "Process deleted."
 msgstr "进程删除成功。"
 
-#: admin/publish.php:112
-#: admin/publish.php:147
+#: admin/publish.php:127
+#: admin/publish.php:157
 msgid "Create all Lists"
 msgstr "生成所有列表"
 
-#: admin/publish.php:116
-#: admin/publish.php:146
+#: admin/publish.php:131
+#: admin/publish.php:156
 msgid "Create all Posts"
 msgstr "生成所有文章"
 
-#: admin/publish.php:120
-#: admin/publish.php:145
+#: admin/publish.php:135
+#: admin/publish.php:155
 msgid "Create all Pages"
 msgstr "生成所有页面"
 
-#: admin/publish.php:124
-#: admin/publish.php:158
-msgid "Create Lists and Posts"
-msgstr "生成列表和文章"
-
-#: admin/publish.php:127
-msgid "Publish process has created."
-msgstr "发布进程创建成功。"
-
-#: admin/publish.php:141
+#: admin/publish.php:151
 msgid "Select you want to publish the items:"
 msgstr "选择你要发布的项目："
 
-#: admin/publish.php:152
+#: admin/publish.php:162
 msgid "Select you want to publish the category:"
 msgstr "选择你要发布的类别："
 
-#: admin/publish.php:159
+#: admin/publish.php:168
+msgid "Create Lists and Posts"
+msgstr "生成列表和文章"
+
+#: admin/publish.php:169
 msgid "Only Create lists"
 msgstr "只生成列表"
 
-#: admin/publish.php:160
+#: admin/publish.php:170
 msgid "Only Create posts"
 msgstr "只生成文章"
 
-#: admin/publish.php:163
+#: admin/publish.php:173
 msgid "Select / Deselect"
 msgstr "全选 / 反选"
 
-#: admin/publish.php:199
+#: admin/publish.php:207
 msgctxt "publish"
-msgid "Type"
-msgstr "类型"
+msgid "Name"
+msgstr "任务"
 
-#: admin/publish.php:200
+#: admin/publish.php:208
 msgctxt "publish"
 msgid "Total"
 msgstr "总数量"
 
-#: admin/publish.php:201
+#: admin/publish.php:209
 msgctxt "publish"
 msgid "Complete"
 msgstr "已完成"
 
-#: admin/publish.php:202
+#: admin/publish.php:210
 msgctxt "publish"
 msgid "Rate"
 msgstr "进度"
 
-#: admin/publish.php:203
+#: admin/publish.php:211
 msgid "Elapsed time"
 msgstr "已用时间"
 
-#: admin/publish.php:204
+#: admin/publish.php:212
 msgctxt "publish"
 msgid "State"
 msgstr "状态"
@@ -1455,130 +1470,139 @@ msgstr "文章创建成功。"
 msgid "Posts deleted."
 msgstr "文章删除成功。"
 
-#: admin/post.php:123
+#: admin/post.php:125
 msgctxt "post"
 msgid "The title field is empty."
 msgstr "标题字段不能为空。"
 
-#: admin/post.php:124
+#: admin/post.php:126
 #, php-format
 msgctxt "post"
 msgid "The title field length must be %d-%d characters."
 msgstr "标题长度必须%d至%d个字符。"
 
-#: admin/post.php:129
+#: admin/post.php:131
 msgctxt "post"
 msgid "The path field is empty."
 msgstr "路径不能为空。"
 
-#: admin/post.php:130
+#: admin/post.php:132
 #, php-format
 msgctxt "post"
 msgid "The path can not contain any of the following characters %s"
 msgstr "文章路径不能下列任何字符之一：%s"
 
-#: admin/post.php:131
+#: admin/post.php:133
 msgctxt "post"
 msgid "The path already exists."
 msgstr "文章路径已存在，请重新输入。"
 
-#: admin/post.php:195
+#: admin/post.php:197
 msgid "Post updated."
 msgstr "文章更新成功。"
 
-#: admin/post.php:205
+#: admin/post.php:207
 msgid "Post created."
 msgstr "文章添加成功。"
 
-#: admin/post.php:290
+#: admin/post.php:296
 msgid "Browse..."
 msgstr "浏览..."
 
-#: admin/post.php:360
-#: admin/post.php:411
+#: admin/post.php:366
+#: admin/post.php:417
 msgid "Create"
 msgstr "生成"
 
-#: admin/post.php:367
-#: admin/post.php:381
+#: admin/post.php:373
+#: admin/post.php:387
 msgid "None"
 msgstr "无"
 
-#: admin/post.php:426
-#: admin/post.php:496
+#: admin/post.php:432
+#: admin/post.php:502
 msgctxt "post"
 msgid "Title"
 msgstr "标题"
 
-#: admin/post.php:427
-#: admin/post.php:474
+#: admin/post.php:433
+#: admin/post.php:480
 msgctxt "post"
 msgid "Model"
 msgstr "模型"
 
-#: admin/post.php:428
-#: admin/post.php:507
+#: admin/post.php:434
+#: admin/post.php:513
 msgctxt "post"
 msgid "Path"
 msgstr "路径"
 
-#: admin/post.php:430
-#: admin/post.php:488
+#: admin/post.php:436
+#: admin/post.php:494
 msgctxt "post"
 msgid "Categories"
 msgstr "分类"
 
-#: admin/post.php:432
+#: admin/post.php:438
 msgctxt "post"
 msgid "Date"
 msgstr "日期"
 
-#: admin/post.php:433
+#: admin/post.php:439
 msgctxt "post"
 msgid "State"
 msgstr "状态"
 
-#: admin/post.php:499
+#: admin/post.php:505
 msgid "Auto get keywords"
 msgstr "自动获取关键词"
 
-#: admin/post.php:503
+#: admin/post.php:509
 msgctxt "post"
 msgid "Content"
 msgstr "内容"
 
-#: admin/post.php:524
+#: admin/post.php:530
 msgid "More attribute"
 msgstr "更多属性"
 
-#: admin/post.php:528
+#: admin/post.php:534
 msgctxt "post"
 msgid "Page Template"
 msgstr "页面模板"
 
-#: admin/post.php:537
+#: admin/post.php:543
 msgctxt "post"
 msgid "Keywords"
 msgstr "关键词"
 
-#: admin/post.php:538
+#: admin/post.php:544
 msgid "Get"
 msgstr "获取"
 
-#: admin/post.php:541
+#: admin/post.php:547
 msgctxt "post"
 msgid "Description"
 msgstr "Meta简述"
 
-#: admin/post.php:549
+#: admin/post.php:551
+msgctxt "post"
+msgid "Other"
+msgstr "其它选项"
+
+#: admin/post.php:552
+msgid "Update Category Lists"
+msgstr "更新分类列表"
+
+#: admin/post.php:559
 msgid "Add Post"
 msgstr "添加文章"
 
-#: admin/post.php:551
+#: admin/post.php:561
 msgid "Update Post"
 msgstr "更新文章"
 
-#: admin/post.php:573
+#: admin/post.php:583
 msgid "Uncategorized"
 msgstr "未分类"
 
@@ -1795,6 +1819,13 @@ msgstr "网页后缀"
 msgid "Save Changes"
 msgstr "保存更改"
 
+#~ msgid "Pause"
+#~ msgstr "暂停"
+#~ msgid "Start"
+#~ msgstr "开始"
+#~ msgctxt "publish"
+#~ msgid "Type"
+#~ msgstr "类型"
 #~ msgid "Stop"
 #~ msgstr "停止"
 #~ msgid "Begin Time"
@@ -1896,12 +1927,6 @@ msgstr "保存更改"
 #~ msgstr "（推荐升级至IE 7.0+）"
 #~ msgid "Don't use model"
 #~ msgstr "不使用模型"
-
-#, fuzzy
-#~ msgid "Name"
-#~ msgid_plural "sort"
-#~ msgstr[0] "分类名称"
-#~ msgstr[1] "分类名称"
 #~ msgid "HTML Save the directory"
 #~ msgstr "网页保存目录"
 #~ msgid "Must be \"/\" end, required"

@@ -41,7 +41,7 @@ switch ($method) {
         $publish = publish_gets();
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'._x('Add New','publish').'</a></h2>';
+        echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'">'._x('Add New','publish').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="publishlist" id="publishlist">';
         table_nav();
         echo       '<table class="data-table" cellspacing="0">';
@@ -60,9 +60,7 @@ switch ($method) {
                     $rate = $data['total']<=0 ? 0 : floor($data['complete'] / $data['total'] * 100);
                 }
 
-                $actions = '<span class="pause"><a href="javascript:;">'.__('Pause').'</a> | </span>';
-                $actions.= '<span class="start"><a href="javascript:;">'.__('Start').'</a> | </span>';
-                $actions.= '<span class="delete"><a href="javascript:;">'.__('Delete').'</a></span>';
+                $actions = '<span class="delete"><a href="javascript:;" onclick="publish_delete('.$pubid.')">'.__('Delete').'</a></span>';
                 echo       '<tr id="publish-'.$pubid.'">';
                 echo           '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$pubid.'" /></td>';
                 echo           '<td><strong>'.$data['name'].'</strong><br/><div class="row-actions">'.$actions.'</div></td>';
@@ -108,6 +106,22 @@ switch ($method) {
         if (empty($actions) && empty($category)) {
 	    	admin_error(__('Did not select any item.'));
 	    }
+        // 添加列表生成
+        if ($category) {
+            $names = taxonomy_get_names($category);
+            // 生成列表和文章
+            if ($option == 'all') {
+                publish_add(sprintf(__('Create Lists and Posts:%s'),$names),'publish_lists',array($category,true));
+            }
+            // 只生成列表
+            elseif ($option == 'lists') {
+                publish_add(sprintf(__('Create Lists:%s'),$names),'publish_lists',array($category,false));
+            }
+            // 只生成文章
+            elseif ($option == 'posts') {
+                publish_add(sprintf(__('Create Posts:%s'),$names),'publish_posts',array($category));
+            }
+        }
         // 添加生成所列表进程
         if (instr('createlists',$actions)) {
             publish_add(__('Create all Lists'),'publish_lists');
@@ -120,24 +134,7 @@ switch ($method) {
         if (instr('createpages',$actions)) {
             publish_add(__('Create all Pages'),'publish_posts',array('pages'));
         }
-        // 添加列表生成
-        if ($category) {
-            // TODO 修改进程显示的文字
-            // 生成列表和文章
-            if ($option == 'all') {
-                publish_add(__('Create Lists and Posts'),'publish_lists',array($category,true));
-            }
-            // 只生成列表
-            elseif ($option == 'lists') {
-                publish_add(__('Create Lists and Posts'),'publish_lists',array($category,false));
-            }
-            // 只生成文章
-            elseif ($option == 'posts') {
-                publish_add(__('Create all Lists'),'publish_lists',array($category));
-            }
-        }
-        // 需要异步请求执行 publish_exec();
-        admin_success(__('Publish process has created.'),"LazyCMS.redirect('".PHP_FILE."?method=list');");
+        admin_success(__('Publish process successfully created.'),"LazyCMS.redirect('".PHP_FILE."?method=list');");
         break;
     // 发布页面
     default:
@@ -195,8 +192,6 @@ function table_nav() {
     echo '<div class="table-nav">';
     echo     '<select name="actions">';
     echo         '<option value="">'.__('Bulk Actions').'</option>';
-    echo         '<option value="pause">'.__('Pause').'</option>';
-    echo         '<option value="start">'.__('Start').'</option>';
     echo         '<option value="delete">'.__('Delete').'</option>';
     echo     '</select>';
     echo     '<button type="button">'.__('Apply').'</button>';
@@ -209,7 +204,7 @@ function table_nav() {
 function table_thead() {
     echo '<tr>';
     echo     '<th class="check-column"><input type="checkbox" name="select" value="all" /></th>';
-    echo     '<th>'._x('Type','publish').'</th>';
+    echo     '<th>'._x('Name','publish').'</th>';
     echo     '<th>'._x('Total','publish').'</th>';
     echo     '<th>'._x('Complete','publish').'</th>';
     echo     '<th>'._x('Rate','publish').'</th>';

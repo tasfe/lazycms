@@ -46,3 +46,11 @@ function publish_list() {
 	// 绑定提交事件
 	form.actions();
 }
+// 删除进程
+function publish_delete(pubid){
+    LazyCMS.confirm(_('Confirm Delete?'),function(r){
+        if (r) {
+            LazyCMS.postAction('publish.php', {method:'bulk', action:'delete'}, pubid);
+        }
+    });
+}

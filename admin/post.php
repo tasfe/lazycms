@@ -118,6 +118,8 @@ switch ($method) {
             $template = isset($_POST['template'])?$_POST['template']:null;
             $keywords = isset($_POST['keywords'])?$_POST['keywords']:null;
             $description = isset($_POST['description'])?$_POST['description']:null;
+            $createlists = isset($_POST['createlists'])?$_POST['createlists']:null;
+
 
             validate_check(array(
                 array('title',VALIDATE_EMPTY,_x('The title field is empty.','post')),
@@ -203,6 +205,10 @@ switch ($method) {
                         $postid = $post['postid'];
                     }
                     $result = __('Post created.');
+                }
+                // 更新分类
+                if ($createlists) {
+                    publish_add(sprintf(__('Create Lists:%s'),taxonomy_get_names($category)),'publish_lists',array($category,false));
                 }
                 // 生成文章
                 if (post_create($postid)) {
@@ -540,7 +546,11 @@ function post_manage_page($action) {
     echo               '<tr>';
     echo                   '<th><label for="description">'._x('Description','post').'<br /><span class="description">'.__('(Maximum of 250)').'</span></label></th>';
     echo                   '<td><textarea class="text" cols="70" rows="5" id="description" name="description">'.$description.'</textarea></td>';
-    echo               '</tr>';    
+    echo               '</tr>';
+    echo               '<tr>';
+    echo                   '<th><label>'._x('Other','post').'</label></th>';
+    echo                   '<td><label for="createlists"><input type="checkbox" name="createlists" value="1" id="createlists" />'.__('Update Category Lists').'</label></td>';
+    echo               '</tr>'; 
     echo           '</tbody>';
     echo       '</table>';
     echo   '</fieldset>';

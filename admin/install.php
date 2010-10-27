@@ -333,9 +333,8 @@ CREATE TABLE `#@_publish` (
   `total` int(10) unsigned NOT NULL DEFAULT '0',
   `complete` int(10) unsigned NOT NULL DEFAULT '0',
   `func` varchar(50) NOT NULL,
-  `begintime` int(10) unsigned NOT NULL DEFAULT '0',
-  `elapsetime` int(10) unsigned NOT NULL DEFAULT '0',
-  `endtime` int(10) unsigned NOT NULL DEFAULT '0',
+  `args` longtext NOT NULL,
+  `elapsetime` decimal(15,4) unsigned NOT NULL DEFAULT '0.0000',
   `state` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`pubid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
@@ -351,7 +350,8 @@ CREATE TABLE `#@_term_relation` (
   `objectid` bigint(20) unsigned NOT NULL,
   `taxonomyid` int(10) unsigned NOT NULL,
   `order` smallint(5) unsigned NOT NULL DEFAULT '0',
-  KEY `taxonomyid` (`taxonomyid`)
+  KEY `taxonomyid` (`taxonomyid`),
+  KEY `objectid` (`objectid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE `#@_term_taxonomy` (

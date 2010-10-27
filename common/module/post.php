@@ -31,6 +31,8 @@ defined('COM_PATH') or die('Restricted access!');
  */
 function post_add($title,$content,$path,$data=null) {
     $db = get_conn();
+    // 删除添加失败的文章
+    $db->delete('#@_post',array('datetime' => 0)); 
     $postid = $db->insert('#@_post',array(
        'title'   => $title,
        'content' => $content,
@@ -66,41 +68,11 @@ function post_edit($postid,$data) {
                     unlink(ABS_PATH.'/'.$post['path']);
             }
         }
-        // 更新分类关系
-        $categories = array();
-        if (isset($data['category'])) {
-            $categories = $data['category'];
-            taxonomy_make_relation('category',$postid,$data['category']);
-        }
-        // 分析关键词
-        if (isset($data['keywords'])) {
-            $taxonomies = array();
-            if ($data['keywords']) {
-                if (is_array($data['keywords'])) {
-                    $keywords = $data['keywords'];
-                } else {
-                    // 替换掉全角逗号和全角空格
-                    $data['keywords'] = str_replace(array('，','　'),array(',',' '),$data['keywords']);
-                    // 先用,分隔关键词
-                    $keywords = explode(',',$data['keywords']);
-                    // 分隔失败，使用空格分隔关键词
-                    if (count($keywords)==1) $keywords = explode(' ',$data['keywords']);
-                }
-                // 移除重复的关键词
-                $keywords = array_unique($keywords);
-                // 去除关键词两边的空格，转义HTML
-                array_walk($keywords,create_function('&$s','$s=esc_html(trim($s));'));
-                // 强力插入关键词
-                foreach($keywords as $key) {
-                    $taxonomies[] = taxonomy_add_tag($key);
-                }
-            }
-            // 创建关系
-            taxonomy_make_relation('post_tag',$postid,$taxonomies);
-        }
+        $category = isset($data['category']) ? $data['category'] : null;
+        $keywords = isset($data['keywords']) ? $data['keywords'] : null;
         unset($data['category'],$data['keywords']);
         $meta_rows = empty($data['meta']) ? array() : $data['meta']; unset($data['meta']);
-        $post_rows = $data; $data['meta'] = $meta_rows; $data['category'] = $categories;
+        $post_rows = $data; $data['meta'] = $meta_rows; $data['category'] = $category;
 
         // 更新数据
         if (!empty($post_rows)) {
@@ -108,6 +80,32 @@ function post_edit($postid,$data) {
         }
         if (!empty($meta_rows)) {
             post_edit_meta($postid,$meta_rows);
+        }
+        // 更新分类关系
+        if ($data['category']) {
+            taxonomy_make_relation('category',$postid,$data['category']);
+        }
+        // 分析关键词
+        if ($keywords) {
+            $taxonomies = array();
+            if (!is_array($keywords)) {
+                // 替换掉全角逗号和全角空格
+                $keywords = str_replace(array('，','　'),array(',',' '),$keywords);
+                // 先用,分隔关键词
+                $keywords = explode(',',$keywords);
+                // 分隔失败，使用空格分隔关键词
+                if (count($keywords)==1) $keywords = explode(' ',$keywords);
+            }
+            // 移除重复的关键词
+            $keywords = array_unique($keywords);
+            // 去除关键词两边的空格，转义HTML
+            array_walk($keywords,create_function('&$s','$s=esc_html(trim($s));'));
+            // 强力插入关键词
+            foreach($keywords as $key) {
+                $taxonomies[] = taxonomy_add_tag($key);
+            }
+            // 创建关系
+            taxonomy_make_relation('post_tag',$postid,$taxonomies);
         }
         // 清理缓存
         post_clean_cache($postid);
@@ -164,7 +162,7 @@ function post_gets($sql, $page=1, $size=10,$option='model,path,category',$is_ret
  */
 function post_path_exists($postid,$path) {
     if (strpos($path,'%ID')!==false && strpos($path,'%MD5')!==false) return false;
-    $db = get_conn();
+    $db = get_conn(); $db->delete('#@_post',array('datetime' => 0)); // 删除添加失败的文章
     if ($postid) {
         $sql = sprintf("SELECT COUNT(`postid`) FROM `#@_post` WHERE `path`='%s' AND `postid`<>'%d';", esc_sql($path), esc_sql($postid));
     } else {

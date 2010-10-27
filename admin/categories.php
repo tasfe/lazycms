@@ -137,6 +137,23 @@ switch ($method) {
 	    	admin_error(__('Did not select any item.'));
 	    }
 	    switch ($action) {
+            // 生成
+	        case 'createposts': case 'createlists': case 'createall':
+                $names = taxonomy_get_names($listids);
+                // 生成列表和文章
+                if ($action == 'createall') {
+                    publish_add(sprintf(__('Create Lists and Posts:%s'),$names),'publish_lists',array($listids,true));
+                }
+                // 只生成列表
+                elseif ($action == 'createlists') {
+                    publish_add(sprintf(__('Create Lists:%s'),$names),'publish_lists',array($listids,false));
+                }
+                // 只生成文章
+                elseif ($action == 'createposts') {
+                    publish_add(sprintf(__('Create Posts:%s'),$names),'publish_posts',array($listids));
+                }
+                admin_success(__('Publish process successfully created.'),"LazyCMS.redirect('".ADMIN_ROOT."publish.php?method=list');");
+                break;
 	        // 删除
 	        case 'delete':
 	            foreach ($listids as $taxonomyid) {
@@ -187,8 +204,9 @@ function table_nav() {
     echo '<div class="table-nav">';
     echo     '<select name="actions">';
     echo         '<option value="">'.__('Bulk Actions').'</option>';
-    echo         '<option value="create">'.__('Create List').'</option>';
-    echo         '<option value="createall">'.__('Create Post and List').'</option>';
+    echo         '<option value="createposts">'.__('Create Posts').'</option>';
+    echo         '<option value="createlists">'.__('Create Lists').'</option>';
+    echo         '<option value="createall">'.__('Create Posts and Lists').'</option>';
     echo         '<option value="delete">'.__('Delete').'</option>';
     echo     '</select>';
     echo     '<button type="button">'.__('Apply').'</button>';
@@ -219,7 +237,7 @@ function display_tr_tree($sorts,$n=0) {
     foreach ($sorts as $sort) {
         $path    = WEB_ROOT.$sort['path'].'/';
         $href    = PHP_FILE.'?method=edit&taxonomyid='.$sort['taxonomyid'];
-        $actions = '<span class="create"><a href="javascript:;">'.__('Create List').'</a> | </span>';
+        $actions = '<span class="create"><a href="javascript:;" onclick="sort_create('.$sort['taxonomyid'].')">'.__('Create List').'</a> | </span>';
         $actions.= '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a> | </span>';
         $actions.= '<span class="delete"><a href="javascript:;" onclick="sort_delete('.$sort['taxonomyid'].')">'.__('Delete').'</a></span>';
         $hl.= '<tr>';

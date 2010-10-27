@@ -50,7 +50,10 @@ function sort_manage_init() {
     // 提交事件
     $('form#sortmanage').ajaxSubmit();
 }
-
+// 生成文章
+function sort_create(sortid) {
+    return LazyCMS.postAction('categories.php', {method:'bulk', action:'createlists'}, sortid);
+}
 // 删除分类
 function sort_delete(sortid){
     LazyCMS.confirm(_('Confirm Delete?'),function(r){

@@ -27,7 +27,7 @@ admin_head('title',__('Tools'));
 
 include ADMIN_PATH.'/admin-header.php';
 
-fcache_flush();
+//fcache_flush();
 
 echo '<div class="wrap">';
 echo   '<h2>'.admin_head('title').'</h2>';

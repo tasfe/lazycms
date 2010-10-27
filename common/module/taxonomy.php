@@ -96,6 +96,26 @@ function term_gets($content,$max_len=8,$save_other=false) {
     }
 }
 /**
+ * 取得分类名称列表
+ *
+ * @param  $category
+ * @param int $num
+ * @return string
+ */
+function taxonomy_get_names($category,$num=3) {
+    $names = array();
+    foreach($category as $i=>$taxonomyid) {
+        $taxonomy = taxonomy_get($taxonomyid);
+        if ($i >= $num) {
+            $names[] = $taxonomy['name'].'...';
+            break;
+        } else {
+            $names[] = $taxonomy['name'];
+        }
+    }
+    return implode(',', $names);
+}
+/**
  * 取得分类列表
  *
  * @param string $type
@@ -446,7 +466,7 @@ function taxonomy_delete($taxonomyid) {
     $db = get_conn();
     $taxonomyid = intval($taxonomyid);
     if (!$taxonomyid) return false;
-    if (taxonomy_get($taxonomyid)) {
+    if ($taxonomy = taxonomy_get($taxonomyid)) {
         // 删除分类关系
         $db->delete('#@_term_relation',array('taxonomyid' => $taxonomyid));
         // 删除分类扩展信息
@@ -455,7 +475,8 @@ function taxonomy_delete($taxonomyid) {
         $db->delete('#@_term_taxonomy',array('taxonomyid' => $taxonomyid));
         // 清理缓存
         taxonomy_clean_cache($taxonomyid);
-        return true;
+        // 删除文件
+        return rmdirs(ABS_PATH.'/'.$taxonomy['path']);
     }
     return false;
 }
@@ -513,8 +534,10 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                     );
                     // 设置分类变量
                     $vars['sortid']   = $post['sortid'];
-                    $vars['sortname'] = $post['sort']['name'];
-                    $vars['sortpath'] = WEB_ROOT.$post['sort']['path'].'/index'.$suffix;
+                    if (isset($post['sort'])) {
+                        $vars['sortname'] = $post['sort']['name'];
+                        $vars['sortpath'] = WEB_ROOT.$post['sort']['path'].'/index'.$suffix;                        
+                    }
                     tpl_vars($vars);
                     // 设置自定义字段
                     if (isset($post['meta'])) {
@@ -541,7 +564,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
             $html = str_replace($block['tag'],$inner,$html);
         }
         // 所需要的标签和数据都不存在，不需要生成页面
-        if ($inner == '') return false;
+        if ($inner=='' && $page>1) return false;
         // 清理模版内部变量
         tpl_clean();
         tpl_vars(array(

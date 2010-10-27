@@ -101,21 +101,31 @@ function publish_exec() {
  * @return bool
  */
 function publish_posts($data,$mode='all'){
-    $db = get_conn(); $where = '';
+    $db = get_conn();
+    $sql = 'SELECT `postid` FROM `#@_post`';
+    // 生成所有页面
     if ($mode == 'pages') {
         $where = "WHERE `sortid`='-1'";
+        $sql  .= $where;
     }
+    // 生成所有文章
     elseif($mode == 'posts') {
         $where = "WHERE `sortid`<>'-1'";
+        $sql  .= $where;
     }
-    // TODO 增加指定分类文章生成
-    else {
-
+    // 指定分类文章生成
+    elseif (is_array($mode) && !empty($mode)) {
+        $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE `tr`.`taxonomyid` IN(%s)",implode(',',$mode));
     }
 
     // 总数小于等于0时，统计总数并保存
     if (isset($data['total']) && 0 >= $data['total'] && $data['state']==0) {
-        $total = $db->result("SELECT COUNT(`postid`) FROM `#@_post` {$where};");
+        if (is_array($mode) && !empty($mode)) {
+            $count_sql = sprintf("SELECT COUNT(DISTINCT(`p`.`postid`)) FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE `tr`.`taxonomyid` IN(%s)",implode(',',$mode));
+        } else {
+            $count_sql = "SELECT COUNT(`postid`) FROM `#@_post` {$where};";
+        }
+        $total = $db->result($count_sql);
         // 没有任何文章需要生成，直接结束
         if (0 >= $total) {
             $sets = array('state' => 2);
@@ -129,7 +139,7 @@ function publish_posts($data,$mode='all'){
         ));
     }
     $length = 0;
-    $rs = $db->query("SELECT `postid` FROM `#@_post` {$where} LIMIT 100 OFFSET %d;",$data['complete']);
+    $rs = $db->query("{$sql} LIMIT 100 OFFSET %d;",$data['complete']);
     while ($row = $db->fetch($rs)) {
         post_create($row['postid']);
         $length++;
