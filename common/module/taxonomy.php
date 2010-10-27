@@ -226,18 +226,13 @@ function taxonomy_get_meta($taxonomyid) {
  * @return array
  */
 function taxonomy_get_relation($type, $objectid) {
-    static $taxonomies = array(); $rel_ids = array();
-    $db = get_conn(); $result = array();
-    if (!isset($taxonomies[$type])) {
-        $tt_ids = array();
-        $rs = $db->query("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `type`='%s';",$type);
-        while ($tt = $db->fetch($rs)) {
-            $tt_ids[] = $tt['taxonomyid'];
-        }
-        $taxonomies[$type] = "'" . implode("', '", $tt_ids) . "'";
+    $db = get_conn(); $result = array(); $tt_ids = array();
+    $rs = $db->query("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `type`='%s';",$type);
+    while ($tt = $db->fetch($rs)) {
+        $tt_ids[] = $tt['taxonomyid'];
     }
-    $in_tt_ids = $taxonomies[$type];
-    $rs = $db->query("SELECT DISTINCT `tr`.`taxonomyid` AS `taxonomyid`,`tr`.`order` AS `order` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%d AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
+    $in_tt_ids = "'" . implode("', '", $tt_ids) . "'";
+    $rs = $db->query("SELECT DISTINCT(`tr`.`taxonomyid`) AS `taxonomyid`,`tr`.`order` AS `order` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%d AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
     while ($taxonomy = $db->fetch($rs)) {
         $result[$taxonomy['order']] = $taxonomy['taxonomyid'];
     }

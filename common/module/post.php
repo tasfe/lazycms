@@ -94,7 +94,7 @@ function post_edit($postid,$data) {
                 // 先用,分隔关键词
                 $keywords = explode(',',$keywords);
                 // 分隔失败，使用空格分隔关键词
-                if (count($keywords)==1) $keywords = explode(' ',$keywords);
+                if (count($keywords)==1) $keywords = explode(' ',$keywords[0]);
             }
             // 移除重复的关键词
             $keywords = array_unique($keywords);
@@ -104,6 +104,7 @@ function post_edit($postid,$data) {
             foreach($keywords as $key) {
                 $taxonomies[] = taxonomy_add_tag($key);
             }
+            $data['keywords'] = implode(',',$keywords);
             // 创建关系
             taxonomy_make_relation('post_tag',$postid,$taxonomies);
         }
@@ -174,11 +175,12 @@ function post_path_exists($postid,$path) {
  * 查找指定的文章
  *
  * @param int $postid
+ * @param bool $is_add 是否添加时调用
  * @return array
  */
 function post_get($postid) {
     $db   = get_conn();
-    $ckey = sprintf('post.%s',$postid);
+    $ckey = sprintf('post.%d',$postid);
     $post = fcache_get($ckey);
     if ($post !== null) return $post;
 
