@@ -499,7 +499,10 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
             $number = tpl_get_attr($block['tag'],'number');
             // 排序方式
             $order  = tpl_get_attr($block['tag'],'order');
-
+            // 校验数据
+            $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
+            $order  = instr(strtoupper($order),'ASC,DESC') ? $order : 'DESC';
+            // 拼装sql
             $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE `taxonomyid`=%d ORDER BY `objectid` %s", esc_sql($taxonomyid), esc_sql($order));
 
             $result = post_gets($sql, $page, $number,'sortid,path',false);

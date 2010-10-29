@@ -22,6 +22,7 @@ defined('COM_PATH') or die('Restricted access!');
 
 // 注册模版变量处理函数
 tpl_add_plugin('system_tpl_plugin');
+tpl_add_plugin('system_list_tpl_plugin');
 
 /**
  * 处理模版变量
@@ -63,6 +64,33 @@ function system_tpl_plugin($tag_name,$tag) {
         default:
             $result = null;
             break;
+    }
+    return $result;
+}
+
+function system_list_tpl_plugin($tag_name,$tag) {
+    if (!instr($tag_name,'post,list')) return null;
+    // 列表类型
+    $type = tpl_get_attr($tag,'type');
+    // 类型为必填
+    if (!$type) return null;
+    // 分类ID
+    $sortid = tpl_get_attr($tag,'sortid');
+    // 显示条数
+    $number = tpl_get_attr($tag,'number');
+    // 校验数据
+    $sortid = validate_is($sortid,VALIDATE_IS_LIST) ? $sortid : null;
+    $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
+    // 处理
+    switch ($type) {
+        case 'new':
+            break;
+        case 'hot':
+            break;
+        case 'chill':
+            break;
+        default:
+            $result = null;
     }
     return $result;
 }

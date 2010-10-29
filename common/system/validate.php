@@ -28,7 +28,7 @@ define('VALIDATE_IS_LETTERS','IS_LETTERS');
 define('VALIDATE_IS_EMAIL','IS_EMAIL');
 // 超链接
 define('VALIDATE_IS_URL','IS_URL');
-// 逗号分隔的字符串列表
+// 逗号分隔的数字列表
 define('VALIDATE_IS_LIST','IS_LIST');
 // 字母、数字、下划线、杠
 define('VALIDATE_IS_CNUS','IS_CNUS');

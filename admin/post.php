@@ -286,9 +286,15 @@ switch ($method) {
                     case 'basic': case 'editor':
                         $options = array();
                         $options['width'] = $field['w'];
+                        $plugins = implode(',', $field['a']);
                         if ($field['t']=='basic') {
-                            $options['toobar'] = 'simple';
+                            $options['tools']  = 'Blocktag,Fontface,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,BackColor,|,Align,List,Outdent,Indent,|,Link,'.$plugins;
                             $options['height'] = '120';
+                        } elseif ($field['t']=='editor') {
+                            $options['height'] = '280';
+                            $options['tools']  = 'Source,Preview,Pastetext,|,Blocktag,Fontface,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,'.
+                                                 'BackColor,Removeformat,|,Align,List,Outdent,Indent,|,Link,Unlink,'.$plugins.',|,Fullscreen';
+
                         }
                         $hl.= editor($field['_n'],$field['d'],$options);
                         break;
@@ -474,7 +480,7 @@ function post_manage_page($action) {
     echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="postmanage" id="postmanage">';
     echo   '<fieldset>';
     echo       '<table class="form-table">';
-    echo           '<tbody class="fixed-attr">';
+    echo           '<tbody>';
     if ($models) {
         echo           '<tr>';
         echo               '<th><label for="model">'._x('Model','post').'</label></th>';
@@ -509,6 +515,9 @@ function post_manage_page($action) {
     echo                   '<th><label for="content">'._x('Content','post').'</label></th>';
     echo                   '<td>'.editor('content',$content).'</td>';
     echo               '</tr>';
+    echo           '</tbody>';
+    echo           '<tbody class="extend-attr"></tbody>';
+    echo           '<tbody>';
     echo               '<tr>';
     echo                   '<th><label for="path">'._x('Path','post').'<span class="description">'.__('(required)').'</span></label></th>';
     echo                   '<td><input class="text" id="path" name="path" type="text" size="80" value="'.$path.'" /><div class="rules">';
@@ -522,7 +531,6 @@ function post_manage_page($action) {
     echo                   '</div></td>';
     echo               '</tr>';
     echo           '</tbody>';
-    echo           '<tbody class="extend-attr"></tbody>';
     echo       '</table>';
     echo   '</fieldset>';
     echo   '<fieldset>';

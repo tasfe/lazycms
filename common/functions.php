@@ -198,6 +198,7 @@ function editor($id,$content,$options=null) {
         'toobar' => 'full',
         'emotPath' => WEB_ROOT.'common/images/emots/',
         'editorRoot' => WEB_ROOT.'common/editor/',
+        'loadCSS' => WEB_ROOT.'common/css/xheditor.plugins.css',
     );
     
     $options = $options ? array_merge($defaults, $options) : $defaults;
@@ -208,8 +209,8 @@ function editor($id,$content,$options=null) {
         switch ($options['toobar']) {
             case 'full':
                 $options['tools'] = 'Source,Preview,Pastetext,|,Blocktag,Fontface,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,'.
-                                    'BackColor,Removeformat,|,Align,List,Outdent,Indent,|,Link,Unlink,Img,Flash,Flv,Emot,Table,Map,|,'.
-                                    'Fullscreen,About';
+                                    'BackColor,Removeformat,|,Align,List,Outdent,Indent,|,Link,Unlink,Img,Flash,Flv,Emot,Table,GoogleMap,Pagebreak,Removelink,|,'.
+                                    'Fullscreen';
                 break;
             case 'simple':
                 $options['tools'] = 'simple';
@@ -220,12 +221,8 @@ function editor($id,$content,$options=null) {
         }
     }
 
-    $ht = '<script type="text/javascript">';
-    $ht.= '$(function(){';
-    $ht.= '$(\'textarea[name='.$id.']\').xheditor($.extend('.json_encode($options).',{"plugins":xplugins}));';
-    $ht.= '});';
-    $ht.= '</script>';
-    $ht.= '<textarea class="text" id="'.$id.'" name="'.$id.'">'.esc_html($content).'</textarea>';;
+    $ht = '<textarea class="text" id="'.$id.'" name="'.$id.'">'.esc_html($content).'</textarea>';
+    $ht.= '<script type="text/javascript">$(\'textarea[name='.$id.']\').xheditor($.extend('.json_encode($options).',{"plugins":xhePlugins,"beforeSetSource":xheFilter.SetSource,"beforeGetSource":xheFilter.GetSource}));</script>';
     return $ht;
 }
 /**
@@ -659,7 +656,7 @@ function ob_compress($content,$level=3,$force_gzip=false){
  * @return string
  */
 function mid($content,$start,$end,$clear=null){
-    if (empty($content) || empty($start) || empty($end)) { return null; }
+    if (empty($content) || empty($start) || empty($end)) return null;
     if ((!strncmp($start,'(',1)) && substr($start,-1)==')') {
         if (preg_match("/{$start}/isU",$content,$args)) {
             $start = $args[0];

@@ -38,3 +38,4 @@ table.model-field-table{ border:0 none; clear:both; margin-bottom:0px; border-co
 	table.model-field-table th{ width:70px; padding-right:5px; text-align:right; font-weight:normal; }
 	table.model-field-table td{ }
 	table.model-field-table td label{ margin:0 3px 0 5px; }
+	table.model-field-table td.toolbar label{ display:inline-block; }

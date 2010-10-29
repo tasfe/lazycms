@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-27 20:36+0800\n"
+"POT-Creation-Date: 2010-10-30 00:49+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.net>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
@@ -331,7 +331,6 @@ msgid "You are now logged out, please log in again!"
 msgstr "您现在已经退出，请重新登录！"
 
 #: admin/categories.php:26
-#: admin/admin-header-menu.php:21
 msgid "Categories"
 msgstr "分类管理"
 
@@ -434,14 +433,14 @@ msgid "Add New"
 msgstr "添加分类"
 
 #: admin/categories.php:188
-#: admin/model.php:308
-#: admin/model.php:439
+#: admin/model.php:311
+#: admin/model.php:442
 #: admin/publish.php:75
 msgid "No record!"
 msgstr "没有记录！"
 
 #: admin/categories.php:206
-#: admin/model.php:326
+#: admin/model.php:329
 #: admin/publish.php:194
 #: admin/user.php:210
 msgid "Bulk Actions"
@@ -461,9 +460,9 @@ msgstr "生成文章和列表"
 
 #: admin/categories.php:210
 #: admin/categories.php:242
-#: admin/model.php:298
-#: admin/model.php:330
-#: admin/model.php:428
+#: admin/model.php:301
+#: admin/model.php:333
+#: admin/model.php:431
 #: admin/publish.php:63
 #: admin/publish.php:195
 #: admin/user.php:184
@@ -472,7 +471,7 @@ msgid "Delete"
 msgstr "删除"
 
 #: admin/categories.php:212
-#: admin/model.php:332
+#: admin/model.php:335
 #: admin/publish.php:197
 #: admin/user.php:213
 msgid "Apply"
@@ -500,8 +499,8 @@ msgid "Create List"
 msgstr "生成列表"
 
 #: admin/categories.php:241
-#: admin/model.php:294
-#: admin/model.php:427
+#: admin/model.php:297
+#: admin/model.php:430
 #: admin/user.php:180
 #: admin/user.php:183
 msgid "Edit"
@@ -518,8 +517,8 @@ msgstr "&mdash; 无父级 &mdash;"
 
 #: admin/categories.php:293
 #: admin/categories.php:297
-#: admin/model.php:382
-#: admin/model.php:390
+#: admin/model.php:385
+#: admin/model.php:393
 #: admin/user.php:253
 #: admin/user.php:261
 msgid "(required)"
@@ -530,12 +529,12 @@ msgid "Category ID"
 msgstr "分类ID"
 
 #: admin/categories.php:300
-#: admin/model.php:393
+#: admin/model.php:396
 msgid "MD5 Value"
 msgstr "MD5值"
 
 #: admin/categories.php:301
-#: admin/model.php:394
+#: admin/model.php:397
 msgid "Pinyin"
 msgstr "拼音"
 
@@ -544,7 +543,7 @@ msgid "List Template"
 msgstr "列表模板"
 
 #: admin/categories.php:313
-#: admin/model.php:402
+#: admin/model.php:405
 msgid "Page Template"
 msgstr "内容模板"
 
@@ -575,13 +574,11 @@ msgid "Update Category"
 msgstr "更新分类"
 
 #: admin/model.php:26
-#: admin/admin-header-menu.php:34
-#: admin/admin-header-menu.php:35
 msgid "Models"
 msgstr "模型管理"
 
 #: admin/model.php:30
-#: admin/model.php:482
+#: admin/model.php:485
 msgctxt "field"
 msgid "Add New"
 msgstr "添加字段"
@@ -735,7 +732,7 @@ msgid "Error Message"
 msgstr "错误信息"
 
 #: admin/model.php:224
-#: admin/model.php:469
+#: admin/model.php:472
 msgctxt "model"
 msgid "Label"
 msgstr "表单文字"
@@ -750,7 +747,7 @@ msgid "Help"
 msgstr "帮助信息"
 
 #: admin/model.php:227
-#: admin/model.php:470
+#: admin/model.php:473
 msgctxt "model"
 msgid "Field"
 msgstr "字段名"
@@ -760,7 +757,7 @@ msgid "Can search"
 msgstr "可以搜索"
 
 #: admin/model.php:229
-#: admin/model.php:471
+#: admin/model.php:474
 msgctxt "model"
 msgid "Type"
 msgstr "输入类型"
@@ -787,115 +784,126 @@ msgid "Serialize"
 msgstr "序列值"
 
 #: admin/model.php:254
-msgid "Attributes"
-msgstr "更多属性"
+msgid "Toolbar"
+msgstr "工具栏"
 
 #: admin/model.php:255
 msgid "Insert Pagebreak"
 msgstr "插入分页符"
 
 #: admin/model.php:256
-msgid "Delete link"
-msgstr "删除站外链接"
+msgid "Remove external links"
+msgstr "移除站外链接"
 
 #: admin/model.php:257
-msgid "Resize"
-msgstr "调整大小"
+msgid "Insert Flv"
+msgstr "插入Flv视频"
+
+#: admin/model.php:258
+msgid "Insert Emote"
+msgstr "插入表情"
+
+#: admin/model.php:259
+msgid "Insert Google Map"
+msgstr "插入Google地图"
 
 #: admin/model.php:260
+msgid "Insert Table"
+msgstr "插入表格"
+
+#: admin/model.php:263
 msgctxt "model"
 msgid "Length"
 msgstr "长度"
 
-#: admin/model.php:267
-#: admin/model.php:472
+#: admin/model.php:270
+#: admin/model.php:475
 msgctxt "model"
 msgid "Default"
 msgstr "默认值"
 
-#: admin/model.php:269
+#: admin/model.php:272
 msgid "Save"
 msgstr "保存"
 
-#: admin/model.php:269
+#: admin/model.php:272
 msgid "Cancel"
 msgstr "取消"
 
-#: admin/model.php:280
-#: admin/admin-header-menu.php:36
+#: admin/model.php:283
 msgctxt "model"
 msgid "Add New"
 msgstr "添加模型"
 
-#: admin/model.php:295
-#: admin/model.php:327
+#: admin/model.php:298
+#: admin/model.php:330
 msgid "Export"
 msgstr "导出"
 
-#: admin/model.php:296
-#: admin/model.php:328
+#: admin/model.php:299
+#: admin/model.php:331
 msgid "Enabled"
 msgstr "启用"
 
-#: admin/model.php:297
-#: admin/model.php:329
+#: admin/model.php:300
+#: admin/model.php:332
 msgid "Disabled"
 msgstr "禁用"
 
-#: admin/model.php:342
-#: admin/model.php:382
+#: admin/model.php:345
+#: admin/model.php:385
 msgctxt "model"
 msgid "Name"
 msgstr "模型名称"
 
-#: admin/model.php:343
-#: admin/model.php:386
+#: admin/model.php:346
+#: admin/model.php:389
 msgctxt "model"
 msgid "Code"
 msgstr "模型标识"
 
-#: admin/model.php:344
-#: admin/model.php:375
+#: admin/model.php:347
+#: admin/model.php:378
 msgctxt "model"
 msgid "Language"
 msgstr "所属语言"
 
-#: admin/model.php:345
+#: admin/model.php:348
 msgctxt "model"
 msgid "State"
 msgstr "状态"
 
-#: admin/model.php:386
+#: admin/model.php:389
 msgid "(required,only)"
 msgstr "(必填，唯一)"
 
-#: admin/model.php:390
+#: admin/model.php:393
 msgctxt "model"
 msgid "Path"
 msgstr "生成规则"
 
-#: admin/model.php:392
+#: admin/model.php:395
 msgid "Post ID"
 msgstr "文章ID"
 
-#: admin/model.php:412
+#: admin/model.php:415
 msgid "Click to toggle"
 msgstr "点击切换"
 
-#: admin/model.php:413
+#: admin/model.php:416
 msgctxt "model"
 msgid "Fields"
 msgstr "字段管理"
 
-#: admin/model.php:453
+#: admin/model.php:456
 msgid "Add Model"
 msgstr "添加模型"
 
-#: admin/model.php:455
+#: admin/model.php:458
 msgid "Update Model"
 msgstr "更新模型"
 
-#: admin/model.php:481
+#: admin/model.php:484
 msgctxt "field"
 msgid "Delete"
 msgstr "删除字段"
@@ -1135,7 +1143,6 @@ msgid "My Site"
 msgstr "我的站点"
 
 #: admin/publish.php:26
-#: admin/admin-header-menu.php:12
 msgid "Publish Posts"
 msgstr "页面发布"
 
@@ -1223,8 +1230,6 @@ msgid "State"
 msgstr "状态"
 
 #: admin/index.php:61
-#: admin/admin-header-menu.php:10
-#: admin/admin-header-menu.php:11
 msgid "Control Panel"
 msgstr "控制面板"
 
@@ -1280,8 +1285,6 @@ msgid "Login"
 msgstr "登入"
 
 #: admin/user.php:26
-#: admin/admin-header-menu.php:42
-#: admin/admin-header-menu.php:43
 msgid "Users"
 msgstr "用户管理"
 
@@ -1318,7 +1321,6 @@ msgid "Users deleted."
 msgstr "用户删除成功。"
 
 #: admin/user.php:166
-#: admin/admin-header-menu.php:44
 msgctxt "user"
 msgid "Add New"
 msgstr "添加用户"
@@ -1388,30 +1390,41 @@ msgid "Update User"
 msgstr "更新用户"
 
 #: admin/admin-header-menu.php:13
+#: admin/upgrade.php:26
+#: admin/admin.php:198
 msgid "Upgrade"
 msgstr "程序升级"
 
 #: admin/admin-header-menu.php:18
 #: admin/admin-header-menu.php:19
+#: admin/post.php:31
+#: admin/admin.php:201
 msgid "Posts"
 msgstr "文章管理"
 
 #: admin/admin-header-menu.php:20
+#: admin/post.php:312
+#: admin/admin.php:203
 msgctxt "post"
 msgid "Add New"
 msgstr "添加文章"
 
 #: admin/admin-header-menu.php:24
 #: admin/admin-header-menu.php:25
+#: admin/post.php:29
+#: admin/admin.php:209
 msgid "Pages"
 msgstr "页面管理"
 
 #: admin/admin-header-menu.php:26
+#: admin/post.php:309
+#: admin/admin.php:211
 msgctxt "page"
 msgid "Add New"
 msgstr "添加页面"
 
 #: admin/admin-header-menu.php:37
+#: admin/admin.php:228
 msgctxt "model"
 msgid "Import"
 msgstr "导入模型"
@@ -1422,23 +1435,30 @@ msgstr "我的配置"
 
 #: admin/admin-header-menu.php:48
 #: admin/admin-header-menu.php:49
+#: admin/plugins.php:26
+#: admin/admin.php:240
 msgid "Plugins"
 msgstr "插件管理"
 
 #: admin/admin-header-menu.php:50
+#: admin/admin.php:242
 msgctxt "plugin"
 msgid "Add New"
 msgstr "添加新插件"
 
 #: admin/admin-header-menu.php:53
+#: admin/admin.php:246
+#: admin/tools/clean-cache.php:26
 msgid "Tools"
 msgstr "系统工具"
 
 #: admin/admin-header-menu.php:54
+#: admin/admin.php:247
 msgid "Clean cache"
 msgstr "清除缓存"
 
 #: admin/admin-header-menu.php:57
+#: admin/admin.php:250
 msgid "Settings"
 msgstr "设置管理"
 
@@ -1585,24 +1605,24 @@ msgctxt "post"
 msgid "Description"
 msgstr "Meta简述"
 
-#: admin/post.php:551
+#: admin/post.php:552
 msgctxt "post"
 msgid "Other"
 msgstr "其它选项"
 
-#: admin/post.php:552
+#: admin/post.php:553
 msgid "Update Category Lists"
 msgstr "更新分类列表"
 
-#: admin/post.php:559
+#: admin/post.php:561
 msgid "Add Post"
 msgstr "添加文章"
 
-#: admin/post.php:561
+#: admin/post.php:563
 msgid "Update Post"
 msgstr "更新文章"
 
-#: admin/post.php:583
+#: admin/post.php:585
 msgid "Uncategorized"
 msgstr "未分类"
 
@@ -1819,6 +1839,12 @@ msgstr "网页后缀"
 msgid "Save Changes"
 msgstr "保存更改"
 
+#~ msgid "Attributes"
+#~ msgstr "更多属性"
+#~ msgid "Delete link"
+#~ msgstr "删除站外链接"
+#~ msgid "Resize"
+#~ msgstr "调整大小"
 #~ msgid "Pause"
 #~ msgstr "暂停"
 #~ msgid "Start"

@@ -71,7 +71,7 @@ if (validate_is_post()) {
     echo               '</td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="Template">'._x('Template','setting').'<span class="description">'.__('(required)').'</span></label></th>';
+    echo               '<th><label for="Template">'._x('Template','setting').'</label></th>';
     echo               '<td><select name="Template" id="Template">';
     echo                       options(TEMPLATE,'dir','<option value="#value#"#selected#>#name#</option>',C('Template'));
     echo                   '</select>';

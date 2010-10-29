@@ -160,7 +160,7 @@ function model_field_manage(id,params) {
             $('#field-index-' + id + ' textarea').addClass('edit');
             
             var dialog = this, switch_type = function(type){
-                $('#field_serialize,#field_attrs,#field_length,#field_default',dialog).hide();
+                $('#field_serialize,#field_toolbar,#field_length,#field_default',dialog).hide();
                 switch (type) {
                     case 'input':
                         $('#field_length,#field_default',dialog).show();
@@ -172,7 +172,7 @@ function model_field_manage(id,params) {
                         $('#field_serialize,#field_default',dialog).show();
                        break;
                     case 'basic': case 'editor':
-                        $('#field_attrs,#field_default',dialog).show();
+                        $('#field_toolbar,#field_default',dialog).show();
                        break;
                     case 'date':
                         $('#field_default',dialog).show();

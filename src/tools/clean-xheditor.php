@@ -82,6 +82,7 @@ function translate($source,$target) {
         array("xheditor_skin/","skins/"),
         array("xheditor_emot/","emots/"),
         array("[\w-\:]","[\w\-\:]"),
+        array("tool=arrEmbed[target.type.toLowerCase()];","var lazyType=$(target).attr('lazytype'); tool=lazyType ? lazyType : arrEmbed[target.type.toLowerCase()];"),
         array("t:'普通段落'","t:_('Paragraph')"),
         array("t:'标题1'","t:_('Heading 1')"),
         array("t:'标题2'","t:_('Heading 2')"),

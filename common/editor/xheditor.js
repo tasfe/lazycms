@@ -1657,7 +1657,7 @@ $.xheditor=function(textarea,options)
 			if(tool=='Embed')//自动识别Flash和多媒体
 			{
 				var arrEmbed={'application/x-shockwave-flash':'Flash','application/x-mplayer2':'Media'};
-				tool=arrEmbed[target.type.toLowerCase()];
+				var lazyType=$(target).attr('lazytype'); tool=lazyType ? lazyType : arrEmbed[target.type.toLowerCase()];
 			}
 			_this.exec(tool);
 		}
