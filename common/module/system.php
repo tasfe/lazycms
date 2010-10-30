@@ -92,7 +92,7 @@ function system_list_tpl_plugin($tag_name,$tag) {
         default:
             $result = null;
     }
-    return $result;
+    return null;
 }
 /**
  * 查询模版路径

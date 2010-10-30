@@ -247,7 +247,7 @@ function display_tr_tree($sorts,$n=0) {
         if (is_dir(ABS_PATH.'/'.$sort['path'])) {
             $hl.= '<td><img class="b6 os" src="'.ADMIN_ROOT.'images/t.gif" /><a href="'.$path.'" target="_blank">'.$path.'</a></td>';
         } else {
-            $hl.= '<td><img class="b7 os" src="'.ADMIN_ROOT.'images/t.gif" /><a href="javascript:;">'.$path.'</a></td>';
+            $hl.= '<td><img class="b7 os" src="'.ADMIN_ROOT.'images/t.gif" /><a href="javascript:;" onclick="sort_create('.$sort['taxonomyid'].')">'.$path.'</a></td>';
         }
         $hl.=   '<td>'.$sort['count'].'</td>';
         $hl.= '</tr>';

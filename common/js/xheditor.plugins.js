@@ -50,17 +50,35 @@ var xhePlugins = window.xhePlugins = {
         var _this=this;
         _this.showIframeModal(_('Google Maps'),'{editorRoot}plugins/googlemap/map.html',function(r){
             _this.pasteHTML('<img src="' + r.src + '" alt="' + r.title + '" />');
-        },538,404);
+        },522,432);
     }},
     // Pagebreak
     Pagebreak:{c:'xhePlugins_btnPageBreak',t:_('Insert Pagebreak'),e:function(){
         this.pasteHTML('<img class="xhePageBeak" src="' + LazyCMS.WEB_ROOT + 'common/images/t.gif" alt="&lt;!--pagebeak--&gt;" />');
+    }},
+    // Removelink
+    Removelink:{c:'xhePlugins_btnRemoveLink',t:_('Remove external links'),e:function(){
+        var source  = this.getSource(),
+            host    = document.location.host;
+            source  = source.replace(/<a[^>]+?href\s*=\s*["']?([^"']+)[^>]*>(.+?)<\/a>/ig,function(all,url,text){
+                // 不是本域名下的链接
+                if (('http://' == url.substr(0,7) && url.substring(7,host.length+7) != host)
+                        || ('https://' == url.substr(0,8) && url.substring(8,host.length+8) != host)
+                        || ('ftp://' == url.substr(0,6) && url.substring(6,host.length+6) != host)) {
+                    all = text;
+                }
+                return all;
+            });
+            this.setSource(source);
     }}
 };
+
+
 
 var xheFilter = window.xheFilter = {
     SetSource: function(source) {
         var html = String(source);
+            html = html.replace(/\r?\n/g,'');
             html = html.replace(/(<embed(?:\s+[^>]*?)?)(flashvars\s*=\s*"file=)([^"]+)("(?:\s+[^>]*?)?(?:src\s*=\s*"[^"]*mediaplayer\/player.swf")(?:\s+[^>]*?)?(?:\s+type\s*=\s*"\s*application\/x-shockwave-flash\s*"|\s+classid\s*=\s*"\s*clsid:d27cdb6e-ae6d-11cf-96b8-4445535400000\s*")[^>]*?\/>)/ig,function(all,start,flashvars,file,end){
                 return start + 'lazysrc="' + file + '" lazytype="Flv" ' + flashvars + file + end;
             });

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-30 00:49+0800\n"
+"POT-Creation-Date: 2010-10-30 14:08+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.net>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
@@ -17,229 +17,229 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: common/functions.php:257
+#: common/functions.php:254
 msgid "Back"
 msgstr "返回"
 
-#: common/functions.php:339
-#: common/functions.php:347
+#: common/functions.php:336
+#: common/functions.php:344
 msgid "System Error"
 msgstr "系统错误"
 
-#: common/functions.php:399
+#: common/functions.php:396
 #, php-format
 msgid "<a href=\"%s\">%d seconds after goto %s.</a>"
 msgstr "<a href=\"%s\">%d 秒后转向 %s。</a>"
 
-#: common/functions.php:417
+#: common/functions.php:414
 msgid "Redirecting..."
 msgstr "正在重定向..."
 
-#: common/functions.php:955
+#: common/functions.php:952
 msgid "Afrikaans"
 msgstr "布尔文(南非洲的荷兰文)"
 
-#: common/functions.php:956
+#: common/functions.php:953
 msgid "Albanian"
 msgstr "阿尔巴尼亚文"
 
-#: common/functions.php:957
+#: common/functions.php:954
 msgid "Arabic"
 msgstr "阿拉伯文"
 
-#: common/functions.php:958
+#: common/functions.php:955
 msgid "Belarusian"
 msgstr "白俄罗斯语"
 
-#: common/functions.php:959
+#: common/functions.php:956
 msgid "Bulgarian"
 msgstr "保加利亚文"
 
-#: common/functions.php:960
+#: common/functions.php:957
 msgid "Catalan"
 msgstr "加泰罗尼亚语"
 
-#: common/functions.php:961
+#: common/functions.php:958
 msgid "Chinese (Simplified)"
 msgstr "中文(简体)"
 
-#: common/functions.php:962
+#: common/functions.php:959
 msgid "Chinese (Traditional)"
 msgstr "中文(繁体)"
 
-#: common/functions.php:963
+#: common/functions.php:960
 msgid "Croatian"
 msgstr "克罗地亚文"
 
-#: common/functions.php:964
+#: common/functions.php:961
 msgid "Czech"
 msgstr "捷克语"
 
-#: common/functions.php:965
+#: common/functions.php:962
 msgid "Danish"
 msgstr "丹麦语"
 
-#: common/functions.php:966
+#: common/functions.php:963
 msgid "Dutch"
 msgstr "荷兰语"
 
-#: common/functions.php:967
+#: common/functions.php:964
 msgid "English"
 msgstr "英语"
 
-#: common/functions.php:968
+#: common/functions.php:965
 msgid "Estonian"
 msgstr "爱沙尼亚语"
 
-#: common/functions.php:969
+#: common/functions.php:966
 msgid "Filipino"
 msgstr "菲律宾文"
 
-#: common/functions.php:970
+#: common/functions.php:967
 msgid "Finnish"
 msgstr "芬兰语"
 
-#: common/functions.php:971
+#: common/functions.php:968
 msgid "French"
 msgstr "法语"
 
-#: common/functions.php:972
+#: common/functions.php:969
 msgid "Galician"
 msgstr "加利西亚语"
 
-#: common/functions.php:973
+#: common/functions.php:970
 msgid "German"
 msgstr "德语"
 
-#: common/functions.php:974
+#: common/functions.php:971
 msgid "Greek"
 msgstr "希腊语"
 
-#: common/functions.php:975
+#: common/functions.php:972
 msgid "Hebrew"
 msgstr "希伯来语"
 
-#: common/functions.php:976
+#: common/functions.php:973
 msgid "Hindi"
 msgstr "印度文"
 
-#: common/functions.php:977
+#: common/functions.php:974
 msgid "Hungarian"
 msgstr "匈牙利语"
 
-#: common/functions.php:978
+#: common/functions.php:975
 msgid "Icelandic"
 msgstr "冰岛语"
 
-#: common/functions.php:979
+#: common/functions.php:976
 msgid "Indonesian"
 msgstr "印尼文"
 
-#: common/functions.php:980
+#: common/functions.php:977
 msgid "Irish"
 msgstr "爱尔兰文"
 
-#: common/functions.php:981
+#: common/functions.php:978
 msgid "Italian"
 msgstr "意大利语"
 
-#: common/functions.php:982
+#: common/functions.php:979
 msgid "Japanese"
 msgstr "日语"
 
-#: common/functions.php:983
+#: common/functions.php:980
 msgid "Korean"
 msgstr "朝鲜语"
 
-#: common/functions.php:984
+#: common/functions.php:981
 msgid "Latvian"
 msgstr "拉脱维亚语"
 
-#: common/functions.php:985
+#: common/functions.php:982
 msgid "Lithuanian"
 msgstr "立陶宛语"
 
-#: common/functions.php:986
+#: common/functions.php:983
 msgid "Macedonian"
 msgstr "马其顿文"
 
-#: common/functions.php:987
+#: common/functions.php:984
 msgid "Malay"
 msgstr "马来文"
 
-#: common/functions.php:988
+#: common/functions.php:985
 msgid "Maltese"
 msgstr "马耳他文"
 
-#: common/functions.php:989
+#: common/functions.php:986
 msgid "Norwegian"
 msgstr "挪威语"
 
-#: common/functions.php:990
+#: common/functions.php:987
 msgid "Persian"
 msgstr "波斯语"
 
-#: common/functions.php:991
+#: common/functions.php:988
 msgid "Polish"
 msgstr "波兰语"
 
-#: common/functions.php:992
+#: common/functions.php:989
 msgid "Portuguese"
 msgstr "葡萄牙语"
 
-#: common/functions.php:993
+#: common/functions.php:990
 msgid "Romanian"
 msgstr "罗马尼亚语"
 
-#: common/functions.php:994
+#: common/functions.php:991
 msgid "Russian"
 msgstr "俄语"
 
-#: common/functions.php:995
+#: common/functions.php:992
 msgid "Serbian"
 msgstr "塞尔维亚文"
 
-#: common/functions.php:996
+#: common/functions.php:993
 msgid "Slovak"
 msgstr "斯洛伐克文"
 
-#: common/functions.php:997
+#: common/functions.php:994
 msgid "Slovenian"
 msgstr "斯洛文尼亚文"
 
-#: common/functions.php:998
+#: common/functions.php:995
 msgid "Spanish"
 msgstr "西班牙语"
 
-#: common/functions.php:999
+#: common/functions.php:996
 msgid "Swahili"
 msgstr "非洲的斯瓦希里文"
 
-#: common/functions.php:1000
+#: common/functions.php:997
 msgid "Swedish"
 msgstr "瑞典语"
 
-#: common/functions.php:1001
+#: common/functions.php:998
 msgid "Thai"
 msgstr "泰文"
 
-#: common/functions.php:1002
+#: common/functions.php:999
 msgid "Turkish"
 msgstr "土耳其文"
 
-#: common/functions.php:1003
+#: common/functions.php:1000
 msgid "Ukrainian"
 msgstr "乌克兰文"
 
-#: common/functions.php:1004
+#: common/functions.php:1001
 msgid "Vietnamese"
 msgstr "越南文"
 
-#: common/functions.php:1005
+#: common/functions.php:1002
 msgid "Welsh"
 msgstr "威尔士语"
 
-#: common/functions.php:1006
+#: common/functions.php:1003
 msgid "Yiddish"
 msgstr "意第绪语"
 
@@ -433,14 +433,14 @@ msgid "Add New"
 msgstr "添加分类"
 
 #: admin/categories.php:188
-#: admin/model.php:311
-#: admin/model.php:442
+#: admin/model.php:313
+#: admin/model.php:444
 #: admin/publish.php:75
 msgid "No record!"
 msgstr "没有记录！"
 
 #: admin/categories.php:206
-#: admin/model.php:329
+#: admin/model.php:331
 #: admin/publish.php:194
 #: admin/user.php:210
 msgid "Bulk Actions"
@@ -460,9 +460,9 @@ msgstr "生成文章和列表"
 
 #: admin/categories.php:210
 #: admin/categories.php:242
-#: admin/model.php:301
-#: admin/model.php:333
-#: admin/model.php:431
+#: admin/model.php:303
+#: admin/model.php:335
+#: admin/model.php:433
 #: admin/publish.php:63
 #: admin/publish.php:195
 #: admin/user.php:184
@@ -471,7 +471,7 @@ msgid "Delete"
 msgstr "删除"
 
 #: admin/categories.php:212
-#: admin/model.php:335
+#: admin/model.php:337
 #: admin/publish.php:197
 #: admin/user.php:213
 msgid "Apply"
@@ -499,8 +499,8 @@ msgid "Create List"
 msgstr "生成列表"
 
 #: admin/categories.php:241
-#: admin/model.php:297
-#: admin/model.php:430
+#: admin/model.php:299
+#: admin/model.php:432
 #: admin/user.php:180
 #: admin/user.php:183
 msgid "Edit"
@@ -517,8 +517,8 @@ msgstr "&mdash; 无父级 &mdash;"
 
 #: admin/categories.php:293
 #: admin/categories.php:297
-#: admin/model.php:385
-#: admin/model.php:393
+#: admin/model.php:387
+#: admin/model.php:395
 #: admin/user.php:253
 #: admin/user.php:261
 msgid "(required)"
@@ -529,12 +529,12 @@ msgid "Category ID"
 msgstr "分类ID"
 
 #: admin/categories.php:300
-#: admin/model.php:396
+#: admin/model.php:398
 msgid "MD5 Value"
 msgstr "MD5值"
 
 #: admin/categories.php:301
-#: admin/model.php:397
+#: admin/model.php:399
 msgid "Pinyin"
 msgstr "拼音"
 
@@ -543,7 +543,7 @@ msgid "List Template"
 msgstr "列表模板"
 
 #: admin/categories.php:313
-#: admin/model.php:405
+#: admin/model.php:407
 msgid "Page Template"
 msgstr "内容模板"
 
@@ -578,7 +578,7 @@ msgid "Models"
 msgstr "模型管理"
 
 #: admin/model.php:30
-#: admin/model.php:485
+#: admin/model.php:487
 msgctxt "field"
 msgid "Add New"
 msgstr "添加字段"
@@ -732,7 +732,7 @@ msgid "Error Message"
 msgstr "错误信息"
 
 #: admin/model.php:224
-#: admin/model.php:472
+#: admin/model.php:474
 msgctxt "model"
 msgid "Label"
 msgstr "表单文字"
@@ -747,7 +747,7 @@ msgid "Help"
 msgstr "帮助信息"
 
 #: admin/model.php:227
-#: admin/model.php:473
+#: admin/model.php:475
 msgctxt "model"
 msgid "Field"
 msgstr "字段名"
@@ -757,7 +757,7 @@ msgid "Can search"
 msgstr "可以搜索"
 
 #: admin/model.php:229
-#: admin/model.php:474
+#: admin/model.php:476
 msgctxt "model"
 msgid "Type"
 msgstr "输入类型"
@@ -788,12 +788,12 @@ msgid "Toolbar"
 msgstr "工具栏"
 
 #: admin/model.php:255
-msgid "Insert Pagebreak"
-msgstr "插入分页符"
+msgid "Insert Image"
+msgstr "插入图片"
 
 #: admin/model.php:256
-msgid "Remove external links"
-msgstr "移除站外链接"
+msgid "Insert Flash"
+msgstr "插入Flash"
 
 #: admin/model.php:257
 msgid "Insert Flv"
@@ -804,106 +804,114 @@ msgid "Insert Emote"
 msgstr "插入表情"
 
 #: admin/model.php:259
-msgid "Insert Google Map"
-msgstr "插入Google地图"
-
-#: admin/model.php:260
 msgid "Insert Table"
 msgstr "插入表格"
 
-#: admin/model.php:263
+#: admin/model.php:260
+msgid "Insert Google Map"
+msgstr "插入Google地图"
+
+#: admin/model.php:261
+msgid "Insert Pagebreak"
+msgstr "插入分页符"
+
+#: admin/model.php:262
+msgid "Remove external links"
+msgstr "移除站外链接"
+
+#: admin/model.php:265
 msgctxt "model"
 msgid "Length"
 msgstr "长度"
 
-#: admin/model.php:270
-#: admin/model.php:475
+#: admin/model.php:272
+#: admin/model.php:477
 msgctxt "model"
 msgid "Default"
 msgstr "默认值"
 
-#: admin/model.php:272
+#: admin/model.php:274
 msgid "Save"
 msgstr "保存"
 
-#: admin/model.php:272
+#: admin/model.php:274
 msgid "Cancel"
 msgstr "取消"
 
-#: admin/model.php:283
+#: admin/model.php:285
 msgctxt "model"
 msgid "Add New"
 msgstr "添加模型"
 
-#: admin/model.php:298
-#: admin/model.php:330
+#: admin/model.php:300
+#: admin/model.php:332
 msgid "Export"
 msgstr "导出"
 
-#: admin/model.php:299
-#: admin/model.php:331
+#: admin/model.php:301
+#: admin/model.php:333
 msgid "Enabled"
 msgstr "启用"
 
-#: admin/model.php:300
-#: admin/model.php:332
+#: admin/model.php:302
+#: admin/model.php:334
 msgid "Disabled"
 msgstr "禁用"
 
-#: admin/model.php:345
-#: admin/model.php:385
+#: admin/model.php:347
+#: admin/model.php:387
 msgctxt "model"
 msgid "Name"
 msgstr "模型名称"
 
-#: admin/model.php:346
-#: admin/model.php:389
+#: admin/model.php:348
+#: admin/model.php:391
 msgctxt "model"
 msgid "Code"
 msgstr "模型标识"
 
-#: admin/model.php:347
-#: admin/model.php:378
+#: admin/model.php:349
+#: admin/model.php:380
 msgctxt "model"
 msgid "Language"
 msgstr "所属语言"
 
-#: admin/model.php:348
+#: admin/model.php:350
 msgctxt "model"
 msgid "State"
 msgstr "状态"
 
-#: admin/model.php:389
+#: admin/model.php:391
 msgid "(required,only)"
 msgstr "(必填，唯一)"
 
-#: admin/model.php:393
+#: admin/model.php:395
 msgctxt "model"
 msgid "Path"
 msgstr "生成规则"
 
-#: admin/model.php:395
+#: admin/model.php:397
 msgid "Post ID"
 msgstr "文章ID"
 
-#: admin/model.php:415
+#: admin/model.php:417
 msgid "Click to toggle"
 msgstr "点击切换"
 
-#: admin/model.php:416
+#: admin/model.php:418
 msgctxt "model"
 msgid "Fields"
 msgstr "字段管理"
 
-#: admin/model.php:456
+#: admin/model.php:458
 msgid "Add Model"
 msgstr "添加模型"
 
-#: admin/model.php:458
+#: admin/model.php:460
 msgid "Update Model"
 msgstr "更新模型"
 
-#: admin/model.php:484
+#: admin/model.php:486
 msgctxt "field"
 msgid "Delete"
 msgstr "删除字段"
@@ -1138,7 +1146,7 @@ msgstr "我接受LazyCMS的<a href=\"../LICENSE.txt\" target=\"_blank\">许可�
 msgid "Install LazyCMS"
 msgstr "安装 LazyCMS"
 
-#: admin/install.php:388
+#: admin/install.php:390
 msgid "My Site"
 msgstr "我的站点"
 
@@ -1403,7 +1411,7 @@ msgid "Posts"
 msgstr "文章管理"
 
 #: admin/admin-header-menu.php:20
-#: admin/post.php:312
+#: admin/post.php:318
 #: admin/admin.php:203
 msgctxt "post"
 msgid "Add New"
@@ -1417,7 +1425,7 @@ msgid "Pages"
 msgstr "页面管理"
 
 #: admin/admin-header-menu.php:26
-#: admin/post.php:309
+#: admin/post.php:315
 #: admin/admin.php:211
 msgctxt "page"
 msgid "Add New"
@@ -1525,104 +1533,104 @@ msgstr "文章更新成功。"
 msgid "Post created."
 msgstr "文章添加成功。"
 
-#: admin/post.php:296
+#: admin/post.php:302
 msgid "Browse..."
 msgstr "浏览..."
 
-#: admin/post.php:366
-#: admin/post.php:417
+#: admin/post.php:372
+#: admin/post.php:423
 msgid "Create"
 msgstr "生成"
 
-#: admin/post.php:373
-#: admin/post.php:387
+#: admin/post.php:379
+#: admin/post.php:393
 msgid "None"
 msgstr "无"
 
-#: admin/post.php:432
-#: admin/post.php:502
+#: admin/post.php:438
+#: admin/post.php:508
 msgctxt "post"
 msgid "Title"
 msgstr "标题"
 
-#: admin/post.php:433
-#: admin/post.php:480
+#: admin/post.php:439
+#: admin/post.php:486
 msgctxt "post"
 msgid "Model"
 msgstr "模型"
 
-#: admin/post.php:434
-#: admin/post.php:513
+#: admin/post.php:440
+#: admin/post.php:522
 msgctxt "post"
 msgid "Path"
 msgstr "路径"
 
-#: admin/post.php:436
-#: admin/post.php:494
+#: admin/post.php:442
+#: admin/post.php:500
 msgctxt "post"
 msgid "Categories"
 msgstr "分类"
 
-#: admin/post.php:438
+#: admin/post.php:444
 msgctxt "post"
 msgid "Date"
 msgstr "日期"
 
-#: admin/post.php:439
+#: admin/post.php:445
 msgctxt "post"
 msgid "State"
 msgstr "状态"
 
-#: admin/post.php:505
+#: admin/post.php:511
 msgid "Auto get keywords"
 msgstr "自动获取关键词"
 
-#: admin/post.php:509
+#: admin/post.php:515
 msgctxt "post"
 msgid "Content"
 msgstr "内容"
 
-#: admin/post.php:530
+#: admin/post.php:538
 msgid "More attribute"
 msgstr "更多属性"
 
-#: admin/post.php:534
+#: admin/post.php:542
 msgctxt "post"
 msgid "Page Template"
 msgstr "页面模板"
 
-#: admin/post.php:543
+#: admin/post.php:551
 msgctxt "post"
 msgid "Keywords"
 msgstr "关键词"
 
-#: admin/post.php:544
+#: admin/post.php:552
 msgid "Get"
 msgstr "获取"
 
-#: admin/post.php:547
+#: admin/post.php:555
 msgctxt "post"
 msgid "Description"
 msgstr "Meta简述"
 
-#: admin/post.php:552
+#: admin/post.php:560
 msgctxt "post"
 msgid "Other"
 msgstr "其它选项"
 
-#: admin/post.php:553
+#: admin/post.php:561
 msgid "Update Category Lists"
 msgstr "更新分类列表"
 
-#: admin/post.php:561
+#: admin/post.php:569
 msgid "Add Post"
 msgstr "添加文章"
 
-#: admin/post.php:563
+#: admin/post.php:571
 msgid "Update Post"
 msgstr "更新文章"
 
-#: admin/post.php:585
+#: admin/post.php:593
 msgid "Uncategorized"
 msgstr "未分类"
 
@@ -1660,16 +1668,16 @@ msgid "Close"
 msgstr "关闭"
 
 #: admin/admin-header.php:44
-msgid "Send"
-msgstr "发送"
+msgid "Search"
+msgstr "搜索"
 
 #: admin/admin-header.php:45
-msgid "Maximize"
-msgstr "最大化"
+msgid "Address:"
+msgstr "地址："
 
 #: admin/admin-header.php:46
-msgid "Minimize"
-msgstr "最小化"
+msgid "Insert Map"
+msgstr "插入地图"
 
 #: admin/admin-header.php:48
 msgid "Confirm Logout?"
@@ -1839,6 +1847,12 @@ msgstr "网页后缀"
 msgid "Save Changes"
 msgstr "保存更改"
 
+#~ msgid "Send"
+#~ msgstr "发送"
+#~ msgid "Maximize"
+#~ msgstr "最大化"
+#~ msgid "Minimize"
+#~ msgstr "最小化"
 #~ msgid "Attributes"
 #~ msgstr "更多属性"
 #~ msgid "Delete link"

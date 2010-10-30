@@ -198,7 +198,7 @@ function editor($id,$content,$options=null) {
         'toobar' => 'full',
         'emotPath' => WEB_ROOT.'common/images/emots/',
         'editorRoot' => WEB_ROOT.'common/editor/',
-        'loadCSS' => WEB_ROOT.'common/css/xheditor.plugins.css',
+        'loadCSS'    => WEB_ROOT.'common/css/xheditor.plugins.css',
     );
     
     $options = $options ? array_merge($defaults, $options) : $defaults;
