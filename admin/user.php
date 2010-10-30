@@ -70,6 +70,8 @@ switch ($method) {
             $email     = isset($_POST['email'])?$_POST['email']:null;
             $url       = isset($_POST['url'])?$_POST['url']:null;
             $desc      = isset($_POST['description'])?$_POST['description']:null;
+            $bcpwd     = isset($_POST['BanChangePassword'])?$_POST['BanChangePassword']:null;
+            $mplogin   = isset($_POST['MultiPersonLogin'])?$_POST['MultiPersonLogin']:'Yes';
             $roldes    = isset($_POST['roles'])?$_POST['roles']:array();
             if ($userid) {
             	$user = user_get_byid($userid); $is_exist = true;
@@ -111,7 +113,9 @@ switch ($method) {
                     'url'  => esc_html($url),
                     'roles' => $roldes,
                     'nickname' => esc_html($nickname),
-                    'Administrator' => 'Yes'
+                    'Administrator' => 'Yes',
+                    'BanChangePassword' => $bcpwd,
+                    'MultiPersonLogin'  => $mplogin,
                 );
                 // 编辑
                 if ($userid) {
@@ -150,7 +154,7 @@ switch ($method) {
 	                if ($_USER['userid']==$userid) continue;
 	            	user_delete($userid);
 	            }
-	            admin_success(__('Users deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
+	            admin_success(__('Users deleted.'),"LazyCMS.redirect('".referer()."');");
 	            break;
             default:
                 admin_alert(__('Parameter is invalid.'));
@@ -160,12 +164,21 @@ switch ($method) {
 	default:
 	    current_user_can('user-list');
 	    admin_head('loadevents','user_list_init');
-	    $admins = user_get_admins();
+        $page   = isset($_REQUEST['page'])?$_REQUEST['page']:1;
+        $size   = isset($_REQUEST['size'])?$_REQUEST['size']:10;
+        $query = array(
+            'page' => '$',
+            'size' => $size,
+        );
+        // 分页地址
+        $page_url = PHP_FILE.'?'.http_build_query($query);
+        $result   = user_gets("SELECT `userid` FROM `#@_user_meta` WHERE `key`='Administrator' AND `VALUE`='Yes' ORDER BY `userid` ASC", $page, $size);
+        $users    = (array) $result['users'];
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'._x('Add New','user').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="userlist" id="userlist">';
-        table_nav();
+        table_nav($page_url,$result);
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
         table_thead();
@@ -174,26 +187,26 @@ switch ($method) {
         table_thead();
         echo           '</tfoot>';
         echo           '<tbody>';
-        foreach ($admins as $admin) {
-            if ($admin['userid']==$_USER['userid']) {
+        foreach ($users as $user) {
+            if ($user['userid']==$_USER['userid']) {
             	$href = ADMIN_ROOT.'profile.php?referer='.PHP_FILE;
             	$actions = '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a></span>';
             } else {
-                $href = PHP_FILE.'?method=edit&userid='.$admin['userid'];
+                $href = PHP_FILE.'?method=edit&userid='.$user['userid'];
                 $actions = '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a> | </span>';
-                $actions.= '<span class="delete"><a href="javascript:;" onclick="user_delete('.$admin['userid'].')">'.__('Delete').'</a></span>';
+                $actions.= '<span class="delete"><a href="javascript:;" onclick="user_delete('.$user['userid'].')">'.__('Delete').'</a></span>';
             }
             echo           '<tr>';
-            echo               '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$admin['userid'].'" /></td>';
-            echo               '<td><strong><a href="'.$href.'">'.$admin['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
-            echo               '<td>'.$admin['mail'].'</td>';
-            echo               '<td><img class="c'.($admin['status']+3).' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
-            echo               '<td>'.$admin['registered'].'</td>';
+            echo               '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$user['userid'].'" /></td>';
+            echo               '<td><strong><a href="'.$href.'">'.$user['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
+            echo               '<td>'.$user['mail'].'</td>';
+            echo               '<td><img class="c'.($user['status']+3).' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
+            echo               '<td>'.$user['registered'].'</td>';
             echo           '</tr>';
         }
         echo           '</tbody>';
         echo       '</table>';
-        table_nav();
+        table_nav($page_url,$result);
         echo   '</form>';
         echo '</div>';
         include ADMIN_PATH.'/admin-footer.php';
@@ -204,13 +217,14 @@ switch ($method) {
  * 批量操作
  *
  */
-function table_nav() {
+function table_nav($url,$result) {
     echo '<div class="table-nav">';
     echo     '<select name="actions">';
     echo         '<option value="">'.__('Bulk Actions').'</option>';
     echo         '<option value="delete">'.__('Delete').'</option>';
     echo     '</select>';
     echo     '<button type="button">'.__('Apply').'</button>';
+    echo     page_list($url,$result['page'],$result['pages'],$result['total']);
     echo '</div>';
 }
 /**
@@ -243,6 +257,8 @@ function user_manage_page($action) {
     $email    = isset($_USER['mail'])?$_USER['mail']:null;
     $url      = isset($_USER['url'])?$_USER['url']:null;
     $desc     = isset($_USER['description'])?$_USER['description']:null;
+    $bcpwd    = isset($_USER['BanChangePassword'])?$_USER['BanChangePassword']:null;
+    $mplogin  = isset($_USER['MultiPersonLogin'])?$_USER['MultiPersonLogin']:'No';
     $roles    = isset($_USER['roles'])?$_USER['roles']:null;
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
@@ -265,8 +281,13 @@ function user_manage_page($action) {
     echo               '<th><label for="url">'.__('Website').'</label></th>';
     echo               '<td><input class="text" id="url" name="url" type="text" size="60" value="'.$url.'" /></td>';
     echo           '</tr>';
-    if ($action!='add') {
-    	echo       '<tr>';
+    if ($action == 'add') {
+        echo       '<tr>';
+        echo           '<th><label for="password1">'.__('Password').'<span class="description">'.__('(twice,required)').'</span></label></th>';
+        echo           '<td><input class="text" id="password1" name="password1" type="password" size="20" /><br/><input class="text" id="password2" name="password2" type="password" size="20" /></td>';
+        echo       '</tr>';
+    } else {
+        echo       '<tr>';
         echo           '<th><label for="description">'.__('Biographical Info').'</label></th>';
         echo           '<td><textarea cols="70" rows="5" id="description" name="description">'.$desc.'</textarea>';
         echo               '<br/><span class="description">'.__('Share a little biographical information to fill out your profile. This may be shown publicly.').'</span>';
@@ -278,21 +299,17 @@ function user_manage_page($action) {
         echo               '<span class="description">'.__('If you would like to change the password type a new one. Otherwise leave this blank.').'</span>';
         echo               '<br/><input class="text" id="password2" name="password2" type="password" size="20" /><span class="description">'.__('Type your new password again.').'</span>';
         echo           '</td>';
-        echo       '</tr>';;
-    } else {
-        echo       '<tr>';
-        echo           '<th><label for="password1">'.__('Password').'<span class="description">'.__('(twice,required)').'</span></label></th>';
-        echo           '<td><input class="text" id="password1" name="password1" type="password" size="20" /><br/><input class="text" id="password2" name="password2" type="password" size="20" /></td>';
-        echo       '</tr>';
-        echo       '<tr>';
-        echo           '<th><label for="send_password">'.__('Send Password?').'</label></th>';
-        echo           '<td><label for="send_password"><input type="checkbox" name="send_password" id="send_password" value="1" /> '.__('Send this password to the new user by email.').'</label></td>';
         echo       '</tr>';
     }
     echo           '<tr>';
     echo               '<th><label>'.__('Role').'</label></th>';
     echo               '<td>';
+    echo                    '<div class="role-list">';
+    echo                        '<label for="BanChangePassword"><input type="checkbox" name="BanChangePassword" id="BanChangePassword" value="Yes"'.($bcpwd=='Yes'?' checked="checked"':null).' />'.__('Ban Change Password').'</label>';
+    echo                        '<label for="MultiPersonLogin"><input type="checkbox" name="MultiPersonLogin" id="MultiPersonLogin" value="No"'.($mplogin=='No'?' checked="checked"':null).' />'.__('Prohibition multi-person to login').'</label>';
+    echo                    '</div>';
     echo                    admin_purview($roles);
+    echo                    '<button type="button" rel="select">'.__('Select / Deselect').'</button>';
     echo               '</td>';
     echo           '</tr>';
     echo       '</table>';

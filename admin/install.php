@@ -193,17 +193,19 @@ else {
 <title><?php _e('LazyCMS Setup');?></title>
 <?php
 admin_css('css/install'); admin_script('js/common'); admin_script('js/install');
+
+admin_head('jslang',array(
+    'Strength indicator' => __('Strength indicator'),
+    'Very weak'          => __('Very weak'),
+    'Weak'               => __('Weak'),
+    'Medium'             => __('Medium'),
+    'Strong'             => __('Strong'),
+    'Mismatch'           => __('Mismatch'),
+    'Rock it!'           => __('Rock it!'),
+));
 ?>
 <script type="text/javascript">
-    $.extend(LazyCMS.L10n,{
-        'Strength indicator': "<?php _e('Strength indicator');?>",
-        'Very weak': "<?php _e('Very weak');?>",
-        'Weak': "<?php _e('Weak');?>",
-        'Medium': "<?php _e('Medium');?>",
-        'Strong': "<?php _e('Strong');?>",
-        'Mismatch': "<?php _e('Mismatch');?>",
-        'Rock it!': "<?php _e('Rock it!');?>"
-    });
+    <?php echo admin_jslang();?>
     $(document).ready(install_init);
 </script>
 </head>

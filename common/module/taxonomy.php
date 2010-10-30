@@ -507,7 +507,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
 
             $result = post_gets($sql, $page, $number,'sortid,path',false);
             // 解析分页标签
-            if (stripos($html,'{pagelist')!==false) {
+            if (stripos($html,'{pagelist') !== false) {
                 $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU',
                     page_list(WEB_ROOT.$taxonomy['path'].'/index$'.$suffix, $page, $result['pages'], $result['length'], true),
                     $html

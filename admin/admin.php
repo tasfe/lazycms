@@ -373,3 +373,32 @@ function admin_menu($menus) {
     
     return true;
 }
+/**
+ * js公共语言包
+ *
+ * @return string
+ */
+function admin_jslang() {
+    // js语言包
+    $js_lang = array_merge(array(
+        'System Error' => __('System Error'),
+        'Alert'     => __('Alert'),
+        'Submit'    => __('Submit'),
+        'Confirm'   => __('Confirm'),
+        'Cancel'    => __('Cancel'),
+        'Save'      => __('Save'),
+        'Close'     => __('Close'),
+        'Edit'      => __('Edit'),
+        'Delete'    => __('Delete'),
+        'Search'    => __('Search'),
+        'Address:'    => __('Address:'),
+        'Insert Map'    => __('Insert Map'),
+        'No record!'        => __('No record!'),
+        'Confirm Logout?'   => __('Confirm Logout?'),
+        'Confirm Delete?'   => __('Confirm Delete?'),
+        'Use the model set' => __('Use the model set'),
+        'Use the category set' => __('Use the category set'),
+        'Did not select any action!' => __('Did not select any action!'),
+    ),admin_head('jslang'));
+    return sprintf('$.extend(LazyCMS.L10n,%s);',json_encode($js_lang));
+}

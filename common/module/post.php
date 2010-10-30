@@ -373,30 +373,81 @@ function post_create($postid) {
         post_process($post,'path,keywords,template');
         // 加载模版
         $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html($post['template']));
-                tpl_clean();
-                tpl_vars(array(
-                    'postid'   => $post['postid'],
-                    'title'    => $post['title'],
-                    'content'  => $post['content'],
-                    'path'     => WEB_ROOT.$post['path'],
-                    'datetime' => $post['datetime'],
-                    'keywords' => $post['keywords'],
-                    'description' => $post['description'],
-                ));
-                // 设置自定义字段
-                if (isset($post['meta'])) {
-                    foreach((array)$post['meta'] as $k=>$v) {
-                        tpl_vars('model.'.$k, $v);
-                    }
+        tpl_clean();
+        tpl_vars(array(
+            'postid'   => $post['postid'],
+            'datetime' => $post['datetime'],
+            'keywords' => $post['keywords'],
+            'description' => $post['description'],
+        ));
+        // 设置自定义字段
+        if (isset($post['meta'])) {
+            foreach((array)$post['meta'] as $k=>$v) {
+                tpl_vars('model.'.$k, $v);
+            }
+        }
+        // 文章分页
+        if ($post['content'] && strpos($post['content'],'<!--pagebeak-->')!==false) {
+            $contents = explode('<!--pagebeak-->',$post['content']);
+            // 总页数
+            $pages = count($contents);
+            if (($pos=strrpos($post['path'],'.')) !== false) {
+                $basename = substr($post['path'],0,$pos);
+                $suffix   = substr($post['path'],$pos);
+            } else {
+                $basename = $post['path'];
+                $suffix   = '';
+            }
+            foreach($contents as $i=>$content) {
+                $page = $i + 1;
+                if ($page == 1) {
+                    $path  = $basename.$suffix;
+                    $title = $post['title'];
+                } else {
+                    $path  = $basename.$page.$suffix;
+                    $title = $post['title'].' ('.$page.')';
                 }
-        
-        $html = tpl_parse($html);
-        // 生成的文件路径
-        $file = ABS_PATH.'/'.$post['path'];
-        // 创建目录
-        mkdirs(dirname($file));
-        // 保存文件
-        return file_put_contents($file,$html);
+
+                tpl_vars(array(
+                    'title'   => $title,
+                    'content' => $content,
+                    'path'    => WEB_ROOT.$path,
+                ));
+                $pagehtml = tpl_parse($html);
+                // 解析分页标签
+                if (stripos($pagehtml,'{pagelist') !== false) {
+                    $pagehtml = preg_replace('/\{(pagelist)[^\}]*\/\}/isU',
+                        page_list(WEB_ROOT.$basename.'$'.$suffix, $page, $pages, 1, true),
+                        $pagehtml
+                    );
+                }
+                // 生成的文件路径
+                $file = ABS_PATH.'/'.$path;
+                // 创建目录
+                mkdirs(dirname($file));
+                // 保存文件
+                file_put_contents($file,$pagehtml);
+            }
+        }
+        // 没有分页
+        else {
+            tpl_vars(array(
+                'title'   => $post['title'],
+                'content' => $post['content'],
+                'path'    => WEB_ROOT.$post['path'],
+            ));
+            // 解析分页标签
+            if (stripos($html,'{pagelist') !== false) {
+                $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU','',$html);
+            }
+            $html = tpl_parse($html);
+            // 生成的文件路径
+            $file = ABS_PATH.'/'.$post['path'];
+            // 创建目录
+            mkdirs(dirname($file));
+            // 保存文件
+            return file_put_contents($file,$html);
+        }
     }
     return true;
 }

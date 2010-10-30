@@ -36,19 +36,32 @@ function user_list_init() {
 }
 // 添加用户页面初始化
 function user_manage_init() {
+    // 绑定全选事件
+    $('button[rel=select]').click(function(){
+        $('.role-list input[name^=roles]:checkbox').each(function(){
+            this.checked = !this.checked; user_role_checked($(this).attr('rel'));
+        });
+    });
     // 初始化权限列表
     $('.role-list input[name^=parent]:checkbox').click(function(){
         $('.role-list input[name^=roles][rel=' + this.value + ']:checkbox').attr('checked',this.checked);
     });
-    var rel,length,cklength,checked;
+
     $('.role-list input[name^=roles]:checkbox').click(function(){
-        rel      = $(this).attr('rel');
-        length   = $('.role-list input[rel=' + rel + ']').size();
-        cklength = $('.role-list input[rel=' + rel + ']:checked').size();
-        checked  = cklength >= length;
-        $('.role-list input.parent-' + rel + ':checkbox').attr('checked',checked);
+        user_role_checked($(this).attr('rel'));
     });
 	$('form#usermanage').ajaxSubmit();
+}
+/**
+ * 权限选择
+ * 
+ * @param rel
+ */
+function user_role_checked(rel) {
+    var length   = $('.role-list input[rel=' + rel + ']').size(),
+        cklength = $('.role-list input[rel=' + rel + ']:checked').size(),
+        checked  = cklength >= length;
+    $('.role-list input.parent-' + rel + ':checkbox').attr('checked',checked);
 }
 // 我的配置页面初始化
 function user_profile_init() {

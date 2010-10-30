@@ -186,8 +186,6 @@ switch ($method) {
 
                 // 下载远程图片
 
-                // 删除站外连接
-                //$content = preg_replace('/<a([^>]*)href=["\']*(?!'.preg_quote(HTTP_HOST,'/').')([^>]*)>(.*)<\/a>/isU','$3',$content);
                 // 更新
                 if ($postid) {
                     $data['path']    = $path;
@@ -326,8 +324,7 @@ switch ($method) {
             'page' => '$',
             'size' => $size,
         );
-        // 分页地址
-        $page_url = PHP_FILE.'?'.http_build_query($query);
+
         // 排序方式
         $order = 'page.php'==$php_file ? 'ASC' : 'DESC';
 
@@ -339,14 +336,21 @@ switch ($method) {
         }
         // 根据分类筛选
         if ($category) {
+            $query['category'] = $category;
             $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE `taxonomyid`=%d ORDER BY `objectid` {$order}",esc_sql($category));
         } else {
             // 根据模型筛选
-            if ($model) $conditions[] = sprintf("`model` = '%s'",esc_sql($model));
+            if ($model) {
+                $query['model'] = $model;
+                $conditions[] = sprintf("`model` = '%s'",esc_sql($model));
+            }
             // 没有任何筛选条件
             $where = ' WHERE '.implode(' AND ' , $conditions);
             $sql = "SELECT `postid` FROM `#@_post` {$where} ORDER BY `postid` {$order}";
         }
+        // 分页地址
+        $page_url = PHP_FILE.'?'.http_build_query($query);
+
         $result = post_gets($sql, $page, $size);
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';

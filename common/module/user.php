@@ -66,18 +66,22 @@ function user_login($username,$password){
             return $user['status'];
         }
         $md5_pass = md5($password.$user['authcode']);
-        if ($md5_pass == $user['pass']) {
-            $authcode = authcode($user['userid']);
-            if ($authcode != $user['authcode']) {
-                // 生成需要更新的数据
-                $userinfo = array(
-                    'pass'     => md5($password.$authcode),
-                    'authcode' => $authcode,
-                );
-                // 更新数据
-                user_edit($user['userid'],$userinfo);
-                // 合并新密码和key
-                $user = array_merge($user,$userinfo);
+        if ($md5_pass == $user['pass']) {//var_dump($user,isset($user['MultiPersonLogin']) === false,(isset($user['MultiPersonLogin']) && $user['MultiPersonLogin']=='No'));
+            // 不允许多用户同时登录
+            if ( isset($user['MultiPersonLogin']) === false
+                || (isset($user['MultiPersonLogin']) && $user['MultiPersonLogin']=='No')) {
+                $authcode = authcode($user['userid']);
+                if ($authcode != $user['authcode']) {
+                    // 生成需要更新的数据
+                    $userinfo = array(
+                        'pass'     => md5($password.$authcode),
+                        'authcode' => $authcode,
+                    );
+                    // 更新数据
+                    user_edit($user['userid'],$userinfo);
+                    // 合并新密码和key
+                    $user = array_merge($user,$userinfo);
+                }
             }
             return $user;
         } else {
@@ -174,17 +178,42 @@ function user_get_meta($userid) {
     return $result;
 }
 /**
- * 取得后台所有的管理员
+ * 取得用户列表
  *
+ * @param string $sql
+ * @param int $page
+ * @param int $size
  * @return array
  */
-function user_get_admins() {
-    $db = get_conn(); $result = array();
-    $rs = $db->query("SELECT * FROM `#@_user_meta` WHERE `key`='Administrator' AND `VALUE`='Yes' ORDER BY `userid` ASC;");
-    while ($row = $db->fetch($rs)) {
-        $result[] = user_get_byid($row['userid']);
+function user_gets($sql, $page=1, $size=10){
+    $db = get_conn(); $users = array();
+    $page = $page<1 ? 1  : $page;
+    $size = $size<1 ? 10 : $size;
+    $count_sql = preg_replace('/SELECT (.+) FROM/iU','SELECT COUNT(*) FROM',$sql,1);
+    $count_sql = preg_replace('/ORDER BY (.+) (ASC|DESC)/i','',$count_sql,1);
+    $total = $db->result($count_sql);
+    $pages = ceil($total/$size);
+    $pages = ((int)$pages == 0) ? 1 : $pages;
+    if ((int)$page < (int)$pages) {
+        $length = $size;
+    } elseif ((int)$page >= (int)$pages) {
+        $length = $total - (($pages-1) * $size);
     }
-    return $result;
+    if ((int)$page > (int)$pages) $page = $pages;
+    $sql.= sprintf(' LIMIT %d OFFSET %d;',$size,($page-1)*$size);
+    $res = $db->query($sql);
+    while ($user = $db->fetch($res)) {
+        $user = user_get_byid($user['userid']);
+        $users[] = $user;
+    }
+    return array(
+        'page'   => $page,
+        'size'   => $size,
+        'total'  => $total,
+        'pages'  => $pages,
+        'length' => $length,
+        'users'  => $users,
+    );
 }
 /**
  * 创建用户
