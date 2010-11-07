@@ -39,6 +39,7 @@ switch ($method) {
     // 强力插入
     case 'new':
         admin_head('scripts',array('js/xheditor','js/post'));
+        admin_head('jslang',admin_editor_lang());
         if ('page.php' == $php_file) {
             current_user_can('page-new');
             admin_head('title',__('Add New Page'));
@@ -54,6 +55,7 @@ switch ($method) {
 	// 编辑
 	case 'edit':
         admin_head('scripts',array('js/xheditor','js/post'));
+        admin_head('jslang',admin_editor_lang());
         if ('page.php' == $php_file) {
             // 所属
             $parent_file = 'page.php';
@@ -110,6 +112,7 @@ switch ($method) {
             $mcode    = isset($_POST['model'])?$_POST['model']:null;
             $model    = model_get_bycode($mcode);
             $sortid   = isset($_POST['sortid'])?$_POST['sortid']:0;
+            $type     = isset($_POST['type'])?$_POST['type']:'page';
             $category = isset($_POST['category'])?$_POST['category']:array();
             $title    = isset($_POST['title'])?$_POST['title']:null;
             $autokeys = isset($_POST['autokeys'])?$_POST['autokeys']:null;
@@ -134,7 +137,7 @@ switch ($method) {
             ));
             // 自动截取简述
             if (empty($description)) {
-                $description = mb_substr(strip_tags($content),0,255,'UTF-8');
+                $description = mb_substr(clear_space(strip_tags($content)),0,255,'UTF-8');
             } else {
                 validate_check(array(
                     array('description',VALIDATE_LENGTH,__('Description the field up to 255 characters.'),0,255),
@@ -171,6 +174,7 @@ switch ($method) {
                 // 获取数据
                 $data = array(
                     'sortid'   => $sortid,
+                    'type'     => $type,
                     'category' => $category,
                     'model'    => esc_html($mcode),
                     'template' => esc_html($template),
@@ -286,11 +290,11 @@ switch ($method) {
                         $options['width'] = $field['w'];
                         $plugins = implode(',', $field['a']);
                         if ($field['t']=='basic') {
-                            $options['tools']  = 'Blocktag,Fontface,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,BackColor,|,Align,List,Outdent,Indent,|,Link,'.$plugins;
+                            $options['tools']  = 'Blocktag,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,BackColor,|,Align,List,Outdent,Indent,|,Link,'.$plugins;
                             $options['height'] = '120';
                         } elseif ($field['t']=='editor') {
                             $options['height'] = '280';
-                            $options['tools']  = 'Source,Preview,Pastetext,|,Blocktag,Fontface,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,'.
+                            $options['tools']  = 'Source,Preview,Pastetext,|,Blocktag,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,'.
                                                  'BackColor,Removeformat,|,Align,List,Outdent,Indent,|,Link,Unlink,'.$plugins.',|,Fullscreen';
 
                         }
@@ -330,9 +334,9 @@ switch ($method) {
 
         $conditions = array();
         if ('page.php' == $php_file) {
-            $conditions[] = "`sortid`='-1'";
+            $conditions[] = "`type`='page'";
         } else {
-            $conditions[] = "`sortid`<>'-1'";
+            $conditions[] = "`type`='post'";
         }
         // 根据分类筛选
         if ($category) {
@@ -462,7 +466,7 @@ function post_manage_page($action) {
     $models  = model_gets(0);
     $suffix  = C('HTMLFileSuffix');
     if ($action=='add') {
-        $mcode = isset($_GET['model'])?$_GET['model']:null;
+        $mcode  = isset($_GET['model'])?$_GET['model']:null;
     } else {
         $_DATA = post_get($postid);
         post_process($_DATA,'keywords');
@@ -488,9 +492,9 @@ function post_manage_page($action) {
     if ($models) {
         echo           '<tr>';
         echo               '<th><label for="model">'._x('Model','post').'</label></th>';
-        echo               '<td><select name="model" id="model">';
+        echo               '<td><select name="model" id="model"'.($action=='add' ? ' cookie="true"' : '').'>';
         foreach ($models as $m) {
-            $selected = isset($model['langcode']) && $m['langcode']==$model['langcode']?'selected="selected"':'';
+            $selected = isset($model['langcode']) && $m['langcode']==$model['langcode']?' selected="selected"':'';
         	echo               '<option value="'.$m['langcode'].'"'.$selected.'>'.$m['name'].'</option>';
         }
         echo               '</select></td>';
@@ -498,8 +502,9 @@ function post_manage_page($action) {
     }
     $hidden = '';
     if ('page.php' == $php_file) {
-        $hidden = '<input type="hidden" name="sortid" value="-1" />';
+        $hidden = '<input type="hidden" name="type" value="page" />';
     } else {
+        $hidden = '<input type="hidden" name="type" value="post" />';
         echo           '<tr class="taxonomyid">';
         echo               '<th><label for="taxonomyid">'._x('Categories','post').'</label></th>';
         echo               '<td>';
@@ -512,7 +517,7 @@ function post_manage_page($action) {
     echo                   '<th><label for="title">'._x('Title','post').'<span class="description">'.__('(required)').'</span></label></th>';
     echo                   '<td>';
     echo                       '<input class="text" id="title" name="title" type="text" size="70" value="'.$title.'" />';
-    echo                       '&nbsp;<label for="autokeys"><input type="checkbox" value="1" id="autokeys" name="autokeys" checked="checked">'.__('Auto get keywords').'</label>';
+    echo                       '&nbsp;<label for="autokeys"><input type="checkbox" value="1" id="autokeys" name="autokeys" checked="checked" cookie="true">'.__('Auto get keywords').'</label>';
     echo                   '</td>';
     echo               '</tr>';
     echo               '<tr>';
@@ -537,7 +542,7 @@ function post_manage_page($action) {
     echo           '</tbody>';
     echo       '</table>';
     echo   '</fieldset>';
-    echo   '<fieldset>';
+    echo   '<fieldset cookie="true">';
     echo       '<a href="javascript:;" class="toggle" title="'.__('Click to toggle').'"><br/></a>';
     echo       '<h3>'.__('More attribute').'</h3>';
     echo       '<table class="form-table">';
@@ -562,7 +567,7 @@ function post_manage_page($action) {
     if ('page.php' != $php_file) {
         echo           '<tr>';
         echo               '<th><label>'._x('Other','post').'</label></th>';
-        echo               '<td><label for="createlists"><input type="checkbox" name="createlists" value="1" id="createlists" />'.__('Update Category Lists').'</label></td>';
+        echo               '<td><label for="createlists"><input type="checkbox" name="createlists" value="1" id="createlists" cookie="true" />'.__('Update Category Lists').'</label></td>';
         echo           '</tr>';
     }
     echo           '</tbody>';

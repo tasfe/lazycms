@@ -270,6 +270,43 @@
             });
         });
     }
+    // 半记忆功能
+    $.fn.semiauto = function() {
+        var name = LazyCMS.URI.File.substr(0,LazyCMS.URI.File.lastIndexOf('.')),
+            opts = { expires: 365, path: LazyCMS.URI.Path };
+        // 下拉框处理
+        $('select[cookie=true]',this).each(function(i){
+            var t = $(this); t.attr('sel_guid',i);
+            var c = $.cookie(name + '_sel_' + i);
+            if (c !== null) {
+                $('option:selected',this).attr('selected',false);
+                $('option[value=' + c + ']',this).attr('selected',true);
+            }
+        }).change(function(){
+            $.cookie(name + '_sel_' + $(this).attr('sel_guid'), this.value, opts);
+        });
+        // 多选处理
+        $('input:checkbox[cookie=true]',this).each(function(i){
+            var t = $(this); t.attr('cbx_guid',i);
+            var c = $.cookie(name + '_cbx_' + i);
+            if (c !== null) {
+                this.checked = c == 'true';
+            }
+        }).click(function(){
+            $.cookie(name + '_cbx_' + $(this).attr('cbx_guid'), this.checked, opts);
+        });
+        // 更多属性处理
+        $('fieldset[cookie=true]',this).each(function(i){
+            var t = $(this); t.attr('fst_guid',i);
+            var c = $.cookie(name + '_fst_' + i);
+            if (c !== null) {
+                t.toggleClass('closed', c == 'true');
+            }
+        }).find('a.toggle,h3').click(function(){
+            $.cookie(name + '_fst_' + $(this).parents('fieldset').attr('fst_guid'), !$(this).parents('fieldset').hasClass('closed'), opts);
+        });
+        return this;
+    }
 
     /*
      * JSON  - JSON for jQuery

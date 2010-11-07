@@ -208,7 +208,7 @@ function editor($id,$content,$options=null) {
     if (isset($options['toobar'])) {
         switch ($options['toobar']) {
             case 'full':
-                $options['tools'] = 'Source,Preview,Pastetext,|,Blocktag,Fontface,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,'.
+                $options['tools'] = 'Source,Preview,Pastetext,|,Blocktag,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,'.
                                     'BackColor,Removeformat,|,Align,List,Outdent,Indent,|,Link,Unlink,Img,Flash,Flv,Emot,Table,GoogleMap,Pagebreak,Removelink,|,'.
                                     'Fullscreen';
                 break;
@@ -372,6 +372,20 @@ function no_cache(){
     header("Last-Modified:".date("D,d M Y H:i:s")." GMT");
     header("Cache-Control:no-cache,must-revalidate");
     header("Pragma:no-cache");
+}
+/**
+ * 清除空白
+ *
+ * @param  $content
+ * @return mixed
+ */
+function clear_space($content){
+    if (strlen($content)==0) return $content; $r = $content;
+    $r = str_replace(array(chr(9),chr(10),chr(13)),'',$r);
+    while (strpos($r,chr(32).chr(32))!==false || strpos($r,'&nbsp;')!==false) {
+        $r = str_replace(chr(32).chr(32),chr(32),str_replace('&nbsp;',chr(32),$r));
+    }
+    return $r;
 }
 /**
  * 在数组或字符串中查找
@@ -657,12 +671,12 @@ function ob_compress($content,$level=3,$force_gzip=false){
  */
 function mid($content,$start,$end,$clear=null){
     if (empty($content) || empty($start) || empty($end)) return null;
-    if ((!strncmp($start,'(',1)) && substr($start,-1)==')') {
+    if ((!strncmp($start,'(',1)) && !substr_compare($start,')',strlen($start)-1,1)) {
         if (preg_match("/{$start}/isU",$content,$args)) {
             $start = $args[0];
         }
     }
-    if ((!strncmp($end,'(',1)) && substr($end,-1)==')') {
+    if ((!strncmp($end,'(',1)) && !substr_compare($end,')',strlen($end)-1,1)) {
         if (preg_match("/{$end}/isU",$content,$args)) {
             $end = $args[0];
         }
@@ -674,7 +688,7 @@ function mid($content,$start,$end,$clear=null){
         $result = trim(substr($content,$start_pos+$start_len,$end_pos));
     }
     if (strlen($result)>0 && strlen($clear)>0) {
-        if ((!strncmp($clear,'(',1)) && substr($clear,-1)==')') {
+        if ((!strncmp($clear,'(',1)) && !substr_compare($clear,')',strlen($clear)-1,1)) {
             $result = preg_replace("/{$clear}/isU",'',$result);
         } else {
             if (strpos($result,$clear)!==false) {
@@ -699,7 +713,7 @@ function get_dir_array($path,$ext='*'){
         $path = ABS_PATH.DIRECTORY_SEPARATOR.$path;
     }
     $process_func = create_function('&$path,$ext','$path=substr($path,strrpos($path,"/")+1);');
-    if (substr($path,-1)!='/') { $path .= '/'; }
+    if (!substr_compare($path,'/',strlen($path)-1,1)===false) $path .= '/';
     $result = ($ext=='dir') ? glob("{$path}*",GLOB_ONLYDIR) : glob("{$path}*.{{$ext}}",GLOB_BRACE);
     array_walk($result,$process_func);
     return $result;
@@ -753,7 +767,7 @@ function iconvs($from,$to,$data){
     }
     if (is_string($data) ) {
         if(function_exists('iconv')) {
-            $to = substr($to,-8)=='//IGNORE' ? $to : $to.'//IGNORE';
+            $to = !substr_compare($to,'//IGNORE',strlen($to)-8,8) ? $to : $to.'//IGNORE';
             return iconv($from,$to,$data);
         } elseif (function_exists('mb_convert_encoding')) {
             return mb_convert_encoding ($data, $to, $from);
@@ -1227,6 +1241,39 @@ if (!function_exists('http_build_query')) {
 
         return implode($sep, $ret);
 	}
+}
+
+if (!function_exists('substr_compare')) {
+   function substr_compare($main_str, $str, $offset, $length = NULL, $case_insensitivity = false) {
+       $offset = (int) $offset;
+
+       // Throw a warning because the offset is invalid
+       if ($offset >= strlen($main_str)) {
+           return throw_error(__('The start position cannot exceed initial string length.'), E_LAZY_WARNING);;
+       }
+
+       // We are comparing the first n-characters of each string, so let's use the PHP function to do it
+       if ($offset == 0 && is_int($length) && $case_insensitivity === true) {
+           return strncasecmp($main_str, $str, $length);
+       }
+
+       // Get the substring that we are comparing
+       if (is_int($length)) {
+           $main_substr = substr($main_str, $offset, $length);
+           $str_substr  = substr($str, 0, $length);
+       } else {
+           $main_substr = substr($main_str, $offset);
+           $str_substr  = $str;
+       }
+
+       // Return a case-insensitive comparison of the two strings
+       if ($case_insensitivity === true) {
+           return strcasecmp($main_substr, $str_substr);
+       }
+
+       // Return a case-sensitive comparison of the two strings
+       return strcmp($main_substr, $str_substr);
+   }
 }
 
 if (!function_exists('gzdecode')) {

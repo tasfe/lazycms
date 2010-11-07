@@ -860,7 +860,7 @@ class Httplib {
      * @return bool|string
      */
     function gzinflate($gz_data) {
-		if ( substr($gz_data, 0, 3) == "\x1f\x8b\x08" ) {
+        if ( !strncmp($gz_data, "\x1f\x8b\x08", 3) ) {
 			$i = 10;
 			$flg = ord( substr($gz_data, 3, 1) );
 			if ( $flg > 0 ) {

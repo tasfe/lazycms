@@ -69,9 +69,18 @@ if ($.browser.msie && $.browser.version == '6.0') {
         // 下拉按钮点击的事件
         $('.head .toggle',this).click(function(){
 			var head = $(this).parent();
-				head.toggleClass('expand',$('.submenu',head).slideToggle('fast'));
+				head.toggleClass('expand',$('.submenu',head).slideToggle('fast',function(){
+                    $.cookie('admin_menu_' + head.attr('menu_guid'), head.hasClass('expand'), { expires: 365, path: LazyCMS.ADMIN_ROOT });
+                }));
         });
 		// 还缺少记录COOKIE
+        $('.head',this).each(function(i){
+            var t = $(this); t.attr('menu_guid',i);
+            var c = $.cookie('admin_menu_' + i);
+            if (c !== null && !t.hasClass('current')) {
+                t.toggleClass('expand',c=='true');
+            }
+        });
     }
     /**
      * 内容分词

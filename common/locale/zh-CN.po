@@ -2,10 +2,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-30 22:39+0800\n"
+"POT-Creation-Date: 2010-11-06 23:56+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.net>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -242,6 +243,10 @@ msgstr "威尔士语"
 #: common/functions.php:1003
 msgid "Yiddish"
 msgstr "意第绪语"
+
+#: common/functions.php:1238
+msgid "The start position cannot exceed initial string length."
+msgstr "起始位置不能超过初始字符串的长度。"
 
 #: common/system/httplib.php:126
 msgid "A valid URL was not provided."
@@ -1146,7 +1151,7 @@ msgstr "我接受LazyCMS的<a href=\"../LICENSE.txt\" target=\"_blank\">许可�
 msgid "Install LazyCMS"
 msgstr "安装 LazyCMS"
 
-#: admin/install.php:392
+#: admin/install.php:393
 msgid "My Site"
 msgstr "我的站点"
 
@@ -1399,7 +1404,6 @@ msgid "Update User"
 msgstr "更新用户"
 
 #: admin/admin-header-menu.php:13
-#: admin/upgrade.php:26
 #: admin/admin.php:198
 msgid "Upgrade"
 msgstr "程序升级"
@@ -1412,7 +1416,7 @@ msgid "Posts"
 msgstr "文章管理"
 
 #: admin/admin-header-menu.php:20
-#: admin/post.php:316
+#: admin/post.php:320
 #: admin/admin.php:203
 msgctxt "post"
 msgid "Add New"
@@ -1426,7 +1430,7 @@ msgid "Pages"
 msgstr "页面管理"
 
 #: admin/admin-header-menu.php:26
-#: admin/post.php:313
+#: admin/post.php:317
 #: admin/admin.php:211
 msgctxt "page"
 msgid "Add New"
@@ -1444,7 +1448,6 @@ msgstr "我的配置"
 
 #: admin/admin-header-menu.php:48
 #: admin/admin-header-menu.php:49
-#: admin/plugins.php:26
 #: admin/admin.php:240
 msgid "Plugins"
 msgstr "插件管理"
@@ -1457,7 +1460,6 @@ msgstr "添加新插件"
 
 #: admin/admin-header-menu.php:53
 #: admin/admin.php:246
-#: admin/tools/clean-cache.php:26
 msgid "Tools"
 msgstr "系统工具"
 
@@ -1475,163 +1477,164 @@ msgstr "设置管理"
 msgid "General"
 msgstr "常规"
 
-#: admin/post.php:44
+#: admin/post.php:45
 msgid "Add New Page"
 msgstr "添加新页面"
 
-#: admin/post.php:47
+#: admin/post.php:48
 msgid "Add New Post"
 msgstr "添加新文章"
 
-#: admin/post.php:63
+#: admin/post.php:65
 msgid "Edit Page"
 msgstr "编辑页面"
 
-#: admin/post.php:70
+#: admin/post.php:72
 msgid "Edit Post"
 msgstr "编辑文章"
 
-#: admin/post.php:90
+#: admin/post.php:92
 msgid "Posts created."
 msgstr "文章创建成功。"
 
-#: admin/post.php:97
+#: admin/post.php:99
 msgid "Posts deleted."
 msgstr "文章删除成功。"
 
-#: admin/post.php:125
+#: admin/post.php:128
 msgctxt "post"
 msgid "The title field is empty."
 msgstr "标题字段不能为空。"
 
-#: admin/post.php:126
+#: admin/post.php:129
 #, php-format
 msgctxt "post"
 msgid "The title field length must be %d-%d characters."
 msgstr "标题长度必须%d至%d个字符。"
 
-#: admin/post.php:131
+#: admin/post.php:134
 msgctxt "post"
 msgid "The path field is empty."
 msgstr "路径不能为空。"
 
-#: admin/post.php:132
+#: admin/post.php:135
 #, php-format
 msgctxt "post"
 msgid "The path can not contain any of the following characters %s"
 msgstr "文章路径不能下列任何字符之一：%s"
 
-#: admin/post.php:133
+#: admin/post.php:136
 msgctxt "post"
 msgid "The path already exists."
 msgstr "文章路径已存在，请重新输入。"
 
-#: admin/post.php:195
+#: admin/post.php:199
 msgid "Post updated."
 msgstr "文章更新成功。"
 
-#: admin/post.php:205
+#: admin/post.php:209
 msgid "Post created."
 msgstr "文章添加成功。"
 
-#: admin/post.php:300
+#: admin/post.php:304
 msgid "Browse..."
 msgstr "浏览..."
 
-#: admin/post.php:376
-#: admin/post.php:427
+#: admin/post.php:380
+#: admin/post.php:431
 msgid "Create"
 msgstr "生成"
 
-#: admin/post.php:383
-#: admin/post.php:397
+#: admin/post.php:387
+#: admin/post.php:401
+#: admin/admin.php:471
 msgid "None"
 msgstr "无"
 
-#: admin/post.php:442
-#: admin/post.php:512
+#: admin/post.php:446
+#: admin/post.php:517
 msgctxt "post"
 msgid "Title"
 msgstr "标题"
 
-#: admin/post.php:443
-#: admin/post.php:490
+#: admin/post.php:447
+#: admin/post.php:494
 msgctxt "post"
 msgid "Model"
 msgstr "模型"
 
-#: admin/post.php:444
-#: admin/post.php:526
+#: admin/post.php:448
+#: admin/post.php:531
 msgctxt "post"
 msgid "Path"
 msgstr "路径"
 
-#: admin/post.php:446
-#: admin/post.php:504
+#: admin/post.php:450
+#: admin/post.php:509
 msgctxt "post"
 msgid "Categories"
 msgstr "分类"
 
-#: admin/post.php:448
+#: admin/post.php:452
 msgctxt "post"
 msgid "Date"
 msgstr "日期"
 
-#: admin/post.php:449
+#: admin/post.php:453
 msgctxt "post"
 msgid "State"
 msgstr "状态"
 
-#: admin/post.php:515
+#: admin/post.php:520
 msgid "Auto get keywords"
 msgstr "自动获取关键词"
 
-#: admin/post.php:519
+#: admin/post.php:524
 msgctxt "post"
 msgid "Content"
 msgstr "内容"
 
-#: admin/post.php:542
+#: admin/post.php:547
 msgid "More attribute"
 msgstr "更多属性"
 
-#: admin/post.php:546
+#: admin/post.php:551
 msgctxt "post"
 msgid "Page Template"
 msgstr "页面模板"
 
-#: admin/post.php:555
+#: admin/post.php:560
 msgctxt "post"
 msgid "Keywords"
 msgstr "关键词"
 
-#: admin/post.php:556
+#: admin/post.php:561
 msgid "Get"
 msgstr "获取"
 
-#: admin/post.php:559
+#: admin/post.php:564
 msgctxt "post"
 msgid "Description"
 msgstr "Meta简述"
 
-#: admin/post.php:564
+#: admin/post.php:569
 msgctxt "post"
 msgid "Other"
 msgstr "其它选项"
 
-#: admin/post.php:565
+#: admin/post.php:570
 msgid "Update Category Lists"
 msgstr "更新分类列表"
 
-#: admin/post.php:573
+#: admin/post.php:578
 msgid "Add Post"
 msgstr "添加文章"
 
-#: admin/post.php:575
+#: admin/post.php:580
 msgid "Update Post"
 msgstr "更新文章"
 
-#: admin/post.php:597
+#: admin/post.php:602
 msgid "Uncategorized"
 msgstr "未分类"
 
@@ -1750,49 +1753,585 @@ msgctxt "setting"
 msgid "General"
 msgstr "常规"
 
-#: admin/admin.php:385
+#: admin/admin.php:388
 msgid "Alert"
 msgstr "系统提示"
 
-#: admin/admin.php:386
+#: admin/admin.php:389
 msgid "Submit"
 msgstr "确认"
 
-#: admin/admin.php:387
+#: admin/admin.php:390
 msgid "Confirm"
 msgstr "操作确认"
 
-#: admin/admin.php:390
+#: admin/admin.php:393
 msgid "Close"
 msgstr "关闭"
 
-#: admin/admin.php:393
+#: admin/admin.php:396
 msgid "Search"
 msgstr "搜索"
 
-#: admin/admin.php:394
+#: admin/admin.php:397
 msgid "Address:"
 msgstr "地址："
 
-#: admin/admin.php:395
+#: admin/admin.php:398
 msgid "Insert Map"
 msgstr "插入地图"
 
-#: admin/admin.php:397
+#: admin/admin.php:400
 msgid "Confirm Logout?"
 msgstr "确定要退出吗？"
 
-#: admin/admin.php:398
+#: admin/admin.php:401
 msgid "Confirm Delete?"
 msgstr "确定要删除吗？"
 
-#: admin/admin.php:400
+#: admin/admin.php:403
 msgid "Use the category set"
 msgstr "使用分类设置"
 
-#: admin/admin.php:401
+#: admin/admin.php:404
 msgid "Did not select any action!"
 msgstr "没有选择任何操作。"
+
+#: admin/admin.php:417
+msgid "Paragraph"
+msgstr "普通段落"
+
+#: admin/admin.php:418
+msgid "Heading 1"
+msgstr "标题1"
+
+#: admin/admin.php:419
+msgid "Heading 2"
+msgstr "标题2"
+
+#: admin/admin.php:420
+msgid "Heading 3"
+msgstr "标题3"
+
+#: admin/admin.php:421
+msgid "Heading 4"
+msgstr "标题4"
+
+#: admin/admin.php:422
+msgid "Heading 5"
+msgstr "标题5"
+
+#: admin/admin.php:423
+msgid "Heading 6"
+msgstr "标题6"
+
+#: admin/admin.php:424
+msgid "Preformatted"
+msgstr "已编排格式"
+
+#: admin/admin.php:425
+msgid "Address"
+msgstr "地址"
+
+#: admin/admin.php:426
+msgid "xx-small"
+msgstr "极小"
+
+#: admin/admin.php:427
+msgid "x-small"
+msgstr "特小"
+
+#: admin/admin.php:428
+msgid "small"
+msgstr "小"
+
+#: admin/admin.php:429
+msgid "medium"
+msgstr "中"
+
+#: admin/admin.php:430
+msgid "large"
+msgstr "大"
+
+#: admin/admin.php:431
+msgid "x-large"
+msgstr "特大"
+
+#: admin/admin.php:432
+msgid "xx-large"
+msgstr "极大"
+
+#: admin/admin.php:433
+msgid "Align left"
+msgstr "左对齐"
+
+#: admin/admin.php:434
+msgid "Align center"
+msgstr "居中"
+
+#: admin/admin.php:435
+msgid "Align right"
+msgstr "右对齐"
+
+#: admin/admin.php:436
+msgid "Align full"
+msgstr "两端对齐"
+
+#: admin/admin.php:437
+msgid "Ordered list"
+msgstr "数字列表"
+
+#: admin/admin.php:438
+msgid "Unordered list"
+msgstr "符号列表"
+
+#: admin/admin.php:439
+msgid "Use Ctrl+V on your keyboard to paste the text."
+msgstr "使用键盘快捷键(Ctrl+V)把内容粘贴到方框里，按 确定"
+
+#: admin/admin.php:440
+msgid "Ok"
+msgstr "确定"
+
+#: admin/admin.php:441
+msgid "Flv URL:"
+msgstr "Flv文件:"
+
+#: admin/admin.php:442
+msgid "Link URL:"
+msgstr "链接地址:"
+
+#: admin/admin.php:443
+msgid "Target:&nbsp;&nbsp;"
+msgstr "打开方式:"
+
+#: admin/admin.php:444
+msgid "Link Text:"
+msgstr "链接文字:"
+
+#: admin/admin.php:445
+msgid "Img URL:&nbsp;"
+msgstr "图片文件:"
+
+#: admin/admin.php:446
+msgid "Alt text:"
+msgstr "替换文本:"
+
+#: admin/admin.php:447
+msgid "Alignment:"
+msgstr "对齐方式:"
+
+#: admin/admin.php:448
+msgid "Dimension:"
+msgstr "宽度高度:"
+
+#: admin/admin.php:449
+msgid "Border:&nbsp;&nbsp;&nbsp;"
+msgstr "边框大小:"
+
+#: admin/admin.php:450
+msgid "Hspace:&nbsp;&nbsp;&nbsp;"
+msgstr "水平间距:"
+
+#: admin/admin.php:451
+msgid "Vspace:"
+msgstr "垂直间距:"
+
+#: admin/admin.php:452
+msgid "Flash URL:"
+msgstr "动画文件:"
+
+#: admin/admin.php:453
+msgid "Media URL:"
+msgstr "媒体文件:"
+
+#: admin/admin.php:454
+msgid "Rows&Cols:&nbsp;&nbsp;"
+msgstr "行数列数:"
+
+#: admin/admin.php:455
+msgid "Headers:&nbsp;&nbsp;&nbsp;&nbsp;"
+msgstr "标题单元:"
+
+#: admin/admin.php:456
+msgid "CellSpacing:"
+msgstr "表格间距:"
+
+#: admin/admin.php:457
+msgid "CellPadding:"
+msgstr "表格填充:"
+
+#: admin/admin.php:458
+msgid "Caption:&nbsp;&nbsp;&nbsp;&nbsp;"
+msgstr "表格标题:"
+
+#: admin/admin.php:459
+msgid "Border:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+msgstr "边框大小:"
+
+#: admin/admin.php:461
+msgid "New window"
+msgstr "新窗口"
+
+#: admin/admin.php:462
+msgid "Same window"
+msgstr "当前窗口"
+
+#: admin/admin.php:463
+msgid "Parent window"
+msgstr "父窗口"
+
+#: admin/admin.php:464
+msgctxt "xhe"
+msgid "Left"
+msgstr "左对齐"
+
+#: admin/admin.php:465
+msgctxt "xhe"
+msgid "Right"
+msgstr "右对齐"
+
+#: admin/admin.php:466
+msgctxt "xhe"
+msgid "Top"
+msgstr "顶端"
+
+#: admin/admin.php:467
+msgctxt "xhe"
+msgid "Middle"
+msgstr "居中"
+
+#: admin/admin.php:468
+msgctxt "xhe"
+msgid "Center"
+msgstr "居中"
+
+#: admin/admin.php:469
+msgctxt "xhe"
+msgid "Baseline"
+msgstr "基线"
+
+#: admin/admin.php:470
+msgctxt "xhe"
+msgid "Bottom"
+msgstr "底边"
+
+#: admin/admin.php:472
+msgid "First row"
+msgstr "第一行"
+
+#: admin/admin.php:473
+msgid "First column"
+msgstr "第一列"
+
+#: admin/admin.php:474
+msgid "Both"
+msgstr "第一行和第一列"
+
+#: admin/admin.php:475
+msgid "xhEditor is a platform independent WYSWYG XHTML editor based by jQuery,released as Open Source under <a href=\"http://www.gnu.org/licenses/lgpl.html\" target=\"_blank\">LGPL</a>."
+msgstr "xhEditor是基于jQuery开发的跨平台轻量XHTML编辑器，基于<a href=\"http://www.gnu.org/licenses/lgpl.html\" target=\"_blank\">LGPL</a>开源协议发布。"
+
+#: admin/admin.php:476
+msgid "Smile"
+msgstr "微笑"
+
+#: admin/admin.php:477
+msgid "Tongue"
+msgstr "吐舌头"
+
+#: admin/admin.php:478
+msgid "Titter"
+msgstr "偷笑"
+
+#: admin/admin.php:479
+msgid "Laugh"
+msgstr "大笑"
+
+#: admin/admin.php:480
+msgid "Sad"
+msgstr "难过"
+
+#: admin/admin.php:481
+msgid "Wronged"
+msgstr "委屈"
+
+#: admin/admin.php:482
+msgid "Fast cry"
+msgstr "快哭了"
+
+#: admin/admin.php:483
+msgid "Cry"
+msgstr "哭"
+
+#: admin/admin.php:484
+msgid "Wail"
+msgstr "大哭"
+
+#: admin/admin.php:485
+msgid "Mad"
+msgstr "生气"
+
+#: admin/admin.php:486
+msgid "Knock"
+msgstr "敲打"
+
+#: admin/admin.php:487
+msgid "Curse"
+msgstr "骂人"
+
+#: admin/admin.php:488
+msgid "Crazy"
+msgstr "抓狂"
+
+#: admin/admin.php:489
+msgid "Angry"
+msgstr "发火"
+
+#: admin/admin.php:490
+msgid "Oh my"
+msgstr "惊讶"
+
+#: admin/admin.php:491
+msgid "Awkward"
+msgstr "尴尬"
+
+#: admin/admin.php:492
+msgid "Panic"
+msgstr "惊恐"
+
+#: admin/admin.php:493
+msgid "Shy"
+msgstr "害羞"
+
+#: admin/admin.php:494
+msgid "Cute"
+msgstr "可怜"
+
+#: admin/admin.php:495
+msgid "Envy"
+msgstr "羡慕"
+
+#: admin/admin.php:496
+msgid "Proud"
+msgstr "得意"
+
+#: admin/admin.php:497
+msgid "Struggle"
+msgstr "奋斗"
+
+#: admin/admin.php:498
+msgid "Quiet"
+msgstr "安静"
+
+#: admin/admin.php:499
+msgid "Shut up"
+msgstr "闭嘴"
+
+#: admin/admin.php:500
+msgid "Doubt"
+msgstr "疑问"
+
+#: admin/admin.php:501
+msgid "Despise"
+msgstr "鄙视"
+
+#: admin/admin.php:502
+msgid "Sleep"
+msgstr "睡觉"
+
+#: admin/admin.php:503
+msgid "Bye"
+msgstr "再见"
+
+#: admin/admin.php:504
+msgid "Cut (Ctrl+X)"
+msgstr "剪切 (Ctrl+X)"
+
+#: admin/admin.php:505
+msgid "Copy (Ctrl+C)"
+msgstr "复制 (Ctrl+C)"
+
+#: admin/admin.php:506
+msgid "Paste (Ctrl+V)"
+msgstr "粘贴 (Ctrl+V)"
+
+#: admin/admin.php:507
+msgid "Paste as plain text"
+msgstr "粘贴文本"
+
+#: admin/admin.php:508
+msgid "Block tag"
+msgstr "段落标签"
+
+#: admin/admin.php:509
+msgid "Font family"
+msgstr "字体"
+
+#: admin/admin.php:510
+msgid "Font size"
+msgstr "字体大小"
+
+#: admin/admin.php:511
+msgid "Bold (Ctrl+B)"
+msgstr "加粗 (Ctrl+B)"
+
+#: admin/admin.php:512
+msgid "Italic (Ctrl+I)"
+msgstr "斜体 (Ctrl+I)"
+
+#: admin/admin.php:513
+msgid "Underline (Ctrl+U)"
+msgstr "下划线 (Ctrl+U)"
+
+#: admin/admin.php:514
+msgid "Strikethrough (Ctrl+S)"
+msgstr "删除线 (Ctrl+S)"
+
+#: admin/admin.php:515
+msgid "Select text color"
+msgstr "字体颜色"
+
+#: admin/admin.php:516
+msgid "Select background color"
+msgstr "背景颜色"
+
+#: admin/admin.php:517
+msgid "SelectAll (Ctrl+A)"
+msgstr "全选 (Ctrl+A)"
+
+#: admin/admin.php:518
+msgid "Remove formatting"
+msgstr "删除文字格式"
+
+#: admin/admin.php:519
+msgid "Align"
+msgstr "对齐"
+
+#: admin/admin.php:520
+msgid "List"
+msgstr "列表"
+
+#: admin/admin.php:521
+msgid "Outdent (Shift+Tab)"
+msgstr "减少缩进 (Shift+Tab)"
+
+#: admin/admin.php:522
+msgid "Indent (Tab)"
+msgstr "增加缩进 (Tab)"
+
+#: admin/admin.php:523
+msgid "Insert/edit link (Ctrl+K)"
+msgstr "超链接 (Ctrl+K)"
+
+#: admin/admin.php:524
+msgid "Unlink"
+msgstr "取消超链接"
+
+#: admin/admin.php:525
+msgid "Insert/edit image"
+msgstr "图片"
+
+#: admin/admin.php:526
+msgid "Insert/edit flash"
+msgstr "Flash动画"
+
+#: admin/admin.php:527
+msgid "Insert/edit media"
+msgstr "多媒体文件"
+
+#: admin/admin.php:528
+msgid "Insert Flv Video"
+msgstr "插入Flv视频"
+
+#: admin/admin.php:530
+msgid "Insert Google map"
+msgstr "插入Google地图"
+
+#: admin/admin.php:531
+msgid "Google Maps"
+msgstr "Google地图"
+
+#: admin/admin.php:533
+msgid "Emotions"
+msgstr "表情"
+
+#: admin/admin.php:534
+msgid "Insert a new table"
+msgstr "表格"
+
+#: admin/admin.php:535
+msgid "Edit source code"
+msgstr "源代码"
+
+#: admin/admin.php:536
+msgid "Preview"
+msgstr "预览"
+
+#: admin/admin.php:537
+msgid "Print (Ctrl+P)"
+msgstr "打印 (Ctrl+P)"
+
+#: admin/admin.php:538
+msgid "Toggle fullscreen (Esc)"
+msgstr "全屏编辑 (Esc)"
+
+#: admin/admin.php:539
+msgid "About xhEditor"
+msgstr "关于 xhEditor"
+
+#: admin/admin.php:540
+msgid "Click to open link"
+msgstr "点击打开链接"
+
+#: admin/admin.php:541
+msgid "Current textarea is hidden, please make it show before initialization xhEditor, or directly initialize the height."
+msgstr "当前textarea处于隐藏状态，请将之显示后再初始化xhEditor，或者直接设置textarea的width和height样式"
+
+#: admin/admin.php:542
+#: admin/admin.php:553
+msgid "Upload file extension required for this: "
+msgstr "上传文件的扩展名必需为："
+
+#: admin/admin.php:543
+msgid "You can only drag and drop the same type of file."
+msgstr "每次只能拖放上传同一类型文件"
+
+#: admin/admin.php:544
+msgid "File uploading,please wait..."
+msgstr "文件上传中，请稍候……"
+
+#: admin/admin.php:545
+msgid "Please do not upload more then {$upMultiple} files."
+msgstr "请不要一次上传超过{$upMultiple}个文件"
+
+#: admin/admin.php:546
+msgid "File uploading(Esc cancel)"
+msgstr "文件上传中(Esc取消上传)"
+
+#: admin/admin.php:547
+msgid " upload interface error!"
+msgstr " 上传接口发生错误！"
+
+#: admin/admin.php:548
+msgid "return error:"
+msgstr "返回的错误内容为:"
+
+#: admin/admin.php:549
+msgid "Close (Esc)"
+msgstr "关闭 (Esc)"
+
+#: admin/admin.php:550
+msgid "Currently not supported by your browser, use keyboard shortcuts(Ctrl+X) instead."
+msgstr "您的浏览器安全设置不允许使用剪切操作，请使用键盘快捷键(Ctrl + X)来完成"
+
+#: admin/admin.php:551
+msgid "Currently not supported by your browser, use keyboard shortcuts(Ctrl+C) instead."
+msgstr "您的浏览器安全设置不允许使用复制操作，请使用键盘快捷键(Ctrl + C)来完成"
+
+#: admin/admin.php:552
+msgid "Currently not supported by your browser, use keyboard shortcuts(Ctrl+V) instead."
+msgstr "您的浏览器安全设置不允许使用粘贴操作，请使用键盘快捷键(Ctrl + V)来完成"
 
 #: admin/profile.php:58
 msgid "Ban Change Password, Please contact the administrator."
@@ -1942,8 +2481,6 @@ msgstr "保存更改"
 #~ msgctxt "module"
 #~ msgid "Add New"
 #~ msgstr "添加模块"
-#~ msgid "Topics"
-#~ msgstr "专题管理"
 #~ msgctxt "topic"
 #~ msgid "List"
 #~ msgstr "专题列表"
@@ -2035,8 +2572,6 @@ msgstr "保存更改"
 #~ msgctxt "posts"
 #~ msgid "Edit"
 #~ msgstr "编辑文章"
-#~ msgid "User list"
-#~ msgstr "用户列表"
 #~ msgid "Class '%s' not found!"
 #~ msgstr "类 '%s' 不存在！"
 

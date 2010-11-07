@@ -302,6 +302,7 @@ CREATE TABLE `#@_model` (
 CREATE TABLE `#@_post` (
   `postid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `sortid` int(11) NOT NULL DEFAULT '0',
+  `type` char(20) NOT NULL,
   `model` char(75) NOT NULL,
   `author` int(11) NOT NULL DEFAULT '0',
   `path` char(255) NOT NULL,

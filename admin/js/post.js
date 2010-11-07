@@ -41,6 +41,8 @@ function post_manage_init() {
                 ((isNaN(+sortid) || +sortid==0) ? _('Use the model set') : _('Use the category set'))
             );
         };
+    // 半记忆
+    wrap.semiauto();
     // 控制是否显示模版使用模型设置
     $('.categories input:radio[name=sortid]',wrap).click(function(){
         categories(this.value); $(this).next().find('input:checkbox:checked').attr('checked',false);

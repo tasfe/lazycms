@@ -30,9 +30,7 @@ defined('COM_PATH') or die('Restricted access!');
  * @return array
  */
 function post_add($title,$content,$path,$data=null) {
-    $db = get_conn();
-    // 删除添加失败的文章
-    $db->delete('#@_post',array('datetime' => 0)); 
+    $db = get_conn(); 
     $postid = $db->insert('#@_post',array(
        'title'   => $title,
        'content' => $content,

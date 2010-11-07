@@ -50,7 +50,7 @@ var xhePlugins = window.xhePlugins = {
         var _this=this;
         _this.showIframeModal(_('Google Maps'),'{editorRoot}plugins/googlemap/map.html',function(r){
             _this.pasteHTML('<img src="' + r.src + '" alt="' + r.title + '" />');
-        },522,432);
+        },522,435);
     }},
     // Pagebreak
     Pagebreak:{c:'xhePlugins_btnPageBreak',t:_('Insert Pagebreak'),e:function(){

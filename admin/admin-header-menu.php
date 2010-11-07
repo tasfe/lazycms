@@ -34,7 +34,6 @@
         'models' => array(__('Models'),'model.php','a7',array(
             array(__('Models'),'model.php','model-list'),
             array(_x('Add New','model'),'model.php?method=new','model-new'),
-            array(_x('Import','model'),'model.php?method=import','model-import'),
         )),
         
         '------------------------------------------------------------',

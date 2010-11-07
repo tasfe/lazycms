@@ -212,20 +212,12 @@ function admin_purview($data=null) {
             'page-edit'   => _x('Edit','page'),
             'page-delete' => _x('Delete','page'),
         ),
-        /*'topic' => array(
-            '_LABEL_'     => __('Topics'),
-            'topic-list'   => _x('List','topic'),
-            'topic-new'    => _x('Add New','topic'),
-            'topic-edit'   => _x('Edit','topic'),
-            'topic-delete' => _x('Delete','topic'),
-        ),*/
         'models' => array(
             '_LABEL_'      => __('Models'),
             'model-list'   => _x('List','model'),
             'model-new'    => _x('Add New','model'),
             'model-edit'   => _x('Edit','model'),
             'model-delete' => _x('Delete','model'),
-            'model-import' => _x('Import','model'),
             'model-export' => _x('Export','model'),
             'model-fields' => _x('Fields','model'),
         ),
@@ -294,7 +286,7 @@ function admin_menu($menus) {
     if (!isset($parent_file)) {
     	$parent_file = PHP_FILE.$query;
     } else {
-        $parent_file = ADMIN_ROOT.(strpos($parent_file,'?')!==false?$parent_file:$parent_file.'?method=default');
+        $parent_file = ADMIN_ROOT.(strpos($parent_file,'?')!==false ? $parent_file : $parent_file.'?method=default');
     }
 
     $menus_tree = array();
@@ -305,10 +297,13 @@ function admin_menu($menus) {
             if (!empty($menu[3]) && is_array($menu[3])) {
                 $has_submenu = true;
                 foreach ($menu[3] as $href) {
+                    // 文件不存在，菜单也不能出现
+                    if (!is_file(ADMIN_PATH.'/'.parse_url($href[1],PHP_URL_PATH))) continue;
                     $href[1]   = ADMIN_ROOT.$href[1];
                     $url_query = strpos($href[1],'?')!==false?$href[1]:$href[1].'?method=default';
                     $href[3]   = !strncasecmp($parent_file,$url_query,strlen($url_query))?true:false;
                     $is_expand = !strncasecmp($parent_file,$url_query,strlen($url_query))?true:$is_expand;
+                    
                     // 子菜单需要权限才能访问，且用户要有权限
                     if (isset($href[2]) && (instr($href[2],$_USER['roles']) || $_USER['roles']=='ALL')) {
                         $submenus[] = $href;
@@ -399,6 +394,154 @@ function admin_jslang() {
         'Use the model set' => __('Use the model set'),
         'Use the category set' => __('Use the category set'),
         'Did not select any action!' => __('Did not select any action!'),
+
     ),admin_head('jslang'));
     return sprintf('$.extend(LazyCMS.L10n,%s);',json_encode($js_lang));
+}
+/**
+ * 编辑器语言
+ *
+ * @return array
+ */
+function admin_editor_lang() {
+    return array(
+        'Cancel'    => __('Cancel'),
+        'Paragraph' => __('Paragraph'),
+        'Heading 1' => __('Heading 1'),
+        'Heading 2' => __('Heading 2'),
+        'Heading 3' => __('Heading 3'),
+        'Heading 4' => __('Heading 4'),
+        'Heading 5' => __('Heading 5'),
+        'Heading 6' => __('Heading 6'),
+        'Preformatted' => __('Preformatted'),
+        'Address' => __('Address'),
+        'xx-small' => __('xx-small'),
+        'x-small' => __('x-small'),
+        'small' => __('small'),
+        'medium' => __('medium'),
+        'large' => __('large'),
+        'x-large' => __('x-large'),
+        'xx-large' => __('xx-large'),
+        'Align left' => __('Align left'),
+        'Align center' => __('Align center'),
+        'Align right' => __('Align right'),
+        'Align full' => __('Align full'),
+        'Ordered list' => __('Ordered list'),
+        'Unordered list' => __('Unordered list'),
+        'Use Ctrl+V on your keyboard to paste the text.' => __('Use Ctrl+V on your keyboard to paste the text.'),
+        'Ok' => __('Ok'),
+        'Flv URL:' => __('Flv URL:'),
+        'Link URL:' => __('Link URL:'),
+        'Target:&nbsp;&nbsp;' => __('Target:&nbsp;&nbsp;'),
+        'Link Text:' => __('Link Text:'),
+        'Img URL:&nbsp;' => __('Img URL:&nbsp;'),
+        'Alt text:' => __('Alt text:'),
+        'Alignment:' => __('Alignment:'),
+        'Dimension:' => __('Dimension:'),
+        'Border:&nbsp;&nbsp;&nbsp;' => __('Border:&nbsp;&nbsp;&nbsp;'),
+        'Hspace:&nbsp;&nbsp;&nbsp;' => __('Hspace:&nbsp;&nbsp;&nbsp;'),
+        'Vspace:' => __('Vspace:'),
+        'Flash URL:' => __('Flash URL:'),
+        'Media URL:' => __('Media URL:'),
+        'Rows&Cols:&nbsp;&nbsp;' => __('Rows&Cols:&nbsp;&nbsp;'),
+        'Headers:&nbsp;&nbsp;&nbsp;&nbsp;' => __('Headers:&nbsp;&nbsp;&nbsp;&nbsp;'),
+        'CellSpacing:' => __('CellSpacing:'),
+        'CellPadding:' => __('CellPadding:'),
+        'Caption:&nbsp;&nbsp;&nbsp;&nbsp;' => __('Caption:&nbsp;&nbsp;&nbsp;&nbsp;'),
+        'Border:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' => __('Border:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'),
+        'Default' => __('Default'),
+        'New window' => __('New window'),
+        'Same window' => __('Same window'),
+        'Parent window' => __('Parent window'),
+        'Left' => _x('Left','xhe'),
+        'Right' => _x('Right','xhe'),
+        'Top' => _x('Top','xhe'),
+        'Middle' => _x('Middle','xhe'),
+        'Center' => _x('Center','xhe'),
+        'Baseline' => _x('Baseline','xhe'),
+        'Bottom' => _x('Bottom','xhe'),
+        'None' => __('None'),
+        'First row' => __('First row'),
+        'First column' => __('First column'),
+        'Both' => __('Both'),
+        'xhEditor is a platform independent WYSWYG XHTML editor based by jQuery,released as Open Source under <a href="http://www.gnu.org/licenses/lgpl.html" target="_blank">LGPL</a>.' => __('xhEditor is a platform independent WYSWYG XHTML editor based by jQuery,released as Open Source under <a href="http://www.gnu.org/licenses/lgpl.html" target="_blank">LGPL</a>.'),
+        'Smile' => __('Smile'),
+        'Tongue' => __('Tongue'),
+        'Titter' => __('Titter'),
+        'Laugh' => __('Laugh'),
+        'Sad' => __('Sad'),
+        'Wronged' => __('Wronged'),
+        'Fast cry' => __('Fast cry'),
+        'Cry' => __('Cry'),
+        'Wail' => __('Wail'),
+        'Mad' => __('Mad'),
+        'Knock' => __('Knock'),
+        'Curse' => __('Curse'),
+        'Crazy' => __('Crazy'),
+        'Angry' => __('Angry'),
+        'Oh my' => __('Oh my'),
+        'Awkward' => __('Awkward'),
+        'Panic' => __('Panic'),
+        'Shy' => __('Shy'),
+        'Cute' => __('Cute'),
+        'Envy' => __('Envy'),
+        'Proud' => __('Proud'),
+        'Struggle' => __('Struggle'),
+        'Quiet' => __('Quiet'),
+        'Shut up' => __('Shut up'),
+        'Doubt' => __('Doubt'),
+        'Despise' => __('Despise'),
+        'Sleep' => __('Sleep'),
+        'Bye' => __('Bye'),
+        'Cut (Ctrl+X)' => __('Cut (Ctrl+X)'),
+        'Copy (Ctrl+C)' => __('Copy (Ctrl+C)'),
+        'Paste (Ctrl+V)' => __('Paste (Ctrl+V)'),
+        'Paste as plain text' => __('Paste as plain text'),
+        'Block tag' => __('Block tag'),
+        'Font family' => __('Font family'),
+        'Font size' => __('Font size'),
+        'Bold (Ctrl+B)' => __('Bold (Ctrl+B)'),
+        'Italic (Ctrl+I)' => __('Italic (Ctrl+I)'),
+        'Underline (Ctrl+U)' => __('Underline (Ctrl+U)'),
+        'Strikethrough (Ctrl+S)' => __('Strikethrough (Ctrl+S)'),
+        'Select text color' => __('Select text color'),
+        'Select background color' => __('Select background color'),
+        'SelectAll (Ctrl+A)' => __('SelectAll (Ctrl+A)'),
+        'Remove formatting' => __('Remove formatting'),
+        'Align' => __('Align'),
+        'List' => __('List'),
+        'Outdent (Shift+Tab)' => __('Outdent (Shift+Tab)'),
+        'Indent (Tab)' => __('Indent (Tab)'),
+        'Insert/edit link (Ctrl+K)' => __('Insert/edit link (Ctrl+K)'),
+        'Unlink' => __('Unlink'),
+        'Insert/edit image' => __('Insert/edit image'),
+        'Insert/edit flash' => __('Insert/edit flash'),
+        'Insert/edit media' => __('Insert/edit media'),
+        'Insert Flv Video' => __('Insert Flv Video'),
+        'Insert Pagebreak' => __('Insert Pagebreak'),
+        'Insert Google map' => __('Insert Google map'),
+        'Google Maps' => __('Google Maps'),
+        'Remove external links' => __('Remove external links'),
+        'Emotions' => __('Emotions'),
+        'Insert a new table' => __('Insert a new table'),
+        'Edit source code' => __('Edit source code'),
+        'Preview' => __('Preview'),
+        'Print (Ctrl+P)' => __('Print (Ctrl+P)'),
+        'Toggle fullscreen (Esc)' => __('Toggle fullscreen (Esc)'),
+        'About xhEditor' => __('About xhEditor'),
+        'Click to open link' => __('Click to open link'),
+        'Current textarea is hidden, please make it show before initialization xhEditor, or directly initialize the height.' => __('Current textarea is hidden, please make it show before initialization xhEditor, or directly initialize the height.'),
+        'Upload file extension required for this: ' => __('Upload file extension required for this: '),
+        'You can only drag and drop the same type of file.' => __('You can only drag and drop the same type of file.'),
+        'File uploading,please wait...' => __('File uploading,please wait...'),
+        'Please do not upload more then {$upMultiple} files.' => __('Please do not upload more then {$upMultiple} files.'),
+        'File uploading(Esc cancel)' => __('File uploading(Esc cancel)'),
+        ' upload interface error!' => __(' upload interface error!'),
+        'return error:' => __('return error:'),
+        'Close (Esc)' => __('Close (Esc)'),
+        'Currently not supported by your browser, use keyboard shortcuts(Ctrl+X) instead.' => __('Currently not supported by your browser, use keyboard shortcuts(Ctrl+X) instead.'),
+        'Currently not supported by your browser, use keyboard shortcuts(Ctrl+C) instead.' => __('Currently not supported by your browser, use keyboard shortcuts(Ctrl+C) instead.'),
+        'Currently not supported by your browser, use keyboard shortcuts(Ctrl+V) instead.' => __('Currently not supported by your browser, use keyboard shortcuts(Ctrl+V) instead.'),
+        'Upload file extension required for this: ' => __('Upload file extension required for this: '),
+    );
 }

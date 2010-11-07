@@ -10,6 +10,8 @@ admin_css('css/admin');
 admin_css(admin_head('styles'));
 // 加载JS核心库
 admin_script('js/common');
+// 输出js语言包
+echo '<script type="text/javascript">'.admin_jslang().'</script>';
 // 加载模块JS库
 admin_script(admin_head('scripts'));
 ?>
@@ -30,8 +32,6 @@ if ($loadevents) {
 }
 // 检查是否有需要生成的进度
 if (publish_check_process()) echo "addLoadEvent(common_publish);";
-// 输出js语言包
-echo admin_jslang();
 ?>
 //]]>
 </script>

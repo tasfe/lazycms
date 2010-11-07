@@ -22,6 +22,8 @@ var LazyCMS = window.LazyCMS = window.CMS = {
     version: '1.0',
     // 语言包对象
     L10n: {},
+    // URI对象
+    URI: {},
     // 后台根目录
     ADMIN_ROOT: '/admin/',
     // 站点根目录
@@ -464,7 +466,16 @@ var LazyCMS = window.LazyCMS = window.CMS = {
     }
 };
 
+LazyCMS.URI.Host = (('https:' == self.location.protocol) ? 'https://'+self.location.hostname : 'http://'+self.location.hostname);
+LazyCMS.URI.Path = self.location.href.replace(/\?(.*)/,'').replace(LazyCMS.URI.Host,'');
+LazyCMS.URI.File = LazyCMS.URI.Path.split('/').pop();
+LazyCMS.URI.Path = LazyCMS.URI.Path.substr(0,LazyCMS.URI.Path.lastIndexOf('/')+1);
+LazyCMS.URI.Url  = LazyCMS.URI.Host + LazyCMS.URI.Path + LazyCMS.URI.File;
+
 window._ = LazyCMS.translate;
+
+
+
 
 // 等同于PHP parse_str
 function parse_str(str) {

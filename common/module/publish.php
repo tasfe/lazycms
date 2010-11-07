@@ -77,11 +77,8 @@ function publish_check_process() {
  */
 function publish_exec() {
     $db = get_conn();
-    // 已经有进程在执行，则退出
-    if (1 < intval($db->result("SELECT COUNT(`pubid`) FROM `#@_publish` WHERE `state`=1;")))
-        return false;
     // 取出未执行进程，开始执行
-    $rs = $db->query("SELECT * FROM `#@_publish` WHERE (`state`=0 OR `state`=1) ORDER BY `pubid` DESC LIMIT 1;");
+    $rs = $db->query("SELECT * FROM `#@_publish` WHERE (`state`=0 OR `state`=1) ORDER BY `pubid` ASC LIMIT 1;");
     if ($data = $db->fetch($rs)) {
         if (!function_exists($data['func'])) {
             $sets = array('state' => 2);
@@ -101,16 +98,16 @@ function publish_exec() {
  * @return bool
  */
 function publish_posts($data,$mode='all'){
-    $db = get_conn();
+    $db = get_conn(); $where = '';
     $sql = 'SELECT `postid` FROM `#@_post`';
     // 生成所有页面
     if ($mode == 'pages') {
-        $where = "WHERE `sortid`='-1'";
+        $where = "WHERE `type`='page'";
         $sql  .= $where;
     }
     // 生成所有文章
     elseif($mode == 'posts') {
-        $where = "WHERE `sortid`<>'-1'";
+        $where = "WHERE `type`='post'";
         $sql  .= $where;
     }
     // 指定分类文章生成
