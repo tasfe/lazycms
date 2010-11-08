@@ -499,7 +499,10 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
             $number = tpl_get_attr($block['tag'],'number');
             // 排序方式
             $order  = tpl_get_attr($block['tag'],'order');
+            // 斑马线实现
+            $zebra  = tpl_get_attr($block['tag'],'zebra');
             // 校验数据
+            $zebra  = validate_is($zebra,VALIDATE_IS_NUMERIC) ? $zebra : 0;
             $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
             $order  = instr(strtoupper($order),'ASC,DESC') ? $order : 'DESC';
             // 拼装sql
@@ -515,13 +518,16 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
             }
             // 数据存在
             if ($result['length'] > 0) {
-                foreach ($result['posts'] as $post) {
+                // 取得标签块内容
+                $block['inner'] = tpl_get_block_inner($block);
+                foreach ($result['posts'] as $i=>$post) {
                     // 生成文章
                     if ($make_post) post_create($post['postid']);
                     // 清理模版内部变量
                     tpl_clean();
                     // 设置文章变量
                     $vars = array(
+                        'zebra'    => ($i % ($zebra + 1)) ? '0' : '1',
                         'postid'   => $post['postid'],
                         'title'    => $post['title'],
                         'content'  => $post['content'],
@@ -543,18 +549,19 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                             tpl_vars('model.'.$k, $v);
                         }
                     }
-                    // 取得标签块内容
-                    $block['inner'] = tpl_get_block_inner($block);
                     // 解析二级内嵌标签
-                    foreach ((array)$block['sub'] as $sblock) {
-                        $sblock['name'] = strtolower($sblock['name']);
-                        switch($sblock['name']) {
-                            // TODO 解析图片标签
-                            case 'images':
-                                $block['inner'] = str_replace($sblock['tag'],'',$block['inner']);
-                                break;
+                    if (isset($block['sub'])) {
+                        foreach ($block['sub'] as $sblock) {
+                            $sblock['name'] = strtolower($sblock['name']);
+                            switch($sblock['name']) {
+                                // TODO 解析图片标签
+                                case 'images':
+                                    $block['inner'] = str_replace($sblock['tag'],'',$block['inner']);
+                                    break;
+                            }
                         }
                     }
+
                     // 解析变量
                     $inner.= tpl_parse($block['inner']);
                 }

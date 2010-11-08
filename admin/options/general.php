@@ -78,6 +78,13 @@ if (validate_is_post()) {
     echo               '</td>';
     echo           '</tr>';
     echo           '<tr>';
+    echo               '<th><label for="Template-404">'.__('404 Template').'</label></th>';
+    echo               '<td><select name="Template-404" id="Template-404">';
+    echo                       options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',C('Template-404'));
+    echo                   '</select>';
+    echo               '</td>';
+    echo           '</tr>';
+    echo           '<tr>';
     echo               '<th><label for="TemplateSuffixs">'.__('Template suffix').'<span class="description">'.__('(required)').'</span></label></th>';
     echo               '<td><input class="text" id="TemplateSuffixs" name="TemplateSuffixs" type="text" size="50" value="'.C('TemplateSuffixs').'" /></td>';
     echo           '</tr>';

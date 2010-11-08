@@ -26,13 +26,21 @@
     {pagelist /}
 </div>
 
-{list type="new" number="8" order="DESC"}
+<div class="news">
+{list type="new" number="8"}
     <p>[<a href="{$sortPath}" target="_blank">{$sortname}</a>]<a href="{$path}" target="_blank">{$title}</a> Date:{$datetime mode='Y-m-d H:i:s'} - {$model.zdy1}</p>
+    <div class="pics">
+        {images number="3"}
+        <img src="{$image}" />
+        {/images}
+    </div>
 {/list}
-
-{post type="hot" number="6" order="DESC"}
+</div>
+<div class="hots">
+{post type="hot" number="6"}
     <p>[<a href="{$sortPath}" target="_blank">{$sortname}</a>]<a href="{$path}" target="_blank">{$title}</a> Date:{$datetime mode='Y-m-d H:i:s'} - {$model.zdy1}</p>
 {/post}
+</div>
 
 {include file="footer.shtml" /}
 

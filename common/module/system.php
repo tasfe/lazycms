@@ -22,7 +22,7 @@ defined('COM_PATH') or die('Restricted access!');
 
 // 注册模版变量处理函数
 tpl_add_plugin('system_tpl_plugin');
-tpl_add_plugin('system_list_tpl_plugin');
+tpl_add_plugin('system_tpl_list_plugin');
 
 /**
  * 处理模版变量
@@ -67,8 +67,14 @@ function system_tpl_plugin($tag_name,$tag) {
     }
     return $result;
 }
-
-function system_list_tpl_plugin($tag_name,$tag) {
+/**
+ * 处理列表
+ *
+ * @param  $tag_name
+ * @param  $tag
+ * @return
+ */
+function system_tpl_list_plugin($tag_name,$tag,$block) {
     if (!instr($tag_name,'post,list')) return null;
     // 列表类型
     $type = tpl_get_attr($tag,'type');
@@ -78,21 +84,83 @@ function system_list_tpl_plugin($tag_name,$tag) {
     $sortid = tpl_get_attr($tag,'sortid');
     // 显示条数
     $number = tpl_get_attr($tag,'number');
+    // 斑马线实现
+    $zebra  = tpl_get_attr($tag,'zebra');
     // 校验数据
     $sortid = validate_is($sortid,VALIDATE_IS_LIST) ? $sortid : null;
     $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
+    $zebra  = validate_is($zebra,VALIDATE_IS_NUMERIC) ? $zebra : 0;
     // 处理
     switch ($type) {
         case 'new':
+            $where = $sortid ? " AND `taxonomyid` IN({$sortid})" : '';
+            $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE 1 %s LIMIT %d;",$where,$number);
             break;
         case 'hot':
+            $where = $sortid ? " AND `tr`.`taxonomyid` IN({$sortid})" : '';
+            $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE 1 %s ORDER BY `p`.`count` DESC LIMIT %d;",$where,$number);
             break;
         case 'chill':
+            $where = $sortid ? " AND `tr`.`taxonomyid` IN({$sortid})" : '';
+            $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE 1 %s ORDER BY `p`.`count` ASC LIMIT %d;",$where,$number);
+            break;
+        case 'related':
+            
             break;
         default:
-            $result = null;
+            $sql = null;
     }
-    return null;
+    $result = null;
+    if ($sql) {
+        $db = get_conn(); $i = 0;
+        $rs = $db->query($sql);
+        $suffix = C('HTMLFileSuffix');
+        $inner  = tpl_get_block_inner($block);
+        while ($data = $db->fetch($rs)) {
+            $post = post_get($data['postid']);
+            post_process($post,'sortid,path');
+            tpl_clean();
+            // 设置文章变量
+            $vars = array(
+                'zebra'    => ($i % ($zebra + 1)) ? '0' : '1',
+                'postid'   => $post['postid'],
+                'title'    => $post['title'],
+                'content'  => $post['content'],
+                'path'     => WEB_ROOT.$post['path'],
+                'datetime' => $post['datetime'],
+                'keywords' => $post['keywords'],
+                'description' => $post['description'],
+            );
+            // 设置分类变量
+            $vars['sortid'] = $post['sortid'];
+            if (isset($post['sort'])) {
+                $vars['sortname'] = $post['sort']['name'];
+                $vars['sortpath'] = WEB_ROOT.$post['sort']['path'].'/index'.$suffix;
+            }
+            tpl_vars($vars);
+            // 设置自定义字段
+            if (isset($post['meta'])) {
+                foreach((array)$post['meta'] as $k=>$v) {
+                    tpl_vars('model.'.$k, $v);
+                }
+            }
+            // 解析二级内嵌标签
+            if (isset($block['sub'])) {
+                foreach ($block['sub'] as $sblock) {
+                    $sblock['name'] = strtolower($sblock['name']);
+                    switch($sblock['name']) {
+                        // TODO 解析图片标签
+                        case 'images':
+                            $inner = str_replace($sblock['tag'],'',$inner);
+                            break;
+                    }
+                }
+            }
+            $result.= tpl_parse($inner);
+            $i++;
+        }
+    }
+    return $result;
 }
 /**
  * 查询模版路径

@@ -26,11 +26,6 @@
             array(_x('Add New','page'),'page.php?method=new','page-new'),
         )),
 
-        /*'topics' => array(__('Topics'),'topic.php','a6',array(
-            array(__('Topics'),'topic.php','topic-list'),
-            array(_x('Add New','topic'),'topic.php?method=new','topic-new'),
-        )),*/
-
         'models' => array(__('Models'),'model.php','a7',array(
             array(__('Models'),'model.php','model-list'),
             array(_x('Add New','model'),'model.php?method=new','model-new'),

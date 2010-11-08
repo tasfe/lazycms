@@ -301,17 +301,18 @@ CREATE TABLE `#@_model` (
 
 CREATE TABLE `#@_post` (
   `postid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `sortid` int(11) NOT NULL DEFAULT '0',
+  `sortid` int(10) unsigned NOT NULL DEFAULT '0',
   `type` char(20) NOT NULL,
   `model` char(75) NOT NULL,
-  `author` int(11) NOT NULL DEFAULT '0',
+  `author` int(10) unsigned NOT NULL DEFAULT '0',
   `path` char(255) NOT NULL,
   `title` char(255) NOT NULL,
   `content` longtext NOT NULL,
   `count` int(10) unsigned NOT NULL DEFAULT '0',
   `digg` int(10) unsigned NOT NULL DEFAULT '0',
   `passed` tinyint(1) NOT NULL DEFAULT '0',
-  `datetime` int(11) NOT NULL DEFAULT '0',
+  `datetime` int(10) unsigned NOT NULL DEFAULT '0',
+  `edittime` int(10) unsigned NOT NULL DEFAULT '0',
   `template` varchar(50) NOT NULL,
   `description` varchar(255) NOT NULL,
   PRIMARY KEY (`postid`),
@@ -387,6 +388,7 @@ function install_defaults() {
     $options = array(
         // 2.0
         'Template' => 'default',
+        'Template-404' => '404.html',
         'TemplateSuffixs' => 'htm,html',
         'HTMLFileSuffix' => '.html',
         'Language' => 'zh-CN',

@@ -32,9 +32,12 @@ defined('COM_PATH') or die('Restricted access!');
 function post_add($title,$content,$path,$data=null) {
     $db = get_conn(); 
     $postid = $db->insert('#@_post',array(
-       'title'   => $title,
-       'content' => $content,
-       'path'    => $path,
+        'title'   => $title,
+        'content' => $content,
+        'path'    => $path,
+        'passed'  => 0,
+        'datetime' => time(),
+        'edittime' => time(),
     ));
     $data['path'] = $path;
     return post_edit($postid,$data);
@@ -62,7 +65,33 @@ function post_edit($postid,$data) {
             // 删除旧文件
             if ($data['path'] != $post['path']) {
                 post_process($post,'path');
-                if (is_file(ABS_PATH.'/'.$post['path']))
+                // 文章添加大于24小时
+                if (time()-$post['edittime'] > 86400) {
+                    // 生成临时转向文件
+                    post_process($post,'keywords');
+                    if (strncmp($data['path'],'/',1) === 0) {
+                        $path = ltrim($data['path'], '/');
+                    } elseif (isset($post['_path'])) {
+                        $path = $post['_path'].'/'.$data['path'];
+                    }
+                    $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('Template-404')));
+                    tpl_clean();
+                    tpl_vars(array(
+                        'path'  => WEB_ROOT.$post['path'],
+                        'url'   => WEB_ROOT.$path,
+                        'title' => $post['title'],
+                        'keywords' => $post['keywords'],
+                        'description' => $post['description'],
+                    ));
+                    $html = tpl_parse($html);
+                    $file = ABS_PATH.'/'.$post['path'];
+                    mkdirs(dirname($file));
+                    file_put_contents($file,$html);
+                    // 变更添加时间
+                    $data['edittime'] = time();
+                }
+                // 删除旧文件
+                elseif (is_file(ABS_PATH.'/'.$post['path']))
                     unlink(ABS_PATH.'/'.$post['path']);
             }
         }
@@ -250,9 +279,9 @@ function post_process(&$post,$option=null) {
         } elseif ($post['sortid'] > 0) {
             $taxonomy = taxonomy_get($post['sortid']);
             if (isset($taxonomy['path'])) {
-                $post['path'] = $taxonomy['path'].'/'.$post['path'];
+                $post['_path'] = $taxonomy['path'];
+                $post['path']  = $post['_path'].'/'.$post['path'];
             }
-
         }
     }
 }

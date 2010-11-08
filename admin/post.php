@@ -201,8 +201,6 @@ switch ($method) {
                 // 强力插入
                 else {
                     $data['author'] = $_USER['userid'];
-                    $data['passed'] = 0;
-                    $data['datetime'] = time();
                     if ($post = post_add($title,$content,$path,$data)) {
                         $postid = $post['postid'];
                     }

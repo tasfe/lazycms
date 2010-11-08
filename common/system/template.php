@@ -75,14 +75,15 @@ class Template {
     /**
      * 执行插件
      *
-     * @param  $tag_name
-     * @param  $tag
+     * @param string $tag_name
+     * @param string $tag
+     * @param array $block 标签信息，嵌套标签需要传
      * @return mixed
      */
-    function apply_plugins($tag_name,$tag) {
+    function apply_plugins($tag_name,$tag,$block=null) {
         $result = null;
         foreach ($this->_plugins as $func) {
-            $result = call_user_func($func,$tag_name,$tag);
+            $result = call_user_func($func,$tag_name,$tag,$block);
             if (null !== $result) break;
         }
         return $result;
@@ -207,7 +208,7 @@ class Template {
             }
             // 不属于本函数处理的范围，利用扩展处理
             else {
-                $html = str_replace($block['tag'], tpl_apply_plugins($block['name'],$block['tag']), $html);
+                $html = str_replace($block['tag'], $this->apply_plugins($block['name'],$block['tag'],$block), $html);
             }
         }
         return $result;
