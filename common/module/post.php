@@ -64,19 +64,20 @@ function post_edit($postid,$data) {
             ));
             // 删除旧文件
             if ($data['path'] != $post['path']) {
-                post_process($post,'path');
+                $post['path'] = post_get_path($post['sortid'],$post['path']);
                 // 文章添加大于24小时
                 if (time()-$post['edittime'] > 86400) {
                     // 生成临时转向文件
-                    post_process($post,'keywords');
+                    $post['keywords'] = post_get_keywords($post['keywords']);
                     if (strncmp($data['path'],'/',1) === 0) {
                         $path = ltrim($data['path'], '/');
-                    } elseif (isset($post['_path'])) {
-                        $path = $post['_path'].'/'.$data['path'];
+                    } elseif ($post['sortid'] > 0) {
+                        $taxonomy = taxonomy_get($post['sortid']);
+                        $path = $taxonomy['path'].'/'.$data['path'];
                     }
                     $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('Template-404')));
                     tpl_clean();
-                    tpl_vars(array(
+                    tpl_set_var(array(
                         'path'  => WEB_ROOT.$post['path'],
                         'url'   => WEB_ROOT.$path,
                         'title' => $post['title'],
@@ -150,7 +151,7 @@ function post_edit($postid,$data) {
  * @param string $option    文章变量处理选项 see function post_process()
  * @return array
  */
-function post_gets($sql, $page=1, $size=10,$option='model,path,category',$is_return=true){
+function post_gets($sql, $page=1, $size=10,$is_return=true){
     $db = get_conn(); $posts = array();
     $page = $page<1 ? 1  : $page;
     $size = $size<1 ? 10 : $size;
@@ -169,7 +170,6 @@ function post_gets($sql, $page=1, $size=10,$option='model,path,category',$is_ret
     $res = $db->query($sql);
     while ($post = $db->fetch($res)) {
         $post = post_get($post['postid']);
-        post_process($post,$option);
         $posts[] = $post;
     }
     return array(
@@ -227,63 +227,49 @@ function post_get($postid) {
     return null;
 }
 /**
- * 处理文章
+ * 文章分类
  *
- * @param array &$post
- * @param string $option model,path,category,template,keywords,sortid
- * @return void
+ * @param  $categories
+ * @return array
  */
-function post_process(&$post,$option=null) {
-    // 解析分类
-    if (instr('sortid',$option) && $post['sortid']>0) {
-        $post['sort'] = taxonomy_get($post['sortid']);
+function post_get_category($categories) {
+    $result = array();
+    foreach((array)$categories as $taxonomyid) {
+        $result[$taxonomyid] = taxonomy_get($taxonomyid);
     }
-    // 解析模型数据
-    if (instr('model',$option) && !empty($post['model'])) {
-        $post['model'] = model_get_bycode($post['model']);
+    return $result;
+}
+/**
+ * 文章关键词
+ *
+ * @param  $keywords
+ * @return string
+ */
+function post_get_keywords($keywords) {
+    $result = array();
+    foreach((array)$keywords as $taxonomyid) {
+        $taxonomy   = taxonomy_get($taxonomyid);
+        $result[] = str_replace(chr(44), '&#44;', $taxonomy['name']);
     }
-    // 查询模版，文章设置->分类设置->模型设置
-    if (instr('template',$option) && empty($post['template'])) {
-        // 使用分类设置
-        if ($post['sortid'] > 0) {
-            $taxonomy = taxonomy_get($post['sortid']);
-            $post['template'] = $taxonomy['page'];
-        }
-        // 使用模型设置
-        if (empty($post['template'])) {
-            $model = model_get_bycode($post['model']);
-            $post['template'] = $model['page'];
-        }
-    }
-    // 处理分类数据
-    if (instr('category',$option) && is_array($post['category'])) {
-        $categories = array();
-        foreach($post['category'] as $taxonomyid) {
-            $categories[$taxonomyid] = taxonomy_get($taxonomyid);
-        }
-        $post['category'] = $categories;
-    }
-    // 处理关键词
-    if (instr('keywords',$option) && is_array($post['keywords'])) {
-        $keywords = array();
-        foreach($post['keywords'] as $taxonomyid) {
-            $taxonomy = taxonomy_get($taxonomyid);
-            $keywords[] = $taxonomy['name'];
-        }
-        $post['keywords'] = implode(',', $keywords);
-    }
-    // 处理生成路径
-    if (instr('path',$option)) {
-        if (strncmp($post['path'],'/',1) === 0) {
-            $post['path'] = ltrim($post['path'], '/');
-        } elseif ($post['sortid'] > 0) {
-            $taxonomy = taxonomy_get($post['sortid']);
-            if (isset($taxonomy['path'])) {
-                $post['_path'] = $taxonomy['path'];
-                $post['path']  = $post['_path'].'/'.$post['path'];
-            }
+    return implode(',', $result);
+}
+/**
+ * 查询文章路径
+ *
+ * @param  $sortid
+ * @param  $path
+ * @return string
+ */
+function post_get_path($sortid,$path) {
+    if (strncmp($path,'/',1) === 0) {
+        $path = ltrim($path, '/');
+    } elseif ($sortid > 0) {
+        $taxonomy = taxonomy_get($sortid);
+        if (isset($taxonomy['path'])) {
+            $path  = $taxonomy['path'].'/'.$path;
         }
     }
+    return $path;
 }
 /**
  * 获取文章的详细信息
@@ -363,7 +349,8 @@ function post_delete($postid) {
     $postid = intval($postid);
     if (!$postid) return false;
     if ($post = post_get($postid)) {
-        post_process($post,'path');
+        // 查询路径
+        $post['path'] = post_get_path($post['sortid'],$post['path']);
         // 删除文件
         if (is_file(ABS_PATH.'/'.$post['path'])) {
             if (!unlink(ABS_PATH.'/'.$post['path'])) {
@@ -397,22 +384,49 @@ function post_create($postid) {
     if (!$postid) return false;
     if ($post = post_get($postid)) {
         // 处理文章
-        post_process($post,'path,keywords,template');
+        $post['sort'] = taxonomy_get($post['sortid']);
+        $post['path'] = post_get_path($post['sortid'],$post['path']);
+        // 使用分类设置
+        if ($post['sortid'] > 0) {
+            $taxonomy = taxonomy_get($post['sortid']);
+            $post['template'] = $taxonomy['page'];
+        }
+        // 使用模型设置
+        if (empty($post['template'])) {
+            $model = model_get_bycode($post['model']);
+            $post['template'] = $model['page'];
+        }
         // 加载模版
         $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html($post['template']));
-        tpl_clean();
-        tpl_vars(array(
+        $vars = array(
             'postid'   => $post['postid'],
+            'sortid'   => $post['sortid'],
+            'views'    => $post['views'],
+            'digg'     => $post['digg'],
             'datetime' => $post['datetime'],
-            'keywords' => $post['keywords'],
+            'edittime' => $post['edittime'],
+            'keywords' => post_get_keywords($post['keywords']),
+            'prepage'  => post_prepage($post['sortid'],$post['postid']),
+            'nextpage' => post_nextpage($post['sortid'],$post['postid']),
             'description' => $post['description'],
-        ));
+            '_keywords'   => $post['keywords'],
+        );
+        // 设置分类变量
+        if (isset($post['sort'])) {
+            $vars['sortname'] = $post['sort']['name'];
+            $vars['sortpath'] = WEB_ROOT.$post['sort']['path'].'/';
+        }
+        // 清理数据
+        tpl_clean();
+        tpl_set_var($vars);
         // 设置自定义字段
         if (isset($post['meta'])) {
             foreach((array)$post['meta'] as $k=>$v) {
-                tpl_vars('model.'.$k, $v);
+                tpl_set_var('model.'.$k, $v);
             }
         }
+        // 文章导航
+        $guide = system_category_guide($post['sortid']);
         // 文章分页
         if ($post['content'] && strpos($post['content'],'<!--pagebeak-->')!==false) {
             $contents = explode('<!--pagebeak-->',$post['content']);
@@ -435,7 +449,8 @@ function post_create($postid) {
                     $title = $post['title'].' ('.$page.')';
                 }
 
-                tpl_vars(array(
+                tpl_set_var(array(
+                    'guide'   => $guide ? $guide.' &gt;&gt; '.$title : $title,
                     'title'   => $title,
                     'content' => $content,
                     'path'    => WEB_ROOT.$path,
@@ -458,7 +473,8 @@ function post_create($postid) {
         }
         // 没有分页
         else {
-            tpl_vars(array(
+            tpl_set_var(array(
+                'guide'   => $guide ? $guide.' &gt;&gt; '.$post['title'] : $post['title'],
                 'title'   => $post['title'],
                 'content' => $post['content'],
                 'path'    => WEB_ROOT.$post['path'],
@@ -477,4 +493,46 @@ function post_create($postid) {
         }
     }
     return true;
+}
+/**
+ * 上一页
+ *
+ * @param  $sortid
+ * @param  $postid
+ * @return string
+ */
+function post_prepage($sortid,$postid) {
+    $db    = get_conn();
+    $preid = $db->result(sprintf("SELECT `objectid` FROM `#@_term_relation` WHERE `taxonomyid`=%d AND `objectid`<%d ORDER BY `objectid` DESC LIMIT 1;", esc_sql($sortid), esc_sql($postid)));
+    if ($preid) {
+        $post = post_get($preid);
+        $post['path'] = post_get_path($post['sortid'],$post['path']);
+        $result = '<a href="'.WEB_ROOT.$post['path'].'">'.$post['title'].'</a>';
+    } else {
+        $post = post_get($postid);
+        $post['sort'] = taxonomy_get($post['sortid']);
+        $result = '<a href="'.WEB_ROOT.$post['sort']['path'].'/">'.$post['sort']['name'].'</a>';
+    }
+    return $result;
+}
+/**
+ * 下一页
+ *
+ * @param  $sortid
+ * @param  $postid
+ * @return string
+ */
+function post_nextpage($sortid,$postid) {
+    $db     = get_conn();
+    $nextid = $db->result(sprintf("SELECT `objectid` FROM `#@_term_relation` WHERE `taxonomyid`=%d AND `objectid`>%d ORDER BY `objectid` ASC LIMIT 1;", esc_sql($sortid), esc_sql($postid)));
+    if ($nextid) {
+        $post = post_get($nextid);
+        $post['path'] = post_get_path($post['sortid'],$post['path']);
+        $result = '<a href="'.WEB_ROOT.$post['path'].'">'.$post['title'].'</a>';
+    } else {
+        $post = post_get($postid);
+        $post['sort'] = taxonomy_get($post['sortid']);
+        $result = '<a href="'.WEB_ROOT.$post['sort']['path'].'/">'.$post['sort']['name'].'</a>';
+    }
+    return $result;
 }

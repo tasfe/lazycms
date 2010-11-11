@@ -369,11 +369,7 @@ switch ($method) {
         echo           '<tbody>';
         if (0 < $result['length']) {
             foreach ($result['posts'] as $post) {
-                $edit_url   = PHP_FILE.'?method=edit&postid='.$post['postid'];
-                $categories = array();
-                foreach($post['category'] as $category) {
-                    $categories[] = '<a href="'.PHP_FILE.'?category='.$category['taxonomyid'].'">'.$category['name'].'</a>';
-                }
+                $edit_url= PHP_FILE.'?method=edit&postid='.$post['postid'];
                 $actions = '<span class="edit"><a href="'.$edit_url.'">'.__('Edit').'</a> | </span>';
                 $actions.= '<span class="create"><a href="javascript:;" onclick="post_create('.$post['postid'].')">'.__('Create').'</a> | </span>';
                 $actions.= '<span class="delete"><a href="javascript:;" onclick="post_delete('.$post['postid'].')">'.__('Delete').'</a></span>';
@@ -384,10 +380,12 @@ switch ($method) {
                 if (empty($post['model'])) {
                     echo '<td><a href="javascript:;">'.__('None').'</a></td>';
                 } else {
+                    $post['model'] = model_get_bycode($post['model']);
                     echo '<td><a href="'.PHP_FILE.'?model='.$post['model']['langcode'].'">'.$post['model']['name'].'</a></td>';
                 }
 
                 // 检查文件是否已生成
+                $post['path'] = post_get_path($post['sortid'],$post['path']);
                 if (is_file(ABS_PATH.'/'.$post['path'])) {
                     echo '<td><img class="b6 os" src="'.ADMIN_ROOT.'images/t.gif" /><a href="'.WEB_ROOT.$post['path'].'" target="_blank">'.WEB_ROOT.$post['path'].'</a></td>';
                 } else {
@@ -395,6 +393,10 @@ switch ($method) {
                 }
 
                 if ('page.php' != $php_file) {
+                    $categories = array();
+                    foreach(post_get_category($post['category']) as $category) {
+                        $categories[] = '<a href="'.PHP_FILE.'?category='.$category['taxonomyid'].'">'.$category['name'].'</a>';
+                    }
                     if (empty($categories)) {
                         echo '<td><a href="'.PHP_FILE.'?category=0">'.__('None').'</a></td>';
                     } else {
@@ -467,7 +469,6 @@ function post_manage_page($action) {
         $mcode  = isset($_GET['model'])?$_GET['model']:null;
     } else {
         $_DATA = post_get($postid);
-        post_process($_DATA,'keywords');
         $mcode = $_DATA['model'];
     }
 
@@ -481,6 +482,7 @@ function post_manage_page($action) {
     $categories  = isset($_DATA['category'])?$_DATA['category']:array();
     $description = isset($_DATA['description'])?$_DATA['description']:null;
 
+    if ($keywords) $keywords = post_get_keywords($keywords);
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="postmanage" id="postmanage">';

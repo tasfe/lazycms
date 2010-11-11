@@ -308,7 +308,7 @@ CREATE TABLE `#@_post` (
   `path` char(255) NOT NULL,
   `title` char(255) NOT NULL,
   `content` longtext NOT NULL,
-  `count` int(10) unsigned NOT NULL DEFAULT '0',
+  `views` int(10) unsigned NOT NULL DEFAULT '0',
   `digg` int(10) unsigned NOT NULL DEFAULT '0',
   `passed` tinyint(1) NOT NULL DEFAULT '0',
   `datetime` int(10) unsigned NOT NULL DEFAULT '0',

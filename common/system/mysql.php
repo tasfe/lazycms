@@ -427,6 +427,7 @@ class Mysql {
         if ($rs = $this->fetch($result,0)) {
             return $rs[$row];
         }
+        return null;
     }
     /**
      * 取得数据集的单条记录

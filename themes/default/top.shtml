@@ -12,3 +12,4 @@
 		</ul>
 	</div>
 </div>
+<div id="guide">位置：{$guide}</div>

@@ -81,7 +81,7 @@ class Template {
      * @return mixed
      */
     function apply_plugins($tag_name,$tag,$block=null) {
-        $result = null;
+        $result = null; $tag_name = strtolower($tag_name);
         foreach ($this->_plugins as $func) {
             $result = call_user_func($func,$tag_name,$tag,$block);
             if (null !== $result) break;
@@ -91,38 +91,44 @@ class Template {
     /**
      * 清空内部数组
      *
+     * @param string $type
      * @return void
      */
     function clean(){
         $this->_vars = array();
     }
     /**
-     * 变量赋值
+     * 设置变量
      *
-     * @param  $key
-     * @param  $val
-     * @return array
+     * @param string|array $key
+     * @param mixed $val
+     * @return bool
      */
-    function vars($key=null,$val=null) {
-        // 获取全部变量
-        if (func_num_args()==0) return $this->_vars;
+    function set_var($key,$val=null) {
+        // 空key不赋值
+        if (empty($key)) return true;
         // 批量赋值
     	if (is_array($key)) {
     		foreach ($key as $k=>$v) {
-                $this->_vars[strtolower($k)] = $v;
+                if (empty($k)) continue;
+                $this->_vars[strtolower($k)] = $this->encode($v);
     		}
-            return $this->_vars;
-        }
-        $key = strtolower($key);
-        // 取值
-        if ($key && func_num_args()==1) {
-            return isset($this->_vars[$key])?$this->_vars[$key]:null;
         }
         // 单个赋值
         else {
-            $this->_vars[$key] = $val;
-            return $val;
+            $this->_vars[strtolower($key)] = $this->encode($val);
         }
+        return true;
+    }
+    /**
+     * 取得变量
+     *
+     * @param string $key
+     * @return array
+     */
+    function get_var($key) {
+        $key = strtolower($key);
+        return isset($this->_vars[$key]) ? $this->_vars[$key] : null;
     }
     /**
      * 解析多层嵌套标签
@@ -188,6 +194,7 @@ class Template {
         }
         return $result;
     }
+
     /**
      * 取得单个标签块
      *
@@ -196,7 +203,7 @@ class Template {
      * @param string $type
      * @return array|null
      */
-    function get_block(&$html,$tag_name,$type='list') {
+    function get_block($html,$tag_name,$type='list') {
         $result = null;
         // 取得所有块标签
         $blocks = $this->get_blocks($html);
@@ -204,11 +211,7 @@ class Template {
         foreach ($blocks as $block) {
             // 取得指定的标签块
             if (instr(strtolower($block['name']),$tag_name) && $this->get_attr($block['tag'],'type')==$type) {
-                $result = $block;
-            }
-            // 不属于本函数处理的范围，利用扩展处理
-            else {
-                $html = str_replace($block['tag'], $this->apply_plugins($block['name'],$block['tag'],$block), $html);
+                $result = $block; break;
             }
         }
         return $result;
@@ -223,29 +226,52 @@ class Template {
         return substr($block['tag'], $block['offset'], $block['length']);
     }
     /**
-     * 解析变量
+     * 处理标签块
      *
      * @param  $html
      * @return mixed
      */
+    function process_blocks($html) {
+        // 取得所有块标签
+        $blocks = $this->get_blocks($html);
+        // 处理所有标签
+        foreach ($blocks as $block) {
+            $html = str_replace($block['tag'],$this->apply_plugins($block['name'],$block['tag'],$block),$html);
+        }
+        return $html;
+    }
+    /**
+     * 解析变量
+     *
+     * @param string $html
+     * @return mixed
+     */
     function process_vars($html){
-        if (preg_match_all('/\{\$([\w\.]++)\b[^\}]*+\}/',$html,$r)) {
+        if (preg_match_all('/\{\$([\w\.\-]++)\b[^\}]*+\}/',$html,$r)) {
             $tags = $r[1];
             foreach ($r[0] as $k => $tag) {
-                // 不区分大小写
-                $tags[$k] = strtolower($tags[$k]);
-
-                // 解析变量
-                $value = $this->vars($tags[$k]);
                 // 应用插件解析
+                $value = $this->apply_plugins('$'.$tags[$k], $tag);
+                // 解析变量
                 if (null === $value) {
-                    $value = $this->apply_plugins($tags[$k], $tag);
+                    $value = $this->get_var($tags[$k]);
                 }
                 // 处理变量属性
                 $value = $this->process_attr($value, $tag);
                 $html  = str_replace($tag, $value, $html);
             }
         }
+        return $this->decode($html);
+    }
+    /**
+     * 解析模版
+     *
+     * @param string $html
+     * @return mixed
+     */
+    function parse($html) {
+        $html = $this->process_blocks($html);
+        $html = $this->process_vars($html);
         return $html;
     }
     /**
@@ -323,6 +349,24 @@ class Template {
             $value = mid($tag, $attr."='","'");
         return $value;
     }
+    /**
+     * 转义标签
+     *
+     * @param  $str
+     * @return mixed
+     */
+    function encode($str) {
+        return str_replace(array(chr(36),chr(123),chr(125)), array('&#36;','&#123;','&#125;'), $str);
+    }
+    /**
+     * 反转标签
+     *
+     * @param  $str
+     * @return mixed
+     */
+    function decode($str) {
+        return str_replace(array('&#36;','&#123;','&#125;'), array(chr(36),chr(123),chr(125)), $str);
+    }
 }
 /**
  * 取得模版实例
@@ -378,35 +422,33 @@ function tpl_clean() {
 /**
  * 变量赋值
  *
- * @param  $key
- * @param  $val
+ * @param mixed $key
+ * @param mixed $val
  * @return array
  */
-function tpl_vars($key=null,$val=null) {
+function tpl_set_var($key,$val=null) {
     $tpl = _tpl_get_object();
-    if (func_num_args()==0)
-        return $tpl->vars();
-    return $tpl->vars($key, $val);
+    return $tpl->set_var($key,$val);   
 }
 /**
- * 取得嵌套标签数据
+ * 查询变量
  *
- * @param  $html
+ * @param string $key
  * @return array
  */
-function tpl_get_blocks($html) {
+function tpl_get_var($key) {
     $tpl = _tpl_get_object();
-    return $tpl->get_blocks($html);
+    return $tpl->get_var($key);   
 }
 /**
  * 取得单个标签块
- *
- * @param  $html
- * @param  $tag_name
+ * 
+ * @param string $html
+ * @param string $tag_name
  * @param string $type
  * @return array|null
  */
-function tpl_get_block(&$html,$tag_name,$type='list') {
+function tpl_get_block($html,$tag_name,$type='list') {
     $tpl = _tpl_get_object();
     return $tpl->get_block($html,$tag_name,$type);
 }
@@ -432,12 +474,12 @@ function tpl_get_attr($tag, $attr) {
     return $tpl->get_attr($tag, $attr);
 }
 /**
- * 解析模版
+ * 解析模版变量
  *
  * @param  $html
  * @return mixed
  */
 function tpl_parse($html) {
     $tpl = _tpl_get_object();
-    return $tpl->process_vars($html);
+    return $tpl->parse($html);
 }
