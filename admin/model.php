@@ -223,7 +223,7 @@ switch ($method) {
 	    $hl.= '<table class="model-field-table">';
 	    $hl.=    '<tr><th><label for="field_l">'._x('Label','model').'</label></th><td><input class="text" id="field_l" name="l" type="text" size="35" value="'.$l.'" />';
 	    $hl.=    '<label for="field_is_help"><input type="checkbox" id="field_is_help"'.($h?' checked="checked"':null).' />'.__('Need help').'</label></td></tr>';
-	    $hl.=    '<tr id="field_help" class="hide"><th class="vt"><label for="field_h">'._x('Help','model').'</label></th><td><textarea class="text" name="h" id="field_h" rows="2" cols="45">'.$h.'</textarea></td></tr>';
+	    $hl.=    '<tr id="field_help" class="hide"><th class="vt"><label for="field_h">'._x('Help','model').'</label></th><td><textarea class="text" name="h" id="field_h" rows="2" cols="40">'.$h.'</textarea></td></tr>';
 	    $hl.=    '<tr><th><label for="field_n">'._x('Field','model').'</label></th><td><input class="text" id="field_n" name="n" type="text" size="30" value="'.$n.'" />';
 	    $hl.=    '<label for="can_search"><input type="checkbox" id="can_search" name="so" value="1"'.($so?' checked="checked"':null).' />'.__('Can search').'</label></td></tr>';
 	    $hl.=    '<tr><th><label for="field_t">'._x('Type','model').'</label></th><td>';
@@ -248,9 +248,9 @@ switch ($method) {
             $hl.=       '<option value="'.$val.'">'.$text.'</option>';
         }
 	    $hl.=        '</select>&nbsp;<a href="javascript:;" rule="+"><img class="b3 os" src="'.ADMIN_ROOT.'images/t.gif" /></a><a href="javascript:;" rule="-"><img class="b4 os" src="'.ADMIN_ROOT.'images/t.gif" /></a>';
-	    $hl.=        '<br/><textarea class="text" name="v" id="field_v" rows="3" cols="45">'.$v.'</textarea></td>';
+	    $hl.=        '<br/><textarea class="text" name="v" id="field_v" rows="3" cols="40">'.$v.'</textarea></td>';
 	    $hl.=    '</tr>';
-	    $hl.=    '<tr id="field_serialize" class="hide"><th class="vt"><label for="field_s">'._x('Serialize','model').'</label></th><td><textarea class="text" name="s" id="field_s" rows="3" cols="45">'.$s.'</textarea></td></tr>';
+	    $hl.=    '<tr id="field_serialize" class="hide"><th class="vt"><label for="field_s">'._x('Serialize','model').'</label></th><td><textarea class="text" name="s" id="field_s" rows="3" cols="40">'.$s.'</textarea></td></tr>';
 	    $hl.=    '<tr id="field_toolbar" class="hide"><th class="vt"><label>'.__('Toolbar').'</label></th><td class="toolbar">';
 	    $hl.=        '<label><input type="checkbox" name="a[]"'.(instr('Img', $a)?' checked="checked"':null).' value="Img" /> '.__('Insert Image').'</label>';
 	    $hl.=        '<label><input type="checkbox" name="a[]"'.(instr('Flash', $a)?' checked="checked"':null).' value="Flash" /> '.__('Insert Flash').'</label>';

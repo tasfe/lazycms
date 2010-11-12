@@ -75,8 +75,9 @@ function term_add($name) {
  * @return array
  */
 function term_gets($content,$max_len=8,$save_other=false) {
-    $ckey  = 'terms.dicts';
-    $dicts = fcache_get($ckey);
+    $content = clear_space(strip_tags($content));
+    $ckey    = 'terms.dicts';
+    $dicts   = fcache_get($ckey);
     if ($dicts === null) {
         $db = get_conn(); $dicts = array();
         // 读取关键词列表
@@ -89,6 +90,17 @@ function term_gets($content,$max_len=8,$save_other=false) {
     require_file(COM_PATH.'/system/splitword.php');
     $splitword = new SplitWord($dicts);
     $keywords  = $splitword->get($content,$max_len,$save_other);
+    // TODO 本地分词失败或分词较少
+    /*if (empty($keywords) && count($keywords)<=3) {
+        // 使用keyword.discuz.com的网络分词
+        require_file(COM_PATH.'/system/httplib.php');
+        $r = @httplib_post(sprintf('http://keyword.discuz.com/related_kw.html?ics=utf-8&ocs=utf-8&title=%s',rawurlencode($content)),array(
+            'timeout' => 5,
+            'body' => array('title' => $content)
+        ));
+        //print_r($r);
+    }*/
+
     if (empty($keywords)) {
         return null;
     } else {
@@ -232,7 +244,7 @@ function taxonomy_get_relation($type, $objectid) {
         $tt_ids[] = $tt['taxonomyid'];
     }
     $in_tt_ids = "'" . implode("', '", $tt_ids) . "'";
-    $rs = $db->query("SELECT DISTINCT(`tr`.`taxonomyid`) AS `taxonomyid`,`tr`.`order` AS `order` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%d AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
+    $rs = $db->query("SELECT DISTINCT(`tr`.`taxonomyid`) AS `taxonomyid`,`tr`.`order` AS `order` FROM `#@_term_taxonomy` AS `tt` RIGHT JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%d AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
     while ($taxonomy = $db->fetch($rs)) {
         $result[$taxonomy['order']] = $taxonomy['taxonomyid'];
     }
@@ -257,7 +269,7 @@ function taxonomy_make_relation($type,$objectid,$taxonomies) {
     $tt_ids = array_diff($tt_ids,$taxonomies);
     $in_tt_ids = "'" . implode("', '", $tt_ids) . "'";
     // 先删除关系
-    $rs = $db->query("SELECT DISTINCT `tr`.`taxonomyid` AS `taxonomyid` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%d AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
+    $rs = $db->query("SELECT DISTINCT(`tr`.`taxonomyid`) AS `taxonomyid` FROM `#@_term_taxonomy` AS `tt` RIGHT JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%d AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
     while ($taxonomy = $db->fetch($rs)) {
         taxonomy_delete_relation($objectid,$taxonomy['taxonomyid']);
     }
@@ -326,7 +338,7 @@ function taxonomy_add($type,$name,$parentid=0,$data=null) {
  */
 function taxonomy_add_tag($name) {
     $db = get_conn(); $type = 'post_tag';
-    $taxonomyid = $db->result(sprintf("SELECT `taxonomyid` FROM `#@_term_taxonomy` AS `tt` INNER JOIN `#@_term` AS `t` ON `tt`.`termid`=`t`.`termid` WHERE `tt`.`type`='%s' AND `t`.`name`='%s' LIMIT 0,1;",esc_sql($type),esc_sql($name)));
+    $taxonomyid = $db->result(sprintf("SELECT `taxonomyid` FROM `#@_term_taxonomy` AS `tt` RIGHT JOIN `#@_term` AS `t` ON `tt`.`termid`=`t`.`termid` WHERE `tt`.`type`='%s' AND `t`.`name`='%s' LIMIT 0,1;",esc_sql($type),esc_sql($name)));
     if (!$taxonomyid) {
         $taxonomyid = $db->insert('#@_term_taxonomy',array(
            'type'   => $type,
@@ -509,7 +521,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
             // 拼装sql
             $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE `taxonomyid`=%d ORDER BY `objectid` %s", esc_sql($taxonomyid), esc_sql($order));
 
-            $result = post_gets($sql, $page, $number,false);
+            $result = post_gets($sql, $page, $number);
             // 解析分页标签
             if (stripos($html,'{pagelist') !== false) {
                 $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU',

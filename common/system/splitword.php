@@ -217,6 +217,6 @@ class SplitWord {
             // 扫描结束,临时队列还有词,那应该是最后面无法进行分词的一些字
             if ($tmp_str != '' && $save_other) $result[] = $tmp_str;
         }
-        return $result;
+        return array_values(array_unique($result));
     }
 }

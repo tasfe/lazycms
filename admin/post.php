@@ -109,6 +109,7 @@ switch ($method) {
 	    current_user_can($postid?'post-edit':'post-new');
 	    
         if (validate_is_post()) {
+            $referer  = referer(PHP_FILE,false);
             $mcode    = isset($_POST['model'])?$_POST['model']:null;
             $model    = model_get_bycode($mcode);
             $sortid   = isset($_POST['sortid'])?$_POST['sortid']:0;
@@ -122,6 +123,10 @@ switch ($method) {
             $keywords = isset($_POST['keywords'])?$_POST['keywords']:null;
             $description = isset($_POST['description'])?$_POST['description']:null;
             $createlists = isset($_POST['createlists'])?$_POST['createlists']:null;
+
+            if ('post.php' == $php_file) {
+                validate_check('sortid',VALIDATE_EMPTY,_x('Please select a main category.','post'));
+            }
 
 
             validate_check(array(
@@ -165,7 +170,7 @@ switch ($method) {
                 $path = esc_html(rtrim($path,'/'));
                 // 自动获取关键词
                 if ($autokeys && empty($keywords)) {
-                    $keywords = term_gets($title);
+                    $keywords = term_gets($title.' '.$content);
                 }
                 // 添加主分类
                 if ($sortid > 0) {
@@ -200,7 +205,8 @@ switch ($method) {
                 }
                 // 强力插入
                 else {
-                    $data['author'] = $_USER['userid'];
+                    $data['author'] = $_USER['name'];
+                    $data['userid'] = $_USER['userid'];
                     if ($post = post_add($title,$content,$path,$data)) {
                         $postid = $post['postid'];
                     }
@@ -212,9 +218,9 @@ switch ($method) {
                 }
                 // 生成文章
                 if (post_create($postid)) {
-                    admin_success($result,"LazyCMS.redirect('".PHP_FILE."');");
+                    admin_success($result,"LazyCMS.redirect('".$referer."');");
                 } else {
-                    admin_alert($result.__('File create failed.'),"LazyCMS.redirect('".PHP_FILE."');");
+                    admin_alert($result.__('File create failed.'),"LazyCMS.redirect('".$referer."');");
                 }
             }
         }
@@ -318,10 +324,12 @@ switch ($method) {
             $add_new = _x('Add New','post');
         }
         admin_head('loadevents','post_list_init');
-	    $page  = isset($_REQUEST['page'])?$_REQUEST['page']:1;
-        $size  = isset($_REQUEST['size'])?$_REQUEST['size']:10;
-        $model = isset($_REQUEST['model'])?$_REQUEST['model']:'';
-        $category = isset($_REQUEST['category'])?$_REQUEST['category']:0;
+	    $page     = isset($_REQUEST['page'])?$_REQUEST['page']:1;
+        $size     = isset($_REQUEST['size'])?$_REQUEST['size']:10;
+        $model    = isset($_REQUEST['model'])?$_REQUEST['model']:'';
+        $search   = isset($_REQUEST['query'])?$_REQUEST['query']:'';
+        $category = isset($_REQUEST['category'])?$_REQUEST['category']:null;
+
         $query = array(
             'page' => '$',
             'size' => $size,
@@ -331,16 +339,29 @@ switch ($method) {
         $order = 'page.php'==$php_file ? 'ASC' : 'DESC';
 
         $conditions = array();
-        if ('page.php' == $php_file) {
-            $conditions[] = "`type`='page'";
-        } else {
-            $conditions[] = "`type`='post'";
-        }
         // 根据分类筛选
-        if ($category) {
+        if ($search) {
+            $where = 'WHERE 1';
+            if ($category) {
+                $query['category'] = $category;
+                $where.= sprintf(" AND (`tr`.`taxonomyid`=%d)", esc_sql($category));
+            }
+            $query['query'] = $search;
+            $fields = array('title','content','description');
+            foreach($fields as $field) {
+                $conditions[] = sprintf("(BINARY `p`.`%s` LIKE '%%%s%%')",$field,esc_sql($search));
+            }
+            $where.= ' AND ('.implode(' OR ', $conditions).')';
+            $sql = "SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` {$where} ORDER BY `p`.`postid` {$order}";
+        } elseif ($category) {
             $query['category'] = $category;
             $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE `taxonomyid`=%d ORDER BY `objectid` {$order}",esc_sql($category));
         } else {
+            if ('page.php' == $php_file) {
+                $conditions[] = "`type`='page'";
+            } else {
+                $conditions[] = "`type`='post'";
+            }
             // 根据模型筛选
             if ($model) {
                 $query['model'] = $model;
@@ -352,13 +373,13 @@ switch ($method) {
         }
         // 分页地址
         $page_url = PHP_FILE.'?'.http_build_query($query);
-
+        
         $result = post_gets($sql, $page, $size);
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'.$add_new.'</a></h2>';
-        echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="postlist" id="postlist">';
-        table_nav($page_url,$result);
+        echo   '<form url="'.PHP_FILE.'?method=bulk" action="'.PHP_FILE.'" method="get" name="postlist" id="postlist">';
+        table_nav('top',$page_url,$result);
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
         table_thead();
@@ -369,43 +390,44 @@ switch ($method) {
         echo           '<tbody>';
         if (0 < $result['length']) {
             foreach ($result['posts'] as $post) {
-                $edit_url= PHP_FILE.'?method=edit&postid='.$post['postid'];
+                $edit_url = PHP_FILE.'?method=edit&postid='.$post['postid'];
+                // 检查文件是否已生成
+                $post['path'] = post_get_path($post['sortid'],$post['path']);
+                if (is_file(ABS_PATH.'/'.$post['path'])) {
+                    $browse   = '<img class="b6 os" src="'.ADMIN_ROOT.'images/t.gif" /><a href="'.WEB_ROOT.$post['path'].'" target="_blank">'.WEB_ROOT.$post['path'].'</a>';
+                } else {
+                    $browse   = '<img class="b7 os" src="'.ADMIN_ROOT.'images/t.gif" /><a href="javascript:;" onclick="post_create('.$post['postid'].')">'.WEB_ROOT.$post['path'].'</a>';
+                }
                 $actions = '<span class="edit"><a href="'.$edit_url.'">'.__('Edit').'</a> | </span>';
                 $actions.= '<span class="create"><a href="javascript:;" onclick="post_create('.$post['postid'].')">'.__('Create').'</a> | </span>';
-                $actions.= '<span class="delete"><a href="javascript:;" onclick="post_delete('.$post['postid'].')">'.__('Delete').'</a></span>';
+                $actions.= '<span class="delete"><a href="javascript:;" onclick="post_delete('.$post['postid'].')">'.__('Delete').'</a> | </span>';
+                $actions.= '<span class="browse">'.$browse.'</span>';
 
                 echo '<tr>';
                 echo    '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$post['postid'].'" /></td>';
                 echo    '<td><strong><a href="'.$edit_url.'">'.$post['title'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
                 if (empty($post['model'])) {
-                    echo '<td><a href="javascript:;">'.__('None').'</a></td>';
+                    echo '<td>'.__('None').'</td>';
                 } else {
                     $post['model'] = model_get_bycode($post['model']);
                     echo '<td><a href="'.PHP_FILE.'?model='.$post['model']['langcode'].'">'.$post['model']['name'].'</a></td>';
                 }
 
-                // 检查文件是否已生成
-                $post['path'] = post_get_path($post['sortid'],$post['path']);
-                if (is_file(ABS_PATH.'/'.$post['path'])) {
-                    echo '<td><img class="b6 os" src="'.ADMIN_ROOT.'images/t.gif" /><a href="'.WEB_ROOT.$post['path'].'" target="_blank">'.WEB_ROOT.$post['path'].'</a></td>';
-                } else {
-                    echo '<td><img class="b7 os" src="'.ADMIN_ROOT.'images/t.gif" /><a href="javascript:;" onclick="post_create('.$post['postid'].')">'.WEB_ROOT.$post['path'].'</a></td>';
-                }
-
-                if ('page.php' != $php_file) {
+                if ('post.php' == $php_file) {
                     $categories = array();
-                    foreach(post_get_category($post['category']) as $category) {
+                    foreach(post_get_taxonomy($post['category']) as $category) {
                         $categories[] = '<a href="'.PHP_FILE.'?category='.$category['taxonomyid'].'">'.$category['name'].'</a>';
                     }
-                    if (empty($categories)) {
-                        echo '<td><a href="'.PHP_FILE.'?category=0">'.__('None').'</a></td>';
-                    } else {
-                        echo '<td>'.implode(',' , $categories).'</td>';
-                    }
-
+                    echo empty($categories) ? '<td>'.__('None').'</td>' : '<td>'.implode(',' , $categories).'</td>';
                 }
-                echo    '<td>'.date('Y-m-d H:i:s',$post['datetime']).'</td>';
-                echo    '<td><img class="b'.($post['passed']+8).' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
+                $tags = array();
+                foreach(post_get_taxonomy($post['keywords']) as $keyword) {
+                    $tags[] = '<a href="'.PHP_FILE.'?category='.$keyword['taxonomyid'].'">'.$keyword['name'].'</a>';
+                }
+                echo empty($tags) ? '<td>'.__('None').'</td>' : '<td>'.implode(',' , $tags).'</td>';
+                
+                echo    '<td><div title="'.date('Y-m-d H:i:s',$post['datetime']).'">'.date('Y-m-d',$post['datetime']).'</div></td>';
+                echo    '<td><img class="'.$post['approved'].' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
                 echo '</tr>';
             }
         } else {
@@ -413,7 +435,7 @@ switch ($method) {
         }
         echo           '</tbody>';
         echo       '</table>';
-        table_nav($page_url,$result);
+        table_nav('bottom',$page_url,$result);
         echo   '</form>';
         echo '</div>';
         include ADMIN_PATH.'/admin-footer.php';
@@ -423,8 +445,13 @@ switch ($method) {
 /**
  * 批量操作
  *
+ * @param  $side    top|bottom
+ * @param  $url
+ * @param  $result
+ * @return void
  */
-function table_nav($url,$result) {
+function table_nav($side,$url,$result) {
+    global $category,$search;
     echo '<div class="table-nav">';
     echo     '<select name="actions">';
     echo         '<option value="">'.__('Bulk Actions').'</option>';
@@ -432,7 +459,19 @@ function table_nav($url,$result) {
     echo         '<option value="delete">'.__('Delete').'</option>';
     echo     '</select>';
     echo     '<button type="button">'.__('Apply').'</button>';
-    echo     page_list($url,$result['page'],$result['pages'],$result['total']);
+    if ($side == 'top') {
+        echo '<span class="filter">';
+        echo    '<select name="category">';
+        echo        '<option value="">'.__('View all categories').'</option>';
+        echo        dropdown_categories($category);
+        echo    '</select>';
+        echo    '<input class="text" type="text" size="20" name="query" value="'.esc_html($search).'" />';
+        echo    '<button type="submit">'.__('Filter').'</button>';
+        echo '</span>';
+    }
+    if ($side == 'bottom') {
+        echo page_list($url,$result['page'],$result['pages'],$result['total']);    
+    }
     echo '</div>';
 }
 /**
@@ -444,13 +483,13 @@ function table_thead() {
     echo '<tr>';
     echo     '<th class="check-column"><input type="checkbox" name="select" value="all" /></th>';
     echo     '<th>'._x('Title','post').'</th>';
-    echo     '<th>'._x('Model','post').'</th>';
-    echo     '<th>'._x('Path','post').'</th>';
-    if ('page.php' != $php_file) {
-        echo '<th>'._x('Categories','post').'</th>';
+    echo     '<th class="w100">'._x('Model','post').'</th>';
+    if ('post.php' == $php_file) {
+        echo '<th class="wp15">'._x('Categories','post').'</th>';
     }
-    echo     '<th>'._x('Date','post').'</th>';
-    echo     '<th>'._x('State','post').'</th>';
+    echo     '<th class="wp15">'._x('Tags','post').'</th>';
+    echo     '<th class="w100">'._x('Date','post').'</th>';
+    echo     '<th class="w30">'._x('State','post').'</th>';
     echo '</tr>';
 }
 
@@ -460,8 +499,26 @@ function table_thead() {
  * @param string $action
  */
 function post_manage_page($action) {
-    global $php_file;
+    global $php_file; $trees = null;
     $referer = referer(PHP_FILE);
+    if ('post.php' == $php_file) {
+        $trees = taxonomy_get_trees();
+        if (empty($trees)) {
+            echo '<div class="wrap">';
+            echo   '<h2>'.admin_head('title').'</h2>';
+            echo   '<fieldset>';
+            echo       '<table class="form-table">';
+            echo           '<tbody>';
+            echo               '<tr><td>'.__('Please Add Category!').'</td></tr>';
+            echo               '<tr><td class="buttons"><button type="button" onclick="LazyCMS.redirect(\''.ADMIN_ROOT.'categories.php?method=new\')">'._x('Add New','sort').'</button><button type="button" onclick="LazyCMS.redirect(\''.$referer.'\')">'.__('Back').'</button></td></tr>';
+            echo           '</tbody>';
+            echo       '</table>';
+            echo   '</fieldset>';
+            echo '</div>';
+            return true;
+        }
+    }
+    
     $postid  = isset($_GET['postid'])?$_GET['postid']:0;
     $models  = model_gets(0);
     $suffix  = C('HTMLFileSuffix');
@@ -478,11 +535,10 @@ function post_manage_page($action) {
     $path     = isset($_DATA['path'])?$_DATA['path']:$model['path'];
     $content  = isset($_DATA['content'])?$_DATA['content']:null;
     $template = isset($_DATA['template'])?$_DATA['template']:null;
-    $keywords = isset($_DATA['keywords'])?$_DATA['keywords']:null;
+    $keywords = isset($_DATA['keywords'])?post_get_keywords($_DATA['keywords']):null;
     $categories  = isset($_DATA['category'])?$_DATA['category']:array();
     $description = isset($_DATA['description'])?$_DATA['description']:null;
 
-    if ($keywords) $keywords = post_get_keywords($keywords);
     echo '<div class="wrap">';
     echo   '<h2>'.admin_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="postmanage" id="postmanage">';
@@ -508,7 +564,7 @@ function post_manage_page($action) {
         echo           '<tr class="taxonomyid">';
         echo               '<th><label for="taxonomyid">'._x('Categories','post').'</label></th>';
         echo               '<td>';
-        echo                   categories_tree($sortid,$categories);
+        echo                   display_ul_categories($sortid,$categories,$trees);
         echo               '</td>';
         echo           '</tr>';
     }
@@ -551,7 +607,8 @@ function post_manage_page($action) {
     echo                   '<th><label for="template">'._x('Page Template','post').'</label></th>';
     echo                   '<td>';
     echo                       '<select id="template" name="template">';
-    echo                           $models?'<option value="">'.__('Use the model set').'</option>':null;
+    echo                           $trees  ? '<option value="">'.__('Use the category set').'</option>' : '';
+    echo                           $models && 'page.php'==$php_file ? '<option value="">'.__('Use the model set').'</option>' : '';
     echo                           options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$template);
     echo                       '</select>';
     echo                   '</td>';
@@ -564,7 +621,7 @@ function post_manage_page($action) {
     echo                   '<th><label for="description">'._x('Description','post').'<br /><span class="description">'.__('(Maximum of 250)').'</span></label></th>';
     echo                   '<td><textarea class="text" cols="70" rows="5" id="description" name="description">'.$description.'</textarea></td>';
     echo               '</tr>';
-    if ('page.php' != $php_file) {
+    if ('post.php' == $php_file) {
         echo           '<tr>';
         echo               '<th><label>'._x('Other','post').'</label></th>';
         echo               '<td><label for="createlists"><input type="checkbox" name="createlists" value="1" id="createlists" cookie="true" />'.__('Update Category Lists').'</label></td>';
@@ -577,7 +634,9 @@ function post_manage_page($action) {
     if ($action=='add') {
         echo   '<button type="submit">'.__('Add Post').'</button>'.$hidden;
     } else {
-        echo   '<button type="submit">'.__('Update Post').'</button><input type="hidden" name="postid" value="'.$postid.'" />'.$hidden;
+        $hidden.= '<input type="hidden" name="postid" value="'.$postid.'" />';
+        $hidden.= '<input type="hidden" name="referer" value="'.referer().'" />';
+        echo   '<button type="submit">'.__('Update Post').'</button>'.$hidden;
     }
     echo       '<button type="button" onclick="LazyCMS.redirect(\''.$referer.'\')">'.__('Back').'</button>';
     echo   '</p>';
@@ -593,14 +652,11 @@ function post_manage_page($action) {
  * @param array $trees
  * @return string
  */
-function categories_tree($sortid,$categories=array(),$trees=null) {
-    static $func = null; if (!$func) $func = __FUNCTION__;
-    $hl = sprintf('<ul class="%s">',is_null($trees) ? 'categories' : 'children');
-    if ($trees === null) {
-        $trees = taxonomy_get_trees();
-        $checked = (empty($sortid) || empty($trees)) ? ' checked="checked"' : '';
-        $hl.= sprintf('<li><input type="radio" name="sortid" id="sortid" value="0"%s /><label for="sortid">'.__('Uncategorized').'</label></li>',$checked);
-    }
+function display_ul_categories($sortid,$categories=array(),$trees=null) {
+    static $func = null;
+    $hl = sprintf('<ul %s>',is_null($func) ? 'id="sortid" class="categories"' : 'class="children"');
+    if (!$func) $func = __FUNCTION__;
+    if ($trees === null) $trees = taxonomy_get_trees();
     foreach ($trees as $i=>$tree) {
         $checked = instr($tree['taxonomyid'],$categories) && $sortid!=$tree['taxonomyid'] ? ' checked="checked"' : '';
         $main_checked = $tree['taxonomyid']==$sortid?' checked="checked"':'';
@@ -613,5 +669,28 @@ function categories_tree($sortid,$categories=array(),$trees=null) {
         $hl.= '</li>';
     }
     $hl.= '</ul>';
+    return $hl;
+}
+
+/**
+ * 显示分类树
+ *
+ * @param int $taxonomyid   当前分类ID
+ * @param int $selected 被选择的分类ID
+ * @param int $n
+ * @param array $trees
+ * @return string
+ */
+function dropdown_categories($selected=0, $trees=null) {
+    static $func = null,$n = 0; if (!$func) $func = __FUNCTION__;
+    if ($trees===null) $trees = taxonomy_get_trees();
+    $hl = ''; $space = str_repeat('&nbsp; &nbsp; ',$n); $n++;
+    foreach ($trees as $tree) {
+        $sel  = $selected==$tree['taxonomyid']?' selected="selected"':null;
+        $hl.= '<option value="'.$tree['taxonomyid'].'"'.$sel.' path="'.$tree['path'].'/">'.$space.'├ '.$tree['name'].'</option>';
+    	if (isset($tree['subs'])) {
+    		$hl.= $func($selected,$tree['subs']);
+    	}
+    }
     return $hl;
 }

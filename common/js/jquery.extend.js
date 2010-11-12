@@ -103,7 +103,7 @@
     $.fn.error = function(data) {
         var wrap = this, s = '<ul>', elm, xheLayout;
         $.each(data,function(i){
-            elm = $('[name=' + this.id + ']',wrap);
+            elm = $('#'+this.id, wrap);
             if (elm.length > 0) {
                 xheLayout = elm.next().next().find('.xheLayout');
                 if (elm.is('textarea') && xheLayout.is('table')) {
@@ -197,7 +197,7 @@
             var _this = $(this);
                 _this.unbind('submit').submit(function(){
                     // 取消样式
-                    $('.input_error,.textarea_error',_this).removeClass('input_error').removeClass('textarea_error');
+                    $('.input_error,.textarea_error,.ul_error',_this).removeClass('input_error').removeClass('textarea_error').removeClass('ul_error');
                     var button = $('button[type=submit]',this).attr('disabled',true);
                     // 取得 action 地址
                     var url = _this.attr('action'); if (url==''||typeof url=='undefined') { url = self.location.href; }
@@ -221,7 +221,9 @@
     $.fn.actions = function(callback) {
         // 取得 action 地址
         var form = $(this);
-        var url  = form.attr('action'); if (url==''||typeof url=='undefined') { url = self.location.href; }
+        var url  = form.attr('url');
+            url  = url || form.attr('action');
+        if (url=='' || typeof url=='undefined') url = self.location.href;
         $('.table-nav',form).each(function(i){
             var _this  = $(this);
             $('button[type=button]',_this).click(function(){

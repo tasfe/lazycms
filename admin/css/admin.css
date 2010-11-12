@@ -101,6 +101,8 @@ body { font-family: Arial,sans-serif; font-size:12px; color: #333333; background
 
 	#admin-content .wrap .table-nav{}
 	#admin-content .wrap .table-nav button, #admin-content .wrap .table-nav select{ margin-right:5px; }
+	#admin-content .wrap .table-nav .filter{ margin:0 5px 0 5px; }
+	#admin-content .wrap .table-nav .filter input{ margin-right:5px; }
 	#admin-content .wrap .table-nav div.pages{ float:right; }
 
 	#admin-content .wrap fieldset{ position:relative; background:#FFF; -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px; border:1px solid #DFDFDF; border-collapse:separate;}

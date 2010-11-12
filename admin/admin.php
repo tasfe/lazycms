@@ -391,8 +391,6 @@ function admin_jslang() {
         'No record!'        => __('No record!'),
         'Confirm Logout?'   => __('Confirm Logout?'),
         'Confirm Delete?'   => __('Confirm Delete?'),
-        'Use the model set' => __('Use the model set'),
-        'Use the category set' => __('Use the category set'),
         'Did not select any action!' => __('Did not select any action!'),
 
     ),admin_head('jslang'));

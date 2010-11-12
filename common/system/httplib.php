@@ -23,7 +23,7 @@ defined('COM_PATH') or die('Restricted access!');
 // 目标网站无法打开时返回的错误代码
 define('HTTPLIB_CONNECT_FAILURE',600);
 // User agent
-define('HTTPLIB_USER_AGENT','LazyCMS/'.LAZY_VERSION.' (compatible; Httplib/0.1; +http://www.lazycms.com/httplib.html)');
+define('HTTPLIB_USER_AGENT','LazyCMS/'.LAZY_VERSION.' (compatible; Httplib/0.1; +http://www.google.com/search?q=LazyCMS+httplib)');
 
 class Httplib {
     var $disable_curl, $disable_fopen, $disable_streams, $disable_fsockopen;

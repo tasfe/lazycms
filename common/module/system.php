@@ -122,7 +122,6 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
             $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE 1 %s ORDER BY `p`.`views` ASC LIMIT %d;",$where,$number);
             break;
         case 'related':
-            // TODO 相关文章
             $_keywords = tpl_get_var('_keywords');
             if ($_keywords) {
                 $postid = tpl_get_var('postid');
@@ -164,6 +163,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
                 $vars['sortname'] = $post['sort']['name'];
                 $vars['sortpath'] = WEB_ROOT.$post['sort']['path'].'/';
             }
+            $tpl->clean();
             $tpl->set_var($vars);
             // 设置自定义字段
             if (isset($post['meta'])) {

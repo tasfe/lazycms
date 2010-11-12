@@ -32,10 +32,11 @@ defined('COM_PATH') or die('Restricted access!');
 function post_add($title,$content,$path,$data=null) {
     $db = get_conn(); 
     $postid = $db->insert('#@_post',array(
-        'title'   => $title,
-        'content' => $content,
-        'path'    => $path,
-        'passed'  => 0,
+        'title'    => $title,
+        'content'  => $content,
+        'path'     => $path,
+        'type'     => 'post',
+        'approved' => 'passed',
         'datetime' => time(),
         'edittime' => time(),
     ));
@@ -148,26 +149,26 @@ function post_edit($postid,$data) {
  * @param string $sql       sql语句
  * @param int $page         当前页
  * @param int $size         每页大小
- * @param string $option    文章变量处理选项 see function post_process()
  * @return array
  */
-function post_gets($sql, $page=1, $size=10,$is_return=true){
+function post_gets($sql, $page=1, $size=10){
     $db = get_conn(); $posts = array();
     $page = $page<1 ? 1  : $page;
     $size = $size<1 ? 10 : $size;
-    $count_sql = preg_replace('/SELECT (.+) FROM/iU','SELECT COUNT(*) FROM',$sql,1);
-    $count_sql = preg_replace('/ORDER BY (.+) (ASC|DESC)/i','',$count_sql,1);
-    $total = $db->result($count_sql);
+    $sql = preg_replace('/SELECT (.+) FROM/iU','SELECT SQL_CALC_FOUND_ROWS \1 FROM',$sql,1);
+    $sql.= sprintf(' LIMIT %d OFFSET %d;',$size,($page-1)*$size);
+    $res = $db->query($sql);
+    // 总记录数
+    $total = $db->result("SELECT FOUND_ROWS();");
     $pages = ceil($total/$size);
     $pages = ((int)$pages == 0) ? 1 : $pages;
     if ((int)$page < (int)$pages) {
         $length = $size;
-    } elseif ((int)$page >= (int)$pages) {
+    } elseif ((int)$page == (int)$pages) {
         $length = $total - (($pages-1) * $size);
+    } else {
+        $length = 0;
     }
-    if ($is_return && (int)$page>(int)$pages) $page = $pages;
-    $sql.= sprintf(' LIMIT %d OFFSET %d;',$size,($page-1)*$size);
-    $res = $db->query($sql);
     while ($post = $db->fetch($res)) {
         $post = post_get($post['postid']);
         $posts[] = $post;
@@ -232,7 +233,7 @@ function post_get($postid) {
  * @param  $categories
  * @return array
  */
-function post_get_category($categories) {
+function post_get_taxonomy($categories) {
     $result = array();
     foreach((array)$categories as $taxonomyid) {
         $result[$taxonomyid] = taxonomy_get($taxonomyid);
@@ -386,15 +387,17 @@ function post_create($postid) {
         // 处理文章
         $post['sort'] = taxonomy_get($post['sortid']);
         $post['path'] = post_get_path($post['sortid'],$post['path']);
-        // 使用分类设置
-        if ($post['sortid'] > 0) {
-            $taxonomy = taxonomy_get($post['sortid']);
-            $post['template'] = $taxonomy['page'];
-        }
-        // 使用模型设置
+        // 模版设置优先级：页面设置>分类设置>模型设置
         if (empty($post['template'])) {
-            $model = model_get_bycode($post['model']);
-            $post['template'] = $model['page'];
+            if ($post['sortid'] > 0) {
+                $taxonomy = taxonomy_get($post['sortid']);
+                $post['template'] = $taxonomy['page'];
+            }
+            // 使用模型设置
+            if (empty($post['template'])) {
+                $model = model_get_bycode($post['model']);
+                $post['template'] = $model['page'];
+            }
         }
         // 加载模版
         $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html($post['template']));

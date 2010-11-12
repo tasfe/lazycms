@@ -198,7 +198,7 @@ class Template {
     /**
      * 取得单个标签块
      *
-     * @param string &$html
+     * @param string $html
      * @param string $tag_name
      * @param string $type
      * @return array|null

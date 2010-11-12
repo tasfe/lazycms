@@ -302,15 +302,16 @@ CREATE TABLE `#@_model` (
 CREATE TABLE `#@_post` (
   `postid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `sortid` int(10) unsigned NOT NULL DEFAULT '0',
+  `userid` int(10) unsigned NOT NULL DEFAULT '0',
   `type` char(20) NOT NULL,
   `model` char(75) NOT NULL,
-  `author` int(10) unsigned NOT NULL DEFAULT '0',
+  `author` varchar(255) NOT NULL,
   `path` char(255) NOT NULL,
   `title` char(255) NOT NULL,
   `content` longtext NOT NULL,
   `views` int(10) unsigned NOT NULL DEFAULT '0',
   `digg` int(10) unsigned NOT NULL DEFAULT '0',
-  `passed` tinyint(1) NOT NULL DEFAULT '0',
+  `approved` tinytext NOT NULL,
   `datetime` int(10) unsigned NOT NULL DEFAULT '0',
   `edittime` int(10) unsigned NOT NULL DEFAULT '0',
   `template` varchar(50) NOT NULL,
@@ -319,7 +320,8 @@ CREATE TABLE `#@_post` (
   UNIQUE KEY `path` (`path`),
   KEY `model` (`sortid`,`model`),
   KEY `title` (`title`),
-  KEY `author` (`author`)
+  KEY `author` (`author`),
+  KEY `userid` (`userid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `#@_post_meta` (
@@ -332,6 +334,22 @@ CREATE TABLE `#@_post_meta` (
   KEY `postid` (`postid`),
   KEY `key` (`key`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+CREATE TABLE `#@_comments` (
+  `commentid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `postid` bigint(20) unsigned NOT NULL,
+  `author` varchar(255) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `url` varchar(200) NOT NULL,
+  `ip` int(10) unsigned NOT NULL,
+  `date` int(10) unsigned NOT NULL,
+  `content` text NOT NULL,
+  `approved` tinytext NOT NULL,
+  `agent` varchar(255) NOT NULL,
+  `parent` bigint(20) unsigned NOT NULL,
+  `userid` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`commentid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE `#@_publish` (
   `pubid` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -388,7 +406,7 @@ function install_defaults() {
     $options = array(
         // 2.0
         'Template' => 'default',
-        'Template-404' => '404.html',
+        'Template-404' => '~404.html',
         'TemplateSuffixs' => 'htm,html',
         'HTMLFileSuffix' => '.html',
         'Language' => 'zh-CN',

@@ -43,7 +43,8 @@ input,select,button { vertical-align:middle; }
 .show{display:block;}
 
 /* text */
-input.text,textarea.text,select{ background-color:#FFF; border:solid 1px #7F9DB9; -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px; padding:2px; }
+input.text,textarea.text,select{ background-color:#FFF; border:solid 1px #7F9DB9; -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px; padding:3px 2px; }
+select{ padding:1px; }
 
 /* button */
 button, .button {
@@ -82,6 +83,8 @@ a.button, span.button, div.button{ padding:4px 8px 5px; padding:5px 8px 3px\9; }
 /* Fixed-width */
 .w10 { width: 10px !important; }
 .w20 { width: 20px !important; }
+.w30 { width: 30px !important; }
+.w40 { width: 40px !important; }
 .w50 { width: 50px !important; }
 .w100 { width: 100px !important; }
 .w150 { width: 150px !important; }

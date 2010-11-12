@@ -183,7 +183,7 @@ switch ($method) {
         echo           '</tfoot>';
         echo           '<tbody>';
         if ($sorts) {
-            echo            display_tr_tree($sorts);
+            echo            display_tr_categories($sorts);
         } else {
             echo           '<tr><td colspan="4" class="tc">'.__('No record!').'</td></tr>';
         }
@@ -231,7 +231,7 @@ function table_thead() {
  * @param int $n
  * @return string
  */
-function display_tr_tree($sorts,$n=0) {
+function display_tr_categories($sorts,$n=0) {
     static $func = null; if (!$func) $func = __FUNCTION__; 
     $hl = ''; $space = str_repeat('&mdash; ',$n);
     foreach ($sorts as $sort) {
@@ -242,7 +242,7 @@ function display_tr_tree($sorts,$n=0) {
         $actions.= '<span class="delete"><a href="javascript:;" onclick="sort_delete('.$sort['taxonomyid'].')">'.__('Delete').'</a></span>';
         $hl.= '<tr>';
         $hl.=   '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$sort['taxonomyid'].'" /></td>';
-        $hl.=   '<td><span class="space">'.$space.'</span><strong><a href="'.$href.'">'.$sort['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
+        $hl.=   '<td><span class="space">'.$space.'</span><strong><a href="'.ADMIN_ROOT.'post.php?category='.$sort['taxonomyid'].'">'.$sort['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
         // 检测目录是否已生成
         if (is_dir(ABS_PATH.'/'.$sort['path'])) {
             $hl.= '<td><img class="b6 os" src="'.ADMIN_ROOT.'images/t.gif" /><a href="'.$path.'" target="_blank">'.$path.'</a></td>';
@@ -286,7 +286,7 @@ function category_manage_page($action) {
     echo               '<th><label for="parent">'._x('Parent','sort').'</label></th>';
     echo               '<td><select name="parent" id="parent">';
     echo                   '<option value="0" path="" model="">'.__('&mdash; no parent &mdash;').'</option>';
-    echo                    options_tree($taxonomyid,$parent);
+    echo                    dropdown_categories($taxonomyid,$parent);
     echo               '</select></td>';
     echo           '</tr>';
     echo           '<tr>';
@@ -345,14 +345,13 @@ function category_manage_page($action) {
  *
  * @param int $taxonomyid   当前分类ID
  * @param int $selected 被选择的分类ID
- * @param int $n
  * @param array $trees
  * @return string
  */
-function options_tree($taxonomyid,$selected=0,$n=0,$trees=null) {
-    static $func = null; if (!$func) $func = __FUNCTION__;
+function dropdown_categories($taxonomyid,$selected=0,$trees=null) {
+    static $func = null,$n = 0; if (!$func) $func = __FUNCTION__;
     if ($trees===null) $trees = taxonomy_get_trees();
-    $hl = ''; $space = str_repeat('&nbsp; &nbsp; ',$n);
+    $hl = ''; $space = str_repeat('&nbsp; &nbsp; ',$n); $n++;
     foreach ($trees as $tree) {
         $sel  = $selected==$tree['taxonomyid']?' selected="selected"':null;
         if ($taxonomyid==$tree['taxonomyid']) {
@@ -361,7 +360,7 @@ function options_tree($taxonomyid,$selected=0,$n=0,$trees=null) {
             $hl.= '<option value="'.$tree['taxonomyid'].'"'.$sel.' path="'.$tree['path'].'/">'.$space.'├ '.$tree['name'].'</option>';
         }
     	if (isset($tree['subs'])) {
-    		$hl.= $func($taxonomyid,$selected,$n+1,$tree['subs']);
+    		$hl.= $func($taxonomyid,$selected,$tree['subs']);
     	}
     }
     return $hl;

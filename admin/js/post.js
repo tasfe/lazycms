@@ -35,26 +35,9 @@ function post_list_init() {
 }
 // 添加用户页面初始化
 function post_manage_init() {
-	var wrap = $('#postmanage'),
-        categories = function(sortid) {
-            $('#template > option:eq(0)',wrap).text(
-                ((isNaN(+sortid) || +sortid==0) ? _('Use the model set') : _('Use the category set'))
-            );
-        };
+	var wrap = $('#postmanage');
     // 半记忆
     wrap.semiauto();
-    // 控制是否显示模版使用模型设置
-    $('.categories input:radio[name=sortid]',wrap).click(function(){
-        categories(this.value); $(this).next().find('input:checkbox:checked').attr('checked',false);
-    });
-    $('.categories input:checkbox[name^=category]',wrap).click(function(){
-        var prev = $(this).parent().prev('input:radio:checked');
-        if (prev.is('input')) {
-            prev.attr('checked',false);
-            $(this).parents('.categories').find('input:radio[value=0]').attr('checked',true);
-        }
-    });
-    categories($('ul.categories input[name=sortid]:checked',wrap).val());
     // 绑定模型选择事件
 	if ($('select[name=model]',wrap).is('select')) {
         var postid = $('input[name=postid]',wrap).val(),
@@ -81,7 +64,7 @@ function post_manage_init() {
     });
     // 绑定获取关键词事件
     $('button[rel=keywords]',wrap).click(function(){
-        $('input#keywords').val('Loading...').getTerms($('input#title',wrap).val());
+        $('input#keywords').val('Loading...').getTerms($('input#title',wrap).val()+' '+$('textarea#content',wrap).val());
     });
     
 	// 提交事件

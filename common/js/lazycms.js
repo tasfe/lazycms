@@ -160,6 +160,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
      */
     redirect: function(url,time,message) {
         if (typeof url != 'undefined' && url != '') {
+            url = url.replace('&amp;', '&');
             var win = top || window;
                 win.location.replace(url);
         }

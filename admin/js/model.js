@@ -150,7 +150,7 @@ function model_field_manage(id,params) {
 	$.post(LazyCMS.ADMIN_ROOT + 'model.php?method=field',params,function(r){
         var title = id ? _('Edit') : _('Add New');
 		LazyCMS.dialog({
-            name:'field', title:title, styles:{ 'top':-100, 'width':'430px' }, body:r, remove:function() {
+            name:'field', title:title, styles:{ 'top':-100, 'width':'440px' }, body:r, remove:function() {
                 LazyCMS.removeDialog('field'); $('#field-index-' + id + ' textarea').removeClass('edit');
             }
         },function(r){

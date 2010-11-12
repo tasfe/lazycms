@@ -163,7 +163,7 @@ switch ($method) {
             echo       '</tr>';
             echo       '<tr>';
             echo            '<td>';
-            echo                categories_tree($categories);
+            echo                display_ul_categories($categories);
             echo                '<div class="option">';
             echo                    '<label for="radio_all"><input type="radio" name="option" value="all" id="radio_all" checked="checked">'.__('Create Lists and Posts').'</label>';
             echo                    '<label for="radio_lists"><input type="radio" name="option" value="lists" id="radio_lists">'.__('Only Create lists').'</label>';
