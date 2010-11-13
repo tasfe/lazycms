@@ -51,7 +51,7 @@ body { font-family: Arial,sans-serif; font-size:12px; color: #333333; background
 
 /* Admin Menu
 ----------------------------------------------------------------------------------------------------*/
-#admin-menu { width:145px; position:relative; list-style:none; float:left; padding:0; clear:left; margin:15px 5px 15px -160px; _margin-left:-80px; font-size:0px; }
+#admin-menu { width:145px; list-style:none; float:left; padding:0; clear:left; margin:15px 5px 15px -160px; _margin-left:-80px; font-size:0px; }
     #admin-menu li{ margin:0; padding:0; clear:both; zoom:100%; overflow: visible; list-style:none; }
     #admin-menu li a{ display:block; }
     #admin-menu a.toggle{ display:none;_display:block; width:25px; height:28px; position:absolute; top:1px; right:0; cursor: default; background: url(../images/menu-current-bgs.png) no-repeat left -91px; }
@@ -69,7 +69,7 @@ body { font-family: Arial,sans-serif; font-size:12px; color: #333333; background
     #admin-menu li.expand div.sub{ display:block; }
 
     /* 默认样式 */
-    #admin-menu li.head{ position:relative; }
+    #admin-menu li.head{ position:relative; z-index:1; }
     #admin-menu li.head a:hover{ text-decoration:none; }
 	#admin-menu li.head a.image{ margin:5px 5px 0px 5px; _margin:5px 0px 0px 2px; float:left; }
 	#admin-menu li.head a.text{ border:solid 1px #DFDFDF; border-bottom:none; padding:5px; background-color: #E5F4FE; font:13px/18px Georgia,"Times New Roman","Bitstream Charter",Times,serif; }
