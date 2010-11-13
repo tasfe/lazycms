@@ -298,14 +298,14 @@
             $.cookie(name + '_cbx_' + $(this).attr('cbx_guid'), this.checked, opts);
         });
         // 更多属性处理
-        $('fieldset[cookie=true]',this).each(function(i){
+        $('.fieldset[cookie=true]',this).each(function(i){
             var t = $(this); t.attr('fst_guid',i);
             var c = $.cookie(name + '_fst_' + i);
             if (c !== null) {
                 t.toggleClass('closed', c == 'true');
             }
         }).find('a.toggle,h3').click(function(){
-            $.cookie(name + '_fst_' + $(this).parents('fieldset').attr('fst_guid'), !$(this).parents('fieldset').hasClass('closed'), opts);
+            $.cookie(name + '_fst_' + $(this).parents('.fieldset').attr('fst_guid'), !$(this).parents('.fieldset').hasClass('closed'), opts);
         });
         return this;
     }

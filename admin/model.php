@@ -448,7 +448,7 @@ function model_manage_page($action) {
     echo                         '</div>';
     fields_actions();
     echo                       '</div>';
-    echo                   '</fieldset>';
+    echo                   '</div>';
     echo               '</td>';
     echo           '</tr>';
     echo       '</table>';

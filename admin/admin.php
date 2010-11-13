@@ -348,13 +348,15 @@ function admin_menu($menus) {
             // 展示子菜单
             if (!empty($menu['submenus'])) {
                 echo '<a href="javascript:;" class="toggle"><br/></a>';
-                echo '<dl class="submenu">';
+                echo '<div class="sub">';
+                echo '<dl>';
                 echo '<dt>'.$menu['text'].'</dt>';
                 foreach ($menu['submenus'] as $submenu) {
                     $current = $submenu[3]?' class="current"':null;
                     echo '<dd'.$current.'><a href="'.$submenu[1].'">'.$submenu[0].'</a></dd>';
                 }
                 echo '</dl>';
+                echo '</div>';
             }
             echo '</li>';
             $is_first = false;

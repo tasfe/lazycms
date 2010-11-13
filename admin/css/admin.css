@@ -52,43 +52,65 @@ body { font-family: Arial,sans-serif; font-size:12px; color: #333333; background
 /* Admin Menu
 ----------------------------------------------------------------------------------------------------*/
 #admin-menu { width:145px; position:relative; list-style:none; float:left; padding:0; clear:left; margin:15px 5px 15px -160px; _margin-left:-80px; font-size:0px; }
-	#admin-menu li{ background-color:#fff; margin:0; padding:0; clear:both; zoom:100%; overflow: visible; list-style:none; }
-	#admin-menu li a{ display:block; font-size: 12px; }
-	#admin-menu .toggle{ display:none;_display:block; width:25px; height:30px; position:absolute; top:1px; right:0; cursor: default; background: url(../images/menu-current-bgs.png) no-repeat left -91px; }
+    #admin-menu li{ margin:0; padding:0; clear:both; zoom:100%; overflow: visible; list-style:none; }
+    #admin-menu li a{ display:block; }
+    #admin-menu a.toggle{ display:none;_display:block; width:25px; height:28px; position:absolute; top:1px; right:0; cursor: default; background: url(../images/menu-current-bgs.png) no-repeat left -91px; }
+    /* 分隔符 */
+    #admin-menu li.separator{ height:21px; background:transparent url(../images/menu-arrows.gif) no-repeat left 5px; }
+	#admin-menu li.separator a{ height:21px; cursor: w-resize; }
+    /* 选中 */
+    #admin-menu li.current a.toggle{ background-position: left -178px; }
+    #admin-menu li.current a.text{ border:solid 1px #B5B5B5 !important; background: url(../images/menu-current-bgs.png) repeat-x left top; *background-position: left 1px; color:#FFF;}
+    #admin-menu li.current div.sub dl{ border-top: none !important; border-bottom: solid #B5B5B5 1px !important; }
+    #admin-menu li.current div.sub dd{ border-left: solid #B5B5B5 1px; border-right: solid #B5B5B5 1px; }
+    /* 展开菜单 */
+    #admin-menu li.expand a.last { -moz-border-radius-bottomleft:0px; -moz-border-radius-bottomright: 0px; -webkit-border-bottom-right-radius: 0px; -webkit-border-bottom-left-radius: 0px; -khtml-border-bottom-right-radius: 0px; -khtml-border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; }
+    #admin-menu li.expand a.toggle{ display:inline; }
+    #admin-menu li.expand div.sub{ display:block; }
 
-	/* 选中 */
-	#admin-menu li.current{ border:none !important; }
-	#admin-menu li.current a.toggle{ background-position: left -178px; }
-	#admin-menu li.current a.text{ border:solid 1px #B5B5B5 !important; background: url(../images/menu-current-bgs.png) repeat-x left top; *background-position: left 1px; color:#FFF; }
-	#admin-menu li.current .submenu { border-right:solid 1px #B5B5B5 !important; border-bottom:solid 1px #B5B5B5 !important; border-top:none; }
-	#admin-menu li.current .submenu dd{ padding:0; margin:0; border-left:solid 1px #B5B5B5; }
-	/* 展开菜单 */
-	#admin-menu li.expand .submenu { border-left:none; border-right:none; border-bottom:none; }
-	#admin-menu li.expand .submenu, #admin-menu li.expand .submenu dd { display:block; }
-	#admin-menu li.expand .toggle{ display:inline; }
-	/* 分隔符 */
-	#admin-menu .separator{ height:21px; background:transparent url(../images/menu-arrows.gif) no-repeat left 5px; }
-	#admin-menu .separator a{ height:21px; cursor: default; }
+    /* 默认样式 */
+    #admin-menu li.head{ position:relative; }
+    #admin-menu li.head a:hover{ text-decoration:none; }
+	#admin-menu li.head a.image{ margin:5px 5px 0px 5px; _margin:5px 0px 0px 2px; float:left; }
+	#admin-menu li.head a.text{ border:solid 1px #DFDFDF; border-bottom:none; padding:5px; background-color: #E5F4FE; font:13px/18px Georgia,"Times New Roman","Bitstream Charter",Times,serif; }
+	#admin-menu li.head:hover a.toggle{ display:block; }
+    #admin-menu a.last{ border-bottom:solid 1px #DFDFDF !important; -moz-border-radius-bottomleft: 6px; -moz-border-radius-bottomright: 6px; -webkit-border-bottom-right-radius: 6px; -webkit-border-bottom-left-radius: 6px; -khtml-border-bottom-right-radius: 6px; -khtml-border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; }
+    #admin-menu a.first { -moz-border-radius-topleft :6px; -moz-border-radius-topright: 6px; -webkit-border-top-right-radius: 6px; -webkit-border-top-left-radius: 6px; -khtml-border-top-right-radius: 6px; -khtml-border-top-left-radius: 6px; border-top-right-radius: 6px; border-top-left-radius: 6px; }
+    #admin-menu li.last div.sub dl{ border-top:none; border-bottom: solid #DFDFDF 1px; }
 
-	#admin-menu li.first,#admin-menu li.current a.first{ border:solid 1px #DFDFDF; border-bottom:none; -moz-border-radius-topleft :6px; -moz-border-radius-topright: 6px; -webkit-border-top-right-radius: 6px; -webkit-border-top-left-radius: 6px; -khtml-border-top-right-radius: 6px; -khtml-border-top-left-radius: 6px; border-top-right-radius: 6px; border-top-left-radius: 6px; }
-	#admin-menu li.last,#admin-menu li.current a.last{ border: solid 1px #DFDFDF; -moz-border-radius-bottomleft: 6px; -moz-border-radius-bottomright: 6px; -webkit-border-bottom-right-radius: 6px; -webkit-border-bottom-left-radius: 6px; -khtml-border-bottom-right-radius: 6px; -khtml-border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; }
-    #admin-menu li.expand a.last{ -moz-border-radius-bottomleft: 0px; -moz-border-radius-bottomright: 0px; -webkit-border-bottom-right-radius: 0px; -webkit-border-bottom-left-radius: 0px; -khtml-border-bottom-right-radius: 0px; -khtml-border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; }
-	
-	#admin-menu .head{ position:relative; border: solid 1px #DFDFDF; border-bottom:none; }
-	#admin-menu .head a:hover{ text-decoration:none; }
-	#admin-menu .head a.image{ position:absolute; left:5px; top:5px; *top:3px; float:left; }
-	#admin-menu .head a.text{ padding-left: 30px; line-height:30px; background: #E5F4FE; }
-	#admin-menu .head:hover a.toggle{ display:block; }
-	
-	#admin-menu .submenu{ display:none; border-top: solid #DFDFDF 1px; border-right: solid #DFDFDF 1px; border-bottom: solid #DFDFDF 1px; margin:0; }
-		#admin-menu .submenu dt{ display:none; }
-		#admin-menu .submenu dd{ zoom:100%; overflow:visible; }
-		#admin-menu .submenu dd a{ line-height:25px; padding:0 10px; }
-		#admin-menu .submenu dd a:hover{ background-color: #E5F4FE; }
-		#admin-menu .submenu dd.current{ border-left: none !important; background:#F5F5F5 url(../images/menu-current-bgs.png) no-repeat left -33px; }
-		#admin-menu .submenu dd.current a{ color:#333333; font-weight:bold; }
-		#admin-menu .submenu dd.current a:hover{ background-color: transparent; }
 
+    #admin-menu div.sub{ display:none; _height:0px; font-size:12px; }
+        #admin-menu div.sub dl{ margin:0; border-top: solid #DFDFDF 1px; }
+        #admin-menu div.sub dt{ display:none; }
+        #admin-menu div.sub dd{ background-color:#fff; margin:0; zoom:100%; overflow:visible; border-left: solid #DFDFDF 1px; border-right: solid #DFDFDF 1px; }
+        #admin-menu div.sub dd a{ line-height:22px; padding:0 10px; }
+		#admin-menu div.sub dd a:hover{ background-color: #E5F4FE; }
+		#admin-menu div.sub dd.current{ border-left: none !important; background:#F5F5F5 url(../images/menu-current-bgs.png) no-repeat left -33px; }
+		#admin-menu div.sub dd.current a{ color:#333333; font-weight:bold; }
+		#admin-menu div.sub dd.current a:hover{ background-color: transparent; }
+
+/* Folded Menu
+----------------------------------------------------------------------------------------------------*/
+.folded #admin-body { margin-left:60px; }
+.folded #admin-menu { width:30px; margin-left:-45px; _margin-left:-23px; }
+    .folded #admin-menu li.separator{ width:30px; height:21px; background:transparent url(../images/menu-arrows.gif) no-repeat right -34px; }
+    .folded #admin-menu li.separator a{ height:21px; cursor: e-resize; }
+
+    .folded #admin-menu li.expand div.sub{ display:none; }
+    .folded #admin-menu li.current div.sub dt{ border:solid 1px #B5B5B5 !important; }
+    .folded #admin-menu li.head div.open{ display:block; }
+
+    .folded #admin-menu li.head { width:30px; height:28px; }
+    .folded #admin-menu li.head a.toggle { display:none; }
+    .folded #admin-menu li.head a.text{ text-indent:-99999px; }
+    .folded #admin-menu li.head a.last { -moz-border-radius-bottomleft: 6px; -moz-border-radius-bottomright: 6px; -webkit-border-bottom-right-radius: 6px; -webkit-border-bottom-left-radius: 6px; -khtml-border-bottom-right-radius: 6px; -khtml-border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; }
+
+    .folded #admin-menu div.sub { position:absolute; left:0; top:0; margin:-1px 0 0 30px; padding-left:10px; z-index:9999; }
+    .folded #admin-menu div.sub dl { width:145px; border-top:none; border-right: none !important; border-bottom:solid 1px #DFDFDF; }
+    .folded #admin-menu div.sub dt { font:13px/25px Georgia,"Times New Roman","Bitstream Charter",Times,serif; padding:0 10px; background:url(../images/blue-grad.png) repeat-x left top; display:block !important; border:solid 1px #DFDFDF; -moz-border-radius-topleft :6px; -moz-border-radius-topright: 6px; -webkit-border-top-right-radius: 6px; -webkit-border-top-left-radius: 6px; -khtml-border-top-right-radius: 6px; -khtml-border-top-left-radius: 6px; border-top-right-radius: 6px; border-top-left-radius: 6px; }
+
+/* Content
+----------------------------------------------------------------------------------------------------*/
 #admin-content{ width:100%; float:left; }
 	#admin-content .wrap{ padding-top:5px; margin-right:10px; margin-bottom:1em; }
 	#admin-content .wrap p{ margin:1em 0; line-height:140%; }

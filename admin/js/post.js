@@ -51,7 +51,7 @@ function post_manage_init() {
 	}
 
 	// 绑定展开事件
-	$('fieldset').each(function(i){
+	$('.fieldset').each(function(i){
 	    var fieldset = $(this);
 	    $('a.toggle,h3',this).click(function(){
 	        fieldset.toggleClass('closed');

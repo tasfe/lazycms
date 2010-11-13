@@ -568,7 +568,7 @@ function load_textdomain($domain='default', $mo_dir=null) {
 function &_get_l10n_object( $domain ) {
 	global $l10n;
 	if ( !isset( $l10n[$domain] ) ) {
-		$l10n[$domain] = &new L10n_NOOP();
+        $l10n[$domain] = new L10n_NOOP();
 	}
 	return $l10n[$domain];
 }

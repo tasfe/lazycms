@@ -219,7 +219,7 @@ function table_thead() {
  * @param  $trees
  * @return string
  */
-function categories_tree($trees=null) {
+function display_ul_categories($trees=null) {
     static $func = null;
     $hl = sprintf('<ul class="%s">',is_null($func) ? 'categories' : 'children');
     if (!$func) $func = __FUNCTION__;

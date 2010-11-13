@@ -66,14 +66,39 @@ if ($.browser.msie && $.browser.version == '6.0') {
 	}
 	// 初始化菜单
     $.fn.init_menu = function(){
+        var mode  = $.cookie('admin_menu_mode'),
+            opts  = { expires: 365, path: LazyCMS.ADMIN_ROOT },
+            hover = function() {
+                $('.folded li.head').unbind().hover(function(){
+                    $('div.sub',this).addClass('open');
+                },function(){
+                    $('div.sub',this).removeClass('open');
+                });
+            };
+        
+        if (mode !== null) {
+            $('#wrapper').toggleClass('folded',mode=='true');
+            if (mode=='true') hover();
+        }
+
+        // 菜单模式切换
+        $('li.separator',this).click(function(){
+            $('#wrapper').toggleClass('folded'); hover();
+            // 保存Cookie
+            $.cookie('admin_menu_mode', $('#wrapper').hasClass('folded'), opts);
+        });
+        // 去掉虚线
+        $('li.separator a',this).focus(function(){
+            this.blur();
+        });        
         // 下拉按钮点击的事件
         $('.head .toggle',this).click(function(){
 			var head = $(this).parent();
-				head.toggleClass('expand',$('.submenu',head).slideToggle('fast',function(){
-                    $.cookie('admin_menu_' + head.attr('menu_guid'), head.hasClass('expand'), { expires: 365, path: LazyCMS.ADMIN_ROOT });
+				head.toggleClass('expand',$('.sub',head).slideToggle('fast',function(){
+                    $.cookie('admin_menu_' + head.attr('menu_guid'), head.hasClass('expand'), opts);
                 }));
         });
-		// 还缺少记录COOKIE
+        // 记录COOKIE
         $('.head',this).each(function(i){
             var t = $(this); t.attr('menu_guid',i);
             var c = $.cookie('admin_menu_' + i);
