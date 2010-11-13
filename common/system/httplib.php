@@ -42,8 +42,13 @@ class Httplib {
      * @return array|bool|mixed|void
      */
     function get($url,$args=array()) {
-        $defaults = array('method' => 'GET');
-        $args     = $this->parse_args($args,$defaults);
+        $defaults = array(
+            'method'  => 'GET',
+            'headers' => array(
+                'referer' => HTTP_HOST.PHP_FILE
+            ),
+        );
+        $args = $this->parse_args($args,$defaults);
         return $this->request($url,$args);
     }
     /**
@@ -54,8 +59,13 @@ class Httplib {
      * @return array|bool|mixed|void
      */
     function post($url,$args=array()) {
-        $defaults = array('method' => 'POST');
-        $args     = $this->parse_args($args,$defaults);
+        $defaults = array(
+            'method'  => 'POST',
+            'headers' => array(
+                'referer' => HTTP_HOST.PHP_FILE
+            ),
+        );
+        $args = $this->parse_args($args,$defaults);
         return $this->request($url,$args);
     }
     /**
@@ -948,6 +958,16 @@ function &_httplib_get_object() {
 	if ( is_null($http) )
 		$http = new Httplib();
 	return $http;
+}
+/**
+ * 解析url
+ *
+ * @param string $url
+ * @return array
+ */
+function httplib_parse_url($url) {
+    $http = _httplib_get_object();
+    return $http->parse_url($url);
 }
 /**
  * 远程request

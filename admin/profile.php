@@ -92,7 +92,7 @@ if (validate_is_post()) {
     echo               '<td><input class="text" id="nickname" name="nickname" type="text" size="20" value="'.$nickname.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="email">'.__('E-mail').'<span class="description">'.__('(required)').'</span></label></th>';
+    echo               '<th><label for="email">'.__('E-mail').'<span class="resume">'.__('(required)').'</span></label></th>';
     echo               '<td><input class="text" id="email" name="email" type="text" size="40" value="'.$email.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
@@ -102,14 +102,14 @@ if (validate_is_post()) {
     echo           '<tr>';
     echo               '<th><label for="description">'.__('Biographical Info').'</label></th>';
     echo               '<td><textarea cols="70" rows="5" id="description" name="description">'.$desc.'</textarea>';
-    echo                   '<br/><span class="description">'.__('Share a little biographical information to fill out your profile. This may be shown publicly.').'</span>';
+    echo                   '<br/><span class="resume">'.__('Share a little biographical information to fill out your profile. This may be shown publicly.').'</span>';
     echo               '</td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="password1">'.__('Password').'<span class="description">'.__('(twice)').'</span></label></th>';
+    echo               '<th><label for="password1">'.__('Password').'<span class="resume">'.__('(twice)').'</span></label></th>';
     echo               '<td><input class="text" id="password1" name="password1" type="password" size="20" />';
-    echo                   '<span class="description">'.__('If you would like to change the password type a new one. Otherwise leave this blank.').'</span>';
-    echo                   '<br/><input class="text" id="password2" name="password2" type="password" size="20" /><span class="description">'.__('Type your new password again.').'</span>';
+    echo                   '<span class="resume">'.__('If you would like to change the password type a new one. Otherwise leave this blank.').'</span>';
+    echo                   '<br/><input class="text" id="password2" name="password2" type="password" size="20" /><span class="resume">'.__('Type your new password again.').'</span>';
     echo               '</td>';
     echo           '</tr>';
     echo       '</table>';

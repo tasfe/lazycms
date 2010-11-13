@@ -249,7 +249,7 @@ switch ($method) {
 	    		$hl.= '<tr>';
                 $hl.=    '<th><label for="'.$field['_n'].'">'.$field['l'];
                 if (!empty($field['h'])) {
-                    $hl.=    '<span class="description">'.$field['h'].'</span>';
+                    $hl.=    '<span class="resume">'.$field['h'].'</span>';
                 }
                 $hl.=        '</label>';
                 $hl.=    '</th>';
@@ -570,7 +570,7 @@ function post_manage_page($action) {
     }
     
     echo               '<tr>';
-    echo                   '<th><label for="title">'._x('Title','post').'<span class="description">'.__('(required)').'</span></label></th>';
+    echo                   '<th><label for="title">'._x('Title','post').'<span class="resume">'.__('(required)').'</span></label></th>';
     echo                   '<td>';
     echo                       '<input class="text" id="title" name="title" type="text" size="70" value="'.$title.'" />';
     echo                       '&nbsp;<label for="autokeys"><input type="checkbox" value="1" id="autokeys" name="autokeys" checked="checked" cookie="true">'.__('Auto get keywords').'</label>';
@@ -584,7 +584,7 @@ function post_manage_page($action) {
     echo           '<tbody class="extend-attr"></tbody>';
     echo           '<tbody>';
     echo               '<tr>';
-    echo                   '<th><label for="path">'._x('Path','post').'<span class="description">'.__('(required)').'</span></label></th>';
+    echo                   '<th><label for="path">'._x('Path','post').'<span class="resume">'.__('(required)').'</span></label></th>';
     echo                   '<td><input class="text" id="path" name="path" type="text" size="80" value="'.$path.'" /><div class="rules">';
     echo                       '<a href="#%ID'.$suffix.'">['.__('Post ID').']</a>';
     echo                       '<a href="#%MD5'.$suffix.'">['.__('MD5 Value').']</a>';
@@ -618,7 +618,7 @@ function post_manage_page($action) {
     echo                   '<td><input class="text" type="text" size="70" name="keywords" id="keywords" value="'.$keywords.'" />&nbsp;<button type="button" rel="keywords">'.__('Get').'</button></td>';
     echo               '</tr>';
     echo               '<tr>';
-    echo                   '<th><label for="description">'._x('Description','post').'<br /><span class="description">'.__('(Maximum of 250)').'</span></label></th>';
+    echo                   '<th><label for="description">'._x('Description','post').'<br /><span class="resume">'.__('(Maximum of 250)').'</span></label></th>';
     echo                   '<td><textarea class="text" cols="70" rows="5" id="description" name="description">'.$description.'</textarea></td>';
     echo               '</tr>';
     if ('post.php' == $php_file) {

@@ -7,7 +7,7 @@
 <style type="text/css">
 <!--
 body{margin:0;padding:10px;font-size:12px;}
-input{border:1px solid #ABADB3;}
+input{ width:300px; border:1px solid #ABADB3; }
 button{border:1px solid #888;border-color:#fff #888 #888 #fff;}
 #map_canvas{width:500px; height:350px;border:1px #999 solid;text-align:center;margin-top:10px}
 -->
@@ -66,7 +66,7 @@ button{border:1px solid #888;border-color:#fff #888 #888 #fff;}
 </head>
 
 <body onload="initialize()">
-    <script type="text/javascript">_('Address:')</script><input type="text" size="40" name="address" id="address" value="China" onkeypress="if (event.keyCode==13 || event.which==13) setCenter(this.value)" />
+    <script type="text/javascript">_('Address:')</script><input type="text" name="address" id="address" value="China" onkeypress="if (event.keyCode==13 || event.which==13) setCenter(this.value)" />
     <button type="button" onclick="setCenter(document.getElementById('address').value)"><script type="text/javascript">_('Search')</script></button>
     <button id="insert" type="button" onclick="insertMap()"><script type="text/javascript">_('Insert Map')</script></button>
     <div id="map_canvas"></div>

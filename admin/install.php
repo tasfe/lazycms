@@ -411,6 +411,8 @@ function install_defaults() {
         'HTMLFileSuffix' => '.html',
         'Language' => 'zh-CN',
         'SiteTitle' => __('My Site'),
+        'Compress' => 1,
+        'Tags-Service' => 1,
         'Installed' => time(),
     );
     // 覆盖或升级设置

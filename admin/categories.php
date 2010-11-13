@@ -290,11 +290,11 @@ function category_manage_page($action) {
     echo               '</select></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="name">'._x('Name','sort').'<span class="description">'.__('(required)').'</span></label></th>';
+    echo               '<th><label for="name">'._x('Name','sort').'<span class="resume">'.__('(required)').'</span></label></th>';
     echo               '<td><input class="text" id="name" name="name" type="text" size="30" value="'.$name.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="path">'._x('Path','sort').'<span class="description">'.__('(required)').'</span></label></th>';
+    echo               '<th><label for="path">'._x('Path','sort').'<span class="resume">'.__('(required)').'</span></label></th>';
     echo               '<td><input class="text" id="path" name="path" type="text" size="70" value="'.$path.'" /><div class="rules">';
     echo                   '<a href="#%ID" title="%ID">['.__('Category ID').']</a>';
     echo                   '<a href="#%MD5" title="%MD5">['.__('MD5 Value').']</a>';
@@ -323,7 +323,7 @@ function category_manage_page($action) {
     echo               '<td><input class="text" type="text" size="70" name="keywords" id="keywords" value="'.$keywords.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="description">'._x('Description','sort').'<br /><span class="description">'.__('(Maximum of 250)').'</span></label></th>';
+    echo               '<th><label for="description">'._x('Description','sort').'<br /><span class="resume">'.__('(Maximum of 250)').'</span></label></th>';
     echo               '<td><textarea class="text" cols="70" rows="5" id="description" name="description">'.$description.'</textarea></td>';
     echo           '</tr>'; 
     echo       '</table>';

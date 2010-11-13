@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-11-12 19:51+0800\n"
+"POT-Creation-Date: 2010-11-13 18:04+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.net>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
@@ -248,18 +248,18 @@ msgstr "意第绪语"
 msgid "The start position cannot exceed initial string length."
 msgstr "起始位置不能超过初始字符串的长度。"
 
-#: common/system/httplib.php:126
+#: common/system/httplib.php:136
 msgid "A valid URL was not provided."
 msgstr "没有提供一个有效的URL。"
 
-#: common/system/httplib.php:258
-#: common/system/httplib.php:367
-#: common/system/httplib.php:383
+#: common/system/httplib.php:268
+#: common/system/httplib.php:377
+#: common/system/httplib.php:393
 msgid "Too many redirects."
 msgstr "太多的重定向。"
 
-#: common/system/httplib.php:450
-#: common/system/httplib.php:555
+#: common/system/httplib.php:460
+#: common/system/httplib.php:565
 #, php-format
 msgid "Could not open handle for fopen() to %s"
 msgstr "无法打开处理fopen()函数到 %s"
@@ -279,6 +279,7 @@ msgid "%s database not found!"
 msgstr "%s 数据库不存在！"
 
 #: common/system/mysql.php:115
+#: admin/install.php:73
 msgid "MySQL database version lower than 4.1, please upgrade MySQL!"
 msgstr "MySQL数据库版本低于4.1，请升级MySQL！"
 
@@ -1420,7 +1421,7 @@ msgid "Posts"
 msgstr "文章管理"
 
 #: admin/admin-header-menu.php:20
-#: admin/post.php:322
+#: admin/post.php:324
 #: admin/admin.php:203
 msgctxt "post"
 msgid "Add New"
@@ -1434,7 +1435,7 @@ msgid "Pages"
 msgstr "页面管理"
 
 #: admin/admin-header-menu.php:26
-#: admin/post.php:319
+#: admin/post.php:321
 #: admin/admin.php:211
 msgctxt "page"
 msgid "Add New"
@@ -1499,162 +1500,162 @@ msgstr "文章创建成功。"
 msgid "Posts deleted."
 msgstr "文章删除成功。"
 
-#: admin/post.php:127
+#: admin/post.php:128
 msgctxt "post"
 msgid "Please select a main category."
 msgstr "请选择一个主分类。"
 
-#: admin/post.php:132
+#: admin/post.php:133
 msgctxt "post"
 msgid "The title field is empty."
 msgstr "标题字段不能为空。"
 
-#: admin/post.php:133
+#: admin/post.php:134
 #, php-format
 msgctxt "post"
 msgid "The title field length must be %d-%d characters."
 msgstr "标题长度必须%d至%d个字符。"
 
-#: admin/post.php:138
+#: admin/post.php:139
 msgctxt "post"
 msgid "The path field is empty."
 msgstr "路径不能为空。"
 
-#: admin/post.php:139
+#: admin/post.php:140
 #, php-format
 msgctxt "post"
 msgid "The path can not contain any of the following characters %s"
 msgstr "文章路径不能下列任何字符之一：%s"
 
-#: admin/post.php:140
+#: admin/post.php:141
 msgctxt "post"
 msgid "The path already exists."
 msgstr "文章路径已存在，请重新输入。"
 
-#: admin/post.php:203
+#: admin/post.php:204
 msgid "Post updated."
 msgstr "文章更新成功。"
 
-#: admin/post.php:211
+#: admin/post.php:213
 msgid "Post created."
 msgstr "文章添加成功。"
 
-#: admin/post.php:306
+#: admin/post.php:308
 msgid "Browse..."
 msgstr "浏览..."
 
-#: admin/post.php:385
-#: admin/post.php:448
+#: admin/post.php:402
+#: admin/post.php:458
 msgid "Create"
 msgstr "生成"
 
-#: admin/post.php:393
-#: admin/post.php:405
-#: admin/post.php:415
+#: admin/post.php:410
+#: admin/post.php:421
+#: admin/post.php:427
 #: admin/admin.php:461
 msgid "None"
 msgstr "无"
 
-#: admin/post.php:455
+#: admin/post.php:465
 msgid "View all categories"
 msgstr "查看全部分类"
 
-#: admin/post.php:459
+#: admin/post.php:469
 msgid "Filter"
 msgstr "过滤"
 
-#: admin/post.php:473
-#: admin/post.php:561
+#: admin/post.php:485
+#: admin/post.php:573
 msgctxt "post"
 msgid "Title"
 msgstr "标题"
 
-#: admin/post.php:474
-#: admin/post.php:538
+#: admin/post.php:486
+#: admin/post.php:550
 msgctxt "post"
 msgid "Model"
 msgstr "模型"
 
-#: admin/post.php:476
-#: admin/post.php:553
+#: admin/post.php:488
+#: admin/post.php:565
 msgctxt "post"
 msgid "Categories"
 msgstr "分类"
 
-#: admin/post.php:478
+#: admin/post.php:490
 msgctxt "post"
 msgid "Tags"
 msgstr "标签"
 
-#: admin/post.php:479
+#: admin/post.php:491
 msgctxt "post"
 msgid "Date"
 msgstr "日期"
 
-#: admin/post.php:480
+#: admin/post.php:492
 msgctxt "post"
 msgid "State"
 msgstr "状态"
 
-#: admin/post.php:500
+#: admin/post.php:512
 msgid "Please Add Category!"
 msgstr "请先添加文章分类！"
 
-#: admin/post.php:564
+#: admin/post.php:576
 msgid "Auto get keywords"
 msgstr "自动获取关键词"
 
-#: admin/post.php:568
+#: admin/post.php:580
 msgctxt "post"
 msgid "Content"
 msgstr "内容"
 
-#: admin/post.php:575
+#: admin/post.php:587
 msgctxt "post"
 msgid "Path"
 msgstr "路径"
 
-#: admin/post.php:591
+#: admin/post.php:603
 msgid "More attribute"
 msgstr "更多属性"
 
-#: admin/post.php:595
+#: admin/post.php:607
 msgctxt "post"
 msgid "Page Template"
 msgstr "页面模板"
 
-#: admin/post.php:598
+#: admin/post.php:610
 msgid "Use the category set"
 msgstr "使用分类设置"
 
-#: admin/post.php:605
+#: admin/post.php:617
 msgctxt "post"
 msgid "Keywords"
 msgstr "关键词"
 
-#: admin/post.php:606
+#: admin/post.php:618
 msgid "Get"
 msgstr "获取"
 
-#: admin/post.php:609
+#: admin/post.php:621
 msgctxt "post"
 msgid "Description"
 msgstr "Meta简述"
 
-#: admin/post.php:614
+#: admin/post.php:626
 msgctxt "post"
 msgid "Other"
 msgstr "其它选项"
 
-#: admin/post.php:615
+#: admin/post.php:627
 msgid "Update Category Lists"
 msgstr "更新分类列表"
 
-#: admin/post.php:623
+#: admin/post.php:635
 msgid "Add Post"
 msgstr "添加文章"
 
-#: admin/post.php:625
+#: admin/post.php:639
 msgid "Update Post"
 msgstr "更新文章"
 
@@ -2378,10 +2379,12 @@ msgid "Compress"
 msgstr "GZIP压缩"
 
 #: admin/options/general.php:60
+#: admin/options/general.php:103
 msgid "Enable"
 msgstr "启用"
 
 #: admin/options/general.php:61
+#: admin/options/general.php:104
 msgid "Disable"
 msgstr "禁用"
 
@@ -2407,10 +2410,20 @@ msgstr "模板后缀"
 msgid "HTML file suffix"
 msgstr "网页后缀"
 
-#: admin/options/general.php:103
+#: admin/options/general.php:101
+msgid "Tags Service"
+msgstr "标签服务"
+
+#: admin/options/general.php:101
+msgid "(Get the Network tags of service)"
+msgstr "(获取网络标签服务)"
+
+#: admin/options/general.php:110
 msgid "Save Changes"
 msgstr "保存更改"
 
+#~ msgid "Related tags"
+#~ msgstr "相关标签"
 #~ msgid "Uncategorized"
 #~ msgstr "未分类"
 #~ msgctxt "model"

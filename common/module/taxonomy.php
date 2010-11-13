@@ -70,14 +70,16 @@ function term_add($name) {
  * 根据词库取得措辞
  *
  * @param string $content
- * @param int $max_len
- * @param bool $save_other
  * @return array
  */
-function term_gets($content,$max_len=8,$save_other=false) {
+function term_gets($content) {
     $content = clear_space(strip_tags($content));
-    $ckey    = 'terms.dicts';
-    $dicts   = fcache_get($ckey);
+    if (trim($content) == '') return null;
+    if (mb_strlen($content,'UTF-8') > 1024)
+        $content = mb_substr($content,0,1024,'UTF-8');
+
+    $ckey  = 'terms.dicts';
+    $dicts = fcache_get($ckey);
     if ($dicts === null) {
         $db = get_conn(); $dicts = array();
         // 读取关键词列表
@@ -87,20 +89,40 @@ function term_gets($content,$max_len=8,$save_other=false) {
         }
         fcache_set($ckey,$dicts);
     }
-    require_file(COM_PATH.'/system/splitword.php');
-    $splitword = new SplitWord($dicts);
-    $keywords  = $splitword->get($content,$max_len,$save_other);
-    // TODO 本地分词失败或分词较少
-    /*if (empty($keywords) && count($keywords)<=3) {
-        // 使用keyword.discuz.com的网络分词
+    require_file(COM_PATH.'/system/keyword.php');
+    $splitword = new keyword($dicts);
+    $keywords  = $splitword->get($content);
+    // 本地分词失败或分词较少
+    if (C('Tags-Service') && (empty($keywords) || count($keywords)<=3)) {
+        // 使用keyword.lazycms.com的网络分词
         require_file(COM_PATH.'/system/httplib.php');
-        $r = @httplib_post(sprintf('http://keyword.discuz.com/related_kw.html?ics=utf-8&ocs=utf-8&title=%s',rawurlencode($content)),array(
-            'timeout' => 5,
-            'body' => array('title' => $content)
+        $r = @httplib_post('http://keyword.lazycms.com/related_kw.php',array(
+            'timeout' => 3,
+            'body'    => array('content' => $content)
         ));
-        //print_r($r);
-    }*/
-
+        $code = httplib_retrieve_response_code($r);
+        if ($code == '200') {
+            $keys = array();
+            $xml  = httplib_retrieve_body($r);
+            // 取出关键词为数组
+            if (preg_match_all('/\<kw\>\<\!\[CDATA\[(.+)\]\]\>\<\/kw\>/i',$xml,$args)) {
+                $keys = $args[1];
+            }
+            // 合并分词结果
+            if (!empty($keys)) {
+                $newkeys  = array_unique(array_merge($keywords,$keys));
+                $keywords = $newkeys;
+                foreach ($keywords as $keyword) {
+                    foreach($newkeys as $k=>$v) {
+                        if ($keyword!=$v && stripos($keyword,$v) !== false) {
+                            unset($keywords[$k]);
+                        }
+                    }
+                }
+                $keywords = array_values($keywords); unset($newkeys);
+            }
+        }
+    }
     if (empty($keywords)) {
         return null;
     } else {
