@@ -57,8 +57,7 @@ a:hover   { text-decoration: underline; }
 		#intro li.brevity{ float:left; margin-left:90px; }
 		* html #intro li.brevity{ margin-left:60px; }
 		#intro li.free{ float:right; margin-right:30px; }
-		
-		
+
 	#download{ width:260px; height:230px; margin:10px 5px 0 0; padding:20px 20px 0 20px; border-top:solid 2px #E2F0F6; float:left; background:url(download-bg.gif) no-repeat left top; }
 		#download h3{ color:#0B5B98; margin:0px; padding:0; font-size:14px; letter-spacing:1px; }
 		#download p{ margin:10px 0; padding:0; }
@@ -80,6 +79,7 @@ a:hover   { text-decoration: underline; }
 	#content .container h3{ color:#0B5B98; height:24px; line-height:24px; margin:0; padding:0 10px; font-size:14px; border-bottom:1px solid #C6D9E7; background:url(buttons-bg.png) repeat-x 0 -2px; letter-spacing:1px; }	
 	
 	#feature{ width:630px; height:300px; float:left; }
+        #feature div.tips{ color:#F3EBEB; font-weight:bold; font-size:48px; text-align:center; margin-top:16%; }
 		#feature ul{ padding:0; margin:0; list-style:none; }
 		#feature li{ float:left; width:209px; }
 		#feature li h4{ margin:20px 0 10px 15px; padding:0; font-size:14px; color:#006600; }
@@ -91,8 +91,11 @@ a:hover   { text-decoration: underline; }
 	#updates { width:300px; height:300px; overflow:hidden; float:right; }
 		#updates ul{ width:284px; height:270px; list-style:none; margin:0; padding:5px 3px 0 13px; overflow:auto; }
 		#updates p { font-family:"宋体"; line-height:120%; margin:0; padding:0; text-indent:0; }
-		#updates a.revision { font-weight:bold; margin-right:1em; }
-		#updates p.comments { margin-bottom:3px; margin-left:4em; }
+		#updates a.revision { font-weight:bold; margin-right:10px; }
+		#updates p.comments { margin-bottom:3px; margin-left:40px; }
+		#updates p.more { text-align:right; font-weight:bold; margin-bottom:10px; margin-right:10px; }
+		#updates div.loading { text-align:center; margin-top:40%; }
+		#updates div.loading img{ margin-right:5px; }
 
 /* links */
 #links{ margin-top:10px; clear:both; }

@@ -30,17 +30,8 @@ defined('NO_REDIRECT') or define('NO_REDIRECT', false);
 if (!NO_REDIRECT && (!is_file(COM_PATH.'/config.php') || !installed())) {
     redirect(ADMIN_ROOT.'install.php'); exit();
 }
-
-// 加载模版处里类
-require COM_PATH.'/system/template.php';
 // 加载公共模块
-require COM_PATH.'/module/system.php';
-require COM_PATH.'/module/user.php';
-require COM_PATH.'/module/model.php';
-require COM_PATH.'/module/taxonomy.php';
-require COM_PATH.'/module/post.php';
-require COM_PATH.'/module/publish.php';
-
+include_modules();
 /**
  * 验证用户权限
  *

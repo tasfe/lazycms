@@ -72,9 +72,8 @@ class LazyLoader {
     function scripts(){
         $scripts = array(
             'jquery'        => array(COM_PATH.'/js/jquery.js'),
-            'jquery.extend' => array(COM_PATH.'/js/jquery.extend.js'),
             'lazycms'       => array(COM_PATH.'/js/lazycms.js'),
-            'common'        => array(ADMIN_PATH.'/js/common.js',array('jquery','jquery.extend','lazycms')),
+            'common'        => array(ADMIN_PATH.'/js/common.js',array('jquery','lazycms')),
             'login'         => array(ADMIN_PATH.'/js/login.js'),
             'install'       => array(ADMIN_PATH.'/js/install.js'),
             

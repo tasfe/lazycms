@@ -47,6 +47,8 @@ require COM_PATH.'/system/fcache.php';
 require COM_PATH.'/system/pinyin.php';
 // 加载本地化语言类库
 require COM_PATH.'/system/l10n.php';
+// 加载模版处里类
+require COM_PATH.'/system/template.php';
 // 开始时间
 define('BEGIN_TIME',micro_time(true));
 // 处理错误

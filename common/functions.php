@@ -43,6 +43,7 @@ function installed() {
     }
     return $result;
 }
+
 /**
  * 解析DSN
  *
@@ -680,33 +681,40 @@ function ob_compress($content,$level=3,$force_gzip=false){
 /**
  * 内容截取，支持正则
  *
- * @param string $content    内容
- * @param string $start      开始代码
- * @param string $end        结束代码
- * @param string $clear      清除内容
+ * $start,$end,$clear 支持正则表达式，“/”斜杠开头为正则模式
+ * $clear 支持数组
+ *
+ * @param string $content           内容
+ * @param string $start             开始代码
+ * @param string $end               结束代码
+ * @param string|array $clear      清除内容
  * @return string
  */
-function mid($content,$start,$end,$clear=null){
-    if (empty($content) || empty($start) || empty($end)) return null;
-    if ((!strncmp($start,'(',1)) && !substr_compare($start,')',strlen($start)-1,1)) {
-        if (preg_match("/{$start}/isU",$content,$args)) {
+function mid($content,$start,$end=null,$clear=null){
+    if (empty($content) || empty($start)) return null;
+    if ( !strncmp($start,'/',1) ) {
+        if (preg_match($start, $content, $args)) {
             $start = $args[0];
         }
     }
-    if ((!strncmp($end,'(',1)) && !substr_compare($end,')',strlen($end)-1,1)) {
-        if (preg_match("/{$end}/isU",$content,$args)) {
+    if ( $end && !strncmp($end,'/',1) ) {
+        if (preg_match($end, $content, $args)) {
             $end = $args[0];
         }
     }
     $start_len = strlen($start); $result = null;
-    $start_pos = strpos(strtolower($content),strtolower($start)); if ($start_pos===false) { return null; }
-    $end_pos   = strpos(strtolower(substr($content,-(strlen($content)-$start_pos-$start_len))),strtolower($end));
-    if ($start_pos!==false && $end_pos!==false) {
-        $result = trim(substr($content,$start_pos+$start_len,$end_pos));
+    $start_pos = stripos($content,$start); if ($start_pos === false) return null;
+    $length    = $end===null ? 0 : stripos(substr($content,-(strlen($content)-$start_pos-$start_len)),$end);
+    if ($start_pos !== false) {
+        if ($length === 0) {
+            $result = trim(substr($content, $start_pos + $start_len));
+        } else {
+            $result = trim(substr($content, $start_pos + $start_len, $length));
+        }
     }
     if (strlen($result)>0 && strlen($clear)>0) {
-        if ((!strncmp($clear,'(',1)) && !substr_compare($clear,')',strlen($clear)-1,1)) {
-            $result = preg_replace("/{$clear}/isU",'',$result);
+        if ( !strncmp($clear,'/',1) ) {
+            $result = preg_replace($clear,'',$result);
         } else {
             if (strpos($result,$clear)!==false) {
                 $result = str_replace($clear,'',$result);
@@ -734,6 +742,18 @@ function get_dir_array($path,$ext='*'){
     $result = ($ext=='dir') ? glob("{$path}*",GLOB_ONLYDIR) : glob("{$path}*.{{$ext}}",GLOB_BRACE);
     array_walk($result,$process_func);
     return $result;
+}
+/**
+ * 加载所有模块
+ *
+ * @return bool
+ */
+function include_modules() {
+    $modules = get_dir_array('@/module','php');
+    foreach ($modules as $file) {
+        require_file(COM_PATH.'/module/'.$file);
+    }
+    return true;
 }
 /**
  * 格式化下拉框选项
