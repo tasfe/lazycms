@@ -528,15 +528,18 @@ function esc_html($str){
  * @return array key
  */
 function random($ps){
-    static $arr = array(); $key = md5(serialize($ps));
-    if (!isset($arr[$key])) {
-        $max = array_sum($ps);
-        foreach ($ps as $k=>$v) {
-            $v = $v / $max * 10000;
-            for ($i=0; $i<$v; $i++) $arr[$key][] = $k;
+    $much = 10000;
+    $max  = array_sum($ps) * $much;
+    $rand = mt_rand(1,$max);
+    $base = 0;
+    foreach ($ps as $k=>$v) {
+        if ($base*$much < $rand && $rand <= ($base+$v)*$much) {
+            return $k;
+        } else {
+            $base = $v;
         }
     }
-    return $arr[$key][mt_rand(0,count($arr[$key])-1)];
+    return false;
 }
 /**
  * 随机字符串
