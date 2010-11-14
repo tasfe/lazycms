@@ -98,7 +98,7 @@ function term_gets($content) {
         require_file(COM_PATH.'/system/httplib.php');
         $r = @httplib_post('http://keyword.lazycms.com/related_kw.php',array(
             'timeout' => 3,
-            'body'    => array('content' => $content)
+            'body'    => array('title' => $content)
         ));
         $code = httplib_retrieve_response_code($r);
         if ($code == '200') {

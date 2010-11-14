@@ -6,10 +6,9 @@
 			<li><a href="{$inst}product/">产品</a></li>
             <li><a href="{$inst}extend/">扩展</a></li>
             <li><a href="{$inst}showcase/">案例</a></li>
-			<li><a href="{$inst}download/">文档</a></li>
+			<li><a href="{$inst}docs/">文档</a></li>
 			<li><a href="{$inst}blog/">博客</a></li>
 			<li><a href="http://bbs.lazycms.com/" target="_blank">论坛</a></li>
 		</ul>
 	</div>
 </div>
-<div id="guide">位置：{$guide}</div>

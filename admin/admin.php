@@ -394,6 +394,13 @@ function admin_jslang() {
         'Confirm Logout?'   => __('Confirm Logout?'),
         'Confirm Delete?'   => __('Confirm Delete?'),
         'Did not select any action!' => __('Did not select any action!'),
+        // 密码强度
+        'Strength indicator' => __('Strength indicator'),
+        'Very weak'          => __('Very weak'),
+        'Weak'               => __('Weak'),
+        'Medium'             => __('Medium'),
+        'Strong'             => __('Strong'),
+        'Mismatch'           => __('Mismatch'),
 
     ),admin_head('jslang'));
     return sprintf('$.extend(LazyCMS.L10n,%s);',json_encode($js_lang));

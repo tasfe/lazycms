@@ -30,34 +30,3 @@ p { margin-bottom:0px; margin-top:1em; }
 .data-table label input{ margin-right:3px; }
 
 
-#pass-strength-result {
-    -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px;
-	background-color: #eee;
-	border-color: #ddd !important;
-	border-style: solid;
-	border-width: 1px;
-	margin: 5px 5px 5px 0px;
-	padding: 1px 2px;
-	text-align: center;
-	width: 150px;
-}
-
-#pass-strength-result.bad {
-	background-color: #ffb78c;
-	border-color: #ff853c !important;
-}
-
-#pass-strength-result.good {
-	background-color: #ffec8b;
-	border-color: #ffcc00 !important;
-}
-
-#pass-strength-result.short {
-	background-color: #ffa0a0;
-	border-color: #f04040 !important;
-}
-
-#pass-strength-result.strong {
-	background-color: #c3ff88;
-	border-color: #8dff1c !important;
-}

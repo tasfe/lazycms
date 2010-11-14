@@ -502,39 +502,3 @@ function parse_str(str) {
     return params;
 }
 
-// Password strength meter
-function password_strength(username, password1, password2) {
-	var short_pass = 1, bad_pass = 2, good_pass = 3, strong_pass = 4, mismatch = 5, symbol_size = 0, natLog, score;
-
-	// password 1 != password 2
-	if ( (password1 != password2) && password2.length > 0)
-		return mismatch
-
-	//password < 4
-	if ( password1.length < 4 )
-		return short_pass
-
-	//password1 == username
-	if ( password1.toLowerCase() == username.toLowerCase() )
-		return bad_pass;
-
-	if ( password1.match(/[0-9]/) )
-		symbol_size +=10;
-	if ( password1.match(/[a-z]/) )
-		symbol_size +=26;
-	if ( password1.match(/[A-Z]/) )
-		symbol_size +=26;
-	if ( password1.match(/[^a-zA-Z0-9]/) )
-		symbol_size +=31;
-
-	natLog = Math.log( Math.pow(symbol_size, password1.length) );
-	score = natLog / Math.LN2;
-
-	if (score < 40 )
-		return bad_pass
-
-	if (score < 56 )
-		return good_pass
-
-    return strong_pass;
-}

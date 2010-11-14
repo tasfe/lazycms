@@ -28,6 +28,8 @@ defined('COM_PATH') or die('Restricted access!');
 class Keyword {
     // 编码
     var $_encoding = 'UTF-8';
+    // 词典
+    var $_dicts  = array();
     // 词典最大 7 中文字
     var $_maxLen = 7;
     // 最小 2 中文字

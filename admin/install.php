@@ -195,13 +195,7 @@ else {
 admin_css('css/install'); admin_script('js/common'); admin_script('js/install');
 
 admin_head('jslang',array(
-    'Strength indicator' => __('Strength indicator'),
-    'Very weak'          => __('Very weak'),
-    'Weak'               => __('Weak'),
-    'Medium'             => __('Medium'),
-    'Strong'             => __('Strong'),
-    'Mismatch'           => __('Mismatch'),
-    'Rock it!'           => __('Rock it!'),
+    'Rock it!' => __('Rock it!'),
 ));
 ?>
 <script type="text/javascript">
@@ -234,7 +228,7 @@ admin_head('jslang',array(
             <tr><th><label for="adminname"><?php _e('UserName');?></label></th><td><input class="text" type="text" name="adminname" id="adminname" /></td><td><?php _e('Administrator account.');?></td></tr>
             <tr>
                 <th><label for="password1"><?php _e('Password, twice');?></label></th>
-                <td><input class="text" type="password" name="password1" id="password1" /><br /><input class="text" type="password" name="password2" id="password2" /><br /><div id="pass-strength-result"><?php _e('Strength indicator');?></div></td>
+                <td><input class="text" type="password" name="password1" id="password1" /><br /><input class="text" type="password" name="password2" id="password2" /><br /><div id="pass-strength-result" class="pass-strength"><?php _e('Strength indicator');?></div></td>
                 <td><?php _e('Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! " ? $ % ^ & ).');?></td>
             </tr>
             <tr><th><label for="email"><?php _e('Your E-mail');?></label></th><td><input class="text" type="text" name="email" id="email" /></td><td><?php _e('Double-check your email address before continuing.');?></td></tr>

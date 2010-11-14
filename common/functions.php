@@ -24,7 +24,24 @@ defined('COM_PATH') or die('Restricted access!');
  */
 // 判断系统是否已安装
 function installed() {
-    if (C('Installed')) return true;
+    $result = false;
+    if (C('Installed')) {
+        $db = get_conn();
+        $tables = array(
+            'option','model','user','user_meta',
+            'publish','post','post_meta','comments',
+            'term','term_relation','term_taxonomy','term_taxonomy_meta',
+        );
+        $table_ok = true;
+        // 检查数据表是否正确
+        foreach($tables as $table) {
+            if (false === $db->is_table('#@_'.$table)) {
+                $table_ok = false;
+            }
+        }
+        $result = $table_ok;
+    }
+    return $result;
 }
 /**
  * 解析DSN

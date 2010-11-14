@@ -42,6 +42,9 @@ function user_manage_init() {
             this.checked = !this.checked; user_role_checked($(this).attr('rel'));
         });
     });
+    // 密码强度验证
+    $('#password1').val('').keyup( user_check_pass_strength );
+    $('#password2').val('').keyup( user_check_pass_strength );
     // 初始化权限列表
     $('.role-list input[name^=parent]:checkbox').click(function(){
         $('.role-list input[name^=roles][rel=' + this.value + ']:checkbox').attr('checked',this.checked);
@@ -65,6 +68,10 @@ function user_role_checked(rel) {
 }
 // 我的配置页面初始化
 function user_profile_init() {
+    // 密码强度验证
+    $('#password1').val('').keyup( user_check_pass_strength );
+    $('#password2').val('').keyup( user_check_pass_strength );
+    
 	$('form#profile').ajaxSubmit();
 }
 // 删除用户
@@ -74,4 +81,12 @@ function user_delete(userid){
             LazyCMS.postAction('user.php', {method:'bulk', action:'delete'}, userid);
         }
     });
+}
+// 验证密码强弱
+function user_check_pass_strength() {
+    $('#pass-strength-result').check_pass_strength(
+            $('#username').val(),
+            $('#password1').val(),
+            $('#password2').val()
+    );
 }

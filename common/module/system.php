@@ -115,11 +115,11 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
             break;
         case 'hot':
             $where = $sortid ? " AND `tr`.`taxonomyid` IN({$sortid})" : '';
-            $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE 1 %s ORDER BY `p`.`views` DESC LIMIT %d;",$where,$number);
+            $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` RIGHT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE 1 %s ORDER BY `p`.`views` DESC LIMIT %d;",$where,$number);
             break;
         case 'chill':
             $where = $sortid ? " AND `tr`.`taxonomyid` IN({$sortid})" : '';
-            $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE 1 %s ORDER BY `p`.`views` ASC LIMIT %d;",$where,$number);
+            $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` RIGHT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE 1 %s ORDER BY `p`.`views` ASC LIMIT %d;",$where,$number);
             break;
         case 'related':
             $_keywords = tpl_get_var('_keywords');

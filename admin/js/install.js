@@ -26,30 +26,9 @@ function install_init() {
 }
 // 验证密码强弱
 function install_check_pass_strength() {
-    var pass1 = $('#password1').val(), user = $('#adminname').val(), pass2 = $('#password2').val(), strength;
-
-    $('#pass-strength-result').removeClass('short bad good strong');
-    if ( ! pass1 ) {
-        $('#pass-strength-result').html( _('Strength indicator') );
-        return;
-    }
-
-    strength = password_strength(user, pass1, pass2);
-
-    switch ( strength ) {
-        case 2:
-            $('#pass-strength-result').addClass('bad').html( _('Weak') );
-            break;
-        case 3:
-            $('#pass-strength-result').addClass('good').html( _('Medium') );
-            break;
-        case 4:
-            $('#pass-strength-result').addClass('strong').html( _('Strong') );
-            break;
-        case 5:
-            $('#pass-strength-result').addClass('short').html( _('Mismatch') );
-            break;
-        default:
-            $('#pass-strength-result').addClass('short').html( _('Very weak') );
-    }
+    $('#pass-strength-result').check_pass_strength(
+            $('#adminname').val(),
+            $('#password1').val(),
+            $('#password2').val()
+    );
 }

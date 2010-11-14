@@ -122,9 +122,11 @@ switch ($method) {
                     'name'     => esc_html($name),
                     'path'     => esc_html($path),
                     'page'     => esc_html($page),
-                    'fields'   => serialize($fields),
                     'language' => esc_html($language),
                 );
+                if (current_user_can('model-fields',false)) {
+                    $info['fields'] = serialize($fields);
+                }
                 // 编辑
                 if ($modelid) {
                     model_edit($modelid,$info);
@@ -411,46 +413,48 @@ function model_manage_page($action) {
     echo                   '</select>';
     echo               '</td>';
     echo           '</tr>';
-    echo           '<tr>';
-    echo               '<td colspan="2">';
-    echo                   '<fieldset id="fields">';
-    echo       '<a href="javascript:;" class="toggle" title="'.__('Click to toggle').'"><br/></a>';
-    echo       '<h3>'._x('Fields','model').'</h3>';
-    echo                       '<div class="fields-data">';
-    fields_actions();
-    echo                         '<div class="fields-table">';
-    echo                           '<table id="table-fields" class="data-table" cellspacing="0"">';
-    echo                               '<thead>';
-    fields_table_thead();
-    echo                               '</thead>';
-    echo                               '<tfoot>';
-    fields_table_thead();
-    echo                               '</tfoot>';
-    echo                               '<tbody>';
-    if ($fields) {
-        foreach ($fields as $i=>$field) {
-            $actions  = '<span class="edit"><a href="#'.$i.'">'.__('Edit').'</a> | </span>';
-            $actions .= '<span class="delete"><a href="#'.$i.'">'.__('Delete').'</a></span>';
-            $textarea = '<textarea class="hide" name="field[]">'.http_build_query($field).'</textarea>';
-            echo                           '<tr id="field-index-'.$i.'" index="'.$i.'">';
-            echo                               '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$i.'" /></td>';
-            echo                               '<td><strong class="edit"><a href="#'.$i.'">'.$field['l'].'</a></strong><br/><div class="row-actions">'.$actions.'</div>'.$textarea.'</td>';
-            echo                               '<td>'.$field['n'].'</td>';
-            echo                               '<td>'.model_get_types($field['t']).'</td>';
-            echo                               '<td>'.(empty($field['d'])?'NULL':$field['d']).'</td>';
-            echo                           '</tr>';
+    if (current_user_can('model-fields',false)) {
+        echo        '<tr>';
+        echo           '<td colspan="2">';
+        echo               '<fieldset id="fields">';
+        echo               '<a href="javascript:;" class="toggle" title="'.__('Click to toggle').'"><br/></a>';
+        echo               '<h3>'._x('Fields','model').'</h3>';
+        echo               '<div class="fields-data">';
+        fields_actions();
+        echo                   '<div class="fields-table">';
+        echo                      '<table id="table-fields" class="data-table" cellspacing="0"">';
+        echo                         '<thead>';
+        fields_table_thead();
+        echo                         '</thead>';
+        echo                         '<tfoot>';
+        fields_table_thead();
+        echo                         '</tfoot>';
+        echo                         '<tbody>';
+        if ($fields) {
+            foreach ($fields as $i=>$field) {
+                $actions  = '<span class="edit"><a href="#'.$i.'">'.__('Edit').'</a> | </span>';
+                $actions .= '<span class="delete"><a href="#'.$i.'">'.__('Delete').'</a></span>';
+                $textarea = '<textarea class="hide" name="field[]">'.http_build_query($field).'</textarea>';
+                echo                    '<tr id="field-index-'.$i.'" index="'.$i.'">';
+                echo                       '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$i.'" /></td>';
+                echo                       '<td><strong class="edit"><a href="#'.$i.'">'.$field['l'].'</a></strong><br/><div class="row-actions">'.$actions.'</div>'.$textarea.'</td>';
+                echo                       '<td>'.$field['n'].'</td>';
+                echo                       '<td>'.model_get_types($field['t']).'</td>';
+                echo                       '<td>'.(empty($field['d'])?'NULL':$field['d']).'</td>';
+                echo                    '</tr>';
+            }
+        } else {
+            echo                        '<tr class="empty"><td colspan="5" class="tc">'.__('No record!').'</td></tr>';
         }
-    } else {
-        echo                               '<tr class="empty"><td colspan="5" class="tc">'.__('No record!').'</td></tr>';
+        echo                         '</tbody>';
+        echo                      '</table>';
+        echo                   '</div>';
+        fields_actions();
+        echo                '</div>';
+        echo             '</div>';
+        echo          '</td>';
+        echo       '</tr>';
     }
-    echo                               '</tbody>';
-    echo                           '</table>';
-    echo                         '</div>';
-    fields_actions();
-    echo                       '</div>';
-    echo                   '</div>';
-    echo               '</td>';
-    echo           '</tr>';
     echo       '</table>';
     echo     '</fieldset>';
     echo     '<p class="submit">';

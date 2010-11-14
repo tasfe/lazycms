@@ -72,3 +72,11 @@ a:hover   { text-decoration: underline; }
 	.data-table tbody td{ vertical-align:top; }
 	.data-table .check-column { width:25px; text-align:center; }
 	.data-table .row-actions { visibility: hidden; }
+
+/* 密码强度
+----------------------------------------------------------------------------------------------------*/
+.pass-strength { width:150px; background-color: #eee; border-color: #ddd !important; border-style: solid; border-width: 1px; margin: 5px 5px 5px 0px; padding: 1px 2px; text-align: center; -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px; }
+    .pass-strength.bad { background-color: #ffb78c; border-color: #ff853c !important;}
+    .pass-strength.good { background-color: #ffec8b; border-color: #ffcc00 !important;}
+    .pass-strength.short { background-color: #ffa0a0; border-color: #f04040 !important;}
+    .pass-strength.strong { background-color: #c3ff88; border-color: #8dff1c !important;}
