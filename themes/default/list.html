@@ -12,34 +12,23 @@
 
 <body>
 {include file="top.shtml" /}
-
+<div id="guide" class="wrapper"><a class="home" href="{$inst}">当前位置</a>{$guide}</div>
 <div id="content" class="wrapper">
-    {pagelist /}
-    {list type="list" number="10" order="DESC"}
-    <p>[<a href="{$sortPath}" target="_blank">{$sortname}</a>]<a href="{$path}" target="_blank">{$title}</a> Date:{$datetime mode='Y-m-d H:i:s'} - {$model.zdy1}</p>
-    <div class="pics">
-        {images number="3"}
-        <img src="{$image}" />
-        {/images}
+    <div id="posts" class="container">
+        <h1>{$sortname}</h1>
+        {pagelist /}
+        {list type="list" number="15" order="DESC"}
+        <p>[<a href="{$sortpath}">{$sortname}</a>] <a href="{$path}" title="{$title}">{$title size="30"}</a> <em>{$datetime mode='Y-m-d H:i:s'}</em></p>
+        <div class="pics">
+            {images number="3"}
+            <img src="{$image}" />
+            {/images}
+        </div>
+        {/list}
+        {pagelist /}
     </div>
-    {/list}
-    {pagelist /}
-</div>
-
-<div class="news">
-{list type="new" number="8"}
-    <p>[<a href="{$sortPath}" target="_blank">{$sortname}</a>]<a href="{$path}" target="_blank">{$title}</a> Date:{$datetime mode='Y-m-d H:i:s'} - {$model.zdy1}</p>
-    <div class="pics">
-        {images number="3"}
-        <img src="{$image}" />
-        {/images}
-    </div>
-{/list}
-</div>
-<div class="hots">
-{post type="hot" number="6"}
-    <p>[<a href="{$sortPath}" target="_blank">{$sortname}</a>]<a href="{$path}" target="_blank">{$title}</a> Date:{$datetime mode='Y-m-d H:i:s'} - {$model.zdy1}</p>
-{/post}
+    {include file="right.shtml" /}
+    <div class="clear"><br/></div>
 </div>
 
 {include file="footer.shtml" /}

@@ -404,6 +404,8 @@ function post_create($postid) {
         $vars = array(
             'postid'   => $post['postid'],
             'sortid'   => $post['sortid'],
+            'userid'   => $post['userid'],
+            'author'   => $post['author'],
             'views'    => $post['views'],
             'digg'     => $post['digg'],
             'datetime' => $post['datetime'],
@@ -448,7 +450,7 @@ function post_create($postid) {
                     $path  = $basename.$suffix;
                     $title = $post['title'];
                 } else {
-                    $path  = $basename.$page.$suffix;
+                    $path  = $basename.'_'.$page.$suffix;
                     $title = $post['title'].' ('.$page.')';
                 }
 
@@ -462,7 +464,7 @@ function post_create($postid) {
                 // 解析分页标签
                 if (stripos($pagehtml,'{pagelist') !== false) {
                     $pagehtml = preg_replace('/\{(pagelist)[^\}]*\/\}/isU',
-                        page_list(WEB_ROOT.$basename.'$'.$suffix, $page, $pages, 1, true),
+                        page_list(WEB_ROOT.$basename.'_$'.$suffix, $page, $pages, 1, '!_$'),
                         $pagehtml
                     );
                 }

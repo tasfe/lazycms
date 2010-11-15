@@ -10,13 +10,6 @@ var URI = window.URI = {};
 // 接收传参
 var scripts = document.getElementsByTagName("script"); eval(scripts[ scripts.length - 1 ].innerHTML);
 
-$(document).ready(function(){
-	// 批量去除连接虚线
-    $('a').focus(function(){ this.blur(); });
-    
-    $('#updates').updates();
-});
-
 (function ($) {
     /**
      * 初始化菜单
@@ -42,7 +35,7 @@ $(document).ready(function(){
                 updates.append([
                     '<li>',
                         '<p><a href="' + entry.link + '" target="_blank" class="revision">r' + entry.id + '</a>' + entry.updated + '</p>',
-                        '<p class="comments">' + entry.content + '</p>',
+                        '<p class="comments">' + entry.title + '</p>',
                     '</li>'
                 ].join('\n'));
             });

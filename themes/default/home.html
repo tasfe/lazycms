@@ -39,16 +39,16 @@ $(document).ready(function(){
         <p>选择您要下载的版本：</p>
 		<form method="get" action="http://code.google.com/p/lazycms/downloads/detail">
             <div class="compression">
-                <input type="radio" name="name" id="dl-one" checked="checked" value="LazyCMS-v2.0.r640.zip" />
-                <a class="radioToggle name checked" href="http://code.google.com/p/lazycms/downloads/detail?name=LazyCMS-v2.0.r640.zip">LazyCMS-v2.0.r640.zip</a>
-                <label for="dl-one">LazyCMS v2.0.r640（200K）</label>
-                <div class="clear"></div>
+                <input type="radio" name="name" id="dl-one" checked="checked" value="LazyCMS-v2.0.r642.zip" />
+                <a class="radioToggle name checked" href="http://code.google.com/p/lazycms/downloads/detail?name=LazyCMS-v2.0.r642.zip">LazyCMS-v2.0.r642.zip</a>
+                <label for="dl-one">LazyCMS v2.0.r642（574K）</label>
+                <div class="clear"><br/></div>
                 <input type="radio" name="name" id="dl-two" value="LazyCMS-v2.0.r618.zip" />
                 <a class="radioToggle name" href="http://code.google.com/p/lazycms/downloads/detail?name=LazyCMS-v2.0.r618.zip">LazyCMS-v2.0.r618.zip</a>
-                <label for="dl-two">LazyCMS v2.0.r618（195K）</label>
+                <label for="dl-two">LazyCMS v2.0.r618（300K）</label>
             </div>
 			<button type="submit">
-				<span>下载 LazyCMS (<em>10002</em>次)</span>
+				<span>下载 LazyCMS 最新版</span>
 			</button>
 		</form>
         <p class="version"><strong>当前版本：</strong>v{$version}</p>
@@ -63,6 +63,8 @@ $(document).ready(function(){
 		<h3>更新记录</h3>
         <div class="loading"><img src="images/loading.gif" alt="Loading..." />Loading...</div>
 	</div>
+    <script type="text/javascript">$('#updates').updates();</script>
+    <div class="clear"><br/></div>
 </div>
 
 <div id="links" class="wrapper"><strong>友情链接</strong>

@@ -12,21 +12,19 @@
 
 <body>
 {include file="top.shtml" /}
-<div id="guide">位置：{$guide}</div>
+<div id="guide" class="wrapper"><a class="home" href="{$inst}">当前位置</a>{$guide}</div>
 <div id="content" class="wrapper">
-    {$content}
-    {pagelist /}
-    <div class="prepage">{$prepage}</div>
-    <div class="nextpage">{$nextpage}</div>
+    <div id="post" class="container">
+        <h1>{$title}</h1>
+        <div class="info">作者：{$author} &nbsp; &nbsp;发布日期：{$datetime mode='Y-m-d'} &nbsp; &nbsp; 浏览次数：{$views}</div>
+        <div class="content">{$content}{pagelist /}</div>
+        <div class="prepage">上一篇：{$prepage}</div>
+        <div class="nextpage">下一篇：{$nextpage}</div>
+    </div>
+    {include file="right.shtml" /}
+    <div class="clear"><br/></div>
 </div>
-<div class="related">
-{post type="related" number="10"}
-    <p>[<a href="{$sortPath}" target="_blank">{$sortname}</a>]<a href="{$path}" target="_blank">{$title}</a> Date:{$datetime mode='Y-m-d H:i:s'}</p>
-{/post}
-</div>
-
 {include file="footer.shtml" /}
-
 </body>
 </html>
 

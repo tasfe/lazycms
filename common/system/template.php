@@ -345,7 +345,7 @@ class Template {
      */
     function get_attr($tag,$attr) {
         $value = mid($tag, $attr.'="','"');
-        if (!$value)
+        if ($value === null)
             $value = mid($tag, $attr."='","'");
         return $value;
     }

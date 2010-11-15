@@ -159,24 +159,32 @@ function get_conn($DSN=null,$pconnect=false){
  * @param int $page     当前页数
  * @param int $total    总页数
  * @param int $length   记录总数
- * @param bool $static  是否静态页面，静态页面首页的1丢弃
+ * @param bool $mode    首页丢弃模式
  * @return string
  */
-function page_list($url,$page,$total,$length,$static=false){
+function page_list($url,$page,$total,$length,$mode='$'){
     $pages = null;
     if (strpos($url,'%24') !==false )
         $url = str_replace('%24','$',$url);
     if (strpos($url,'$')===false || $length==0)
         return ;
 
-    $start = $static ? '' : 1;
+    $start = instr($mode,'!$,!_$') ? '' : 1;
     if ($page > 2) {
         $pages.= '<a href="'.str_replace('$',$page-1,$url).'">&laquo;</a>';
     } elseif ($page==2) {
-        $pages.= '<a href="'.str_replace('$',$start,$url).'">&laquo;</a>';
+        if ($mode == '!_$') {
+            $pages.= '<a href="'.str_replace('_$',$start,$url).'">&laquo;</a>';
+        } else {
+            $pages.= '<a href="'.str_replace('$',$start,$url).'">&laquo;</a>';
+        }
     }
     if ($page > 3) {
-        $pages.= '<a href="'.str_replace('$',$start,$url).'">1</a><span>&#8230;</span>';
+        if ($mode == '!_$') {
+            $pages.= '<a href="'.str_replace('_$',$start,$url).'">1</a><span>&#8230;</span>';
+        } else {
+            $pages.= '<a href="'.str_replace('$',$start,$url).'">1</a><span>&#8230;</span>';
+        }
     }
     $before = $page-2;
     $after  = $page+7;
@@ -186,7 +194,11 @@ function page_list($url,$page,$total,$length,$static=false){
                 $pages.= '<span class="active">'.$i.'</span>';
             } else {
                 if ($i==1) {
-                    $pages.= '<a href="'.str_replace('$',$start,$url).'">'.$i.'</a>';
+                    if ($mode == '!_$') {
+                        $pages.= '<a href="'.str_replace('_$',$start,$url).'">'.$i.'</a>';
+                    } else {
+                        $pages.= '<a href="'.str_replace('$',$start,$url).'">'.$i.'</a>';
+                    }
                 } else {
                     $pages.= '<a href="'.str_replace('$',$i,$url).'">'.$i.'</a>';
                 }

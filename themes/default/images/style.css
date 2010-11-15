@@ -30,6 +30,9 @@ a:link    { color: #0B55C4; text-decoration: none; }
 a:visited { color: #0B55C4; text-decoration: none; }
 a:hover   { text-decoration: underline; }
 
+/* http://sonspring.com/journal/clearing-floats */
+.clear { clear: both; display: block; overflow: hidden; visibility: hidden; width: 0; height: 0; }
+
 .wrapper{ width:940px; margin:0 auto; position:relative; clear:both; }
 
 /* 头部 */
@@ -43,6 +46,10 @@ a:hover   { text-decoration: underline; }
 	#menu li { position:relative; top:1px; z-index:100; float:left; line-height:24px; white-space: nowrap; margin-right:10px; }
 	#menu li a { font-size:14px; padding:3px 20px 0px 20px; border:solid 1px #c6d9e7; display:block; background:url(buttons-bg.png) repeat-x 0 -1px; text-decoration:none; letter-spacing:2px;}
 	#menu li a.active { color:#003683; background:#F7FBFF; font-weight:bold; border-top:solid 1px #3BB2F4; border-bottom:solid 1px #F7FBFF; background-image:url(menu_selected.png); background-repeat:repeat-x; background-position:0 0; }
+
+/* guide */
+#guide { height:21px; line-height:21px; margin-top:10px; display:table; }
+    #guide a.home { width:92px; color:#666; background:url(guide.gif) no-repeat left center; display:inline-block; margin-right:5px; font-weight:bold; height:21px; letter-spacing:3px; text-align:center; }
 
 /* header */
 #header{ height:250px; margin:20px auto 0 auto; zoom:1; overflow:hidden; background:url(header-bg.gif) no-repeat left top; }
@@ -68,13 +75,13 @@ a:hover   { text-decoration: underline; }
 		#download .compression input{ display:none; }
 		#download .compression label{ float:left; height:25px; line-height:25px; display:block; }
 		
-		#download button{ width:260px; height:45px; font-size:14px; text-align:left; border:none; background:url(download.png) no-repeat; font-weight:bold; color:#006600; }
+		#download button{ width:260px; height:45px; cursor:pointer; font-size:14px; text-align:left; border:none; background:url(download.png) no-repeat; font-weight:bold; color:#006600; }
 		#download button span { margin-left:50px; }
 		#download button em { font-style:normal; }
 		#download .version{ text-align:right;}
 	
 /* content */
-#content{ margin:10px auto 0 auto; zoom:1; overflow:auto; clear:both; }
+#content{ margin:10px auto 0 auto; clear:both; }
 	#content .container{ border:1px solid #c6d9e7; background:#FFFFFF; }
 	#content .container h3{ color:#0B5B98; height:24px; line-height:24px; margin:0; padding:0 10px; font-size:14px; border-bottom:1px solid #C6D9E7; background:url(buttons-bg.png) repeat-x 0 -2px; letter-spacing:1px; }	
 	
@@ -87,7 +94,7 @@ a:hover   { text-decoration: underline; }
 		#feature li.bk1 p{ border-right:solid 1px #D8E6F0; }
 		#feature li.bk2 p{ border-right:solid 1px #D8E6F0; }
 		#feature li.bk3{}
-	
+
 	#updates { width:300px; height:300px; overflow:hidden; float:right; }
 		#updates ul{ width:284px; height:270px; list-style:none; margin:0; padding:5px 3px 0 13px; overflow:auto; }
 		#updates p { font-family:"宋体"; line-height:120%; margin:0; padding:0; text-indent:0; }
@@ -96,6 +103,18 @@ a:hover   { text-decoration: underline; }
 		#updates p.more { text-align:right; font-weight:bold; margin-bottom:10px; margin-right:10px; }
 		#updates div.loading { text-align:center; margin-top:40%; }
 		#updates div.loading img{ margin-right:5px; }
+
+    #posts{ width:610px; padding:10px; float:left; }
+        #posts h1{ color:#003683; display:block; background:url(title.gif) no-repeat left 5px; margin:-3px 0 5px 0; padding-left:10px; padding-bottom:3px; font-size:14px; line-height:1.5; border-bottom:1px solid #CCCCCC; }
+        #posts p em{ font-size:9px; color:#666; }
+
+    #post{ width:610px; padding:10px; float:left; }
+        #post h1{ text-align:center; color:#003683; display:block; font-size:14px; line-height:1.5; }
+        #post .info{ text-align:center; }
+        #post .content{ margin:10px 0; }
+
+    #news, #hots { width:300px; margin-bottom:5px; float:right; }
+        #news p, #hots p { margin:3px 5px; line-height:140%; }
 
 /* links */
 #links{ margin-top:10px; clear:both; }
@@ -107,3 +126,11 @@ a:hover   { text-decoration: underline; }
 	#footer .menu{ margin:10px 0; }
 	#footer .menu a{ color:#666666; margin-left:6px;}
 	#footer .menu a:hover{ text-decoration:none; color:#0B55C4;}
+
+
+/* 分页样式 */
+.pages { display:table; }
+.pages a, .pages span { display:block; float:left; background:#fff; border:solid 1px #DEDEDE; padding:1px 3px; margin-right:2px; text-align:center; text-decoration:none; -moz-border-radius:5px; -webkit-border-radius:5px; -khtml-border-radius:5px; border-radius:5px;}
+.pages a:hover{ position:relative; line-height:1; padding:0 5px; font-size:24px; z-index:100; margin:-8px 0 0 -8px; text-decoration:none;}
+.pages a:hover + a{ position:relative; line-height:1; padding:0 5px; font-size:18px; z-index:90; margin:-4px 0 0 -4px; text-decoration:none;}
+.pages span.active{ color:#990000 !important; font-weight:bold; }

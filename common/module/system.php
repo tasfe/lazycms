@@ -109,17 +109,15 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
     $zebra  = validate_is($zebra,VALIDATE_IS_NUMERIC) ? $zebra : 0;
     // 处理
     switch ($type) {
-        case 'new':
-            $where = $sortid ? " AND `taxonomyid` IN({$sortid})" : '';
-            $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE 1 %s LIMIT %d;",$where,$number);
-            break;
-        case 'hot':
-            $where = $sortid ? " AND `tr`.`taxonomyid` IN({$sortid})" : '';
-            $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` RIGHT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE 1 %s ORDER BY `p`.`views` DESC LIMIT %d;",$where,$number);
-            break;
-        case 'chill':
-            $where = $sortid ? " AND `tr`.`taxonomyid` IN({$sortid})" : '';
-            $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` RIGHT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE 1 %s ORDER BY `p`.`views` ASC LIMIT %d;",$where,$number);
+        case 'new': case 'hot': case 'chill':
+            $sortid = $sortid===null ? tpl_get_var('sortid') : $sortid;
+            $where  = $sortid ? " AND `tr`.`taxonomyid` IN({$sortid})" : '';
+            switch ($type) {
+                case 'new'  : $order = 'ORDER BY `p`.`postid` DESC';
+                case 'hot'  : $order = 'ORDER BY `p`.`views` DESC, `p`.`postid` DESC';
+                case 'chill': $order = 'ORDER BY `p`.`views` ASC, `p`.`postid` DESC';
+            }
+            $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` RIGHT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' %s %s LIMIT %d;",$where,$order,$number);
             break;
         case 'related':
             $_keywords = tpl_get_var('_keywords');
@@ -149,6 +147,8 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
                 'zebra'    => ($i % ($zebra + 1)) ? '0' : '1',
                 'postid'   => $post['postid'],
                 'sortid'   => $post['sortid'],
+                'userid'   => $post['userid'],
+                'author'   => $post['author'],
                 'views'    => $post['views'],
                 'digg'     => $post['digg'],
                 'title'    => $post['title'],

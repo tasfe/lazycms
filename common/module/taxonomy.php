@@ -547,7 +547,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
             // 解析分页标签
             if (stripos($html,'{pagelist') !== false) {
                 $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU',
-                    page_list(WEB_ROOT.$taxonomy['path'].'/index$'.$suffix, $page, $result['pages'], $result['length'], true),
+                    page_list(WEB_ROOT.$taxonomy['path'].'/index$'.$suffix, $page, $result['pages'], $result['length'], '!$'),
                     $html
                 );
             }
@@ -566,6 +566,8 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                         'zebra'    => ($i % ($zebra + 1)) ? '0' : '1',
                         'postid'   => $post['postid'],
                         'sortid'   => $post['sortid'],
+                        'userid'   => $post['userid'],
+                        'author'   => $post['author'],
                         'title'    => $post['title'],
                         'views'    => $post['views'],
                         'digg'     => $post['digg'],

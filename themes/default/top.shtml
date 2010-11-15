@@ -3,12 +3,12 @@
 		<div class="logo"><a href="{$inst}"><img src="images/logo.png" alt="LazyCMS {$ver}" /></a></div>
 		<ul id="menu">
 			<li><a class="active" href="{$inst}index.html">首页</a></li>
-			<li><a href="#{$inst}product/">产品</a></li>
+			<li><a href="{$inst}product/">产品</a></li>
             <li><a href="#{$inst}extend/">扩展</a></li>
             <li><a href="#{$inst}showcase/">案例</a></li>
 			<li><a href="#{$inst}docs/">文档</a></li>
 			<li><a href="#{$inst}blog/">博客</a></li>
-			<li><a href="http://forums.lazycms.com/" target="_blank">论坛</a></li>
+			<li><a href="http://code.google.com/p/lazycms/issues/list" target="_blank">反馈</a></li>
 		</ul>
         <script type="text/javascript">$('ul#menu').init_menu();</script>
 	</div>

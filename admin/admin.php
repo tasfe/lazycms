@@ -66,6 +66,7 @@ function current_user_can($action,$is_redirect=true) {
                 echo $text; exit();
             }
     	} else {
+            global $_USER;
     	    admin_head('title',__('Restricted access'));
     	    include ADMIN_PATH.'/admin-header.php';
     	    echo error_page(__('Restricted access'),__('Restricted access, please contact the administrator.'));
