@@ -76,6 +76,38 @@ function system_tpl_plugin($tag_name,$tag) {
             $result = tpl_get_var('description');
             if (!$result) $result = tpl_get_var('title');
             break;
+        case '$content':
+            // 关键词链接地址
+            $link   = tpl_get_attr($tag,'link');
+            if ($link) {
+                $link = str_replace(array('[$inst]','[$webroot]'),WEB_ROOT,$link);
+                $link = str_replace(array('[$host]','[$domain]'),HTTP_HOST,$link);
+                $link = str_replace(array('[$theme]','[$templet]','[$template]'),WEB_ROOT.system_themes_path(),$link);
+            } else {
+                $link = WEB_ROOT.'tags.php?q=$';
+            }
+            // 关键词匹配最大数
+            $number = tpl_get_attr($tag,'tags');
+            if (strpos($number,'-') !== false) {
+                $range = explode('-', trim($number,'-')); sort($range);
+                $tag_min = $range[0]; $tag_max = $range[1];
+            } else {
+                $tag_min = $tag_max = $number;
+            }
+            $tag_min = validate_is($tag_min,VALIDATE_IS_NUMERIC) ? $tag_min : 10;
+            $tag_max = validate_is($tag_max,VALIDATE_IS_NUMERIC) ? $tag_max : 10;
+            // 文章内容
+            $content = tpl_get_var('content');
+            if ($content) {
+                $dicts = term_gets();
+                if (!empty($dicts)) {
+                    require_file(COM_PATH.'/system/keyword.php');
+                    $splitword = new keyword($dicts);
+                    $content   = $splitword->tags($content, $link, mt_rand($tag_min,$tag_max));
+                }
+            }
+            $result = $content;
+            break;
         default:
             $result = null;
             break;
@@ -149,7 +181,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
                 'sortid'   => $post['sortid'],
                 'userid'   => $post['userid'],
                 'author'   => $post['author'],
-                'views'    => $post['views'],
+                'views'    => '<script type="text/javascript" src="'.WEB_ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
                 'digg'     => $post['digg'],
                 'title'    => $post['title'],
                 'path'     => WEB_ROOT.$post['path'],

@@ -380,10 +380,11 @@ function post_delete($postid) {
  * @param  $postid
  * @return bool
  */
-function post_create($postid) {
+function post_create($postid,&$preid=0,&$nextid=0) {
     $postid = intval($postid);
     if (!$postid) return false;
     if ($post = post_get($postid)) {
+        $block_guid   = $inner = '';
         // 处理文章
         $post['sort'] = taxonomy_get($post['sortid']);
         $post['path'] = post_get_path($post['sortid'],$post['path']);
@@ -400,19 +401,38 @@ function post_create($postid) {
             }
         }
         // 加载模版
-        $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html($post['template']));
-        $vars = array(
+        $html  = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html($post['template']));
+        $views = '<script type="text/javascript" src="'.WEB_ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'&updated=%s"></script>';
+        // 解析tags
+        $block  = tpl_get_block($html,'tag,tags');
+        if ($block && $post['keywords']) {
+            $block['inner'] = tpl_get_block_inner($block);
+            foreach(post_get_taxonomy($post['keywords']) as $taxonomy) {
+                tpl_clean();
+                tpl_set_var(array(
+                    'name' => $taxonomy['name'],
+                    'path' => WEB_ROOT.'tags.php?q='.$taxonomy['name'],
+                ));
+                $inner.= tpl_parse($block['inner']);
+            }
+            // 生成标签块的唯一ID
+            $block_guid = guid($block['tag']);
+            // 把标签块替换成变量标签
+            $html = str_replace($block['tag'], '{$'.$block_guid.'}', $html);
+        }
+        
+        $vars  = array(
             'postid'   => $post['postid'],
             'sortid'   => $post['sortid'],
             'userid'   => $post['userid'],
             'author'   => $post['author'],
-            'views'    => $post['views'],
+            'views'    => sprintf($views,'true'),
             'digg'     => $post['digg'],
             'datetime' => $post['datetime'],
             'edittime' => $post['edittime'],
             'keywords' => post_get_keywords($post['keywords']),
-            'prepage'  => post_prepage($post['sortid'],$post['postid']),
-            'nextpage' => post_nextpage($post['sortid'],$post['postid']),
+            'prepage'  => post_prepage($post['sortid'],$post['postid'],$preid),
+            'nextpage' => post_nextpage($post['sortid'],$post['postid'],$nextid),
             'description' => $post['description'],
             '_keywords'   => $post['keywords'],
         );
@@ -423,6 +443,7 @@ function post_create($postid) {
         }
         // 清理数据
         tpl_clean();
+        tpl_set_var($block_guid,$inner);
         tpl_set_var($vars);
         // 设置自定义字段
         if (isset($post['meta'])) {
@@ -452,6 +473,7 @@ function post_create($postid) {
                 } else {
                     $path  = $basename.'_'.$page.$suffix;
                     $title = $post['title'].' ('.$page.')';
+                    tpl_set_var('views',sprintf($views,'false'));
                 }
 
                 tpl_set_var(array(
@@ -502,11 +524,12 @@ function post_create($postid) {
 /**
  * 上一页
  *
- * @param  $sortid
- * @param  $postid
+ * @param int $sortid
+ * @param int $postid
+ * @param int &$preid
  * @return string
  */
-function post_prepage($sortid,$postid) {
+function post_prepage($sortid,$postid,&$preid=0) {
     $db    = get_conn();
     $preid = $db->result(sprintf("SELECT `objectid` FROM `#@_term_relation` WHERE `taxonomyid`=%d AND `objectid`<%d ORDER BY `objectid` DESC LIMIT 1;", esc_sql($sortid), esc_sql($postid)));
     if ($preid) {
@@ -523,11 +546,12 @@ function post_prepage($sortid,$postid) {
 /**
  * 下一页
  *
- * @param  $sortid
- * @param  $postid
+ * @param int $sortid
+ * @param int $postid
+ * @param int &$nextid
  * @return string
  */
-function post_nextpage($sortid,$postid) {
+function post_nextpage($sortid,$postid,&$nextid=0) {
     $db     = get_conn();
     $nextid = $db->result(sprintf("SELECT `objectid` FROM `#@_term_relation` WHERE `taxonomyid`=%d AND `objectid`>%d ORDER BY `objectid` ASC LIMIT 1;", esc_sql($sortid), esc_sql($postid)));
     if ($nextid) {
@@ -540,4 +564,22 @@ function post_nextpage($sortid,$postid) {
         $result = '<a href="'.WEB_ROOT.$post['sort']['path'].'/">'.$post['sort']['name'].'</a>';
     }
     return $result;
+}
+/**
+ * 显示浏览量
+ *
+ * @return int|string
+ */
+function post_gateway_views() {
+    $postid  = isset($_REQUEST['postid'])  ? $_REQUEST['postid']  : 0;
+    $updated = isset($_REQUEST['updated']) ? $_REQUEST['updated'] : null;
+    if ($postid) {
+        $db = get_conn();
+        $views = $db->result(sprintf("SELECT `views` FROM `#@_post` WHERE `postid`=%d",esc_sql($postid)));
+        if ($updated=='true' || $updated=='1') {
+            $views++; no_cache();
+            $db->update('#@_post',array('views' => $views),array( 'postid' => $postid));
+        }
+    }
+    return 'document.write('.esc_js($views).');';
 }

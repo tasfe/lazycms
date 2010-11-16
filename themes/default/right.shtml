@@ -2,21 +2,11 @@
 		<h3>最近更新</h3>
         {list type="new" number="10"}
         <p><a href="{$path}" title="{$title}">{$title size="20"}</a></p>
-        <div class="pics">
-            {images number="3"}
-            <img src="{$image}" />
-            {/images}
-        </div>
         {/list}
 	</div>
     <div id="hots" class="container">
 		<h3>热门文章</h3>
         {list type="hot" number="10"}
         <p><a href="{$path}" title="{$title}">{$title size="20"}</a></p>
-        <div class="pics">
-            {images number="3"}
-            <img src="{$image}" />
-            {/images}
-        </div>
         {/list}
 	</div>

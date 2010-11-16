@@ -43,7 +43,7 @@ input,select,button { vertical-align:middle; }
 .show{display:block;}
 
 /* text */
-input.text,textarea.text,select{ background-color:#FFF; border:solid 1px #7F9DB9; -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px; padding:3px 2px; }
+input.text,textarea.text,select{ background-color:#FFF; border:solid 1px #7F9DB9; -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px; padding:3px 2px; _padding:2px 2px; }
 select{ padding:1px; }
 
 /* button */

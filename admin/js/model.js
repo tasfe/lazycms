@@ -75,7 +75,7 @@ function model_manage_init() {
     	$('span.edit a,strong.edit a',wrap).click(function(){
     	    var id     = this.href.replace(self.location,'').replace('#',''),
     	        field  = $('#field-index-' + id + ' textarea[name^=field]').val();
-				model_field_manage(id,parse_str(field));
+				model_field_manage(id,LazyCMS.parse_str(field));
     		return false;
     	});
         // 绑定删除事件
@@ -215,7 +215,7 @@ function model_field_manage(id,params) {
                 $('.input_error,.textarea_error',dialog).removeClass('input_error').removeClass('textarea_error');
                 // 获取已经添加的字段
                 $('td textarea:not(.edit)',wrap).each(function(){
-                    fields.push(parse_str(this.value).n);
+                    fields.push(LazyCMS.parse_str(this.value).n);
                 });
                 // 开始验证
                 if (label=='') error.push({'id':'l','text':_('The label field is empty.')});

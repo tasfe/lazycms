@@ -66,11 +66,10 @@ if ($.browser.msie && $.browser.version == '6.0') {
 	}
 	// 初始化菜单
     $.fn.init_menu = function(){
-        var mode  = $.cookie('admin_menu_mode'),
-            opts  = { expires: 365, path: LazyCMS.ADMIN_ROOT },
+        var mode  = LazyCMS.setCookie('menu_setting', 'mode'),
             hover = function() {
                 $('.folded li.head').unbind().hover(function(){
-                    $('div.sub',this).addClass('open');
+                    $('div.sub',this).addClass('open').bgIframe();
                 },function(){
                     $('div.sub',this).removeClass('open');
                 });
@@ -85,7 +84,7 @@ if ($.browser.msie && $.browser.version == '6.0') {
         $('li.separator',this).click(function(){
             $('#wrapper').toggleClass('folded'); hover();
             // 保存Cookie
-            $.cookie('admin_menu_mode', $('#wrapper').hasClass('folded'), opts);
+            LazyCMS.setCookie('menu_setting', 'mode', $('#wrapper').hasClass('folded'));
         });
         // 去掉虚线
         $('li.separator a',this).focus(function(){
@@ -95,13 +94,13 @@ if ($.browser.msie && $.browser.version == '6.0') {
         $('.head .toggle',this).click(function(){
 			var head = $(this).parent();
 				head.toggleClass('expand',$('.sub',head).slideToggle('fast',function(){
-                    $.cookie('admin_menu_' + head.attr('menu_guid'), head.hasClass('expand'), opts);
+                    LazyCMS.setCookie('menu_setting', 'm' + head.attr('menu_guid'), head.hasClass('expand'));
                 }));
         });
         // 记录COOKIE
         $('.head',this).each(function(i){
             var t = $(this); t.attr('menu_guid',i);
-            var c = $.cookie('admin_menu_' + i);
+            var c = LazyCMS.getCookie('menu_setting','m' + i);
             if (c !== null && !t.hasClass('current')) {
                 t.toggleClass('expand',c=='true');
             }
@@ -169,6 +168,8 @@ if ($.browser.msie && $.browser.version == '6.0') {
         return this;
     }
 })(jQuery);
+
+
 
 
 // 执行生成进度

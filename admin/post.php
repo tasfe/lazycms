@@ -112,6 +112,7 @@ switch ($method) {
             $referer  = referer(PHP_FILE,false);
             $mcode    = isset($_POST['model'])?$_POST['model']:null;
             $model    = model_get_bycode($mcode);
+            $create   = isset($_POST['create'])?$_POST['create']:array();
             $sortid   = isset($_POST['sortid'])?$_POST['sortid']:0;
             $type     = isset($_POST['type'])?$_POST['type']:'page';
             $category = isset($_POST['category'])?$_POST['category']:array();
@@ -122,7 +123,7 @@ switch ($method) {
             $template = isset($_POST['template'])?$_POST['template']:null;
             $keywords = isset($_POST['keywords'])?$_POST['keywords']:null;
             $description = isset($_POST['description'])?$_POST['description']:null;
-            $createlists = isset($_POST['createlists'])?$_POST['createlists']:null;
+
 
             if ('post.php' == $php_file) {
                 validate_check('sortid',VALIDATE_EMPTY,_x('Please select a main category.','post'));
@@ -142,7 +143,7 @@ switch ($method) {
             ));
             // 自动截取简述
             if (empty($description)) {
-                $description = mb_substr(clear_space(strip_tags($content)),0,255,'UTF-8');
+                $description = mb_substr(clear_space(strip_tags($content)),0,250,'UTF-8');
             } else {
                 validate_check(array(
                     array('description',VALIDATE_LENGTH,__('Description the field up to 255 characters.'),0,255),
@@ -213,11 +214,17 @@ switch ($method) {
                     $result = __('Post created.');
                 }
                 // 更新分类
-                if ($createlists) {
+                if (instr('lists',$create)) {
                     publish_add(sprintf(__('Create Lists:%s'),taxonomy_get_names($category)),'publish_lists',array($category,false));
                 }
+                // 更新所有单页面
+                if (instr('pages',$create)) {
+                    publish_add(__('Create all Pages'),'publish_posts',array('pages'));
+                }
                 // 生成文章
-                if (post_create($postid)) {
+                if (post_create($postid,$preid)) {
+                    // 重新生成上一篇
+                    if ($preid) post_create($preid);
                     admin_success($result,"LazyCMS.redirect('".$referer."');");
                 } else {
                     admin_alert($result.__('File create failed.'),"LazyCMS.redirect('".$referer."');");
@@ -341,7 +348,11 @@ switch ($method) {
         $conditions = array();
         // 根据分类筛选
         if ($search) {
-            $where = 'WHERE 1';
+            if ('page.php' == $php_file) {
+                $where = "WHERE `p`.`type`='page'";
+            } else {
+                $where = "WHERE `p`.`type`='post'";
+            }
             if ($category) {
                 $query['category'] = $category;
                 $where.= sprintf(" AND (`tr`.`taxonomyid`=%d)", esc_sql($category));
@@ -349,7 +360,7 @@ switch ($method) {
             $query['query'] = $search;
             $fields = array('title','content','description');
             foreach($fields as $field) {
-                $conditions[] = sprintf("(BINARY `p`.`%s` LIKE '%%%s%%')",$field,esc_sql($search));
+                $conditions[] = sprintf("BINARY UCASE(`p`.`%s`) LIKE UCASE('%%%s%%')",$field,esc_sql($search));
             }
             $where.= ' AND ('.implode(' OR ', $conditions).')';
             $sql = "SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` {$where} ORDER BY `p`.`postid` {$order}";
@@ -378,7 +389,7 @@ switch ($method) {
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'.$add_new.'</a></h2>';
-        echo   '<form url="'.PHP_FILE.'?method=bulk" action="'.PHP_FILE.'" method="get" name="postlist" id="postlist">';
+        echo   '<form header="POST '.PHP_FILE.'?method=bulk" action="'.PHP_FILE.'" method="get" name="postlist" id="postlist">';
         table_nav('top',$page_url,$result);
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
@@ -451,7 +462,7 @@ switch ($method) {
  * @return void
  */
 function table_nav($side,$url,$result) {
-    global $category,$search;
+    global $php_file, $category, $search;
     echo '<div class="table-nav">';
     echo     '<select name="actions">';
     echo         '<option value="">'.__('Bulk Actions').'</option>';
@@ -461,10 +472,12 @@ function table_nav($side,$url,$result) {
     echo     '<button type="button">'.__('Apply').'</button>';
     if ($side == 'top') {
         echo '<span class="filter">';
-        echo    '<select name="category">';
-        echo        '<option value="">'.__('View all categories').'</option>';
-        echo        dropdown_categories($category);
-        echo    '</select>';
+        if ('post.php' == $php_file) {
+            echo '<select name="category">';
+            echo     '<option value="">'.__('View all categories').'</option>';
+            echo     dropdown_categories($category);
+            echo '</select>';
+        }
         echo    '<input class="text" type="text" size="20" name="query" value="'.esc_html($search).'" />';
         echo    '<button type="submit">'.__('Filter').'</button>';
         echo '</span>';
@@ -624,7 +637,11 @@ function post_manage_page($action) {
     if ('post.php' == $php_file) {
         echo           '<tr>';
         echo               '<th><label>'._x('Other','post').'</label></th>';
-        echo               '<td><label for="createlists"><input type="checkbox" name="createlists" value="1" id="createlists" cookie="true" />'.__('Update Category Lists').'</label></td>';
+        echo               '<td>';
+        echo                   '<label for="comments"><input type="checkbox" name="comments" value="Yes" id="comments" cookie="true" />'.__('Allow Comments').'</label>';
+        echo                   '<label for="createpages"><input type="checkbox" name="create[]" value="pages" id="createpages" cookie="true" />'.__('Update all Pages').'</label>';
+        echo                   '<label for="createlists"><input type="checkbox" name="create[]" value="lists" id="createlists" cookie="true" />'.__('Update Category Lists').'</label>';
+        echo               '</td>';
         echo           '</tr>';
     }
     echo           '</tbody>';

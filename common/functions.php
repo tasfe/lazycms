@@ -534,6 +534,16 @@ function esc_html($str){
     return $str;
 }
 /**
+ * Escapes strings to be included in javascript
+ *
+ * @param string $str
+ * @return mixed
+ */
+function esc_js($str) {
+    return preg_replace('/([^ :!#$%@()*+,-.\x30-\x5b\x5d-\x7e])/e',
+        "'\\x'.(ord('\\1')<16? '0': '').dechex(ord('\\1'))", $str);
+}
+/**
  * 全概率计算函数
  *
  * @param  $ps  array('a'=>0.5,'b'=>0.2,'c'=>0.4)

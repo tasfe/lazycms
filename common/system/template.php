@@ -203,14 +203,16 @@ class Template {
      * @param string $type
      * @return array|null
      */
-    function get_block($html,$tag_name,$type='list') {
+    function get_block($html,$tag_name,$type=null) {
         $result = null;
         // 取得所有块标签
         $blocks = $this->get_blocks($html);
         // 处理所有标签
         foreach ($blocks as $block) {
+            // type value
+            $type_val = $this->get_attr($block['tag'],'type');
             // 取得指定的标签块
-            if (instr(strtolower($block['name']),$tag_name) && $this->get_attr($block['tag'],'type')==$type) {
+            if (instr(strtolower($block['name']),$tag_name) && ($type_val==$type || $type==null)) {
                 $result = $block; break;
             }
         }
@@ -448,7 +450,7 @@ function tpl_get_var($key) {
  * @param string $type
  * @return array|null
  */
-function tpl_get_block($html,$tag_name,$type='list') {
+function tpl_get_block($html,$tag_name,$type=null) {
     $tpl = _tpl_get_object();
     return $tpl->get_block($html,$tag_name,$type);
 }

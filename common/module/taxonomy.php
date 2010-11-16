@@ -72,12 +72,7 @@ function term_add($name) {
  * @param string $content
  * @return array
  */
-function term_gets($content) {
-    $content = clear_space(strip_tags($content));
-    if (trim($content) == '') return null;
-    if (mb_strlen($content,'UTF-8') > 1024)
-        $content = mb_substr($content,0,1024,'UTF-8');
-
+function term_gets($content=null) {
     $ckey  = 'terms.dicts';
     $dicts = fcache_get($ckey);
     if ($dicts === null) {
@@ -89,6 +84,14 @@ function term_gets($content) {
         }
         fcache_set($ckey,$dicts);
     }
+    // 不输入文章，只返回词库
+    if ($content === null) return $dicts;
+    // 开始分词
+    $content = clear_space(strip_tags($content));
+    if (trim($content) == '') return null;
+    if (mb_strlen($content,'UTF-8') > 1024)
+        $content = mb_substr($content,0,1024,'UTF-8');
+
     require_file(COM_PATH.'/system/keyword.php');
     $splitword = new keyword($dicts);
     $keywords  = $splitword->get($content);
@@ -569,7 +572,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                         'userid'   => $post['userid'],
                         'author'   => $post['author'],
                         'title'    => $post['title'],
-                        'views'    => $post['views'],
+                        'views'    => '<script type="text/javascript" src="'.WEB_ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
                         'digg'     => $post['digg'],
                         'path'     => WEB_ROOT.$post['path'],
                         'datetime' => $post['datetime'],

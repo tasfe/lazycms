@@ -464,6 +464,66 @@ var LazyCMS = window.LazyCMS = window.CMS = {
             params = $.extend(params,{action:action});
         }
         return $.post(LazyCMS.ADMIN_ROOT + url,params,null,'json');
+    },
+    /**
+     * 设置cookie
+     *
+     * @param name
+     * @param key
+     * @param val
+     * @param options
+     */
+    setCookie: function(name,key,val,options) {
+        options = options || {};
+        var cookie  = $.cookie(name),
+            opts    = $.extend({ expires: 365, path: LazyCMS.ADMIN_ROOT }, options),
+            cookies = cookie===null ? {} : LazyCMS.parse_str(cookie);
+        // 取值
+        if (arguments.length == 2) {
+            if (cookies[key]) return cookies[key];
+            else return null;
+        }
+        // 赋值
+        else {
+            cookies[key] = val;
+            return $.cookie(name, $.param(cookies), opts);
+        }
+    },
+    /**
+     * 取得cookie
+     *
+     * @param name
+     * @param key
+     */
+    getCookie: function(name,key) {
+        return LazyCMS.setCookie(name,key);
+    },
+    /**
+     * 等同于PHP parse_str
+     * 
+     * @param str
+     */
+    parse_str: function(str) {
+        var pairs = str.split('&'),params = {}, urldecode = function(s){
+            return decodeURIComponent(s.replace(/\+/g, '%20'));
+        };
+        $.each(pairs,function(i,pair){
+            if ((pair = pair.split('='))[0]) {
+                var key  = urldecode(pair.shift());
+                var value = pair.length > 1 ? pair.join('=') : pair[0];
+                if (value != undefined) value = urldecode(value);
+
+                if (key in params) {
+                    if (!$.isArray(params[key])) {
+                        params[key] = [params[key]];
+                    }
+                    params[key].push(value);
+                } else {
+                    params[key] = value;
+                }
+            }
+        });
+        return params;
     }
 };
 
@@ -478,30 +538,6 @@ window._ = LazyCMS.translate;
 
 
 
-// 等同于PHP parse_str
-function parse_str(str) {
-    var pairs = str.split('&'),params = {}, urldecode = function(s){
-        return decodeURIComponent(s.replace(/\+/g, '%20'));
-    };
-    $.each(pairs,function(i,pair){
-        if ((pair = pair.split('='))[0]) {
-            var key  = urldecode(pair.shift());
-            var value = pair.length > 1 ? pair.join('=') : pair[0];
-            if (value != undefined) value = urldecode(value);
-
-            if (key in params) {
-                if (!$.isArray(params[key])) {
-                    params[key] = [params[key]];
-                }
-                params[key].push(value);
-            } else {
-                params[key] = value;
-            }
-        }
-    });
-    return params;
-}
-
 /**
  * jQuery 扩展
  *
@@ -509,39 +545,14 @@ function parse_str(str) {
  * @date:   2010/1/21 17:11
  */
 (function ($) {
-    /**
-     * 在光标位置插入值
-     *
-     * @param val
-     */
-    $.fn.insertVal = function(val) {
-        return this.each(function(){
-            // IE support
-            if (document.selection && document.selection.createRange){
-                this.focus();
-                var sel = document.selection.createRange();
-                    if (sel.text) {
-                        sel.text += val;
-                    } else {
-                        this.value += val;
-                    }
-            }
-            // MOZILLA/NETSCAPE support
-            else if (this.selectionStart || this.selectionStart == '0') {
-                var start = this.selectionStart, end = this.selectionEnd, stp = this.scrollTop;
-                this.value = this.value.substring(0, start) + val + this.value.substring(end, this.value.length);
-                this.focus();
-                this.selectionStart = start + val.length;
-                this.selectionEnd = start + val.length;
-                this.scrollTop = stp;
-            }
-            // Other
-            else {
-                this.value += val;
-                this.focus();
-            }
+    // 取得最大的zIndex
+    $.fn.maxIndex = function(){
+        var max = 0;
+        this.each(function(){
+            max = Math.max(max,this.style.zIndex);
         });
-    }
+        return max;
+    };
     /**
      * 取得一个对象的所有属性
      */
@@ -561,15 +572,7 @@ function parse_str(str) {
             });
         }
         return r;
-    }
-    // 取得最大的zIndex
-    $.fn.maxIndex = function(){
-        var max = 0;
-        this.each(function(){
-            max = Math.max(max,this.style.zIndex);
-        });
-        return max;
-    }
+    };
     /**
      * 错误处理
      *
@@ -601,77 +604,7 @@ function parse_str(str) {
         });
         s+= '</ul>';
         LazyCMS.alert(s);
-    }
-    /**
-     * 检查密码强度
-     *
-     * @param user
-     * @param pass1
-     * @param pass2
-     */
-    $.fn.check_pass_strength = function(user,pass1,pass2) {
-        this.removeClass('short bad good strong');
-        if ( ! pass1 ) {
-            return this.html( _('Strength indicator') );
-        }
-        // Password strength meter
-        var password_strength = function(username, password1, password2) {
-            var short_pass = 1, bad_pass = 2, good_pass = 3, strong_pass = 4, mismatch = 5, symbol_size = 0, natLog, score;
-                username = username || '';
-
-            // password 1 != password 2
-            if ( (password1 != password2) && password2.length > 0)
-                return mismatch
-
-            //password < 4
-            if ( password1.length < 4 )
-                return short_pass
-
-            //password1 == username
-            if ( password1.toLowerCase() == username.toLowerCase() )
-                return bad_pass;
-
-            if ( password1.match(/[0-9]/) )
-                symbol_size +=10;
-            if ( password1.match(/[a-z]/) )
-                symbol_size +=26;
-            if ( password1.match(/[A-Z]/) )
-                symbol_size +=26;
-            if ( password1.match(/[^a-zA-Z0-9]/) )
-                symbol_size +=31;
-
-            natLog = Math.log( Math.pow(symbol_size, password1.length) );
-            score = natLog / Math.LN2;
-
-            if (score < 40 )
-                return bad_pass
-
-            if (score < 56 )
-                return good_pass
-
-            return strong_pass;
-        };
-
-        var strength = password_strength(user, pass1, pass2);
-
-        switch ( strength ) {
-            case 2:
-                this.addClass('bad').html( _('Weak') );
-                break;
-            case 3:
-                this.addClass('good').html( _('Medium') );
-                break;
-            case 4:
-                this.addClass('strong').html( _('Strong') );
-                break;
-            case 5:
-                this.addClass('short').html( _('Mismatch') );
-                break;
-            default:
-                this.addClass('short').html( _('Very weak') );
-        }
-        return this;
-    }
+    };
     /**
      * 设置对象的浮动位置
      *
@@ -741,251 +674,8 @@ function parse_str(str) {
         // 绑定窗口调整事件
 		$(window).resize(position);
         return this;
-	}
+	};
     /**
-     * ajax 表单提交
-     *
-     * @param callback
-     */
-    $.fn.ajaxSubmit = function(callback){
-        return this.each(function(){
-            var _this = $(this);
-                _this.unbind('submit').submit(function(){
-                    // 取消样式
-                    $('.input_error,.textarea_error,.ul_error',_this).removeClass('input_error').removeClass('textarea_error').removeClass('ul_error');
-                    var button = $('button[type=submit]',this).attr('disabled',true);
-                    // 取得 action 地址
-                    var url = _this.attr('action'); if (url==''||typeof url=='undefined') { url = self.location.href; }
-                    // ajax submit
-                    $.ajax({
-                        cache: false, url: url, dataType:'json',
-                        type: _this.attr('method') && _this.attr('method').toUpperCase() || 'POST',
-                        data: _this.serializeArray(),
-                        success: function(data, status, xhr){
-                            if ($.isFunction(callback)) callback.call(_this,data, status, xhr);
-                        },
-                        complete: function(){
-                            button.attr('disabled',false); LazyCMS.Loading.remove();
-                        }
-                    });
-                    return false;
-                });
-        });
-    }
-    // 绑定批量操作事件
-    $.fn.actions = function(callback) {
-        // 取得 action 地址
-        var form = $(this);
-        var url  = form.attr('url');
-            url  = url || form.attr('action');
-        if (url=='' || typeof url=='undefined') url = self.location.href;
-        $('.table-nav',form).each(function(i){
-            var _this  = $(this);
-            $('button[type=button]',_this).click(function(){
-                var button  = $(this), listids = [] ,action = $('select[name=actions]',_this).val(),
-                // 提交方法
-                submit = function(url,data) {
-                    button.attr('disabled',true);
-                    $.ajax({
-                        dataType: 'json', url: url, data: data,
-                        type: form.attr('method') && form.attr('method').toUpperCase() || 'POST',
-                        success: function(data){
-                            if ($.isFunction(callback)) callback.call(_this,data);
-                        },
-                        complete: function(){
-                            button.attr('disabled',false); LazyCMS.Loading.remove();
-                        }
-                    });
-                }
-
-                if (action=='') {
-                    return LazyCMS.alert(_('Did not select any action!'),'Error');
-                }
-
-                $('input:checkbox[name^=listids]:checked',form).each(function(){
-                    listids.push(this.value);
-                });
-
-                switch (action) {
-                    case 'delete':
-                       LazyCMS.confirm(_('Confirm Delete?'),function(r){
-                           if (r) {
-                               submit(url,{
-                                   'action':action,
-                                   'listids':listids
-                               });
-                           }
-                       });
-                       break;
-                   default:
-                       submit(url,{
-                           'action':action,
-                           'listids':listids
-                       });
-                       break;
-                }
-            });
-        });
-    }
-    // 半记忆功能
-    $.fn.semiauto = function() {
-        var name = LazyCMS.URI.File.substr(0,LazyCMS.URI.File.lastIndexOf('.')),
-            opts = { expires: 365, path: LazyCMS.URI.Path };
-        // 下拉框处理
-        $('select[cookie=true]',this).each(function(i){
-            var t = $(this); t.attr('sel_guid',i);
-            var c = $.cookie(name + '_sel_' + i);
-            if (c !== null) {
-                $('option:selected',this).attr('selected',false);
-                $('option[value=' + c + ']',this).attr('selected',true);
-            }
-        }).change(function(){
-            $.cookie(name + '_sel_' + $(this).attr('sel_guid'), this.value, opts);
-        });
-        // 多选处理
-        $('input:checkbox[cookie=true]',this).each(function(i){
-            var t = $(this); t.attr('cbx_guid',i);
-            var c = $.cookie(name + '_cbx_' + i);
-            if (c !== null) {
-                this.checked = c == 'true';
-            }
-        }).click(function(){
-            $.cookie(name + '_cbx_' + $(this).attr('cbx_guid'), this.checked, opts);
-        });
-        // 更多属性处理
-        $('.fieldset[cookie=true]',this).each(function(i){
-            var t = $(this); t.attr('fst_guid',i);
-            var c = $.cookie(name + '_fst_' + i);
-            if (c !== null) {
-                t.toggleClass('closed', c == 'true');
-            }
-        }).find('a.toggle,h3').click(function(){
-            $.cookie(name + '_fst_' + $(this).parents('.fieldset').attr('fst_guid'), !$(this).parents('.fieldset').hasClass('closed'), opts);
-        });
-        return this;
-    }
-
-    /*
-     * JSON  - JSON for jQuery
-     *
-     * FILE:jquery.json.js
-     *
-     * Example:
-     *
-     * $.toJSON(Object);
-     * $.parseJSON(String);
-     */
-    $.toJSON = function(o){
-        var i, v, s = $.toJSON, t;
-        if (o == null) return 'null';
-        t = typeof o;
-        if (t == 'string') {
-            v = '\bb\tt\nn\ff\rr\""\'\'\\\\';
-            return '"' + o.replace(/([\u0080-\uFFFF\x00-\x1f\"])/g, function(a, b) {
-                i = v.indexOf(b);
-                if (i + 1) return '\\' + v.charAt(i + 1);
-                a = b.charCodeAt().toString(16);
-                return '\\u' + '0000'.substring(a.length) + a;
-            }) + '"';
-        }
-        if (t == 'object') {
-            if (o instanceof Array) {
-                for (i=0, v = '['; i<o.length; i++) v += (i > 0 ? ',' : '') + s(o[i]);
-                return v + ']';
-            }
-            v = '{';
-            for (i in o) v += typeof o[i] != 'function' ? (v.length > 1 ? ',"' : '"') + i + '":' + s(o[i]) : '';
-            return v + '}';
-        }
-        return '' + o;
-    }
-    /**
-     * The bgiframe is chainable and applies the iframe hack to get
-     * around zIndex issues in IE6. It will only apply itself in IE6
-     * and adds a class to the iframe called 'bgiframe'. The iframe
-     * is appeneded as the first child of the matched element(s)
-     * with a tabIndex and zIndex of -1.
-     *
-     * By default the plugin will take borders, sized with pixel units,
-     * into account. If a different unit is used for the border's width,
-     * then you will need to use the top and left settings as explained below.
-     *
-     * NOTICE: This plugin has been reported to cause perfromance problems
-     * when used on elements that change properties (like width, height and
-     * opacity) a lot in IE6. Most of these problems have been caused by
-     * the expressions used to calculate the elements width, height and
-     * borders. Some have reported it is due to the opacity filter. All
-     * these settings can be changed if needed as explained below.
-     *
-     * @example $('div').bgiframe();
-     * @before <div><p>Paragraph</p></div>
-     * @result <div><iframe class="bgiframe".../><p>Paragraph</p></div>
-     *
-     * @param Map settings Optional settings to configure the iframe.
-     * @option String|Number top The iframe must be offset to the top
-     *      by the width of the top border. This should be a negative
-     *      number representing the border-top-width. If a number is
-     *      is used here, pixels will be assumed. Otherwise, be sure
-     *      to specify a unit. An expression could also be used.
-     *      By default the value is "auto" which will use an expression
-     *      to get the border-top-width if it is in pixels.
-     * @option String|Number left The iframe must be offset to the left
-     *      by the width of the left border. This should be a negative
-     *      number representing the border-left-width. If a number is
-     *      is used here, pixels will be assumed. Otherwise, be sure
-     *      to specify a unit. An expression could also be used.
-     *      By default the value is "auto" which will use an expression
-     *      to get the border-left-width if it is in pixels.
-     * @option String|Number width This is the width of the iframe. If
-     *      a number is used here, pixels will be assume. Otherwise, be sure
-     *      to specify a unit. An experssion could also be used.
-     *      By default the value is "auto" which will use an experssion
-     *      to get the offsetWidth.
-     * @option String|Number height This is the height of the iframe. If
-     *      a number is used here, pixels will be assume. Otherwise, be sure
-     *      to specify a unit. An experssion could also be used.
-     *      By default the value is "auto" which will use an experssion
-     *      to get the offsetHeight.
-     * @option Boolean opacity This is a boolean representing whether or not
-     *      to use opacity. If set to true, the opacity of 0 is applied. If
-     *      set to false, the opacity filter is not applied. Default: true.
-     * @option String src This setting is provided so that one could change
-     *      the src of the iframe to whatever they need.
-     *      Default: "javascript:false;"
-     *
-     * @name bgiframe
-     * @type jQuery
-     * @cat Plugins/bgiframe
-     * @author Brandon Aaron (brandon.aaron@gmail.com || http://brandonaaron.net)
-     */
-    $.fn.bgIframe = $.fn.bgiframe = function(s) {
-        // This is only for IE6
-        if ( $.browser.msie && /6.0/.test(navigator.userAgent) ) {
-            s = $.extend({
-                top     : 'auto', // auto == .currentStyle.borderTopWidth
-                left    : 'auto', // auto == .currentStyle.borderLeftWidth
-                width   : 'auto', // auto == offsetWidth
-                height  : 'auto', // auto == offsetHeight
-                opacity : true,
-                src     : 'javascript:false;'
-            }, s || {});
-            var prop = function(n){return n&&n.constructor==Number?n+'px':n;},
-                html = '<iframe class="bgiframe"frameborder="0"tabindex="-1"src="'+s.src+'"'+
-                           'style="display:block;position:absolute;z-index:-1;'+
-                               (s.opacity !== false?'filter:Alpha(Opacity=\'0\');':'')+
-                               'top:'+(s.top=='auto'?'expression(((parseInt(this.parentNode.currentStyle.borderTopWidth)||0)*-1)+\'px\')':prop(s.top))+';'+
-                               'left:'+(s.left=='auto'?'expression(((parseInt(this.parentNode.currentStyle.borderLeftWidth)||0)*-1)+\'px\')':prop(s.left))+';'+
-                               'width:'+(s.width=='auto'?'expression(this.parentNode.offsetWidth+\'px\')':prop(s.width))+';'+
-                               'height:'+(s.height=='auto'?'expression(this.parentNode.offsetHeight+\'px\')':prop(s.height))+';'+
-                        '"/>';
-            return this.each(function() {
-                if ( $('> iframe.bgiframe', this).length == 0 )
-                    this.insertBefore( document.createElement(html), this.firstChild );
-            });
-        }
-        return this;
-    };
-	/**
      * Create a cookie with the given name and value and other optional parameters.
      *
      * @example $.cookie('the_cookie', 'the_value');
@@ -1069,5 +759,91 @@ function parse_str(str) {
             }
             return cookieValue;
         }
+    };
+    /**
+     * The bgiframe is chainable and applies the iframe hack to get
+     * around zIndex issues in IE6. It will only apply itself in IE6
+     * and adds a class to the iframe called 'bgiframe'. The iframe
+     * is appeneded as the first child of the matched element(s)
+     * with a tabIndex and zIndex of -1.
+     *
+     * By default the plugin will take borders, sized with pixel units,
+     * into account. If a different unit is used for the border's width,
+     * then you will need to use the top and left settings as explained below.
+     *
+     * NOTICE: This plugin has been reported to cause perfromance problems
+     * when used on elements that change properties (like width, height and
+     * opacity) a lot in IE6. Most of these problems have been caused by
+     * the expressions used to calculate the elements width, height and
+     * borders. Some have reported it is due to the opacity filter. All
+     * these settings can be changed if needed as explained below.
+     *
+     * @example $('div').bgiframe();
+     * @before <div><p>Paragraph</p></div>
+     * @result <div><iframe class="bgiframe".../><p>Paragraph</p></div>
+     *
+     * @param Map settings Optional settings to configure the iframe.
+     * @option String|Number top The iframe must be offset to the top
+     *      by the width of the top border. This should be a negative
+     *      number representing the border-top-width. If a number is
+     *      is used here, pixels will be assumed. Otherwise, be sure
+     *      to specify a unit. An expression could also be used.
+     *      By default the value is "auto" which will use an expression
+     *      to get the border-top-width if it is in pixels.
+     * @option String|Number left The iframe must be offset to the left
+     *      by the width of the left border. This should be a negative
+     *      number representing the border-left-width. If a number is
+     *      is used here, pixels will be assumed. Otherwise, be sure
+     *      to specify a unit. An expression could also be used.
+     *      By default the value is "auto" which will use an expression
+     *      to get the border-left-width if it is in pixels.
+     * @option String|Number width This is the width of the iframe. If
+     *      a number is used here, pixels will be assume. Otherwise, be sure
+     *      to specify a unit. An experssion could also be used.
+     *      By default the value is "auto" which will use an experssion
+     *      to get the offsetWidth.
+     * @option String|Number height This is the height of the iframe. If
+     *      a number is used here, pixels will be assume. Otherwise, be sure
+     *      to specify a unit. An experssion could also be used.
+     *      By default the value is "auto" which will use an experssion
+     *      to get the offsetHeight.
+     * @option Boolean opacity This is a boolean representing whether or not
+     *      to use opacity. If set to true, the opacity of 0 is applied. If
+     *      set to false, the opacity filter is not applied. Default: true.
+     * @option String src This setting is provided so that one could change
+     *      the src of the iframe to whatever they need.
+     *      Default: "javascript:false;"
+     *
+     * @name bgiframe
+     * @type jQuery
+     * @cat Plugins/bgiframe
+     * @author Brandon Aaron (brandon.aaron@gmail.com || http://brandonaaron.net)
+     */
+    $.fn.bgIframe = $.fn.bgiframe = function(s) {
+        // This is only for IE6
+        if ( $.browser.msie && /6.0/.test(navigator.userAgent) ) {
+            s = $.extend({
+                top     : 'auto', // auto == .currentStyle.borderTopWidth
+                left    : 'auto', // auto == .currentStyle.borderLeftWidth
+                width   : 'auto', // auto == offsetWidth
+                height  : 'auto', // auto == offsetHeight
+                opacity : true,
+                src     : 'javascript:false;'
+            }, s || {});
+            var prop = function(n){ return n&&n.constructor==Number?n+'px':n; },
+                html = '<iframe class="bgiframe" frameborder="0" tabindex="-1" src="'+s.src+'" '+
+                           'style="display:block;position:absolute;z-index:-1;'+
+                               (s.opacity !== false?'filter:Alpha(Opacity=\'0\');':'')+
+                               'top:'+(s.top=='auto'?'expression(((parseInt(this.parentNode.currentStyle.borderTopWidth)||0)*-1)+\'px\')':prop(s.top))+';'+
+                               'left:'+(s.left=='auto'?'expression(((parseInt(this.parentNode.currentStyle.borderLeftWidth)||0)*-1)+\'px\')':prop(s.left))+';'+
+                               'width:'+(s.width=='auto'?'expression(this.parentNode.offsetWidth+\'px\')':prop(s.width))+';'+
+                               'height:'+(s.height=='auto'?'expression(this.parentNode.offsetHeight+\'px\')':prop(s.height))+';'+
+                        '"/>';
+            return this.each(function() {
+                if ( $('> iframe.bgiframe', this).length == 0 )
+                    this.insertBefore( document.createElement(html), this.firstChild );
+            });
+        }
+        return this;
     };
 })(jQuery);
