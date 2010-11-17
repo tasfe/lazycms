@@ -17,6 +17,9 @@
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
+ *
+ * @author  Lukin <my@lukin.cn>
+ * @version $Id$
  */
 // 检查环境是否适合做爱做的事
 !version_compare(PHP_VERSION, '4.3.3', '<') or die('PHP version lower than 4.3.3, upgrade PHP!<br/>&lt;<a href="http://php.net/downloads.php" target="_blank">http://php.net/downloads.php</a>&gt;');
