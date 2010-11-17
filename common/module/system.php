@@ -156,7 +156,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
             if ($_keywords) {
                 $postid = tpl_get_var('postid');
                 $ids = implode(',', $_keywords);
-                $sql = sprintf("SELECT DISTINCT(`objectid`) AS `postid` FROM `#@_term_relation` WHERE `taxonomyid` IN(%s) AND `objectid`<>%d LIMIT %d;",$ids,$postid,$number);
+                $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` RIGHT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' AND `tr`.`taxonomyid` IN(%s) AND `p`.`postid`<>%d LIMIT %d;",$ids,$postid,$number);
             } else {
                 $sql = null;
             }

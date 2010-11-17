@@ -118,7 +118,8 @@ a:hover   { text-decoration: underline; }
         #post .related h3{ border:1px solid #C6D9E7; }
         #post .related p{ margin:5px; }
 
-    #news, #hots { width:300px; margin-bottom:5px; float:right; }
+    #right { width:300px; float:right; }
+        #news, #hots { margin-bottom:5px; }
         #news p, #hots p { margin:3px 5px; line-height:140%; }
 
 /* links */
