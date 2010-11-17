@@ -399,7 +399,7 @@ function install_defaults() {
     // 默认设置
     $options = array(
         // 2.0
-        'Template' => 'default',
+        'Template' => 'lazycms',
         'Template-404' => '~404.html',
         'TemplateSuffixs' => 'htm,html',
         'HTMLFileSuffix' => '.html',
