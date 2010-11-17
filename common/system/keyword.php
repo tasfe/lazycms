@@ -23,7 +23,7 @@ defined('COM_PATH') or die('Restricted access!');
  * 简单取词类
  *
  * @author  Lukin <my@lukin.cn>
- * @date    2010/1/21 20:42
+ * @version $Id$
  */
 class Keyword {
     // 编码

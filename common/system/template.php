@@ -19,7 +19,12 @@
  * +---------------------------------------------------------------------------+
  */
 defined('COM_PATH') or die('Restricted access!');
-
+/**
+ * 模版处理类
+ *
+ * @author  Lukin <my@lukin.cn>
+ * @version $Id$
+ */
 class Template {
     var $_vars    = array();
     var $_plugins = array();

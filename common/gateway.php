@@ -17,6 +17,11 @@
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
+ * 
+ * 对外接口
+ *
+ * @author  Lukin <my@lukin.cn>
+ * @version $Id$
  */
 // 加载公共文件
 require dirname(__FILE__).'/../global.php';

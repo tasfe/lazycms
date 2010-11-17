@@ -28,7 +28,7 @@ define('DATACACHE_EXPIRE',31536000);
  * 数据缓存类
  *
  * @author  Lukin <my@lukin.cn>
- * @date    2010/1/21 20:42
+ * @version $Id$
  */
 class FCache {
     /**

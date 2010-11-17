@@ -25,6 +25,7 @@ defined('COOKIE_DOMAIN') or define('COOKIE_DOMAIN','');
  * Cookie 管理类
  *
  * @author  Lukin <my@lukin.cn>
+ * @version $Id$
  */
 class Cookie {
     /**

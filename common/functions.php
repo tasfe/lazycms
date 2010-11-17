@@ -21,6 +21,9 @@
 defined('COM_PATH') or die('Restricted access!');
 /**
  * LazyCMS 公用函数库
+ *
+ * @author  Lukin <my@lukin.cn>
+ * @version $Id$
  */
 // 判断系统是否已安装
 function installed() {

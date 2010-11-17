@@ -24,7 +24,8 @@ defined('COM_PATH') or die('Restricted access!');
  *
  * 修改自WordPress L10n类
  *
- * @author Lukin <my@lukin.cn>
+ * @author  Lukin <my@lukin.cn>
+ * @version $Id$
  */
 class L10n {
     var $entries = array();

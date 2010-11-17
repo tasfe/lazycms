@@ -24,6 +24,9 @@ defined('COM_PATH') or die('Restricted access!');
  *
  * 这个文件用在于安装程序自动生成 commom/config.php 配置文件，
  * 您可以手动复制这个文件，并重命名为 commom/config.php，然后输入相关信息。
+ *
+ * @author  Lukin <my@lukin.cn>
+ * @version $Id$
  */
 
 /**

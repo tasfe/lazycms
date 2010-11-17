@@ -19,7 +19,12 @@
  * +---------------------------------------------------------------------------+
  */
 defined('COM_PATH') or die('Restricted access!');
-
+/**
+ * 后台静态文件加载类
+ * 
+ * @author  Lukin <my@lukin.cn>
+ * @version $Id$
+ */
 class LazyLoader {
     var $version  = 0;
     var $language = null;

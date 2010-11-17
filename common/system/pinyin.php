@@ -21,6 +21,9 @@
 defined('COM_PATH') or die('Restricted access!');
 /**
  * 中文转拼类
+ *
+ * @author  Lukin <my@lukin.cn>
+ * @version $Id$
  */
 class PinYin {
     // 码表

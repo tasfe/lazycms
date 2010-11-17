@@ -16,8 +16,12 @@
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
+ *
+ * xheditor plugins
+ *
+ * @author  Lukin <my@lukin.cn>
+ * @version $Id$
  */
-
 var xhePlugins = window.xhePlugins = {
     // Flv
     Flv:{c:'xhePlugins_btnFlv',t:_('Insert Flv Video'),h:1,e:function(){

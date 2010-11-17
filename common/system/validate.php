@@ -47,6 +47,8 @@ define('VALIDATE_EQUAL','EQUAL');
 /**
  * LazyCMS 系统验证类
  *
+ * @author  Lukin <my@lukin.cn>
+ * @version $Id$
  */
 class Validate {
     // private

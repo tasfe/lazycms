@@ -22,6 +22,7 @@ defined('COM_PATH') or die('Restricted access!');
 /**
  * LazyCMS 系统定义文件
  *
+ * @author  Lukin <my@lukin.cn>
  * @version $Id$
  */
 // System version

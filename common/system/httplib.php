@@ -24,7 +24,12 @@ defined('COM_PATH') or die('Restricted access!');
 define('HTTPLIB_CONNECT_FAILURE',600);
 // User agent
 define('HTTPLIB_USER_AGENT','LazyCMS/'.LAZY_VERSION.' (compatible; Httplib/0.1; +http://www.google.com/search?q=LazyCMS+httplib)');
-
+/**
+ * httplib
+ *
+ * @author  Lukin <my@lukin.cn>
+ * @version $Id$
+ */
 class Httplib {
     var $disable_curl, $disable_fopen, $disable_streams, $disable_fsockopen;
 

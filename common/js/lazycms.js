@@ -16,6 +16,11 @@
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
+ *
+ * LazyCMS
+ *
+ * @author  Lukin <my@lukin.cn>
+ * @version $Id$
  */
 var LazyCMS = window.LazyCMS = window.CMS = {
     // javascript libaray version

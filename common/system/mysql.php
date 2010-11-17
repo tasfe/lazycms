@@ -23,7 +23,9 @@ defined('COM_PATH') or die('Restricted access!');
 define('CLIENT_MULTI_RESULTS', 0x20000);
 /**
  * mysql访问类
- *
+ * 
+ * @author  Lukin <my@lukin.cn>
+ * @version $Id$
  */
 class Mysql {
 	// public

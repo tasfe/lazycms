@@ -20,8 +20,8 @@
 /**
  * jQuery 扩展
  *
- * @author: Lukin<my@lukin.cn>
- * @date:   2010/1/21 17:11
+ * @author  Lukin <my@lukin.cn>
+ * @version $Id$
  */
 (function ($) {
     /**
