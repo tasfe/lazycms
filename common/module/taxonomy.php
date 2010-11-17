@@ -558,7 +558,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
             if ($result['length'] > 0) {
                 // 取得标签块内容
                 $block['inner'] = tpl_get_block_inner($block);
-                foreach ($result['posts'] as $i=>$post) {
+                foreach ($result['datas'] as $i=>$post) {
                     if (empty($post)) continue;
                     $post['sort'] = taxonomy_get($post['sortid']);
                     $post['path'] = post_get_path($post['sortid'],$post['path']);

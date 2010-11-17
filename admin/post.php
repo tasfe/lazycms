@@ -347,7 +347,7 @@ switch ($method) {
 
         $conditions = array();
         // 根据分类筛选
-        if ($search) {
+        if ($search || $category) {
             if ('page.php' == $php_file) {
                 $where = "WHERE `p`.`type`='page'";
             } else {
@@ -357,16 +357,15 @@ switch ($method) {
                 $query['category'] = $category;
                 $where.= sprintf(" AND (`tr`.`taxonomyid`=%d)", esc_sql($category));
             }
-            $query['query'] = $search;
-            $fields = array('title','content','description');
-            foreach($fields as $field) {
-                $conditions[] = sprintf("BINARY UCASE(`p`.`%s`) LIKE UCASE('%%%s%%')",$field,esc_sql($search));
+            if ($search) {
+                $query['query'] = $search;
+                $fields = array('title','content','description');
+                foreach($fields as $field) {
+                    $conditions[] = sprintf("BINARY UCASE(`p`.`%s`) LIKE UCASE('%%%s%%')",$field,esc_sql($search));
+                }
+                $where.= ' AND ('.implode(' OR ', $conditions).')';
             }
-            $where.= ' AND ('.implode(' OR ', $conditions).')';
             $sql = "SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` {$where} ORDER BY `p`.`postid` {$order}";
-        } elseif ($category) {
-            $query['category'] = $category;
-            $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE `taxonomyid`=%d ORDER BY `objectid` {$order}",esc_sql($category));
         } else {
             if ('page.php' == $php_file) {
                 $conditions[] = "`type`='page'";
@@ -400,7 +399,8 @@ switch ($method) {
         echo           '</tfoot>';
         echo           '<tbody>';
         if (0 < $result['length']) {
-            foreach ($result['posts'] as $post) {
+            $posts = (array) $result['datas'];
+            foreach ($posts as $post) {
                 $edit_url = PHP_FILE.'?method=edit&postid='.$post['postid'];
                 // 检查文件是否已生成
                 $post['path'] = post_get_path($post['sortid'],$post['path']);
@@ -483,7 +483,7 @@ function table_nav($side,$url,$result) {
         echo '</span>';
     }
     if ($side == 'bottom') {
-        echo page_list($url,$result['page'],$result['pages'],$result['total']);    
+        echo page_list($url,$result['page'],$result['pages'],$result['total']);
     }
     echo '</div>';
 }

@@ -23,7 +23,7 @@ defined('COM_PATH') or die('Restricted access!');
  * LazyCMS 系统定义文件
  */
 // System version
-define('LAZY_VERSION','2.0');
+define('LAZY_VERSION','2.0.r$Rev$');
 // 严重错误，停止程序
 define('E_LAZY_ERROR',10);
 // 警告错误，不停止程序

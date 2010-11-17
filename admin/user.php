@@ -173,7 +173,7 @@ switch ($method) {
         // 分页地址
         $page_url = PHP_FILE.'?'.http_build_query($query);
         $result   = user_gets("SELECT `userid` FROM `#@_user_meta` WHERE `key`='Administrator' AND `VALUE`='Yes' ORDER BY `userid` ASC", $page, $size);
-        $users    = (array) $result['users'];
+        $users    = (array) $result['datas'];
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'._x('Add New','user').'</a></h2>';

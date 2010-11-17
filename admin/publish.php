@@ -38,12 +38,21 @@ switch ($method) {
     case 'list':
         admin_head('title',__('Process list'));
         admin_head('loadevents','publish_list');
-        $publish = publish_gets();
+        $page    = isset($_REQUEST['page'])?$_REQUEST['page']:1;
+        $size    = isset($_REQUEST['size'])?$_REQUEST['size']:10;
+        $query   = array(
+            'method' => 'list',
+            'page'   => '$',
+            'size'   => $size,
+        );
+        // 分页地址
+        $page_url = PHP_FILE.'?'.http_build_query($query);
+        $result   = publish_gets("SELECT * FROM `#@_publish` ORDER BY `pubid` DESC", $page, $size);
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'">'._x('Add New','publish').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="publishlist" id="publishlist">';
-        table_nav();
+        table_nav($page_url,$result);
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
         table_thead();
@@ -52,7 +61,8 @@ switch ($method) {
         table_thead();
         echo           '</tfoot>';
         echo           '<tbody>';
-        if ($publish) {
+        if (0 < $result['length']) {
+            $publish = (array) $result['datas'];
             foreach ($publish as $pubid=>$data) {
                 if ($data['total']<=0 && $data['state']==2) {
                     $rate = 100;
@@ -76,7 +86,7 @@ switch ($method) {
         }
         echo           '</tbody>';
         echo       '</table>';
-        table_nav();
+        table_nav($page_url,$result);
         echo   '</form>';
         echo '</div>';
         include ADMIN_PATH.'/admin-footer.php';
@@ -188,13 +198,14 @@ switch ($method) {
  * 批量操作
  *
  */
-function table_nav() {
+function table_nav($url,$result) {
     echo '<div class="table-nav">';
     echo     '<select name="actions">';
     echo         '<option value="">'.__('Bulk Actions').'</option>';
     echo         '<option value="delete">'.__('Delete').'</option>';
     echo     '</select>';
     echo     '<button type="button">'.__('Apply').'</button>';
+    echo     page_list($url,$result['page'],$result['pages'],$result['total']);
     echo '</div>';
 }
 /**

@@ -53,13 +53,35 @@ function publish_edit($pubid,$data) {
  *
  * @return array
  */
-function publish_gets() {
-    $db = get_conn(); $result = array();
-    $rs = $db->query("SELECT * FROM `#@_publish` ORDER BY `pubid` DESC;");
-    while ($data = $db->fetch($rs)) {
-        $result[$data['pubid']] = $data;
+function publish_gets($sql, $page=1, $size=10) {
+    $db = get_conn(); $publish = array();
+    $page = $page<1 ? 1  : $page;
+    $size = $size<1 ? 10 : $size;
+    $sql = preg_replace('/SELECT (.+) FROM/iU','SELECT SQL_CALC_FOUND_ROWS \1 FROM',$sql,1);
+    $sql.= sprintf(' LIMIT %d OFFSET %d;',$size,($page-1)*$size);
+    $res = $db->query($sql);
+    // 总记录数
+    $total = $db->result("SELECT FOUND_ROWS();");
+    $pages = ceil($total/$size);
+    $pages = ((int)$pages == 0) ? 1 : $pages;
+    if ((int)$page < (int)$pages) {
+        $length = $size;
+    } elseif ((int)$page == (int)$pages) {
+        $length = $total - (($pages-1) * $size);
+    } else {
+        $length = 0;
     }
-    return $result;
+    while ($data = $db->fetch($res)) {
+        $publish[$data['pubid']] = $data;
+    }
+    return array(
+        'page'   => $page,
+        'size'   => $size,
+        'total'  => $total,
+        'pages'  => $pages,
+        'length' => $length,
+        'datas'  => $publish,
+    );
 }
 /**
  * 检查是否有需要生成的进度
