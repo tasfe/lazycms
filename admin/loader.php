@@ -60,10 +60,10 @@ switch ($type) {
         		foreach ($loads[$css] as $src) {
         		    $content = get_file($src) . "\n";
         		    if (!strncasecmp($src,COM_PATH,strlen(COM_PATH))) {
-        		    	$content = str_replace('../images/',WEB_ROOT.'common/images/',$content);
-                        $content = str_replace('../editor/',WEB_ROOT.'common/editor/',$content);
+        		    	$content = str_replace('../images/',ROOT.'common/images/',$content);
+                        $content = str_replace('../editor/',ROOT.'common/editor/',$content);
         		    } else {
-        		    	$content = str_replace('../images/',ADMIN_ROOT.'images/',$content);
+        		    	$content = str_replace('../images/',ADMIN.'images/',$content);
         		    }
         		    // 清除注释和回车
         			$out.= preg_replace('@(\/\*(.+)\*\/)|(\r\n|\n)@sU','',$content);
@@ -87,8 +87,8 @@ switch ($type) {
         $jsL10n = $loads['LazyCMS.L10N'];
         $out = preg_replace('/^(\\s*L10n) *(\:) *(.+)/m','\1: $.extend(\3'.json_encode($jsL10n).'),',$out);
         // 替换系统常量
-        $out = preg_replace('/^(\\s*ADMIN_ROOT).+/m',"$1: '".ADMIN_ROOT."',",$out);
-        $out = preg_replace('/^(\\s*WEB_ROOT).+/m',"$1: '".WEB_ROOT."',",$out);
+        $out = preg_replace('/^(\\s*ADMIN).+/m',"$1: '".ADMIN."',",$out);
+        $out = preg_replace('/^(\\s*ROOT).+/m',"$1: '".ROOT."',",$out);
 		break;
 }
 // 输出内容

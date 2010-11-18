@@ -70,9 +70,9 @@ if ($tag && $block) {
                 'userid'   => $post['userid'],
                 'author'   => $post['author'],
                 'title'    => $post['title'],
-                'views'    => '<script type="text/javascript" src="'.WEB_ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
+                'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
                 'digg'     => $post['digg'],
-                'path'     => WEB_ROOT.$post['path'],
+                'path'     => ROOT.$post['path'],
                 'datetime' => $post['datetime'],
                 'edittime' => $post['edittime'],
                 'keywords' => $post['keywords'],
@@ -81,7 +81,7 @@ if ($tag && $block) {
             // 设置分类变量
             if (isset($post['sort'])) {
                 $vars['sortname'] = $post['sort']['name'];
-                $vars['sortpath'] = WEB_ROOT.$post['sort']['path'].'/';
+                $vars['sortpath'] = ROOT.$post['sort']['path'].'/';
             }
             // 清理数据
             tpl_clean();

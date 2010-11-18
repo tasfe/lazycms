@@ -42,9 +42,9 @@ function user_current($is_redirect=true){
     if (!$is_login && $is_redirect) {
         if (is_ajax()) {
             // 显示未登录的提示警告
-            ajax_echo('Alert',__('You are now logged out, please log in again!'),"LazyCMS.redirect('".ADMIN_ROOT."login.php');");
+            ajax_echo('Alert',__('You are now logged out, please log in again!'),"LazyCMS.redirect('".ADMIN."login.php');");
         } else {
-            redirect(ADMIN_ROOT.'login.php');
+            redirect(ADMIN.'login.php');
         }
     }
     $_USER = $user;

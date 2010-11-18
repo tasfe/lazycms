@@ -18,7 +18,7 @@
  * +---------------------------------------------------------------------------+
  */
 
-LazyCMS.Loading = $('<div class="loading"><img class="os" src="' + LazyCMS.ADMIN_ROOT + 'images/loading.gif" />Loading...</div>').css({width:'100px',position:'fixed',top:'5px',right:'5px'});
+LazyCMS.Loading = $('<div class="loading"><img class="os" src="' + LazyCMS.ADMIN + 'images/loading.gif" />Loading...</div>').css({width:'100px',position:'fixed',top:'5px',right:'5px'});
 
 // 设置全局 AJAX 默认选项
 $.ajaxSetup({
@@ -117,7 +117,7 @@ if ($.browser.msie && $.browser.version == '6.0') {
         content = content.replace(/\<[^>]+?\>|\r|\n|\t|  /ig,'');
         if (content.length > 1024) content.substr(0,1024);
         if (content!='') {
-            $.post(LazyCMS.ADMIN_ROOT + 'index.php',{method:'terms',content:content},function(r){
+            $.post(LazyCMS.ADMIN + 'index.php',{method:'terms',content:content},function(r){
                 if (r) {
                     _this.val(r.join(','));
                 } else {
@@ -136,7 +136,7 @@ if ($.browser.msie && $.browser.version == '6.0') {
         var _this = this, form_exist = this.is('form');
         $.ajax({
             cache: false, type:'GET', dataType:'json',
-            url: LazyCMS.ADMIN_ROOT + 'index.php?method=publish',
+            url: LazyCMS.ADMIN + 'index.php?method=publish',
             beforeSend:function(xhr, s){
                 LazyCMS.success(xhr,s,true);
             },

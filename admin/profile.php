@@ -55,7 +55,7 @@ if (validate_is_post()) {
         // 修改暗号
         if ($password) {
             if (isset($_USER['BanChangePassword']) && $_USER['BanChangePassword']=='Yes') {
-                admin_alert(__('Ban Change Password, Please contact the administrator.'));
+                ajax_alert(__('Ban Change Password, Please contact the administrator.'));
             } else {
                 $user_info = array_merge($user_info,array(
                    'pass' => md5($password.$_USER['authcode'])
@@ -64,7 +64,7 @@ if (validate_is_post()) {
 
         }
         user_edit($userid,$user_info);
-        admin_success(__('User updated.'),"LazyCMS.redirect('".$referer."');");
+        ajax_success(__('User updated.'),"LazyCMS.redirect('".$referer."');");
     }
 } else {
     // 标题

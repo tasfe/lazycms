@@ -1,15 +1,111 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<link rel="shortcut icon" href="favicon.ico" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="refresh" content="0;url=admin/" />
+<meta name="keywords" content="LazyCMS,PHPCMS,CMS,免费CMS,内容管理系统,免费内容管理系统" />
+<meta name="description" content="LazyCMS是一个小巧灵活、性能卓越、功能丰富的免费网站管理系统。简洁、人性化、多语言的管理界面；易懂的文章管理系统和自定义的数据模型；更高效的后台操作和HTML生成速度；XML风格的可嵌套标签；所见即所得（WYSIWYG）编辑器；兼容多数的虚拟主机环境；" />
 <meta name="generator" content="LazyCMS 2.0" />
-<title>LazyCMS v2.0.x</title>
-<script type="text/javascript">location.replace('admin/');</script>
+<title>LazyCMS(内容管理系统) - 做国内最优秀的免费、开源PHPCMS</title>
+<script type="text/javascript" src="/common/js/jquery.js"></script>
+<script type="text/javascript" src="/common/js/lazycms.js?ver=2.0"></script>
+<script type="text/javascript" src="/themes/lazycms/images/script.js">CMS.WEB_ROOT='/';</script>
+<link href="/themes/lazycms/images/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#download label,.radioToggle').click(function(){
+		var thisToggle = $(this).is('.radioToggle') ? $(this) : $(this).prev();
+		var checkBox = thisToggle.prev();
+			checkBox.trigger('click');
+		$('.radioToggle').removeClass('checked');
+		thisToggle.addClass('checked');
+		return false;
+	});
+});
+</script>
 </head>
 
 <body>
+<div id="top">
+	<div class="wrapper">
+		<div class="logo"><a href="/"><img src="/themes/lazycms/images/logo.png" alt="LazyCMS 2.0" /></a></div>
+		<ul id="menu">
+			<li><a class="active" href="/index.html">首页</a></li>
+			<li><a href="/product/">产品</a></li>
+            <li><a href="#/extend/">扩展</a></li>
+            <li><a href="#/showcase/">案例</a></li>
+			<li><a href="#/docs/">文档</a></li>
+			<li><a href="#/blog/">博客</a></li>
+			<li><a href="http://code.google.com/p/lazycms/issues/list" target="_blank">反馈</a></li>
+		</ul>
+        <script type="text/javascript">$('ul#menu').init_menu();</script>
+	</div>
+</div>
+
+<div id="header" class="wrapper">
+	<div id="intro">
+		<h2><em>LazyCMS</em>是一个小巧灵活、性能卓越、功能丰富的网站管理系统。</h2>
+		<p>简洁、人性化、多语言的管理界面；易懂的文章管理系统和自定义的数据模型；更高效的后台操作和HTML生成速度；XML风格的可嵌套标签；所见即所得（WYSIWYG）编辑器；兼容多数的虚拟主机环境；</p>
+        <ul>
+			<li class="agile"><img src="/themes/lazycms/images/agile.gif" alt="小巧灵活、性能卓越" />小巧灵活<br/>性能卓越</li>
+			<li class="brevity"><img src="/themes/lazycms/images/brevity.gif" alt="功能丰富、操作简单" />功能丰富<br/>操作简单</li>
+			<li class="free"><img src="/themes/lazycms/images/free.gif" alt="自由定制、开源免费" />自由定制<br/>开源免费</li>
+		</ul>
+	</div>
+	<div id="download">
+        <h3>下载LazyCMS最新版本</h3>
+        <p>选择您要下载的版本：</p>
+		<form method="get" action="http://code.google.com/p/lazycms/downloads/detail">
+            <div class="compression">
+                <input type="radio" name="name" id="dl-one" checked="checked" value="LazyCMS-v2.0.r642.zip" />
+                <a class="radioToggle name checked" href="http://code.google.com/p/lazycms/downloads/detail?name=LazyCMS-v2.0.r642.zip">LazyCMS-v2.0.r642.zip</a>
+                <label for="dl-one">LazyCMS v2.0.r642（574K）</label>
+                <div class="clear"><br/></div>
+                <input type="radio" name="name" id="dl-two" value="LazyCMS-v2.0.r618.zip" />
+                <a class="radioToggle name" href="http://code.google.com/p/lazycms/downloads/detail?name=LazyCMS-v2.0.r618.zip">LazyCMS-v2.0.r618.zip</a>
+                <label for="dl-two">LazyCMS v2.0.r618（300K）</label>
+            </div>
+			<button type="submit">
+				<span>下载 LazyCMS 最新版</span>
+			</button>
+		</form>
+        <p class="version"><strong>当前版本：</strong>v2.0</p>
+	</div>
+</div>
+
+<div id="content" class="wrapper">
+	<div id="feature" class="container">
+        <div class="tips">内容建设中……</div>
+    </div>
+    <div id="updates" class="container">
+		<h3>更新记录</h3>
+        <div class="load"><img src="/themes/lazycms/images/loading.gif" alt="Loading..." />Loading...</div>
+	</div>
+    <script type="text/javascript">$('#updates').updates();</script>
+    <div class="clear"><br/></div>
+</div>
+
+<div id="links" class="wrapper"><strong>友情链接</strong>
+	<a href="http://www.chinaz.com/" target="_blank">中国站长站</a>
+	<a href="http://www.im286.com/" target="_blank">落伍者</a>
+</div>
+
+
+<div id="footer" class="wrapper">
+	<div class="menu">
+		<a title="关于我们" href="#/aboutus/index.html">关于我们</a>
+		<a title="联系方式" href="#/aboutus/contact.html">联系方式</a>
+		<a title="付款方式" href="#/aboutus/payment.html">付款方式</a>
+		<a title="免责条款" href="#/license.html">许可协议</a>
+		<a title="站点地图" href="#/sitemap.html">站点地图</a>
+	</div>
+	Copyright &copy; LazyCMS.com All Rights Reserved.<br/>
+	<span id="lazycms">Powered by: <a href="http://lazycms.com/" style="font-weight:bold" target="_blank">LazyCMS</a> 2.0</span><br/>
+	<a href="http://www.miibeian.gov.cn" target="_blank">京ICP备09028602号</a>
+	<script language="javascript" type="text/javascript" src="http://js.users.51.la/1497837.js"></script>
+    <noscript><a href="http://www.51.la/?1497837" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/1497837.asp" style="border:none" /></a></noscript>
+</div>
+
+
 </body>
 </html>
 

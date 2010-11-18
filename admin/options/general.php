@@ -37,7 +37,7 @@ if (validate_is_post()) {
     if (validate_is_ok()) {
         C($options);
     }
-    admin_success(__('Settings saved.'),"LazyCMS.redirect('".$referer."');");
+    ajax_success(__('Settings saved.'),"LazyCMS.redirect('".$referer."');");
 } else {
     // 标题
     admin_head('title',__('General Settings'));

@@ -17,39 +17,35 @@
  * | LazyCMS is free software. This version use Apache License 2.0             |
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
- * 
- * 对外接口
- *
- * @author  Lukin <my@lukin.cn>
- * @version $Id$
  */
-// 加载公共文件
-require dirname(__FILE__).'/../global.php';
-// 加载模块
-include_modules();
-// 获取参数
-$func     = isset($_GET['func']) ? trim($_GET['func']) : null;
-$callback = isset($_GET['callback']) ? $_GET['callback'] : null;
-// 组装gateway专用函数
-$position = strpos($func,'_');
-$prefix   = substr($func,0,$position);
-$name     = substr($func,$position + 1);
-$func_name = sprintf('%s_gateway_%s',$prefix,$name);
-// 函数存在，可以执行
-if (function_exists($func_name)) {
-    $result = call_user_func($func_name);
-    // jsonp
-    if ($callback) {
-        printf('%s(%s);',$callback,json_encode($result));
-    }
-    // 直接输出
-    elseif (is_string($result) || is_numeric($result)) {
-        echo $result;
-    }
-    // 需要json_encode
-    elseif($result) {
-        ajax_echo('Return', $result);
-    }
-} else {
-    die('Restricted access!');
+defined('COM_PATH') or die('Restricted access!');
+
+/**
+ * 添加评论
+ *
+ * @param int $postid
+ * @param string $content
+ * @param int $parent
+ * @param array $user
+ * @return int
+ */
+function comment_add($postid,$content,$parent=0,$user=null) {
+    $db = get_conn();
+    $userid = isset($user['userid']) ? $user['userid'] : 0;
+    $author = isset($user['name']) ? esc_html($user['name']) : '';
+    $email  = isset($user['email']) ? esc_html($user['email']) : '';
+    $url    = isset($user['url']) ? esc_html($user['url']) : '';
+    return $db->insert('#@_comments', array(
+        'postid'  => $postid,
+        'author'  => $author,
+        'email'   => $email,
+        'url'     => $url,
+        'ip'      => sprintf('%u',ip2long($_SERVER['REMOTE_ADDR'])),
+        'agent'   => esc_html($_SERVER['HTTP_USER_AGENT']),
+        'date'    => time(),
+        'content' => $content,
+        'parent'  => $parent,
+        'userid'  => $userid,
+        'approved'=> 1,
+    ));
 }

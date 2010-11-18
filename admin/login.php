@@ -56,7 +56,7 @@ if (validate_is_post()) {
             cookie_set('language',$language,$expire);
             redirect('index.php');
         } else {
-            admin_alert(__('Username or password error!'));
+            ajax_alert(__('Username or password error!'));
         }
     }
 } else {
@@ -73,7 +73,7 @@ echo '<script type="text/javascript">'.admin_jslang().'</script>';
 echo '</head>';
 echo '<body>';
 echo    '<form id="login" name="login" method="post" action="'.sprintf('%s?method=login',PHP_FILE).'">';
-echo        '<div class="col1">'.sprintf(__('<p>LazyCMS is free, open source content management system.</p><p>Runtime:PHP 4.3.3+、MySQL 4.1+</p><p><a href="%s">Back Home</a></p>'),WEB_ROOT).'</div>';
+echo        '<div class="col1">'.sprintf(__('<p>LazyCMS is free, open source content management system.</p><p>Runtime:PHP 4.3.3+、MySQL 4.1+</p><p><a href="%s">Back Home</a></p>'),ROOT).'</div>';
 echo        '<dl class="col2">';
 echo            '<dt>'.__('Administrator Login').'</dt>';
 echo            '<dd><label>'.__('Username').'</label><br/><input class="username text" type="text" name="username" id="username" tabindex="1" /></dd>';

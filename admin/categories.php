@@ -122,9 +122,9 @@ switch ($method) {
                 }
                 // 生成列表页
                 if (taxonomy_create($taxonomyid)) {
-                    admin_success($result,"LazyCMS.redirect('".PHP_FILE."');");
+                    ajax_success($result,"LazyCMS.redirect('".PHP_FILE."');");
                 } else {
-                    admin_alert($result.__('File create failed.'),"LazyCMS.redirect('".PHP_FILE."');");
+                    ajax_alert($result.__('File create failed.'),"LazyCMS.redirect('".PHP_FILE."');");
                 }
             }
         }
@@ -134,7 +134,7 @@ switch ($method) {
 	    $action  = isset($_POST['action'])?$_POST['action']:null;
 	    $listids = isset($_POST['listids'])?$_POST['listids']:null;
 	    if (empty($listids)) {
-	    	admin_error(__('Did not select any item.'));
+	    	ajax_error(__('Did not select any item.'));
 	    }
 	    switch ($action) {
             // 生成
@@ -152,17 +152,17 @@ switch ($method) {
                 elseif ($action == 'createposts') {
                     publish_add(sprintf(__('Create Posts:%s'),$names),'publish_posts',array($listids));
                 }
-                admin_success(__('Publish process successfully created.'),"LazyCMS.redirect('".ADMIN_ROOT."publish.php?method=list');");
+                ajax_success(__('Publish process successfully created.'),"LazyCMS.redirect('".ADMIN."publish.php?method=list');");
                 break;
 	        // 删除
 	        case 'delete':
 	            foreach ($listids as $taxonomyid) {
 	            	taxonomy_delete($taxonomyid);
 	            }
-	            admin_success(__('Categories deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
+	            ajax_success(__('Categories deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
 	            break;
             default:
-                admin_alert(__('Parameter is invalid.'));
+                ajax_alert(__('Parameter is invalid.'));
                 break;
 	    }
 	    break;
@@ -235,19 +235,19 @@ function display_tr_categories($sorts,$n=0) {
     static $func = null; if (!$func) $func = __FUNCTION__; 
     $hl = ''; $space = str_repeat('&mdash; ',$n);
     foreach ($sorts as $sort) {
-        $path    = WEB_ROOT.$sort['path'].'/';
+        $path    = ROOT.$sort['path'].'/';
         $href    = PHP_FILE.'?method=edit&taxonomyid='.$sort['taxonomyid'];
         $actions = '<span class="create"><a href="javascript:;" onclick="sort_create('.$sort['taxonomyid'].')">'.__('Create List').'</a> | </span>';
         $actions.= '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a> | </span>';
         $actions.= '<span class="delete"><a href="javascript:;" onclick="sort_delete('.$sort['taxonomyid'].')">'.__('Delete').'</a></span>';
         $hl.= '<tr>';
         $hl.=   '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$sort['taxonomyid'].'" /></td>';
-        $hl.=   '<td><span class="space">'.$space.'</span><strong><a href="'.ADMIN_ROOT.'post.php?category='.$sort['taxonomyid'].'">'.$sort['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
+        $hl.=   '<td><span class="space">'.$space.'</span><strong><a href="'.ADMIN.'post.php?category='.$sort['taxonomyid'].'">'.$sort['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
         // 检测目录是否已生成
         if (is_dir(ABS_PATH.'/'.$sort['path'])) {
-            $hl.= '<td><img class="b6 os" src="'.ADMIN_ROOT.'images/t.gif" /><a href="'.$path.'" target="_blank">'.$path.'</a></td>';
+            $hl.= '<td><img class="b6 os" src="'.ADMIN.'images/t.gif" /><a href="'.$path.'" target="_blank">'.$path.'</a></td>';
         } else {
-            $hl.= '<td><img class="b7 os" src="'.ADMIN_ROOT.'images/t.gif" /><a href="javascript:;" onclick="sort_create('.$sort['taxonomyid'].')">'.$path.'</a></td>';
+            $hl.= '<td><img class="b7 os" src="'.ADMIN.'images/t.gif" /><a href="javascript:;" onclick="sort_create('.$sort['taxonomyid'].')">'.$path.'</a></td>';
         }
         $hl.=   '<td>'.$sort['count'].'</td>';
         $hl.= '</tr>';

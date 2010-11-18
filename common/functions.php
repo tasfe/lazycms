@@ -229,9 +229,9 @@ function editor($id,$content,$options=null) {
         'width' => '700',
         'height'=> '280',
         'toobar' => 'full',
-        'emotPath' => WEB_ROOT.'common/images/emots/',
-        'editorRoot' => WEB_ROOT.'common/editor/',
-        'loadCSS'    => WEB_ROOT.'common/css/xheditor.plugins.css',
+        'emotPath' => ROOT.'common/images/emots/',
+        'editorRoot' => ROOT.'common/editor/',
+        'loadCSS'    => ROOT.'common/css/xheditor.plugins.css',
     );
     
     $options = $options ? array_merge($defaults, $options) : $defaults;
@@ -269,7 +269,7 @@ function editor($id,$content,$options=null) {
 function error_page($title,$content,$is_full=false) {
     // CSS
     $css = '<style type="text/css">';
-    $css.= '#error-page { width:600px; min-height:250px; background:#fff url('.WEB_ROOT.'common/images/warning-large.png) no-repeat 15px 10px; margin-top:15px; padding-bottom:30px; border:1px solid #B5B5B5; }';
+    $css.= '#error-page { width:600px; min-height:250px; background:#fff url('.ROOT.'common/images/warning-large.png) no-repeat 15px 10px; margin-top:15px; padding-bottom:30px; border:1px solid #B5B5B5; }';
     $css.= '#error-page { -moz-border-radius:6px; -webkit-border-radius:6px; -khtml-border-radius:6px; border-radius:6px; }';
     $css.= '#error-title { width:500px; border-bottom:solid 1px #B5B5B5; margin:0 0 15px 80px; }';
     $css.= '#error-title h1{ font-size: 25px; margin:10px 0 5px 0; }';
@@ -397,6 +397,18 @@ function ajax_echo($code,$data,$eval=null){
     }
     echo json_encode($data); ob_flush(); exit();
 }
+function ajax_alert($message,$eval=null){
+    return ajax_echo('Alert',$message,$eval);
+}
+function ajax_success($message,$eval=null){
+    return ajax_echo('Success',$message,$eval);
+}
+function ajax_error($message,$eval=null){
+    return ajax_echo('Error',$message,$eval);
+}
+function ajax_return($data) {
+    return ajax_echo('Return', $data);
+}
 /**
  * 防止浏览器缓存
  */
@@ -474,7 +486,7 @@ function redirect($url,$time=0,$msg='') {
  * @return string
  */
 function referer($default='',$back_server_referer=true){
-    $default = $default?$default:WEB_ROOT;
+    $default = $default?$default:ROOT;
     $referer = isset($_REQUEST['referer'])?$_REQUEST['referer']:null;
     if ($back_server_referer) {
         if(empty($referer) && isset($_SERVER['HTTP_REFERER'])) {
@@ -503,7 +515,7 @@ function referer($default='',$back_server_referer=true){
 function replace_root($path){
     $abs_path = str_replace(DIRECTORY_SEPARATOR,'/',ABS_PATH.DIRECTORY_SEPARATOR);
     $src_path = str_replace(DIRECTORY_SEPARATOR,'/',$path);
-    return str_replace($abs_path,WEB_ROOT,$src_path);
+    return str_replace($abs_path,ROOT,$src_path);
 }
 /**
  * 转义sql语句

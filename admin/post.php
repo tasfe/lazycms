@@ -82,24 +82,24 @@ switch ($method) {
 	    $action  = isset($_POST['action'])?$_POST['action']:null;
 	    $listids = isset($_POST['listids'])?$_POST['listids']:null;
 	    if (empty($listids)) {
-	    	admin_error(__('Did not select any item.'));
+	    	ajax_error(__('Did not select any item.'));
 	    }
 	    switch ($action) {
 	        case 'create':
 	            foreach ($listids as $postid) {
 	            	post_create($postid);
 	            }
-	            admin_success(__('Posts created.'),"LazyCMS.redirect('".referer()."');");
+	            ajax_success(__('Posts created.'),"LazyCMS.redirect('".referer()."');");
 	            break;
             case 'delete':
 	            current_user_can('post-delete');
 	            foreach ($listids as $postid) {
 	            	post_delete($postid);
 	            }
-	            admin_success(__('Posts deleted.'),"LazyCMS.redirect('".referer()."');");
+	            ajax_success(__('Posts deleted.'),"LazyCMS.redirect('".referer()."');");
 	            break;
             default:
-                admin_alert(__('Parameter is invalid.'));
+                ajax_alert(__('Parameter is invalid.'));
                 break;
 	    }
 	    break;
@@ -113,6 +113,7 @@ switch ($method) {
             $mcode    = isset($_POST['model'])?$_POST['model']:null;
             $model    = model_get_bycode($mcode);
             $create   = isset($_POST['create'])?$_POST['create']:array();
+            $comments = isset($_POST['comments'])?$_POST['comments']:'No';
             $sortid   = isset($_POST['sortid'])?$_POST['sortid']:0;
             $type     = isset($_POST['type'])?$_POST['type']:'page';
             $category = isset($_POST['category'])?$_POST['category']:array();
@@ -185,6 +186,7 @@ switch ($method) {
                     'model'    => esc_html($mcode),
                     'template' => esc_html($template),
                     'keywords' => $keywords,
+                    'comments' => $comments,
                     'description' => esc_html($description),
                 );
                 // 获取模型字段值
@@ -225,9 +227,9 @@ switch ($method) {
                 if (post_create($postid,$preid)) {
                     // 重新生成上一篇
                     if ($preid) post_create($preid);
-                    admin_success($result,"LazyCMS.redirect('".$referer."');");
+                    ajax_success($result,"LazyCMS.redirect('".$referer."');");
                 } else {
-                    admin_alert($result.__('File create failed.'),"LazyCMS.redirect('".$referer."');");
+                    ajax_alert($result.__('File create failed.'),"LazyCMS.redirect('".$referer."');");
                 }
             }
         }
@@ -320,7 +322,7 @@ switch ($method) {
                 $hl.= '</tr>';
 	    	}
 	    }
-        admin_return($hl);
+        ajax_return($hl);
 	    break;
     default:
         if ('page.php' == $php_file) {
@@ -405,9 +407,9 @@ switch ($method) {
                 // 检查文件是否已生成
                 $post['path'] = post_get_path($post['sortid'],$post['path']);
                 if (is_file(ABS_PATH.'/'.$post['path'])) {
-                    $browse   = '<img class="b6 os" src="'.ADMIN_ROOT.'images/t.gif" /><a href="'.WEB_ROOT.$post['path'].'" target="_blank">'.WEB_ROOT.$post['path'].'</a>';
+                    $browse   = '<img class="b6 os" src="'.ADMIN.'images/t.gif" /><a href="'.ROOT.$post['path'].'" target="_blank">'.ROOT.$post['path'].'</a>';
                 } else {
-                    $browse   = '<img class="b7 os" src="'.ADMIN_ROOT.'images/t.gif" /><a href="javascript:;" onclick="post_create('.$post['postid'].')">'.WEB_ROOT.$post['path'].'</a>';
+                    $browse   = '<img class="b7 os" src="'.ADMIN.'images/t.gif" /><a href="javascript:;" onclick="post_create('.$post['postid'].')">'.ROOT.$post['path'].'</a>';
                 }
                 $actions = '<span class="edit"><a href="'.$edit_url.'">'.__('Edit').'</a> | </span>';
                 $actions.= '<span class="create"><a href="javascript:;" onclick="post_create('.$post['postid'].')">'.__('Create').'</a> | </span>';
@@ -438,7 +440,7 @@ switch ($method) {
                 echo empty($tags) ? '<td>'.__('None').'</td>' : '<td>'.implode(',' , $tags).'</td>';
                 
                 echo    '<td><div title="'.date('Y-m-d H:i:s',$post['datetime']).'">'.date('Y-m-d',$post['datetime']).'</div></td>';
-                echo    '<td><img class="'.$post['approved'].' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
+                echo    '<td><img class="'.$post['approved'].' os" src="'.ADMIN.'images/t.gif" /></td>';
                 echo '</tr>';
             }
         } else {
@@ -523,7 +525,7 @@ function post_manage_page($action) {
             echo       '<table class="form-table">';
             echo           '<tbody>';
             echo               '<tr><td>'.__('Please Add Category!').'</td></tr>';
-            echo               '<tr><td class="buttons"><button type="button" onclick="LazyCMS.redirect(\''.ADMIN_ROOT.'categories.php?method=new\')">'._x('Add New','sort').'</button><button type="button" onclick="LazyCMS.redirect(\''.$referer.'\')">'.__('Back').'</button></td></tr>';
+            echo               '<tr><td class="buttons"><button type="button" onclick="LazyCMS.redirect(\''.ADMIN.'categories.php?method=new\')">'._x('Add New','sort').'</button><button type="button" onclick="LazyCMS.redirect(\''.$referer.'\')">'.__('Back').'</button></td></tr>';
             echo           '</tbody>';
             echo       '</table>';
             echo   '</fieldset>';

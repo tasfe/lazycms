@@ -130,12 +130,12 @@ switch ($method) {
                     	));
                     }
                     user_edit($userid,$user_info);
-                    admin_success(__('User updated.'),"LazyCMS.redirect('".PHP_FILE."');");
+                    ajax_success(__('User updated.'),"LazyCMS.redirect('".PHP_FILE."');");
                 } 
                 // 强力插入
                 else {
                     user_add($username,$password,$email,$user_info);
-                    admin_success(__('User created.'),"LazyCMS.redirect('".PHP_FILE."');");
+                    ajax_success(__('User created.'),"LazyCMS.redirect('".PHP_FILE."');");
                 }
             }
         }
@@ -145,7 +145,7 @@ switch ($method) {
 	    $action  = isset($_POST['action'])?$_POST['action']:null;
 	    $listids = isset($_POST['listids'])?$_POST['listids']:null;
 	    if (empty($listids)) {
-	    	admin_error(__('Did not select any item.'));
+	    	ajax_error(__('Did not select any item.'));
 	    }
 	    switch ($action) {
 	        case 'delete':
@@ -154,10 +154,10 @@ switch ($method) {
 	                if ($_USER['userid']==$userid) continue;
 	            	user_delete($userid);
 	            }
-	            admin_success(__('Users deleted.'),"LazyCMS.redirect('".referer()."');");
+	            ajax_success(__('Users deleted.'),"LazyCMS.redirect('".referer()."');");
 	            break;
             default:
-                admin_alert(__('Parameter is invalid.'));
+                ajax_alert(__('Parameter is invalid.'));
                 break;
 	    }
 	    break;
@@ -189,7 +189,7 @@ switch ($method) {
         echo           '<tbody>';
         foreach ($users as $user) {
             if ($user['userid']==$_USER['userid']) {
-            	$href = ADMIN_ROOT.'profile.php?referer='.PHP_FILE;
+            	$href = ADMIN.'profile.php?referer='.PHP_FILE;
             	$actions = '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a></span>';
             } else {
                 $href = PHP_FILE.'?method=edit&userid='.$user['userid'];
@@ -200,7 +200,7 @@ switch ($method) {
             echo               '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$user['userid'].'" /></td>';
             echo               '<td><strong><a href="'.$href.'">'.$user['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
             echo               '<td>'.$user['mail'].'</td>';
-            echo               '<td><img class="c'.($user['status']+3).' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
+            echo               '<td><img class="c'.($user['status']+3).' os" src="'.ADMIN.'images/t.gif" /></td>';
             echo               '<td>'.$user['registered'].'</td>';
             echo           '</tr>';
         }

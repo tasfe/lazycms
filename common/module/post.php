@@ -79,8 +79,8 @@ function post_edit($postid,$data) {
                     $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('Template-404')));
                     tpl_clean();
                     tpl_set_var(array(
-                        'path'  => WEB_ROOT.$post['path'],
-                        'url'   => WEB_ROOT.$path,
+                        'path'  => ROOT.$post['path'],
+                        'url'   => ROOT.$path,
                         'title' => $post['title'],
                         'keywords' => $post['keywords'],
                         'description' => $post['description'],
@@ -203,7 +203,6 @@ function post_path_exists($postid,$path) {
  * 查找指定的文章
  *
  * @param int $postid
- * @param bool $is_add 是否添加时调用
  * @return array
  */
 function post_get($postid) {
@@ -402,7 +401,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
         }
         // 加载模版
         $html  = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html($post['template']));
-        $views = '<script type="text/javascript" src="'.WEB_ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'&updated=%s"></script>';
+        $views = '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'&updated=%s"></script>';
         // 解析tags
         $block  = tpl_get_block($html,'tag,tags');
         if ($block && $post['keywords']) {
@@ -411,7 +410,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
                 tpl_clean();
                 tpl_set_var(array(
                     'name' => $taxonomy['name'],
-                    'path' => WEB_ROOT.'tags.php?q='.$taxonomy['name'],
+                    'path' => ROOT.'tags.php?q='.$taxonomy['name'],
                 ));
                 $inner.= tpl_parse($block['inner']);
             }
@@ -433,13 +432,16 @@ function post_create($postid,&$preid=0,&$nextid=0) {
             'keywords' => post_get_keywords($post['keywords']),
             'prepage'  => post_prepage($post['sortid'],$post['postid'],$preid),
             'nextpage' => post_nextpage($post['sortid'],$post['postid'],$nextid),
-            'description' => $post['description'],
-            '_keywords'   => $post['keywords'],
+            'cmt_state'    => $post['comments'],
+            'cmt_ajaxview' => ROOT.'common/gateway.php?func=post_ajax_comment&postid='.$post['postid'],
+            'cmt_replyurl' => ROOT.'common/gateway.php?func=post_send_comment&postid='.$post['postid'],
+            'description'  => $post['description'],
+            '_keywords'    => $post['keywords'],
         );
         // 设置分类变量
         if (isset($post['sort'])) {
             $vars['sortname'] = $post['sort']['name'];
-            $vars['sortpath'] = WEB_ROOT.$post['sort']['path'].'/';
+            $vars['sortpath'] = ROOT.$post['sort']['path'].'/';
         }
         // 清理数据
         tpl_clean();
@@ -480,13 +482,13 @@ function post_create($postid,&$preid=0,&$nextid=0) {
                     'guide'   => $guide ? $guide.' &gt;&gt; '.$title : $title,
                     'title'   => $title,
                     'content' => $content,
-                    'path'    => WEB_ROOT.$path,
+                    'path'    => ROOT.$path,
                 ));
                 $pagehtml = tpl_parse($html);
                 // 解析分页标签
                 if (stripos($pagehtml,'{pagelist') !== false) {
                     $pagehtml = preg_replace('/\{(pagelist)[^\}]*\/\}/isU',
-                        page_list(WEB_ROOT.$basename.'_$'.$suffix, $page, $pages, 1, '!_$'),
+                        page_list(ROOT.$basename.'_$'.$suffix, $page, $pages, 1, '!_$'),
                         $pagehtml
                     );
                 }
@@ -504,7 +506,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
                 'guide'   => $guide ? $guide.' &gt;&gt; '.$post['title'] : $post['title'],
                 'title'   => $post['title'],
                 'content' => $post['content'],
-                'path'    => WEB_ROOT.$post['path'],
+                'path'    => ROOT.$post['path'],
             ));
             // 解析分页标签
             if (stripos($html,'{pagelist') !== false) {
@@ -535,11 +537,11 @@ function post_prepage($sortid,$postid,&$preid=0) {
     if ($preid) {
         $post = post_get($preid);
         $post['path'] = post_get_path($post['sortid'],$post['path']);
-        $result = '<a href="'.WEB_ROOT.$post['path'].'">'.$post['title'].'</a>';
+        $result = '<a href="'.ROOT.$post['path'].'">'.$post['title'].'</a>';
     } else {
         $post = post_get($postid);
         $post['sort'] = taxonomy_get($post['sortid']);
-        $result = '<a href="'.WEB_ROOT.$post['sort']['path'].'/">'.$post['sort']['name'].'</a>';
+        $result = '<a href="'.ROOT.$post['sort']['path'].'/">'.$post['sort']['name'].'</a>';
     }
     return $result;
 }
@@ -557,11 +559,11 @@ function post_nextpage($sortid,$postid,&$nextid=0) {
     if ($nextid) {
         $post = post_get($nextid);
         $post['path'] = post_get_path($post['sortid'],$post['path']);
-        $result = '<a href="'.WEB_ROOT.$post['path'].'">'.$post['title'].'</a>';
+        $result = '<a href="'.ROOT.$post['path'].'">'.$post['title'].'</a>';
     } else {
         $post = post_get($postid);
         $post['sort'] = taxonomy_get($post['sortid']);
-        $result = '<a href="'.WEB_ROOT.$post['sort']['path'].'/">'.$post['sort']['name'].'</a>';
+        $result = '<a href="'.ROOT.$post['sort']['path'].'/">'.$post['sort']['name'].'</a>';
     }
     return $result;
 }
@@ -582,4 +584,50 @@ function post_gateway_views() {
         }
     }
     return 'document.write('.esc_js($views).');';
+}
+/**
+ * 显示评论信息
+ *
+ * @return
+ */
+function post_gateway_ajax_comment() {
+    $postid  = isset($_REQUEST['postid'])  ? $_REQUEST['postid']  : 0;
+    $db = get_conn();
+    $comment_count  = $db->result(sprintf("SELECT COUNT(`commentid`) FROM `#@_comments` WHERE `postid`=%d;", $postid));
+    $comment_people = $db->result(sprintf("SELECT COUNT(DISTINCT(`author`)) FROM `#@_comments` WHERE `postid`=%d;", $postid));
+    return array($comment_count,$comment_people);
+}
+
+/**
+ * 发表评论
+ *
+ * @return void
+ */
+function post_gateway_send_comment() {
+    $postid  = isset($_REQUEST['postid'])  ? $_REQUEST['postid']  : 0;
+    // 检查文章是否存在
+    if (!($post = post_get($postid))) {
+        return ajax_error(__('The post doesn\'t exist or has been deleted!'));
+    }
+    // 检查是否可以评论
+    if ($post['comments'] != 'Yes') {
+        return ajax_error(__('The post doesn\'t comment!'));
+    }
+    $parent  = isset($_REQUEST['parent'])  ? $_REQUEST['parent']  : 0;
+    $content = isset($_REQUEST['content']) ? $_REQUEST['content']  : '';
+    $content = esc_html($content);
+    global $_USER;
+    if (!isset($_USER)) {
+        $_USER = array(
+            'name'   => isset($_REQUEST['author'])  ? $_REQUEST['author']  : '',
+            'email'  => isset($_REQUEST['email'])   ? $_REQUEST['email']  : '',
+            'url'    => isset($_REQUEST['url'])     ? $_REQUEST['url']  : '',
+        );
+    }
+    // 添加评论
+    if (comment_add($postid,$content,$parent,$_USER)) {
+        ajax_success(__('Comment on the success!'));
+    } else {
+        ajax_error(__('Comment failed!'));
+    }
 }

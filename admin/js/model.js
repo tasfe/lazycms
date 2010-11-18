@@ -147,7 +147,7 @@ function model_manage_init() {
 function model_field_manage(id,params) {
 	var wrap = model_manage_init.wrap, actions = model_manage_init.actions, table_drag = model_manage_init.table_drag, set_rules  = model_manage_init.set_rules;
 		id = id || '', params = $.extend(params||{},(params?{id:id}:{}));
-	$.post(LazyCMS.ADMIN_ROOT + 'model.php?method=field',params,function(r){
+	$.post(LazyCMS.ADMIN + 'model.php?method=field',params,function(r){
         var title = id ? _('Edit') : _('Add New');
 		LazyCMS.dialog({
             name:'field', title:title, styles:{ 'top':-100, 'width':'440px' }, body:r, remove:function() {

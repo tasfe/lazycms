@@ -130,12 +130,12 @@ switch ($method) {
                 // 编辑
                 if ($modelid) {
                     model_edit($modelid,$info);
-                    admin_success(__('Model updated.'),"LazyCMS.redirect('".PHP_FILE."');");
+                    ajax_success(__('Model updated.'),"LazyCMS.redirect('".PHP_FILE."');");
                 } 
                 // 强力插入了
                 else {
                     model_add($info);
-                    admin_success(__('Model created.'),"LazyCMS.redirect('".PHP_FILE."');");
+                    ajax_success(__('Model created.'),"LazyCMS.redirect('".PHP_FILE."');");
                 }
             }
         }
@@ -145,7 +145,7 @@ switch ($method) {
 	    $action  = isset($_POST['action'])?$_POST['action']:null;
 	    $listids = isset($_POST['listids'])?$_POST['listids']:null;
 	    if (empty($listids)) {
-	    	admin_error(__('Did not select any item.'));
+	    	ajax_error(__('Did not select any item.'));
 	    }
 	    switch ($action) {
 	        // 删除
@@ -154,7 +154,7 @@ switch ($method) {
 	            foreach ($listids as $modelid) {
 	            	model_delete($modelid);
 	            }
-	            admin_success(__('Models deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
+	            ajax_success(__('Models deleted.'),"LazyCMS.redirect('".PHP_FILE."');");
 	            break;
 	        // 启用
 	        case 'enabled':
@@ -163,7 +163,7 @@ switch ($method) {
 	            	  'state' => 0
 	            	));
 	            }
-	            admin_success(__('Models enabled.'),"LazyCMS.redirect('".PHP_FILE."');");
+	            ajax_success(__('Models enabled.'),"LazyCMS.redirect('".PHP_FILE."');");
 	            break;
 	        // 禁用
 	        case 'disabled':
@@ -172,14 +172,14 @@ switch ($method) {
 	            	  'state' => 1
 	            	));
 	            }
-	            admin_success(__('Models disabled.'),"LazyCMS.redirect('".PHP_FILE."');");
+	            ajax_success(__('Models disabled.'),"LazyCMS.redirect('".PHP_FILE."');");
 	            break;
 	        // 导出
 	        case 'export':
 	            // 批量导出，打包成zip
 	            break;
             default:
-                admin_alert(__('Parameter is invalid.'));
+                ajax_alert(__('Parameter is invalid.'));
                 break;
 	    }
 	    break;
@@ -220,7 +220,7 @@ switch ($method) {
 	       __('Custom validation')          => 'CUSTOM|'.__('Error Message'),
 	    );
 	    $hl = '<div class="wrapper">';
-	    $hl.= '<a href="javascript:;" class="help"><img class="f1 os" src="'.ADMIN_ROOT.'images/t.gif" /></a>';
+	    $hl.= '<a href="javascript:;" class="help"><img class="f1 os" src="'.ADMIN.'images/t.gif" /></a>';
 	    $hl.= '<form id="model-field-table">';
 	    $hl.= '<table class="model-field-table">';
 	    $hl.=    '<tr><th><label for="field_l">'._x('Label','model').'</label></th><td><input class="text" id="field_l" name="l" type="text" size="35" value="'.$l.'" />';
@@ -249,7 +249,7 @@ switch ($method) {
 	    foreach ($verify as $text=>$val) {
             $hl.=       '<option value="'.$val.'">'.$text.'</option>';
         }
-	    $hl.=        '</select>&nbsp;<a href="javascript:;" rule="+"><img class="b3 os" src="'.ADMIN_ROOT.'images/t.gif" /></a><a href="javascript:;" rule="-"><img class="b4 os" src="'.ADMIN_ROOT.'images/t.gif" /></a>';
+	    $hl.=        '</select>&nbsp;<a href="javascript:;" rule="+"><img class="b3 os" src="'.ADMIN.'images/t.gif" /></a><a href="javascript:;" rule="-"><img class="b4 os" src="'.ADMIN.'images/t.gif" /></a>';
 	    $hl.=        '<br/><textarea class="text" name="v" id="field_v" rows="3" cols="40">'.$v.'</textarea></td>';
 	    $hl.=    '</tr>';
 	    $hl.=    '<tr id="field_serialize" class="hide"><th class="vt"><label for="field_s">'._x('Serialize','model').'</label></th><td><textarea class="text" name="s" id="field_s" rows="3" cols="40">'.$s.'</textarea></td></tr>';
@@ -276,7 +276,7 @@ switch ($method) {
 	    $hl.= '<div class="buttons"><button type="button" rel="save">'.__('Save').'</button><button type="button" rel="close">'.__('Cancel').'</button></div>';
 	    $hl.= '<input type="hidden" name="id" value="'.$id.'" />';
 	    $hl.= '</form></div>';
-	    admin_return($hl);
+	    ajax_return($hl);
 	    break;
 	default:
 	    current_user_can('model-list');
@@ -308,7 +308,7 @@ switch ($method) {
                 echo           '<td><strong><a href="'.$href.'">'.$model['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
                 echo           '<td>'.$model['code'].'</td>';
                 echo           '<td>'.code2lang($model['language']).'</td>';
-                echo           '<td><img class="c'.($model['state']+3).' os" src="'.ADMIN_ROOT.'images/t.gif" /></td>';
+                echo           '<td><img class="c'.($model['state']+3).' os" src="'.ADMIN.'images/t.gif" /></td>';
                 echo       '</tr>';
             }
         } else {

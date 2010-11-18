@@ -78,7 +78,7 @@ switch ($method) {
                 echo           '<td>'.number_format($data['complete']).'</td>';
                 echo           '<td class="w150"><div class="rate"><div class="inner" style="width:'.$rate.'px"></div><div class="text">'.$rate.'%</div></div></td>';
                 echo           '<td>'.time_format('%H:%i:%s,%ms',$data['elapsetime']).'</td>';
-                echo           '<td><img class="c'.($data['state']+1).' os" src="'.ADMIN_ROOT.'images/t.gif"></td>';
+                echo           '<td><img class="c'.($data['state']+1).' os" src="'.ADMIN.'images/t.gif"></td>';
                 echo       '</tr>';
             }
         } else {
@@ -96,15 +96,15 @@ switch ($method) {
 	    $action  = isset($_POST['action'])?$_POST['action']:null;
 	    $listids = isset($_POST['listids'])?$_POST['listids']:null;
 	    if (empty($listids)) {
-	    	admin_error(__('Did not select any item.'));
+	    	ajax_error(__('Did not select any item.'));
 	    }
 	    switch ($action) {
             case 'delete':
                 publish_delete($listids);
-	            admin_success(__('Process deleted.'),"LazyCMS.redirect('".referer()."');");
+	            ajax_success(__('Process deleted.'),"LazyCMS.redirect('".referer()."');");
 	            break;
             default:
-                admin_alert(__('Parameter is invalid.'));
+                ajax_alert(__('Parameter is invalid.'));
                 break;
 	    }
 	    break;
@@ -114,7 +114,7 @@ switch ($method) {
         $category = isset($_POST['category']) ? $_POST['category'] : null;
         $option   = isset($_POST['option']) ? $_POST['option'] : 'all';
         if (empty($actions) && empty($category)) {
-	    	admin_error(__('Did not select any item.'));
+	    	ajax_error(__('Did not select any item.'));
 	    }
         // 添加列表生成
         if ($category) {
@@ -144,7 +144,7 @@ switch ($method) {
         if (instr('createpages',$actions)) {
             publish_add(__('Create all Pages'),'publish_posts',array('pages'));
         }
-        admin_success(__('Publish process successfully created.'),"LazyCMS.redirect('".PHP_FILE."?method=list');");
+        ajax_success(__('Publish process successfully created.'),"LazyCMS.redirect('".PHP_FILE."?method=list');");
         break;
     // 发布页面
     default:

@@ -40,15 +40,15 @@ if (publish_check_process()) echo "addLoadEvent(common_publish);";
 <body>
 <div id="wrapper">
     <div id="header">
-        <img id="header-logo" src="<?php echo ADMIN_ROOT.'images/logo.png';?>" alt="LazyCMS <?php echo LAZY_VERSION;?>" />
+        <img id="header-logo" src="<?php echo ADMIN.'images/logo.png';?>" alt="LazyCMS <?php echo LAZY_VERSION;?>" />
         <h1 id="header-visit">
-            <a href="<?php echo WEB_ROOT;?>" target="_blank">
+            <a href="<?php echo ROOT;?>" target="_blank">
                 <span><?php echo C('SiteTitle');?></span>
                 <em><?php _e('Visit Site');?></em>
             </a>
         </h1>
-        <div id="header-menu"><strong><a href="<?php echo ADMIN_ROOT.'profile.php';?>"><?php echo $_USER['name'];?></a></strong>
-             | <a href="<?php echo ADMIN_ROOT.'login.php?method=logout';?>" onclick="return $(this).logout();"><?php _e('Logout');?></a>
+        <div id="header-menu"><strong><a href="<?php echo ADMIN.'profile.php';?>"><?php echo $_USER['name'];?></a></strong>
+             | <a href="<?php echo ADMIN.'login.php?method=logout';?>" onclick="return $(this).logout();"><?php _e('Logout');?></a>
         </div>
     </div>
 

@@ -26,7 +26,7 @@ define('NO_REDIRECT',true);
 require ADMIN_PATH.'/admin.php';
 // 检查系统是否已经安装
 if (installed()) {
-    redirect(ADMIN_ROOT);
+    redirect(ADMIN);
 }
 // 系统需要安装
 else {
@@ -70,7 +70,7 @@ else {
                 if (@$db->connect()) {
                     // 检查数据库版本
                     if (!version_compare($db->version(), '4.1', '>=')) {
-                        admin_error(__('MySQL database version lower than 4.1, please upgrade MySQL!'));
+                        ajax_error(__('MySQL database version lower than 4.1, please upgrade MySQL!'));
                     }
                     // 数据库没有创建，自动创建数据库
                     if (!$db->is_database($dbname)) {
@@ -110,7 +110,7 @@ else {
                 }
                 // 检查 config.sample.php 文件是否存在
                 if (!is_file(COM_PATH.'/config.sample.php')) {
-                    admin_error(__('Sorry, I need a common/config.sample.php file to work from. Please re-upload this file from your LazyCMS installation.'));
+                    ajax_error(__('Sorry, I need a common/config.sample.php file to work from. Please re-upload this file from your LazyCMS installation.'));
                 }
                 // 替换变量
                 $configs = file(COM_PATH.'/config.sample.php');
@@ -178,9 +178,9 @@ else {
                 ));
             }
             if ($writable) {
-                admin_success(__('All right sparky! You\'ve made it through of the installation. If you are ready, time now to&hellip;'), "LazyCMS.redirect('".ADMIN_ROOT."');");
+                ajax_success(__('All right sparky! You\'ve made it through of the installation. If you are ready, time now to&hellip;'), "LazyCMS.redirect('".ADMIN."');");
             } else {
-                admin_alert(__('Create config.php failed, Please manually create.'), "LazyCMS.redirect('".ADMIN_ROOT."');");
+                ajax_alert(__('Create config.php failed, Please manually create.'), "LazyCMS.redirect('".ADMIN."');");
             }
         }
     }
@@ -306,6 +306,7 @@ CREATE TABLE `#@_post` (
   `views` int(10) unsigned NOT NULL DEFAULT '0',
   `digg` int(10) unsigned NOT NULL DEFAULT '0',
   `approved` tinytext NOT NULL,
+  `comments` enum('Yes','No') NOT NULL DEFAULT 'No',
   `datetime` int(10) unsigned NOT NULL DEFAULT '0',
   `edittime` int(10) unsigned NOT NULL DEFAULT '0',
   `template` varchar(50) NOT NULL,
@@ -335,7 +336,7 @@ CREATE TABLE `#@_comments` (
   `author` varchar(255) NOT NULL,
   `email` varchar(100) NOT NULL,
   `url` varchar(200) NOT NULL,
-  `ip` int(10) unsigned NOT NULL,
+  `ip` bigint(20) unsigned NOT NULL,
   `date` int(10) unsigned NOT NULL,
   `content` text NOT NULL,
   `approved` tinytext NOT NULL,

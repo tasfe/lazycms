@@ -39,11 +39,11 @@ switch ($method) {
             $data['total']      = number_format($data['total']);
             $data['complete']   = number_format($data['complete']);
             $data['elapsetime'] = time_format('%H:%i:%s,%ms',$data['elapsetime']);
-            $data['state']      = '<img class="c'.($data['state']+1).' os" src="'.ADMIN_ROOT.'images/t.gif">';
+            $data['state']      = '<img class="c'.($data['state']+1).' os" src="'.ADMIN.'images/t.gif">';
             // 删除不需要显示的数据
             unset($data['name'],$data['func'],$data['args']);
         }
-        admin_return($data);
+        ajax_return($data);
         break;
     // 取得关键词
     case 'terms':
@@ -53,7 +53,7 @@ switch ($method) {
         } else {
             $terms = array();
         }
-        admin_return(empty($terms) ? '' : $terms);
+        ajax_return(empty($terms) ? '' : $terms);
         break;
     // 默认页面
     default:

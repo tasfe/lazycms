@@ -30,9 +30,9 @@ var LazyCMS = window.LazyCMS = window.CMS = {
     // URI对象
     URI: {},
     // 后台根目录
-    ADMIN_ROOT: '/admin/',
+    ADMIN: '/admin/',
     // 站点根目录
-    WEB_ROOT: '/',
+    ROOT: '/',
     // Loading...
     Loading: $('<div class="loading">Loading...</div>').css({width:'90px',position:'fixed',top:'5px',right:'5px'}),
 	// 计数变量
@@ -111,7 +111,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
             };
         }
         LazyCMS.dialog({
-            name:'alert', title:_('Alert'),close:false,styles:{ 'top':-100, 'max-width':'600px', 'min-width':'400px' },
+            name:'alert', title:_('Alert'), close:false, styles:{ 'top':-100, 'max-width':'600px', 'min-width':'400px' },
             body:message,
             buttons:[{
                 focus:true,
@@ -468,7 +468,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
         } else {
             params = $.extend(params,{action:action});
         }
-        return $.post(LazyCMS.ADMIN_ROOT + url,params,null,'json');
+        return $.post(LazyCMS.ADMIN + url,params,null,'json');
     },
     /**
      * 设置cookie
@@ -481,7 +481,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
     setCookie: function(name,key,val,options) {
         options = options || {};
         var cookie  = $.cookie(name),
-            opts    = $.extend({ expires: 365, path: LazyCMS.ADMIN_ROOT }, options),
+            opts    = $.extend({ expires: 365, path: LazyCMS.ADMIN }, options),
             cookies = cookie===null ? {} : LazyCMS.parse_str(cookie);
         // 取值
         if (arguments.length == 2) {
@@ -609,6 +609,130 @@ window._ = LazyCMS.translate;
         });
         s+= '</ul>';
         LazyCMS.alert(s);
+    };
+    // 半记忆功能
+    $.fn.semiauto = function() {
+        var name = LazyCMS.URI.File.substr(0,LazyCMS.URI.File.lastIndexOf('.')),
+            opts = { path: LazyCMS.URI.Path };
+        // 下拉框处理
+        $('select[cookie=true]',this).each(function(i){
+            var t = $(this); t.attr('guid',i);
+            var c = LazyCMS.getCookie(name + '_select', 's' + i);
+            if (c !== null) {
+                $('option:selected',this).attr('selected',false);
+                $('option[value=' + c + ']',this).attr('selected',true);
+            }
+        }).change(function(){
+            LazyCMS.setCookie(name + '_select', 's' + $(this).attr('guid'), this.value, opts);
+        });
+        // 多选处理
+        $('input:checkbox[cookie=true]',this).each(function(i){
+            var t = $(this); t.attr('guid',i);
+            var c = LazyCMS.getCookie(name + '_checkbox', 'c' + i);
+            if (c !== null) {
+                this.checked = c == 'true';
+            }
+        }).click(function(){
+            LazyCMS.setCookie(name + '_checkbox', 'c' + $(this).attr('guid'), this.checked, opts);
+        });
+        // 更多属性处理
+        $('fieldset[cookie=true]',this).each(function(i){
+            var t = $(this); t.attr('guid',i);
+            var c = LazyCMS.getCookie(name + '_fieldset', 'f' + i);
+            if (c !== null) {
+                t.toggleClass('closed', c == 'true');
+            }
+        }).find('a.toggle,h3').click(function(){
+            LazyCMS.setCookie(name + '_fieldset', 'f' + $(this).parents('fieldset').attr('guid'), !$(this).parents('fieldset').hasClass('closed'), opts);
+        });
+        return this;
+    };
+    /**
+     * ajax 表单提交
+     *
+     * @param callback
+     */
+    $.fn.ajaxSubmit = function(callback){
+        return this.each(function(){
+            var _this = $(this);
+                _this.unbind('submit').submit(function(){
+                    // 取消样式
+                    $('.input_error,.textarea_error,.ul_error',_this).removeClass('input_error').removeClass('textarea_error').removeClass('ul_error');
+                    var button = $('button[type=submit]',this).attr('disabled',true);
+                    // 取得 action 地址
+                    var url = _this.attr('action'); if (url==''||typeof url=='undefined') { url = self.location.href; }
+                    // ajax submit
+                    $.ajax({
+                        cache: false, url: url, dataType:'json',
+                        type: _this.attr('method') && _this.attr('method').toUpperCase() || 'POST',
+                        data: _this.serializeArray(),
+                        success: function(data, status, xhr){
+                            if ($.isFunction(callback)) callback.call(_this,data, status, xhr);
+                        },
+                        complete: function(){
+                            button.attr('disabled',false); LazyCMS.Loading.remove();
+                        }
+                    });
+                    return false;
+                });
+        });
+    };
+    // 绑定批量操作事件
+    $.fn.actions = function(callback) {
+        // 取得 action 地址
+        var form   = $(this);
+        var header = form.attr('header'), method = form.attr('method'),
+            url    = header && $.trim(header.substr(header.indexOf(' '))) || form.attr('action');
+            method = header && $.trim(header.substring(0,header.indexOf(' '))) || method;
+
+        if (url=='' || typeof url=='undefined') url = self.location.href;
+        $('.table-nav',form).each(function(i){
+            var _this  = $(this);
+            $('button[type=button]',_this).click(function(){
+                var button  = $(this), listids = [] ,action = $('select[name=actions]',_this).val(),
+                // 提交方法
+                submit = function(url,data) {
+                    button.attr('disabled',true);
+                    $.ajax({
+                        dataType: 'json', url: url, data: data,
+                        type: method.toUpperCase() || 'GET',
+                        success: function(data){
+                            if ($.isFunction(callback)) callback.call(_this,data);
+                        },
+                        complete: function(){
+                            button.attr('disabled',false); LazyCMS.Loading.remove();
+                        }
+                    });
+                }
+
+                if (action=='') {
+                    return LazyCMS.alert(_('Did not select any action!'),'Error');
+                }
+
+                $('input:checkbox[name^=listids]:checked',form).each(function(){
+                    listids.push(this.value);
+                });
+
+                switch (action) {
+                    case 'delete':
+                       LazyCMS.confirm(_('Confirm Delete?'),function(r){
+                           if (r) {
+                               submit(url,{
+                                   'action':action,
+                                   'listids':listids
+                               });
+                           }
+                       });
+                       break;
+                   default:
+                       submit(url,{
+                           'action':action,
+                           'listids':listids
+                       });
+                       break;
+                }
+            });
+        });
     };
     /**
      * 设置对象的浮动位置

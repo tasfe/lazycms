@@ -23,12 +23,12 @@ defined('ADMIN_PATH') or define('ADMIN_PATH', dirname(__FILE__));
 // 加载公共文件
 require ADMIN_PATH.'/../global.php';
 // 后台的目录
-define('ADMIN_ROOT',WEB_ROOT.str_replace('\\','/',substr(ADMIN_PATH,strlen(ABS_PATH)+1)).'/');
+define('ADMIN',ROOT.str_replace('\\','/',substr(ADMIN_PATH,strlen(ABS_PATH)+1)).'/');
 
 // 检查是否已配置
 defined('NO_REDIRECT') or define('NO_REDIRECT', false);
 if (!NO_REDIRECT && (!is_file(COM_PATH.'/config.php') || !installed())) {
-    redirect(ADMIN_ROOT.'install.php'); exit();
+    redirect(ADMIN.'install.php'); exit();
 }
 // 加载公共模块
 include_modules();
@@ -61,7 +61,7 @@ function current_user_can($action,$is_redirect=true) {
             $text = __('Restricted access, please contact the administrator.');
     		// 显示未登录的提示警告
             if (is_accept_json()) {
-        	    admin_alert($text);
+        	    ajax_alert($text);
             } else {
                 echo $text; exit();
             }
@@ -119,7 +119,7 @@ function admin_css(){
     // 加载样式表
     $version = $loader->get_version($loads);
     // 输出HTML
-    printf('<link href="'.ADMIN_ROOT.'loader.php?%s" rel="stylesheet" type="text/css" />',str_replace('%2C',',',http_build_query(array(
+    printf('<link href="'.ADMIN.'loader.php?%s" rel="stylesheet" type="text/css" />',str_replace('%2C',',',http_build_query(array(
         'type' => 'css',
         'load' => $loads,
         'ver'  => $version,
@@ -152,30 +152,11 @@ function admin_script(){
     // 加载样式表
     $version = $loader->get_version($loads);
     // 输出HTML
-    printf('<script type="text/javascript" src="'.ADMIN_ROOT.'loader.php?%s"></script>',str_replace('%2C',',',http_build_query(array(
+    printf('<script type="text/javascript" src="'.ADMIN.'loader.php?%s"></script>',str_replace('%2C',',',http_build_query(array(
         'type' => 'js',
         'load' => $loads,
         'ver'  => $version,
     ))));
-}
-
-/**
- * 输出后台警告信息
- *
- * @param string $message
- * @param string $eval
- */
-function admin_alert($message,$eval=null){
-    ajax_echo('Alert',$message,$eval);
-}
-function admin_success($message,$eval=null){
-    ajax_echo('Success',$message,$eval);
-}
-function admin_error($message,$eval=null){
-    ajax_echo('Error',$message,$eval);
-}
-function admin_return($data) {
-    return ajax_echo('Return', $data);
 }
 /**
  * 权限列表
@@ -278,7 +259,7 @@ function admin_menu($menus) {
     if (!isset($parent_file)) {
     	$parent_file = PHP_FILE.$query;
     } else {
-        $parent_file = ADMIN_ROOT.(strpos($parent_file,'?')!==false ? $parent_file : $parent_file.'?method=default');
+        $parent_file = ADMIN.(strpos($parent_file,'?')!==false ? $parent_file : $parent_file.'?method=default');
     }
 
     $menus_tree = array();
@@ -291,7 +272,7 @@ function admin_menu($menus) {
                 foreach ($menu[3] as $href) {
                     // 文件不存在，菜单也不能出现
                     if (!is_file(ADMIN_PATH.'/'.parse_url($href[1],PHP_URL_PATH))) continue;
-                    $href[1]   = ADMIN_ROOT.$href[1];
+                    $href[1]   = ADMIN.$href[1];
                     $url_query = strpos($href[1],'?')!==false?$href[1]:$href[1].'?method=default';
                     $href[3]   = !strncasecmp($parent_file,$url_query,strlen($url_query))?true:false;
                     $is_expand = !strncasecmp($parent_file,$url_query,strlen($url_query))?true:$is_expand;
@@ -309,7 +290,7 @@ function admin_menu($menus) {
             
             // 存在子菜单，并且子菜单不为空，或者没有子菜单
             if ($has_submenu===true && !empty($submenus) || $has_submenu===false) {
-                $menu[1] = ADMIN_ROOT.$menu[1];
+                $menu[1] = ADMIN.$menu[1];
                 $current = !strncasecmp($parent_file,$menu[1],strlen($menu[1])) || $is_expand ? ' current' : '';
                 $expand  = empty($submenus) || empty($current) ? '' : ' expand';
                 $menu = array(
@@ -335,7 +316,7 @@ function admin_menu($menus) {
             if ($is_first) $class.= ' first';
             if ($is_last)  $class.= ' last';
             echo '<li id="menu-'.$k.'" class="head'.$class.$menu['current'].$menu['expand'].'">';
-            echo '<a href="'.$menu['link'].'" class="image"><img src="'.ADMIN_ROOT.'images/t.gif" class="'.$menu['icon'].' os" /></a>';
+            echo '<a href="'.$menu['link'].'" class="image"><img src="'.ADMIN.'images/t.gif" class="'.$menu['icon'].' os" /></a>';
             echo '<a href="'.$menu['link'].'" class="text'.$class.'">'.$menu['text'].'</a>';
             // 展示子菜单
             if (!empty($menu['submenus'])) {

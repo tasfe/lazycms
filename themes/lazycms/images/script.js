@@ -1,14 +1,41 @@
-// 网站根目录
-var ROOT = window.ROOT = '/';
-// URI
-var URI = window.URI = {};
-    URI.Host = (('https:' == self.location.protocol) ? 'https://'+self.location.hostname : 'http://'+self.location.hostname);
-    URI.Path = self.location.href.replace(/\?(.*)/,'').replace(URI.Host,'');
-    URI.File = URI.Path.split('/').pop();
-    URI.Path = URI.Path.substr(0,URI.Path.lastIndexOf('/')+1);
-    URI.Url  = URI.Host + URI.Path + URI.File;
 // 接收传参
 var scripts = document.getElementsByTagName("script"); eval(scripts[ scripts.length - 1 ].innerHTML);
+
+LazyCMS.Loading = $('<div class="loading"><img class="os" src="' + LazyCMS.ADMIN + 'images/loading.gif" />Loading...</div>').css({width:'100px',position:'fixed',top:'5px',right:'5px'});
+
+// 设置全局 AJAX 默认选项
+$.ajaxSetup({
+    beforeSend: LazyCMS.success,
+    error:function(xhr,status,error) {
+        var title = $.parseJSON(xhr.getResponseHeader('X-Dialog-title'));
+            title = title || _('System Error');
+        LazyCMS.dialog({
+            title:title, styles:{ overflow:'auto', width:'700px',height:'350px' }, body: xhr.responseText
+        });
+        LazyCMS.Loading.remove();
+    },
+    complete: function(){
+        LazyCMS.Loading.remove();
+    }
+});
+
+// 兼容IE6.0
+if ($.browser.msie && $.browser.version == '6.0') {
+    $(document).ready(function(){
+        var load_move = function(){
+            LazyCMS.Loading.css({
+                position:'absolute',
+                top:($(window).scrollTop() + 5) + 'px',
+                left:($(window).width() - 100 - 20) + 'px'
+            });
+        }; load_move();
+
+        if (!LazyCMS.COUNT_VAR.Loading) {
+            $(window).scroll(load_move).resize(load_move);
+            LazyCMS.COUNT_VAR.Loading = true;
+        }
+    });
+}
 
 (function ($) {
     /**
@@ -17,7 +44,7 @@ var scripts = document.getElementsByTagName("script"); eval(scripts[ scripts.len
     $.fn.init_menu = function(){
         $('li a',this).removeClass('active');
         $('li a',this).each(function(){
-            if (URI.Url.substr(0,this.href.length) == this.href) {
+            if (CMS.URI.Url.substr(0,this.href.length) == this.href) {
                 $(this).addClass('active');
             }
         });
@@ -29,8 +56,8 @@ var scripts = document.getElementsByTagName("script"); eval(scripts[ scripts.len
      */
     $.fn.updates = function(){
         var _this = this,updates = $('<ul></ul>');
-        $.getJSON(ROOT + 'common/gateway.php?func=lazycms_updates',function(r){
-            $('.loading',_this).remove();
+        $.getJSON(CMS.ROOT + 'common/gateway.php?func=lazycms_updates',function(r){
+            $('.load',_this).remove();
             $.each(r.entrys,function(i,entry){
                 updates.append([
                     '<li>',

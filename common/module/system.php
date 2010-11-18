@@ -37,7 +37,7 @@ function system_tpl_plugin($tag_name,$tag) {
             $result = C('SiteTitle');
             break;
         case '$inst': case '$webroot':
-            $result = WEB_ROOT;
+            $result = ROOT;
             break;
         case '$host': case '$domain':
             $result = HTTP_HOST;
@@ -46,7 +46,7 @@ function system_tpl_plugin($tag_name,$tag) {
             $result = LAZY_VERSION;
             break;
         case '$theme': case '$templet': case '$template':
-            $result = WEB_ROOT.system_themes_path();
+            $result = ROOT.system_themes_path();
             break;
         case '$lang': case '$language':
             $result = C('Language');
@@ -59,9 +59,9 @@ function system_tpl_plugin($tag_name,$tag) {
             $guide = tpl_get_var('guide');
             if (!$name) $name = __('Home');
             if ($guide) {
-                $result = '<a href="'.WEB_ROOT.'">'.$name.'</a> &gt;&gt; '.$guide;
+                $result = '<a href="'.ROOT.'">'.$name.'</a> &gt;&gt; '.$guide;
             } else {
-                $result = '<a href="'.WEB_ROOT.'">'.$name.'</a> &gt;&gt; '.tpl_get_var('title');
+                $result = '<a href="'.ROOT.'">'.$name.'</a> &gt;&gt; '.tpl_get_var('title');
             }
             break;
         case '$jquery':
@@ -80,11 +80,11 @@ function system_tpl_plugin($tag_name,$tag) {
             // 关键词链接地址
             $link   = tpl_get_attr($tag,'link');
             if ($link) {
-                $link = str_replace(array('[$inst]','[$webroot]'),WEB_ROOT,$link);
+                $link = str_replace(array('[$inst]','[$webroot]'),ROOT,$link);
                 $link = str_replace(array('[$host]','[$domain]'),HTTP_HOST,$link);
-                $link = str_replace(array('[$theme]','[$templet]','[$template]'),WEB_ROOT.system_themes_path(),$link);
+                $link = str_replace(array('[$theme]','[$templet]','[$template]'),ROOT.system_themes_path(),$link);
             } else {
-                $link = WEB_ROOT.'tags.php?q=$';
+                $link = ROOT.'tags.php?q=$';
             }
             // 关键词匹配最大数
             $number = tpl_get_attr($tag,'tags');
@@ -145,9 +145,9 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
             $sortid = $sortid===null ? tpl_get_var('sortid') : $sortid;
             $where  = $sortid ? " AND `tr`.`taxonomyid` IN({$sortid})" : '';
             switch ($type) {
-                case 'new'  : $order = 'ORDER BY `p`.`postid` DESC';
-                case 'hot'  : $order = 'ORDER BY `p`.`views` DESC, `p`.`postid` DESC';
-                case 'chill': $order = 'ORDER BY `p`.`views` ASC, `p`.`postid` DESC';
+                case 'new'  : $order = 'ORDER BY `p`.`postid` DESC'; break;
+                case 'hot'  : $order = 'ORDER BY `p`.`views` DESC, `p`.`postid` DESC'; break;
+                case 'chill': $order = 'ORDER BY `p`.`views` ASC, `p`.`postid` DESC'; break;
             }
             $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` RIGHT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' %s %s LIMIT %d;",$where,$order,$number);
             break;
@@ -181,10 +181,10 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
                 'sortid'   => $post['sortid'],
                 'userid'   => $post['userid'],
                 'author'   => $post['author'],
-                'views'    => '<script type="text/javascript" src="'.WEB_ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
+                'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
                 'digg'     => $post['digg'],
                 'title'    => $post['title'],
-                'path'     => WEB_ROOT.$post['path'],
+                'path'     => ROOT.$post['path'],
                 'datetime' => $post['datetime'],
                 'edittime' => $post['edittime'],
                 'keywords' => $post['keywords'],
@@ -193,7 +193,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
             // 设置分类变量
             if (isset($post['sort'])) {
                 $vars['sortname'] = $post['sort']['name'];
-                $vars['sortpath'] = WEB_ROOT.$post['sort']['path'].'/';
+                $vars['sortpath'] = ROOT.$post['sort']['path'].'/';
             }
             $tpl->clean();
             $tpl->set_var($vars);
@@ -230,7 +230,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
 function system_category_guide($sortid) {
     if (empty($sortid)) return ; $result = '';
     if ($taxonomy = taxonomy_get($sortid)) {
-        $result = '<a href="'.WEB_ROOT.$taxonomy['path'].'/">'.esc_html($taxonomy['name']).'</a>';
+        $result = '<a href="'.ROOT.$taxonomy['path'].'/">'.esc_html($taxonomy['name']).'</a>';
         if ($taxonomy['parent']) {
             $result = system_category_guide($taxonomy['parent'])." &gt;&gt; ".$result;
         }

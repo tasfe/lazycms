@@ -550,7 +550,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
             // 解析分页标签
             if (stripos($html,'{pagelist') !== false) {
                 $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU',
-                    page_list(WEB_ROOT.$taxonomy['path'].'/index$'.$suffix, $page, $result['pages'], $result['length'], '!$'),
+                    page_list(ROOT.$taxonomy['path'].'/index$'.$suffix, $page, $result['pages'], $result['length'], '!$'),
                     $html
                 );
             }
@@ -572,9 +572,9 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                         'userid'   => $post['userid'],
                         'author'   => $post['author'],
                         'title'    => $post['title'],
-                        'views'    => '<script type="text/javascript" src="'.WEB_ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
+                        'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
                         'digg'     => $post['digg'],
-                        'path'     => WEB_ROOT.$post['path'],
+                        'path'     => ROOT.$post['path'],
                         'datetime' => $post['datetime'],
                         'edittime' => $post['edittime'],
                         'keywords' => $post['keywords'],
@@ -583,7 +583,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                     // 设置分类变量
                     if (isset($post['sort'])) {
                         $vars['sortname'] = $post['sort']['name'];
-                        $vars['sortpath'] = WEB_ROOT.$post['sort']['path'].'/';
+                        $vars['sortpath'] = ROOT.$post['sort']['path'].'/';
                     }
                     // 清理数据
                     tpl_clean();
@@ -625,7 +625,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
         tpl_set_var(array(
             'sortid'   => $taxonomy['taxonomyid'],
             'sortname' => $taxonomy['name'],
-            'sortpath' => WEB_ROOT.$taxonomy['path'].'/',
+            'sortpath' => ROOT.$taxonomy['path'].'/',
             'termid'   => $taxonomy['termid'],
             'count'    => $taxonomy['count'],
             'guide'    => system_category_guide($taxonomy['taxonomyid']),

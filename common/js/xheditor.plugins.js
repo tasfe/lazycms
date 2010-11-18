@@ -36,7 +36,7 @@ var xhePlugins = window.xhePlugins = {
 
         jSave.click(function(){
             _this.loadBookmark();
-            _this.pasteHTML('<embed width="'+jWidth.val()+'" height="'+jHeight.val()+'" lazysrc="'+jUrl.val()+'" flashvars="file='+jUrl.val()+'" src="'+LazyCMS.WEB_ROOT+'common/editor/plugins/mediaplayer/player.swf" quality="high" allowScriptAccess="always" allowFullScreen="true" type="application/x-shockwave-flash" lazytype="Flv" />');
+            _this.pasteHTML('<embed width="'+jWidth.val()+'" height="'+jHeight.val()+'" lazysrc="'+jUrl.val()+'" flashvars="file='+jUrl.val()+'" src="'+LazyCMS.ROOT+'common/editor/plugins/mediaplayer/player.swf" quality="high" allowScriptAccess="always" allowFullScreen="true" type="application/x-shockwave-flash" lazytype="Flv" />');
             _this.hidePanel();
             return false;
         });
@@ -58,7 +58,7 @@ var xhePlugins = window.xhePlugins = {
     }},
     // Pagebreak
     Pagebreak:{c:'xhePlugins_btnPageBreak',t:_('Insert Pagebreak'),e:function(){
-        this.pasteHTML('<img class="xhePageBeak" src="' + LazyCMS.WEB_ROOT + 'common/images/t.gif" alt="" />');
+        this.pasteHTML('<img class="xhePageBeak" src="' + LazyCMS.ROOT + 'common/images/t.gif" alt="" />');
     }},
     // Removelink
     Removelink:{c:'xhePlugins_btnRemoveLink',t:_('Remove external links'),e:function(){
@@ -86,7 +86,7 @@ var xheFilter = window.xheFilter = {
             html = html.replace(/(<embed(?:\s+[^>]*?)?)(flashvars\s*=\s*"file=)([^"]+)("(?:\s+[^>]*?)?(?:src\s*=\s*"[^"]*mediaplayer\/player.swf")(?:\s+[^>]*?)?(?:\s+type\s*=\s*"\s*application\/x-shockwave-flash\s*"|\s+classid\s*=\s*"\s*clsid:d27cdb6e-ae6d-11cf-96b8-4445535400000\s*")[^>]*?\/>)/ig,function(all,start,flashvars,file,end){
                 return start + 'lazysrc="' + file + '" lazytype="Flv" ' + flashvars + file + end;
             });
-            html = html.replace(/<!--pagebeak-->/ig,'<img class="xhePageBeak" src="' + LazyCMS.WEB_ROOT + 'common/images/t.gif" alt="" />');
+            html = html.replace(/<!--pagebeak-->/ig,'<img class="xhePageBeak" src="' + LazyCMS.ROOT + 'common/images/t.gif" alt="" />');
         return html;
     },
     GetSource: function(source) {

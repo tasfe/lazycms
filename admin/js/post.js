@@ -58,7 +58,7 @@ function post_manage_init() {
 	    });
 	});
     // 绑定规则点击
-    $('div.rules > a',wrap).click(function(){
+    $('div.rules > a:not([onclick])',wrap).click(function(){
         var val = this.href.replace(self.location,'').replace('#','');
         $('input[name=path]',wrap).insertVal(val); return false;
     });
@@ -76,7 +76,7 @@ function post_manage_extend_attr(model,postid) {
         params = {method:'extend-attr',model:model};    
         params = typeof(postid)!='undefined' ? $.extend(params,{postid:postid}) : params;
 
-    $.post(LazyCMS.ADMIN_ROOT+'post.php',params,function(data, status, xhr) {
+    $.post(LazyCMS.ADMIN+'post.php',params,function(data, status, xhr) {
         $('tbody.extend-attr',wrap).html(data);
         if (path = xhr.getResponseHeader('X-LazyCMS-Path')) {
             $('input#path',wrap).val(path);
