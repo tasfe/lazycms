@@ -543,22 +543,26 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
             $zebra  = validate_is($zebra,VALIDATE_IS_NUMERIC) ? $zebra : 0;
             $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
             $order  = instr(strtoupper($order),'ASC,DESC') ? $order : 'DESC';
+            // 设置每页显示数
+            pages_init($number, $page);
             // 拼装sql
             $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE `taxonomyid`=%d ORDER BY `objectid` %s", esc_sql($taxonomyid), esc_sql($order));
 
-            $result = post_gets($sql, $page, $number);
+            $result = pages_query($sql);
             // 解析分页标签
             if (stripos($html,'{pagelist') !== false) {
                 $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU',
-                    page_list(ROOT.$taxonomy['path'].'/index$'.$suffix, $page, $result['pages'], $result['length'], '!$'),
+                    pages_list(ROOT.$taxonomy['path'].'/index$'.$suffix, '!$'),
                     $html
                 );
             }
             // 数据存在
-            if ($result['length'] > 0) {
+            if ($result) {
+                $i = 0;
                 // 取得标签块内容
                 $block['inner'] = tpl_get_block_inner($block);
-                foreach ($result['datas'] as $i=>$post) {
+                while ($data = pages_fetch($result)) {
+                    $post = post_get($data['postid']);
                     if (empty($post)) continue;
                     $post['sort'] = taxonomy_get($post['sortid']);
                     $post['path'] = post_get_path($post['sortid'],$post['path']);
@@ -575,7 +579,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                         'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
                         'digg'     => $post['digg'],
                         'path'     => ROOT.$post['path'],
-                        'datetime' => $post['datetime'],
+                        'date'     => $post['datetime'],
                         'edittime' => $post['edittime'],
                         'keywords' => $post['keywords'],
                         'description' => $post['description'],
@@ -608,7 +612,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                     }
 
                     // 解析变量
-                    $inner.= tpl_parse($block['inner']);
+                    $inner.= tpl_parse($block['inner']); $i++;
                 }
             }
             // 生成标签块的唯一ID

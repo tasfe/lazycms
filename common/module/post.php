@@ -144,45 +144,6 @@ function post_edit($postid,$data) {
     return null;
 }
 /**
- * 取得post
- *
- * @param string $sql       sql语句
- * @param int $page         当前页
- * @param int $size         每页大小
- * @return array
- */
-function post_gets($sql, $page=1, $size=10){
-    $db = get_conn(); $posts = array();
-    $page = $page<1 ? 1  : $page;
-    $size = $size<1 ? 10 : $size;
-    $sql = preg_replace('/SELECT (.+) FROM/iU','SELECT SQL_CALC_FOUND_ROWS \1 FROM',$sql,1);
-    $sql.= sprintf(' LIMIT %d OFFSET %d;',$size,($page-1)*$size);
-    $res = $db->query($sql);
-    // 总记录数
-    $total = $db->result("SELECT FOUND_ROWS();");
-    $pages = ceil($total/$size);
-    $pages = ((int)$pages == 0) ? 1 : $pages;
-    if ((int)$page < (int)$pages) {
-        $length = $size;
-    } elseif ((int)$page == (int)$pages) {
-        $length = $total - (($pages-1) * $size);
-    } else {
-        $length = 0;
-    }
-    while ($post = $db->fetch($res)) {
-        $post = post_get($post['postid']);
-        $posts[] = $post;
-    }
-    return array(
-        'page'   => $page,
-        'size'   => $size,
-        'total'  => $total,
-        'pages'  => $pages,
-        'length' => $length,
-        'datas'  => $posts,
-    );
-}
-/**
  * 判断路径是否存在
  *
  * @param  $postid
@@ -260,13 +221,19 @@ function post_get_keywords($keywords) {
  * @param  $path
  * @return string
  */
-function post_get_path($sortid,$path) {
+function post_get_path($sortid,$path,$prefix='') {
+    if ($prefix) {
+        $prefix = !substr_compare($prefix,'/',strlen($prefix)-1,1) ? $prefix : $prefix.'/';
+        if (strncmp($prefix,'/',1) === 0) {
+            return ltrim($prefix,'/').ltrim($path, '/');
+        }
+    }
     if (strncmp($path,'/',1) === 0) {
-        $path = ltrim($path, '/');
+        $path = ltrim($prefix,'/').ltrim($path, '/');
     } elseif ($sortid > 0) {
         $taxonomy = taxonomy_get($sortid);
         if (isset($taxonomy['path'])) {
-            $path  = $taxonomy['path'].'/'.$path;
+            $path  = $taxonomy['path'].'/'.$prefix.$path;
         }
     }
     return $path;
@@ -385,8 +352,9 @@ function post_create($postid,&$preid=0,&$nextid=0) {
     if ($post = post_get($postid)) {
         $block_guid   = $inner = '';
         // 处理文章
-        $post['sort'] = taxonomy_get($post['sortid']);
-        $post['path'] = post_get_path($post['sortid'],$post['path']);
+        $post['sort']     = taxonomy_get($post['sortid']);
+        $post['cmt_path'] = post_get_path($post['sortid'],$post['path'], C('Comments-Path'));
+        $post['path']     = post_get_path($post['sortid'],$post['path']);
         // 模版设置优先级：页面设置>分类设置>模型设置
         if (empty($post['template'])) {
             if ($post['sortid'] > 0) {
@@ -420,22 +388,24 @@ function post_create($postid,&$preid=0,&$nextid=0) {
             $html = str_replace($block['tag'], '{$'.$block_guid.'}', $html);
         }
         
-        $vars  = array(
+        $vars = array(
             'postid'   => $post['postid'],
             'sortid'   => $post['sortid'],
             'userid'   => $post['userid'],
             'author'   => $post['author'],
             'views'    => sprintf($views,'true'),
             'digg'     => $post['digg'],
-            'datetime' => $post['datetime'],
+            'date'     => $post['datetime'],
             'edittime' => $post['edittime'],
             'keywords' => post_get_keywords($post['keywords']),
             'prepage'  => post_prepage($post['sortid'],$post['postid'],$preid),
             'nextpage' => post_nextpage($post['sortid'],$post['postid'],$nextid),
             'cmt_state'    => $post['comments'],
-            'cmt_ajaxview' => ROOT.'common/gateway.php?func=post_ajax_comment&postid='.$post['postid'],
+            'cmt_ajaxinfo' => ROOT.'common/gateway.php?func=post_ajax_comment&postid='.$post['postid'],
             'cmt_replyurl' => ROOT.'common/gateway.php?func=post_send_comment&postid='.$post['postid'],
+            'cmt_listsurl' => ROOT.$post['cmt_path'],
             'description'  => $post['description'],
+            // 内部使用的变量，不能被当作标签输出
             '_keywords'    => $post['keywords'],
         );
         // 设置分类变量
@@ -456,8 +426,8 @@ function post_create($postid,&$preid=0,&$nextid=0) {
         // 文章导航
         $guide = system_category_guide($post['sortid']);
         // 文章分页
-        if ($post['content'] && strpos($post['content'],'<!--pagebeak-->')!==false) {
-            $contents = explode('<!--pagebeak-->',$post['content']);
+        if ($post['content'] && strpos($post['content'],'<!--pagebreak-->')!==false) {
+            $contents = explode('<!--pagebreak-->',$post['content']);
             // 总页数
             $pages = count($contents);
             if (($pos=strrpos($post['path'],'.')) !== false) {
@@ -488,7 +458,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
                 // 解析分页标签
                 if (stripos($pagehtml,'{pagelist') !== false) {
                     $pagehtml = preg_replace('/\{(pagelist)[^\}]*\/\}/isU',
-                        page_list(ROOT.$basename.'_$'.$suffix, $page, $pages, 1, '!_$'),
+                        pages_list(ROOT.$basename.'_$'.$suffix, '!_$', $page, $pages, 1),
                         $pagehtml
                     );
                 }

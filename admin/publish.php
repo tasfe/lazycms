@@ -38,21 +38,12 @@ switch ($method) {
     case 'list':
         admin_head('title',__('Process list'));
         admin_head('loadevents','publish_list');
-        $page    = isset($_REQUEST['page'])?$_REQUEST['page']:1;
-        $size    = isset($_REQUEST['size'])?$_REQUEST['size']:10;
-        $query   = array(
-            'method' => 'list',
-            'page'   => '$',
-            'size'   => $size,
-        );
-        // 分页地址
-        $page_url = PHP_FILE.'?'.http_build_query($query);
-        $result   = publish_gets("SELECT * FROM `#@_publish` ORDER BY `pubid` DESC", $page, $size);
+        $result = pages_query("SELECT * FROM `#@_publish` ORDER BY `pubid` DESC");
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'">'._x('Add New','publish').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="publishlist" id="publishlist">';
-        table_nav($page_url,$result);
+        table_nav();
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
         table_thead();
@@ -61,9 +52,9 @@ switch ($method) {
         table_thead();
         echo           '</tfoot>';
         echo           '<tbody>';
-        if (0 < $result['length']) {
-            $publish = (array) $result['datas'];
-            foreach ($publish as $pubid=>$data) {
+        if ($result) {
+            while ($data = pages_fetch($result)) {
+                $pubid = $data['pubid'];
                 if ($data['total']<=0 && $data['state']==2) {
                     $rate = 100;
                 } else {
@@ -86,7 +77,7 @@ switch ($method) {
         }
         echo           '</tbody>';
         echo       '</table>';
-        table_nav($page_url,$result);
+        table_nav();
         echo   '</form>';
         echo '</div>';
         include ADMIN_PATH.'/admin-footer.php';
@@ -198,14 +189,19 @@ switch ($method) {
  * 批量操作
  *
  */
-function table_nav($url,$result) {
+function table_nav() {
+    // 分页地址
+    $page_url = PHP_FILE.'?'.http_build_query(array(
+        'method' => 'list',
+        'page'   => '$',
+    ));
     echo '<div class="table-nav">';
     echo     '<select name="actions">';
     echo         '<option value="">'.__('Bulk Actions').'</option>';
     echo         '<option value="delete">'.__('Delete').'</option>';
     echo     '</select>';
     echo     '<button type="button">'.__('Apply').'</button>';
-    echo     page_list($url,$result['page'],$result['pages'],$result['total']);
+    echo     pages_list($page_url);
     echo '</div>';
 }
 /**
@@ -237,7 +233,7 @@ function display_ul_categories($trees=null) {
     if ($trees === null) $trees = taxonomy_get_trees();
     foreach ($trees as $i=>$tree) {
         $hl.= sprintf('<li><label class="selectit" for="category-%d">',$tree['taxonomyid']);
-        $hl.= sprintf('<input type="checkbox" id="category-%d" name="category[]" value="%d" />%s<em>(%d)</em></label>',$tree['taxonomyid'],$tree['taxonomyid'],$tree['name'],$tree['count']);
+        $hl.= sprintf('<input type="checkbox" id="category-%1$d" name="category[]" value="%1$d" />%2$s<em>(%3$d)</em></label>',$tree['taxonomyid'],$tree['name'],$tree['count']);
     	if (isset($tree['subs'])) {
     		$hl.= $func($tree['subs']);
     	}

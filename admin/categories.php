@@ -79,7 +79,7 @@ switch ($method) {
             $path_exists = taxonomy_path_exists($taxonomyid,path_format($path,array('PY'=>$name)));
             validate_check(array(
                 array('path',VALIDATE_EMPTY,_x('The path field is empty.','sort')),
-                array('path',VALIDATE_IS_PATH,sprintf(_x('The path can not contain any of the following characters %s','sort'),'* : < > | \\')),
+                array('path',VALIDATE_IS_PATH,sprintf(_x('The path can not contain any of the following characters %s','sort'), esc_html('* : < > | \\'))),
                 array('path',(!$path_exists),_x('The path already exists.','sort')),
             ));
             

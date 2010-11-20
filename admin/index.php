@@ -28,7 +28,7 @@ $method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 switch ($method) {
     // 进度
     case 'publish':
-        $data   = publish_exec();
+        $data = publish_exec();
         if ($data) {
             $data['pubid'] = $data['pubid'];
             if ($data['total']<=0 && $data['state']==2) {

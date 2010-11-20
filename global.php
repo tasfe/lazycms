@@ -52,6 +52,10 @@ require COM_PATH.'/system/pinyin.php';
 require COM_PATH.'/system/l10n.php';
 // 加载模版处里类
 require COM_PATH.'/system/template.php';
+// 加载分页类
+require COM_PATH.'/system/pages.php';
+// 设置系统时区
+time_zone_set(C('Timezone'));
 // 开始时间
 define('BEGIN_TIME',micro_time(true));
 // 处理错误

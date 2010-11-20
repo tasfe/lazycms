@@ -18,20 +18,8 @@
  * +---------------------------------------------------------------------------+
  */
 function post_list_init() {
-    var form = $('#postlist');
-    // 绑定全选事件
-    $('input[name=select]',form).click(function(){
-        $('input[name^=list]:checkbox,input[name=select]:checkbox',form).attr('checked',this.checked);
-    });
-    $('tbody tr',form).hover(function(){
-        $('td',this).css({'background-color':'#FFFFCC'});
-        $('.row-actions',this).css({'visibility': 'visible'});
-    },function(){
-        $('td',this).css({'background-color':'#FFFFFF'});
-        $('.row-actions',this).css({'visibility': 'hidden'});
-    });
 	// 绑定提交事件
-	form.actions();
+	$('#postlist').actions();
 }
 // 添加用户页面初始化
 function post_manage_init() {

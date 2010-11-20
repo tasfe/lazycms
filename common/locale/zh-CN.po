@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-11-19 00:35+0800\n"
+"POT-Creation-Date: 2010-11-20 00:12+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.net>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
@@ -332,19 +332,19 @@ msgstr "文件上传框"
 msgid "You are now logged out, please log in again!"
 msgstr "您现在已经退出，请重新登录！"
 
-#: common/module/post.php:626
+#: common/module/post.php:619
 msgid "The post doesn't exist or has been deleted!"
 msgstr "该文章不存在或已删除！"
 
-#: common/module/post.php:630
+#: common/module/post.php:623
 msgid "The post doesn't comment!"
 msgstr "该文章不能评论！"
 
-#: common/module/post.php:645
+#: common/module/post.php:638
 msgid "Comment on the success!"
 msgstr "发表评论成功！"
 
-#: common/module/post.php:647
+#: common/module/post.php:640
 msgid "Comment failed!"
 msgstr "发表评论失败！"
 
@@ -384,7 +384,7 @@ msgstr "列表目录不能为空。"
 #, php-format
 msgctxt "sort"
 msgid "The path can not contain any of the following characters %s"
-msgstr "列表目录不能下列任何字符之一：%s"
+msgstr "列表目录不能包含下列任何字符之一：%s"
 
 #: admin/categories.php:83
 msgctxt "sort"
@@ -1130,7 +1130,7 @@ msgstr "我接受LazyCMS的<a href=\"../LICENSE.txt\" target=\"_blank\">许可�
 msgid "Install LazyCMS"
 msgstr "安装 LazyCMS"
 
-#: admin/install.php:408
+#: admin/install.php:403
 msgid "My Site"
 msgstr "我的站点"
 
@@ -1279,8 +1279,8 @@ msgid "Login"
 msgstr "登入"
 
 #: admin/user.php:26
-#: admin/admin-header-menu.php:36
-#: admin/admin-header-menu.php:37
+#: admin/admin-header-menu.php:38
+#: admin/admin-header-menu.php:39
 #: admin/admin.php:198
 msgid "Users"
 msgstr "用户管理"
@@ -1319,7 +1319,7 @@ msgid "Users deleted."
 msgstr "用户删除成功。"
 
 #: admin/user.php:179
-#: admin/admin-header-menu.php:38
+#: admin/admin-header-menu.php:40
 #: admin/admin.php:200
 msgctxt "user"
 msgid "Add New"
@@ -1396,6 +1396,11 @@ msgstr "添加用户"
 msgid "Update User"
 msgstr "更新用户"
 
+#: admin/comment.php:26
+#: admin/admin-header-menu.php:34
+msgid "Comments"
+msgstr "评论管理"
+
 #: admin/admin-header-menu.php:13
 #: admin/admin.php:171
 msgid "Upgrade"
@@ -1429,40 +1434,45 @@ msgctxt "page"
 msgid "Add New"
 msgstr "添加页面"
 
-#: admin/admin-header-menu.php:39
+#: admin/admin-header-menu.php:41
 msgid "Your Profile"
 msgstr "我的配置"
 
-#: admin/admin-header-menu.php:42
-#: admin/admin-header-menu.php:43
+#: admin/admin-header-menu.php:44
+#: admin/admin-header-menu.php:45
 #: admin/admin.php:205
 msgid "Plugins"
 msgstr "插件管理"
 
-#: admin/admin-header-menu.php:44
+#: admin/admin-header-menu.php:46
 #: admin/admin.php:207
 msgctxt "plugin"
 msgid "Add New"
 msgstr "添加新插件"
 
-#: admin/admin-header-menu.php:47
+#: admin/admin-header-menu.php:49
 #: admin/admin.php:211
 msgid "Tools"
 msgstr "系统工具"
 
-#: admin/admin-header-menu.php:48
+#: admin/admin-header-menu.php:50
 #: admin/admin.php:212
 msgid "Clean cache"
 msgstr "清除缓存"
 
-#: admin/admin-header-menu.php:51
+#: admin/admin-header-menu.php:53
 #: admin/admin.php:215
 msgid "Settings"
 msgstr "设置管理"
 
-#: admin/admin-header-menu.php:52
+#: admin/admin-header-menu.php:54
 msgid "General"
 msgstr "常规"
+
+#: admin/admin-header-menu.php:55
+msgctxt "setting"
+msgid "Posts"
+msgstr "文章"
 
 #: admin/post.php:45
 msgid "Add New Page"
@@ -1513,7 +1523,7 @@ msgstr "路径不能为空。"
 #, php-format
 msgctxt "post"
 msgid "The path can not contain any of the following characters %s"
-msgstr "文章路径不能下列任何字符之一：%s"
+msgstr "文章路径不能包含下列任何字符之一：%s"
 
 #: admin/post.php:143
 msgctxt "post"
@@ -1553,19 +1563,19 @@ msgid "Filter"
 msgstr "过滤"
 
 #: admin/post.php:500
-#: admin/post.php:588
+#: admin/post.php:589
 msgctxt "post"
 msgid "Title"
 msgstr "标题"
 
 #: admin/post.php:501
-#: admin/post.php:565
+#: admin/post.php:566
 msgctxt "post"
 msgid "Model"
 msgstr "模型"
 
 #: admin/post.php:503
-#: admin/post.php:580
+#: admin/post.php:581
 msgctxt "post"
 msgid "Categories"
 msgstr "分类"
@@ -1589,69 +1599,69 @@ msgstr "状态"
 msgid "Please Add Category!"
 msgstr "请先添加文章分类！"
 
-#: admin/post.php:591
+#: admin/post.php:592
 msgid "Auto get keywords"
 msgstr "自动获取关键词"
 
-#: admin/post.php:595
+#: admin/post.php:596
 msgctxt "post"
 msgid "Content"
 msgstr "内容"
 
-#: admin/post.php:602
+#: admin/post.php:603
 msgctxt "post"
 msgid "Path"
 msgstr "路径"
 
-#: admin/post.php:618
+#: admin/post.php:619
 msgid "More attribute"
 msgstr "更多属性"
 
-#: admin/post.php:622
+#: admin/post.php:623
 msgctxt "post"
 msgid "Page Template"
 msgstr "页面模板"
 
-#: admin/post.php:625
+#: admin/post.php:626
 msgid "Use the category set"
 msgstr "使用分类设置"
 
-#: admin/post.php:632
+#: admin/post.php:633
 msgctxt "post"
 msgid "Keywords"
 msgstr "关键词"
 
-#: admin/post.php:633
+#: admin/post.php:634
 msgid "Get"
 msgstr "获取"
 
-#: admin/post.php:636
+#: admin/post.php:637
 msgctxt "post"
 msgid "Description"
 msgstr "Meta简述"
 
-#: admin/post.php:641
+#: admin/post.php:642
 msgctxt "post"
 msgid "Other"
 msgstr "其它选项"
 
-#: admin/post.php:643
+#: admin/post.php:644
 msgid "Allow Comments"
 msgstr "允许评论"
 
-#: admin/post.php:644
+#: admin/post.php:645
 msgid "Update all Pages"
 msgstr "更新所有页面"
 
-#: admin/post.php:645
+#: admin/post.php:646
 msgid "Update Category Lists"
 msgstr "更新分类列表"
 
-#: admin/post.php:654
+#: admin/post.php:655
 msgid "Add Post"
 msgstr "添加文章"
 
-#: admin/post.php:658
+#: admin/post.php:659
 msgid "Update Post"
 msgstr "更新文章"
 
@@ -2379,65 +2389,119 @@ msgid "Update Profile"
 msgstr "更新资料"
 
 #: admin/options/general.php:36
-msgid "Please enter the site name."
-msgstr "请输入网站的名称。"
+msgid "Please input the Site Title."
+msgstr "请输入网站名称。"
 
-#: admin/options/general.php:40
+#: admin/options/general.php:37
+msgid "Please input the Template suffix."
+msgstr "请输入模板后缀"
+
+#: admin/options/general.php:38
+msgid "Please input the HTML file suffix."
+msgstr "请输入网页后缀"
+
+#: admin/options/general.php:42
+#: admin/options/posts.php:43
 msgid "Settings saved."
 msgstr "设置已保存。"
 
-#: admin/options/general.php:43
+#: admin/options/general.php:45
 msgid "General Settings"
 msgstr "常规设置"
 
-#: admin/options/general.php:58
+#: admin/options/general.php:61
 msgctxt "setting"
 msgid "Language"
 msgstr "网站语言"
 
-#: admin/options/general.php:67
+#: admin/options/general.php:70
+msgctxt "setting"
+msgid "Time zone"
+msgstr "时区设置"
+
+#: admin/options/general.php:83
+#, php-format
+msgid "<abbr title=\"Coordinated Universal Time\">UTC</abbr> time is <code>%s</code>"
+msgstr "<abbr title=\"协调世界时\">UTC</abbr> 时间是 <code>%s</code>"
+
+#: admin/options/general.php:85
+#, php-format
+msgid "Local time is <code>%s</code>"
+msgstr "本地时间是 <code>%s</code>"
+
+#: admin/options/general.php:89
 msgctxt "setting"
 msgid "Template"
 msgstr "网站模板"
 
-#: admin/options/general.php:74
-msgid "404 Template"
-msgstr "404模板"
-
-#: admin/options/general.php:81
+#: admin/options/general.php:96
 msgid "Template suffix"
 msgstr "模板后缀"
 
-#: admin/options/general.php:85
+#: admin/options/general.php:100
 msgid "HTML file suffix"
 msgstr "网页后缀"
 
-#: admin/options/general.php:94
+#: admin/options/general.php:109
 msgid "Compress"
 msgstr "GZIP压缩"
 
-#: admin/options/general.php:96
-#: admin/options/general.php:103
+#: admin/options/general.php:111
+#: admin/options/posts.php:84
 msgid "Enable"
 msgstr "启用"
 
-#: admin/options/general.php:97
-#: admin/options/general.php:104
+#: admin/options/general.php:112
+#: admin/options/posts.php:85
 msgid "Disable"
 msgstr "禁用"
 
-#: admin/options/general.php:101
-msgid "Tags Service"
-msgstr "标签服务"
-
-#: admin/options/general.php:101
-msgid "(Get the Network tags of service)"
-msgstr "(获取网络标签服务)"
-
-#: admin/options/general.php:110
+#: admin/options/general.php:118
+#: admin/options/posts.php:91
 msgid "Save Changes"
 msgstr "保存更改"
 
+#: admin/options/posts.php:37
+msgid "Please input the Comments Path."
+msgstr "请输入评论目录。"
+
+#: admin/options/posts.php:38
+#, php-format
+msgctxt "setting"
+msgid "The path can not contain any of the following characters %s"
+msgstr "评论目录不能包含下列任何字符之一：%s"
+
+#: admin/options/posts.php:46
+msgid "Posts Settings"
+msgstr "文章设置"
+
+#: admin/options/posts.php:57
+msgid "404 Template"
+msgstr "404页模板"
+
+#: admin/options/posts.php:64
+msgid "Tags Template"
+msgstr "标签页模板"
+
+#: admin/options/posts.php:71
+msgid "Comments Template"
+msgstr "评论页模板"
+
+#: admin/options/posts.php:78
+msgid "Comments Path"
+msgstr "评论目录"
+
+#: admin/options/posts.php:82
+msgid "Tags Service"
+msgstr "标签服务"
+
+#: admin/options/posts.php:82
+msgid "(Get the Network tags of service)"
+msgstr "(获取网络标签服务)"
+
+#, fuzzy
+#~ msgid "Select a city"
+#~ msgstr "全选 / 反选"
 #~ msgid "I,is,for,you,him,she,of,and,at,the,in"
 #~ msgstr ""
 #~ "我,是,为,了,的,你,他,她,它,们,这,那,在,和,一,不,有,对,中,这,要,上,也,人,"

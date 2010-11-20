@@ -139,7 +139,7 @@ switch ($method) {
             $path_exists = post_path_exists($postid,path_format($path,array('PY'=>$title)));
             validate_check(array(
                 array('path',VALIDATE_EMPTY,_x('The path field is empty.','post')),
-                array('path',VALIDATE_IS_PATH,sprintf(_x('The path can not contain any of the following characters %s','post'),'* : < > | \\')),
+                array('path',VALIDATE_IS_PATH,sprintf(_x('The path can not contain any of the following characters %s','post'),esc_html('* : < > | \\'))),
                 array('path',(!$path_exists),_x('The path already exists.','post')),
             ));
             // 自动截取简述
@@ -333,17 +333,10 @@ switch ($method) {
             $add_new = _x('Add New','post');
         }
         admin_head('loadevents','post_list_init');
-	    $page     = isset($_REQUEST['page'])?$_REQUEST['page']:1;
-        $size     = isset($_REQUEST['size'])?$_REQUEST['size']:10;
-        $model    = isset($_REQUEST['model'])?$_REQUEST['model']:'';
+	    $model    = isset($_REQUEST['model'])?$_REQUEST['model']:'';
         $search   = isset($_REQUEST['query'])?$_REQUEST['query']:'';
         $category = isset($_REQUEST['category'])?$_REQUEST['category']:null;
-
-        $query = array(
-            'page' => '$',
-            'size' => $size,
-        );
-
+        $query    = array('page' => '$');
         // 排序方式
         $order = 'page.php'==$php_file ? 'ASC' : 'DESC';
 
@@ -383,15 +376,15 @@ switch ($method) {
             $where = ' WHERE '.implode(' AND ' , $conditions);
             $sql = "SELECT `postid` FROM `#@_post` {$where} ORDER BY `postid` {$order}";
         }
+        $result = pages_query($sql);
         // 分页地址
         $page_url = PHP_FILE.'?'.http_build_query($query);
-        
-        $result = post_gets($sql, $page, $size);
+
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'.$add_new.'</a></h2>';
         echo   '<form header="POST '.PHP_FILE.'?method=bulk" action="'.PHP_FILE.'" method="get" name="postlist" id="postlist">';
-        table_nav('top',$page_url,$result);
+        table_nav('top',$page_url);
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
         table_thead();
@@ -400,9 +393,9 @@ switch ($method) {
         table_thead();
         echo           '</tfoot>';
         echo           '<tbody>';
-        if (0 < $result['length']) {
-            $posts = (array) $result['datas'];
-            foreach ($posts as $post) {
+        if ($result) {
+            while ($data = pages_fetch($result)) {
+                $post     = post_get($data['postid']);
                 $edit_url = PHP_FILE.'?method=edit&postid='.$post['postid'];
                 // 检查文件是否已生成
                 $post['path'] = post_get_path($post['sortid'],$post['path']);
@@ -448,7 +441,7 @@ switch ($method) {
         }
         echo           '</tbody>';
         echo       '</table>';
-        table_nav('bottom',$page_url,$result);
+        table_nav('bottom',$page_url);
         echo   '</form>';
         echo '</div>';
         include ADMIN_PATH.'/admin-footer.php';
@@ -460,10 +453,9 @@ switch ($method) {
  *
  * @param  $side    top|bottom
  * @param  $url
- * @param  $result
  * @return void
  */
-function table_nav($side,$url,$result) {
+function table_nav($side,$url) {
     global $php_file, $category, $search;
     echo '<div class="table-nav">';
     echo     '<select name="actions">';
@@ -485,7 +477,7 @@ function table_nav($side,$url,$result) {
         echo '</span>';
     }
     if ($side == 'bottom') {
-        echo page_list($url,$result['page'],$result['pages'],$result['total']);
+        echo pages_list($url);
     }
     echo '</div>';
 }
@@ -549,6 +541,7 @@ function post_manage_page($action) {
     $title    = isset($_DATA['title'])?$_DATA['title']:null;
     $path     = isset($_DATA['path'])?$_DATA['path']:$model['path'];
     $content  = isset($_DATA['content'])?$_DATA['content']:null;
+    $comments = isset($_DATA['comments'])?$_DATA['comments']:'Yes';
     $template = isset($_DATA['template'])?$_DATA['template']:null;
     $keywords = isset($_DATA['keywords'])?post_get_keywords($_DATA['keywords']):null;
     $categories  = isset($_DATA['category'])?$_DATA['category']:array();
@@ -640,7 +633,7 @@ function post_manage_page($action) {
         echo           '<tr>';
         echo               '<th><label>'._x('Other','post').'</label></th>';
         echo               '<td>';
-        echo                   '<label for="comments"><input type="checkbox" name="comments" value="Yes" id="comments" cookie="true" />'.__('Allow Comments').'</label>';
+        echo                   '<label for="comments"><input type="checkbox" name="comments" value="Yes" id="comments"'.($comments=='Yes'?' checked="checked"':'').' />'.__('Allow Comments').'</label>';
         echo                   '<label for="createpages"><input type="checkbox" name="create[]" value="pages" id="createpages" cookie="true" />'.__('Update all Pages').'</label>';
         echo                   '<label for="createlists"><input type="checkbox" name="create[]" value="lists" id="createlists" cookie="true" />'.__('Update Category Lists').'</label>';
         echo               '</td>';
@@ -681,7 +674,7 @@ function display_ul_categories($sortid,$categories=array(),$trees=null) {
         $main_checked = $tree['taxonomyid']==$sortid?' checked="checked"':'';
         $hl.= sprintf('<li><input type="radio" name="sortid" value="%d"%s />',$tree['taxonomyid'],$main_checked);
         $hl.= sprintf('<label class="selectit" for="category-%d">',$tree['taxonomyid']);
-        $hl.= sprintf('<input type="checkbox" id="category-%d" name="category[]" value="%d"%s />%s</label>',$tree['taxonomyid'],$tree['taxonomyid'],$checked,$tree['name']);
+        $hl.= sprintf('<input type="checkbox" id="category-%1$d" name="category[]" value="%1$d"%3$s />%2$s</label>',$tree['taxonomyid'],$tree['name'],$checked);
     	if (isset($tree['subs'])) {
     		$hl.= $func($sortid,$categories,$tree['subs']);
     	}

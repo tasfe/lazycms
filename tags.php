@@ -26,9 +26,8 @@ include_modules(); $db = get_conn();
 $inner  = $block_guid = '';
 // 获取参数
 $tag    = isset($_REQUEST['q']) ? trim($_REQUEST['q']) : null;
-$page   = isset($_REQUEST['page']) ? $_REQUEST['page'] : 1;
 // 载入模版
-$html   = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/~tags.html');
+$html   = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('Template-Tags')));
 // 标签块信息
 $block  = tpl_get_block($html,'post,list','list');
 if ($tag && $block) {
@@ -42,23 +41,27 @@ if ($tag && $block) {
     $zebra  = validate_is($zebra,VALIDATE_IS_NUMERIC) ? $zebra : 0;
     $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
     $order  = instr(strtoupper($order),'ASC,DESC') ? $order : 'DESC';
+    // 设置每页显示数
+    pages_init($number);
     // 显示Tags相关的文章列表
     $term   = term_get_byname($tag);
     $tid    = $db->result(sprintf("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `termid`=%d", esc_sql($term['termid'])));
     $sql    = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` RIGHT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' AND `tr`.`taxonomyid`=%d ORDER BY `p`.`postid` %s", $tid, $order);
-    $result = post_gets($sql, $page, $number);
+    $result = pages_query($sql);
     // 解析分页标签
     if (stripos($html,'{pagelist') !== false) {
         $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU',
-            page_list(PHP_FILE.'?q='.rawurlencode($tag).'&page=$', $page, $result['pages'], $result['length']),
+            pages_list(PHP_FILE.'?q='.rawurlencode($tag).'&page=$'),
             $html
         );
     }
     // 数据存在
-    if ($result['length'] > 0) {
+    if ($result) {
+        $i = 0;
         // 取得标签块内容
         $block['inner'] = tpl_get_block_inner($block);
-        foreach ($result['datas'] as $i=>$post) {
+        while ($data = pages_fetch($result)) {
+            $post = post_get($data['postid']);
             if (empty($post)) continue;
             $post['sort'] = taxonomy_get($post['sortid']);
             $post['path'] = post_get_path($post['sortid'],$post['path']);
@@ -106,7 +109,7 @@ if ($tag && $block) {
             }
 
             // 解析变量
-            $inner.= tpl_parse($block['inner']);
+            $inner.= tpl_parse($block['inner']); $i++;
         }
     }
     // 生成标签块的唯一ID

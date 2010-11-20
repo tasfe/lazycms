@@ -52,16 +52,17 @@ function system_tpl_plugin($tag_name,$tag) {
             $result = C('Language');
             break;
         case '$cms': case '$lazycms':
-            $result = '<span id="lazycms">Powered by: <a href="http://lazycms.com/" style="font-weight:bold" target="_blank">LazyCMS</a> '.LAZY_VERSION.'</span>';
+            $result = '<span id="lazycms">Powered by: <a href="http://lazycms.com/" style="font-weight:bold" target="_blank" title="LazyCMS">LazyCMS</a> '.LAZY_VERSION.'</span>';
             break;
         case '$guide':
             $name  = tpl_get_attr($tag,'name');
             $guide = tpl_get_var('guide');
             if (!$name) $name = __('Home');
+            $name = esc_html($name);
             if ($guide) {
-                $result = '<a href="'.ROOT.'">'.$name.'</a> &gt;&gt; '.$guide;
+                $result = '<a href="'.ROOT.'" title="'.$name.'">'.$name.'</a> &gt;&gt; '.$guide;
             } else {
-                $result = '<a href="'.ROOT.'">'.$name.'</a> &gt;&gt; '.tpl_get_var('title');
+                $result = '<a href="'.ROOT.'" title="'.$name.'">'.$name.'</a> &gt;&gt; '.tpl_get_var('title');
             }
             break;
         case '$jquery':
@@ -185,7 +186,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
                 'digg'     => $post['digg'],
                 'title'    => $post['title'],
                 'path'     => ROOT.$post['path'],
-                'datetime' => $post['datetime'],
+                'datet'    => $post['datetime'],
                 'edittime' => $post['edittime'],
                 'keywords' => $post['keywords'],
                 'description' => $post['description'],
@@ -221,6 +222,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
     }
     return $result;
 }
+if (!function_exists('system_category_guide')) :
 /**
  * 生成导航
  *
@@ -230,13 +232,14 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
 function system_category_guide($sortid) {
     if (empty($sortid)) return ; $result = '';
     if ($taxonomy = taxonomy_get($sortid)) {
-        $result = '<a href="'.ROOT.$taxonomy['path'].'/">'.esc_html($taxonomy['name']).'</a>';
+        $result = '<a href="'.ROOT.$taxonomy['path'].'/" title="'.esc_html($taxonomy['name']).'">'.esc_html($taxonomy['name']).'</a>';
         if ($taxonomy['parent']) {
             $result = system_category_guide($taxonomy['parent'])." &gt;&gt; ".$result;
         }
     }
     return $result;
 }
+endif;
 /**
  * 查询模版路径
  *

@@ -33,7 +33,9 @@ if (validate_is_post()) {
         }
     }
     unset($options['referer']);
-    validate_check('SiteTitle',VALIDATE_EMPTY,__('Please enter the site name.'));
+    validate_check('SiteTitle',VALIDATE_EMPTY,__('Please input the Site Title.'));
+    validate_check('TemplateSuffixs',VALIDATE_EMPTY,__('Please input the Template suffix.'));
+    validate_check('HTMLFileSuffix',VALIDATE_EMPTY,__('Please input the HTML file suffix.'));
     if (validate_is_ok()) {
         C($options);
     }
@@ -41,6 +43,7 @@ if (validate_is_post()) {
 } else {
     // 标题
     admin_head('title',__('General Settings'));
+    admin_head('styles', array('css/options'));
     admin_head('scripts',array('js/options'));
     admin_head('loadevents','options_init');
 
@@ -64,16 +67,28 @@ if (validate_is_post()) {
     echo               '</td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="Template">'._x('Template','setting').'</label></th>';
-    echo               '<td><select name="Template" id="Template">';
-    echo                       options(TEMPLATE,'dir','<option value="#value#"#selected#>#name#</option>',C('Template'));
+    echo               '<th><label for="timezone">'._x('Time zone','setting').'</label></th>';
+    echo               '<td>';
+    echo                   '<select name="Timezone" id="timezone">';
+    foreach (time_zone_list() as $name=>$zones) {
+        echo                   '<optgroup label="'.$name.'">';
+        foreach ($zones as $k=>$v) {
+            $selected = C('Timezone')==$name.'/'.$k ? ' selected="selected"' : '';
+            echo                   '<option value="'.$name.'/'.$k.'"'.$selected.'>'.$v.'</option>';
+        }
+        echo                   '</optgroup>';
+    }
     echo                   '</select>';
+    $timezone = time_zone_set('UTC');
+    echo                   '<span class="utc-time">'.sprintf(__('<abbr title="Coordinated Universal Time">UTC</abbr> time is <code>%s</code>'), date('Y-m-d H:i:s',time())).'</span>';
+    time_zone_set($timezone);
+    echo                   '<span class="local-time">'.sprintf(__('Local time is <code>%s</code>'), date('Y-m-d H:i:s',time())).'</span>';
     echo               '</td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="Template-404">'.__('404 Template').'</label></th>';
-    echo               '<td><select name="Template-404" id="Template-404">';
-    echo                       options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',C('Template-404'));
+    echo               '<th><label for="Template">'._x('Template','setting').'</label></th>';
+    echo               '<td><select name="Template" id="Template">';
+    echo                       options(TEMPLATE,'dir','<option value="#value#"#selected#>#name#</option>',C('Template'));
     echo                   '</select>';
     echo               '</td>';
     echo           '</tr>';
@@ -95,13 +110,6 @@ if (validate_is_post()) {
     echo               '<td>';
     echo                   '<label><input name="Compress" type="radio" value="1"'.(C('Compress')?' checked="checked"':'').' />'.__('Enable').'</label>';
     echo                   '<label><input name="Compress" type="radio" value="0"'.(!C('Compress')?' checked="checked"':'').' />'.__('Disable').'</label>';
-    echo               '</td>';
-    echo           '</tr>';
-    echo           '<tr>';
-    echo               '<th><label>'.__('Tags Service').'<div class="resume">'.__('(Get the Network tags of service)').'</div></label></th>';
-    echo               '<td>';
-    echo                   '<label><input name="Tags-Service" type="radio" value="1"'.(C('Tags-Service')?' checked="checked"':'').' />'.__('Enable').'</label>';
-    echo                   '<label><input name="Tags-Service" type="radio" value="0"'.(!C('Tags-Service')?' checked="checked"':'').' />'.__('Disable').'</label>';
     echo               '</td>';
     echo           '</tr>';
     echo       '</table>';

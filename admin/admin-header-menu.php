@@ -30,6 +30,8 @@
             array(__('Models'),'model.php','model-list'),
             array(_x('Add New','model'),'model.php?method=new','model-new'),
         )),
+
+        'comments' => array(__('Comments'),'comment.php','c8'),
         
         '------------------------------------------------------------',
         
@@ -50,6 +52,7 @@
 
         'options'  => array(__('Settings'),'options/general.php','a5',array(
             array(__('General'),'options/general.php','option-general'),
+            array(_x('Posts','setting'),'options/posts.php','option-posts'),
         )),
     ));
     ?>

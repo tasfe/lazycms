@@ -173,7 +173,7 @@ class Keyword {
                             $pattern = '/'.preg_quote($sub_str,'/').'(?![^<]*<\/(a|b|strong|i|em)>)/iU';
                             if (preg_match($pattern, $content)) {
                                 $is_links[$sub_str] = 1;
-                                $content = preg_replace($pattern,'<a href="'.str_replace('$', $sub_str, $url).'">'.$sub_str.'</a>', $content, 1);
+                                $content = preg_replace($pattern,'<a href="'.str_replace('$', $sub_str, $url).'" title="'.$sub_str.'">'.$sub_str.'</a>', $content, 1);
                                 $count++;
                             }
                         }

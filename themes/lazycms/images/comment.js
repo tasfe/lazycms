@@ -1,4 +1,4 @@
-var cmtstate, replyurl = ajaxview = comment = '';
+var cmtstate, replyurl = ajaxinfo = comment = '';
 var scripts = document.getElementsByTagName("script"); eval(scripts[ scripts.length - 1 ].innerHTML);
 // 允许评论才显示
 if (cmtstate=='Yes') {
@@ -17,7 +17,7 @@ if (cmtstate=='Yes') {
     comment+= '</div>';
 
     document.write(comment);
-    document.write('<script type="text/javascript" src="' + ajaxview + '&callback=comment_ajax_view"><\/script>');
+    document.write('<script type="text/javascript" src="' + ajaxinfo + '&callback=comment_ajax_info"><\/script>');
 
     $('form#cmt_form').ajaxSubmit(function(r){
         // TODO 刷新评论数
@@ -29,7 +29,7 @@ if (cmtstate=='Yes') {
  *
  * @param data
  */
-function comment_ajax_view(data) {
+function comment_ajax_info(data) {
     var wrap = $('form#cmt_form');
     $('div.top em:eq(0)',wrap).text(data[0]);
     $('div.top em:eq(1)',wrap).text(data[1]);

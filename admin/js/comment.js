@@ -17,28 +17,7 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-// 页面初始化
-function publish_init() {
-	var form = $('form#publish');
-    // 绑定全选事件
-    $('button[rel=select]',form).click(function(){
-        $('input[name^=category]:checkbox',form).each(function(){
-            this.checked = !this.checked;
-        });
-    });
-    // 提交事件
-    form.ajaxSubmit();
-}
-// 进程管理
-function publish_list() {
+function comment_list_init() {
 	// 绑定提交事件
-	$('form#publishlist').actions();
-}
-// 删除进程
-function publish_delete(pubid){
-    LazyCMS.confirm(_('Confirm Delete?'),function(r){
-        if (r) {
-            LazyCMS.postAction('publish.php', {method:'bulk', action:'delete'}, pubid);
-        }
-    });
+	$('#comments').actions();
 }

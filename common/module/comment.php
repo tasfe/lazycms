@@ -49,3 +49,28 @@ function comment_add($postid,$content,$parent=0,$user=null) {
         'approved'=> 1,
     ));
 }
+
+function comment_create($postid) {
+    $postid = intval($postid);
+    if (!$postid) return false;
+    if ($post = post_get($postid)) {
+        // 加载模版
+        $html  = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('Template-Comments')));
+        // 标签块信息
+        $block  = tpl_get_block($html,'comments','list');
+        if ($block) {
+            // 每页条数
+            $number = tpl_get_attr($block['tag'],'number');
+            // 排序方式
+            $order  = tpl_get_attr($block['tag'],'order');
+            // 斑马线实现
+            $zebra  = tpl_get_attr($block['tag'],'zebra');
+            // 校验数据
+            $zebra  = validate_is($zebra,VALIDATE_IS_NUMERIC) ? $zebra : 0;
+            $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
+            $order  = instr(strtoupper($order),'ASC,DESC') ? $order : 'DESC';
+            // sql
+            $sql = sprintf("SELECT * FROM `#@_comments` WHERE `postid`=%d ORDER BY `date` DESC");
+        }
+    }
+}

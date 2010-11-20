@@ -681,6 +681,20 @@ window._ = LazyCMS.translate;
     $.fn.actions = function(callback) {
         // 取得 action 地址
         var form   = $(this);
+
+        // 绑定全选事件
+        $('input[name=select]',form).click(function(){
+            $('input[name^=list]:checkbox,input[name=select]:checkbox',form).attr('checked',this.checked);
+        });
+        // 表格背景变色
+        $('tbody tr',form).hover(function(){
+            $('td',this).css({'background-color':'#FFFFCC'});
+            $('.row-actions',this).css({'visibility': 'visible'});
+        },function(){
+            $('td',this).css({'background-color':'#FFFFFF'});
+            $('.row-actions',this).css({'visibility': 'hidden'});
+        });
+
         var header = form.attr('header'), method = form.attr('method'),
             url    = header && $.trim(header.substr(header.indexOf(' '))) || form.attr('action');
             method = header && $.trim(header.substring(0,header.indexOf(' '))) || method;

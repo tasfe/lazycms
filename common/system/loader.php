@@ -60,6 +60,7 @@ class LazyLoader {
             'model'  => array(ADMIN_PATH.'/css/model.css'),
             'post'   => array(ADMIN_PATH.'/css/post.css',array('xheditor.plugins')),
             'publish' => array(ADMIN_PATH.'/css/publish.css'),
+            'options' => array(ADMIN_PATH.'/css/options.css'),
             'categories' => array(ADMIN_PATH.'/css/categories.css'),
             'xheditor.plugins' => array(COM_PATH.'/css/xheditor.plugins.css'),
         );
@@ -89,7 +90,7 @@ class LazyLoader {
             'post'          => array(ADMIN_PATH.'/js/post.js'),
             'options'       => array(ADMIN_PATH.'/js/options.js'),
             'publish'       => array(ADMIN_PATH.'/js/publish.js'),
-            'message'       => array(ADMIN_PATH.'/js/message.js'),
+            'comment'       => array(ADMIN_PATH.'/js/comment.js'),
             'xheditor'      => array(COM_PATH.'/editor/xheditor.js',array('xheditor.plugins')),
             'xheditor.plugins' => array(COM_PATH.'/js/xheditor.plugins.js'),
         );

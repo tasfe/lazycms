@@ -400,15 +400,19 @@ function install_defaults() {
     // 默认设置
     $options = array(
         // 2.0
-        'Template' => 'lazycms',
-        'Template-404' => '~404.html',
-        'TemplateSuffixs' => 'htm,html',
-        'HTMLFileSuffix' => '.html',
-        'Language' => 'zh-CN',
         'SiteTitle' => __('My Site'),
+        'Language' => 'zh-CN',
         'Compress' => 1,
         'Tags-Service' => 1,
         'Installed' => time(),
+        'Timezone' => 'Asia/Shanghai',
+        'Template' => 'lazycms',
+        'Template-404' => '~404.html',
+        'Template-Tags' => '~tags.html',
+        'Template-Comments' => '~comments.html',
+        'TemplateSuffixs' => 'htm,html',
+        'HTMLFileSuffix' => '.html',
+        'Comments-Path' => 'comments/',
     );
     // 覆盖或升级设置
     foreach($options as $k=>$v) {

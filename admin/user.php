@@ -164,21 +164,12 @@ switch ($method) {
 	default:
 	    current_user_can('user-list');
 	    admin_head('loadevents','user_list_init');
-        $page   = isset($_REQUEST['page'])?$_REQUEST['page']:1;
-        $size   = isset($_REQUEST['size'])?$_REQUEST['size']:10;
-        $query = array(
-            'page' => '$',
-            'size' => $size,
-        );
-        // 分页地址
-        $page_url = PHP_FILE.'?'.http_build_query($query);
-        $result   = user_gets("SELECT `userid` FROM `#@_user_meta` WHERE `key`='Administrator' AND `VALUE`='Yes' ORDER BY `userid` ASC", $page, $size);
-        $users    = (array) $result['datas'];
+        $result = pages_query("SELECT `userid` FROM `#@_user_meta` WHERE `key`='Administrator' AND `VALUE`='Yes' ORDER BY `userid` ASC");
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
         echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'._x('Add New','user').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="userlist" id="userlist">';
-        table_nav($page_url,$result);
+        table_nav();
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
         table_thead();
@@ -187,7 +178,8 @@ switch ($method) {
         table_thead();
         echo           '</tfoot>';
         echo           '<tbody>';
-        foreach ($users as $user) {
+        while ($data = pages_fetch($result)) {
+            $user = user_get_byid($data['userid']);
             if ($user['userid']==$_USER['userid']) {
             	$href = ADMIN.'profile.php?referer='.PHP_FILE;
             	$actions = '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a></span>';
@@ -206,7 +198,7 @@ switch ($method) {
         }
         echo           '</tbody>';
         echo       '</table>';
-        table_nav($page_url,$result);
+        table_nav();
         echo   '</form>';
         echo '</div>';
         include ADMIN_PATH.'/admin-footer.php';
@@ -217,14 +209,18 @@ switch ($method) {
  * 批量操作
  *
  */
-function table_nav($url,$result) {
+function table_nav() {
+    // 分页地址
+    $page_url = PHP_FILE.'?'.http_build_query(array(
+        'page' => '$',
+    ));
     echo '<div class="table-nav">';
     echo     '<select name="actions">';
     echo         '<option value="">'.__('Bulk Actions').'</option>';
     echo         '<option value="delete">'.__('Delete').'</option>';
     echo     '</select>';
     echo     '<button type="button">'.__('Apply').'</button>';
-    echo     page_list($url,$result['page'],$result['pages'],$result['total']);
+    echo     pages_list($page_url);
     echo '</div>';
 }
 /**
