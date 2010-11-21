@@ -24,6 +24,7 @@ require dirname(__FILE__).'/admin.php';
 $_USER = user_current();
 // 设置标题
 admin_head('title',__('Comments'));
+admin_head('styles', array('css/comment'));
 admin_head('scripts',array('js/comment'));
 
 // 方法
@@ -32,15 +33,45 @@ $method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 switch ($method) {
     default:
         admin_head('loadevents','comment_list_init');
+        $where  = 'WHERE 1';
         $query  = array('page' => '$');
-        $result = pages_query("SELECT * FROM `#@_comments` ORDER BY `commentid` DESC");
+        $status = isset($_GET['status'])  ? $_GET['status']  : '';
+        if ($status) {
+            $query['status'] = $status;
+            if ($status == 'moderated') {
+                $approved = '0';
+            } elseif ($status == 'approved') {
+                $approved = '1';
+            } else {
+                $approved = $status;
+            }
+            $where.= sprintf(" AND `approved`='%s'", $approved);
+        }
+        $postid = isset($_GET['p'])  ? $_GET['p']  : null;
+        if ($postid) {
+            $query['p'] = $postid;
+            $where.= ' AND `postid`='.esc_sql($postid);
+        }
+        $ipaddr = isset($_GET['ip']) ? $_GET['ip'] : null;
+        if ($ipaddr) {
+            $query['ip'] = $ipaddr;
+            $where.= ' AND `ip`='.esc_sql(sprintf('%u', ip2long($ipaddr)));
+        }
+        
+        $result = pages_query("SELECT * FROM `#@_comments` {$where} ORDER BY `commentid` DESC");
         // 分页地址
         $page_url = PHP_FILE.'?'.http_build_query($query);
+        $pend_len = comment_count(0, '0');
         // 加载头部
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'._x('Add New','comment').'</a></h2>';
+        echo   '<h2>'.admin_head('title').'</h2>';
         echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="comments" id="comments">';
+        echo       '<div class="submenu">';
+        echo           '<a'.($status==''?' class="current"':'').' href="'.PHP_FILE.'">'._x('All','comments').'</a> | ';
+        echo           '<a'.($status=='moderated'?' class="current"':'').' href="'.PHP_FILE.'?status=moderated">'._x('Pending','comments').'</a> '.($pend_len?' <span>('.$pend_len.')</span> ':'').'| ';
+        echo           '<a'.($status=='approved'?' class="current"':'').' href="'.PHP_FILE.'?status=approved">'.__('Approved').'</a>';
+        echo       '</div>';
         table_nav($page_url);
         echo       '<table class="data-table" cellspacing="0">';
         echo           '<thead>';
@@ -52,17 +83,44 @@ switch ($method) {
         echo           '<tbody>';
         if ($result) {
             while ($data = pages_fetch($result)) {
-                $data['author']  = $data['author'] ? $data['author'] : __('Anonymous');
-                $post = post_get($data['postid']);
-                $actions = '<span class="unapprove"><a href="javascript:;" onclick="">'.__('Unapprove').'</a> | </span>';
+                $data['avatar'] = get_avatar($data['email'], 32, 'mystery');
+                $data['author'] = $data['author'] ? $data['author'] : __('Anonymous');
+                $data['count']  = comment_count($data['postid']);
+                $data['ipaddr'] = long2ip($data['ip']);
+                if ($data['approved']==0) {
+                    $actions = '<span class="approve"><a href="javascript:;" onclick="">'.__('Approve').'</a> | </span>';
+                } elseif ($data['approved']==1) {
+                    $actions = '<span class="unapprove"><a href="javascript:;" onclick="">'.__('Unapprove').'</a> | </span>';
+                }
                 $actions.= '<span class="reply"><a href="javascript:;">'.__('Reply').'</a> | </span>';
                 $actions.= '<span class="edit"><a href="javascript:;">'.__('Edit').'</a> | </span>';
-                $actions.= '<span class="delete"><a href="javascript:;" onclick="post_delete('.$post['postid'].')">'.__('Delete').'</a></span>';
+                $actions.= '<span class="delete"><a href="javascript:;" onclick="">'.__('Delete').'</a></span>';
                 echo       '<tr>';
                 echo           '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$data['commentid'].'" /></td>';
-                echo           '<td><strong>'.$data['author'].'</strong></td>';
+                echo           '<td>';
+                echo                '<div class="avatar"><img src="'.$data['avatar'].'" width="32" height="32" alt="'.esc_html($data['author']).'" /></div>';
+                echo                '<strong>'.$data['author'].'</strong>';
+                if ($data['url'] && $data['url']!='http://') {
+                    $url = !strncmp($data['url'],'http://',7) ? substr($data['url'],7) : $data['url'];
+                    echo            '<br /><a href="'.$data['url'].'" target="_blank">'.$url.'</a>';
+                }
+                if ($data['email']) {
+                    echo            '<br /><a href="mailto:'.$data['email'].'">'.$data['email'].'</a>';
+                }
+                echo            '<br /><a href="'.PHP_FILE.'?ip='.$data['ipaddr'].'" title="'.esc_html(ip2addr($data['ipaddr'])).'">'.$data['ipaddr'].'</a>';
+                echo           '</td>';
                 echo           '<td>'.sprintf(__('Submitted on: <b>%s</b>'),date('Y-m-d H:i:s',$data['date'])).'<br />'.$data['content'].'<br/><div class="row-actions">'.$actions.'</div></td>';
-                echo           '<td><a href="'.ADMIN.'post.php?method=edit&postid='.$data['postid'].'">'.$post['title'].'</a></td>';
+                if ($post = post_get($data['postid'])) {
+                    $path = post_get_path($post['sortid'],$post['path']);
+                    echo       '<td><a href="'.ADMIN.'post.php?method=edit&postid='.$data['postid'].'">'.$post['title'].'</a><br />';
+                    echo           '<a class="comment-count" href="'.PHP_FILE.'?p='.$data['postid'].'"><span>'.$data['count'].'</span></a>';
+                    echo           '<a href="'.ROOT.$path.'#comment-'.$data['commentid'].'" target="_blank">#</a>';
+                    echo       '</td>';
+                } else {
+                    echo       '<td>'.__('The post has been deleted.').'<br />';
+                    echo           '<a class="comment-count" href="'.PHP_FILE.'?p='.$data['postid'].'"><span>'.$data['count'].'</span></a>';                    
+                    echo       '</td>';
+                }
                 echo       '</tr>';
             }
         } else {

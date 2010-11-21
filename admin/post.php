@@ -397,12 +397,13 @@ switch ($method) {
             while ($data = pages_fetch($result)) {
                 $post     = post_get($data['postid']);
                 $edit_url = PHP_FILE.'?method=edit&postid='.$post['postid'];
+                $post['count'] = comment_count($post['postid']);
                 // 检查文件是否已生成
                 $post['path'] = post_get_path($post['sortid'],$post['path']);
                 if (is_file(ABS_PATH.'/'.$post['path'])) {
-                    $browse   = '<img class="b6 os" src="'.ADMIN.'images/t.gif" /><a href="'.ROOT.$post['path'].'" target="_blank">'.ROOT.$post['path'].'</a>';
+                    $browse   = get_icon('b6').'<a href="'.ROOT.$post['path'].'" target="_blank">'.ROOT.$post['path'].'</a>';
                 } else {
-                    $browse   = '<img class="b7 os" src="'.ADMIN.'images/t.gif" /><a href="javascript:;" onclick="post_create('.$post['postid'].')">'.ROOT.$post['path'].'</a>';
+                    $browse   = get_icon('b7').'<a href="javascript:;" onclick="post_create('.$post['postid'].')">'.ROOT.$post['path'].'</a>';
                 }
                 $actions = '<span class="edit"><a href="'.$edit_url.'">'.__('Edit').'</a> | </span>';
                 $actions.= '<span class="create"><a href="javascript:;" onclick="post_create('.$post['postid'].')">'.__('Create').'</a> | </span>';
@@ -432,8 +433,8 @@ switch ($method) {
                 }
                 echo empty($tags) ? '<td>'.__('None').'</td>' : '<td>'.implode(',' , $tags).'</td>';
                 
-                echo    '<td><div title="'.date('Y-m-d H:i:s',$post['datetime']).'">'.date('Y-m-d',$post['datetime']).'</div></td>';
-                echo    '<td><img class="'.$post['approved'].' os" src="'.ADMIN.'images/t.gif" /></td>';
+                echo    '<td><a class="comment-count'.($post['count']?' exist':'').'" href="'.ADMIN.'comment.php?p='.$post['postid'].'"><span>'.$post['count'].'</span></a></td>';
+                echo    '<td><div title="'.date('Y-m-d H:i:s',$post['datetime']).'">'.date('Y-m-d',$post['datetime']).'</div></td>';//'.get_icon($post['approved']).'
                 echo '</tr>';
             }
         } else {
@@ -495,8 +496,8 @@ function table_thead() {
         echo '<th class="wp15">'._x('Categories','post').'</th>';
     }
     echo     '<th class="wp15">'._x('Tags','post').'</th>';
+    echo     '<th class="w50">'.get_icon('c9').'</th>';
     echo     '<th class="w100">'._x('Date','post').'</th>';
-    echo     '<th class="w30">'._x('State','post').'</th>';
     echo '</tr>';
 }
 

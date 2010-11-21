@@ -192,7 +192,7 @@ switch ($method) {
             echo               '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$user['userid'].'" /></td>';
             echo               '<td><strong><a href="'.$href.'">'.$user['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
             echo               '<td>'.$user['mail'].'</td>';
-            echo               '<td><img class="c'.($user['status']+3).' os" src="'.ADMIN.'images/t.gif" /></td>';
+            echo               '<td>'.get_icon('c'.($user['status']+3)).'</td>';
             echo               '<td>'.$user['registered'].'</td>';
             echo           '</tr>';
         }

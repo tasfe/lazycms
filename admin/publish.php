@@ -69,7 +69,7 @@ switch ($method) {
                 echo           '<td>'.number_format($data['complete']).'</td>';
                 echo           '<td class="w150"><div class="rate"><div class="inner" style="width:'.$rate.'px"></div><div class="text">'.$rate.'%</div></div></td>';
                 echo           '<td>'.time_format('%H:%i:%s,%ms',$data['elapsetime']).'</td>';
-                echo           '<td><img class="c'.($data['state']+1).' os" src="'.ADMIN.'images/t.gif"></td>';
+                echo           '<td>'.get_icon('c'.($data['state']+1)).'</td>';
                 echo       '</tr>';
             }
         } else {

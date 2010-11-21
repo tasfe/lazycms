@@ -316,7 +316,7 @@ function admin_menu($menus) {
             if ($is_first) $class.= ' first';
             if ($is_last)  $class.= ' last';
             echo '<li id="menu-'.$k.'" class="head'.$class.$menu['current'].$menu['expand'].'">';
-            echo '<a href="'.$menu['link'].'" class="image"><img src="'.ADMIN.'images/t.gif" class="'.$menu['icon'].' os" /></a>';
+            echo '<a href="'.$menu['link'].'" class="image">'.get_icon($menu['icon']).'</a>';
             echo '<a href="'.$menu['link'].'" class="text'.$class.'">'.$menu['text'].'</a>';
             // 展示子菜单
             if (!empty($menu['submenus'])) {

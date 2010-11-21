@@ -18,15 +18,14 @@
  * +---------------------------------------------------------------------------+
  */
 
-ul.categories{ width:450px; max-height:200px; border:1px solid #7F9DB9; -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px; border-collapse:separate; overflow:auto; padding:5px; margin:0; _height:expression(this.scrollHeight > 200 ? "200px" : "auto"); }
-ul.categories li{ list-style:none; }
-ul.categories li input{ margin-right:3px; }
-ul.categories ul.children{ padding:0; margin:0 0 0 15px; }
+.data-table b{ color:#0B55C4; font-weight:normal; }
+
+div.avatar{ float:left; margin-right:6px; }
+
+span.unapprove a{color:#D98500;}
+span.approve a{color:#006505;}
 
 a.comment-count{ height:1.3em; line-height:1.1em; margin-right:5px; color:#FFFFFF; text-decoration:none; background:url(../images/bubble_bg.gif) no-repeat center -80px; cursor:pointer; padding:0 0 6px; }
 a.comment-count span{ height:1.7em; line-height:1.7em; min-width:0.7em; background-color:#BBBBBB; -moz-border-radius:5px 5px 5px 5px; cursor:pointer; display:inline-block; font-size:9px; font-weight:bold; padding:0 6px;}
 a.comment-count:hover{ background-position:center -3px; }
 a.comment-count:hover span{ background-color:#D54E21; }
-
-a.comment-count.exist { background-position:center -55px; }
-a.comment-count.exist span { background-color:#21759B; }

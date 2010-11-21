@@ -61,6 +61,7 @@ class LazyLoader {
             'post'   => array(ADMIN_PATH.'/css/post.css',array('xheditor.plugins')),
             'publish' => array(ADMIN_PATH.'/css/publish.css'),
             'options' => array(ADMIN_PATH.'/css/options.css'),
+            'comment' => array(ADMIN_PATH.'/css/comment.css'),
             'categories' => array(ADMIN_PATH.'/css/categories.css'),
             'xheditor.plugins' => array(COM_PATH.'/css/xheditor.plugins.css'),
         );

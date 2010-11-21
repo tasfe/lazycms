@@ -49,6 +49,32 @@ function comment_add($postid,$content,$parent=0,$user=null) {
         'approved'=> 1,
     ));
 }
+/**
+ * 评论数
+ *
+ * @param int $postid
+ * @return int
+ */
+function comment_count($postid,$status='all') {
+    $db = get_conn(); $where = 'WHERE 1';
+    if ($postid) {
+        $where.= sprintf(" AND `postid`='%d'", $postid);
+    }
+    if ($status != 'all') {
+        $where.= sprintf(" AND `approved`='%s'", strval($status));
+    }
+    return $db->result("SELECT COUNT(`commentid`) FROM `#@_comments` {$where};");
+}
+/**
+ * 评论人数
+ *
+ * @param int $postid
+ * @return int
+ */
+function comment_people($postid) {
+    $db = get_conn();
+    return $db->result(sprintf("SELECT COUNT(DISTINCT(`author`)) FROM `#@_comments` WHERE `postid`=%d;", $postid));    
+}
 
 function comment_create($postid) {
     $postid = intval($postid);

@@ -220,7 +220,7 @@ switch ($method) {
 	       __('Custom validation')          => 'CUSTOM|'.__('Error Message'),
 	    );
 	    $hl = '<div class="wrapper">';
-	    $hl.= '<a href="javascript:;" class="help"><img class="f1 os" src="'.ADMIN.'images/t.gif" /></a>';
+	    $hl.= '<a href="javascript:;" class="help">'.get_icon('f1').'</a>';
 	    $hl.= '<form id="model-field-table">';
 	    $hl.= '<table class="model-field-table">';
 	    $hl.=    '<tr><th><label for="field_l">'._x('Label','model').'</label></th><td><input class="text" id="field_l" name="l" type="text" size="35" value="'.$l.'" />';
@@ -249,7 +249,7 @@ switch ($method) {
 	    foreach ($verify as $text=>$val) {
             $hl.=       '<option value="'.$val.'">'.$text.'</option>';
         }
-	    $hl.=        '</select>&nbsp;<a href="javascript:;" rule="+"><img class="b3 os" src="'.ADMIN.'images/t.gif" /></a><a href="javascript:;" rule="-"><img class="b4 os" src="'.ADMIN.'images/t.gif" /></a>';
+	    $hl.=        '</select>&nbsp;<a href="javascript:;" rule="+">'.get_icon('b3').'</a><a href="javascript:;" rule="-">'.get_icon('b4').'</a>';
 	    $hl.=        '<br/><textarea class="text" name="v" id="field_v" rows="3" cols="40">'.$v.'</textarea></td>';
 	    $hl.=    '</tr>';
 	    $hl.=    '<tr id="field_serialize" class="hide"><th class="vt"><label for="field_s">'._x('Serialize','model').'</label></th><td><textarea class="text" name="s" id="field_s" rows="3" cols="40">'.$s.'</textarea></td></tr>';
@@ -308,7 +308,7 @@ switch ($method) {
                 echo           '<td><strong><a href="'.$href.'">'.$model['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
                 echo           '<td>'.$model['code'].'</td>';
                 echo           '<td>'.code2lang($model['language']).'</td>';
-                echo           '<td><img class="c'.($model['state']+3).' os" src="'.ADMIN.'images/t.gif" /></td>';
+                echo           '<td>'.get_icon('c'.($model['state']+3)).'</td>';
                 echo       '</tr>';
             }
         } else {

@@ -217,8 +217,9 @@ function post_get_keywords($keywords) {
 /**
  * 查询文章路径
  *
- * @param  $sortid
- * @param  $path
+ * @param int $sortid
+ * @param string $path
+ * @param string $prefix
  * @return string
  */
 function post_get_path($sortid,$path,$prefix='') {
@@ -562,9 +563,8 @@ function post_gateway_views() {
  */
 function post_gateway_ajax_comment() {
     $postid  = isset($_REQUEST['postid'])  ? $_REQUEST['postid']  : 0;
-    $db = get_conn();
-    $comment_count  = $db->result(sprintf("SELECT COUNT(`commentid`) FROM `#@_comments` WHERE `postid`=%d;", $postid));
-    $comment_people = $db->result(sprintf("SELECT COUNT(DISTINCT(`author`)) FROM `#@_comments` WHERE `postid`=%d;", $postid));
+    $comment_count  = comment_count($postid);
+    $comment_people = comment_people($postid);
     return array($comment_count,$comment_people);
 }
 

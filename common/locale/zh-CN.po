@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-11-20 00:12+0800\n"
+"POT-Creation-Date: 2010-11-22 00:32+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.net>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
@@ -18,233 +18,233 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: common/functions.php:287
+#: common/functions.php:228
 msgid "Back"
 msgstr "返回"
 
-#: common/functions.php:369
-#: common/functions.php:377
+#: common/functions.php:312
+#: common/functions.php:320
 msgid "System Error"
 msgstr "系统错误"
 
-#: common/functions.php:455
+#: common/functions.php:398
 #, php-format
 msgid "<a href=\"%s\">%d seconds after goto %s.</a>"
 msgstr "<a href=\"%s\">%d 秒后转向 %s。</a>"
 
-#: common/functions.php:473
+#: common/functions.php:416
 msgid "Redirecting..."
 msgstr "正在重定向..."
 
-#: common/functions.php:1043
+#: common/functions.php:1047
 msgid "Afrikaans"
 msgstr "布尔文(南非洲的荷兰文)"
 
-#: common/functions.php:1044
+#: common/functions.php:1048
 msgid "Albanian"
 msgstr "阿尔巴尼亚文"
 
-#: common/functions.php:1045
+#: common/functions.php:1049
 msgid "Arabic"
 msgstr "阿拉伯文"
 
-#: common/functions.php:1046
+#: common/functions.php:1050
 msgid "Belarusian"
 msgstr "白俄罗斯语"
 
-#: common/functions.php:1047
+#: common/functions.php:1051
 msgid "Bulgarian"
 msgstr "保加利亚文"
 
-#: common/functions.php:1048
+#: common/functions.php:1052
 msgid "Catalan"
 msgstr "加泰罗尼亚语"
 
-#: common/functions.php:1049
+#: common/functions.php:1053
 msgid "Chinese (Simplified)"
 msgstr "中文(简体)"
 
-#: common/functions.php:1050
+#: common/functions.php:1054
 msgid "Chinese (Traditional)"
 msgstr "中文(繁体)"
 
-#: common/functions.php:1051
+#: common/functions.php:1055
 msgid "Croatian"
 msgstr "克罗地亚文"
 
-#: common/functions.php:1052
+#: common/functions.php:1056
 msgid "Czech"
 msgstr "捷克语"
 
-#: common/functions.php:1053
+#: common/functions.php:1057
 msgid "Danish"
 msgstr "丹麦语"
 
-#: common/functions.php:1054
+#: common/functions.php:1058
 msgid "Dutch"
 msgstr "荷兰语"
 
-#: common/functions.php:1055
+#: common/functions.php:1059
 msgid "English"
 msgstr "英语"
 
-#: common/functions.php:1056
+#: common/functions.php:1060
 msgid "Estonian"
 msgstr "爱沙尼亚语"
 
-#: common/functions.php:1057
+#: common/functions.php:1061
 msgid "Filipino"
 msgstr "菲律宾文"
 
-#: common/functions.php:1058
+#: common/functions.php:1062
 msgid "Finnish"
 msgstr "芬兰语"
 
-#: common/functions.php:1059
+#: common/functions.php:1063
 msgid "French"
 msgstr "法语"
 
-#: common/functions.php:1060
+#: common/functions.php:1064
 msgid "Galician"
 msgstr "加利西亚语"
 
-#: common/functions.php:1061
+#: common/functions.php:1065
 msgid "German"
 msgstr "德语"
 
-#: common/functions.php:1062
+#: common/functions.php:1066
 msgid "Greek"
 msgstr "希腊语"
 
-#: common/functions.php:1063
+#: common/functions.php:1067
 msgid "Hebrew"
 msgstr "希伯来语"
 
-#: common/functions.php:1064
+#: common/functions.php:1068
 msgid "Hindi"
 msgstr "印度文"
 
-#: common/functions.php:1065
+#: common/functions.php:1069
 msgid "Hungarian"
 msgstr "匈牙利语"
 
-#: common/functions.php:1066
+#: common/functions.php:1070
 msgid "Icelandic"
 msgstr "冰岛语"
 
-#: common/functions.php:1067
+#: common/functions.php:1071
 msgid "Indonesian"
 msgstr "印尼文"
 
-#: common/functions.php:1068
+#: common/functions.php:1072
 msgid "Irish"
 msgstr "爱尔兰文"
 
-#: common/functions.php:1069
+#: common/functions.php:1073
 msgid "Italian"
 msgstr "意大利语"
 
-#: common/functions.php:1070
+#: common/functions.php:1074
 msgid "Japanese"
 msgstr "日语"
 
-#: common/functions.php:1071
+#: common/functions.php:1075
 msgid "Korean"
 msgstr "朝鲜语"
 
-#: common/functions.php:1072
+#: common/functions.php:1076
 msgid "Latvian"
 msgstr "拉脱维亚语"
 
-#: common/functions.php:1073
+#: common/functions.php:1077
 msgid "Lithuanian"
 msgstr "立陶宛语"
 
-#: common/functions.php:1074
+#: common/functions.php:1078
 msgid "Macedonian"
 msgstr "马其顿文"
 
-#: common/functions.php:1075
+#: common/functions.php:1079
 msgid "Malay"
 msgstr "马来文"
 
-#: common/functions.php:1076
+#: common/functions.php:1080
 msgid "Maltese"
 msgstr "马耳他文"
 
-#: common/functions.php:1077
+#: common/functions.php:1081
 msgid "Norwegian"
 msgstr "挪威语"
 
-#: common/functions.php:1078
+#: common/functions.php:1082
 msgid "Persian"
 msgstr "波斯语"
 
-#: common/functions.php:1079
+#: common/functions.php:1083
 msgid "Polish"
 msgstr "波兰语"
 
-#: common/functions.php:1080
+#: common/functions.php:1084
 msgid "Portuguese"
 msgstr "葡萄牙语"
 
-#: common/functions.php:1081
+#: common/functions.php:1085
 msgid "Romanian"
 msgstr "罗马尼亚语"
 
-#: common/functions.php:1082
+#: common/functions.php:1086
 msgid "Russian"
 msgstr "俄语"
 
-#: common/functions.php:1083
+#: common/functions.php:1087
 msgid "Serbian"
 msgstr "塞尔维亚文"
 
-#: common/functions.php:1084
+#: common/functions.php:1088
 msgid "Slovak"
 msgstr "斯洛伐克文"
 
-#: common/functions.php:1085
+#: common/functions.php:1089
 msgid "Slovenian"
 msgstr "斯洛文尼亚文"
 
-#: common/functions.php:1086
+#: common/functions.php:1090
 msgid "Spanish"
 msgstr "西班牙语"
 
-#: common/functions.php:1087
+#: common/functions.php:1091
 msgid "Swahili"
 msgstr "非洲的斯瓦希里文"
 
-#: common/functions.php:1088
+#: common/functions.php:1092
 msgid "Swedish"
 msgstr "瑞典语"
 
-#: common/functions.php:1089
+#: common/functions.php:1093
 msgid "Thai"
 msgstr "泰文"
 
-#: common/functions.php:1090
+#: common/functions.php:1094
 msgid "Turkish"
 msgstr "土耳其文"
 
-#: common/functions.php:1091
+#: common/functions.php:1095
 msgid "Ukrainian"
 msgstr "乌克兰文"
 
-#: common/functions.php:1092
+#: common/functions.php:1096
 msgid "Vietnamese"
 msgstr "越南文"
 
-#: common/functions.php:1093
+#: common/functions.php:1097
 msgid "Welsh"
 msgstr "威尔士语"
 
-#: common/functions.php:1094
+#: common/functions.php:1098
 msgid "Yiddish"
 msgstr "意第绪语"
 
-#: common/functions.php:1329
+#: common/functions.php:1333
 msgid "The start position cannot exceed initial string length."
 msgstr "起始位置不能超过初始字符串的长度。"
 
@@ -264,6 +264,14 @@ msgstr "太多的重定向。"
 msgid "Could not open handle for fopen() to %s"
 msgstr "无法打开处理fopen()函数到 %s"
 
+#: common/system/qqwry.php:110
+msgid "Local"
+msgstr "本地"
+
+#: common/system/qqwry.php:148
+msgid "Unknown"
+msgstr "未知"
+
 #: common/system/mysql.php:52
 msgid "Your PHP installation appears to be missing the MySQL extension which is required by LazyCMS."
 msgstr "您的 PHP 似乎缺少 LazyCMS 所需的 MySQL 扩展。"
@@ -279,7 +287,6 @@ msgid "%s database not found!"
 msgstr "%s 数据库不存在！"
 
 #: common/system/mysql.php:117
-#: admin/install.php:73
 msgid "MySQL database version lower than 4.1, please upgrade MySQL!"
 msgstr "MySQL数据库版本低于4.1，请升级MySQL！"
 
@@ -332,19 +339,19 @@ msgstr "文件上传框"
 msgid "You are now logged out, please log in again!"
 msgstr "您现在已经退出，请重新登录！"
 
-#: common/module/post.php:619
+#: common/module/post.php:580
 msgid "The post doesn't exist or has been deleted!"
 msgstr "该文章不存在或已删除！"
 
-#: common/module/post.php:623
+#: common/module/post.php:584
 msgid "The post doesn't comment!"
 msgstr "该文章不能评论！"
 
-#: common/module/post.php:638
+#: common/module/post.php:599
 msgid "Comment on the success!"
 msgstr "发表评论成功！"
 
-#: common/module/post.php:640
+#: common/module/post.php:601
 msgid "Comment failed!"
 msgstr "发表评论失败！"
 
@@ -408,32 +415,25 @@ msgid "File create failed."
 msgstr "文件创建失败。"
 
 #: admin/categories.php:137
-#: admin/model.php:148
-#: admin/publish.php:99
-#: admin/publish.php:117
 msgid "Did not select any item."
 msgstr "没有选择任何项目。"
 
 #: admin/categories.php:145
-#: admin/publish.php:124
 #, php-format
 msgid "Create Lists and Posts:%s"
 msgstr "生成列表和文章：%s"
 
 #: admin/categories.php:149
-#: admin/publish.php:128
 #, php-format
 msgid "Create Lists:%s"
 msgstr "生成列表：%s"
 
 #: admin/categories.php:153
-#: admin/publish.php:132
 #, php-format
 msgid "Create Posts:%s"
 msgstr "生成文章：%s"
 
 #: admin/categories.php:155
-#: admin/publish.php:147
 msgid "Publish process successfully created."
 msgstr "发布进程创建成功。"
 
@@ -442,8 +442,6 @@ msgid "Categories deleted."
 msgstr "分类删除成功。"
 
 #: admin/categories.php:165
-#: admin/model.php:182
-#: admin/publish.php:107
 msgid "Parameter is invalid."
 msgstr "参数错误。"
 
@@ -453,15 +451,10 @@ msgid "Add New"
 msgstr "添加分类"
 
 #: admin/categories.php:188
-#: admin/model.php:315
-#: admin/model.php:447
-#: admin/publish.php:85
 msgid "No record!"
 msgstr "没有记录！"
 
 #: admin/categories.php:206
-#: admin/model.php:333
-#: admin/publish.php:204
 msgid "Bulk Actions"
 msgstr "批量操作"
 
@@ -479,17 +472,10 @@ msgstr "生成文章和列表"
 
 #: admin/categories.php:210
 #: admin/categories.php:242
-#: admin/model.php:305
-#: admin/model.php:337
-#: admin/model.php:436
-#: admin/publish.php:73
-#: admin/publish.php:205
 msgid "Delete"
 msgstr "删除"
 
 #: admin/categories.php:212
-#: admin/model.php:339
-#: admin/publish.php:207
 msgid "Apply"
 msgstr "应用"
 
@@ -515,8 +501,6 @@ msgid "Create List"
 msgstr "生成列表"
 
 #: admin/categories.php:241
-#: admin/model.php:301
-#: admin/model.php:435
 msgid "Edit"
 msgstr "编辑"
 
@@ -531,8 +515,6 @@ msgstr "&mdash; 无父级 &mdash;"
 
 #: admin/categories.php:293
 #: admin/categories.php:297
-#: admin/model.php:389
-#: admin/model.php:397
 msgid "(required)"
 msgstr "(必填)"
 
@@ -541,12 +523,10 @@ msgid "Category ID"
 msgstr "分类ID"
 
 #: admin/categories.php:300
-#: admin/model.php:400
 msgid "MD5 Value"
 msgstr "MD5值"
 
 #: admin/categories.php:301
-#: admin/model.php:401
 msgid "Pinyin"
 msgstr "拼音"
 
@@ -555,7 +535,6 @@ msgid "List Template"
 msgstr "列表模板"
 
 #: admin/categories.php:313
-#: admin/model.php:409
 msgid "Page Template"
 msgstr "内容模板"
 
@@ -586,6 +565,9 @@ msgid "Update Category"
 msgstr "更新分类"
 
 #: admin/model.php:26
+#: admin/admin-header-menu.php:29
+#: admin/admin-header-menu.php:30
+#: admin/admin.php:189
 msgid "Models"
 msgstr "模型管理"
 
@@ -701,6 +683,9 @@ msgid "Same the two fields."
 msgstr "两个字段值不相等。"
 
 #: admin/model.php:216
+#: admin/user.php:234
+#: admin/user.php:273
+#: admin/profile.php:95
 msgid "E-mail"
 msgstr "电子邮箱"
 
@@ -822,10 +807,12 @@ msgid "Insert Google Map"
 msgstr "插入Google地图"
 
 #: admin/model.php:263
+#: admin/admin.php:501
 msgid "Insert Pagebreak"
 msgstr "插入分页符"
 
 #: admin/model.php:264
+#: admin/admin.php:504
 msgid "Remove external links"
 msgstr "移除站外链接"
 
@@ -841,14 +828,19 @@ msgid "Default"
 msgstr "默认值"
 
 #: admin/model.php:276
+#: admin/admin.php:359
 msgid "Save"
 msgstr "保存"
 
 #: admin/model.php:276
+#: admin/admin.php:358
+#: admin/admin.php:388
 msgid "Cancel"
 msgstr "取消"
 
 #: admin/model.php:287
+#: admin/admin-header-menu.php:31
+#: admin/admin.php:191
 msgctxt "model"
 msgid "Add New"
 msgstr "添加模型"
@@ -901,14 +893,17 @@ msgid "Path"
 msgstr "生成规则"
 
 #: admin/model.php:399
+#: admin/post.php:598
 msgid "Post ID"
 msgstr "文章ID"
 
 #: admin/model.php:420
+#: admin/post.php:611
 msgid "Click to toggle"
 msgstr "点击切换"
 
 #: admin/model.php:421
+#: admin/admin.php:195
 msgctxt "model"
 msgid "Fields"
 msgstr "字段管理"
@@ -939,14 +934,20 @@ msgid "You must provide a valid username."
 msgstr "请输入您的管理员名称。"
 
 #: admin/install.php:45
+#: admin/user.php:105
+#: admin/profile.php:44
 msgid "Your passwords do not match. Please try again."
 msgstr "您两次输入的密码不符，请重试。"
 
 #: admin/install.php:48
+#: admin/user.php:97
+#: admin/profile.php:39
 msgid "Please enter an e-mail address."
 msgstr "请输入一个电子邮件地址。"
 
 #: admin/install.php:49
+#: admin/user.php:98
+#: admin/profile.php:40
 msgid "You must provide an e-mail address."
 msgstr "请输入一个有效的电子邮件地址。"
 
@@ -1063,6 +1064,9 @@ msgid "Your MySQL username"
 msgstr "您的 MySQL 用户名"
 
 #: admin/install.php:217
+#: admin/login.php:80
+#: admin/user.php:282
+#: admin/profile.php:109
 msgid "Password"
 msgstr "密码"
 
@@ -1107,6 +1111,10 @@ msgid "Password, twice"
 msgstr "密码，两次"
 
 #: admin/install.php:231
+#: admin/user.php:284
+#: admin/user.php:298
+#: admin/admin.php:371
+#: admin/profile.php:113
 msgid "Strength indicator"
 msgstr "强度"
 
@@ -1135,93 +1143,100 @@ msgid "My Site"
 msgstr "我的站点"
 
 #: admin/publish.php:26
+#: admin/admin-header-menu.php:12
+#: admin/admin.php:170
 msgid "Publish Posts"
 msgstr "页面发布"
 
 #: admin/publish.php:39
-#: admin/publish.php:156
+#: admin/publish.php:147
 msgid "Process list"
 msgstr "进程管理"
 
-#: admin/publish.php:53
-#: admin/publish.php:190
+#: admin/publish.php:44
+#: admin/publish.php:181
 msgctxt "publish"
 msgid "Add New"
 msgstr "添加进程"
 
-#: admin/publish.php:104
+#: admin/publish.php:95
 msgid "Process deleted."
 msgstr "进程删除成功。"
 
-#: admin/publish.php:137
-#: admin/publish.php:167
+#: admin/publish.php:128
+#: admin/publish.php:158
 msgid "Create all Lists"
 msgstr "生成所有列表"
 
-#: admin/publish.php:141
-#: admin/publish.php:166
+#: admin/publish.php:132
+#: admin/publish.php:157
 msgid "Create all Posts"
 msgstr "生成所有文章"
 
-#: admin/publish.php:145
-#: admin/publish.php:165
+#: admin/publish.php:136
+#: admin/publish.php:156
+#: admin/post.php:224
 msgid "Create all Pages"
 msgstr "生成所有页面"
 
-#: admin/publish.php:161
+#: admin/publish.php:152
 msgid "Select you want to publish the items:"
 msgstr "选择你要发布的项目："
 
-#: admin/publish.php:172
+#: admin/publish.php:163
 msgid "Select you want to publish the category:"
 msgstr "选择你要发布的类别："
 
-#: admin/publish.php:178
+#: admin/publish.php:169
 msgid "Create Lists and Posts"
 msgstr "生成列表和文章"
 
-#: admin/publish.php:179
+#: admin/publish.php:170
 msgid "Only Create lists"
 msgstr "只生成列表"
 
-#: admin/publish.php:180
+#: admin/publish.php:171
 msgid "Only Create posts"
 msgstr "只生成文章"
 
-#: admin/publish.php:183
+#: admin/publish.php:174
+#: admin/user.php:310
 msgid "Select / Deselect"
 msgstr "全选 / 反选"
 
-#: admin/publish.php:218
+#: admin/publish.php:214
 msgctxt "publish"
 msgid "Name"
 msgstr "任务"
 
-#: admin/publish.php:219
+#: admin/publish.php:215
 msgctxt "publish"
 msgid "Total"
 msgstr "总数量"
 
-#: admin/publish.php:220
+#: admin/publish.php:216
 msgctxt "publish"
 msgid "Complete"
 msgstr "已完成"
 
-#: admin/publish.php:221
+#: admin/publish.php:217
 msgctxt "publish"
 msgid "Rate"
 msgstr "进度"
 
-#: admin/publish.php:222
+#: admin/publish.php:218
 msgid "Elapsed time"
 msgstr "已用时间"
 
-#: admin/publish.php:223
+#: admin/publish.php:219
 msgctxt "publish"
 msgid "State"
 msgstr "状态"
 
 #: admin/index.php:61
+#: admin/admin-header-menu.php:10
+#: admin/admin-header-menu.php:11
+#: admin/admin.php:169
 msgid "Control Panel"
 msgstr "控制面板"
 
@@ -1255,8 +1270,8 @@ msgid "<p>LazyCMS is free, open source content management system.</p><p>Runtime:
 msgstr "<p>LazyCMS是免费、开源的内容管理系统。</p><p>运行环境：PHP 4.3.3+、MySQL 4.1+</p><p><a href=\"%s\">返回首页</a></p>"
 
 #: admin/login.php:79
-#: admin/user.php:237
-#: admin/user.php:269
+#: admin/user.php:233
+#: admin/user.php:265
 #: admin/profile.php:87
 msgid "Username"
 msgstr "用户名"
@@ -1318,81 +1333,81 @@ msgstr "用户添加成功。"
 msgid "Users deleted."
 msgstr "用户删除成功。"
 
-#: admin/user.php:179
+#: admin/user.php:170
 #: admin/admin-header-menu.php:40
 #: admin/admin.php:200
 msgctxt "user"
 msgid "Add New"
 msgstr "添加用户"
 
-#: admin/user.php:239
+#: admin/user.php:235
 msgid "Status"
 msgstr "状态"
 
-#: admin/user.php:240
+#: admin/user.php:236
 msgid "Registered"
 msgstr "注册日期"
 
-#: admin/user.php:273
+#: admin/user.php:269
 #: admin/profile.php:91
 msgid "Nickname"
 msgstr "昵称"
 
-#: admin/user.php:281
+#: admin/user.php:277
 #: admin/profile.php:99
 msgid "Website"
 msgstr "个人主页"
 
-#: admin/user.php:286
+#: admin/user.php:282
 msgid "(twice,required)"
 msgstr "(两次，必填)"
 
-#: admin/user.php:292
+#: admin/user.php:288
 #: admin/profile.php:103
 msgid "Biographical Info"
 msgstr "个人说明"
 
-#: admin/user.php:294
+#: admin/user.php:290
 #: admin/profile.php:105
 msgid "Share a little biographical information to fill out your profile. This may be shown publicly."
 msgstr "共享您的一些信息。这个可能会被公开。"
 
-#: admin/user.php:298
+#: admin/user.php:294
 msgid "New Password"
 msgstr "新密码"
 
-#: admin/user.php:298
+#: admin/user.php:294
 #: admin/profile.php:109
 msgid "(twice)"
 msgstr "(两次)"
 
-#: admin/user.php:300
+#: admin/user.php:296
 #: admin/profile.php:111
 msgid "If you would like to change the password type a new one. Otherwise leave this blank."
 msgstr "如果您想修改您的密码请输入一个新密码，否则请留空。"
 
-#: admin/user.php:301
+#: admin/user.php:297
 #: admin/profile.php:112
 msgid "Type your new password again."
 msgstr "输入新密码。"
 
-#: admin/user.php:307
+#: admin/user.php:303
 msgid "Role"
 msgstr "权限"
 
-#: admin/user.php:310
+#: admin/user.php:306
 msgid "Ban Change Password"
 msgstr "禁止修改密码"
 
-#: admin/user.php:311
+#: admin/user.php:307
 msgid "Prohibition multi-person to login"
 msgstr "禁止多人同时登录"
 
-#: admin/user.php:321
+#: admin/user.php:317
 msgid "Add User"
 msgstr "添加用户"
 
-#: admin/user.php:323
+#: admin/user.php:319
 msgid "Update User"
 msgstr "更新用户"
 
@@ -1400,6 +1415,60 @@ msgstr "更新用户"
 #: admin/admin-header-menu.php:34
 msgid "Comments"
 msgstr "评论管理"
+
+#: admin/comment.php:71
+msgctxt "comments"
+msgid "All"
+msgstr "全部"
+
+#: admin/comment.php:72
+msgctxt "comments"
+msgid "Pending"
+msgstr "待审"
+
+#: admin/comment.php:73
+msgid "Approved"
+msgstr "已获准"
+
+#: admin/comment.php:87
+msgid "Anonymous"
+msgstr "匿名"
+
+#: admin/comment.php:91
+#: admin/comment.php:150
+msgid "Approve"
+msgstr "获准"
+
+#: admin/comment.php:93
+#: admin/comment.php:149
+msgid "Unapprove"
+msgstr "驳回"
+
+#: admin/comment.php:95
+msgid "Reply"
+msgstr "回复"
+
+#: admin/comment.php:112
+#, php-format
+msgid "Submitted on: <b>%s</b>"
+msgstr "提交于：<b>%s</b>"
+
+#: admin/comment.php:120
+msgid "The post has been deleted."
+msgstr "该文章已删除！"
+
+#: admin/comment.php:164
+msgid "Author"
+msgstr "作者"
+
+#: admin/comment.php:165
+msgctxt "comment"
+msgid "Comment"
+msgstr "评论"
+
+#: admin/comment.php:166
+msgid "In Response To"
+msgstr "回应"
 
 #: admin/admin-header-menu.php:13
 #: admin/admin.php:171
@@ -1542,126 +1611,121 @@ msgstr "文章添加成功。"
 msgid "Browse..."
 msgstr "浏览..."
 
-#: admin/post.php:415
-#: admin/post.php:471
+#: admin/post.php:409
+#: admin/post.php:464
 msgid "Create"
 msgstr "生成"
 
-#: admin/post.php:423
+#: admin/post.php:417
+#: admin/post.php:428
 #: admin/post.php:434
-#: admin/post.php:440
 #: admin/admin.php:443
 msgid "None"
 msgstr "无"
 
-#: admin/post.php:479
+#: admin/post.php:472
 msgid "View all categories"
 msgstr "查看全部分类"
 
-#: admin/post.php:484
+#: admin/post.php:477
 msgid "Filter"
 msgstr "过滤"
 
-#: admin/post.php:500
-#: admin/post.php:589
+#: admin/post.php:493
+#: admin/post.php:582
 msgctxt "post"
 msgid "Title"
 msgstr "标题"
 
-#: admin/post.php:501
-#: admin/post.php:566
+#: admin/post.php:494
+#: admin/post.php:559
 msgctxt "post"
 msgid "Model"
 msgstr "模型"
 
-#: admin/post.php:503
-#: admin/post.php:581
+#: admin/post.php:496
+#: admin/post.php:574
 msgctxt "post"
 msgid "Categories"
 msgstr "分类"
 
-#: admin/post.php:505
+#: admin/post.php:498
 msgctxt "post"
 msgid "Tags"
 msgstr "标签"
 
-#: admin/post.php:506
+#: admin/post.php:500
 msgctxt "post"
 msgid "Date"
 msgstr "日期"
 
-#: admin/post.php:507
-msgctxt "post"
-msgid "State"
-msgstr "状态"
-
-#: admin/post.php:527
+#: admin/post.php:520
 msgid "Please Add Category!"
 msgstr "请先添加文章分类！"
 
-#: admin/post.php:592
+#: admin/post.php:585
 msgid "Auto get keywords"
 msgstr "自动获取关键词"
 
-#: admin/post.php:596
+#: admin/post.php:589
 msgctxt "post"
 msgid "Content"
 msgstr "内容"
 
-#: admin/post.php:603
+#: admin/post.php:596
 msgctxt "post"
 msgid "Path"
 msgstr "路径"
 
-#: admin/post.php:619
+#: admin/post.php:612
 msgid "More attribute"
 msgstr "更多属性"
 
-#: admin/post.php:623
+#: admin/post.php:616
 msgctxt "post"
 msgid "Page Template"
 msgstr "页面模板"
 
-#: admin/post.php:626
+#: admin/post.php:619
 msgid "Use the category set"
 msgstr "使用分类设置"
 
-#: admin/post.php:633
+#: admin/post.php:626
 msgctxt "post"
 msgid "Keywords"
 msgstr "关键词"
 
-#: admin/post.php:634
+#: admin/post.php:627
 msgid "Get"
 msgstr "获取"
 
-#: admin/post.php:637
+#: admin/post.php:630
 msgctxt "post"
 msgid "Description"
 msgstr "Meta简述"
 
-#: admin/post.php:642
+#: admin/post.php:635
 msgctxt "post"
 msgid "Other"
 msgstr "其它选项"
 
-#: admin/post.php:644
+#: admin/post.php:637
 msgid "Allow Comments"
 msgstr "允许评论"
 
-#: admin/post.php:645
+#: admin/post.php:638
 msgid "Update all Pages"
 msgstr "更新所有页面"
 
-#: admin/post.php:646
+#: admin/post.php:639
 msgid "Update Category Lists"
 msgstr "更新分类列表"
 
-#: admin/post.php:655
+#: admin/post.php:648
 msgid "Add Post"
 msgstr "添加文章"
 
-#: admin/post.php:659
+#: admin/post.php:652
 msgid "Update Post"
 msgstr "更新文章"
 
@@ -2499,6 +2563,13 @@ msgstr "标签服务"
 msgid "(Get the Network tags of service)"
 msgstr "(获取网络标签服务)"
 
+#~ msgctxt "post"
+#~ msgid "State"
+#~ msgstr "状态"
+#~ msgctxt "comment"
+#~ msgid "Add New"
+#~ msgstr "添加"
+
 #, fuzzy
 #~ msgid "Select a city"
 #~ msgstr "全选 / 反选"
@@ -2546,8 +2617,6 @@ msgstr "(获取网络标签服务)"
 #~ msgstr "反选"
 #~ msgid "Create all Posts and Lists"
 #~ msgstr "生成所有文章和列表"
-#~ msgid "Unknown"
-#~ msgstr "未知"
 #~ msgid "Can not send an empty message！"
 #~ msgstr "不能发送空消息！"
 #~ msgctxt "make"

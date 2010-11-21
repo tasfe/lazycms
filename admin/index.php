@@ -39,7 +39,7 @@ switch ($method) {
             $data['total']      = number_format($data['total']);
             $data['complete']   = number_format($data['complete']);
             $data['elapsetime'] = time_format('%H:%i:%s,%ms',$data['elapsetime']);
-            $data['state']      = '<img class="c'.($data['state']+1).' os" src="'.ADMIN.'images/t.gif">';
+            $data['state']      = get_icon('c'.($data['state']+1));
             // 删除不需要显示的数据
             unset($data['name'],$data['func'],$data['args']);
         }

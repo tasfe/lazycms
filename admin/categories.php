@@ -245,9 +245,9 @@ function display_tr_categories($sorts,$n=0) {
         $hl.=   '<td><span class="space">'.$space.'</span><strong><a href="'.ADMIN.'post.php?category='.$sort['taxonomyid'].'">'.$sort['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
         // 检测目录是否已生成
         if (is_dir(ABS_PATH.'/'.$sort['path'])) {
-            $hl.= '<td><img class="b6 os" src="'.ADMIN.'images/t.gif" /><a href="'.$path.'" target="_blank">'.$path.'</a></td>';
+            $hl.= '<td>'.get_icon('b6').'<a href="'.$path.'" target="_blank">'.$path.'</a></td>';
         } else {
-            $hl.= '<td><img class="b7 os" src="'.ADMIN.'images/t.gif" /><a href="javascript:;" onclick="sort_create('.$sort['taxonomyid'].')">'.$path.'</a></td>';
+            $hl.= '<td>'.get_icon('b7').'<a href="javascript:;" onclick="sort_create('.$sort['taxonomyid'].')">'.$path.'</a></td>';
         }
         $hl.=   '<td>'.$sort['count'].'</td>';
         $hl.= '</tr>';

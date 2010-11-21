@@ -707,6 +707,65 @@ function mid($content,$start,$end=null,$clear=null){
     return $result;
 }
 /**
+ * IP地理位置解析
+ *
+ * @param string $ip
+ * @return string
+ */
+function ip2addr($ip) {
+    static $QQWry;
+	if ( is_null($QQWry) ) {
+        require_file(COM_PATH.'/system/qqwry.php');
+        $QQWry = new QQWry(COM_PATH.'/QQWry.Dat');
+    }
+    return $QQWry->ip2addr($ip);
+}
+/**
+ * 头像
+ *
+ * @param string $email
+ * @param int $size
+ * @param string $default
+ * @return string
+ */
+function get_avatar($email, $size=96, $default='') {
+    if ( !empty($email) )
+		$email_hash = md5( strtolower( $email ) );
+
+    if ( !empty($email) )
+        $host = sprintf( "http://%d.gravatar.com", ( hexdec( $email_hash{0} ) % 2 ) );
+    else
+        $host = 'http://0.gravatar.com';
+
+    if ( 'mystery' == $default )
+        $default = "{$host}/avatar/ad516503a11cd5ca435acc9bb6523536.gif?s={$size}"; // ad516503a11cd5ca435acc9bb6523536 == md5('unknown@gravatar.com')
+    elseif ( 'blank' == $default )
+		$default = HTTP_HOST.ROOT.'common/images/blank.gif';
+    elseif ( empty($email) )
+		$default = "{$host}/avatar/00000000000000000000000000000000.gif?d={$default}&amp;s={$size}";
+
+    if ( !empty($email) ) {
+        $result = "{$host}/avatar/{$email_hash}.gif?s={$size}&amp;d=".urlencode( $default )."&amp;r=g";
+    } else {
+        $result = $default;
+    }
+    return $result;
+}
+/**
+ * 小图标
+ *
+ * @param string $name
+ * @return string
+ */
+function get_icon($name) {
+    switch ($name) {
+        case 'passed': $name = 'b8'; break;
+        case 'draft':  $name = 'b9'; break;
+
+    }
+    return '<img src="'.ROOT.'common/images/t.gif" class="os '.$name.'" alt="" />';
+}
+/**
  * 将目录下的文件或文件夹读取成为数组
  *
  * @param string $path    路径
