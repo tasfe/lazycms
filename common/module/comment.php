@@ -148,18 +148,42 @@ function comment_create($postid) {
         if (stripos($html,'{pagelist') !== false) {
             $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU','{$pagelist}', $html);
         }
-        // 有评论内容
-        if (comment_count($post['postid'],'1') > 0) {
-            // 分析路径
-            if (($pos=strrpos($post['cmt_path'],'.')) !== false) {
-                $basename = substr($post['cmt_path'],0,$pos);
-                $suffix   = substr($post['cmt_path'],$pos);
-            } else {
-                $basename = $post['cmt_path'];
-                $suffix   = '';
+        // 分析路径
+        if (($pos=strrpos($post['cmt_path'],'.')) !== false) {
+            $basename = substr($post['cmt_path'],0,$pos);
+            $suffix   = substr($post['cmt_path'],$pos);
+        } else {
+            $basename = $post['cmt_path'];
+            $suffix   = '';
+        }
+        // 标签块信息
+        if ($block = tpl_get_block($html,'comments','list')) {
+            $inner = $b_guid = '';
+            // 生成标签块的唯一ID
+            $b_guid = guid($block['tag']);
+            // 把标签块替换成变量标签
+            $html   = str_replace($block['tag'], '{$'.$b_guid.'}', $html);
+            // 没有评论
+            if (comment_count($post['postid'],'1') == 0) {
+                tpl_clean();
+                tpl_set_var($b_guid, __('No comment!'));
+                tpl_set_var(array(
+                    'guide'    => $guide ? $guide.' &gt;&gt; '.$title : $title,
+                    'title'    => $title,
+                    'keywords' => post_get_keywords($post['keywords']),
+                    'description' => $post['description'],
+                ));
+
+                $html = tpl_parse($html);
+                // 生成的文件路径
+                $file = ABS_PATH.'/'.$post['cmt_path'];
+                // 创建目录
+                mkdirs(dirname($file));
+                // 保存文件
+                return file_put_contents($file, $html);
             }
-            // 标签块信息
-            if ($block = tpl_get_block($html,'comments','list')) {
+            // 有评论
+            else {
                 // 每页条数
                 $number = tpl_get_attr($block['tag'],'number');
                 // 排序方式
@@ -171,15 +195,11 @@ function comment_create($postid) {
                 $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
                 $order  = instr(strtoupper($order),'ASC,DESC') ? $order : 'DESC';
 
-                $db = get_conn(); $i = $length = 0; $inner = $b_guid = ''; $page = 1;
+                $db = get_conn(); $i = $length = 0; $page = 1;
                 $rs = $db->query("SELECT * FROM `#@_comments` WHERE `postid`=%d AND `approved`='1' ORDER BY `commentid` {$order};", $post['postid']);
                 $total = $db->result("SELECT FOUND_ROWS();");
                 $pages = ceil($total / $number);
                 $pages = ((int)$pages == 0) ? 1 : $pages;
-                // 生成标签块的唯一ID
-                $b_guid = guid($block['tag']);
-                // 把标签块替换成变量标签
-                $html   = str_replace($block['tag'], '{$'.$b_guid.'}', $html);
 
                 while ($data = $db->fetch($rs)) {
                     $block['inner'] = tpl_get_block_inner($block);
@@ -228,21 +248,23 @@ function comment_create($postid) {
                 return true;
             }
         }
-        // 没有评论或没有标签
-        tpl_clean();
-        tpl_set_var(array(
-            'guide'    => $guide ? $guide.' &gt;&gt; '.$title : $title,
-            'title'    => $title,
-            'keywords' => post_get_keywords($post['keywords']),
-            'description' => $post['description'],
-        ));
+        // 没有标签
+        else {
+            tpl_clean();
+            tpl_set_var(array(
+                'guide'    => $guide ? $guide.' &gt;&gt; '.$title : $title,
+                'title'    => $title,
+                'keywords' => post_get_keywords($post['keywords']),
+                'description' => $post['description'],
+            ));
 
-        $html = tpl_parse($html);
-        // 生成的文件路径
-        $file = ABS_PATH.'/'.$post['cmt_path'];
-        // 创建目录
-        mkdirs(dirname($file));
-        // 保存文件
-        return file_put_contents($file, $html);
+            $html = tpl_parse($html);
+            // 生成的文件路径
+            $file = ABS_PATH.'/'.$post['cmt_path'];
+            // 创建目录
+            mkdirs(dirname($file));
+            // 保存文件
+            return file_put_contents($file, $html);
+        }
     }
 }

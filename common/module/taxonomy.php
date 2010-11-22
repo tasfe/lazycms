@@ -526,7 +526,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
     if (!$taxonomyid) return false;
     if ($taxonomy = taxonomy_get($taxonomyid)) {
         $page   = $page<1 ? 1 : intval($page);
-        $inner  = $b_guid = '';
+        $inner  = $b_guid = ''; $i = 0;
         $suffix = C('HTMLFileSuffix');
         // 载入模版
         $html   = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.$taxonomy['list']);
@@ -558,7 +558,6 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
             }
             // 数据存在
             if ($result) {
-                $i = 0;
                 // 取得标签块内容
                 $block['inner'] = tpl_get_block_inner($block);
                 while ($data = pages_fetch($result)) {
@@ -614,6 +613,8 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                     // 解析变量
                     $inner.= tpl_parse($block['inner']); $i++;
                 }
+            } else {
+                $inner = __('The page is in the making, please visit later ...');
             }
             // 生成标签块的唯一ID
             $b_guid = guid($block['tag']);
@@ -622,7 +623,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
         }
 
         // 所需要的标签和数据都不存在，不需要生成页面
-        if ($inner=='' && $page>1) return false;
+        if ($i==0 && $page>1) return false;
         // 清理模版内部变量
         tpl_clean();
         tpl_set_var($b_guid,$inner);
