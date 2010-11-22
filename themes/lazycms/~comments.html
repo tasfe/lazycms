@@ -1,18 +1,15 @@
-<div class="comment_list">
-    {pagelist /}
-    {comments type="list" number="20" order="DESC"}
-    <div class="dt">
-        <span class="author"><span class="address">{$address}</span>{$author}</span>
-        <span class="post-time">{$date mode="Y年m月d日 H:i"}</span>
-    </div>
-    <div class="dd">
-        <p class="cmt_content">{$content}</p>
-        <div class="bar">
-            <a href="javascript:;">支持[15]</a>
-            <a href="javascript:;">反对[10]</a>
-            <a href="javascript:;">回复</a>
-        </div>
-    </div>
-    {/comments}
-    {pagelist /}
+{pagelist /}
+{comments type="list" number="20" order="DESC"}
+<div class="dt">
+    <span class="author">
+        <span class="address">{$address}</span>
+        <img src="{$avatar}" alt="{$author}" /><span class="name">{$author}</span>
+    </span>
+    <span class="post-time">{$date mode="Y年m月d日 H:i"}</span>
+    <div class="clear"><br/></div>
 </div>
+<div class="dd">
+    <p class="cmt_content">{$content}</p>
+</div>
+{/comments}
+{pagelist /}

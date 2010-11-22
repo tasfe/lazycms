@@ -22,7 +22,7 @@
 @import "../../../common/css/common.css";
 /* 全局样式 */
 body { height:100%; margin:0; background: #F7FBFF; text-align:left;}
-body,td,th,p,div { color: #333333; line-height: 130%; font-family: Verdana; font-size: 12px;}
+body,td,th,p,div { color: #333333; line-height: 130%; font-family: "Verdana"; font-size: 12px;}
 dl,dt,dd,form{ margin:0; padding:0;}
 img,input,button,select{ vertical-align:middle; }
 img{ border:none; }
@@ -127,11 +127,24 @@ a:hover   { text-decoration: underline; }
         #left .comments .textarea { margin:5px 0; }
         #left .comments .textarea textarea { width:576px; height:90px; font-size:14px; padding:6px; text-align:left; }
 
+        #left .comment_list{ margin-top:5px; padding:10px; border:1px solid #C6D9E7; background:#fff; }
+        #left .comment_list .dt{ }
+        #left .comment_list .dt .author{ float:left; color:#0B3B8C; }
+        #left .comment_list .dt .author img{ margin-right:3px; }
+        #left .comment_list .dt .author .name, #left .comment_list .dt .author a{ vertical-align:middle; }
+        #left .comment_list .dt .address{ color:#8D8D8D; margin-right:10px; vertical-align:middle; }
+        #left .comment_list .dt .post-time{ float:right; color:#8D8D8D; }
+        #left .comment_list .dd { padding:5px 0; margin-top:5px; margin-bottom:5px; border-bottom:1px dashed #C2C3BA; }
+        #left .comment_list .dd, #left .comment_list .dd p { word-break:break-all;word-wrap:break-word; font-size:14px; }
+        #left .comment_list .dd .citation { background:#FFFEF5; border:1px solid #D1D5DB; padding:3px 3px 10px; }
+
         #post{ width:608px; padding:10px; float:left; }
-            #post h1{ text-align:center; color:#003683; display:block; font-size:14px; line-height:1.5; }
+            #post h1{ text-align:center; color:#003683; display:block; font-size:16px; line-height:1.5; }
             #post .info{ text-align:center; }
+            #post .info span.cmt-count{ color:#F70000; }
             #post .content{ margin:10px 0; }
-            #post .tags{ margin:10px 0; padding:10px 0; border-top: #ccc dashed 1px; border-bottom: #ccc dashed 1px; }
+            #post .content, #post .content p{ font-size:14px; }
+            #post .tags{ margin:10px 0; padding:10px 0; border-top: 1px dashed #C2C3BA; border-bottom: 1px dashed #C2C3BA; }
             #post .tags a{ margin-right:6px; }
 
     #right { width:300px; float:right; }

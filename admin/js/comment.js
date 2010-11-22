@@ -21,3 +21,15 @@ function comment_list_init() {
 	// 绑定提交事件
 	$('#comments').actions();
 }
+// 修改评论状态
+function comment_state(action,commentid){
+    return LazyCMS.postAction('comment.php', {method:'bulk', action:action}, commentid);
+}
+// 删除模型
+function comment_delete(commentid){
+    LazyCMS.confirm(_('Confirm Delete?'),function(r){
+        if (r) {
+            LazyCMS.postAction('comment.php', {method:'bulk', action:'delete'}, commentid);
+        }
+    });
+}

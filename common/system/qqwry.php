@@ -107,9 +107,13 @@ class QQWry {
 
     function ip2addr($ipaddr) {
         if (!$this->_fp) return $ipaddr;
-        if (preg_match('/^(127)/', $ipaddr)) return __('Local');
-
-        $ip = sprintf('%u',ip2long($ipaddr));
+        if (strpos($ipaddr, '.') !== false) {
+            if (preg_match('/^(127)/', $ipaddr))
+                return __('Local');
+            $ip = sprintf('%u',ip2long($ipaddr));
+        } else {
+            $ip = $ipaddr;
+        }
         $this->_init();
         fseek($this->_fp, 0);
         $buf = fread($this->_fp, 8);

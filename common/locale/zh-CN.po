@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-11-22 00:32+0800\n"
+"POT-Creation-Date: 2010-11-22 23:33+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.net>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
@@ -264,11 +264,11 @@ msgstr "太多的重定向。"
 msgid "Could not open handle for fopen() to %s"
 msgstr "无法打开处理fopen()函数到 %s"
 
-#: common/system/qqwry.php:110
+#: common/system/qqwry.php:112
 msgid "Local"
 msgstr "本地"
 
-#: common/system/qqwry.php:148
+#: common/system/qqwry.php:152
 msgid "Unknown"
 msgstr "未知"
 
@@ -287,6 +287,7 @@ msgid "%s database not found!"
 msgstr "%s 数据库不存在！"
 
 #: common/system/mysql.php:117
+#: admin/install.php:73
 msgid "MySQL database version lower than 4.1, please upgrade MySQL!"
 msgstr "MySQL数据库版本低于4.1，请升级MySQL！"
 
@@ -339,19 +340,42 @@ msgstr "文件上传框"
 msgid "You are now logged out, please log in again!"
 msgstr "您现在已经退出，请重新登录！"
 
-#: common/module/post.php:580
+#: common/module/comment.php:144
+#, php-format
+msgid "Comment: %s"
+msgstr "评论：%s"
+
+#: common/module/comment.php:192
+msgid "Anonymous"
+msgstr "匿名"
+
+#: common/module/post.php:581
 msgid "The post doesn't exist or has been deleted!"
 msgstr "该文章不存在或已删除！"
 
-#: common/module/post.php:584
+#: common/module/post.php:585
 msgid "The post doesn't comment!"
 msgstr "该文章不能评论！"
 
-#: common/module/post.php:599
+#: common/module/post.php:591
+msgid "Please enter a comment on the contents!"
+msgstr "请输入评论内容！"
+
+#: common/module/post.php:592
+#, php-format
+msgid "Maximum %d characters of Comment content!"
+msgstr "评论内容最多个 %d 个字！"
+
+#: common/module/post.php:596
+#: admin/install.php:49
+msgid "You must provide an e-mail address."
+msgstr "请输入一个有效的电子邮件地址。"
+
+#: common/module/post.php:606
 msgid "Comment on the success!"
 msgstr "发表评论成功！"
 
-#: common/module/post.php:601
+#: common/module/post.php:608
 msgid "Comment failed!"
 msgstr "发表评论失败！"
 
@@ -415,6 +439,7 @@ msgid "File create failed."
 msgstr "文件创建失败。"
 
 #: admin/categories.php:137
+#: admin/model.php:148
 msgid "Did not select any item."
 msgstr "没有选择任何项目。"
 
@@ -442,6 +467,7 @@ msgid "Categories deleted."
 msgstr "分类删除成功。"
 
 #: admin/categories.php:165
+#: admin/model.php:182
 msgid "Parameter is invalid."
 msgstr "参数错误。"
 
@@ -451,10 +477,13 @@ msgid "Add New"
 msgstr "添加分类"
 
 #: admin/categories.php:188
+#: admin/model.php:315
+#: admin/model.php:447
 msgid "No record!"
 msgstr "没有记录！"
 
 #: admin/categories.php:206
+#: admin/model.php:333
 msgid "Bulk Actions"
 msgstr "批量操作"
 
@@ -472,10 +501,14 @@ msgstr "生成文章和列表"
 
 #: admin/categories.php:210
 #: admin/categories.php:242
+#: admin/model.php:305
+#: admin/model.php:337
+#: admin/model.php:436
 msgid "Delete"
 msgstr "删除"
 
 #: admin/categories.php:212
+#: admin/model.php:339
 msgid "Apply"
 msgstr "应用"
 
@@ -501,6 +534,8 @@ msgid "Create List"
 msgstr "生成列表"
 
 #: admin/categories.php:241
+#: admin/model.php:301
+#: admin/model.php:435
 msgid "Edit"
 msgstr "编辑"
 
@@ -515,6 +550,8 @@ msgstr "&mdash; 无父级 &mdash;"
 
 #: admin/categories.php:293
 #: admin/categories.php:297
+#: admin/model.php:389
+#: admin/model.php:397
 msgid "(required)"
 msgstr "(必填)"
 
@@ -523,10 +560,12 @@ msgid "Category ID"
 msgstr "分类ID"
 
 #: admin/categories.php:300
+#: admin/model.php:400
 msgid "MD5 Value"
 msgstr "MD5值"
 
 #: admin/categories.php:301
+#: admin/model.php:401
 msgid "Pinyin"
 msgstr "拼音"
 
@@ -535,6 +574,7 @@ msgid "List Template"
 msgstr "列表模板"
 
 #: admin/categories.php:313
+#: admin/model.php:409
 msgid "Page Template"
 msgstr "内容模板"
 
@@ -565,9 +605,6 @@ msgid "Update Category"
 msgstr "更新分类"
 
 #: admin/model.php:26
-#: admin/admin-header-menu.php:29
-#: admin/admin-header-menu.php:30
-#: admin/admin.php:189
 msgid "Models"
 msgstr "模型管理"
 
@@ -683,9 +720,6 @@ msgid "Same the two fields."
 msgstr "两个字段值不相等。"
 
 #: admin/model.php:216
-#: admin/user.php:234
-#: admin/user.php:273
-#: admin/profile.php:95
 msgid "E-mail"
 msgstr "电子邮箱"
 
@@ -807,12 +841,10 @@ msgid "Insert Google Map"
 msgstr "插入Google地图"
 
 #: admin/model.php:263
-#: admin/admin.php:501
 msgid "Insert Pagebreak"
 msgstr "插入分页符"
 
 #: admin/model.php:264
-#: admin/admin.php:504
 msgid "Remove external links"
 msgstr "移除站外链接"
 
@@ -828,19 +860,14 @@ msgid "Default"
 msgstr "默认值"
 
 #: admin/model.php:276
-#: admin/admin.php:359
 msgid "Save"
 msgstr "保存"
 
 #: admin/model.php:276
-#: admin/admin.php:358
-#: admin/admin.php:388
 msgid "Cancel"
 msgstr "取消"
 
 #: admin/model.php:287
-#: admin/admin-header-menu.php:31
-#: admin/admin.php:191
 msgctxt "model"
 msgid "Add New"
 msgstr "添加模型"
@@ -893,17 +920,14 @@ msgid "Path"
 msgstr "生成规则"
 
 #: admin/model.php:399
-#: admin/post.php:598
 msgid "Post ID"
 msgstr "文章ID"
 
 #: admin/model.php:420
-#: admin/post.php:611
 msgid "Click to toggle"
 msgstr "点击切换"
 
 #: admin/model.php:421
-#: admin/admin.php:195
 msgctxt "model"
 msgid "Fields"
 msgstr "字段管理"
@@ -934,22 +958,12 @@ msgid "You must provide a valid username."
 msgstr "请输入您的管理员名称。"
 
 #: admin/install.php:45
-#: admin/user.php:105
-#: admin/profile.php:44
 msgid "Your passwords do not match. Please try again."
 msgstr "您两次输入的密码不符，请重试。"
 
 #: admin/install.php:48
-#: admin/user.php:97
-#: admin/profile.php:39
 msgid "Please enter an e-mail address."
 msgstr "请输入一个电子邮件地址。"
-
-#: admin/install.php:49
-#: admin/user.php:98
-#: admin/profile.php:40
-msgid "You must provide an e-mail address."
-msgstr "请输入一个有效的电子邮件地址。"
 
 #: admin/install.php:83
 #: admin/install.php:85
@@ -1064,9 +1078,6 @@ msgid "Your MySQL username"
 msgstr "您的 MySQL 用户名"
 
 #: admin/install.php:217
-#: admin/login.php:80
-#: admin/user.php:282
-#: admin/profile.php:109
 msgid "Password"
 msgstr "密码"
 
@@ -1111,10 +1122,6 @@ msgid "Password, twice"
 msgstr "密码，两次"
 
 #: admin/install.php:231
-#: admin/user.php:284
-#: admin/user.php:298
-#: admin/admin.php:371
-#: admin/profile.php:113
 msgid "Strength indicator"
 msgstr "强度"
 
@@ -1416,57 +1423,65 @@ msgstr "更新用户"
 msgid "Comments"
 msgstr "评论管理"
 
-#: admin/comment.php:71
+#: admin/comment.php:52
+#, php-format
+msgid "%s comment approved"
+msgid_plural "%s comments approved"
+msgstr[0] "已获准 %s 条评论"
+
+#: admin/comment.php:59
+#, php-format
+msgid "%s comment permanently deleted"
+msgid_plural "%s comments permanently deleted"
+msgstr[0] "已永久删除 %s 条评论"
+
+#: admin/comment.php:103
 msgctxt "comments"
 msgid "All"
 msgstr "全部"
 
-#: admin/comment.php:72
+#: admin/comment.php:104
 msgctxt "comments"
 msgid "Pending"
 msgstr "待审"
 
-#: admin/comment.php:73
+#: admin/comment.php:105
 msgid "Approved"
 msgstr "已获准"
 
-#: admin/comment.php:87
-msgid "Anonymous"
-msgstr "匿名"
-
-#: admin/comment.php:91
-#: admin/comment.php:150
+#: admin/comment.php:123
+#: admin/comment.php:182
 msgid "Approve"
 msgstr "获准"
 
-#: admin/comment.php:93
-#: admin/comment.php:149
+#: admin/comment.php:125
+#: admin/comment.php:181
 msgid "Unapprove"
 msgstr "驳回"
 
-#: admin/comment.php:95
+#: admin/comment.php:127
 msgid "Reply"
 msgstr "回复"
 
-#: admin/comment.php:112
+#: admin/comment.php:144
 #, php-format
 msgid "Submitted on: <b>%s</b>"
 msgstr "提交于：<b>%s</b>"
 
-#: admin/comment.php:120
+#: admin/comment.php:152
 msgid "The post has been deleted."
 msgstr "该文章已删除！"
 
-#: admin/comment.php:164
+#: admin/comment.php:196
 msgid "Author"
 msgstr "作者"
 
-#: admin/comment.php:165
+#: admin/comment.php:197
 msgctxt "comment"
 msgid "Comment"
 msgstr "评论"
 
-#: admin/comment.php:166
+#: admin/comment.php:198
 msgid "In Response To"
 msgstr "回应"
 

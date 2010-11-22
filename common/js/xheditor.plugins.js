@@ -58,7 +58,7 @@ var xhePlugins = window.xhePlugins = {
     }},
     // Pagebreak
     Pagebreak:{c:'xhePlugins_btnPageBreak',t:_('Insert Pagebreak'),e:function(){
-        this.pasteHTML('<img class="xhePageBreak" src="' + LazyCMS.ROOT + 'common/images/t.gif" alt="" />');
+        this.pasteHTML('<img class="xhePageBreak" src="' + LazyCMS.ROOT + 'common/images/blank.gif" alt="" />');
     }},
     // Removelink
     Removelink:{c:'xhePlugins_btnRemoveLink',t:_('Remove external links'),e:function(){
@@ -86,7 +86,7 @@ var xheFilter = window.xheFilter = {
             html = html.replace(/(<embed(?:\s+[^>]*?)?)(flashvars\s*=\s*"file=)([^"]+)("(?:\s+[^>]*?)?(?:src\s*=\s*"[^"]*mediaplayer\/player.swf")(?:\s+[^>]*?)?(?:\s+type\s*=\s*"\s*application\/x-shockwave-flash\s*"|\s+classid\s*=\s*"\s*clsid:d27cdb6e-ae6d-11cf-96b8-4445535400000\s*")[^>]*?\/>)/ig,function(all,start,flashvars,file,end){
                 return start + 'lazysrc="' + file + '" lazytype="Flv" ' + flashvars + file + end;
             });
-            html = html.replace(/<!--pagebreak-->/ig,'<img class="xhePageBreak" src="' + LazyCMS.ROOT + 'common/images/t.gif" alt="" />');
+            html = html.replace(/<!--pagebreak-->/ig,'<img class="xhePageBreak" src="' + LazyCMS.ROOT + 'common/images/blank.gif" alt="" />');
         return html;
     },
     GetSource: function(source) {

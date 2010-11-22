@@ -39,14 +39,14 @@ function lazycms_gateway_updates() {
         $result['more'] = mid($body,'/<link\s+?rel="alternate"[^>]+?href="/i','"');
         if (preg_match_all('/<entry>.+?<\/entry>/is',$body,$args)) {
             foreach($args[0] as $entry) {
-                $title     = mid($entry,"<title>","</title>",'/Revision\s\d+?\:\s/');
+                $content   = mid($entry,"/<content[^>]+?>.+&lt;br\/&gt;\n &lt;br\/&gt;/s","</content>");
                 $alternate = mid($entry,'/<link\s+?rel="alternate"[^>]+?href="/i','"');
                 $result['entrys'][] = array(
                     'id'      => mid($alternate,'detail?r='),
                     'updated' => date('Y-m-d H:i:s',strtotime(mid($entry,"<updated>","</updated>"))),
                     'link'    => $alternate,
                     'author'  => mid($entry,'/<author>.+?<name>/is','/<\/name>.+?<\/author>/is'),
-                    'title'   => $title,
+                    'content' => nl2br($content),
 
                 );
             }

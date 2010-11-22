@@ -25,8 +25,8 @@ ul.categories ul.children{ padding:0; margin:0 0 0 15px; }
 
 a.comment-count{ height:1.3em; line-height:1.1em; margin-right:5px; color:#FFFFFF; text-decoration:none; background:url(../images/bubble_bg.gif) no-repeat center -80px; cursor:pointer; padding:0 0 6px; }
 a.comment-count span{ height:1.7em; line-height:1.7em; min-width:0.7em; background-color:#BBBBBB; -moz-border-radius:5px 5px 5px 5px; cursor:pointer; display:inline-block; font-size:9px; font-weight:bold; padding:0 6px;}
-a.comment-count:hover{ background-position:center -3px; }
-a.comment-count:hover span{ background-color:#D54E21; }
+a.comment-count:hover{ background-position:center -3px !important; }
+a.comment-count:hover span{ background-color:#D54E21 !important; }
 
 a.comment-count.exist { background-position:center -55px; }
 a.comment-count.exist span { background-color:#21759B; }

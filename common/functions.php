@@ -763,7 +763,7 @@ function get_icon($name) {
         case 'draft':  $name = 'b9'; break;
 
     }
-    return '<img src="'.ROOT.'common/images/t.gif" class="os '.$name.'" alt="" />';
+    return '<img src="'.ROOT.'common/images/blank.gif" class="os '.$name.'" alt="" />';
 }
 /**
  * 将目录下的文件或文件夹读取成为数组

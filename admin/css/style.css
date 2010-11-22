@@ -64,12 +64,11 @@ a:hover   { text-decoration: underline; }
 ----------------------------------------------------------------------------------------------------*/
 .data-table{ width:100%; margin-top:5px; margin-bottom:5px; border-collapse:separate; clear:both; border:solid 1px #DFDFDF; -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px; }
 	.data-table th { font-weight:bold; }
-	.data-table th, .data-table td { padding:4px; text-align:left; border:none; }
-	.data-table th, .data-table td { border-bottom:solid 1px #DFDFDF; }
+	.data-table th, .data-table td { padding:4px; text-align:left; border:none; border-bottom:solid 1px #DFDFDF; }
     .data-table a{ display:inline-block; }
 	.data-table thead, .data-table tfoot { background:url(../images/blue-grad.png) repeat-x scroll left top; }
 	.data-table tbody { background:#fff; border-top:solid 1px #DFDFDF; border-bottom:solid 1px #DFDFDF; }
-	.data-table tbody td{ vertical-align:top; }
+	.data-table tbody td{ vertical-align:top; word-break:break-all; word-wrap:break-word; }
 	.data-table .check-column { width:25px; text-align:center; }
 	.data-table .row-actions { visibility: hidden; }
 

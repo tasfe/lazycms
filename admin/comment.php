@@ -31,6 +31,38 @@ admin_head('scripts',array('js/comment'));
 $method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 
 switch ($method) {
+    case 'bulk':
+        $action  = isset($_POST['action'])?$_POST['action']:null;
+	    $listids = isset($_POST['listids'])?$_POST['listids']:null;
+	    if (empty($listids)) {
+	    	ajax_error(__('Did not select any item.'));
+	    }
+	    switch ($action) {
+	        case 'unapprove':
+	            foreach ($listids as $commentid) {
+	            	comment_edit($commentid,null,'0');
+	            }
+                redirect(referer());
+	            break;
+            case 'approve':
+                $approved = count($listids);
+	            foreach ($listids as $commentid) {
+	            	comment_edit($commentid,null,'1');
+	            }
+                ajax_success(sprintf(_n('%s comment approved', '%s comments approved', $approved ), $approved),"LazyCMS.redirect('".referer()."');");
+	            break;
+            case 'delete':
+                $deleted = count($listids);
+	            foreach ($listids as $commentid) {
+	            	comment_delete($commentid);
+	            }
+	            ajax_success(sprintf(_n('%s comment permanently deleted', '%s comments permanently deleted', $deleted ), $deleted),"LazyCMS.redirect('".referer()."');");
+	            break;
+            default:
+                ajax_alert(__('Parameter is invalid.'));
+                break;
+	    }
+        break;
     default:
         admin_head('loadevents','comment_list_init');
         $where  = 'WHERE 1';
@@ -88,13 +120,13 @@ switch ($method) {
                 $data['count']  = comment_count($data['postid']);
                 $data['ipaddr'] = long2ip($data['ip']);
                 if ($data['approved']==0) {
-                    $actions = '<span class="approve"><a href="javascript:;" onclick="">'.__('Approve').'</a> | </span>';
+                    $actions = '<span class="approve"><a href="javascript:;" onclick="comment_state(\'approve\','.$data['commentid'].')">'.__('Approve').'</a> | </span>';
                 } elseif ($data['approved']==1) {
-                    $actions = '<span class="unapprove"><a href="javascript:;" onclick="">'.__('Unapprove').'</a> | </span>';
+                    $actions = '<span class="unapprove"><a href="javascript:;" onclick="comment_state(\'unapprove\','.$data['commentid'].')">'.__('Unapprove').'</a> | </span>';
                 }
                 $actions.= '<span class="reply"><a href="javascript:;">'.__('Reply').'</a> | </span>';
                 $actions.= '<span class="edit"><a href="javascript:;">'.__('Edit').'</a> | </span>';
-                $actions.= '<span class="delete"><a href="javascript:;" onclick="">'.__('Delete').'</a></span>';
+                $actions.= '<span class="delete"><a href="javascript:;" onclick="comment_delete('.$data['commentid'].')">'.__('Delete').'</a></span>';
                 echo       '<tr>';
                 echo           '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$data['commentid'].'" /></td>';
                 echo           '<td>';
@@ -107,9 +139,9 @@ switch ($method) {
                 if ($data['email']) {
                     echo            '<br /><a href="mailto:'.$data['email'].'">'.$data['email'].'</a>';
                 }
-                echo            '<br /><a href="'.PHP_FILE.'?ip='.$data['ipaddr'].'" title="'.esc_html(ip2addr($data['ipaddr'])).'">'.$data['ipaddr'].'</a>';
+                echo            '<br /><a href="'.PHP_FILE.'?ip='.$data['ipaddr'].'" title="'.esc_html(ip2addr($data['ip'])).'">'.$data['ipaddr'].'</a>';
                 echo           '</td>';
-                echo           '<td>'.sprintf(__('Submitted on: <b>%s</b>'),date('Y-m-d H:i:s',$data['date'])).'<br />'.$data['content'].'<br/><div class="row-actions">'.$actions.'</div></td>';
+                echo           '<td>'.sprintf(__('Submitted on: <b>%s</b>'),date('Y-m-d H:i:s',$data['date'])).'<br />'.$data['content'].'<br /><div class="row-actions">'.$actions.'</div></td>';
                 if ($post = post_get($data['postid'])) {
                     $path = post_get_path($post['sortid'],$post['path']);
                     echo       '<td><a href="'.ADMIN.'post.php?method=edit&postid='.$data['postid'].'">'.$post['title'].'</a><br />';

@@ -351,7 +351,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
     $postid = intval($postid);
     if (!$postid) return false;
     if ($post = post_get($postid)) {
-        $block_guid   = $inner = '';
+        $b_guid = $inner = ''; comment_create($post['postid']); // 生成评论
         // 处理文章
         $post['sort']     = taxonomy_get($post['sortid']);
         $post['cmt_path'] = post_get_path($post['sortid'],$post['path'], C('Comments-Path'));
@@ -384,9 +384,9 @@ function post_create($postid,&$preid=0,&$nextid=0) {
                 $inner.= tpl_parse($block['inner']);
             }
             // 生成标签块的唯一ID
-            $block_guid = guid($block['tag']);
+            $b_guid = guid($block['tag']);
             // 把标签块替换成变量标签
-            $html = str_replace($block['tag'], '{$'.$block_guid.'}', $html);
+            $html = str_replace($block['tag'], '{$'.$b_guid.'}', $html);
         }
         
         $vars = array(
@@ -416,7 +416,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
         }
         // 清理数据
         tpl_clean();
-        tpl_set_var($block_guid,$inner);
+        tpl_set_var($b_guid,$inner);
         tpl_set_var($vars);
         // 设置自定义字段
         if (isset($post['meta'])) {
@@ -426,6 +426,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
         }
         // 文章导航
         $guide = system_category_guide($post['sortid']);
+
         // 文章分页
         if ($post['content'] && strpos($post['content'],'<!--pagebreak-->')!==false) {
             $contents = explode('<!--pagebreak-->',$post['content']);
@@ -585,17 +586,23 @@ function post_gateway_send_comment() {
     }
     $parent  = isset($_REQUEST['parent'])  ? $_REQUEST['parent']  : 0;
     $content = isset($_REQUEST['content']) ? $_REQUEST['content']  : '';
-    $content = esc_html($content);
+    $content = esc_html(trim($content));
+    // 限制内容长度
+    if (!$content) return ajax_alert(__('Please enter a comment on the contents!'));
+    if (mb_strlen($content,'UTF-8') > 500) return ajax_alert(sprintf(__('Maximum %d characters of Comment content!'), 500));
     global $_USER;
     if (!isset($_USER)) {
+        $email = isset($_REQUEST['email']) ? esc_html(trim($_REQUEST['email'])) : '';
+        if (!validate_is($email,VALIDATE_IS_EMAIL)) return ajax_alert(__('You must provide an e-mail address.'));
         $_USER = array(
-            'name'   => isset($_REQUEST['author'])  ? $_REQUEST['author']  : '',
-            'email'  => isset($_REQUEST['email'])   ? $_REQUEST['email']  : '',
-            'url'    => isset($_REQUEST['url'])     ? $_REQUEST['url']  : '',
+            'email'  => $email,
+            'name'   => isset($_REQUEST['author'])  ? esc_html(trim($_REQUEST['author']))  : '',
+            'url'    => isset($_REQUEST['url'])     ? esc_html(trim($_REQUEST['url']))     : '',
         );
     }
     // 添加评论
     if (comment_add($postid,$content,$parent,$_USER)) {
+        comment_create($postid);
         ajax_success(__('Comment on the success!'));
     } else {
         ajax_error(__('Comment failed!'));

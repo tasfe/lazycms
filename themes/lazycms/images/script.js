@@ -3,6 +3,11 @@ var scripts = document.getElementsByTagName("script"); eval(scripts[ scripts.len
 
 LazyCMS.Loading = $('<div class="loading"><img class="os" src="' + LazyCMS.ADMIN + 'images/loading.gif" />Loading...</div>').css({width:'100px',position:'fixed',top:'5px',right:'5px'});
 
+LazyCMS.L10n = {
+    'Alert': '系统警告',
+    'Submit': '确定'
+};
+
 // 设置全局 AJAX 默认选项
 $.ajaxSetup({
     beforeSend: LazyCMS.success,
@@ -62,7 +67,7 @@ if ($.browser.msie && $.browser.version == '6.0') {
                 updates.append([
                     '<li>',
                         '<p><a href="' + entry.link + '" target="_blank" class="revision">r' + entry.id + '</a>' + entry.updated + '</p>',
-                        '<p class="comments">' + entry.title + '</p>',
+                        '<p class="comments">' + entry.content + '</p>',
                     '</li>'
                 ].join('\n'));
             });

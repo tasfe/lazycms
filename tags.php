@@ -23,7 +23,7 @@ require dirname(__FILE__).'/global.php';
 // 加载模块
 include_modules(); $db = get_conn();
 
-$inner  = $block_guid = '';
+$inner  = $b_guid = '';
 // 获取参数
 $tag    = isset($_REQUEST['q']) ? trim($_REQUEST['q']) : null;
 // 载入模版
@@ -113,12 +113,12 @@ if ($tag && $block) {
         }
     }
     // 生成标签块的唯一ID
-    $block_guid = guid($block['tag']);
+    $b_guid = guid($block['tag']);
     // 把标签块替换成变量标签
-    $html = str_replace($block['tag'], '{$'.$block_guid.'}', $html);
+    $html   = str_replace($block['tag'], '{$'.$b_guid.'}', $html);
     // 清理模版内部变量
     tpl_clean();
-    tpl_set_var($block_guid,$inner);
+    tpl_set_var($b_guid,$inner);
     tpl_set_var(array(
         'guide'    => '<a href="'.PHP_FILE.'">Tags</a> &gt;&gt; '.$tag,
         'title'    => $tag,

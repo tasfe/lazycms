@@ -268,7 +268,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
             case 'Return': default:
                 break;
         }
-        if ($.inArray(code, ['Success','Return'])==-1) data = null;
+        if (code && $.inArray(code, ['Success','Return'])==-1) data = null;
         return data;
     },
     /**
@@ -481,7 +481,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
     setCookie: function(name,key,val,options) {
         options = options || {};
         var cookie  = $.cookie(name),
-            opts    = $.extend({ expires: 365, path: LazyCMS.ADMIN }, options),
+            opts    = $.extend({ expires: 365, path: LazyCMS.ROOT }, options),
             cookies = cookie===null ? {} : LazyCMS.parse_str(cookie);
         // 取值
         if (arguments.length == 2) {
