@@ -397,6 +397,7 @@ SQL;
 }
 // 安装默认设置
 function install_defaults() {
+    $db = get_conn();
     // 默认设置
     $options = array(
         // 2.0
@@ -420,6 +421,71 @@ function install_defaults() {
             C($k,$v);
         }
     }
+    // 插入测试数据
+    $db->query("SET SQL_MODE='NO_AUTO_VALUE_ON_ZERO';");
+
+    $db->query("INSERT INTO `#@_comments` (`commentid`, `postid`, `author`, `email`, `url`, `ip`, `date`, `content`, `approved`, `agent`, `parent`, `userid`) VALUES(1, 2, 'LazyCMS', 'my@lukin.cn', 'http://www.lukin.cn/', 2130706689, 1290445365, '这是一个评论测试！', '1', 'Mozilla/5.0 (X11; U; Linux x86_64; zh-CN; rv:1.9.2.12) Gecko/20101027 Ubuntu/10.10 (maverick) Firefox/3.6.12', 0, 0);");
+
+    $db->query("INSERT INTO `#@_model` (`modelid`, `language`, `code`, `name`, `path`, `page`, `fields`, `state`) VALUES(1, 'zh-CN', 'Page', '单页面', '%PY.html', 'default.html', 'N;', 0);");
+    $db->query("INSERT INTO `#@_model` (`modelid`, `language`, `code`, `name`, `path`, `page`, `fields`, `state`) VALUES(2, 'zh-CN', 'News', '新闻系统', '%Y%m/%ID.html', 'default.html', 'N;', 0);");
+    $db->query("INSERT INTO `#@_model` (`modelid`, `language`, `code`, `name`, `path`, `page`, `fields`, `state`) VALUES(3, 'zh-CN', 'Blog', '博客系统', '%Y%m/%PY.html', 'default.html', 'N;', 0);");
+
+    $db->query("INSERT INTO `#@_post` (`postid`, `sortid`, `userid`, `type`, `model`, `author`, `path`, `title`, `content`, `views`, `digg`, `approved`, `comments`, `datetime`, `edittime`, `template`, `description`) VALUES(1, 0, 1, 'page', 'zh-CN:Page', 'Lukin', 'index.html', '首页', '', 0, 0, 'passed', 'No', 1290444282, 1290444282, 'home.html', '');");
+    $db->query("INSERT INTO `#@_post` (`postid`, `sortid`, `userid`, `type`, `model`, `author`, `path`, `title`, `content`, `views`, `digg`, `approved`, `comments`, `datetime`, `edittime`, `template`, `description`) VALUES(2, 5, 1, 'post', 'zh-CN:Blog', 'Lukin', '201011/Hello-Word!-BoKeCeShi.html', 'Hello Word! 博客测试！', '<p>这是一篇测试的博客！</p><p>插入Google地图：</p><p><img src=\"http://maps.google.com/maps/api/staticmap?center=31.195429,121.507929&amp;zoom=17&amp;size=500x350&amp;maptype=roadmap&amp;markers=31.195429,121.507929&amp;sensor=false\" alt=\"上海市浦东新区江天宾馆\" /><br /></p>', 3, 0, 'passed', 'Yes', 1290444589, 1290444589, '', '这是一篇测试的博客！');");
+    $db->query("INSERT INTO `#@_post` (`postid`, `sortid`, `userid`, `type`, `model`, `author`, `path`, `title`, `content`, `views`, `digg`, `approved`, `comments`, `datetime`, `edittime`, `template`, `description`) VALUES(3, 1, 1, 'post', 'zh-CN:News', 'Lukin', '201011/3.html', 'Hello Word! 新闻测试！', '这是一篇测试新闻！<br />', 0, 0, 'passed', 'Yes', 1290444632, 1290444632, '', '这是一篇测试新闻！');");
+
+
+    $db->query("INSERT INTO `#@_term` (`termid`, `name`) VALUES(1, '产品');");
+    $db->query("INSERT INTO `#@_term` (`termid`, `name`) VALUES(2, '扩展');");
+    $db->query("INSERT INTO `#@_term` (`termid`, `name`) VALUES(3, '模版');");
+    $db->query("INSERT INTO `#@_term` (`termid`, `name`) VALUES(4, '插件');");
+    $db->query("INSERT INTO `#@_term` (`termid`, `name`) VALUES(5, '官方博客');");
+    $db->query("INSERT INTO `#@_term` (`termid`, `name`) VALUES(6, '博客');");
+    $db->query("INSERT INTO `#@_term` (`termid`, `name`) VALUES(7, 'Hello');");
+    $db->query("INSERT INTO `#@_term` (`termid`, `name`) VALUES(8, 'Word');");
+
+    $db->query("INSERT INTO `#@_term_relation` (`objectid`, `taxonomyid`, `order`) VALUES(2, 5, 0);");
+    $db->query("INSERT INTO `#@_term_relation` (`objectid`, `taxonomyid`, `order`) VALUES(2, 6, 0);");
+    $db->query("INSERT INTO `#@_term_relation` (`objectid`, `taxonomyid`, `order`) VALUES(2, 7, 1);");
+    $db->query("INSERT INTO `#@_term_relation` (`objectid`, `taxonomyid`, `order`) VALUES(2, 8, 2);");
+    $db->query("INSERT INTO `#@_term_relation` (`objectid`, `taxonomyid`, `order`) VALUES(3, 1, 0);");
+    $db->query("INSERT INTO `#@_term_relation` (`objectid`, `taxonomyid`, `order`) VALUES(3, 7, 0);");
+    $db->query("INSERT INTO `#@_term_relation` (`objectid`, `taxonomyid`, `order`) VALUES(3, 8, 1);");
+
+    $db->query("INSERT INTO `#@_term_taxonomy` (`taxonomyid`, `termid`, `type`, `parent`, `count`) VALUES(1, 1, 'category', 0, 1);");
+    $db->query("INSERT INTO `#@_term_taxonomy` (`taxonomyid`, `termid`, `type`, `parent`, `count`) VALUES(2, 2, 'category', 0, 0);");
+    $db->query("INSERT INTO `#@_term_taxonomy` (`taxonomyid`, `termid`, `type`, `parent`, `count`) VALUES(3, 3, 'category', 2, 0);");
+    $db->query("INSERT INTO `#@_term_taxonomy` (`taxonomyid`, `termid`, `type`, `parent`, `count`) VALUES(4, 4, 'category', 2, 0);");
+    $db->query("INSERT INTO `#@_term_taxonomy` (`taxonomyid`, `termid`, `type`, `parent`, `count`) VALUES(5, 5, 'category', 0, 1);");
+    $db->query("INSERT INTO `#@_term_taxonomy` (`taxonomyid`, `termid`, `type`, `parent`, `count`) VALUES(6, 6, 'post_tag', 0, 1);");
+    $db->query("INSERT INTO `#@_term_taxonomy` (`taxonomyid`, `termid`, `type`, `parent`, `count`) VALUES(7, 7, 'post_tag', 0, 2);");
+    $db->query("INSERT INTO `#@_term_taxonomy` (`taxonomyid`, `termid`, `type`, `parent`, `count`) VALUES(8, 8, 'post_tag', 0, 2);");
+
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(1, 1, 'path', 'product', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(2, 1, 'list', 'list.html', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(3, 1, 'page', '', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(4, 1, 'keywords', '', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(5, 1, 'description', '', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(6, 2, 'path', 'extend', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(7, 2, 'list', 'list.html', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(8, 2, 'page', '', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(9, 2, 'keywords', '', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(10, 2, 'description', '', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(11, 3, 'path', 'extend/themes', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(12, 3, 'list', 'list.html', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(13, 3, 'page', '', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(14, 3, 'keywords', '', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(15, 3, 'description', '', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(16, 4, 'path', 'extend/plugins', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(17, 4, 'list', 'list.html', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(18, 4, 'page', '', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(19, 4, 'keywords', '', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(20, 4, 'description', '', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(21, 5, 'path', 'blog', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(22, 5, 'list', 'list.html', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(23, 5, 'page', '', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(24, 5, 'keywords', '', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(25, 5, 'description', '', 'string');");
 
     return true;
 }

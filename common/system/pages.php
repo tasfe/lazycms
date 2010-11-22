@@ -76,8 +76,8 @@ class Pages {
             $this->length = $this->total - (($this->pages-1) * $this->size);
         } else {
             $this->length = 0;
-            $result = false;
         }
+        if ($this->total==0 || $this->length==0) $result = false;
         return $result;
     }
     /**

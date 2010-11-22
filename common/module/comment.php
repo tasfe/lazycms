@@ -193,7 +193,7 @@ function comment_create($postid) {
                         'email'   => $data['email'],
                         'url'     => !strncmp($data['url'],'http://',7) ? $data['url'] : 'http://'.$data['url'],
                         'ip'      => long2ip($data['ip']),
-                        'address' => ip2addr($data['ip']),
+                        'address' => ip2addr(long2ip($data['ip'])),
                         'content' => nl2br($data['content']),
                         'agent'   => $data['agent'],
                         'date'    => $data['date'],

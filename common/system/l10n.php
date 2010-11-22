@@ -393,7 +393,7 @@ class L10n {
 	 * @return void
 	 **/
 	function merge_with(&$other) {
-		foreach( $other->entries as $entry ) {
+		foreach( (array)$other->entries as $entry ) {
 			$this->entries[$this->entry_key($entry)] = $entry;
 		}
 	}
@@ -523,6 +523,8 @@ class L10n_Reader {
 }
 
 class L10n_NOOP {
+    var $entries;
+
     function translate($singular, $context=null) {
 		return $singular;
 	}

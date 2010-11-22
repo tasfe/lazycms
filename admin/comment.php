@@ -146,7 +146,7 @@ switch ($method) {
                     $path = post_get_path($post['sortid'],$post['path']);
                     echo       '<td><a href="'.ADMIN.'post.php?method=edit&postid='.$data['postid'].'">'.$post['title'].'</a><br />';
                     echo           '<a class="comment-count" href="'.PHP_FILE.'?p='.$data['postid'].'"><span>'.$data['count'].'</span></a>';
-                    echo           '<a href="'.ROOT.$path.'#comment-'.$data['commentid'].'" target="_blank">#</a>';
+                    echo           '<a href="'.ROOT.$path.'#cmt_list" target="_blank">#</a>';
                     echo       '</td>';
                 } else {
                     echo       '<td>'.__('The post has been deleted.').'<br />';

@@ -159,6 +159,6 @@ class QQWry {
     }
     
     function __destruct() {
-        fclose($this->_fp);
+        if ($this->_fp) fclose($this->_fp);
     }
 }
