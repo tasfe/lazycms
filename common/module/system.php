@@ -327,7 +327,7 @@ function system_tags($tag) {
         tpl_clean();
         tpl_set_var($b_guid,$inner);
         tpl_set_var(array(
-            'guide'    => '<a href="'.PHP_FILE.'">Tags</a> &gt;&gt; '.$tag,
+            'guide'    => 'Tags &gt;&gt; '.$tag,
             'title'    => $tag,
             'keywords' => $tag,
         ));

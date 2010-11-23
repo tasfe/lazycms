@@ -51,6 +51,7 @@ a:hover   { text-decoration: underline; }
 
 /* guide */
 #guide { height:21px; line-height:21px; margin-top:10px; display:table; }
+    #guide a.home:hover { text-decoration:none; }
     #guide a.home { width:92px; color:#666; background:url(guide.gif) no-repeat left center; display:inline-block; margin-right:5px; font-weight:bold; height:21px; letter-spacing:3px; text-align:center; }
 
 /* header */
@@ -90,7 +91,7 @@ a:hover   { text-decoration: underline; }
 	
 	#feature{ width:300px; height:301px; float:left; margin-right:5px; background:url(feature-bg.gif) no-repeat left top; border:none !important; border-bottom:1px solid #c6d9e7 !important; }
     #feature h4 { font-size:16px; color:#0B5B98; line-height:1.5; text-align:center; margin-top:15px; letter-spacing:2px; }
-    #feature ul { margin-top:15px; padding-left:10px; }
+    #feature ul { margin-top:15px; _margin-top:10px; padding-left:10px; }
     #feature ul li{ line-height:24px; font-size:14px; }
 
     #updates{ width:323px; height:300px; float:left; }

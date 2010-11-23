@@ -21,10 +21,13 @@ if (cmtstate=='Yes') {
     document.write(comment);
     
     $(document).ready(function(){
-        var wrap = $('form#cmt_form'),url = CMS.getCookie('comment_user','url');
-        $('input[name=author]',wrap).val(CMS.getCookie('comment_user','author'));
-        $('input[name=email]',wrap).val(CMS.getCookie('comment_user','email'));
-        if (url !== null) $('input[name=url]',wrap).val(url);
+        var wrap   = $('form#cmt_form'),
+            author = CMS.getCookie('comment_user','author'),
+            email  = CMS.getCookie('comment_user','email'),
+            url    = CMS.getCookie('comment_user','url');
+        if (author !== null) $('input[name=author]',wrap).val(author);
+        if (email !== null)  $('input[name=email]',wrap).val(email);
+        if (url !== null)    $('input[name=url]',wrap).val(url);
         // 刷新评论数
         comment_jsonp_info(ajaxinfo);
         // 显示评论列表

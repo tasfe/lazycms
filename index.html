@@ -1,147 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<link rel="shortcut icon" href="favicon.ico" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="keywords" content="首页" />
-<meta name="description" content="首页" />
+<meta http-equiv="refresh" content="0;url=admin/" />
 <meta name="generator" content="LazyCMS 2.0" />
-<title>LazyCMS(内容管理系统) - 做国内最优秀的免费、开源PHPCMS</title>
-<script type="text/javascript" src="/common/js/jquery.js"></script>
-<script type="text/javascript" src="/common/js/lazycms.js?ver=2.0"></script>
-<script type="text/javascript" src="/themes/lazycms/images/script.js">CMS.WEB_ROOT='/';</script>
-<link href="/themes/lazycms/images/style.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript">
-$(document).ready(function(){
-	$('#download label,.radioToggle').click(function(){
-		var thisToggle = $(this).is('.radioToggle') ? $(this) : $(this).prev();
-		var checkBox = thisToggle.prev();
-			checkBox.trigger('click');
-		$('.radioToggle').removeClass('checked');
-		thisToggle.addClass('checked');
-		return false;
-	});
-});
-</script>
+<title>LazyCMS v2.0.x</title>
+<script type="text/javascript">location.replace('admin/');</script>
 </head>
 
 <body>
-<div id="top">
-	<div class="wrapper">
-		<div class="logo"><a href="/"><img src="/themes/lazycms/images/logo.png" alt="LazyCMS 2.0" /></a></div>
-		<ul id="menu">
-			<li><a class="active" href="/index.html">首页</a></li>
-			<li><a href="/product/" title="产品">产品</a></li>
-            <li><a href="/extend/" title="扩展">扩展</a></li>
-            <li><a href="/showcase/" title="案例">案例</a></li>
-			<li><a href="/docs/" title="文档">文档</a></li>
-			<li><a href="/blog/" title="博客">博客</a></li>
-			<li><a href="http://code.google.com/p/lazycms/issues/list" target="_blank">反馈</a></li>
-		</ul>
-        <script type="text/javascript">$('ul#menu').init_menu();</script>
-	</div>
-</div>
-
-<div id="header" class="wrapper">
-	<div id="intro">
-		<h1><em>LazyCMS</em>是一个小巧灵活、性能卓越、功能丰富的网站管理系统。</h1>
-		<h2><em>LazyCMS</em>提供了一种快速简便的方法来建设一个专业网站，无论是小型企业或跨国公司，网站建设就是这样简单。</h2>
-        <ul>
-			<li class="agile"><img src="/themes/lazycms/images/agile.gif" alt="小巧灵活、性能卓越" />小巧灵活<br/>性能卓越</li>
-			<li class="brevity"><img src="/themes/lazycms/images/brevity.gif" alt="功能丰富、操作简单" />功能丰富<br/>操作简单</li>
-			<li class="free"><img src="/themes/lazycms/images/free.gif" alt="自由定制、开源免费" />自由定制<br/>开源免费</li>
-		</ul>
-	</div>
-	<div id="download">
-        <h3>下载LazyCMS最新版本</h3>
-        <p>选择您要下载的版本：</p>
-		<form method="get" action="http://code.google.com/p/lazycms/downloads/detail">
-            <div class="compression">
-                <input type="radio" name="name" id="dl-one" checked="checked" value="LazyCMS-v2.0.r659.zip" />
-                <a class="radioToggle name checked" href="http://code.google.com/p/lazycms/downloads/detail?name=LazyCMS-v2.0.r659.zip">LazyCMS-v2.0.r659.zip</a>
-                <label for="dl-one">LazyCMS v2.0.r659（610K）</label>
-                <div class="clear"><br/></div>
-                <input type="radio" name="name" id="dl-two" value="LazyCMS-v2.0.r653.zip" />
-                <a class="radioToggle name" href="http://code.google.com/p/lazycms/downloads/detail?name=LazyCMS-v2.0.r653.zip">LazyCMS-v2.0.r653.zip</a>
-                <label for="dl-two">LazyCMS v2.0.r653（552K）</label>
-            </div>
-			<button type="submit">
-				<span>下载 LazyCMS 最新版</span>
-			</button>
-		</form>
-        <p class="version"><strong>当前版本：</strong>v2.0</p>
-	</div>
-</div>
-
-<div id="content" class="wrapper">
-	<div id="feature" class="container">
-        <h4>为什么选择LazyCMS？</h4>
-        <ul>
-            <li>全站静态化、SEO友好的URLs；</li>
-            <li>灵活的模块设计、丰富的功能扩展；</li>
-            <li>简单的安装向导和系统升级；</li>
-            <li>简洁人性化、多语言的管理面板；</li>
-            <li>强大易用的文章管理系统；</li>
-            <li>简单方便的自定义数据模型；</li>
-            <li>高效的后台操作和HTML生成速度；</li>
-            <li>所见即所得（WYSIWYG）编辑器；</li>
-            <li>XML风格的可嵌套模版标签；</li>
-            <li>最小的系统需求；</li>
-        </ul>
-    </div>
-    <div id="updates" class="container">
-        <h3>最近更新</h3>
-        
-        <p>[<a href="/product/" title="产品">产品</a>] <a href="/product/201011/17.html" title="抢先体验Opera 11 Beta">抢先体验Opera 11 Beta</a></p>
-        
-        <p>[<a href="/product/" title="产品">产品</a>] <a href="/product/201011/16.html" title="WebOS 2.0.1 已经开始推送到无锁版Pre 2？">WebOS 2.0.1 已经开始推送到无...</a></p>
-        
-        <p>[<a href="/product/" title="产品">产品</a>] <a href="/product/201011/15.html" title="维亚康姆成第五家屏蔽Google TV广播公司">维亚康姆成第五家屏蔽Google TV广...</a></p>
-        
-        <p>[<a href="/product/" title="产品">产品</a>] <a href="/product/201011/14.html" title="2010年开源软件奖开奖">2010年开源软件奖开奖</a></p>
-        
-        <p>[<a href="/product/" title="产品">产品</a>] <a href="/product/201011/13.html" title="HD7 和 iPhone 拍照比拼，HD7完败！">HD7 和 iPhone 拍照比拼，HD...</a></p>
-        
-        <p>[<a href="/product/" title="产品">产品</a>] <a href="/product/201011/12.html" title="M9准备好了,JW开始爆料魅族M9II">M9准备好了,JW开始爆料魅族M9II</a></p>
-        
-        <p>[<a href="/product/" title="产品">产品</a>] <a href="/product/201011/11.html" title="Websense警告:搜热门新闻比成人内容更危险">Websense警告:搜热门新闻比成人内...</a></p>
-        
-        <p>[<a href="/product/" title="产品">产品</a>] <a href="/product/201011/10.html" title="美宇航局飞船近距掠过彗星遭遇星际雪暴">美宇航局飞船近距掠过彗星遭遇星际雪暴</a></p>
-        
-        <p>[<a href="/product/" title="产品">产品</a>] <a href="/product/201011/9.html" title="明年初揭晓 索尼爱立信PS Phone再曝光">明年初揭晓 索尼爱立信PS Phone再...</a></p>
-        
-        <p>[<a href="/product/" title="产品">产品</a>] <a href="/product/201011/8.html" title="谷歌确定年内发布Chrome OS 可能为测试版">谷歌确定年内发布Chrome OS 可能...</a></p>
-        
-    </div>
-    <div id="changes" class="container">
-		<h3>更新记录</h3>
-        <div class="load"><img src="/themes/lazycms/images/loading.gif" alt="Loading..." />Loading...</div>
-	</div>
-    <script type="text/javascript">$('#changes').updates();</script>
-    <div class="clear"><br/></div>
-</div>
-
-<div id="links" class="wrapper"><strong>友情链接</strong>
-	<a href="http://www.chinaz.com/" target="_blank">中国站长站</a>
-	<a href="http://www.im286.com/" target="_blank">落伍者</a>
-</div>
-
-
-<div id="footer" class="wrapper">
-	<div class="menu">
-		<a title="关于我们" href="#/aboutus/index.html">关于我们</a>
-		<a title="联系方式" href="#/aboutus/contact.html">联系方式</a>
-		<a title="付款方式" href="#/aboutus/payment.html">付款方式</a>
-		<a title="免责条款" href="#/license.html">许可协议</a>
-		<a title="站点地图" href="#/sitemap.html">站点地图</a>
-	</div>
-	Copyright &copy; LazyCMS.com All Rights Reserved.<br/>
-	<span id="lazycms">Powered by: <a href="http://lazycms.com/" style="font-weight:bold" target="_blank" title="LazyCMS">LazyCMS</a> 2.0</span><br/>
-	<a href="http://www.miibeian.gov.cn" target="_blank">京ICP备09028602号</a>
-	<script language="javascript" type="text/javascript" src="http://js.users.51.la/1497837.js"></script>
-    <noscript><a href="http://www.51.la/?1497837" target="_blank"><img alt="&#x6211;&#x8981;&#x5566;&#x514D;&#x8D39;&#x7EDF;&#x8BA1;" src="http://img.users.51.la/1497837.asp" style="border:none" /></a></noscript>
-</div>
-
-
 </body>
 </html>
 
