@@ -175,6 +175,13 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
             $post['sort'] = taxonomy_get($post['sortid']);
             $post['path'] = post_get_path($post['sortid'],$post['path']);
             $post['keywords'] = post_get_keywords($post['keywords']);
+            // 文章内容
+            if ($post['content'] && strpos($post['content'],'<!--pagebreak-->')!==false) {
+                $contents = explode('<!--pagebreak-->', $post['content']);
+                $content  = array_shift($contents);
+            } else {
+                $content  = $post['content'];
+            }
             // 设置文章变量
             $vars = array(
                 'zebra'    => ($i % ($zebra + 1)) ? '0' : '1',
@@ -186,7 +193,8 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
                 'digg'     => $post['digg'],
                 'title'    => $post['title'],
                 'path'     => ROOT.$post['path'],
-                'datet'    => $post['datetime'],
+                'content'  => $content,
+                'date'     => $post['datetime'],
                 'edittime' => $post['edittime'],
                 'keywords' => $post['keywords'],
                 'description' => $post['description'],
@@ -270,6 +278,13 @@ function system_tags($tag) {
                 if (empty($post)) continue;
                 $post['sort'] = taxonomy_get($post['sortid']);
                 $post['path'] = post_get_path($post['sortid'],$post['path']);
+                // 文章内容
+                if ($post['content'] && strpos($post['content'],'<!--pagebreak-->')!==false) {
+                    $contents = explode('<!--pagebreak-->', $post['content']);
+                    $content  = array_shift($contents);
+                } else {
+                    $content  = $post['content'];
+                }
                 // 设置文章变量
                 $vars = array(
                     'zebra'    => ($i % ($zebra + 1)) ? '0' : '1',
@@ -281,6 +296,7 @@ function system_tags($tag) {
                     'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
                     'digg'     => $post['digg'],
                     'path'     => ROOT.$post['path'],
+                    'content'  => $content,
                     'datetime' => $post['datetime'],
                     'edittime' => $post['edittime'],
                     'keywords' => $post['keywords'],

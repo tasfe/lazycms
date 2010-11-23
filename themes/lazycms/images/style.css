@@ -107,10 +107,17 @@ a:hover   { text-decoration: underline; }
 		#changes div.load { text-align:center; margin-top:40%; }
 		#changes div.load img{ margin-right:5px; }
 
-    #posts{ width:610px; padding:10px; float:left; }
-        #posts h1{ color:#003683; display:block; background:url(title.gif) no-repeat left 5px; margin:-3px 0 5px 0; padding-left:10px; padding-bottom:3px; font-size:14px; line-height:1.5; border-bottom:1px solid #CCCCCC; }
-        #posts p{ margin:8px 0; }
-        #posts p em{ font-size:9px; color:#666; }
+    div.lists { width:610px; padding:10px; float:left; }
+        div.lists h1{ color:#003683; display:block; background:url(title.gif) no-repeat left 5px; margin:-3px 0 5px 0; padding-left:10px; padding-bottom:3px; font-size:14px; line-height:1.5; border-bottom:1px solid #CCCCCC; }
+        div.lists p{ margin:8px 0; }
+        div.lists p em{ font-size:9px; color:#666; }
+
+    #blogs h2{ font-size:14px; line-height:1.5; margin:5px 0; }
+    #blogs div.post{ border-bottom: 1px dashed #C2C3BA; margin-bottom:10px; }
+    #blogs div.post .entry-meta { color:#8D8D8D; }
+    #blogs div.post .entry-meta span.author{ color:#0B3B8C; }
+    #blogs div.post .entry-utility{ margin-bottom:10px; }
+    #blogs span.tags a{ margin-right:5px; }
 
     #left{ width:630px; float:left; }
         #left .related{ margin-top:5px; border:1px solid #C6D9E7; background:#fff; }

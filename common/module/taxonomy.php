@@ -567,6 +567,13 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                     $post['path'] = post_get_path($post['sortid'],$post['path']);
                     // 生成文章
                     if ($make_post) post_create($post['postid']);
+                    // 文章内容
+                    if ($post['content'] && strpos($post['content'],'<!--pagebreak-->')!==false) {
+                        $contents = explode('<!--pagebreak-->', $post['content']);
+                        $content  = array_shift($contents);
+                    } else {
+                        $content  = $post['content'];
+                    }
                     // 设置文章变量
                     $vars = array(
                         'zebra'    => ($i % ($zebra + 1)) ? '0' : '1',
@@ -576,8 +583,10 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                         'author'   => $post['author'],
                         'title'    => $post['title'],
                         'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
+                        'cmt_count'=> '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment_count&postid='.$post['postid'].'"></script>',
                         'digg'     => $post['digg'],
                         'path'     => ROOT.$post['path'],
+                        'content'  => $content,
                         'date'     => $post['datetime'],
                         'edittime' => $post['edittime'],
                         'keywords' => post_get_keywords($post['keywords']),
@@ -602,6 +611,27 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                         foreach ($block['sub'] as $sblock) {
                             $sblock['name'] = strtolower($sblock['name']);
                             switch($sblock['name']) {
+                                // 解析tags
+                                case 'tags':
+                                    $t_inner = $t_guid = '';
+                                    if ($post['keywords']) {
+                                        $tpl = new Template();
+                                        $sblock['inner'] = $tpl->get_block_inner($sblock);
+                                        foreach(post_get_taxonomy($post['keywords']) as $tt) {
+                                            $tpl->clean();
+                                            $tpl->set_var(array(
+                                                'name' => $tt['name'],
+                                                'path' => ROOT.'tags.php?q='.$tt['name'],
+                                            ));
+                                            $t_inner.= $tpl->parse($sblock['inner']);
+                                        }
+                                        // 生成标签块的唯一ID
+                                        $t_guid = guid($sblock['tag']);
+                                        // 把标签块替换成变量标签
+                                        $block['inner'] = str_replace($sblock['tag'], '{$'.$t_guid.'}', $block['inner']);
+                                    }
+                                    tpl_set_var($t_guid, $t_inner);
+                                    break;
                                 // TODO 解析图片标签
                                 case 'images':
                                     $block['inner'] = str_replace($sblock['tag'],'',$block['inner']);

@@ -568,7 +568,16 @@ function post_gateway_ajax_comment() {
     $comment_people = comment_people($postid);
     return array($comment_count,$comment_people);
 }
-
+/**
+ * 评论数量
+ *
+ * @return string
+ */
+function post_gateway_comment_count() {
+    $postid = isset($_REQUEST['postid'])  ? $_REQUEST['postid']  : 0;
+    $comment_count  = comment_count($postid);
+    return 'document.write('.esc_js($comment_count).');';
+}
 /**
  * 发表评论
  *
