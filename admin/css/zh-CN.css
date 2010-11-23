@@ -17,19 +17,4 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
-
-.data-table b{ color:#0B55C4; font-weight:normal; }
-
-div.avatar{ float:left; margin-right:6px; }
-
-span.unapprove a{color:#D98500;}
-span.approve a{color:#006505;}
-
-a.comment-count{ height:1.3em; line-height:1.1em; margin-right:5px; color:#FFFFFF; text-decoration:none; background:url(../images/bubble_bg.gif) no-repeat center -80px; cursor:pointer; padding:0 0 6px; }
-a.comment-count span{ height:1.7em; line-height:1.7em; min-width:0.7em; background-color:#BBBBBB; -moz-border-radius:5px 5px 5px 5px; cursor:pointer; display:inline-block; font-size:9px; font-weight:bold; padding:0 6px;}
-a.comment-count:hover{ background-position:center -3px; }
-a.comment-count:hover span{ background-color:#D54E21; }
-
-
-div.cmt_dialog p { margin:3px 0 !important;}
-div.cmt_dialog p label{ width:70px; display:inline-block; }
+.form-table th{ width:110px; }

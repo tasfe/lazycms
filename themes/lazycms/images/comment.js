@@ -8,7 +8,7 @@ if (cmtstate=='Yes') {
     comment+=       '<div class="top"><strong>网友评论:</strong><a href="#cmt_list">已有<em>0</em>条评论，共<em>0</em>人参与评论。</a></div>';
     comment+=       '<div class="info">';
     comment+=           '<p><label for="author">名&nbsp; &nbsp; &nbsp; 称：</label><input class="text" name="author" id="author" type="text" size="20" /></p>';
-    comment+=           '<p><label for="email">电子邮件：</label><input class="text" name="email" id="email" type="text" size="30" /></p>';
+    comment+=           '<p><label for="mail">电子邮件：</label><input class="text" name="mail" id="mail" type="text" size="30" /></p>';
     comment+=           '<p><label for="url">网&nbsp; &nbsp; &nbsp; 站：</label><input class="text" name="url" id="url" type="text" size="50" value="http://" /></p>';
     comment+=       '</div>';
     comment+=       '<div class="textarea"><textarea class="text" id="cmt_content" name="content"></textarea></div>';
@@ -23,10 +23,10 @@ if (cmtstate=='Yes') {
     $(document).ready(function(){
         var wrap   = $('form#cmt_form'),
             author = CMS.getCookie('comment_user','author'),
-            email  = CMS.getCookie('comment_user','email'),
+            email  = CMS.getCookie('comment_user','mail'),
             url    = CMS.getCookie('comment_user','url');
         if (author !== null) $('input[name=author]',wrap).val(author);
-        if (email !== null)  $('input[name=email]',wrap).val(email);
+        if (email !== null)  $('input[name=mail]',wrap).val(email);
         if (url !== null)    $('input[name=url]',wrap).val(url);
         // 刷新评论数
         comment_jsonp_info(ajaxinfo);
@@ -36,6 +36,8 @@ if (cmtstate=='Yes') {
     
     // 绑定评论提交事件
     $('form#cmt_form').ajaxSubmit(function(r){
+        // 清空发表的内容
+        $('textarea', this).val('');
         // 刷新评论数
         comment_jsonp_info(ajaxinfo);
         // 刷新评论
@@ -43,7 +45,7 @@ if (cmtstate=='Yes') {
         // 保存用户信息
         var wrap = $('form#cmt_form');
         CMS.setCookie('comment_user', 'author', $('input[name=author]',wrap).val());
-        CMS.setCookie('comment_user', 'email', $('input[name=email]',wrap).val());
+        CMS.setCookie('comment_user', 'mail', $('input[name=mail]',wrap).val());
         CMS.setCookie('comment_user', 'url', $('input[name=url]',wrap).val());
     });
 

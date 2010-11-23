@@ -601,19 +601,41 @@ function post_gateway_send_comment() {
     if (mb_strlen($content,'UTF-8') > 500) return ajax_alert(sprintf(__('Maximum %d characters of Comment content!'), 500));
     global $_USER;
     if (!isset($_USER)) {
-        $email = isset($_REQUEST['email']) ? esc_html(trim($_REQUEST['email'])) : '';
+        $email = isset($_REQUEST['mail']) ? esc_html(trim($_REQUEST['mail'])) : '';
         if (!validate_is($email,VALIDATE_IS_EMAIL)) return ajax_alert(__('You must provide an e-mail address.'));
         $_USER = array(
-            'email'  => $email,
-            'name'   => isset($_REQUEST['author'])  ? esc_html(trim($_REQUEST['author']))  : '',
-            'url'    => isset($_REQUEST['url'])     ? esc_html(trim($_REQUEST['url']))     : '',
+            'mail' => $email,
+            'name' => isset($_REQUEST['author'])  ? esc_html(trim($_REQUEST['author']))  : '',
+            'url'  => isset($_REQUEST['url'])     ? esc_html(trim($_REQUEST['url']))     : '',
         );
+    }
+
+    // 获取用户唯一标识
+    $authcode = authcode();
+    $cachekey = sprintf('comment.send.%s', $authcode);
+    $session  = fcache_get($cachekey);
+    if ($session !== null) {
+        // 说话太快，歇歇吧！
+        if (time()-$session['time'] <= 3) {
+            return ajax_error(__('You speak too fast, rest!'));
+        }
+        // 不能发送重复的评论
+        if ($session['content'] == $content) {
+            return ajax_error(__('You can not send duplicate comment!'));
+        }
+        // 没有违规，删除缓存
+        fcache_delete($cachekey);
     }
     // 添加评论
     if (comment_add($postid,$content,$parent,$_USER)) {
+        // 保存用户信息
+        fcache_set($cachekey, array(
+            'time' => time(),
+            'content' => $content
+        ), 86400);
         comment_create($postid);
-        ajax_success(__('Comment on the success!'));
+        return ajax_success(__('Comment on the success!'));
     } else {
-        ajax_error(__('Comment failed!'));
+        return ajax_error(__('Comment failed!'));
     }
 }

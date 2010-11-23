@@ -31,6 +31,38 @@ admin_head('scripts',array('js/comment'));
 $method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 
 switch ($method) {
+    case 'get':
+        $cmtid   = isset($_REQUEST['cmtid']) ? $_REQUEST['cmtid'] : 0;
+        $comment = comment_get($cmtid);
+        ajax_return(array(
+            'author'  => $comment['author'],
+            'mail'    => $comment['mail'],
+            'url'     => $comment['url'],
+            'content' => $comment['content'],
+        ));
+        break;
+    case 'edit':
+        $cmtid   = isset($_POST['cmtid']) ? $_POST['cmtid'] : 0;
+        $content = isset($_POST['content']) ? trim($_POST['content'])  : '';
+        comment_edit($cmtid, $content, null, array(
+            'name' => isset($_POST['author']) ? $_POST['author'] : '',
+            'mail' => isset($_POST['mail']) ? $_POST['mail'] : '',
+            'url'  => isset($_POST['url']) ? $_POST['url'] : '',
+        ));
+        comment_create(comment_get_postid($cmtid));
+        ajax_success(__('Comment updated.'), "LazyCMS.redirect('".referer()."');");
+        break;
+    case 'reply':
+        $parent  = isset($_POST['parent'])  ? $_POST['parent']  : 0;
+        $content = isset($_POST['content']) ? trim($_POST['content'])  : '';
+        $postid  = comment_get_postid($parent);
+        if (comment_add($postid,$content,$parent,$_USER)) {
+            comment_create($postid);
+            ajax_success(__('Comment on the success!'), "LazyCMS.redirect('".referer()."');");
+        } else {
+            ajax_error(__('Comment failed!'));
+        }
+        break;
     case 'bulk':
         $action  = isset($_POST['action'])?$_POST['action']:null;
 	    $listids = isset($_POST['listids'])?$_POST['listids']:null;
@@ -39,22 +71,22 @@ switch ($method) {
 	    }
 	    switch ($action) {
 	        case 'unapprove':
-	            foreach ($listids as $commentid) {
-	            	comment_edit($commentid,null,'0');
+	            foreach ($listids as $cmtid) {
+	            	comment_edit($cmtid,null,'0');
 	            }
                 redirect(referer());
 	            break;
             case 'approve':
                 $approved = count($listids);
-	            foreach ($listids as $commentid) {
-	            	comment_edit($commentid,null,'1');
+	            foreach ($listids as $cmtid) {
+	            	comment_edit($cmtid,null,'1');
 	            }
                 ajax_success(sprintf(_n('%s comment approved', '%s comments approved', $approved ), $approved),"LazyCMS.redirect('".referer()."');");
 	            break;
             case 'delete':
                 $deleted = count($listids);
-	            foreach ($listids as $commentid) {
-	            	comment_delete($commentid);
+	            foreach ($listids as $cmtid) {
+	            	comment_delete($cmtid);
 	            }
 	            ajax_success(sprintf(_n('%s comment permanently deleted', '%s comments permanently deleted', $deleted ), $deleted),"LazyCMS.redirect('".referer()."');");
 	            break;
@@ -64,6 +96,13 @@ switch ($method) {
 	    }
         break;
     default:
+        admin_head('jslang',array(
+            'Reply comment' => __('Reply comment'),
+            'Edit comment' => __('Edit comment'),
+            'Author' => __('Author'),
+            'Email' => __('Email'),
+            'Url' => __('Url'),
+        ));
         admin_head('loadevents','comment_list_init');
         $where  = 'WHERE 1';
         $query  = array('page' => '$');
@@ -90,7 +129,7 @@ switch ($method) {
             $where.= ' AND `ip`='.esc_sql(sprintf('%u', ip2long($ipaddr)));
         }
         
-        $result = pages_query("SELECT * FROM `#@_comments` {$where} ORDER BY `commentid` DESC");
+        $result = pages_query("SELECT * FROM `#@_comments` {$where} ORDER BY `cmtid` DESC");
         // 分页地址
         $page_url = PHP_FILE.'?'.http_build_query($query);
         $pend_len = comment_count(0, '0');
@@ -115,20 +154,26 @@ switch ($method) {
         echo           '<tbody>';
         if ($result) {
             while ($data = pages_fetch($result)) {
-                $data['avatar'] = get_avatar($data['email'], 32, 'mystery');
+                $data['avatar'] = get_avatar($data['mail'], 32, 'mystery');
                 $data['author'] = $data['author'] ? $data['author'] : __('Anonymous');
                 $data['count']  = comment_count($data['postid']);
                 $data['ipaddr'] = long2ip($data['ip']);
-                if ($data['approved']==0) {
-                    $actions = '<span class="approve"><a href="javascript:;" onclick="comment_state(\'approve\','.$data['commentid'].')">'.__('Approve').'</a> | </span>';
-                } elseif ($data['approved']==1) {
-                    $actions = '<span class="unapprove"><a href="javascript:;" onclick="comment_state(\'unapprove\','.$data['commentid'].')">'.__('Unapprove').'</a> | </span>';
+                if ($data['parent']) {
+                    $parent = comment_get($data['parent']);
+                    $reply  = ' | '.sprintf(__('In reply to <a href="%s">%s</a>.'), 'javascript:;', $parent['author']);
+                } else {
+                    $reply  = '';
                 }
-                $actions.= '<span class="reply"><a href="javascript:;">'.__('Reply').'</a> | </span>';
-                $actions.= '<span class="edit"><a href="javascript:;">'.__('Edit').'</a> | </span>';
-                $actions.= '<span class="delete"><a href="javascript:;" onclick="comment_delete('.$data['commentid'].')">'.__('Delete').'</a></span>';
-                echo       '<tr>';
-                echo           '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$data['commentid'].'" /></td>';
+                if ($data['approved']==0) {
+                    $actions = '<span class="approve"><a href="javascript:;" onclick="comment_state(\'approve\','.$data['cmtid'].')">'.__('Approve').'</a> | </span>';
+                } elseif ($data['approved']==1) {
+                    $actions = '<span class="unapprove"><a href="javascript:;" onclick="comment_state(\'unapprove\','.$data['cmtid'].')">'.__('Unapprove').'</a> | </span>';
+                }
+                $actions.= '<span class="reply"><a href="javascript:;" onclick="comment_reply('.$data['cmtid'].')">'.__('Reply').'</a> | </span>';
+                $actions.= '<span class="edit"><a href="javascript:;" onclick="comment_edit('.$data['cmtid'].')">'.__('Edit').'</a> | </span>';
+                $actions.= '<span class="delete"><a href="javascript:;" onclick="comment_delete('.$data['cmtid'].')">'.__('Delete').'</a></span>';
+                echo       '<tr id="cmt-'.$data['cmtid'].'">';
+                echo           '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$data['cmtid'].'" /></td>';
                 echo           '<td>';
                 echo                '<div class="avatar"><img src="'.$data['avatar'].'" width="32" height="32" alt="'.esc_html($data['author']).'" /></div>';
                 echo                '<strong>'.$data['author'].'</strong>';
@@ -136,12 +181,13 @@ switch ($method) {
                     $url = !strncmp($data['url'],'http://',7) ? substr($data['url'],7) : $data['url'];
                     echo            '<br /><a href="'.$data['url'].'" target="_blank">'.$url.'</a>';
                 }
-                if ($data['email']) {
-                    echo            '<br /><a href="mailto:'.$data['email'].'">'.$data['email'].'</a>';
+                if ($data['mail']) {
+                    echo            '<br /><a href="mailto:'.$data['mail'].'">'.$data['mail'].'</a>';
                 }
                 echo            '<br /><a href="'.PHP_FILE.'?ip='.$data['ipaddr'].'" title="'.esc_html(ip2addr($data['ip'])).'">'.$data['ipaddr'].'</a>';
                 echo           '</td>';
-                echo           '<td>'.sprintf(__('Submitted on: <b>%s</b>'),date('Y-m-d H:i:s',$data['date'])).'<br />'.$data['content'].'<br /><div class="row-actions">'.$actions.'</div></td>';
+                echo           '<td><div class="submitted-on">'.sprintf(__('Submitted on: <b>%s</b>'),date('Y-m-d H:i:s',$data['date'])).$reply.'</div>';
+                echo               '<p>'.nl2br($data['content']).'</p><div class="row-actions">'.$actions.'</div></td>';
                 if ($post = post_get($data['postid'])) {
                     $path = post_get_path($post['sortid'],$post['path']);
                     echo       '<td><a href="'.ADMIN.'post.php?method=edit&postid='.$data['postid'].'">'.$post['title'].'</a><br />';

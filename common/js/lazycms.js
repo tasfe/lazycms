@@ -273,135 +273,12 @@ var LazyCMS = window.LazyCMS = window.CMS = {
     },
     /**
      * 模拟的弹出框
-     *
-     * @param options   参数
-     *          {
-     *              name:标识,
-     *              title:标题,
-     *              body:内容,
-     *              styles:css 样式,
-     *              masked:是否需要遮罩，默认true,
-     *              close:是否显示关闭按钮，默认true,
-     *              float:浮动位置，默认居中，参数：c,lt,rt,lb,rb,
-     *              remove:点击关闭按钮触发的事件,
-     *              buttons:按钮
-     *          }
-     * @param callback  回调函数(dialog jquery对象,传入的 options)
+     * 
+     * @param options
+     * @param callback
      */
     dialog: function(options,callback) {
-        // body
-        var body = $('body');
-        // 默认设置
-        var opts = $.extend({
-            title:'',
-            body:'',
-            styles:{},
-            name:null,
-            masked:true,
-            close:true,
-			float:'c',
-			className:'dialog',
-            remove:function(){ LazyCMS.removeDialog(opts.name); },
-            buttons:[]
-        }, options||{});
-
-        // 按钮个数
-        var btnLength = opts.buttons.length;
-        // 设置默认名称
-        opts.name = opts.name?'lazy_dialog_' + opts.name:'lazy_dialog';
-        // 定义弹出层对象
-        var dialog = $('<div class="' + opts.name + ' ' + opts.className + ' window" style="display:none;"><h1>Loading...</h1><div class="wrapper">Loading...</div></div>').css({position:'fixed'});
-        var target = $('div.' + opts.name,body);
-            if (target.is('div')) {
-                dialog = target;
-            } else {
-                body.append(dialog);
-            }
-            // 添加删除事件
-            dialog.removeDialog = opts.remove;
-        // 添加遮罩层
-        if (opts.masked) {
-            LazyCMS.masked({'z-index':$('*').maxIndex() + 1});
-        }
-
-        // 添加关闭按钮
-        if (opts.close) {
-            if ($('.close',dialog).is('a')) {
-                $('.close',dialog).click(function(){
-                    dialog.removeDialog();
-                });
-            } else {
-                $('<a href="javascript:;" class="close">Close</a>').click(dialog.removeDialog).insertAfter($('h1',dialog));
-            }
-        } else {
-            $('.close',dialog).remove();
-        }
-
-        // 重新调整CSS
-        var styles = $.extend({overflow:'','z-index':$('*').maxIndex() + 1,height:'auto'},opts.styles); dialog.css(styles);
-
-        // 设置标题
-        $('h1',dialog).text(opts.title);
-
-        // 设置内容
-        if ($('div.wrapper','<div>' + opts.body + '</div>').is('div')) {
-            $('div.wrapper',dialog).replaceWith(opts.body);
-        } else {
-            $('.wrapper',dialog).html(opts.body + '<div class="clear"></div>');
-            // 删除原来存在的按钮
-            $('.buttons',dialog).remove();
-        }
-        // 绑定关闭
-        $('[rel=close]',dialog).click(function(){
-            dialog.removeDialog();
-        });
-        // 为万恶的IE6实现 min-width max-width
-        if ($.browser.msie && $.browser.version == '6.0') {
-            var width = dialog.width(),
-                min_width = parseFloat(dialog.css('min-width')),
-                max_width = parseFloat(dialog.css('max-width'));
-            if (!isNaN(min_width)) {
-                width = Math.max(width,min_width);
-            }
-            if (!isNaN(max_width)) {
-                width = Math.min(width,max_width);
-            }
-            dialog.width(width);
-        }
-        var overflow = dialog.css('overflow'); dialog.float({float:opts.float,top:styles.top}).css({overflow:''}).show();
-        if (overflow=='auto') {
-            var wrapper = $('div.wrapper',dialog),
-                paddtop = parseFloat(wrapper.css('padding-top')),
-                paddbottom = parseFloat(wrapper.css('padding-bottom')),
-                h1_height  = $('h1',dialog).outerHeight();
-                wrapper.css({overflow:'auto',width:wrapper.width(),height:dialog.height()-(paddtop+paddbottom)-h1_height});
-        }
-
-        // 添加按钮
-        if (btnLength > 0) {
-            $('.wrapper',dialog).after('<div class="buttons"></div>');
-            for (var i=0;i<btnLength;i++) {
-                var button = $('<button type="button">' + opts.buttons[i].text + '</button>');
-                    // 绑定按钮事件
-                    (function(i){
-                        button.click(function(){
-                            if ($.isFunction(opts.buttons[i].handler)) opts.buttons[i].handler.call(dialog,opts);
-                            return false;
-                        });
-                    })(i);
-                    $('.buttons',dialog).append(button);
-                    // 设置按钮类型
-                    opts.buttons[i].type && button.attr('type',opts.buttons[i].type) || null;
-                    // 设置鼠标焦点
-                    opts.buttons[i].focus && button.focus() || null;
-            }
-        }
-        // 保存对象
-        $.data(document,opts.name,dialog);
-        // 执行回调函数
-        if ($.isFunction(callback)) callback.call(dialog,opts);
-
-        return dialog;
+        return $('body').dialog(options,callback);
     },
     /**
      * 删除弹出框
@@ -578,6 +455,140 @@ window._ = LazyCMS.translate;
         }
         return r;
     };
+    /**
+     * 模拟的弹出框
+     *
+     * @param options   参数
+     *          {
+     *              name:标识,
+     *              title:标题,
+     *              body:内容,
+     *              styles:css 样式,
+     *              masked:是否需要遮罩，默认true,
+     *              close:是否显示关闭按钮，默认true,
+     *              float:浮动位置，默认居中，参数：c,lt,rt,lb,rb,
+     *              remove:点击关闭按钮触发的事件,
+     *              buttons:按钮
+     *          }
+     * @param callback  回调函数(dialog jquery对象,传入的 options)
+     */
+    $.fn.dialog = function(options,callback) {
+        // this
+        var _this = $(this);
+        // 默认设置
+        var opts = $.extend({
+            title:'',
+            body:'',
+            styles:{},
+            name:null,
+            masked:true,
+            close:true,
+			float:'c',
+			className:'dialog',
+            remove:function(){ LazyCMS.removeDialog(opts.name); },
+            buttons:[]
+        }, options||{});
+
+        // 按钮个数
+        var btnLength = opts.buttons.length;
+        // 设置默认名称
+        opts.name = opts.name?'lazy_dialog_' + opts.name:'lazy_dialog';
+        // 定义弹出层对象
+        var dialog = $('<div class="' + opts.name + ' ' + opts.className + ' window" style="display:none;"><h1>Loading...</h1><div class="wrapper">Loading...</div></div>').css({position:'fixed'});
+        var target = $('div.' + opts.name,_this);
+            if (target.is('div')) {
+                dialog = target;
+            } else {
+                _this.append(dialog);
+            }
+            // 添加删除事件
+            dialog.removeDialog = opts.remove;
+        // 添加遮罩层
+        if (opts.masked) {
+            LazyCMS.masked({'z-index':$('*').maxIndex() + 1});
+        }
+
+        // 添加关闭按钮
+        if (opts.close) {
+            if ($('.close',dialog).is('a')) {
+                $('.close',dialog).click(function(){
+                    dialog.removeDialog();
+                });
+            } else {
+                $('<a href="javascript:;" class="close">Close</a>').click(dialog.removeDialog).insertAfter($('h1',dialog));
+            }
+        } else {
+            $('.close',dialog).remove();
+        }
+
+        // 重新调整CSS
+        var styles = $.extend({overflow:'','z-index':$('*').maxIndex() + 1,height:'auto'},opts.styles); dialog.css(styles);
+
+        // 设置标题
+        $('h1',dialog).text(opts.title);
+
+        // 设置内容
+        if ($('div.wrapper','<div>' + opts.body + '</div>').is('div')) {
+            $('div.wrapper',dialog).replaceWith(opts.body);
+        } else {
+            $('.wrapper',dialog).html(opts.body + '<div class="clear"></div>');
+            // 删除原来存在的按钮
+            $('.buttons',dialog).remove();
+        }
+        // 绑定关闭
+        $('[rel=close]',dialog).click(function(){
+            dialog.removeDialog();
+        });
+        // 为万恶的IE6实现 min-width max-width
+        if ($.browser.msie && $.browser.version == '6.0') {
+            var width = dialog.width(),
+                min_width = parseFloat(dialog.css('min-width')),
+                max_width = parseFloat(dialog.css('max-width'));
+            if (!isNaN(min_width)) {
+                width = Math.max(width,min_width);
+            }
+            if (!isNaN(max_width)) {
+                width = Math.min(width,max_width);
+            }
+            dialog.width(width);
+        }
+        var overflow = dialog.css('overflow');
+        if (opts.float) dialog.float({float:opts.float,top:styles.top});
+        dialog.css({overflow:''}).show();
+        if (overflow=='auto') {
+            var wrapper = $('div.wrapper',dialog),
+                paddtop = parseFloat(wrapper.css('padding-top')),
+                paddbottom = parseFloat(wrapper.css('padding-bottom')),
+                h1_height  = $('h1',dialog).outerHeight();
+                wrapper.css({overflow:'auto',width:wrapper.width(),height:dialog.height()-(paddtop+paddbottom)-h1_height});
+        }
+
+        // 添加按钮
+        if (btnLength > 0) {
+            $('.wrapper',dialog).after('<div class="buttons"></div>');
+            for (var i=0;i<btnLength;i++) {
+                var button = $('<button type="button">' + opts.buttons[i].text + '</button>');
+                    // 绑定按钮事件
+                    (function(i){
+                        button.click(function(){
+                            if ($.isFunction(opts.buttons[i].handler)) opts.buttons[i].handler.call(dialog,opts);
+                            return false;
+                        });
+                    })(i);
+                    $('.buttons',dialog).append(button);
+                    // 设置按钮类型
+                    opts.buttons[i].type && button.attr('type',opts.buttons[i].type) || null;
+                    // 设置鼠标焦点
+                    opts.buttons[i].focus && button.focus() || null;
+            }
+        }
+        // 保存对象
+        $.data(document,opts.name,dialog);
+        // 执行回调函数
+        if ($.isFunction(callback)) callback.call(dialog,opts);
+
+        return dialog;
+    }
     /**
      * 错误处理
      *

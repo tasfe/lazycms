@@ -390,12 +390,12 @@ function model_manage_page($action) {
     echo               '<td><input class="text" id="name" name="name" type="text" size="20" value="'.$name.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="code">'._x('Code','model').'<span class="resume">'.__('(required,only)').'</span></label></th>';
+    echo               '<th><label for="code">'._x('Code','model').'<br /><span class="resume">'.__('(required,only)').'</span></label></th>';
     echo               '<td><input class="text" id="code" name="code" type="text" size="20" value="'.$code.'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="path">'._x('Path','model').'<span class="resume">'.__('(required)').'</span></label></th>';
-    echo               '<td><input class="text" id="path" name="path" type="text" size="70" value="'.$path.'" /><div class="rules">';
+    echo               '<td><input class="text" id="path" name="path" type="text" size="60" value="'.$path.'" /><div class="rules">';
     echo                   '<a href="#%ID'.$suffix.'" title="%ID">['.__('Post ID').']</a>';
     echo                   '<a href="#%MD5'.$suffix.'" title="%MD5">['.__('MD5 Value').']</a>';
     echo                   '<a href="#%PY'.$suffix.'" title="%PY">['.__('Pinyin').']</a>';

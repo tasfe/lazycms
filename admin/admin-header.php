@@ -5,7 +5,7 @@
 <title><?php echo esc_html(strip_tags(admin_head('title')));?> &lsaquo; <?php echo C('SiteTitle');?>  &#8212; LazyCMS</title>
 <?php
 // 加载核心CSS
-admin_css('css/admin');
+admin_css('css/admin', 'css/'.language());
 // 加载模块CSS
 admin_css(admin_head('styles'));
 // 加载JS核心库

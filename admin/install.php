@@ -331,10 +331,10 @@ CREATE TABLE `#@_post_meta` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `#@_comments` (
-  `commentid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `cmtid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `postid` bigint(20) unsigned NOT NULL,
   `author` varchar(255) NOT NULL,
-  `email` varchar(100) NOT NULL,
+  `mail` varchar(100) NOT NULL,
   `url` varchar(200) NOT NULL,
   `ip` bigint(20) unsigned NOT NULL,
   `date` int(10) unsigned NOT NULL,
@@ -343,7 +343,8 @@ CREATE TABLE `#@_comments` (
   `agent` varchar(255) NOT NULL,
   `parent` bigint(20) unsigned NOT NULL,
   `userid` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`commentid`)
+  PRIMARY KEY (`cmtid`),
+  KEY `postid` (`postid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE `#@_publish` (
@@ -424,7 +425,7 @@ function install_defaults() {
     // 插入测试数据
     $db->query("SET SQL_MODE='NO_AUTO_VALUE_ON_ZERO';");
 
-    $db->query("INSERT INTO `#@_comments` (`commentid`, `postid`, `author`, `email`, `url`, `ip`, `date`, `content`, `approved`, `agent`, `parent`, `userid`) VALUES(1, 2, 'LazyCMS', 'my@lukin.cn', 'http://www.lukin.cn/', 2130706689, 1290445365, '这是一个评论测试！', '1', 'Mozilla/5.0 (X11; U; Linux x86_64; zh-CN; rv:1.9.2.12) Gecko/20101027 Ubuntu/10.10 (maverick) Firefox/3.6.12', 0, 0);");
+    $db->query("INSERT INTO `#@_comments` (`cmtid`, `postid`, `author`, `mail`, `url`, `ip`, `date`, `content`, `approved`, `agent`, `parent`, `userid`) VALUES(1, 2, 'LazyCMS', 'my@lukin.cn', 'http://www.lukin.cn/', 2130706689, 1290445365, '这是一个评论测试！', '1', 'Mozilla/5.0 (X11; U; Linux x86_64; zh-CN; rv:1.9.2.12) Gecko/20101027 Ubuntu/10.10 (maverick) Firefox/3.6.12', 0, 0);");
 
     $db->query("INSERT INTO `#@_model` (`modelid`, `language`, `code`, `name`, `path`, `page`, `fields`, `state`) VALUES(1, 'zh-CN', 'Page', '单页面', '%PY.html', 'default.html', 'N;', 0);");
     $db->query("INSERT INTO `#@_model` (`modelid`, `language`, `code`, `name`, `path`, `page`, `fields`, `state`) VALUES(2, 'zh-CN', 'News', '新闻系统', '%Y%m/%ID.html', 'default.html', 'N;', 0);");

@@ -33,12 +33,12 @@ function comment_add($postid,$content,$parent=0,$user=null) {
     $db = get_conn();
     $userid = isset($user['userid']) ? $user['userid'] : 0;
     $author = isset($user['name']) ? esc_html($user['name']) : '';
-    $email  = isset($user['email']) ? esc_html($user['email']) : '';
+    $email  = isset($user['mail']) ? esc_html($user['mail']) : '';
     $url    = isset($user['url']) ? esc_html($user['url']) : '';
     return $db->insert('#@_comments', array(
         'postid'   => $postid,
         'author'   => $author,
-        'email'    => $email,
+        'mail'     => $email,
         'url'      => $url,
         'ip'       => sprintf('%u',ip2long($_SERVER['REMOTE_ADDR'])),
         'agent'    => esc_html($_SERVER['HTTP_USER_AGENT']),
@@ -52,52 +52,62 @@ function comment_add($postid,$content,$parent=0,$user=null) {
 /**
  * 编辑评论
  *
- * @param int $commentid
+ * @param int $cmtid
  * @param string $content
  * @param string $status
  * @param array $user
  * @return int
  */
-function comment_edit($commentid, $content, $status=null, $user=null) {
+function comment_edit($cmtid, $content, $status=null, $user=null) {
     $db = get_conn(); $sets = array();
     if ($content !== null) $sets['content'] = $content;
     if ($status !== null) $sets['approved'] = $status;
-    if ($user) {
-        $userid = isset($user['userid']) ? $user['userid'] : 0;
-        $author = isset($user['name']) ? esc_html($user['name']) : '';
-        $email  = isset($user['email']) ? esc_html($user['email']) : '';
-        $url    = isset($user['url']) ? esc_html($user['url']) : '';
-        $sets   = array(
-            'author'   => $author,
-            'email'    => $email,
-            'url'      => $url,
-            'userid'   => $userid,
-        );
-    }
-    $result = $db->update('#@_comments', $sets, array('commentid' => $commentid));
+    if (isset($user['name'])) $sets['author'] = esc_html($user['name']);
+    if (isset($user['mail'])) $sets['mail'] = esc_html($user['mail']);
+    if (isset($user['url'])) $sets['url'] = esc_html($user['url']);
+    if (isset($user['userid'])) $sets['userid'] = esc_html($user['userid']);
+    $result = $db->update('#@_comments', $sets, array('cmtid' => $cmtid));
     // 重新生成评论
-    comment_create(comment_get_postid($commentid));
+    comment_create(comment_get_postid($cmtid));
     return $result;
 }
 /**
  * 查询postid
  *
- * @param int $commentid
+ * @param int $cmtid
  * @return int
  */
-function comment_get_postid($commentid) {
-    $db = get_conn(); return $db->result(sprintf("SELECT `postid` FROM `#@_comments` WHERE `commentid`=%d;", $commentid));
+function comment_get_postid($cmtid) {
+    $db = get_conn(); return $db->result(sprintf("SELECT `postid` FROM `#@_comments` WHERE `cmtid`=%d;", $cmtid));
+}
+/**
+ * 取得一条评论
+ *
+ * @param int $cmtid
+ * @return array
+ */
+function comment_get($cmtid) {
+    static $comments = array();
+    if (isset($comments[$cmtid]))
+        return $comments[$cmtid];
+    
+    $db = get_conn();
+    $rs = $db->query("SELECT * FROM `#@_comments` WHERE `cmtid`=%d;", $cmtid);
+    if ($data = $db->fetch($rs)) {
+        $comments[$cmtid] = $data;
+    }
+    return $comments[$cmtid];
 }
 /**
  * 删除评论
  *
- * @param int $commentid
+ * @param int $cmtid
  * @return int
  */
-function comment_delete($commentid) {
+function comment_delete($cmtid) {
     $db = get_conn();
-    $postid = comment_get_postid($commentid);
-    $result = $db->delete('#@_comments', array('commentid' => $commentid));
+    $postid = comment_get_postid($cmtid);
+    $result = $db->delete('#@_comments', array('cmtid' => $cmtid));
     // 重新生成评论
     comment_create($postid);
     return $result;
@@ -117,7 +127,7 @@ function comment_count($postid,$status='all') {
     if ($status != 'all') {
         $where.= sprintf(" AND `approved`='%s'", strval($status));
     }
-    return $db->result("SELECT COUNT(`commentid`) FROM `#@_comments` {$where};");
+    return $db->result("SELECT COUNT(`cmtid`) FROM `#@_comments` {$where};");
 }
 /**
  * 评论人数
@@ -196,7 +206,7 @@ function comment_create($postid) {
                 $order  = instr(strtoupper($order),'ASC,DESC') ? $order : 'DESC';
 
                 $db = get_conn(); $i = $length = 0; $page = 1;
-                $rs = $db->query("SELECT * FROM `#@_comments` WHERE `postid`=%d AND `approved`='1' ORDER BY `commentid` {$order};", $post['postid']);
+                $rs = $db->query("SELECT * FROM `#@_comments` WHERE `postid`=%d AND `approved`='1' ORDER BY `cmtid` {$order};", $post['postid']);
                 $total = $db->result("SELECT FOUND_ROWS();");
                 $pages = ceil($total / $number);
                 $pages = ((int)$pages == 0) ? 1 : $pages;
@@ -207,10 +217,10 @@ function comment_create($postid) {
                     tpl_clean();
                     tpl_set_var(array(
                         'zebra'   => ($i % ($zebra + 1)) ? '0' : '1',
-                        'cmtid'   => $data['commentid'],
-                        'avatar'  => get_avatar($data['email'], 16, 'mystery'),
+                        'cmtid'   => $data['cmtid'],
+                        'avatar'  => get_avatar($data['mail'], 16, 'mystery'),
                         'author'  => $data['author'] ? $data['author'] : __('Anonymous'),
-                        'email'   => $data['email'],
+                        'email'   => $data['mail'],
                         'url'     => !strncmp($data['url'],'http://',7) ? $data['url'] : 'http://'.$data['url'],
                         'ip'      => long2ip($data['ip']),
                         'address' => ip2addr(long2ip($data['ip'])),
