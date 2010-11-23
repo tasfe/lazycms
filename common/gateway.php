@@ -51,5 +51,5 @@ if (function_exists($func_name)) {
         ajax_echo('Return', $result);
     }
 } else {
-    die('Restricted access!');
+    die(__('Restricted access!'));
 }

@@ -27,8 +27,8 @@ $(document).ready(function(){
 {include file="top.shtml" /}
 <div id="header" class="wrapper">
 	<div id="intro">
-		<h2><em>LazyCMS</em>是一个小巧灵活、性能卓越、功能丰富的网站管理系统。</h2>
-		<p>简洁、人性化、多语言的管理界面；易懂的文章管理系统和自定义的数据模型；更高效的后台操作和HTML生成速度；XML风格的可嵌套标签；所见即所得（WYSIWYG）编辑器；兼容多数的虚拟主机环境；</p>
+		<h1><em>LazyCMS</em>是一个小巧灵活、性能卓越、功能丰富的网站管理系统。</h1>
+		<h2><em>LazyCMS</em>提供了一种快速简便的方法来建设一个专业网站，无论是小型企业或跨国公司，网站建设就是这样简单。</h2>
         <ul>
 			<li class="agile"><img src="images/agile.gif" alt="小巧灵活、性能卓越" />小巧灵活<br/>性能卓越</li>
 			<li class="brevity"><img src="images/brevity.gif" alt="功能丰富、操作简单" />功能丰富<br/>操作简单</li>
@@ -40,13 +40,13 @@ $(document).ready(function(){
         <p>选择您要下载的版本：</p>
 		<form method="get" action="http://code.google.com/p/lazycms/downloads/detail">
             <div class="compression">
-                <input type="radio" name="name" id="dl-one" checked="checked" value="LazyCMS-v2.0.r642.zip" />
-                <a class="radioToggle name checked" href="http://code.google.com/p/lazycms/downloads/detail?name=LazyCMS-v2.0.r642.zip">LazyCMS-v2.0.r642.zip</a>
-                <label for="dl-one">LazyCMS v2.0.r642（574K）</label>
+                <input type="radio" name="name" id="dl-one" checked="checked" value="LazyCMS-v2.0.r659.zip" />
+                <a class="radioToggle name checked" href="http://code.google.com/p/lazycms/downloads/detail?name=LazyCMS-v2.0.r659.zip">LazyCMS-v2.0.r659.zip</a>
+                <label for="dl-one">LazyCMS v2.0.r659（610K）</label>
                 <div class="clear"><br/></div>
-                <input type="radio" name="name" id="dl-two" value="LazyCMS-v2.0.r618.zip" />
-                <a class="radioToggle name" href="http://code.google.com/p/lazycms/downloads/detail?name=LazyCMS-v2.0.r618.zip">LazyCMS-v2.0.r618.zip</a>
-                <label for="dl-two">LazyCMS v2.0.r618（300K）</label>
+                <input type="radio" name="name" id="dl-two" value="LazyCMS-v2.0.r653.zip" />
+                <a class="radioToggle name" href="http://code.google.com/p/lazycms/downloads/detail?name=LazyCMS-v2.0.r653.zip">LazyCMS-v2.0.r653.zip</a>
+                <label for="dl-two">LazyCMS v2.0.r653（552K）</label>
             </div>
 			<button type="submit">
 				<span>下载 LazyCMS 最新版</span>
@@ -58,13 +58,31 @@ $(document).ready(function(){
 
 <div id="content" class="wrapper">
 	<div id="feature" class="container">
-        <div class="tips">内容建设中……</div>
+        <h4>为什么选择LazyCMS？</h4>
+        <ul>
+            <li>全站静态化、SEO友好的URLs；</li>
+            <li>灵活的模块设计、丰富的功能扩展；</li>
+            <li>简单的安装向导和系统升级；</li>
+            <li>简洁人性化、多语言的管理面板；</li>
+            <li>强大易用的文章管理系统；</li>
+            <li>简单方便的自定义数据模型；</li>
+            <li>高效的后台操作和HTML生成速度；</li>
+            <li>所见即所得（WYSIWYG）编辑器；</li>
+            <li>XML风格的可嵌套模版标签；</li>
+            <li>最小的系统需求；</li>
+        </ul>
     </div>
     <div id="updates" class="container">
+        <h3>最近更新</h3>
+        {list type="new" number="10"}
+        <p>[<a href="{$sortpath}" title="{$sortname}">{$sortname}</a>] <a href="{$path}" title="{$title}">{$title size="20"}</a></p>
+        {/list}
+    </div>
+    <div id="changes" class="container">
 		<h3>更新记录</h3>
         <div class="load"><img src="images/loading.gif" alt="Loading..." />Loading...</div>
 	</div>
-    <script type="text/javascript">$('#updates').updates();</script>
+    <script type="text/javascript">$('#changes').updates();</script>
     <div class="clear"><br/></div>
 </div>
 

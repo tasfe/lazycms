@@ -69,6 +69,23 @@ function parse_dsn($DSN){
     return null;
 }
 /**
+ * 解析路径 /tags/CMS
+ *
+ * @param string $path
+ * @return array
+ */
+function parse_path($path) {
+    $paths  = explode('/', $path);
+    $length = count($paths);
+    for($i=0; $i<$length; $i++){
+        if (isset($paths[$i+1])) {
+            $_GET[$paths[$i]] = strval($paths[++$i]);
+        }
+    }
+    $_REQUEST = array_merge($_POST,$_GET);
+    return $paths;
+}
+/**
  * 格式化路径
  *
  * @param string $path  %ID,%PY,%MD5 和 strftime() 支持的参数

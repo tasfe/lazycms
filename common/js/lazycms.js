@@ -655,7 +655,7 @@ window._ = LazyCMS.translate;
     $.fn.ajaxSubmit = function(callback){
         return this.each(function(){
             var _this = $(this);
-                _this.unbind('submit').submit(function(){
+                _this.submit(function(){
                     // 取消样式
                     $('.input_error,.textarea_error,.ul_error',_this).removeClass('input_error').removeClass('textarea_error').removeClass('ul_error');
                     var button = $('button[type=submit]',this).attr('disabled',true);
