@@ -28,7 +28,11 @@ defined('COM_PATH') or die('Restricted access!');
 class Template {
     var $_vars    = array();
     var $_plugins = array();
-    function __construct(){ }
+    function __construct(){
+        global $tpl_plugins;
+        if (is_array($tpl_plugins))
+            $this->_plugins = $tpl_plugins;
+    }
 
     function Template() {
         $args = func_get_args();
@@ -65,19 +69,6 @@ class Template {
         return $this->load(file_get_contents($file));
     }
     /**
-     * 添加插件
-     *
-     * @param  $func
-     * @return void
-     */
-    function add_plugin($func) {
-        if (!in_array($func,$this->_plugins)) {
-            $this->_plugins[] = $func;
-            return true;
-        }
-        return false;
-    }
-    /**
      * 执行插件
      *
      * @param string $tag_name
@@ -87,7 +78,7 @@ class Template {
      */
     function apply_plugins($tag_name,$tag,$block=null) {
         $result = null; $tag_name = strtolower($tag_name);
-        foreach ($this->_plugins as $func) {
+        foreach ((array)$this->_plugins as $func) {
             $result = call_user_func($func,$tag_name,$tag,$block);
             if (null !== $result) break;
         }
@@ -408,8 +399,13 @@ function tpl_loadfile($file) {
  * @return void
  */
 function tpl_add_plugin($func) {
-    $tpl = _tpl_get_object();
-    return $tpl->add_plugin($func);
+    global $tpl_plugins;
+    $tpl_plugins = empty($tpl_plugins) ? array() : $tpl_plugins;
+    if (!in_array($func,$tpl_plugins)) {
+        $tpl_plugins[] = $func;
+        return true;
+    }
+    return false;
 }
 /**
  * 使用插件
