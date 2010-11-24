@@ -42,14 +42,14 @@ if (validate_is_post()) {
     ajax_success(__('Settings saved.'),"LazyCMS.redirect('".$referer."');");
 } else {
     // 标题
-    admin_head('title',__('General Settings'));
-    admin_head('styles', array('css/options'));
-    admin_head('scripts',array('js/options'));
-    admin_head('loadevents','options_init');
+    system_head('title',__('General Settings'));
+    system_head('styles', array('css/options'));
+    system_head('scripts',array('js/options'));
+    system_head('loadevents','options_init');
 
     include ADMIN_PATH.'/admin-header.php';
     echo '<div class="wrap">';
-    echo   '<h2>'.admin_head('title').'</h2>';
+    echo   '<h2>'.system_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'" method="post" name="options" id="options">';
     echo     '<fieldset>';
     echo       '<table class="form-table">';
@@ -70,7 +70,7 @@ if (validate_is_post()) {
     echo               '<th><label for="timezone">'._x('Time zone','setting').'</label></th>';
     echo               '<td>';
     echo                   '<select name="Timezone" id="timezone">';
-    foreach (time_zone_list() as $name=>$zones) {
+    foreach (time_zone_group() as $name=>$zones) {
         echo                   '<optgroup label="'.$name.'">';
         foreach ($zones as $k=>$v) {
             $selected = C('Timezone')==$name.'/'.$k ? ' selected="selected"' : '';

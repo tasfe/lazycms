@@ -5,7 +5,7 @@
      *
      * @author  Lukin <my@lukin.cn>
      */
-    admin_menu(array(
+    system_menu(array(
 
         'cpanel' => array(__('Control Panel'),'index.php','a1',array(
             array(__('Control Panel'),'index.php'),

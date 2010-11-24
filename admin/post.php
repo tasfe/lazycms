@@ -26,53 +26,53 @@ require dirname(__FILE__).'/admin.php';
 $_USER = user_current();
 // 标题
 if ('page.php' == $php_file) {
-    admin_head('title',  __('Pages'));
+    system_head('title',  __('Pages'));
 } else {
-    admin_head('title',  __('Posts'));
+    system_head('title',  __('Posts'));
 }
-admin_head('styles', array('css/post'));
-admin_head('scripts',array('js/post'));
+system_head('styles', array('css/post'));
+system_head('scripts',array('js/post'));
 // 方法
 $method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 
 switch ($method) {
     // 强力插入
     case 'new':
-        admin_head('scripts',array('js/xheditor','js/post'));
-        admin_head('jslang',admin_editor_lang());
+        system_head('scripts',array('js/xheditor','js/post'));
+        system_head('jslang',system_editor_lang());
         if ('page.php' == $php_file) {
             current_user_can('page-new');
-            admin_head('title',__('Add New Page'));
+            system_head('title',__('Add New Page'));
         } else {
             current_user_can('post-new');
-            admin_head('title',__('Add New Post'));
+            system_head('title',__('Add New Post'));
         }
-	    admin_head('loadevents','post_manage_init');
+	    system_head('loadevents','post_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
 	    post_manage_page('add');	    
 	    include ADMIN_PATH.'/admin-footer.php';
 	    break;
 	// 编辑
 	case 'edit':
-        admin_head('scripts',array('js/xheditor','js/post'));
-        admin_head('jslang',admin_editor_lang());
+        system_head('scripts',array('js/xheditor','js/post'));
+        system_head('jslang',system_editor_lang());
         if ('page.php' == $php_file) {
             // 所属
             $parent_file = 'page.php';
             // 权限检查
             current_user_can('page-edit');
             // 重置标题
-            admin_head('title',__('Edit Page'));
+            system_head('title',__('Edit Page'));
         } else {
             // 所属
             $parent_file = 'post.php';
             // 权限检查
             current_user_can('post-edit');
             // 重置标题
-            admin_head('title',__('Edit Post'));
+            system_head('title',__('Edit Post'));
         }
 
-	    admin_head('loadevents','post_manage_init');
+	    system_head('loadevents','post_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
 	    post_manage_page('edit');	    
 	    include ADMIN_PATH.'/admin-footer.php';
@@ -332,11 +332,12 @@ switch ($method) {
             current_user_can('post-list');
             $add_new = _x('Add New','post');
         }
-        admin_head('loadevents','post_list_init');
+        system_head('loadevents','post_list_init');
 	    $model    = isset($_REQUEST['model'])?$_REQUEST['model']:'';
         $search   = isset($_REQUEST['query'])?$_REQUEST['query']:'';
         $category = isset($_REQUEST['category'])?$_REQUEST['category']:null;
         $query    = array('page' => '$');
+        $add_args = array('method' => 'new');
         // 排序方式
         $order = 'page.php'==$php_file ? 'ASC' : 'DESC';
 
@@ -349,7 +350,7 @@ switch ($method) {
                 $where = "WHERE `p`.`type`='post'";
             }
             if ($category) {
-                $query['category'] = $category;
+                $query['category'] = $category; $add_args['category'] = $category;
                 $where.= sprintf(" AND (`tr`.`taxonomyid`=%d)", esc_sql($category));
             }
             if ($search) {
@@ -378,11 +379,11 @@ switch ($method) {
         }
         $result = pages_query($sql);
         // 分页地址
-        $page_url = PHP_FILE.'?'.http_build_query($query);
+        $page_url   = PHP_FILE.'?'.http_build_query($query);
 
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'.$add_new.'</a></h2>';
+        echo   '<h2>'.system_head('title').'<a class="button" href="'.PHP_FILE.'?'.http_build_query($add_args).'">'.$add_new.'</a></h2>';
         echo   '<form header="POST '.PHP_FILE.'?method=bulk" action="'.PHP_FILE.'" method="get" name="postlist" id="postlist">';
         table_nav('top',$page_url);
         echo       '<table class="data-table" cellspacing="0">';
@@ -513,7 +514,7 @@ function post_manage_page($action) {
         $trees = taxonomy_get_trees();
         if (empty($trees)) {
             echo '<div class="wrap">';
-            echo   '<h2>'.admin_head('title').'</h2>';
+            echo   '<h2>'.system_head('title').'</h2>';
             echo   '<fieldset>';
             echo       '<table class="form-table">';
             echo           '<tbody>';
@@ -532,13 +533,14 @@ function post_manage_page($action) {
     $suffix  = C('HTMLFileSuffix');
     if ($action=='add') {
         $mcode  = isset($_GET['model'])?$_GET['model']:null;
+        $sortid = isset($_GET['category'])?$_GET['category']:null;
     } else {
-        $_DATA = post_get($postid);
-        $mcode = $_DATA['model'];
+        $_DATA  = post_get($postid);
+        $mcode  = $_DATA['model'];
+        $sortid = isset($_DATA['sortid'])?$_DATA['sortid']:null;
     }
 
     $model    = $mcode ? model_get_bycode($mcode) : array_pop(array_slice($models,0,1));
-    $sortid   = isset($_DATA['sortid'])?$_DATA['sortid']:null;
     $title    = isset($_DATA['title'])?$_DATA['title']:null;
     $path     = isset($_DATA['path'])?$_DATA['path']:$model['path'];
     $content  = isset($_DATA['content'])?$_DATA['content']:null;
@@ -547,9 +549,9 @@ function post_manage_page($action) {
     $keywords = isset($_DATA['keywords'])?post_get_keywords($_DATA['keywords']):null;
     $categories  = isset($_DATA['category'])?$_DATA['category']:array();
     $description = isset($_DATA['description'])?$_DATA['description']:null;
-
+    
     echo '<div class="wrap">';
-    echo   '<h2>'.admin_head('title').'</h2>';
+    echo   '<h2>'.system_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="postmanage" id="postmanage">';
     echo   '<fieldset>';
     echo       '<table class="form-table">';

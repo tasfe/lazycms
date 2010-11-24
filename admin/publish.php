@@ -23,9 +23,9 @@ require dirname(__FILE__).'/admin.php';
 // 查询管理员信息
 $_USER = user_current();
 // 标题
-admin_head('title',__('Publish Posts'));
-admin_head('styles', array('css/publish'));
-admin_head('scripts',array('js/publish'));
+system_head('title',__('Publish Posts'));
+system_head('styles', array('css/publish'));
+system_head('scripts',array('js/publish'));
 // 动作
 $method  = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 // 所属
@@ -36,12 +36,12 @@ current_user_can('publish');
 switch ($method) {
     // 发布进程管理
     case 'list':
-        admin_head('title',__('Process list'));
-        admin_head('loadevents','publish_list');
+        system_head('title',__('Process list'));
+        system_head('loadevents','publish_list');
         $result = pages_query("SELECT * FROM `#@_publish` ORDER BY `pubid` DESC");
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'">'._x('Add New','publish').'</a></h2>';
+        echo   '<h2>'.system_head('title').'<a class="button" href="'.PHP_FILE.'">'._x('Add New','publish').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="publishlist" id="publishlist">';
         table_nav();
         echo       '<table class="data-table" cellspacing="0">';
@@ -141,10 +141,10 @@ switch ($method) {
     default:
         $referer    = referer(PHP_FILE);
         $categories = taxonomy_get_trees();
-        admin_head('loadevents','publish_init');
+        system_head('loadevents','publish_init');
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=list">'.__('Process list').'</a></h2>';
+        echo   '<h2>'.system_head('title').'<a class="button" href="'.PHP_FILE.'?method=list">'.__('Process list').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="publish" id="publish">';
         echo     '<fieldset>';
         echo       '<table class="form-table">';

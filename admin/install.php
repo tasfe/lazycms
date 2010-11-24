@@ -192,14 +192,14 @@ else {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php _e('LazyCMS Setup');?></title>
 <?php
-admin_css('css/install'); admin_script('js/common'); admin_script('js/install');
+loader_css('css/install'); loader_js('js/common'); loader_js('js/install');
 
-admin_head('jslang',array(
+system_head('jslang',array(
     'Rock it!' => __('Rock it!'),
 ));
 ?>
 <script type="text/javascript">
-    <?php echo admin_jslang();?>
+    <?php echo system_jslang();?>
     $(document).ready(install_init);
 </script>
 </head>
@@ -423,7 +423,7 @@ function install_defaults() {
         }
     }
     // 插入测试数据
-    $db->query("SET SQL_MODE='NO_AUTO_VALUE_ON_ZERO';");
+    /*$db->query("SET SQL_MODE='NO_AUTO_VALUE_ON_ZERO';");
 
     $db->query("INSERT INTO `#@_comments` (`cmtid`, `postid`, `author`, `mail`, `url`, `ip`, `date`, `content`, `approved`, `agent`, `parent`, `userid`) VALUES(1, 2, 'LazyCMS', 'my@lukin.cn', 'http://www.lukin.cn/', 2130706689, 1290445365, '这是一个评论测试！', '1', 'Mozilla/5.0 (X11; U; Linux x86_64; zh-CN; rv:1.9.2.12) Gecko/20101027 Ubuntu/10.10 (maverick) Firefox/3.6.12', 0, 0);");
 
@@ -486,7 +486,7 @@ function install_defaults() {
     $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(22, 5, 'list', 'list.html', 'string');");
     $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(23, 5, 'page', '', 'string');");
     $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(24, 5, 'keywords', '', 'string');");
-    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(25, 5, 'description', '', 'string');");
+    $db->query("INSERT INTO `#@_term_taxonomy_meta` (`metaid`, `taxonomyid`, `key`, `value`, `type`) VALUES(25, 5, 'description', '', 'string');");*/
 
     return true;
 }

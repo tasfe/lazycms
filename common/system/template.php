@@ -29,9 +29,9 @@ class Template {
     var $_vars    = array();
     var $_plugins = array();
     function __construct(){
-        global $tpl_plugins;
-        if (is_array($tpl_plugins))
-            $this->_plugins = $tpl_plugins;
+        global $LC_tpl_plugins;
+        if (is_array($LC_tpl_plugins))
+            $this->_plugins = $LC_tpl_plugins;
     }
 
     function Template() {
@@ -392,6 +392,8 @@ function tpl_loadfile($file) {
     $tpl = _tpl_get_object();
     return $tpl->load_file($file);
 }
+
+if (!function_exists('tpl_add_plugin')) :
 /**
  * 添加插件
  *
@@ -399,14 +401,15 @@ function tpl_loadfile($file) {
  * @return void
  */
 function tpl_add_plugin($func) {
-    global $tpl_plugins;
-    $tpl_plugins = empty($tpl_plugins) ? array() : $tpl_plugins;
-    if (!in_array($func,$tpl_plugins)) {
-        $tpl_plugins[] = $func;
+    global $LC_tpl_plugins;
+    $LC_tpl_plugins = empty($LC_tpl_plugins) ? array() : $LC_tpl_plugins;
+    if (!in_array($func,$LC_tpl_plugins)) {
+        $LC_tpl_plugins[] = $func;
         return true;
     }
     return false;
 }
+endif;
 /**
  * 使用插件
  * 

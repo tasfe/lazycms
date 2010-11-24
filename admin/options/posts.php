@@ -43,13 +43,13 @@ if (validate_is_post()) {
     ajax_success(__('Settings saved.'),"LazyCMS.redirect('".$referer."');");
 } else {
     // 标题
-    admin_head('title',__('Posts Settings'));
-    admin_head('scripts',array('js/options'));
-    admin_head('loadevents','options_init');
+    system_head('title',__('Posts Settings'));
+    system_head('scripts',array('js/options'));
+    system_head('loadevents','options_init');
 
     include ADMIN_PATH.'/admin-header.php';
     echo '<div class="wrap">';
-    echo   '<h2>'.admin_head('title').'</h2>';
+    echo   '<h2>'.system_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'" method="post" name="options" id="options">';
     echo     '<fieldset>';
     echo       '<table class="form-table">';

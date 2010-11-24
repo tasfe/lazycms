@@ -165,6 +165,10 @@ function get_conn($DSN=null,$pconnect=false){
             );
         }
     }
+    // 加载类
+    if (!class_exists('Mysql')) {
+        require_file(COM_PATH.'/system/mysql.php');
+    }
     // 实例话mysql类
     $mysql = new Mysql($config,$pconnect);
     if ($mysql->conn && $mysql->errno()==0) {
@@ -484,8 +488,7 @@ function replace_root($path){
  * @return string
  */
 function esc_sql($str) {
-    $db = get_conn();
-    return $db->escape($str);
+    $db = get_conn(); return $db->escape($str);
 }
 /**
  * 转换特殊字符为HTML实体
@@ -607,10 +610,7 @@ function is_accept_json() {
  * @return bool
  */
 function is_json($string){
-    if (preg_match('/^("(\\.|[^"\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/',$string)) {
-    	return true;
-    }
-    return false;
+    return preg_match('/^("(\\.|[^"\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/',$string);
 }
 /**
  * 是否需要序列化
@@ -619,8 +619,7 @@ function is_json($string){
  * @return bool
  */
 function is_need_serialize($value){
-    $type = strtolower(gettype($value));
-    return !instr($type,'integer,double,string,null');
+    return !instr(strtolower(gettype($value)), 'integer,double,string,null');
 }
 /**
  * 是否需要反序列化
@@ -629,8 +628,7 @@ function is_need_serialize($value){
  * @return bool
  */
 function is_need_unserialize($type){
-    $type = strtolower($type);
-    return !instr($type,'integer,double,string,null');
+    return !instr(strtolower($type), 'integer,double,string,null');
 }
 /**
  * stripslashes 扩展
@@ -738,6 +736,105 @@ function ip2addr($ip) {
     return $QQWry->ip2addr($ip);
 }
 /**
+ * jsmin
+ *
+ * @param string $js
+ * @return string
+ */
+function jsmin($js) {
+    if (!class_exists('JSMin')) {
+        require_file(COM_PATH.'/system/jsmin.php');
+    }
+    return JSMin::minify($js);
+}
+/**
+ * 取得拼音
+ *
+ * @param string $str
+ * @param bool $ucfirst 首字母大写
+ * @return string
+ */
+function pinyin($str, $ucfirst=true) {
+    if (!function_exists('_pinyin_get_object')) {
+        require_file(COM_PATH.'/system/pinyin.php');
+    }
+    $pinyin = _pinyin_get_object();
+    return $pinyin->encode($str, $ucfirst);
+}
+/**
+ * 分页列表
+ *
+ * @param string $url   $ 代表当前页数
+ * @param string $mode  首页丢弃模式
+ * @param int $page     当前页数
+ * @param int $total    总页数
+ * @param int $length   当前页记录数
+ * @return string
+ */
+function pages_list($url,$mode='$',$page=null,$total=null,$length=null) {
+    if (!function_exists('_pages_get_object')) {
+        require_file(COM_PATH.'/system/pages.php');
+    }
+    $pages = _pages_get_object();
+    if ($page !== null)   $pages->page   = $page;
+    if ($total !== null)  $pages->pages  = $total;
+    if ($length !== null) $pages->length = $length;
+    return $pages->page_list($url, $mode);
+}
+/**
+ * 查询HTTP状态的描述
+ *
+ * @param int $code HTTP status code.
+ * @return string Empty string if not found, or description if found.
+ */
+function http_status_desc($code) {
+    if (!function_exists('_httplib_get_object')) {
+        require_file(COM_PATH.'/system/httplib.php');
+    }
+    $http = _httplib_get_object();
+    return $http->status_desc($code);
+}
+/**
+ * 设置时区
+ *
+ * @param string $timezone
+ * @return bool
+ */
+function time_zone_set($timezone) {
+    if (!function_exists('_timezone_get_object')) {
+        require_file(COM_PATH.'/system/timezone.php');
+    }
+    $zone = _timezone_get_object();
+    return $zone->set_zone($timezone);
+}
+/**
+ * 支持的时区分组
+ *
+ * @return array
+ */
+function time_zone_group() {
+    if (!function_exists('_timezone_get_object')) {
+        require_file(COM_PATH.'/system/timezone.php');
+    }
+    $zone = _timezone_get_object();
+    return $zone->get_group();
+}
+/**
+ * 添加插件
+ *
+ * @param  $func
+ * @return void
+ */
+function tpl_add_plugin($func) {
+    global $LC_tpl_plugins;
+    $LC_tpl_plugins = empty($LC_tpl_plugins) ? array() : $LC_tpl_plugins;
+    if (!in_array($func,$LC_tpl_plugins)) {
+        $LC_tpl_plugins[] = $func;
+        return true;
+    }
+    return false;
+}
+/**
  * 头像
  *
  * @param string $email
@@ -808,11 +905,19 @@ function get_dir_array($path,$ext='*'){
  * @return bool
  */
 function include_modules() {
+    static $loaded; if ($loaded) return true;
+    // 加载模版处里类
+    require_file(COM_PATH.'/system/template.php');
+    // 加载分页类
+    require_file(COM_PATH.'/system/pages.php');
+    // js css 加载类
+    require_file(COM_PATH.'/system/loader.php');
+    // 查询模块列表
     $modules = get_dir_array('@/module','php');
     foreach ($modules as $file) {
         require_file(COM_PATH.'/module/'.$file);
     }
-    return true;
+    $loaded = true; return true;
 }
 /**
  * 格式化下拉框选项
@@ -981,78 +1086,6 @@ function guid($mix=null){
     $result[] = substr($randid, 20, 12);
     return implode($hyphen,$result);
 }
-
-/**
- * 查询HTTP状态的描述
- *
- * @param int $code HTTP status code.
- * @return string Empty string if not found, or description if found.
- */
-function get_status_header_desc( $code ) {
-    $code = abs(intval($code));
-    $header_desc = array(
-        100 => 'Continue',
-        101 => 'Switching Protocols',
-        102 => 'Processing',
-
-        200 => 'OK',
-        201 => 'Created',
-        202 => 'Accepted',
-        203 => 'Non-Authoritative Information',
-        204 => 'No Content',
-        205 => 'Reset Content',
-        206 => 'Partial Content',
-        207 => 'Multi-Status',
-        226 => 'IM Used',
-
-        300 => 'Multiple Choices',
-        301 => 'Moved Permanently',
-        302 => 'Found',
-        303 => 'See Other',
-        304 => 'Not Modified',
-        305 => 'Use Proxy',
-        306 => 'Reserved',
-        307 => 'Temporary Redirect',
-
-        400 => 'Bad Request',
-        401 => 'Unauthorized',
-        402 => 'Payment Required',
-        403 => 'Forbidden',
-        404 => 'Not Found',
-        405 => 'Method Not Allowed',
-        406 => 'Not Acceptable',
-        407 => 'Proxy Authentication Required',
-        408 => 'Request Timeout',
-        409 => 'Conflict',
-        410 => 'Gone',
-        411 => 'Length Required',
-        412 => 'Precondition Failed',
-        413 => 'Request Entity Too Large',
-        414 => 'Request-URI Too Long',
-        415 => 'Unsupported Media Type',
-        416 => 'Requested Range Not Satisfiable',
-        417 => 'Expectation Failed',
-        422 => 'Unprocessable Entity',
-        423 => 'Locked',
-        424 => 'Failed Dependency',
-        426 => 'Upgrade Required',
-
-        500 => 'Internal Server Error',
-        501 => 'Not Implemented',
-        502 => 'Bad Gateway',
-        503 => 'Service Unavailable',
-        504 => 'Gateway Timeout',
-        505 => 'HTTP Version Not Supported',
-        506 => 'Variant Also Negotiates',
-        507 => 'Insufficient Storage',
-        510 => 'Not Extended'
-    );
-
-    if ( isset( $header_desc[$code] ) )
-        return $header_desc[$code];
-    else
-        return '';
-}
 /**
  * 语言包列表
  *
@@ -1134,9 +1167,9 @@ function language() {
             $ck_lang = substr($ck_lang,0,$pos);
         }
         // 需要转换大小写
-        if (strtolower($ck_lang)=='zh-cn') {
+        if (strtolower($ck_lang) == 'zh-cn') {
             $ck_lang = 'zh-CN';
-        } elseif (strtolower($ck_lang)=='zh-tw') {
+        } elseif (strtolower($ck_lang) == 'zh-tw') {
             $ck_lang = 'zh-TW';
         }
     }
@@ -1512,497 +1545,3 @@ function micro_time($get_as_float=false){
     }
     return microtime($get_as_float);
 }
-/**
- * 设置时区
- *
- * @param string $timezone
- * @return bool
- */
-function time_zone_set($timezone) {
-    $timezone = $timezone ? $timezone : 'UTC';
-    if (function_exists('date_default_timezone_set')) {
-        $result = date_default_timezone_get();
-        date_default_timezone_set($timezone);
-    } else {
-        $result = getenv('TZ');
-        putenv('TZ='.$timezone);
-    }
-    return $result;
-}
-if (!function_exists('time_zone_list')) :
-/**
- * 支持时区
- *
- * @return array
- */
-function time_zone_list() {
-    return array(
-        'Africa' => array(
-            'Abidjan' => 'Abidjan',
-            'Accra' => 'Accra',
-            'Addis_Ababa' => 'Addis Ababa',
-            'Algiers' => 'Algiers',
-            'Asmara' => 'Asmara',
-            'Bamako' => 'Bamako',
-            'Bangui' => 'Bangui',
-            'Banjul' => 'Banjul',
-            'Bissau' => 'Bissau',
-            'Blantyre' => 'Blantyre',
-            'Brazzaville' => 'Brazzaville',
-            'Bujumbura' => 'Bujumbura',
-            'Cairo' => 'Cairo',
-            'Casablanca' => 'Casablanca',
-            'Ceuta' => 'Ceuta',
-            'Conakry' => 'Conakry',
-            'Dakar' => 'Dakar',
-            'Dar_es_Salaam' => 'Dar es Salaam',
-            'Djibouti' => 'Djibouti',
-            'Douala' => 'Douala',
-            'El_Aaiun' => 'El Aaiun',
-            'Freetown' => 'Freetown',
-            'Gaborone' => 'Gaborone',
-            'Harare' => 'Harare',
-            'Johannesburg' => 'Johannesburg',
-            'Kampala' => 'Kampala',
-            'Khartoum' => 'Khartoum',
-            'Kigali' => 'Kigali',
-            'Kinshasa' => 'Kinshasa',
-            'Lagos' => 'Lagos',
-            'Libreville' => 'Libreville',
-            'Lome' => 'Lome',
-            'Luanda' => 'Luanda',
-            'Lubumbashi' => 'Lubumbashi',
-            'Lusaka' => 'Lusaka',
-            'Malabo' => 'Malabo',
-            'Maputo' => 'Maputo',
-            'Maseru' => 'Maseru',
-            'Mbabane' => 'Mbabane',
-            'Mogadishu' => 'Mogadishu',
-            'Monrovia' => 'Monrovia',
-            'Nairobi' => 'Nairobi',
-            'Ndjamena' => 'Ndjamena',
-            'Niamey' => 'Niamey',
-            'Nouakchott' => 'Nouakchott',
-            'Ouagadougou' => 'Ouagadougou',
-            'Porto-Novo' => 'Porto-Novo',
-            'Sao_Tome' => 'Sao Tome',
-            'Tripoli' => 'Tripoli',
-            'Tunis' => 'Tunis',
-            'Windhoek' => 'Windhoek',
-        ),
-        'America' => array(
-            'Adak' => 'Adak',
-            'Anchorage' => 'Anchorage',
-            'Anguilla' => 'Anguilla',
-            'Antigua' => 'Antigua',
-            'Araguaina' => 'Araguaina',
-            'Argentina' => 'Argentina',
-            'Aruba' => 'Aruba',
-            'Asuncion' => 'Asuncion',
-            'Atikokan' => 'Atikokan',
-            'Bahia' => 'Bahia',
-            'Bahia_Banderas' => 'Bahia Banderas',
-            'Barbados' => 'Barbados',
-            'Belem' => 'Belem',
-            'Belize' => 'Belize',
-            'Blanc-Sablon' => 'Blanc-Sablon',
-            'Boa_Vista' => 'Boa Vista',
-            'Bogota' => 'Bogota',
-            'Boise' => 'Boise',
-            'Cambridge_Bay' => 'Cambridge Bay',
-            'Campo_Grande' => 'Campo Grande',
-            'Cancun' => 'Cancun',
-            'Caracas' => 'Caracas',
-            'Cayenne' => 'Cayenne',
-            'Cayman' => 'Cayman',
-            'Chicago' => 'Chicago',
-            'Chihuahua' => 'Chihuahua',
-            'Costa_Rica' => 'Costa Rica',
-            'Cuiaba' => 'Cuiaba',
-            'Curacao' => 'Curacao',
-            'Danmarkshavn' => 'Danmarkshavn',
-            'Dawson' => 'Dawson',
-            'Dawson_Creek' => 'Dawson Creek',
-            'Denver' => 'Denver',
-            'Detroit' => 'Detroit',
-            'Dominica' => 'Dominica',
-            'Edmonton' => 'Edmonton',
-            'Eirunepe' => 'Eirunepe',
-            'El_Salvador' => 'El Salvador',
-            'Fortaleza' => 'Fortaleza',
-            'Glace_Bay' => 'Glace Bay',
-            'Godthab' => 'Godthab',
-            'Goose_Bay' => 'Goose Bay',
-            'Grand_Turk' => 'Grand Turk',
-            'Grenada' => 'Grenada',
-            'Guadeloupe' => 'Guadeloupe',
-            'Guatemala' => 'Guatemala',
-            'Guayaquil' => 'Guayaquil',
-            'Guyana' => 'Guyana',
-            'Halifax' => 'Halifax',
-            'Havana' => 'Havana',
-            'Hermosillo' => 'Hermosillo',
-            'Indiana' => 'Indiana',
-            'Inuvik' => 'Inuvik',
-            'Iqaluit' => 'Iqaluit',
-            'Jamaica' => 'Jamaica',
-            'Juneau' => 'Juneau',
-            'Kentucky' => 'Kentucky',
-            'La_Paz' => 'La Paz',
-            'Lima' => 'Lima',
-            'Los_Angeles' => 'Los Angeles',
-            'Maceio' => 'Maceio',
-            'Managua' => 'Managua',
-            'Manaus' => 'Manaus',
-            'Marigot' => 'Marigot',
-            'Martinique' => 'Martinique',
-            'Matamoros' => 'Matamoros',
-            'Mazatlan' => 'Mazatlan',
-            'Menominee' => 'Menominee',
-            'Merida' => 'Merida',
-            'Mexico_City' => 'Mexico City',
-            'Miquelon' => 'Miquelon',
-            'Moncton' => 'Moncton',
-            'Monterrey' => 'Monterrey',
-            'Montevideo' => 'Montevideo',
-            'Montreal' => 'Montreal',
-            'Montserrat' => 'Montserrat',
-            'Nassau' => 'Nassau',
-            'New_York' => 'New York',
-            'Nipigon' => 'Nipigon',
-            'Nome' => 'Nome',
-            'Noronha' => 'Noronha',
-            'North_Dakota' => 'North Dakota',
-            'Ojinaga' => 'Ojinaga',
-            'Panama' => 'Panama',
-            'Pangnirtung' => 'Pangnirtung',
-            'Paramaribo' => 'Paramaribo',
-            'Phoenix' => 'Phoenix',
-            'Port-au-Prince' => 'Port-au-Prince',
-            'Port_of_Spain' => 'Port of Spain',
-            'Porto_Velho' => 'Porto Velho',
-            'Puerto_Rico' => 'Puerto Rico',
-            'Rainy_River' => 'Rainy River',
-            'Rankin_Inlet' => 'Rankin Inlet',
-            'Recife' => 'Recife',
-            'Regina' => 'Regina',
-            'Resolute' => 'Resolute',
-            'Rio_Branco' => 'Rio Branco',
-            'Santa_Isabel' => 'Santa Isabel',
-            'Santarem' => 'Santarem',
-            'Santiago' => 'Santiago',
-            'Santo_Domingo' => 'Santo Domingo',
-            'Sao_Paulo' => 'Sao Paulo',
-            'Scoresbysund' => 'Scoresbysund',
-            'Shiprock' => 'Shiprock',
-            'St_Barthelemy' => 'St Barthelemy',
-            'St_Johns' => 'St Johns',
-            'St_Kitts' => 'St Kitts',
-            'St_Lucia' => 'St Lucia',
-            'St_Thomas' => 'St Thomas',
-            'St_Vincent' => 'St Vincent',
-            'Swift_Current' => 'Swift Current',
-            'Tegucigalpa' => 'Tegucigalpa',
-            'Thule' => 'Thule',
-            'Thunder_Bay' => 'Thunder Bay',
-            'Tijuana' => 'Tijuana',
-            'Toronto' => 'Toronto',
-            'Tortola' => 'Tortola',
-            'Vancouver' => 'Vancouver',
-            'Whitehorse' => 'Whitehorse',
-            'Winnipeg' => 'Winnipeg',
-            'Yakutat' => 'Yakutat',
-            'Yellowknife' => 'Yellowknife',
-        ),
-        'Antarctica' => array(
-            'Casey' => 'Casey',
-            'Davis' => 'Davis',
-            'DumontDUrville' => 'DumontDUrville',
-            'Macquarie' => 'Macquarie',
-            'Mawson' => 'Mawson',
-            'McMurdo' => 'McMurdo',
-            'Palmer' => 'Palmer',
-            'Rothera' => 'Rothera',
-            'South_Pole' => 'South Pole',
-            'Syowa' => 'Syowa',
-            'Vostok' => 'Vostok',
-        ),
-        'Arctic' => array(
-            'Longyearbyen' => 'Longyearbyen',
-        ),
-        'Asia' => array(
-            'Aden' => 'Aden',
-            'Almaty' => 'Almaty',
-            'Amman' => 'Amman',
-            'Anadyr' => 'Anadyr',
-            'Aqtau' => 'Aqtau',
-            'Aqtobe' => 'Aqtobe',
-            'Ashgabat' => 'Ashgabat',
-            'Baghdad' => 'Baghdad',
-            'Bahrain' => 'Bahrain',
-            'Baku' => 'Baku',
-            'Bangkok' => 'Bangkok',
-            'Beijing' => 'Beijing',
-            'Beirut' => 'Beirut',
-            'Bishkek' => 'Bishkek',
-            'Brunei' => 'Brunei',
-            'Choibalsan' => 'Choibalsan',
-            'Chongqing' => 'Chongqing',
-            'Colombo' => 'Colombo',
-            'Damascus' => 'Damascus',
-            'Dhaka' => 'Dhaka',
-            'Dili' => 'Dili',
-            'Dubai' => 'Dubai',
-            'Dushanbe' => 'Dushanbe',
-            'Gaza' => 'Gaza',
-            'Harbin' => 'Harbin',
-            'Ho_Chi_Minh' => 'Ho Chi Minh',
-            'Hong_Kong' => 'Hong Kong',
-            'Hovd' => 'Hovd',
-            'Irkutsk' => 'Irkutsk',
-            'Jakarta' => 'Jakarta',
-            'Jayapura' => 'Jayapura',
-            'Jerusalem' => 'Jerusalem',
-            'Kabul' => 'Kabul',
-            'Kamchatka' => 'Kamchatka',
-            'Karachi' => 'Karachi',
-            'Kashgar' => 'Kashgar',
-            'Kathmandu' => 'Kathmandu',
-            'Kolkata' => 'Kolkata',
-            'Krasnoyarsk' => 'Krasnoyarsk',
-            'Kuala_Lumpur' => 'Kuala Lumpur',
-            'Kuching' => 'Kuching',
-            'Kuwait' => 'Kuwait',
-            'Macau' => 'Macau',
-            'Magadan' => 'Magadan',
-            'Makassar' => 'Makassar',
-            'Manila' => 'Manila',
-            'Muscat' => 'Muscat',
-            'Nicosia' => 'Nicosia',
-            'Novokuznetsk' => 'Novokuznetsk',
-            'Novosibirsk' => 'Novosibirsk',
-            'Omsk' => 'Omsk',
-            'Oral' => 'Oral',
-            'Phnom_Penh' => 'Phnom Penh',
-            'Pontianak' => 'Pontianak',
-            'Pyongyang' => 'Pyongyang',
-            'Qatar' => 'Qatar',
-            'Qyzylorda' => 'Qyzylorda',
-            'Rangoon' => 'Rangoon',
-            'Riyadh' => 'Riyadh',
-            'Sakhalin' => 'Sakhalin',
-            'Samarkand' => 'Samarkand',
-            'Seoul' => 'Seoul',
-            'Shanghai' => 'Shanghai',
-            'Singapore' => 'Singapore',
-            'Taipei' => 'Taipei',
-            'Tashkent' => 'Tashkent',
-            'Tbilisi' => 'Tbilisi',
-            'Tehran' => 'Tehran',
-            'Thimphu' => 'Thimphu',
-            'Tokyo' => 'Tokyo',
-            'Ulaanbaatar' => 'Ulaanbaatar',
-            'Urumqi' => 'Urumqi',
-            'Vientiane' => 'Vientiane',
-            'Vladivostok' => 'Vladivostok',
-            'Yakutsk' => 'Yakutsk',
-            'Yekaterinburg' => 'Yekaterinburg',
-            'Yerevan' => 'Yerevan',
-        ),
-        'Atlantic' => array(
-            'Azores' => 'Azores',
-            'Bermuda' => 'Bermuda',
-            'Canary' => 'Canary',
-            'Cape_Verde' => 'Cape Verde',
-            'Faroe' => 'Faroe',
-            'Madeira' => 'Madeira',
-            'Reykjavik' => 'Reykjavik',
-            'South_Georgia' => 'South Georgia',
-            'St_Helena' => 'St Helena',
-            'Stanley' => 'Stanley',
-        ),
-        'Australia' => array(
-            'Adelaide' => 'Adelaide',
-            'Brisbane' => 'Brisbane',
-            'Broken_Hill' => 'Broken Hill',
-            'Currie' => 'Currie',
-            'Darwin' => 'Darwin',
-            'Eucla' => 'Eucla',
-            'Hobart' => 'Hobart',
-            'Lindeman' => 'Lindeman',
-            'Lord_Howe' => 'Lord Howe',
-            'Melbourne' => 'Melbourne',
-            'Perth' => 'Perth',
-            'Sydney' => 'Sydney',
-        ),
-        'Europe' => array(
-            'Amsterdam' => 'Amsterdam',
-            'Andorra' => 'Andorra',
-            'Athens' => 'Athens',
-            'Belgrade' => 'Belgrade',
-            'Berlin' => 'Berlin',
-            'Bratislava' => 'Bratislava',
-            'Brussels' => 'Brussels',
-            'Bucharest' => 'Bucharest',
-            'Budapest' => 'Budapest',
-            'Chisinau' => 'Chisinau',
-            'Copenhagen' => 'Copenhagen',
-            'Dublin' => 'Dublin',
-            'Gibraltar' => 'Gibraltar',
-            'Guernsey' => 'Guernsey',
-            'Helsinki' => 'Helsinki',
-            'Isle_of_Man' => 'Isle of Man',
-            'Istanbul' => 'Istanbul',
-            'Jersey' => 'Jersey',
-            'Kaliningrad' => 'Kaliningrad',
-            'Kiev' => 'Kiev',
-            'Lisbon' => 'Lisbon',
-            'Ljubljana' => 'Ljubljana',
-            'London' => 'London',
-            'Luxembourg' => 'Luxembourg',
-            'Madrid' => 'Madrid',
-            'Malta' => 'Malta',
-            'Mariehamn' => 'Mariehamn',
-            'Minsk' => 'Minsk',
-            'Monaco' => 'Monaco',
-            'Moscow' => 'Moscow',
-            'Oslo' => 'Oslo',
-            'Paris' => 'Paris',
-            'Podgorica' => 'Podgorica',
-            'Prague' => 'Prague',
-            'Riga' => 'Riga',
-            'Rome' => 'Rome',
-            'Samara' => 'Samara',
-            'San_Marino' => 'San Marino',
-            'Sarajevo' => 'Sarajevo',
-            'Simferopol' => 'Simferopol',
-            'Skopje' => 'Skopje',
-            'Sofia' => 'Sofia',
-            'Stockholm' => 'Stockholm',
-            'Tallinn' => 'Tallinn',
-            'Tirane' => 'Tirane',
-            'Uzhgorod' => 'Uzhgorod',
-            'Vaduz' => 'Vaduz',
-            'Vatican' => 'Vatican',
-            'Vienna' => 'Vienna',
-            'Vilnius' => 'Vilnius',
-            'Volgograd' => 'Volgograd',
-            'Warsaw' => 'Warsaw',
-            'Zagreb' => 'Zagreb',
-            'Zaporozhye' => 'Zaporozhye',
-            'Zurich' => 'Zurich',
-        ),
-        'Indian' => array(
-            'Antananarivo' => 'Antananarivo',
-            'Chagos' => 'Chagos',
-            'Christmas' => 'Christmas',
-            'Cocos' => 'Cocos',
-            'Comoro' => 'Comoro',
-            'Kerguelen' => 'Kerguelen',
-            'Mahe' => 'Mahe',
-            'Maldives' => 'Maldives',
-            'Mauritius' => 'Mauritius',
-            'Mayotte' => 'Mayotte',
-            'Reunion' => 'Reunion',
-        ),
-        'Pacific' => array(
-            'Apia' => 'Apia',
-            'Auckland' => 'Auckland',
-            'Chatham' => 'Chatham',
-            'Chuuk' => 'Chuuk',
-            'Easter' => 'Easter',
-            'Efate' => 'Efate',
-            'Enderbury' => 'Enderbury',
-            'Fakaofo' => 'Fakaofo',
-            'Fiji' => 'Fiji',
-            'Funafuti' => 'Funafuti',
-            'Galapagos' => 'Galapagos',
-            'Gambier' => 'Gambier',
-            'Guadalcanal' => 'Guadalcanal',
-            'Guam' => 'Guam',
-            'Honolulu' => 'Honolulu',
-            'Johnston' => 'Johnston',
-            'Kiritimati' => 'Kiritimati',
-            'Kosrae' => 'Kosrae',
-            'Kwajalein' => 'Kwajalein',
-            'Majuro' => 'Majuro',
-            'Marquesas' => 'Marquesas',
-            'Midway' => 'Midway',
-            'Nauru' => 'Nauru',
-            'Niue' => 'Niue',
-            'Norfolk' => 'Norfolk',
-            'Noumea' => 'Noumea',
-            'Pago_Pago' => 'Pago Pago',
-            'Palau' => 'Palau',
-            'Pitcairn' => 'Pitcairn',
-            'Pohnpei' => 'Pohnpei',
-            'Port_Moresby' => 'Port Moresby',
-            'Rarotonga' => 'Rarotonga',
-            'Saipan' => 'Saipan',
-            'Tahiti' => 'Tahiti',
-            'Tarawa' => 'Tarawa',
-            'Tongatapu' => 'Tongatapu',
-            'Wake' => 'Wake',
-            'Wallis' => 'Wallis',
-        ),
-        'UTC' => array(
-            'UTC' => 'UTC',
-            'UTC-12' => 'UTC-12',
-            'UTC-11.5' => 'UTC-11:30',
-            'UTC-11' => 'UTC-11',
-            'UTC-10.5' => 'UTC-10:30',
-            'UTC-10' => 'UTC-10',
-            'UTC-9.5' => 'UTC-9:30',
-            'UTC-9' => 'UTC-9',
-            'UTC-8.5' => 'UTC-8:30',
-            'UTC-8' => 'UTC-8',
-            'UTC-7.5' => 'UTC-7:30',
-            'UTC-7' => 'UTC-7',
-            'UTC-6.5' => 'UTC-6:30',
-            'UTC-6' => 'UTC-6',
-            'UTC-5.5' => 'UTC-5:30',
-            'UTC-5' => 'UTC-5',
-            'UTC-4.5' => 'UTC-4:30',
-            'UTC-4' => 'UTC-4',
-            'UTC-3.5' => 'UTC-3:30',
-            'UTC-3' => 'UTC-3',
-            'UTC-2.5' => 'UTC-2:30',
-            'UTC-2' => 'UTC-2',
-            'UTC-1.5' => 'UTC-1:30',
-            'UTC-1' => 'UTC-1',
-            'UTC-0.5' => 'UTC-0:30',
-            'UTC+0' => 'UTC+0',
-            'UTC+0.5' => 'UTC+0:30',
-            'UTC+1' => 'UTC+1',
-            'UTC+1.5' => 'UTC+1:30',
-            'UTC+2' => 'UTC+2',
-            'UTC+2.5' => 'UTC+2:30',
-            'UTC+3' => 'UTC+3',
-            'UTC+3.5' => 'UTC+3:30',
-            'UTC+4' => 'UTC+4',
-            'UTC+4.5' => 'UTC+4:30',
-            'UTC+5' => 'UTC+5',
-            'UTC+5.5' => 'UTC+5:30',
-            'UTC+5.75' => 'UTC+5:45',
-            'UTC+6' => 'UTC+6',
-            'UTC+6.5' => 'UTC+6:30',
-            'UTC+7' => 'UTC+7',
-            'UTC+7.5' => 'UTC+7:30',
-            'UTC+8' => 'UTC+8',
-            'UTC+8.5' => 'UTC+8:30',
-            'UTC+8.75' => 'UTC+8:45',
-            'UTC+9' => 'UTC+9',
-            'UTC+9.5' => 'UTC+9:30',
-            'UTC+10' => 'UTC+10',
-            'UTC+10.5' => 'UTC+10:30',
-            'UTC+11' => 'UTC+11',
-            'UTC+11.5' => 'UTC+11:30',
-            'UTC+12' => 'UTC+12',
-            'UTC+12.75' => 'UTC+12:45',
-            'UTC+13' => 'UTC+13',
-            'UTC+13.75' => 'UTC+13:45',
-            'UTC+14' => 'UTC+14',
-        ),
-    );
-}
-endif;

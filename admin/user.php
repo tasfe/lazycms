@@ -23,9 +23,9 @@ require dirname(__FILE__).'/admin.php';
 // 查询管理员信息
 $_USER = user_current();
 // 标题
-admin_head('title',  __('Users'));
-admin_head('styles', array('css/user'));
-admin_head('scripts',array('js/user'));
+system_head('title',  __('Users'));
+system_head('styles', array('css/user'));
+system_head('scripts',array('js/user'));
 // 动作
 $method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 
@@ -35,9 +35,9 @@ switch ($method) {
 	    // 权限检查
 	    current_user_can('user-new');
 	    // 重置标题
-	    admin_head('title',__('Add New User'));
+	    system_head('title',__('Add New User'));
 	    // 添加JS事件
-	    admin_head('loadevents','user_manage_init');
+	    system_head('loadevents','user_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
         // 显示页面
 	    user_manage_page('add');
@@ -50,9 +50,9 @@ switch ($method) {
 	    // 权限检查
 	    current_user_can('user-edit');
 	    // 重置标题
-	    admin_head('title',__('Edit User'));
+	    system_head('title',__('Edit User'));
 	    // 添加JS事件
-	    admin_head('loadevents','user_manage_init');
+	    system_head('loadevents','user_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
 	    user_manage_page('edit');
         include ADMIN_PATH.'/admin-footer.php';
@@ -163,11 +163,11 @@ switch ($method) {
 	    break;
 	default:
 	    current_user_can('user-list');
-	    admin_head('loadevents','user_list_init');
+	    system_head('loadevents','user_list_init');
         $result = pages_query("SELECT `userid` FROM `#@_user_meta` WHERE `key`='Administrator' AND `VALUE`='Yes' ORDER BY `userid` ASC");
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'._x('Add New','user').'</a></h2>';
+        echo   '<h2>'.system_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'._x('Add New','user').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="userlist" id="userlist">';
         table_nav();
         echo       '<table class="data-table" cellspacing="0">';
@@ -257,7 +257,7 @@ function user_manage_page($action) {
     $mplogin  = isset($_USER['MultiPersonLogin'])?$_USER['MultiPersonLogin']:'No';
     $roles    = isset($_USER['roles'])?$_USER['roles']:null;
     echo '<div class="wrap">';
-    echo   '<h2>'.admin_head('title').'</h2>';
+    echo   '<h2>'.system_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="usermanage" id="usermanage">';
     echo     '<fieldset>';
     echo       '<table class="form-table">';
@@ -306,7 +306,7 @@ function user_manage_page($action) {
     echo                        '<label for="BanChangePassword"><input type="checkbox" name="BanChangePassword" id="BanChangePassword" value="Yes"'.($bcpwd=='Yes'?' checked="checked"':null).' />'.__('Ban Change Password').'</label>';
     echo                        '<label for="MultiPersonLogin"><input type="checkbox" name="MultiPersonLogin" id="MultiPersonLogin" value="No"'.($mplogin=='No'?' checked="checked"':null).' />'.__('Prohibition multi-person to login').'</label>';
     echo                    '</div>';
-    echo                    admin_purview($roles);
+    echo                    system_purview($roles);
     echo                    '<button type="button" rel="select">'.__('Select / Deselect').'</button>';
     echo               '</td>';
     echo           '</tr>';

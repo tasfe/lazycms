@@ -2,25 +2,25 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo esc_html(strip_tags(admin_head('title')));?> &lsaquo; <?php echo C('SiteTitle');?>  &#8212; LazyCMS</title>
+<title><?php echo esc_html(strip_tags(system_head('title')));?> &lsaquo; <?php echo C('SiteTitle');?>  &#8212; LazyCMS</title>
 <?php
 // 加载核心CSS
-admin_css('css/admin', 'css/'.language());
+loader_css('css/admin', 'css/'.language());
 // 加载模块CSS
-admin_css(admin_head('styles'));
+loader_css(system_head('styles'));
 // 加载JS核心库
-admin_script('js/common');
+loader_js('js/common');
 // 输出js语言包
-echo '<script type="text/javascript">'.admin_jslang().'</script>';
+echo '<script type="text/javascript">'.system_jslang().'</script>';
 // 加载模块JS库
-admin_script(admin_head('scripts'));
+loader_js(system_head('scripts'));
 ?>
 <script type="text/javascript">
 //<![CDATA[
 window.addLoadEvent=function(a){if(typeof jQuery!='undefined')jQuery(document).ready(a);else if(typeof LazyOnload!='function')LazyOnload=a;else{var b=LazyOnload;LazyOnload=function(){b();a()}}};
 <?php
 // 执行事件
-$loadevents = admin_head('loadevents');
+$loadevents = system_head('loadevents');
 if ($loadevents) {
     if (is_array($loadevents)) {
     	foreach ($loadevents as $event) {

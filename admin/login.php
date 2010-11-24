@@ -68,8 +68,8 @@ if (validate_is_post()) {
 // 登录页面
 echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 echo '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-echo '<title>LazyCMS '.__('Administrator Login').'</title>'; admin_css('css/login'); admin_script('js/common'); admin_script('js/login');
-echo '<script type="text/javascript">'.admin_jslang().'</script>';
+echo '<title>LazyCMS '.__('Administrator Login').'</title>'; loader_css('css/login'); loader_js('js/common'); loader_js('js/login');
+echo '<script type="text/javascript">'.system_jslang().'</script>';
 echo '</head>';
 echo '<body>';
 echo    '<form id="login" name="login" method="post" action="'.sprintf('%s?method=login',PHP_FILE).'">';

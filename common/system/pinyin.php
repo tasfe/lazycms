@@ -166,6 +166,8 @@ function &_pinyin_get_object() {
 		$pinyin = new PinYin();
 	return $pinyin;
 }
+
+if (!function_exists('pinyin')) :
 /**
  * 取得拼音
  *
@@ -177,3 +179,4 @@ function pinyin($str, $ucfirst=true) {
     $py = _pinyin_get_object();
     return $py->encode($str, $ucfirst);
 }
+endif;

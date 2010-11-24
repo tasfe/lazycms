@@ -25,91 +25,26 @@ defined('COM_PATH') or die('Restricted access!');
  * @author  Lukin <my@lukin.cn>
  * @version $Id$
  */
-class LazyLoader {
-    var $version  = 0;
-    var $language = null;
-    var $_groups  = array();
+class Loader {
+    var $_files = array();
     /**
-     * 设置语言
+     * 设置分组
      *
-     * @param string $language
+     * @param array $files
      * @return void
      */
-    function set_language($language = ''){
-        if ($language) {
-            $this->language = $language;
-        }
-	}
-
-    /**
-     * CSS样式依赖关系
-     *
-     * @return array
-     */
-    function styles() {
-        $styles = array(
-            'reset'  => array(COM_PATH.'/css/reset.css'),
-            'icons'  => array(COM_PATH.'/css/icons.css'),
-            'common' => array(COM_PATH.'/css/common.css'),
-            'style'  => array(ADMIN_PATH.'/css/style.css',array('reset','icons','common')),
-            'admin'  => array(ADMIN_PATH.'/css/admin.css',array('style')),
-            'login'  => array(ADMIN_PATH.'/css/login.css',array('style')),
-            'install' => array(ADMIN_PATH.'/css/install.css',array('style')),
-
-            'user'   => array(ADMIN_PATH.'/css/user.css'),
-            'model'  => array(ADMIN_PATH.'/css/model.css'),
-            'post'   => array(ADMIN_PATH.'/css/post.css',array('xheditor.plugins')),
-            'publish' => array(ADMIN_PATH.'/css/publish.css'),
-            'options' => array(ADMIN_PATH.'/css/options.css'),
-            'comment' => array(ADMIN_PATH.'/css/comment.css'),
-            'categories' => array(ADMIN_PATH.'/css/categories.css'),
-            'xheditor.plugins' => array(COM_PATH.'/css/xheditor.plugins.css'),
-        );
-        // 追加语言相关的CSS
-        if ($this->language) {
-            $styles[$this->language] = array(sprintf('%s/css/%s.css',ADMIN_PATH,$this->language));
-        }
-        return $styles;
-    }
-    /**
-     * Js依赖关系
-     *
-     * @return array
-     */
-    function scripts(){
-        $scripts = array(
-            'jquery'        => array(COM_PATH.'/js/jquery.js'),
-            'jquery.extend' => array(COM_PATH.'/js/jquery.extend.js'),
-            'lazycms'       => array(COM_PATH.'/js/lazycms.js'),
-            'common'        => array(ADMIN_PATH.'/js/common.js',array('jquery','jquery.extend','lazycms')),
-            'login'         => array(ADMIN_PATH.'/js/login.js'),
-            'install'       => array(ADMIN_PATH.'/js/install.js'),
-            
-            'user'          => array(ADMIN_PATH.'/js/user.js'),
-            'model'         => array(ADMIN_PATH.'/js/model.js'),
-            'categories'    => array(ADMIN_PATH.'/js/categories.js'),
-            'post'          => array(ADMIN_PATH.'/js/post.js'),
-            'options'       => array(ADMIN_PATH.'/js/options.js'),
-            'publish'       => array(ADMIN_PATH.'/js/publish.js'),
-            'comment'       => array(ADMIN_PATH.'/js/comment.js'),
-            'xheditor'      => array(COM_PATH.'/editor/xheditor.js',array('xheditor.plugins')),
-            'xheditor.plugins' => array(COM_PATH.'/js/xheditor.plugins.js'),
-        );
-        // 追加语言相关的JS
-        if ($this->language) {
-            $scripts[$this->language] = array(sprintf('%s/js/%s.js',ADMIN_PATH,$this->language));
-        }
-        return $scripts;
+    function set_files($files) {
+        $this->_files = $files;
     }
     /**
      * 取得版本号
      *
-     * @param string $files
+     * @param string|array $loads
      * @return int
      */
-    function get_version($file){
+    function get_version($loads){
         $version = 0;
-        $files   = $this->get_dependence_files($file); unset($files['LazyCMS.L10N']);
+        $files   = $this->get_dependence_files($loads);
         foreach ($files as $srcs) {
         	foreach ($srcs as $src) {
         		$version = max($version,filemtime($src));
@@ -117,29 +52,27 @@ class LazyLoader {
         }
         if ($version) {
         	$version = date('YmdHis',$version);
-        } else {
-            $version = LAZY_VERSION;
         }
         return $version;
     }
     /**
-     * 取得依赖的文件
+     * 取得文件
      *
-     * @param string $group
+     * @param string $loads
      * @return array
      */
-    function get_dependence_files($file){
-        $result = array(); $files = array(); $jsL10n = array();
-        if (is_array($file) || strpos($file,',')!==false) {
-        	$loads = !is_array($file)?explode(',',$file):$file;
+    function get_dependence_files($loads){
+        $result = array(); $files = array();
+        if (is_array($loads) || strpos($loads,',')!==false) {
+        	$loads = !is_array($loads) ? explode(',', $loads) : $loads;
         	foreach ($loads as $file) {
-        	    $dependence_file = $this->_get_dependence_files($file,$jsL10n);
+        	    $dependence_file = $this->_get_dependence_files($file);
         	    if (!empty($dependence_file)) {
         	    	$files[$file] = $dependence_file;
         	    }
         	}
         } else {
-            $files[$file] = $this->_get_dependence_files($file,$jsL10n);
+            $files[$loads] = $this->_get_dependence_files($loads);
         }
 
         $is_exist = array();
@@ -154,17 +87,16 @@ class LazyLoader {
             }
             $result[$group] = $arr_src;
         }
-        $result['LazyCMS.L10N'] = $jsL10n;
         return $result;
     }
-    function _get_dependence_files($group,& $jsL10n){
+    function _get_dependence_files($name){
         $files = array();
-        if (isset($this->_groups[$group])) {
-            $rule = $this->_groups[$group];
+        if (isset($this->_files[$name])) {
+            $rule = $this->_files[$name];
         	// 存在依赖
         	if (isset($rule[1]) && !empty($rule[1])) {
         	    foreach ($rule[1] as $tode_file) {
-        	    	$dependence_files = $this->_get_dependence_files($tode_file,$jsL10n);
+        	    	$dependence_files = $this->_get_dependence_files($tode_file);
         	    	foreach ($dependence_files as $file=>$v) {
         	    	    if (!isset($files[$file])) {
         	    	    	$files[$file] = 1;
@@ -173,46 +105,157 @@ class LazyLoader {
         	    }
         	}
         	$file = $rule[0];
+            if (!strncasecmp($file, '/common/', 8)) {
+                $file = COM_PATH.substr($file,7);
+            } elseif (!strncasecmp($file, '/admin/', 7)) {
+                $file = ADMIN_PATH.substr($file,6);
+            }
         	if (!isset($files[$file]) && is_file($file)) {
-                // 读取相关语言文字
-                if (isset($rule[2]) && !empty($rule[2])) {
-                    $jsL10n[$group] = $rule[2];
-                }
                 $files[$file] = 1;
             }
         }
         return $files;
     }
-    function loads($files){
-        return $this->get_dependence_files($files);
-    }
-    function get_files() {
-        return $this->_groups;
-    }
 }
 
-class StylesLoader extends LazyLoader {
-
-    function __construct($language = ''){
-        $this->set_language($language);
-		$this->_groups = $this->styles();
-	}
-
-    function StylesLoader() {
-        $args = func_get_args();
-		call_user_func_array( array(&$this, '__construct'), $args );
-    }
+/**
+ * 取得实例
+ *
+ * @return $loader
+ */
+function &_loader_get_object() {
+    static $loader;
+	if ( is_null($loader) )
+		$loader = new Loader();
+	return $loader;
 }
-
-class ScriptsLoader extends LazyLoader {
-
-    function __construct($language = ''){
-        $this->set_language($language);
-		$this->_groups = $this->scripts();
-	}
-
-    function ScriptsLoader() {
-        $args = func_get_args();
-		call_user_func_array( array(&$this, '__construct'), $args );
+/**
+ * 取得文件列表
+ *
+ * @param string $type css or js
+ * @param string|array $loads
+ * @return array
+ */
+function loader_get_files($type, $loads) {
+    $loader = _loader_get_object();
+    if ($type == 'css') {
+        global $Loader_Styles;
+        $loader->set_files($Loader_Styles);
+    } elseif ($type == 'js') {
+        global $Loader_Scripts;
+        $loader->set_files($Loader_Scripts);
     }
+    return $loader->get_dependence_files($loads);
+}
+/**
+ * 加载css
+ *
+ * @return void
+ */
+function loader_css() {
+    global $Loader_Styles;
+    $loader = _loader_get_object();
+    $files  = array();
+    $args   = func_get_args();
+    if (isset($args[0]) && is_array($args[0]))
+        $args = $args[0];
+
+    if (empty($args)) return ;
+
+    foreach ($args as $file) {
+        $files[] = !strncasecmp($file,'css/',4) ? substr( $file, 4 ) : $file;
+    }
+    $loads = implode(',', $files);
+    // 设置css
+    $loader->set_files($Loader_Styles);
+    // 加载样式表
+    $version = $loader->get_version($loads);
+    // 输出HTML
+    printf('<link href="'.ADMIN.'loader.php?%s" rel="stylesheet" type="text/css" />',str_replace('%2C',',',http_build_query(array(
+        'type' => 'css',
+        'load' => $loads,
+        'ver'  => $version,
+    ))));
+}
+/**
+ * 加载js
+ *
+ * @return void
+ */
+function loader_js() {
+    global $Loader_Scripts;
+    $loader = _loader_get_object();
+    $files  = array();
+    $args   = func_get_args();
+    if (isset($args[0]) && is_array($args[0]))
+        $args = $args[0];
+
+    if (empty($args)) return ;
+
+    foreach ($args as $file) {
+        $files[] = !strncasecmp($file,'js/',3) ? substr($file, 3) : $file;
+    }
+    $loads = implode(',', $files);
+    // 设置js
+    $loader->set_files($Loader_Scripts);
+    // 加载样式表
+    $version = $loader->get_version($loads);
+    // 输出HTML
+    printf('<script type="text/javascript" src="'.ADMIN.'loader.php?%s"></script>',str_replace('%2C',',',http_build_query(array(
+        'type' => 'js',
+        'load' => $loads,
+        'ver'  => $version,
+    ))));
+}
+/**
+ * 添加css
+ *
+ * @param array $styles
+ *      array(
+ *          'key' => array('css path', array('common')),
+ *      )
+ * @return array
+ */
+function loader_add_css($styles) {
+    global $Loader_Styles;
+    if (!$Loader_Styles) {
+        $Loader_Styles = array();
+    }
+    if (func_num_args() == 2) {
+        $args = func_num_args();
+        $key  = $args[0];
+        $val  = $args[1];
+        $Loader_Styles[$key] = $val;
+    } else {
+        foreach ((array) $styles as $key=>$val) {
+            $Loader_Styles[$key] = $val;
+        }
+    }
+    return $Loader_Styles;
+}
+/**
+ * 添加js
+ *
+ * @param array $scripts
+ *      array(
+ *          'key' => array('js path', array('common')),
+ *      )
+ * @return array
+ */
+function loader_add_script($scripts) {
+    global $Loader_Scripts;
+    if (!$Loader_Scripts) {
+        $Loader_Scripts = array();
+    }
+    if (func_num_args() == 2) {
+        $args = func_num_args();
+        $key  = $args[0];
+        $val  = $args[1];
+        $Loader_Scripts[$key] = $val;
+    } else {
+        foreach ((array) $scripts as $key=>$val) {
+            $Loader_Scripts[$key] = $val;
+        }
+    }
+    return $Loader_Scripts;
 }

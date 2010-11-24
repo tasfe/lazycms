@@ -29,7 +29,7 @@ class QQWry {
     var $_fp = null;
     var $_start = 0, $_end = 0, $_ctype = 0;
     var $_fstart = 0, $_lstart = 0, $_offset = 0;
-    
+
     function QQWry() {
         register_shutdown_function( array(&$this, '__destruct') );
         

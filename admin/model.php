@@ -23,10 +23,10 @@ require dirname(__FILE__).'/admin.php';
 // 查询管理员信息
 $_USER = user_current();
 // 标题
-admin_head('title',  __('Models'));
-admin_head('styles', array('css/model'));
-admin_head('scripts',array('js/model'));
-admin_head('jslang',array(
+system_head('title',  __('Models'));
+system_head('styles', array('css/model'));
+system_head('scripts',array('js/model'));
+system_head('jslang',array(
     'Add New' => _x('Add New','field'),
     'Edit'    => _x('Edit','field'),
     'The label field is empty.' => _x('The label field is empty.','field'),
@@ -42,9 +42,9 @@ switch ($method) {
 	    // 权限检查
 	    current_user_can('model-new');
 	    // 重置标题
-	    admin_head('title',__('Add New Model'));
+	    system_head('title',__('Add New Model'));
 	    // 添加JS事件
-	    admin_head('loadevents','model_manage_init');
+	    system_head('loadevents','model_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
         // 显示页面
 	    model_manage_page('add');
@@ -57,9 +57,9 @@ switch ($method) {
 	    // 权限检查
 	    current_user_can('model-edit');
 	    // 重置标题
-	    admin_head('title',__('Edit Model'));
+	    system_head('title',__('Edit Model'));
 	    // 添加JS事件
-	    admin_head('loadevents','model_manage_init');
+	    system_head('loadevents','model_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
 	    model_manage_page('edit');
         include ADMIN_PATH.'/admin-footer.php';
@@ -280,11 +280,11 @@ switch ($method) {
 	    break;
 	default:
 	    current_user_can('model-list');
-	    admin_head('loadevents','model_list_init');
+	    system_head('loadevents','model_list_init');
 	    $models = model_gets();
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'._x('Add New','model').'</a></h2>';
+        echo   '<h2>'.system_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'._x('Add New','model').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="modellist" id="modellist">';
         table_nav();
         echo       '<table class="data-table" cellspacing="0">';
@@ -374,7 +374,7 @@ function model_manage_page($action) {
     $page     = isset($_MODEL['page'])?$_MODEL['page']:null;
     $fields   = isset($_MODEL['fields'])?$_MODEL['fields']:null;
     echo '<div class="wrap">';
-    echo   '<h2>'.admin_head('title').'</h2>';
+    echo   '<h2>'.system_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="modelmanage" id="modelmanage">';
     echo     '<fieldset>';
     echo       '<table class="form-table">';

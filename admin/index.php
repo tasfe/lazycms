@@ -58,7 +58,7 @@ switch ($method) {
     // 默认页面
     default:
         // 设置标题
-        admin_head('title',__('Control Panel'));
+        system_head('title',__('Control Panel'));
         // 加载头部
         include ADMIN_PATH.'/admin-header.php';
         

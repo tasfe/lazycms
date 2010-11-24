@@ -46,14 +46,8 @@ require COM_PATH.'/system/validate.php';
 require COM_PATH.'/system/cookie.php';
 // 加载文件缓存类
 require COM_PATH.'/system/fcache.php';
-// 加载中文转拼音类
-require COM_PATH.'/system/pinyin.php';
 // 加载本地化语言类库
 require COM_PATH.'/system/l10n.php';
-// 加载模版处里类
-require COM_PATH.'/system/template.php';
-// 加载分页类
-require COM_PATH.'/system/pages.php';
 // 设置系统时区
 time_zone_set(C('Timezone'));
 // 开始时间

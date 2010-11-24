@@ -68,10 +68,10 @@ if (validate_is_post()) {
     }
 } else {
     // 标题
-    admin_head('title',__('Profile'));
-    admin_head('styles', array('css/user'));
-    admin_head('scripts',array('js/user'));
-    admin_head('loadevents','user_profile_init');
+    system_head('title',__('Profile'));
+    system_head('styles', array('css/user'));
+    system_head('scripts',array('js/user'));
+    system_head('loadevents','user_profile_init');
     $username = isset($_USER['name'])?$_USER['name']:null;
     $nickname = isset($_USER['nickname'])?$_USER['nickname']:null;
     $email    = isset($_USER['mail'])?$_USER['mail']:null;
@@ -79,7 +79,7 @@ if (validate_is_post()) {
     $desc     = isset($_USER['description'])?$_USER['description']:null;
     include ADMIN_PATH.'/admin-header.php';
     echo '<div class="wrap">';
-    echo   '<h2>'.admin_head('title').'</h2>';
+    echo   '<h2>'.system_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'" method="post" name="profile" id="profile">';
     echo     '<fieldset>';
     echo       '<table class="form-table">';

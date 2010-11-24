@@ -23,9 +23,9 @@ require dirname(__FILE__).'/admin.php';
 // 查询管理员信息
 $_USER = user_current();
 // 设置标题
-admin_head('title',__('Comments'));
-admin_head('styles', array('css/comment'));
-admin_head('scripts',array('js/comment'));
+system_head('title',__('Comments'));
+system_head('styles', array('css/comment'));
+system_head('scripts',array('js/comment'));
 
 // 方法
 $method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
@@ -96,14 +96,14 @@ switch ($method) {
 	    }
         break;
     default:
-        admin_head('jslang',array(
+        system_head('jslang',array(
             'Reply comment' => __('Reply comment'),
             'Edit comment' => __('Edit comment'),
             'Author' => __('Author'),
             'Email' => __('Email'),
             'Url' => __('Url'),
         ));
-        admin_head('loadevents','comment_list_init');
+        system_head('loadevents','comment_list_init');
         $where  = 'WHERE 1';
         $query  = array('page' => '$');
         $status = isset($_GET['status'])  ? $_GET['status']  : '';
@@ -136,7 +136,7 @@ switch ($method) {
         // 加载头部
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'</h2>';
+        echo   '<h2>'.system_head('title').'</h2>';
         echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="comments" id="comments">';
         echo       '<div class="submenu">';
         echo           '<a'.($status==''?' class="current"':'').' href="'.PHP_FILE.'">'._x('All','comments').'</a> | ';

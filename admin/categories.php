@@ -23,9 +23,9 @@ require dirname(__FILE__).'/admin.php';
 // 查询管理员信息
 $_USER = user_current();
 // 标题
-admin_head('title',  __('Categories'));
-admin_head('styles', array('css/categories'));
-admin_head('scripts',array('js/categories'));
+system_head('title',  __('Categories'));
+system_head('styles', array('css/categories'));
+system_head('scripts',array('js/categories'));
 // 动作
 $method  = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 // 所属
@@ -37,9 +37,9 @@ switch ($method) {
     // 强力插入
     case 'new':
 	    // 重置标题
-	    admin_head('title',__('Add New Category'));
+	    system_head('title',__('Add New Category'));
 	    // 添加JS事件
-	    admin_head('loadevents','sort_manage_init');
+	    system_head('loadevents','sort_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
         // 显示页面
 	    category_manage_page('add');
@@ -48,9 +48,9 @@ switch ($method) {
     // 活塞式运动，你懂得。。。
 	case 'edit':
 	    // 重置标题
-	    admin_head('title',__('Edit Category'));
+	    system_head('title',__('Edit Category'));
 	    // 添加JS事件
-	    admin_head('loadevents','sort_manage_init');
+	    system_head('loadevents','sort_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
 	    category_manage_page('edit');
         include ADMIN_PATH.'/admin-footer.php';
@@ -167,11 +167,11 @@ switch ($method) {
 	    }
 	    break;
     default:
-	    admin_head('loadevents','sort_list_init');
+	    system_head('loadevents','sort_list_init');
 	    $sorts = taxonomy_get_trees();
         include ADMIN_PATH.'/admin-header.php';
         echo '<div class="wrap">';
-        echo   '<h2>'.admin_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'._x('Add New','sort').'</a></h2>';
+        echo   '<h2>'.system_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'._x('Add New','sort').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="sortlist" id="sortlist">';
         table_nav();
         echo       '<table class="data-table" cellspacing="0">';
@@ -238,6 +238,7 @@ function display_tr_categories($sorts,$n=0) {
         $path    = ROOT.$sort['path'].'/';
         $href    = PHP_FILE.'?method=edit&taxonomyid='.$sort['taxonomyid'];
         $actions = '<span class="create"><a href="javascript:;" onclick="sort_create('.$sort['taxonomyid'].')">'.__('Create List').'</a> | </span>';
+        $actions.= '<span class="add_post"><a href="'.ADMIN.'post.php?method=new&category='.$sort['taxonomyid'].'">'._x('Add New','post').'</a> | </span>';
         $actions.= '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a> | </span>';
         $actions.= '<span class="delete"><a href="javascript:;" onclick="sort_delete('.$sort['taxonomyid'].')">'.__('Delete').'</a></span>';
         $hl.= '<tr>';
@@ -278,7 +279,7 @@ function category_manage_page($action) {
     $description = isset($_SORT['description'])?$_SORT['description']:null;
     $models = model_gets(0);
     echo '<div class="wrap">';
-    echo   '<h2>'.admin_head('title').'</h2>';
+    echo   '<h2>'.system_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="sortmanage" id="sortmanage">';
     echo     '<fieldset>';
     echo       '<table class="form-table">';
