@@ -24,6 +24,7 @@ defined('COM_PATH') or die('Restricted access!');
 tpl_add_plugin('system_tpl_plugin');
 tpl_add_plugin('system_tpl_list_plugin');
 // 添加 CSS
+if (function_exists('loader_add_css')) :
 loader_add_css(array(
     'reset'             => array('/common/css/reset.css'),
     'icons'             => array('/common/css/icons.css'),
@@ -41,7 +42,9 @@ loader_add_css(array(
     'categories'        => array('/admin/css/categories.css'),
     'xheditor.plugins'  => array('/common/css/xheditor.plugins.css'),
 ));
+endif;
 // 添加js
+if (function_exists('loader_add_script')) :
 loader_add_script(array(
     'jquery'            => array('/common/js/jquery.js'),
     'jquery.extend'     => array('/common/js/jquery.extend.js'),
@@ -58,6 +61,65 @@ loader_add_script(array(
     'comment'           => array('/admin/js/comment.js'),
     'xheditor'          => array('/common/editor/xheditor.js', array('xheditor.plugins')),
     'xheditor.plugins'  => array('/common/js/xheditor.plugins.js'),
+));
+endif;
+// 系统权限
+system_purview_add(array(
+    'cpanel' => array(
+        '_LABEL_'           => __('Control Panel'),
+        'publish'           => __('Publish Posts'),
+        'upgrade'           => __('Upgrade'),
+    ),
+    'posts' => array(
+        '_LABEL_'           => __('Posts'),
+        'categories'        => __('Categories'),
+        'post-new'          => _x('Add New','post'),
+        'post-list'         => _x('List','post'),
+        'post-edit'         => _x('Edit','post'),
+        'post-delete'       => _x('Delete','post'),
+    ),
+    'pages' => array(
+        '_LABEL_'           => __('Pages'),
+        'page-list'         => _x('List','page'),
+        'page-new'          => _x('Add New','page'),
+        'page-edit'         => _x('Edit','page'),
+        'page-delete'       => _x('Delete','page'),
+    ),
+    'models' => array(
+        '_LABEL_'           => __('Models'),
+        'model-list'        => _x('List','model'),
+        'model-new'         => _x('Add New','model'),
+        'model-edit'        => _x('Edit','model'),
+        'model-delete'      => _x('Delete','model'),
+        'model-export'      => _x('Export','model'),
+        'model-fields'      => _x('Fields','model'),
+    ),
+    'comments' => array(
+        '_LABEL_'           => __('Comments'),
+        'comment-list'      => _x('List','comment'),
+        'comment-state'     => _x('Change State','comment'),
+        'comment-reply'     => _x('Reply comment','comment'),
+        'comment-edit'      => _x('Edit','comment'),
+        'comment-delete'    => _x('Delete','comment'),
+    ),
+    'users' => array(
+        '_LABEL_'           => __('Users'),
+        'user-list'         => _x('List','user'),
+        'user-new'          => _x('Add New','user'),
+        'user-edit'         => _x('Edit','user'),
+        'user-delete'       => _x('Delete','user'),
+    ),
+    /*'plugins' => array(
+        '_LABEL_'           => __('Plugins'),
+        'plugin-list'       => _x('List','plugin'),
+        'plugin-new'        => _x('Add New','plugin'),
+        'plugin-delete'     => _x('Delete','plugin'),
+    ),*/
+    'settings' => array( 
+        '_LABEL_'           => __('Settings'),
+        'option-general'    => _x('General','setting'),
+        'option-posts'      => _x('Posts','setting'),
+    )
 ));
 
 /**
@@ -115,32 +177,30 @@ function system_tpl_plugin($tag_name,$tag) {
             break;
         case '$content':
             // 关键词链接地址
-            $link   = tpl_get_attr($tag,'link');
+            $link = tpl_get_attr($tag,'link');
             if ($link) {
                 $link = str_replace(array('[$inst]','[$webroot]'),ROOT,$link);
                 $link = str_replace(array('[$host]','[$domain]'),HTTP_HOST,$link);
                 $link = str_replace(array('[$theme]','[$templet]','[$template]'),ROOT.system_themes_path(),$link);
-            } else {
-                $link = ROOT.'tags.php?q=$';
-            }
-            // 关键词匹配最大数
-            $number = tpl_get_attr($tag,'tags');
-            if (strpos($number,'-') !== false) {
-                $range = explode('-', trim($number,'-')); sort($range);
-                $tag_min = $range[0]; $tag_max = $range[1];
-            } else {
-                $tag_min = $tag_max = $number;
-            }
-            $tag_min = validate_is($tag_min,VALIDATE_IS_NUMERIC) ? $tag_min : 10;
-            $tag_max = validate_is($tag_max,VALIDATE_IS_NUMERIC) ? $tag_max : 10;
-            // 文章内容
-            $content = tpl_get_var('content');
-            if ($content) {
-                $dicts = term_gets();
-                if (!empty($dicts)) {
-                    require_file(COM_PATH.'/system/keyword.php');
-                    $splitword = new keyword($dicts);
-                    $content   = $splitword->tags($content, $link, mt_rand($tag_min,$tag_max));
+                // 关键词匹配最大数
+                $number = tpl_get_attr($tag,'tags');
+                if (strpos($number,'-') !== false) {
+                    $range = explode('-', trim($number,'-')); sort($range);
+                    $tag_min = $range[0]; $tag_max = $range[1];
+                } else {
+                    $tag_min = $tag_max = $number;
+                }
+                $tag_min = validate_is($tag_min,VALIDATE_IS_NUMERIC) ? $tag_min : 10;
+                $tag_max = validate_is($tag_max,VALIDATE_IS_NUMERIC) ? $tag_max : 10;
+                // 文章内容
+                $content = tpl_get_var('content');
+                if ($content) {
+                    $dicts = term_gets();
+                    if (!empty($dicts)) {
+                        require_file(COM_PATH.'/system/keyword.php');
+                        $splitword = new keyword($dicts);
+                        $content   = $splitword->tags($content, $link, mt_rand($tag_min,$tag_max));
+                    }
                 }
             }
             $result = $content;
@@ -439,74 +499,43 @@ function system_head($key,$value=null) {
     }
     return isset($head[$key])?$head[$key]:array();
 }
-
+/**
+ * 添加权限
+ *
+ * @param array $purview
+ * @return array
+ */
+function system_purview_add($purview) {
+    global $LC_Purview;
+    if (!$LC_Purview) $LC_Purview = array();
+    if (func_num_args() == 2) {
+        $args = func_num_args();
+        $key  = $args[0];
+        $val  = $args[1];
+        $LC_Purview[$key] = $val;
+    } else {
+        foreach ((array) $purview as $key=>$val) {
+            $LC_Purview[$key] = $val;
+        }
+    }
+    return $LC_Purview;
+}
 /**
  * 权限列表
  *
  * @return array
  */
 function system_purview($data=null) {
-    $purview = array(
-        'cpanel' => array(
-            '_LABEL_'   => __('Control Panel'),
-            'publish'   => __('Publish Posts'),
-            'upgrade'   => __('Upgrade'),
-        ),
-        'posts' => array(
-            '_LABEL_'     => __('Posts'),
-            'categories'  => __('Categories'),
-            'post-new'    => _x('Add New','post'),
-            'post-list'   => _x('List','post'),
-            'post-edit'   => _x('Edit','post'),
-            'post-delete' => _x('Delete','post'),
-        ),
-        'pages' => array(
-            '_LABEL_'     => __('Pages'),
-            'page-list'   => _x('List','page'),
-            'page-new'    => _x('Add New','page'),
-            'page-edit'   => _x('Edit','page'),
-            'page-delete' => _x('Delete','page'),
-        ),
-        'models' => array(
-            '_LABEL_'      => __('Models'),
-            'model-list'   => _x('List','model'),
-            'model-new'    => _x('Add New','model'),
-            'model-edit'   => _x('Edit','model'),
-            'model-delete' => _x('Delete','model'),
-            'model-export' => _x('Export','model'),
-            'model-fields' => _x('Fields','model'),
-        ),
-        'users' => array(
-            '_LABEL_'     => __('Users'),
-            'user-list'   => _x('List','user'),
-            'user-new'    => _x('Add New','user'),
-            'user-edit'   => _x('Edit','user'),
-            'user-delete' => _x('Delete','user'),
-        ),
-        'plugins' => array(
-            '_LABEL_'       => __('Plugins'),
-            'plugin-list'   => _x('List','plugin'),
-            'plugin-new'    => _x('Add New','plugin'),
-            'plugin-delete' => _x('Delete','plugin'),
-        ),
-        'tools' => array(
-            '_LABEL_'       => __('Tools'),
-            'clean-cache'   => __('Clean cache'),
-        ),
-        'settings' => array(
-            '_LABEL_'        => __('Settings'),
-            'option-general' => _x('General','setting'),
-        )
-    );
+    global $LC_Purview;
     $hl = '<div class="role-list">';
-    foreach ($purview as $k=>$pv) {
+    foreach ((array) $LC_Purview as $k=>$pv) {
         $title = $pv['_LABEL_']; unset($pv['_LABEL_']);
         $roles = null; $parent_checked = ' checked="checked"';
         foreach ($pv as $sk=>$spv) {
-            if ($data=='ALL') {
+            if ($data == 'ALL') {
                 $checked = ' checked="checked"';
             } else {
-                $checked = instr($sk,$data)?' checked="checked"':null;
+                $checked = instr($sk, $data)?' checked="checked"':null;
             }
             $parent_checked = empty($checked)?'':$parent_checked;
         	$roles.= '<label><input type="checkbox" name="roles[]" rel="'.$k.'" value="'.$sk.'"'.$checked.' /> '.$spv.'</label>';
@@ -815,18 +844,18 @@ function system_editor_lang() {
  */
 function system_gateway_rewrite() {
     // 获取参数
-    $path  = isset($_GET['path']) ? substr('/'.rtrim(trim($_GET['path']),'/'), strlen(ROOT)) : null;
-    $paths = parse_path($path);
-    $type  = isset($paths[0]) ? strtolower($paths[0]) : null;
+    $path   = isset($_GET['path']) ? substr('/'.rtrim(trim($_GET['path']),'/'), strlen(ROOT)) : null;
+    $paths  = parse_path($path);
+    $type   = isset($paths[0]) ? strtolower($paths[0]) : null;
     $result = '';
     switch($type) {
         case 'tags': case 'tags.php':
             $result = system_tags($_GET[$type]);
             break;
         default:
-            $result = __('Restricted access!');
+            header('HTTP/1.1 404 Not Found', 404);
+            redirect(ROOT, 3, __('Restricted access!'));
             break;
     }
-
     return $result;
 }

@@ -22,6 +22,8 @@
 require dirname(__FILE__).'/../admin.php';
 // 得到客人信息
 $_USER = user_current();
+// 权限验证
+current_user_can('option-posts');
 // 姿势
 $referer = referer(PHP_FILE,false);
 // 保存

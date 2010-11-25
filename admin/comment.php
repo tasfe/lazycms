@@ -32,6 +32,7 @@ $method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 
 switch ($method) {
     case 'get':
+        current_user_can('comment-edit');
         $cmtid   = isset($_REQUEST['cmtid']) ? $_REQUEST['cmtid'] : 0;
         $comment = comment_get($cmtid);
         ajax_return(array(
@@ -42,6 +43,7 @@ switch ($method) {
         ));
         break;
     case 'edit':
+        current_user_can('comment-edit');
         $cmtid   = isset($_POST['cmtid']) ? $_POST['cmtid'] : 0;
         $content = isset($_POST['content']) ? trim($_POST['content'])  : '';
         comment_edit($cmtid, $content, null, array(
@@ -53,6 +55,7 @@ switch ($method) {
         ajax_success(__('Comment updated.'), "LazyCMS.redirect('".referer()."');");
         break;
     case 'reply':
+        current_user_can('comment-reply');
         $parent  = isset($_POST['parent'])  ? $_POST['parent']  : 0;
         $content = isset($_POST['content']) ? trim($_POST['content'])  : '';
         $postid  = comment_get_postid($parent);
@@ -71,12 +74,14 @@ switch ($method) {
 	    }
 	    switch ($action) {
 	        case 'unapprove':
+                current_user_can('comment-state');
 	            foreach ($listids as $cmtid) {
 	            	comment_edit($cmtid,null,'0');
 	            }
                 redirect(referer());
 	            break;
             case 'approve':
+                current_user_can('comment-state');
                 $approved = count($listids);
 	            foreach ($listids as $cmtid) {
 	            	comment_edit($cmtid,null,'1');
@@ -84,6 +89,7 @@ switch ($method) {
                 ajax_success(sprintf(_n('%s comment approved', '%s comments approved', $approved ), $approved),"LazyCMS.redirect('".referer()."');");
 	            break;
             case 'delete':
+                current_user_can('comment-delete');
                 $deleted = count($listids);
 	            foreach ($listids as $cmtid) {
 	            	comment_delete($cmtid);
@@ -96,6 +102,7 @@ switch ($method) {
 	    }
         break;
     default:
+        current_user_can('comment-list');
         system_head('jslang',array(
             'Reply comment' => __('Reply comment'),
             'Edit comment' => __('Edit comment'),

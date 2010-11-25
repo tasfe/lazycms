@@ -412,6 +412,9 @@ function instr($needle,$haystack){
  * 页面跳转
  *
  * @param string $url
+ * @param int $time
+ * @param string $msg
+ * @return void
  */
 function redirect($url,$time=0,$msg='') {
 	// 多行URL地址支持
@@ -425,17 +428,17 @@ function redirect($url,$time=0,$msg='') {
         ajax_echo('Redirect',$data);
     } else {
     	if (!headers_sent()) {
-    		if(0===$time) {
+    		if(0===intval($time)) {
     			header("Location: {$url}");
-    		} else {
-    			header("Refresh: {$time};url={$url}");
     		}
     	}
 		$html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 		$html.= '<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-		$html.= '<meta http-equiv="refresh" content="0;url='.$url.'" />';
+		$html.= '<meta http-equiv="refresh" content="'.$time.';url='.$url.'" />';
 		$html.= '<title>'.__('Redirecting...').'</title>';
-		$html.= '<script type="text/javascript" charset="utf-8">self.location.href="'.$url.'";</script>';
+		$html.= '<script type="text/javascript" charset="utf-8">';
+        $html.= 'window.setTimeout(function(){location.replace("'.esc_js($url).'");}, '.($time*1000).');';
+        $html.= '</script>';
 		$html.= '</head><body>';
 		$html.= 0===$time ? null : $msg;
 		$html.= '</body></html>';
