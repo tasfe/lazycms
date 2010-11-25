@@ -392,8 +392,6 @@ function tpl_loadfile($file) {
     $tpl = _tpl_get_object();
     return $tpl->load_file($file);
 }
-
-if (!function_exists('tpl_add_plugin')) :
 /**
  * 添加插件
  *
@@ -409,7 +407,6 @@ function tpl_add_plugin($func) {
     }
     return false;
 }
-endif;
 /**
  * 使用插件
  * 

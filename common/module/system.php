@@ -21,11 +21,10 @@
 defined('COM_PATH') or die('Restricted access!');
 
 // 注册模版变量处理函数
-tpl_add_plugin('system_tpl_plugin');
-tpl_add_plugin('system_tpl_list_plugin');
+func_add_callback('tpl_add_plugin', 'system_tpl_plugin');
+func_add_callback('tpl_add_plugin', 'system_tpl_list_plugin');
 // 添加 CSS
-if (function_exists('loader_add_css')) :
-loader_add_css(array(
+func_add_callback('loader_add_css', array(
     'reset'             => array('/common/css/reset.css'),
     'icons'             => array('/common/css/icons.css'),
     'common'            => array('/common/css/common.css'),
@@ -42,10 +41,8 @@ loader_add_css(array(
     'categories'        => array('/admin/css/categories.css'),
     'xheditor.plugins'  => array('/common/css/xheditor.plugins.css'),
 ));
-endif;
 // 添加js
-if (function_exists('loader_add_script')) :
-loader_add_script(array(
+func_add_callback('loader_add_js', array(
     'jquery'            => array('/common/js/jquery.js'),
     'jquery.extend'     => array('/common/js/jquery.extend.js'),
     'lazycms'           => array('/common/js/lazycms.js'),
@@ -62,9 +59,8 @@ loader_add_script(array(
     'xheditor'          => array('/common/editor/xheditor.js', array('xheditor.plugins')),
     'xheditor.plugins'  => array('/common/js/xheditor.plugins.js'),
 ));
-endif;
 // 系统权限
-system_purview_add(array(
+func_add_callback('system_purview_add', array(
     'cpanel' => array(
         '_LABEL_'           => __('Control Panel'),
         'publish'           => __('Publish Posts'),
@@ -115,7 +111,7 @@ system_purview_add(array(
         'plugin-new'        => _x('Add New','plugin'),
         'plugin-delete'     => _x('Delete','plugin'),
     ),*/
-    'settings' => array( 
+    'settings' => array(
         '_LABEL_'           => __('Settings'),
         'option-general'    => _x('General','setting'),
         'option-posts'      => _x('Posts','setting'),
@@ -202,8 +198,10 @@ function system_tpl_plugin($tag_name,$tag) {
                         $content   = $splitword->tags($content, $link, mt_rand($tag_min,$tag_max));
                     }
                 }
+                $result = $content;
+            } else {
+                $result = null;
             }
-            $result = $content;
             break;
         default:
             $result = null;
@@ -507,16 +505,20 @@ function system_head($key,$value=null) {
  */
 function system_purview_add($purview) {
     global $LC_Purview;
-    if (!$LC_Purview) $LC_Purview = array();
-    if (func_num_args() == 2) {
+    
+    if (!$LC_Purview)
+        $LC_Purview = array();
+
+    if (is_array($purview)) {
+        foreach ($purview as $key=>$val) {
+            $LC_Purview[$key] = $val;
+        }
+    } else {
         $args = func_num_args();
         $key  = $args[0];
         $val  = $args[1];
         $LC_Purview[$key] = $val;
-    } else {
-        foreach ((array) $purview as $key=>$val) {
-            $LC_Purview[$key] = $val;
-        }
+
     }
     return $LC_Purview;
 }
@@ -546,13 +548,38 @@ function system_purview($data=null) {
     return $hl;
 }
 /**
+ * 添加菜单
+ *
+ * @param string|array $menus
+ * @return array
+ */
+function system_menu_add($menus) {
+    global $LC_system_menus;
+
+    if (!$LC_system_menus)
+        $LC_system_menus = array();
+
+    if (is_array($menus)) {
+        foreach ($menus as $key=>$val) {
+            $LC_system_menus[$key] = $val;
+        }
+    } else {
+        $args = func_num_args();
+        $key  = $args[0];
+        $val  = $args[1];
+        $LC_system_menus[$key] = $val;
+
+    }
+    return $LC_system_menus;
+}
+/**
  * 输出后台菜单
  *
  * @param  $menus
  * @return bool
  */
 function system_menu($menus) {
-    global $parent_file,$_USER;
+    global $parent_file,$_USER,$LC_system_menus;
     // 获取管理员信息
     if (!isset($_USER)) $_USER = user_current(false);
     // 自动植入配置
@@ -572,12 +599,24 @@ function system_menu($menus) {
     } else {
         $parent_file = ADMIN.(strpos($parent_file,'?')!==false ? $parent_file : $parent_file.'?method=default');
     }
+    // 插入菜单
+    if ($LC_system_menus) {
+        $i = $j = 0;
+        foreach($menus as $k=>$v) {
+            if ($j >= 2) break; $i++;
+            if (is_string($v)) $j++;
+        }
+        reset($menus);
+        array_ksplice($menus, $i-1, 0, '-');
+        array_ksplice($menus, $i, 0, $LC_system_menus);
+        unset($i, $j);
+    }
 
     $menus_tree = array();
     // 预处理菜单
     while (list($k,$menu) = each($menus)) {
         if (is_array($menu)) {
-            $submenus = array(); $is_expand = false; $has_submenu = false;
+            $submenus = array(); $is_expand = $has_submenu = false; $has_view = true;
             if (!empty($menu[3]) && is_array($menu[3])) {
                 $has_submenu = true;
                 foreach ($menu[3] as $href) {
@@ -598,9 +637,17 @@ function system_menu($menus) {
                     }
                 }
             }
+            // 没有子菜单
+            else {
+                // 文件存在
+                if (!is_file(ADMIN_PATH.'/'.parse_url($menu[1],PHP_URL_PATH))
+                    || (isset($menu[3]) && ($_USER['roles']!='ALL' && !instr($menu[3],$_USER['roles'])))) {
+                    $has_view = false;
+                }
+            }
 
             // 存在子菜单，并且子菜单不为空，或者没有子菜单
-            if ($has_submenu===true && !empty($submenus) || $has_submenu===false) {
+            if ($has_submenu && !empty($submenus) || $has_view && !$has_submenu) {
                 $menu[1] = ADMIN.$menu[1];
                 $current = !strncasecmp($parent_file,$menu[1],strlen($menu[1])) || $is_expand ? ' current' : '';
                 $expand  = empty($submenus) || empty($current) ? '' : ' expand';
@@ -643,12 +690,12 @@ function system_menu($menus) {
                 echo '</div>';
             }
             echo '</li>';
-            $is_first = false;
+            $is_first = false; $separator = true;
         }
         // 否则是分隔符
-        else {
+        elseif($separator) {
             echo '<li class="separator"><a href="javascript:;"><br/></a></li>';
-            $is_first = true; $is_last = false;
+            $is_first = true; $is_last = $separator = false;
         }
     }
 

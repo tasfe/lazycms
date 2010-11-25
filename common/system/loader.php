@@ -242,7 +242,7 @@ function loader_add_css($styles) {
  *      )
  * @return array
  */
-function loader_add_script($scripts) {
+function loader_add_js($scripts) {
     global $Loader_Scripts;
     if (!$Loader_Scripts) {
         $Loader_Scripts = array();

@@ -11,6 +11,7 @@
             array(__('Control Panel'),'index.php'),
             array(__('Publish Posts'),'publish.php','publish'),
             array(__('Upgrade'),'upgrade.php','upgrade'),
+            array(__('Your Profile'),'profile.php'),
         )),
 
         '------------------------------------------------------------',
@@ -31,14 +32,13 @@
             array(_x('Add New','model'),'model.php?method=new','model-new'),
         )),
 
-        'comments' => array(__('Comments'),'comment.php','c8'),
+        'comments' => array(__('Comments'),'comment.php','c8','comment-list'),
         
         '------------------------------------------------------------',
         
         'users' => array(__('Users'),'user.php','a4',array(
             array(__('Users'),'user.php','user-list'),
             array(_x('Add New','user'),'user.php?method=new','user-new'),
-            array(__('Your Profile'),'profile.php'),
         )),
         
         'plugins' => array(__('Plugins'),'plugins.php','a3',array(

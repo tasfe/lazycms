@@ -823,19 +823,34 @@ function time_zone_group() {
     return $zone->get_group();
 }
 /**
- * 添加插件
+ * 添加回调函数
  *
- * @param  $func
- * @return void
+ * @param string $func
+ * @param mixed $args
+ * @return bool
  */
-function tpl_add_plugin($func) {
-    global $LC_tpl_plugins;
-    $LC_tpl_plugins = empty($LC_tpl_plugins) ? array() : $LC_tpl_plugins;
-    if (!in_array($func,$LC_tpl_plugins)) {
-        $LC_tpl_plugins[] = $func;
+function func_add_callback() {
+    global $LC_func_callback;
+
+    if (!is_array($LC_func_callback))
+        $LC_func_callback = array();
+    
+    $args = func_get_args();
+    $func = array_shift($args);
+    
+    if (!isset($LC_func_callback[$func]) && function_exists($func)) {
+        $LC_func_callback[$func] = $args;
         return true;
     }
     return false;
+}
+/**
+ * 取得回调函数
+ *
+ * @return array
+ */
+function func_get_callback() {
+    global $LC_func_callback; return $LC_func_callback;
 }
 /**
  * 头像
@@ -913,8 +928,6 @@ function include_modules() {
     require_file(COM_PATH.'/system/template.php');
     // 加载分页类
     require_file(COM_PATH.'/system/pages.php');
-    // js css 加载类
-    require_file(COM_PATH.'/system/loader.php');
     // 查询模块列表
     $modules = get_dir_array('@/module','php');
     foreach ($modules as $file) {
@@ -1547,4 +1560,27 @@ function micro_time($get_as_float=false){
         return ((float)$usec + (float)$sec);
     }
     return microtime($get_as_float);
+}
+/**
+ * array_splice 保留key
+ *
+ * @param array &$input
+ * @param int $start
+ * @param int $length
+ * @param mixed $replacement
+ * @return array|bool
+ */
+function array_ksplice(&$input, $start, $length=0, $replacement=null) {
+    if (!is_array($replacement)) {
+        return array_splice($input, $start, $length, $replacement);
+    }
+    $keys        = array_keys($input);
+    $values      = array_values($input);
+    $replacement = (array) $replacement;
+    $rkeys       = array_keys($replacement);
+    $rvalues     = array_values($replacement);
+    array_splice($keys, $start, $length, $rkeys);
+    array_splice($values, $start, $length, $rvalues);
+    $input = array_combine($keys, $values);
+    return $input;
 }
