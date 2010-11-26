@@ -513,7 +513,7 @@ function post_prepage($sortid,$postid,&$preid=0) {
     } else {
         $post = post_get($postid);
         $post['sort'] = taxonomy_get($post['sortid']);
-        $result = '<a href="'.ROOT.$post['sort']['path'].'/">'.$post['sort']['name'].'</a>';
+        $result = '<a href="'.ROOT.$post['sort']['path'].'/">['.$post['sort']['name'].']</a>';
     }
     return $result;
 }
@@ -535,7 +535,7 @@ function post_nextpage($sortid,$postid,&$nextid=0) {
     } else {
         $post = post_get($postid);
         $post['sort'] = taxonomy_get($post['sortid']);
-        $result = '<a href="'.ROOT.$post['sort']['path'].'/">'.$post['sort']['name'].'</a>';
+        $result = '<a href="'.ROOT.$post['sort']['path'].'/">['.$post['sort']['name'].']</a>';
     }
     return $result;
 }
@@ -547,13 +547,15 @@ function post_nextpage($sortid,$postid,&$nextid=0) {
 function post_gateway_views() {
     $postid  = isset($_REQUEST['postid'])  ? $_REQUEST['postid']  : 0;
     $updated = isset($_REQUEST['updated']) ? $_REQUEST['updated'] : null;
-    if ($postid) {
+    if (post_get($postid)) {
         $db = get_conn();
         $views = $db->result(sprintf("SELECT `views` FROM `#@_post` WHERE `postid`=%d",esc_sql($postid)));
         if ($updated=='true' || $updated=='1') {
             $views++; no_cache();
             $db->update('#@_post',array('views' => $views),array( 'postid' => $postid));
         }
+    } else {
+        $views = 0;
     }
     return 'document.write('.esc_js($views).');';
 }

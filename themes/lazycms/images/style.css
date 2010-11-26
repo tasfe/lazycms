@@ -86,7 +86,7 @@ a:hover   { text-decoration: underline; }
 	
 /* content */
 #content{ margin:10px auto 0 auto; clear:both; }
-	#content .container{ border:1px solid #c6d9e7; background-color:#FFFFFF; }
+	#content .container{ border:1px solid #c6d9e7; background-color:#FFFFFF; margin-bottom:5px; }
 	#content .container h3{ color:#0B5B98; height:24px; line-height:24px; margin:0; padding:0 10px; font-size:14px; border-bottom:1px solid #C6D9E7; background:url(buttons-bg.png) repeat-x 0 -2px; letter-spacing:1px; }	
 	
 	#feature{ width:300px; height:301px; float:left; margin-right:5px; background:url(feature-bg.gif) no-repeat left top; border:none !important; border-bottom:1px solid #c6d9e7 !important; }
@@ -133,17 +133,22 @@ a:hover   { text-decoration: underline; }
         #left .comments .info label{ display:inline-block; }
         #left .comments .textarea { margin:5px 0; }
         #left .comments .textarea textarea { width:576px; height:90px; font-size:14px; padding:6px; text-align:left; }
+        #left .comments .bottom button{ margin-right:6px; }
 
         #left .comment_list{ margin-top:5px; padding:10px; border:1px solid #C6D9E7; background:#fff; }
         #left .comment_list .dt{ }
-        #left .comment_list .dt .author{ float:left; color:#0B3B8C; }
-        #left .comment_list .dt .author img{ margin-right:3px; }
-        #left .comment_list .dt .author .name, #left .comment_list .dt .author a{ vertical-align:middle; }
-        #left .comment_list .dt .address{ color:#8D8D8D; margin-right:10px; vertical-align:middle; }
-        #left .comment_list .dt .post-time{ float:right; color:#8D8D8D; }
+        #left .comment_list .author{ float:left; color:#0B3B8C; }
+        #left .comment_list .author img{ margin-right:3px; }
+        #left .comment_list .author .name, #left .comment_list .author a{ vertical-align:middle; }
+        #left .comment_list .address{ color:#8D8D8D; margin-right:10px; vertical-align:middle; }
+        #left .comment_list .post-time{ float:right; color:#8D8D8D; }
         #left .comment_list .dd { padding:5px 0; margin-top:5px; margin-bottom:5px; border-bottom:1px dashed #C2C3BA; }
-        #left .comment_list .dd, #left .comment_list .dd p { word-break:break-all;word-wrap:break-word; font-size:14px; }
         #left .comment_list .dd .citation { background:#FFFEF5; border:1px solid #D1D5DB; padding:3px 3px 10px; }
+        #left .comment_list .dd .citation-title { line-height:25px; padding-left:5px; padding-right:5px; }
+        #left .comment_list .dd .citation .content { padding-left:8px; padding-right:8px; }
+        #left .comment_list .dd .content { font-size:14px; word-break:break-all;word-wrap:break-word; margin-bottom:0; line-height:25px; }
+        #left .comment_list .dd .toolbar { text-align:right; }
+        #left .comment_list .dd .toolbar a { margin-left:8px; }
 
         #post{ width:608px; padding:10px; float:left; }
             #post h1{ text-align:center; color:#003683; display:block; font-size:16px; line-height:1.5; }
@@ -155,8 +160,7 @@ a:hover   { text-decoration: underline; }
             #post .tags a{ margin-right:6px; }
 
     #right { width:300px; float:right; }
-        #news, #hots { margin-bottom:5px; }
-        #news p, #hots p { margin:3px 5px; line-height:140%; }
+        #right .container p { margin:3px 5px; line-height:140%; }
 
 /* links */
 #links{ margin-top:10px; clear:both; }

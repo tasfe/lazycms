@@ -299,7 +299,7 @@ switch ($method) {
             foreach ($models as $model) {
                 $href = PHP_FILE.'?method=edit&modelid='.$model['modelid'];
                 $actions = '<span class="edit"><a href="'.$href.'">'.__('Edit').'</a> | </span>';
-                $actions.= '<span class="export"><a href="'.PHP_FILE.'?method=export&modelid='.$model['modelid'].'">'.__('Export').'</a> | </span>';
+                //$actions.= '<span class="export"><a href="'.PHP_FILE.'?method=export&modelid='.$model['modelid'].'">'.__('Export').'</a> | </span>';
                 $actions.= '<span class="enabled"><a href="javascript:;" onclick="model_state(\'enabled\','.$model['modelid'].')">'.__('Enabled').'</a> | </span>';
                 $actions.= '<span class="disabled"><a href="javascript:;" onclick="model_state(\'disabled\','.$model['modelid'].')">'.__('Disabled').'</a> | </span>';
                 $actions.= '<span class="delete"><a href="javascript:;" onclick="model_delete('.$model['modelid'].')">'.__('Delete').'</a></span>';

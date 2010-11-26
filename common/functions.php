@@ -838,19 +838,14 @@ function func_add_callback() {
     $args = func_get_args();
     $func = array_shift($args);
     
-    if (!isset($LC_func_callback[$func]) && function_exists($func)) {
-        $LC_func_callback[$func] = $args;
+    if (function_exists($func)) {
+        $LC_func_callback[] = array(
+            'func' => $func,
+            'args' => $args,
+        );
         return true;
     }
     return false;
-}
-/**
- * 取得回调函数
- *
- * @return array
- */
-function func_get_callback() {
-    global $LC_func_callback; return $LC_func_callback;
 }
 /**
  * 头像
@@ -932,6 +927,13 @@ function include_modules() {
     $modules = get_dir_array('@/module','php');
     foreach ($modules as $file) {
         require_file(COM_PATH.'/module/'.$file);
+    }
+    // 执行函数回调
+    global $LC_func_callback;
+    if ($LC_func_callback) {
+        foreach ((array)$LC_func_callback as $call) {
+            if (function_exists($call['func'])) call_user_func_array($call['func'], $call['args']);
+        }
     }
     $loaded = true; return true;
 }

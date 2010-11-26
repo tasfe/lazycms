@@ -51,7 +51,7 @@ function lazycms_gateway_updates() {
                 );
             }
         }
-        fcache_set($ckey,$result,86400);
+        fcache_set($ckey,$result,3600);
     }
     return $result;
 }

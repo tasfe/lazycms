@@ -23,6 +23,7 @@ defined('COM_PATH') or die('Restricted access!');
 // 注册模版变量处理函数
 func_add_callback('tpl_add_plugin', 'system_tpl_plugin');
 func_add_callback('tpl_add_plugin', 'system_tpl_list_plugin');
+func_add_callback('tpl_add_plugin', 'system_tpl_comments_plugin');
 // 添加 CSS
 func_add_callback('loader_add_css', array(
     'reset'             => array('/common/css/reset.css'),
@@ -259,6 +260,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
         default:
             $sql = null;
     }
+    
     $result = null;
     if ($sql) {
         $db = get_conn(); $i = 0;
@@ -322,6 +324,71 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
             $i++;
         }
     }
+    return $result;
+}
+
+function system_tpl_comments_plugin($tag_name,$tag,$block) {
+    if (!instr($tag_name,'comment,comments')) return null;
+    // 实例化模版对象
+    $tpl = new Template();
+    // 列表类型
+    $type = $tpl->get_attr($tag,'type');
+    // 类型为必填
+    if (!$type) return null;
+    // 显示条数
+    $number = $tpl->get_attr($tag,'number');
+    // 斑马线实现
+    $zebra  = $tpl->get_attr($tag,'zebra');
+    $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
+    $zebra  = validate_is($zebra,VALIDATE_IS_NUMERIC) ? $zebra : 0;
+    // 处理类型
+    switch($type) {
+        case 'new':
+            $postid = $tpl->get_var('postid');
+            $insql  = $postid ? sprintf(" AND `postid`=%d", esc_sql($postid)) : '';
+            $sql    = "SELECT * FROM `#@_comments` WHERE `approved`='1' {$insql} ORDER BY `cmtid` DESC LIMIT {$number};";
+
+            break;
+        default:
+            $sql = null;
+    }
+
+    $result = null;
+    if ($sql) {
+        $db = get_conn(); $i = 0;
+        $rs = $db->query($sql);
+        $inner = $tpl->get_block_inner($block);
+        while ($data = $db->fetch($rs)) {
+            $data['ip']      = long2ip($data['ip']);
+            $data['ipaddr']  = ip2addr($data['ip']);
+            if ($data['ip'] == $data['ipaddr']) {
+                $data['ip'] = substr_replace($data['ip'], '*', strrpos($data['ip'], '.')+1);
+                $data['ipaddr'] = $data['ip'];
+            } else {
+                $data['ip'] = substr_replace($data['ip'], '*', strrpos($data['ip'], '.')+1);
+            }
+            $tpl->clean();
+            if ($post = post_get($data['postid'])) {
+                $tpl->set_var('path', ROOT.post_get_path($post['sortid'], $post['path']));
+            }
+            $tpl->set_var(array(
+                'zebra'   => ($i % ($zebra + 1)) ? '0' : '1',
+                'cmtid'   => $data['cmtid'],
+                'avatar'  => get_avatar($data['mail'], 16, 'mystery'),
+                'author'  => $data['author'] ? $data['author'] : __('Anonymous'),
+                'email'   => $data['mail'],
+                'url'     => !strncmp($data['url'],'http://',7) ? $data['url'] : 'http://'.$data['url'],
+                'ip'      => $data['ip'],
+                'address' => $data['ipaddr'],
+                'content' => nl2br($data['content']),
+                'agent'   => $data['agent'],
+                'date'    => $data['date'],
+            ));
+            $result.= $tpl->parse($inner);
+            $i++;
+        }
+    }
+    
     return $result;
 }
 /**
@@ -896,7 +963,7 @@ function system_gateway_rewrite() {
     $type   = isset($paths[0]) ? strtolower($paths[0]) : null;
     $result = '';
     switch($type) {
-        case 'tags': case 'tags.php':
+        case 'tags':
             $result = system_tags($_GET[$type]);
             break;
         default:

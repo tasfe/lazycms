@@ -187,10 +187,10 @@ function taxonomy_get_trees($parentid=0,$type='category') {
             $un[] = $id;
         }
     }
-    foreach($un as $v) unset($result[$v]);
     if ($parentid) {
         $result = isset($result[$parentid])?$result[$parentid]:array();
     }
+    foreach($un as $v) unset($result[$v]);
     return $result;
 }
 /**
@@ -583,7 +583,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                         'author'   => $post['author'],
                         'title'    => $post['title'],
                         'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
-                        'cmt_count'=> '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment_count&postid='.$post['postid'].'"></script>',
+                        'comment'  => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment_count&postid='.$post['postid'].'"></script>',
                         'digg'     => $post['digg'],
                         'path'     => ROOT.$post['path'],
                         'content'  => $content,

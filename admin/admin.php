@@ -34,10 +34,6 @@ if (!NO_REDIRECT && (!is_file(COM_PATH.'/config.php') || !installed())) {
 require_file(COM_PATH.'/system/loader.php');
 // 加载公共模块
 include_modules();
-// 执行函数回调
-foreach ((array)func_get_callback() as $func=>$args) {
-    if (function_exists($func)) call_user_func_array($func, $args);
-}
 /**
  * 验证用户权限
  *

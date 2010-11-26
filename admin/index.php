@@ -61,7 +61,10 @@ switch ($method) {
         system_head('title',__('Control Panel'));
         // 加载头部
         include ADMIN_PATH.'/admin-header.php';
+        echo '<div class="wrap">';
+        echo   '<h2>'.system_head('title').'</h2>';
         
+        echo '</div>';
         // 加载尾部
         include ADMIN_PATH.'/admin-footer.php';
         break;

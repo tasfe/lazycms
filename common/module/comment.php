@@ -98,6 +98,43 @@ function comment_get($cmtid) {
     return $comments[$cmtid];
 }
 /**
+ * 取得评论树
+ *
+ * @param int $postid
+ * @param int $parentid
+ * @return array
+ */
+function comment_get_trees($postid, $parentid=0) {
+    static $trees;
+    if (!$trees) {
+        $db = get_conn();
+        $rs = $db->query("SELECT * FROM `#@_comments` WHERE `postid`=%d;", $postid);
+        while ($data = $db->fetch($rs)){
+            $data['ip']      = long2ip($data['ip']);
+            $data['ipaddr']  = ip2addr($data['ip']);
+            if ($data['ip'] == $data['ipaddr']) {
+                $data['ip'] = substr_replace($data['ip'], '*', strrpos($data['ip'], '.')+1);
+                $data['ipaddr'] = $data['ip'];
+            } else {
+                $data['ip'] = substr_replace($data['ip'], '*', strrpos($data['ip'], '.')+1);
+            }
+            $trees[$data['cmtid']] = $data;
+        }
+    }
+    // 将数组转变成树，因为使用了引用，所以不会占用太多的内存
+    foreach ($trees as $id => $item) {
+        if ($item['parent']) {
+            $trees[$id]['parents'] = &$trees[$item['parent']];
+        }
+    }
+    if ($parentid) {
+        $result = isset($trees[$parentid]['parents']) ? $trees[$parentid]['parents'] : null;
+    } else {
+        $result = $trees;
+    }
+    return $result;
+}
+/**
  * 删除评论
  *
  * @param int $cmtid
@@ -138,6 +175,35 @@ function comment_people($postid) {
     $db = get_conn(); return $db->result(sprintf("SELECT COUNT(DISTINCT(`author`)) FROM `#@_comments` WHERE `postid`=%d;", $postid));
 }
 /**
+ * 回复盖楼
+ *
+ * @param array $comment
+ * @param array $sblock
+ * @return mixed
+ */
+function comment_parse_reply($comment, $sblock) {
+    static $func; if (!$func) $func = __FUNCTION__;
+    $tpl = new Template();
+    $sblock['inner'] = $tpl->get_block_inner($sblock);
+    $tpl->clean();
+    $tpl->set_var(array(
+        'cmtid'   => $comment['cmtid'],
+        'avatar'  => get_avatar($comment['mail'], 16, 'mystery'),
+        'author'  => $comment['author'] ? $comment['author'] : __('Anonymous'),
+        'email'   => $comment['mail'],
+        'url'     => !strncmp($comment['url'], 'http://', 7) ? $comment['url'] : 'http://' . $comment['url'],
+        'ip'      => $comment['ip'],
+        'address' => $comment['ipaddr'],
+        'content' => nl2br($comment['content']),
+        'agent'   => $comment['agent'],
+        'date'    => $comment['date'],
+    ));
+    if (isset($comment['parents'])) {
+        $tpl->set_var('contents_deep', $func($comment['parents'], $sblock));
+    }
+    return $tpl->parse($sblock['inner']);
+}
+/**
  * 生成评论
  *
  * @param int $postid
@@ -166,7 +232,7 @@ function comment_create($postid) {
             $suffix   = '';
         }
         // 标签块信息
-        if ($block = tpl_get_block($html,'comments','list')) {
+        if ($block = tpl_get_block($html,'comment,comments','list')) {
             $inner = $b_guid = '';
             // 生成标签块的唯一ID
             $b_guid = guid($block['tag']);
@@ -211,7 +277,15 @@ function comment_create($postid) {
                 $pages = ((int)$pages == 0) ? 1 : $pages;
 
                 while ($data = $db->fetch($rs)) {
-                    $block['inner'] = tpl_get_block_inner($block);
+                    $block['inner']  = tpl_get_block_inner($block);
+                    $data['ip']      = long2ip($data['ip']);
+                    $data['ipaddr']  = ip2addr($data['ip']);
+                    if ($data['ip'] == $data['ipaddr']) {
+                        $data['ip'] = substr_replace($data['ip'], '*', strrpos($data['ip'], '.')+1);
+                        $data['ipaddr'] = $data['ip'];
+                    } else {
+                        $data['ip'] = substr_replace($data['ip'], '*', strrpos($data['ip'], '.')+1);
+                    }
                     // 清理数据
                     tpl_clean();
                     tpl_set_var(array(
@@ -221,12 +295,30 @@ function comment_create($postid) {
                         'author'  => $data['author'] ? $data['author'] : __('Anonymous'),
                         'email'   => $data['mail'],
                         'url'     => !strncmp($data['url'],'http://',7) ? $data['url'] : 'http://'.$data['url'],
-                        'ip'      => long2ip($data['ip']),
-                        'address' => ip2addr(long2ip($data['ip'])),
+                        'ip'      => $data['ip'],
+                        'address' => $data['ipaddr'],
                         'content' => nl2br($data['content']),
                         'agent'   => $data['agent'],
                         'date'    => $data['date'],
                     ));
+                    // 解析二级内嵌标签
+                    if (isset($block['sub'])) {
+                        foreach ($block['sub'] as $sblock) {
+                            $sblock['name'] = strtolower($sblock['name']);
+                            switch($sblock['name']) {
+                                // 解析tags
+                                case 'content': case 'contents':
+                                    $c_reply = comment_get_trees($post['postid'], $data['cmtid']);
+                                    $c_inner = $c_reply ? comment_parse_reply($c_reply, $sblock) : '';
+                                    // 生成标签块的唯一ID
+                                    $c_guid = guid($sblock['tag']);
+                                    // 把标签块替换成变量标签
+                                    $block['inner'] = str_replace($sblock['tag'], '{$'.$c_guid.'}', $block['inner']);
+                                    tpl_set_var($c_guid, $c_inner);
+                                    break;
+                            }
+                        }
+                    }
                     // 解析变量
                     $inner.= tpl_parse($block['inner']); $i++; $length++;
                     // 分页

@@ -25,14 +25,21 @@
             <div class="entry-content">{$content link="[$inst]tags.php?q=$" tags="5-10"}</div>
             <div class="entry-utility">
                 发表在 [<a href="{$sortpath}" title="{$sortname}">{$sortname}</a>] |
-                <a href="{$path}#cmt_list">{$cmt_count} 评论</a> | 
+                <a href="{$path}#cmt_list">{$comment} 评论</a> |
                 <span class="tags">标签为 {tags}<a href="{$inst}tags.php?q={$name}" title="{$name}">{$name}</a>{/tags}</span>
             </div>
         </div>
         {/list}
         {pagelist /}
     </div>
-    {include file="inc/right.html" /}
+    <div id="right">
+        <div id="comments" class="container">
+            <h3>最新评论</h3>
+            {comments type="new" number="10"}
+            <p><a href="{$path}#cmt_list">{$content size="20"}</a></p>
+            {/comments}
+        </div>
+    </div>
     <div class="clear"><br/></div>
 </div>
 
