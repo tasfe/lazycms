@@ -32,7 +32,9 @@
 .wrap .right-now table td{ border:0 none; padding:3px; }
 .wrap .right-now table td.number{ font-size:18px; text-align:right; line-height:10px; }
 
-.wrap .server-env label{ width:110px; margin-right:5px; display:inline-block; text-align:right; color:blue; }
+.wrap .server-env label,.wrap .lazy-team label{ margin-right:5px; display:inline-block; text-align:right; color:blue; }
+.wrap .server-env label{ width:115px; }
+.wrap .lazy-team label{ width:70px; }
 
 .wrap .comments { padding:0 !important; }
     .wrap .comments .buttons{ text-align:right; padding:5px; }

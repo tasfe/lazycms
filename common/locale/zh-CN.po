@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-11-28 02:31+0800\n"
+"POT-Creation-Date: 2010-11-28 03:18+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.net>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
@@ -32,224 +32,224 @@ msgstr "返回"
 msgid "System Error"
 msgstr "系统错误"
 
-#: common/functions.php:422
+#: common/functions.php:431
 #, php-format
 msgid "<a href=\"%s\">%d seconds after goto %s.</a>"
 msgstr "<a href=\"%s\">%d 秒后转向 %s。</a>"
 
-#: common/functions.php:438
+#: common/functions.php:447
 msgid "Redirecting..."
 msgstr "正在重定向..."
 
-#: common/functions.php:1115
+#: common/functions.php:1124
 msgid "Afrikaans"
 msgstr "布尔文(南非洲的荷兰文)"
 
-#: common/functions.php:1116
+#: common/functions.php:1125
 msgid "Albanian"
 msgstr "阿尔巴尼亚文"
 
-#: common/functions.php:1117
+#: common/functions.php:1126
 msgid "Arabic"
 msgstr "阿拉伯文"
 
-#: common/functions.php:1118
+#: common/functions.php:1127
 msgid "Belarusian"
 msgstr "白俄罗斯语"
 
-#: common/functions.php:1119
+#: common/functions.php:1128
 msgid "Bulgarian"
 msgstr "保加利亚文"
 
-#: common/functions.php:1120
+#: common/functions.php:1129
 msgid "Catalan"
 msgstr "加泰罗尼亚语"
 
-#: common/functions.php:1121
+#: common/functions.php:1130
 msgid "Chinese (Simplified)"
 msgstr "中文(简体)"
 
-#: common/functions.php:1122
+#: common/functions.php:1131
 msgid "Chinese (Traditional)"
 msgstr "中文(繁体)"
 
-#: common/functions.php:1123
+#: common/functions.php:1132
 msgid "Croatian"
 msgstr "克罗地亚文"
 
-#: common/functions.php:1124
+#: common/functions.php:1133
 msgid "Czech"
 msgstr "捷克语"
 
-#: common/functions.php:1125
+#: common/functions.php:1134
 msgid "Danish"
 msgstr "丹麦语"
 
-#: common/functions.php:1126
+#: common/functions.php:1135
 msgid "Dutch"
 msgstr "荷兰语"
 
-#: common/functions.php:1127
+#: common/functions.php:1136
 msgid "English"
 msgstr "英语"
 
-#: common/functions.php:1128
+#: common/functions.php:1137
 msgid "Estonian"
 msgstr "爱沙尼亚语"
 
-#: common/functions.php:1129
+#: common/functions.php:1138
 msgid "Filipino"
 msgstr "菲律宾文"
 
-#: common/functions.php:1130
+#: common/functions.php:1139
 msgid "Finnish"
 msgstr "芬兰语"
 
-#: common/functions.php:1131
+#: common/functions.php:1140
 msgid "French"
 msgstr "法语"
 
-#: common/functions.php:1132
+#: common/functions.php:1141
 msgid "Galician"
 msgstr "加利西亚语"
 
-#: common/functions.php:1133
+#: common/functions.php:1142
 msgid "German"
 msgstr "德语"
 
-#: common/functions.php:1134
+#: common/functions.php:1143
 msgid "Greek"
 msgstr "希腊语"
 
-#: common/functions.php:1135
+#: common/functions.php:1144
 msgid "Hebrew"
 msgstr "希伯来语"
 
-#: common/functions.php:1136
+#: common/functions.php:1145
 msgid "Hindi"
 msgstr "印度文"
 
-#: common/functions.php:1137
+#: common/functions.php:1146
 msgid "Hungarian"
 msgstr "匈牙利语"
 
-#: common/functions.php:1138
+#: common/functions.php:1147
 msgid "Icelandic"
 msgstr "冰岛语"
 
-#: common/functions.php:1139
+#: common/functions.php:1148
 msgid "Indonesian"
 msgstr "印尼文"
 
-#: common/functions.php:1140
+#: common/functions.php:1149
 msgid "Irish"
 msgstr "爱尔兰文"
 
-#: common/functions.php:1141
+#: common/functions.php:1150
 msgid "Italian"
 msgstr "意大利语"
 
-#: common/functions.php:1142
+#: common/functions.php:1151
 msgid "Japanese"
 msgstr "日语"
 
-#: common/functions.php:1143
+#: common/functions.php:1152
 msgid "Korean"
 msgstr "朝鲜语"
 
-#: common/functions.php:1144
+#: common/functions.php:1153
 msgid "Latvian"
 msgstr "拉脱维亚语"
 
-#: common/functions.php:1145
+#: common/functions.php:1154
 msgid "Lithuanian"
 msgstr "立陶宛语"
 
-#: common/functions.php:1146
+#: common/functions.php:1155
 msgid "Macedonian"
 msgstr "马其顿文"
 
-#: common/functions.php:1147
+#: common/functions.php:1156
 msgid "Malay"
 msgstr "马来文"
 
-#: common/functions.php:1148
+#: common/functions.php:1157
 msgid "Maltese"
 msgstr "马耳他文"
 
-#: common/functions.php:1149
+#: common/functions.php:1158
 msgid "Norwegian"
 msgstr "挪威语"
 
-#: common/functions.php:1150
+#: common/functions.php:1159
 msgid "Persian"
 msgstr "波斯语"
 
-#: common/functions.php:1151
+#: common/functions.php:1160
 msgid "Polish"
 msgstr "波兰语"
 
-#: common/functions.php:1152
+#: common/functions.php:1161
 msgid "Portuguese"
 msgstr "葡萄牙语"
 
-#: common/functions.php:1153
+#: common/functions.php:1162
 msgid "Romanian"
 msgstr "罗马尼亚语"
 
-#: common/functions.php:1154
+#: common/functions.php:1163
 msgid "Russian"
 msgstr "俄语"
 
-#: common/functions.php:1155
+#: common/functions.php:1164
 msgid "Serbian"
 msgstr "塞尔维亚文"
 
-#: common/functions.php:1156
+#: common/functions.php:1165
 msgid "Slovak"
 msgstr "斯洛伐克文"
 
-#: common/functions.php:1157
+#: common/functions.php:1166
 msgid "Slovenian"
 msgstr "斯洛文尼亚文"
 
-#: common/functions.php:1158
+#: common/functions.php:1167
 msgid "Spanish"
 msgstr "西班牙语"
 
-#: common/functions.php:1159
+#: common/functions.php:1168
 msgid "Swahili"
 msgstr "非洲的斯瓦希里文"
 
-#: common/functions.php:1160
+#: common/functions.php:1169
 msgid "Swedish"
 msgstr "瑞典语"
 
-#: common/functions.php:1161
+#: common/functions.php:1170
 msgid "Thai"
 msgstr "泰文"
 
-#: common/functions.php:1162
+#: common/functions.php:1171
 msgid "Turkish"
 msgstr "土耳其文"
 
-#: common/functions.php:1163
+#: common/functions.php:1172
 msgid "Ukrainian"
 msgstr "乌克兰文"
 
-#: common/functions.php:1164
+#: common/functions.php:1173
 msgid "Vietnamese"
 msgstr "越南文"
 
-#: common/functions.php:1165
+#: common/functions.php:1174
 msgid "Welsh"
 msgstr "威尔士语"
 
-#: common/functions.php:1166
+#: common/functions.php:1175
 msgid "Yiddish"
 msgstr "意第绪语"
 
-#: common/functions.php:1401
+#: common/functions.php:1410
 msgid "The start position cannot exceed initial string length."
 msgstr "起始位置不能超过初始字符串的长度。"
 
@@ -656,7 +656,7 @@ msgstr "关闭"
 #: admin/categories.php:242
 #: admin/model.php:301
 #: admin/model.php:435
-#: admin/index.php:141
+#: admin/index.php:147
 #: admin/user.php:185
 #: admin/user.php:188
 #: admin/comment.php:180
@@ -672,7 +672,7 @@ msgstr "编辑"
 #: admin/model.php:436
 #: admin/publish.php:64
 #: admin/publish.php:201
-#: admin/index.php:142
+#: admin/index.php:148
 #: admin/user.php:189
 #: admin/user.php:220
 #: admin/comment.php:181
@@ -1819,8 +1819,9 @@ msgstr "文章ID"
 
 #: admin/model.php:420
 #: admin/index.php:82
-#: admin/index.php:101
-#: admin/index.php:127
+#: admin/index.php:105
+#: admin/index.php:121
+#: admin/index.php:133
 #: admin/post.php:613
 msgid "Click to toggle"
 msgstr "点击切换"
@@ -2154,134 +2155,155 @@ msgid "Url"
 msgstr "网址"
 
 #: admin/index.php:83
-msgid "Server Environment"
-msgstr "服务器环境"
-
-#: admin/index.php:85
-msgid "Server OS:"
-msgstr "服务器系统："
-
-#: admin/index.php:86
-msgid "Server Software:"
-msgstr "服务器软件："
-
-#: admin/index.php:87
-msgid "Server API :"
-msgstr "服务器 API："
-
-#: admin/index.php:88
-msgid "PHP Version:"
-msgstr "PHP版本："
-
-#: admin/index.php:89
-msgid "MySQL Version:"
-msgstr "MySQL版本："
-
-#: admin/index.php:90
-msgid "LazyCMS Version:"
-msgstr "LazyCMS版本："
-
-#: admin/index.php:91
-msgid "GD library:"
-msgstr "图形绘制库："
-
-#: admin/index.php:91
-#: admin/index.php:92
-#: admin/index.php:93
-#: admin/index.php:94
-msgid "Not Supported"
-msgstr "不支持"
-
-#: admin/index.php:92
-msgid "ICONV:"
-msgstr "字符集转换："
-
-#: admin/index.php:93
-msgid "Multibyte String:"
-msgstr "多字节字符串："
-
-#: admin/index.php:94
-msgid "Allow URL Open:"
-msgstr "允许打开URL："
-
-#: admin/index.php:102
 msgid "Right Now"
 msgstr "概况"
 
-#: admin/index.php:109
+#: admin/index.php:87
 msgid "Content"
 msgstr "内容"
 
-#: admin/index.php:111
+#: admin/index.php:89
 msgid "Post"
 msgid_plural "Posts"
 msgstr[0] "文章"
 
-#: admin/index.php:112
+#: admin/index.php:90
 msgid "Page"
 msgid_plural "Pages"
 msgstr[0] "页面"
 
-#: admin/index.php:113
+#: admin/index.php:91
 msgid "Category"
 msgid_plural "Categories"
 msgstr[0] "分类目录"
 
-#: admin/index.php:117
+#: admin/index.php:95
 msgid "Discussion"
 msgstr "讨论"
 
-#: admin/index.php:119
+#: admin/index.php:97
 msgid "Comment"
 msgid_plural "Comments"
 msgstr[0] "评论"
 
-#: admin/index.php:120
+#: admin/index.php:98
 #: admin/comment.php:151
 msgid "Approved"
 msgstr "已获准"
 
-#: admin/index.php:121
-#: admin/index.php:154
+#: admin/index.php:99
+#: admin/index.php:160
 msgid "Pending"
 msgstr "待审"
 
-#: admin/index.php:128
+#: admin/index.php:106
+msgid "Server Environment"
+msgstr "服务器环境"
+
+#: admin/index.php:108
+msgid "Server OS:"
+msgstr "服务器系统："
+
+#: admin/index.php:109
+msgid "Server Software:"
+msgstr "服务器软件："
+
+#: admin/index.php:110
+msgid "Server API :"
+msgstr "服务器 API："
+
+#: admin/index.php:111
+msgid "PHP Version:"
+msgstr "PHP版本："
+
+#: admin/index.php:112
+msgid "MySQL Version:"
+msgstr "MySQL版本："
+
+#: admin/index.php:113
+msgid "LazyCMS Version:"
+msgstr "LazyCMS版本："
+
+#: admin/index.php:114
+msgid "GD library:"
+msgstr "图形绘制库："
+
+#: admin/index.php:114
+#: admin/index.php:115
+#: admin/index.php:116
+#: admin/index.php:117
+msgid "Not Supported"
+msgstr "不支持"
+
+#: admin/index.php:115
+msgid "ICONV:"
+msgstr "字符集转换："
+
+#: admin/index.php:116
+msgid "Multibyte String:"
+msgstr "多字节字符串："
+
+#: admin/index.php:117
+msgid "Remote URL Open:"
+msgstr "打开远程URL："
+
+#: admin/index.php:122
+msgid "LazyCMS Team"
+msgstr "LazyCMS团队"
+
+#: admin/index.php:124
+msgid "Author:"
+msgstr "作者："
+
+#: admin/index.php:125
+msgid "QQ Group:"
+msgstr "QQ群号："
+
+#: admin/index.php:125
+msgid "#LazyCMS# Topics"
+msgstr "#LazyCMS# 相关话题"
+
+#: admin/index.php:126
+msgctxt "team"
+msgid "Website:"
+msgstr "官方网站："
+
+#: admin/index.php:134
 msgid "Recent Comments"
 msgstr "最新评论"
 
-#: admin/index.php:136
+#: admin/index.php:142
 #: admin/comment.php:175
 #: admin/comment.php:235
 msgid "Approve"
 msgstr "获准"
 
-#: admin/index.php:138
+#: admin/index.php:144
 #: admin/comment.php:177
 #: admin/comment.php:234
 msgid "Unapprove"
 msgstr "驳回"
 
-#: admin/index.php:140
+#: admin/index.php:146
 #: admin/comment.php:179
 msgid "Reply"
 msgstr "回复"
 
-#: admin/index.php:151
+#: admin/index.php:157
 #: admin/comment.php:205
 msgid "The post has been deleted."
 msgstr "该文章已删除！"
 
-#: admin/index.php:156
+#: admin/index.php:162
 #, php-format
 msgid "From %s"
 msgstr "来自 %s 的评论"
 
-#: admin/index.php:165
+#: admin/index.php:171
 msgid "No comments yet."
 msgstr "还没有任何评论。"
 
-#: admin/index.php:167
+#: admin/index.php:173
 msgid "View all"
 msgstr "查看全部"
 
@@ -2836,6 +2858,8 @@ msgstr "标签服务"
 msgid "(Get the Network tags of service)"
 msgstr "(获取网络标签服务)"
 
+#~ msgid "About Us"
+#~ msgstr "关于我们"
 #~ msgid "From %1$s on %2$s"
 #~ msgstr "%2$s 来自 %1$s 的评论"
 #~ msgid "Supported"
