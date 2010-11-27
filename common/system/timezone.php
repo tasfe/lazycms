@@ -543,9 +543,9 @@ class Timezone {
 }
 
 /**
- * 取得httplib实例
+ * 取得实例
  *
- * @return Httplib
+ * @return Timezone
  */
 function &_timezone_get_object() {
 	static $timezone;

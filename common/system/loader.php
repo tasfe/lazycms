@@ -222,13 +222,13 @@ function loader_add_css($styles) {
         $Loader_Styles = array();
     }
     if (func_num_args() == 2) {
-        $args = func_num_args();
+        $args = func_get_args();
         $key  = $args[0];
         $val  = $args[1];
-        $Loader_Styles[$key] = $val;
+        $Loader_Styles[$key] = (array) $val;
     } else {
         foreach ((array) $styles as $key=>$val) {
-            $Loader_Styles[$key] = $val;
+            $Loader_Styles[$key] = (array) $val;
         }
     }
     return $Loader_Styles;
@@ -248,13 +248,13 @@ function loader_add_js($scripts) {
         $Loader_Scripts = array();
     }
     if (func_num_args() == 2) {
-        $args = func_num_args();
+        $args = func_get_args();
         $key  = $args[0];
         $val  = $args[1];
-        $Loader_Scripts[$key] = $val;
+        $Loader_Scripts[$key] = (array) $val;
     } else {
         foreach ((array) $scripts as $key=>$val) {
-            $Loader_Scripts[$key] = $val;
+            $Loader_Scripts[$key] = (array) $val;
         }
     }
     return $Loader_Scripts;

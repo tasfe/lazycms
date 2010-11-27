@@ -151,7 +151,7 @@ switch ($method) {
         echo           '<a'.($status=='approved'?' class="current"':'').' href="'.PHP_FILE.'?status=approved">'.__('Approved').'</a>';
         echo       '</div>';
         table_nav($page_url);
-        echo       '<table class="data-table" cellspacing="0">';
+        echo       '<table class="data-table fixed" cellspacing="0">';
         echo           '<thead>';
         table_thead();
         echo           '</thead>';
@@ -194,7 +194,7 @@ switch ($method) {
                 echo            '<br /><a href="'.PHP_FILE.'?ip='.$data['ipaddr'].'" title="'.esc_html(ip2addr($data['ip'])).'">'.$data['ipaddr'].'</a>';
                 echo           '</td>';
                 echo           '<td><div class="submitted-on">'.sprintf(__('Submitted on: <b>%s</b>'),date('Y-m-d H:i:s',$data['date'])).$reply.'</div>';
-                echo               '<p>'.nl2br($data['content']).'</p><div class="row-actions">'.$actions.'</div></td>';
+                echo               '<div class="content">'.nl2br($data['content']).'</div><div class="row-actions">'.$actions.'</div></td>';
                 if ($post = post_get($data['postid'])) {
                     $path = post_get_path($post['sortid'],$post['path']);
                     echo       '<td><a href="'.ADMIN.'post.php?method=edit&postid='.$data['postid'].'">'.$post['title'].'</a><br />';
@@ -209,7 +209,7 @@ switch ($method) {
                 echo       '</tr>';
             }
         } else {
-            echo           '<tr><td colspan="7" class="tc">'.__('No record!').'</td></tr>';
+            echo           '<tr><td colspan="4" class="tc">'.__('No record!').'</td></tr>';
         }
         echo           '</tbody>';
         echo       '</table>';

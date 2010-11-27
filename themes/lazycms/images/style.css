@@ -146,7 +146,7 @@ a:hover   { text-decoration: underline; }
         #left .comment_list .dd .citation { background:#FFFEF5; border:1px solid #D1D5DB; padding:3px 3px 10px; }
         #left .comment_list .dd .citation-title { line-height:25px; padding-left:5px; padding-right:5px; }
         #left .comment_list .dd .citation .content { padding-left:8px; padding-right:8px; }
-        #left .comment_list .dd .content { font-size:14px; word-break:break-all;word-wrap:break-word; margin-bottom:0; line-height:25px; }
+        #left .comment_list .dd .content { font-size:14px; word-wrap:break-word; overflow:hidden; margin-bottom:0; line-height:25px; }
         #left .comment_list .dd .toolbar { text-align:right; }
         #left .comment_list .dd .toolbar a { margin-left:8px; }
 
@@ -183,12 +183,12 @@ a:hover   { text-decoration: underline; }
 
 /* 浮动窗口
 ----------------------------------------------------------------------------------------------------*/
-.window { position:absolute; background:#D4E6EE; border:solid 1px #8ab0de; }
+.window { position:absolute; background:#D4E6EE; border:solid 1px #8ab0de; word-wrap:break-word; overflow:hidden; }
 	.window h1 { font-size:12px; line-height:22px; background:#fff url(bg_top.png) repeat-x left top; margin:0; padding:0 5px; clear:both; border-bottom:solid 1px #8ab0de; white-space:nowrap; }
 	.window a.close { position:absolute; width:36px; height:17px; background:url(close.png) no-repeat 0 1px; text-indent:-9999px; right:0px; top:0px;}
 	.window a.close:hover{ background-position: 0 -17px; }
 	.window .help{ position:absolute; top:0; right:38px; }
-	.window .wrapper { width:auto !important; word-break:break-all; word-wrap:break-word; padding:5px; overflow: auto; clear:both; }
+	.window .wrapper { width:auto !important; padding:5px; overflow: auto; clear:both; }
 	.window .wrapper .icon{ width:32px; height:32px; float:left; margin:5px 10px 0 10px; _margin-left:4px; background-image:url(info_icons.png); background-repeat:no-repeat; }
     .window .wrapper .content{ max-width:520px; min-width:320px; margin:5px 10px 0 0; float:left; }
     .window .wrapper .content h6{ line-height:130%; margin:2px 0 0 0; }

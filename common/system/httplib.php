@@ -96,20 +96,20 @@ class Httplib {
         static $result;
         if ( is_null($result) ) {
             if (true != $this->disable_fsockopen && function_exists('fsockopen')) {
-                $result['fsockopen'] = 'fsockopen';
+                $result['fsockopen'] = 'Socket';
             }
-            if (true != $this->disable_fopen && function_exists('fopen')
-                    && (function_exists('ini_get') && true == ini_get('allow_url_fopen'))
-                    && (isset($args['method']) && 'HEAD' != $args['method']) ) {
-                $result['fopen'] = 'fopen';
+            if (true != $this->disable_curl && function_exists('curl_init') && function_exists('curl_exec')) {
+                $result['curl'] = 'Curl';
             }
             if (true != $this->disable_streams && function_exists('fopen')
                     && (function_exists('ini_get') && true == ini_get('allow_url_fopen'))
                     && !version_compare(PHP_VERSION, '5.0', '<') ) {
-                $result['streams'] = 'streams';
+                $result['streams'] = 'Streams';
             }
-            if (true != $this->disable_curl && function_exists('curl_init') && function_exists('curl_exec')) {
-                $result['curl'] = 'curl';
+            if (true != $this->disable_fopen && function_exists('fopen')
+                    && (function_exists('ini_get') && true == ini_get('allow_url_fopen'))
+                    && (isset($args['method']) && 'HEAD' != $args['method']) ) {
+                $result['fopen'] = 'allow_url_fopen = On';
             }
             // fopen不支持post提交
             if ($send_data == 'YES' && isset($result['fopen'])) {
@@ -181,9 +181,9 @@ class Httplib {
         } 
 
         $response   = array();
-        foreach ((array)$transports as $transport) {
-            if (method_exists($this,'request_'.$transport)) {
-                $response = call_user_func(array(&$this,'request_'.$transport),$url,$r);
+        foreach ((array)$transports as $func=>$transport) {
+            if (method_exists($this,'request_'.$func)) {
+                $response = call_user_func(array(&$this,'request_'.$func),$url,$r);
                 if (is_array($response)) return $response;
             }
         }
@@ -1034,6 +1034,15 @@ function &_httplib_get_object() {
 	if ( is_null($http) )
 		$http = new Httplib();
 	return $http;
+}
+/**
+ * HTTP 测试
+ *
+ * @return array
+ */
+function httplib_test() {
+    $http = _httplib_get_object();
+    return $http->transports(array('method'=>'GET'), 'NO');
 }
 /**
  * 解析url

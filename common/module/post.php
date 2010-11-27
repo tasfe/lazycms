@@ -161,6 +161,15 @@ function post_path_exists($postid,$path) {
     return !($db->result($sql) == 0);
 }
 /**
+ * 统计文章数量
+ *
+ * @param string $type
+ * @return int
+ */
+function post_count($type) {
+    $db = get_conn(); return $db->result(sprintf("SELECT COUNT(`postid`) FROM `#@_post` WHERE `type`='%s' AND `approved`='passed';", $type));
+}
+/**
  * 查找指定的文章
  *
  * @param int $postid

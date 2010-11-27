@@ -32,6 +32,8 @@ if (!NO_REDIRECT && (!is_file(COM_PATH.'/config.php') || !installed())) {
 }
 // js css 加载类
 require_file(COM_PATH.'/system/loader.php');
+// 添加 CSS
+func_add_callback('loader_add_css', language(), sprintf('/admin/css/%s.css', language()));
 // 加载公共模块
 include_modules();
 /**

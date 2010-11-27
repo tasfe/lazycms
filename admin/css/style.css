@@ -23,6 +23,11 @@ a:link    { color: #0B55C4; text-decoration: none; }
 a:visited { color: #0B55C4; text-decoration: none; }
 a:hover   { text-decoration: underline; }
 
+/* row actions */
+.row-actions { visibility: hidden; }
+/* number */
+.number{ font-family:Georgia,"Times New Roman","Bitstream Charter",Times,serif; }
+
 /* error and tips */
 .input_error, .textarea_error, .ul_error { border:solid 1px #FF0000 !important; background:#fff url(../images/invalid-line.gif) repeat-x left bottom !important;}
 
@@ -35,12 +40,12 @@ a:hover   { text-decoration: underline; }
 
 /* 浮动窗口
 ----------------------------------------------------------------------------------------------------*/
-.window { position:absolute; background:#D4E6EE; border:solid 1px #8ab0de; }
+.window { position:absolute; background:#D4E6EE; border:solid 1px #8ab0de; word-wrap:break-word; overflow:hidden; }
 	.window h1 { font-size:12px; line-height:22px; background:#fff url(../images/bg_top.png) repeat-x left top; margin:0; padding:0 5px; clear:both; border-bottom:solid 1px #8ab0de; white-space:nowrap; }
 	.window a.close { position:absolute; width:36px; height:17px; background:url(../images/close.png) no-repeat 0 1px; text-indent:-9999px; right:0px; top:0px;}
 	.window a.close:hover{ background-position: 0 -17px; }
 	.window .help{ position:absolute; top:0; right:38px; }
-	.window .wrapper { word-break:break-all; word-wrap:break-word; padding:5px; overflow: auto; clear:both; }
+	.window .wrapper { padding:5px; overflow: auto; clear:both; }
 	.window .wrapper .icon{ width:32px; height:32px; float:left; margin:5px 10px 0 10px; _margin-left:4px; background-image:url(../images/info_icons.png); background-repeat:no-repeat; }
     .window .wrapper .content{ max-width:520px; min-width:320px; margin:5px 10px 0 0; float:left; }
     .window .wrapper .content h6{ line-height:130%; margin:2px 0 0 0; }
@@ -68,9 +73,9 @@ a:hover   { text-decoration: underline; }
     .data-table a{ display:inline-block; }
 	.data-table thead, .data-table tfoot { background:url(../images/blue-grad.png) repeat-x scroll left top; }
 	.data-table tbody { background:#fff; border-top:solid 1px #DFDFDF; border-bottom:solid 1px #DFDFDF; }
-	.data-table tbody td{ vertical-align:top; word-break:break-all; word-wrap:break-word; }
+	.data-table tbody td{ vertical-align:top;word-wrap:break-word; overflow:hidden; }
 	.data-table .check-column { width:25px; text-align:center; }
-	.data-table .row-actions { visibility: hidden; }
+
 
 /* 密码强度
 ----------------------------------------------------------------------------------------------------*/

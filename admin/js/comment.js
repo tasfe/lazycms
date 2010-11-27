@@ -27,7 +27,7 @@ function comment_list_init() {
  * @param cmtid
  */
 function comment_reply(cmtid) {
-    var tr = $('tr#cmt-' + cmtid); LazyCMS.removeDialog('cmt_dialog');
+    var tr = $('#cmt-' + cmtid); LazyCMS.removeDialog('cmt_dialog');
     if ($('div.cmt_dialog', tr).is('div')===false) $('.row-actions', tr).after('<div class="cmt_dialog"></div>');
     $('.cmt_dialog', tr).dialog({
         name:'cmt_dialog', title:_('Reply comment'), masked: false, float:null, styles: {position:'absolute'},
@@ -54,7 +54,7 @@ function comment_reply(cmtid) {
  * @param cmtid
  */
 function comment_edit(cmtid) {
-    var tr = $('tr#cmt-' + cmtid); LazyCMS.removeDialog('cmt_dialog');
+    var tr = $('#cmt-' + cmtid); LazyCMS.removeDialog('cmt_dialog');
     if ($('div.cmt_dialog', tr).is('div')===false) $('.row-actions', tr).after('<div class="cmt_dialog"></div>');
     $.getJSON(LazyCMS.ADMIN + 'comment.php', {method: 'get', cmtid: cmtid} ,function(r){
         $('.cmt_dialog', tr).dialog({

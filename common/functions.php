@@ -374,6 +374,15 @@ function ajax_return($data) {
     return ajax_echo('Return', $data);
 }
 /**
+ * 检查状态
+ *
+ * @param bool $state
+ * @return string
+ */
+function echo_state($state) {
+    return $state ? '<strong style="color:#009900;">&radic;</strong>' : '<strong style="color:#FF0000;">&times;</strong>';
+}
+/**
  * 防止浏览器缓存
  */
 function no_cache(){

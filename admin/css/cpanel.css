@@ -18,4 +18,28 @@
  * +---------------------------------------------------------------------------+
  */
 
-table.data-table { table-layout:fixed; }
+.wrap fieldset.closed .inside{ display:none; }
+.wrap fieldset { display:table; }
+.wrap fieldset .inside{ padding:0 10px; }
+.wrap fieldset .inside .empty{ padding:10px; }
+
+.wrap .container{ width:49%; float:left; margin-right:0.5%; }
+
+.wrap .right-now h4{ font-size:14px; line-height:2; padding-left:10px; border-bottom:solid 1px #DFDFDF; }
+.wrap .right-now .content{ width:45%; float:left; }
+.wrap .right-now .discussion{ width:45%; float:right; }
+.wrap .right-now table{ margin-left:4%; border:0 none; clear:both; }
+.wrap .right-now table td{ border:0 none; padding:3px; }
+.wrap .right-now table td.number{ font-size:18px; text-align:right; line-height:10px; }
+
+.wrap .server-env label{ width:110px; margin-right:5px; display:inline-block; text-align:right; color:blue; }
+
+.wrap .comments { padding:0 !important; }
+    .wrap .comments .buttons{ text-align:right; padding:5px; }
+    .wrap .comment { padding:10px 15px; border-bottom:solid 1px #DFDFDF; }
+    .wrap .comment img{ float:left; margin-right:10px; }
+    .wrap .comment .comment-wrap { word-wrap:break-word; overflow:hidden; }
+    .wrap .comment .comment-wrap h4{ font-size:12px; font-weight:normal; }
+    .wrap .comment .comment-wrap em{ color:#D98500; font-size:11px; margin-right:5px; }
+    .wrap .comment .comment-wrap .author{ color:#999; }
+    .wrap .comment .comment-wrap .content{  }

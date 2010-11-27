@@ -422,7 +422,7 @@ function model_manage_page($action) {
         echo               '<div class="fields-data">';
         fields_actions();
         echo                   '<div class="fields-table">';
-        echo                      '<table id="table-fields" class="data-table" cellspacing="0"">';
+        echo                      '<table id="table-fields" class="data-table fixed" cellspacing="0"">';
         echo                         '<thead>';
         fields_table_thead();
         echo                         '</thead>';

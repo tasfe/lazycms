@@ -37,7 +37,7 @@ if (publish_check_process()) echo "addLoadEvent(common_publish);";
 </script>
 </head>
 
-<body>
+<body class="<?php echo str_replace(array('/','.'),'-',substr(PHP_FILE,strlen(ADMIN)));?>">
 <div id="wrapper">
     <div id="header">
         <img id="header-logo" src="<?php echo ADMIN.'images/logo.png';?>" alt="LazyCMS <?php echo LAZY_VERSION;?>" />

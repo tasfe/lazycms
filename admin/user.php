@@ -170,7 +170,7 @@ switch ($method) {
         echo   '<h2>'.system_head('title').'<a class="button" href="'.PHP_FILE.'?method=new">'._x('Add New','user').'</a></h2>';
         echo   '<form action="'.PHP_FILE.'?method=bulk" method="post" name="userlist" id="userlist">';
         table_nav();
-        echo       '<table class="data-table" cellspacing="0">';
+        echo       '<table class="data-table fixed" cellspacing="0">';
         echo           '<thead>';
         table_thead();
         echo           '</thead>';

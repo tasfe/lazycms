@@ -153,6 +153,15 @@ function taxonomy_get_names($category,$num=3) {
     return implode(',', $names);
 }
 /**
+ * 统计数量
+ *
+ * @param string $type
+ * @return int
+ */
+function taxonomy_count($type='category') {
+    $db = get_conn(); return $db->result(sprintf("SELECT COUNT(`taxonomyid`) FROM `#@_term_taxonomy` WHERE `type`='%s';", $type));
+}
+/**
  * 取得分类列表
  *
  * @param string $type

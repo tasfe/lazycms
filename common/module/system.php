@@ -33,13 +33,13 @@ func_add_callback('loader_add_css', array(
     'admin'             => array('/admin/css/admin.css', array('style')),
     'login'             => array('/admin/css/login.css', array('style')),
     'install'           => array('/admin/css/install.css', array('style')),
+    'cpanel'            => array('/admin/css/cpanel.css'),
     'user'              => array('/admin/css/user.css'),
     'model'             => array('/admin/css/model.css'),
     'post'              => array('/admin/css/post.css', array('xheditor.plugins')),
     'publish'           => array('/admin/css/publish.css'),
     'options'           => array('/admin/css/options.css'),
     'comment'           => array('/admin/css/comment.css'),
-    'categories'        => array('/admin/css/categories.css'),
     'xheditor.plugins'  => array('/common/css/xheditor.plugins.css'),
 ));
 // 添加js
@@ -50,6 +50,7 @@ func_add_callback('loader_add_js', array(
     'common'            => array('/admin/js/common.js', array('jquery','jquery.extend','lazycms')),
     'login'             => array('/admin/js/login.js'),
     'install'           => array('/admin/js/install.js'),
+    'cpanel'            => array('/admin/js/cpanel.js'),
     'user'              => array('/admin/js/user.js'),
     'model'             => array('/admin/js/model.js'),
     'categories'        => array('/admin/js/categories.js'),
@@ -581,7 +582,7 @@ function system_purview_add($purview) {
             $LC_Purview[$key] = $val;
         }
     } else {
-        $args = func_num_args();
+        $args = func_get_args();
         $key  = $args[0];
         $val  = $args[1];
         $LC_Purview[$key] = $val;
@@ -631,7 +632,7 @@ function system_menu_add($menus) {
             $LC_system_menus[$key] = $val;
         }
     } else {
-        $args = func_num_args();
+        $args = func_get_args();
         $key  = $args[0];
         $val  = $args[1];
         $LC_system_menus[$key] = $val;
@@ -967,7 +968,7 @@ function system_gateway_rewrite() {
             $result = system_tags($_GET[$type]);
             break;
         default:
-            header('HTTP/1.1 404 Not Found', 404);
+            header('HTTP/1.1 404 Not Found', true, 404);
             redirect(ROOT, 3, __('Restricted access!'));
             break;
     }

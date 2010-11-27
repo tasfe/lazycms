@@ -18,7 +18,7 @@
  * +---------------------------------------------------------------------------+
  */
 
-.data-table b{ color:#0B55C4; font-weight:normal; }
+table.data-table b{ color:#0B55C4; font-weight:normal; }
 
 div.avatar{ float:left; margin-right:6px; }
 

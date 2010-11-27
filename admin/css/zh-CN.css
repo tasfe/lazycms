@@ -17,4 +17,7 @@
  * | See LICENSE.txt for copyright notices and details.                        |
  * +---------------------------------------------------------------------------+
  */
+
+body{ font-family: "Lucida Grande",Verdana,Arial,"Bitstream Vera Sans",sans-serif,"新宋体","宋体"; }
+
 .form-table th{ width:110px; }
