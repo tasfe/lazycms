@@ -12,10 +12,9 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
+ * | Copyright (C) 2007-2010 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | LazyCMS is free software. This version use Apache License 2.0             |
- * | See LICENSE.txt for copyright notices and details.                        |
+ * | LazyCMS is free software. See LICENSE for copyright notices and details.  |
  * +---------------------------------------------------------------------------+
  */
 // 文件名
@@ -632,16 +631,18 @@ function post_manage_page($action) {
     echo                   '<th><label for="description">'._x('Description','post').'<br /><span class="resume">'.__('(Maximum of 250)').'</span></label></th>';
     echo                   '<td><textarea class="text" cols="70" rows="5" id="description" name="description">'.$description.'</textarea></td>';
     echo               '</tr>';
-    if ('post.php' == $php_file) {
+
         echo           '<tr>';
         echo               '<th><label>'._x('Other','post').'</label></th>';
         echo               '<td>';
         echo                   '<label for="comments"><input type="checkbox" name="comments" value="Yes" id="comments"'.($comments=='Yes'?' checked="checked"':'').' />'.__('Allow Comments').'</label>';
-        echo                   '<label for="createpages"><input type="checkbox" name="create[]" value="pages" id="createpages" cookie="true" />'.__('Update all Pages').'</label>';
-        echo                   '<label for="createlists"><input type="checkbox" name="create[]" value="lists" id="createlists" cookie="true" />'.__('Update Category Lists').'</label>';
+        if ('post.php' == $php_file) {
+            echo               '<label for="createpages"><input type="checkbox" name="create[]" value="pages" id="createpages" cookie="true" />'.__('Update all Pages').'</label>';
+            echo               '<label for="createlists"><input type="checkbox" name="create[]" value="lists" id="createlists" cookie="true" />'.__('Update Category Lists').'</label>';
+        }
         echo               '</td>';
         echo           '</tr>';
-    }
+
     echo           '</tbody>';
     echo       '</table>';
     echo   '</fieldset>';

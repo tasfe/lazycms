@@ -12,10 +12,9 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
+ * | Copyright (C) 2007-2010 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | LazyCMS is free software. This version use Apache License 2.0             |
- * | See LICENSE.txt for copyright notices and details.                        |
+ * | LazyCMS is free software. See LICENSE for copyright notices and details.  |
  * +---------------------------------------------------------------------------+
  */
 defined('COM_PATH') or die('Restricted access!');
@@ -25,27 +24,7 @@ defined('COM_PATH') or die('Restricted access!');
  * @author  Lukin <my@lukin.cn>
  * @version $Id$
  */
-// 判断系统是否已安装
-function installed() {
-    $result = false;
-    if (C('Installed')) {
-        $db = get_conn();
-        $tables = array(
-            'option','model','user','user_meta',
-            'publish','post','post_meta','comments',
-            'term','term_relation','term_taxonomy','term_taxonomy_meta',
-        );
-        $table_ok = true;
-        // 检查数据表是否正确
-        foreach($tables as $table) {
-            if (false === $db->is_table('#@_'.$table)) {
-                $table_ok = false;
-            }
-        }
-        $result = $table_ok;
-    }
-    return $result;
-}
+
 
 /**
  * 解析DSN
@@ -287,11 +266,11 @@ function throw_error($errstr,$errno=E_LAZY_NOTICE,$errfile=null,$errline=0){
     $string  = $file = null;
     $traces  = debug_backtrace();
     $error   = $traces[0]; unset($traces[0]);
-    $errstr  = replace_root($errstr);
-    $errfile = replace_root($errfile ? $errfile : $error['file']);
-    $errline = replace_root($errline ? $errline : $error['line']);
+    $errstr  = rel_root($errstr);
+    $errfile = rel_root($errfile ? $errfile : $error['file']);
+    $errline = rel_root($errline ? $errline : $error['line']);
     foreach($traces as $i=>$trace) {
-        $file  = isset($trace['file']) ? replace_root($trace['file']) : $file;
+        $file  = isset($trace['file']) ? rel_root($trace['file']) : $file;
         $line  = isset($trace['line']) ? $trace['line'] : null;
         $class = isset($trace['class']) ? $trace['class'] : null;
         $type  = isset($trace['type']) ? $trace['type'] : null;
@@ -379,7 +358,7 @@ function ajax_return($data) {
  * @param bool $state
  * @return string
  */
-function echo_state($state) {
+function test_result($state) {
     return $state ? '<strong style="color:#009900;">&radic;</strong>' : '<strong style="color:#FF0000;">&times;</strong>';
 }
 /**
@@ -488,7 +467,7 @@ function referer($default='',$back_server_referer=true){
  * @param   string  $path
  * @return  string  返回一个相对当前站点的文件路径
  */
-function replace_root($path){
+function rel_root($path){
     $abs_path = str_replace(DIRECTORY_SEPARATOR,'/',ABS_PATH.DIRECTORY_SEPARATOR);
     $src_path = str_replace(DIRECTORY_SEPARATOR,'/',$path);
     return str_replace($abs_path,ROOT,$src_path);
@@ -1183,10 +1162,7 @@ function code2lang($code){
  */
 function language() {
     $ck_lang = cookie_get('language');
-    $ck_lang = preg_replace( '/[^a-z0-9,_-]+/i', '', $ck_lang );
-    if ($ck_lang && $ck_lang=='default') {
-        $ck_lang = C('Language');
-    }
+    $ck_lang = preg_replace( '/[^a-z0-9,_-]+/i', '', $ck_lang ); 
 
     if (empty($ck_lang) && isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
         $ck_lang = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
@@ -1199,6 +1175,8 @@ function language() {
         } elseif (strtolower($ck_lang) == 'zh-tw') {
             $ck_lang = 'zh-TW';
         }
+    } elseif(empty($ck_lang)) {
+        $ck_lang = C('Language');
     }
     return $ck_lang;
 }

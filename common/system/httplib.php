@@ -12,10 +12,9 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
+ * | Copyright (C) 2007-2010 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | LazyCMS is free software. This version use Apache License 2.0             |
- * | See LICENSE.txt for copyright notices and details.                        |
+ * | LazyCMS is free software. See LICENSE for copyright notices and details.  |
  * +---------------------------------------------------------------------------+
  */
 defined('COM_PATH') or die('Restricted access!');
@@ -96,20 +95,20 @@ class Httplib {
         static $result;
         if ( is_null($result) ) {
             if (true != $this->disable_fsockopen && function_exists('fsockopen')) {
-                $result['fsockopen'] = 'Socket';
+                $result['fsockopen'] = 'fsockopen';
             }
             if (true != $this->disable_curl && function_exists('curl_init') && function_exists('curl_exec')) {
-                $result['curl'] = 'Curl';
+                $result['curl'] = 'curl';
             }
             if (true != $this->disable_streams && function_exists('fopen')
                     && (function_exists('ini_get') && true == ini_get('allow_url_fopen'))
                     && !version_compare(PHP_VERSION, '5.0', '<') ) {
-                $result['streams'] = 'Streams';
+                $result['streams'] = 'streams';
             }
             if (true != $this->disable_fopen && function_exists('fopen')
                     && (function_exists('ini_get') && true == ini_get('allow_url_fopen'))
                     && (isset($args['method']) && 'HEAD' != $args['method']) ) {
-                $result['fopen'] = 'allow_url_fopen = On';
+                $result['fopen'] = 'fopen';
             }
             // fopen不支持post提交
             if ($send_data == 'YES' && isset($result['fopen'])) {

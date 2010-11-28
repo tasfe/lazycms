@@ -12,10 +12,9 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
+ * | Copyright (C) 2007-2010 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | LazyCMS is free software. This version use Apache License 2.0             |
- * | See LICENSE.txt for copyright notices and details.                        |
+ * | LazyCMS is free software. See LICENSE for copyright notices and details.  |
  * +---------------------------------------------------------------------------+
  */ 
 /*defined('COM_PATH') or die('Restricted access!');*/

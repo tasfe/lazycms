@@ -12,10 +12,9 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
+ * | Copyright (C) 2007-2010 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | LazyCMS is free software. This version use Apache License 2.0             |
- * | See LICENSE.txt for copyright notices and details.                        |
+ * | LazyCMS is free software. See LICENSE for copyright notices and details.  |
  * +---------------------------------------------------------------------------+
  */
 defined('COM_PATH') or die('Restricted access!');
@@ -792,6 +791,7 @@ function system_jslang() {
         'No record!'        => __('No record!'),
         'Confirm Logout?'   => __('Confirm Logout?'),
         'Confirm Delete?'   => __('Confirm Delete?'),
+        'Latest Version:'   => __('Latest Version:'),
         'Did not select any action!' => __('Did not select any action!'),
         // 密码强度
         'Strength indicator' => __('Strength indicator'),
@@ -950,6 +950,36 @@ function system_editor_lang() {
         'Currently not supported by your browser, use keyboard shortcuts(Ctrl+V) instead.' => __('Currently not supported by your browser, use keyboard shortcuts(Ctrl+V) instead.'),
         'Upload file extension required for this: ' => __('Upload file extension required for this: '),
     );
+}
+/**
+ * 取得PHPINFO
+ *
+ * @param int $info
+ * @return mixed|string
+ */
+function system_phpinfo($info = INFO_ALL) {
+    /**
+     * callback function to eventually add an extra space in passed <td class="v">...</td>
+     * after a ";" or "@" char to let the browser split long lines nicely
+     */
+    function _system_phpinfo_v_callback($matches) {
+        $matches[2] = preg_replace('/(?<!\s)([;@])(?!\s)/', "$1 ", $matches[2]);
+        return $matches[1] . $matches[2] . $matches[3];
+    }
+    ob_start();
+    phpinfo($info);
+    $output = preg_replace(array('/^.*<body[^>]*>/is', '/<\/body[^>]*>.*$/is'), '', ob_get_clean(), 1);
+
+    $output = preg_replace('/width="[0-9]+"/i', 'width="100%"', $output);
+    $output = str_replace('<table border="0" cellpadding="3" width="100%">', '<table class="phpinfo">', $output);
+    $output = str_replace('<hr />', '', $output);
+    $output = str_replace('<tr class="h">', '<tr>', $output);
+    $output = str_replace('<a name=', '<a id=', $output);
+    $output = str_replace('<font', '<span', $output);
+    $output = str_replace('</font', '</span', $output);
+    $output = str_replace(',', ', ', $output);
+    // match class "v" td cells an pass them to callback function
+    return preg_replace_callback('%(<td class="v">)(.*?)(</td>)%i', '_system_phpinfo_v_callback', $output);
 }
 
 /**

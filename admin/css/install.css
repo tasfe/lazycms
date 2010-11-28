@@ -11,22 +11,30 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
+ * | Copyright (C) 2007-2010 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | LazyCMS is free software. This version use Apache License 2.0             |
- * | See LICENSE.txt for copyright notices and details.                        |
+ * | LazyCMS is free software. See LICENSE for copyright notices and details.  |
  * +---------------------------------------------------------------------------+
  */
 html { background:#FAFAFA; }
-body { width:750px; margin:1em auto; padding:2em; font-family: Arial,sans-serif; font-size:12px; color: #333333; background:#FFF; -moz-border-radius:6px; -webkit-border-radius:6px; -khtml-border-radius:6px; border-radius:6px; border:1px solid #DFDFDF; border-collapse:separate; }
+body { width:800px; margin:1em auto; padding:2em; font-family:"Lucida Grande",Verdana,Arial,"Bitstream Vera Sans",sans-serif; font-size:12px; color: #333333; background:#FFF; -moz-border-radius:6px; -webkit-border-radius:6px; -khtml-border-radius:6px; border-radius:6px; border:1px solid #DFDFDF; border-collapse:separate; }
 p { margin-bottom:0px; margin-top:1em; }
 #logo{ height:48px; line-height:48px; padding-left:60px; display:table; background:url("images/setup-logo.png") no-repeat left center; margin:6px auto 14px; text-align:center; }
 
-.data-table tbody th,.data-table tbody td { line-height:200%; }
-.data-table tbody th p { font-weight:normal; color:#666; }
-.data-table th{ text-align:left; vertical-align:top; }
-.data-table input{ margin:1px 0; }
-.data-table label{ cursor:pointer; }
-.data-table label input{ margin-right:3px; }
+p.buttons{ text-align:left; }
+p.buttons button{ margin-right:6px;}
+
+.btn-info{ text-align:center; margin:20px auto; }
+.center{ width:100%; display:none; text-align:center; word-wrap:break-word; overflow:hidden; }
+.phpinfo { margin:0 auto;  }
+.phpinfo td{ text-align:left; word-wrap:break-word; overflow:hidden; }
+
+table.data-table .thead th { background-color:#E5F4FE; }
+table.data-table tbody th,.data-table tbody td { line-height:200%; }
+table.data-table tbody th p { font-weight:normal; color:#666; }
+table.data-table th{ text-align:left; vertical-align:top; }
+table.data-table input{ margin:1px 0; }
+table.data-table label{ cursor:pointer; }
+table.data-table label input{ margin-right:3px; }
 
 

@@ -12,10 +12,9 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
+ * | Copyright (C) 2007-2010 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | LazyCMS is free software. This version use Apache License 2.0             |
- * | See LICENSE.txt for copyright notices and details.                        |
+ * | LazyCMS is free software. See LICENSE for copyright notices and details.  |
  * +---------------------------------------------------------------------------+
  */
 // 定义管理后台路径
@@ -27,7 +26,7 @@ require ADMIN_PATH.'/admin.php';
 $method = isset($_GET['method'])?$_GET['method']:null;
 if ($method=='logout') {
     cookie_delete('authcode');
-    redirect('login.php'); exit();
+    redirect('login.php');
 } else {
 	$language = language();
 }
@@ -51,7 +50,8 @@ if (validate_is_post()) {
     if (validate_is_ok()) {
         // 提交到数据库验证用户名和密码
         if ($user = user_login($username,$userpass)) {
-            $expire = $rememberme=='forever'?365*86400:0;
+            $expire   = $rememberme=='forever' ? 365*86400 : 0;
+            $language = $language=='default' ? C('Language') : $language;
             cookie_set('authcode',$user['authcode'],$expire);
             cookie_set('language',$language,$expire);
             redirect('index.php');

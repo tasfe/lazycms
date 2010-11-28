@@ -11,14 +11,17 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
+ * | Copyright (C) 2007-2010 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | LazyCMS is free software. This version use Apache License 2.0             |
- * | See LICENSE.txt for copyright notices and details.                        |
+ * | LazyCMS is free software. See LICENSE for copyright notices and details.  |
  * +---------------------------------------------------------------------------+
  */
 function install_init() {
-    $('form#setup').ajaxSubmit(function(){
+    $('button[rel=phpinfo]').click(function(){
+        $('form#setup div.center').toggle();
+    });
+
+    $('form#setup_cfg').ajaxSubmit(function(){
         $('.dialog .buttons button').text(_('Rock it!'));
     });
     $('#password1').val('').keyup( install_check_pass_strength );

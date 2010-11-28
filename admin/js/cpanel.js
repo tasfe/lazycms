@@ -11,10 +11,9 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
+ * | Copyright (C) 2007-2010 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | LazyCMS is free software. This version use Apache License 2.0             |
- * | See LICENSE.txt for copyright notices and details.                        |
+ * | LazyCMS is free software. See LICENSE for copyright notices and details.  |
  * +---------------------------------------------------------------------------+
  */
 function cpanel_init() {
@@ -35,4 +34,8 @@ function cpanel_init() {
 	        fieldset.toggleClass('closed');
 	    });
 	});
+    // 取得新版本
+    $.getJSON('http://cms.lukin.cn/version.php?callback=?', {lang:$.cookie('language'), version:$('fieldset .server-env .version').text()}, function(r){
+        $('fieldset .server-env .latest').html('<label>' + _('Latest Version:') + '</label>' + r);
+    });
 }

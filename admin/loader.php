@@ -12,10 +12,9 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
+ * | Copyright (C) 2007-2010 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | LazyCMS is free software. This version use Apache License 2.0             |
- * | See LICENSE.txt for copyright notices and details.                        |
+ * | LazyCMS is free software. See LICENSE for copyright notices and details.  |
  * +---------------------------------------------------------------------------+
  */
 /**
@@ -85,7 +84,7 @@ switch ($type) {
 		foreach ($load as $js) {
             if (isset($loads[$js])) {
         		foreach ($loads[$js] as $src) {
-                    $out.= "/* file:".replace_root($src)." */\n".file_get_contents($src) . "\n\n";
+                    $out.= "/* file:".rel_root($src)." */\n".file_get_contents($src) . "\n\n";
         		}
         	}
         }

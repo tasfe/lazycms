@@ -12,10 +12,9 @@
  * |                        LL                                                 |
  * |                        LL                                                 |
  * +---------------------------------------------------------------------------+
- * | Copyright (C) 2007-2008 LazyCMS.com All rights reserved.                  |
+ * | Copyright (C) 2007-2010 LazyCMS.com All rights reserved.                  |
  * +---------------------------------------------------------------------------+
- * | LazyCMS is free software. This version use Apache License 2.0             |
- * | See LICENSE.txt for copyright notices and details.                        |
+ * | LazyCMS is free software. See LICENSE for copyright notices and details.  |
  * +---------------------------------------------------------------------------+
  */
 // 加载公共文件
@@ -105,16 +104,16 @@ switch ($method) {
         echo            '<a href="javascript:;" class="toggle" title="'.__('Click to toggle').'"><br/></a>';
         echo            '<h3>'.__('Server Environment').'</h3>';
         echo            '<div class="inside server-env">';
-        echo                '<p><label>'.__('Server OS:').'</label>'.PHP_OS.'</p>';
+        echo                '<p><label>'.__('Server OS:').'</label>'.PHP_OS .' '. php_uname('r') .' On '. php_uname('m').'</p>';
         echo                '<p><label>'.__('Server Software:').'</label>'.$_SERVER['SERVER_SOFTWARE'].'</p>';
         echo                '<p><label>'.__('Server API :').'</label>'.PHP_SAPI.'</p>';
-        echo                '<p><label>'.__('PHP Version:').'</label>'.PHP_VERSION.'&nbsp; '.echo_state(version_compare(PHP_VERSION,'4.3.3','>')).'</p>';
-        echo                '<p><label>'.__('MySQL Version:').'</label>'.$db->version().'&nbsp; '.echo_state(version_compare($db->version(),'4.1.0','>')).'</p>';
-        echo                '<p><label>'.__('LazyCMS Version:').'</label>'.LAZY_VERSION.'</p>';
-        echo                '<p><label>'.__('GD library:').'</label>'.(function_exists('gd_info') ? GD_VERSION : __('Not Supported')).'&nbsp; '.echo_state(function_exists('gd_info')).'</p>';
-        echo                '<p><label>'.__('ICONV:').'</label>'.(function_exists('iconv') ? ICONV_VERSION : __('Not Supported')).'&nbsp; '.echo_state(function_exists('iconv')).'</p>';
-        echo                '<p><label>'.__('Multibyte String:').'</label>'.(extension_loaded('mbstring') ? 'mb_***' : __('Not Supported')).'&nbsp; '.echo_state(extension_loaded('mbstring')).'</p>';
-        echo                '<p><label>'.__('Remote URL Open:').'</label>'.($http_test ? array_shift($http_test) : __('Not Supported')).'&nbsp; '.echo_state($http_test).'</p>';
+        echo                '<p><label>'.__('LazyCMS Version:').'</label><span class="version">'.LAZY_VERSION.'</span><span class="latest"><img class="os" src="'.ADMIN.'images/loading.gif" /></span></p>';
+        echo                '<p><label>'.__('PHP Version:').'</label>'.PHP_VERSION.'&nbsp; '.test_result(version_compare(PHP_VERSION,'4.3.3','>')).'</p>';
+        echo                '<p><label>'.__('MySQL Version:').'</label>'.$db->version().'&nbsp; '.test_result(version_compare($db->version(),'4.1.0','>')).'</p>';
+        echo                '<p><label>'.__('GD Library:').'</label>'.(function_exists('gd_info') ? GD_VERSION : __('Not Supported')).'&nbsp; '.test_result(function_exists('gd_info')).'</p>';
+        echo                '<p><label>'.__('Iconv Support:').'</label>'.(function_exists('iconv') ? ICONV_VERSION : __('Not Supported')).'&nbsp; '.test_result(function_exists('iconv')).'</p>';
+        echo                '<p><label>'.__('Multibyte Support:').'</label>'.(extension_loaded('mbstring') ? 'mbstring' : __('Not Supported')).'&nbsp; '.test_result(extension_loaded('mbstring')).'</p>';
+        echo                '<p><label>'.__('Remote URL Open:').'</label>'.($http_test ? array_shift($http_test) : __('Not Supported')).'&nbsp; '.test_result($http_test).'</p>';
         echo            '</div>';
         echo        '</fieldset>';
         echo        '<fieldset>';
