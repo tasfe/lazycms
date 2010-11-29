@@ -244,6 +244,8 @@ function post_get_path($sortid,$path,$prefix='') {
         if (isset($taxonomy['path'])) {
             $path  = $taxonomy['path'].'/'.$prefix.$path;
         }
+    } else {
+        $path = $prefix.$path;
     }
     return $path;
 }
@@ -518,10 +520,12 @@ function post_prepage($sortid,$postid,&$preid=0) {
         $post = post_get($preid);
         $post['path'] = post_get_path($post['sortid'],$post['path']);
         $result = '<a href="'.ROOT.$post['path'].'">'.$post['title'].'</a>';
-    } else {
+    } elseif($sortid) {
         $post = post_get($postid);
         $post['sort'] = taxonomy_get($post['sortid']);
         $result = '<a href="'.ROOT.$post['sort']['path'].'/">['.$post['sort']['name'].']</a>';
+    } else {
+        $result = '['.__('Not Supported').']';
     }
     return $result;
 }
@@ -540,10 +544,12 @@ function post_nextpage($sortid,$postid,&$nextid=0) {
         $post = post_get($nextid);
         $post['path'] = post_get_path($post['sortid'],$post['path']);
         $result = '<a href="'.ROOT.$post['path'].'">'.$post['title'].'</a>';
-    } else {
+    } elseif($sortid) {
         $post = post_get($postid);
         $post['sort'] = taxonomy_get($post['sortid']);
         $result = '<a href="'.ROOT.$post['sort']['path'].'/">['.$post['sort']['name'].']</a>';
+    } else {
+        $result = '['.__('Not Supported').']';
     }
     return $result;
 }

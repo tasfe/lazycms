@@ -202,7 +202,7 @@ switch ($method) {
 	    $n  = isset($_POST['n'])?$_POST['n']:null;
 	    $so = isset($_POST['so'])?$_POST['so']:null;
 	    $t  = isset($_POST['t'])?$_POST['t']:null;
-	    $w  = isset($_POST['w'])?$_POST['w']:'200px';
+	    $w  = isset($_POST['w'])?$_POST['w']:'auto';
 	    $v  = isset($_POST['v'])?$_POST['v']:null;
 	    $s  = isset($_POST['s'])?$_POST['s']:null;
 	    $a  = isset($_POST['a'])?$_POST['a']:null;

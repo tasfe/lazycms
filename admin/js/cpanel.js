@@ -35,7 +35,7 @@ function cpanel_init() {
 	    });
 	});
     // 取得新版本
-    $.getJSON('http://cms.lukin.cn/version.php?callback=?', {lang:$.cookie('language'), version:$('fieldset .server-env .version').text()}, function(r){
+    $.getJSON('http://lazycms.com/version.php?callback=?', {lang:$.cookie('language'), version:$('fieldset .server-env .version').text()}, function(r){
         $('fieldset .server-env .latest').html('<label>' + _('Latest Version:') + '</label>' + r);
     });
 }

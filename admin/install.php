@@ -245,8 +245,8 @@ switch($setup) {
         $html.=             '<tr class="thead"><th>'.__('Test').'</th><th class="w100">'.__('Require').'</th><th class="w150">'.__('Current').'</th></tr>';
         $html.=             '<tr><td>'.__('PHP Version').'</td><td>4.3.3+</td><td>'.test_result(version_compare(PHP_VERSION,'4.3.3','>')).'&nbsp; '.PHP_VERSION.'</td></tr>';
         $html.=             '<tr><td>'.__('MySQL Client Version').'</td><td>4.1.0+</td><td>'.test_result(function_exists('mysql_get_client_info')).'&nbsp; '.(function_exists('mysql_get_client_info') ? mysql_get_client_info() : __('Not Supported')).'</td></tr>';
-        $html.=             '<tr><td>'.__('GD Library').'</td><td>'.__('Support').'</td><td>'.test_result(function_exists('gd_info')).'&nbsp; '.(function_exists('gd_info') ? GD_VERSION : __('Not Supported')).'</td></tr>';
-        $html.=             '<tr><td>'.__('Iconv Support').'</td><td>'.__('Support').'</td><td>'.test_result(function_exists('iconv')).'&nbsp; '.(function_exists('iconv') ? ICONV_VERSION : __('Not Supported')).'</td></tr>';
+        $html.=             '<tr><td>'.__('GD Library').'</td><td>2.0.0+</td><td>'.test_result(function_exists('gd_info')).'&nbsp; '.(function_exists('gd_info') ? GD_VERSION : __('Not Supported')).'</td></tr>';
+        $html.=             '<tr><td>'.__('Iconv Support').'</td><td>2.0.0+</td><td>'.test_result(function_exists('iconv')).'&nbsp; '.(function_exists('iconv') ? ICONV_VERSION : __('Not Supported')).'</td></tr>';
         $html.=             '<tr><td>'.__('Multibyte Support').'</td><td>'.__('Support').'</td><td>'.test_result(extension_loaded('mbstring')).'&nbsp; '.(extension_loaded('mbstring') ? 'mbstring' : __('Not Supported')).'</td></tr>';
         $html.=             '<tr><td>'.__('Remote URL Open').'</td><td>'.__('Support').'</td><td>'.test_result($http_test).'&nbsp; '.($http_test ? array_shift($http_test) : __('Not Supported')).'</td></tr>';
         $html.=         '</tbody>';

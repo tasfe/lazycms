@@ -419,7 +419,7 @@ function system_tags($tag) {
         pages_init($number);
         // 显示Tags相关的文章列表
         $term   = term_get_byname($tag);
-        $tid    = $db->result(sprintf("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `termid`=%d", esc_sql($term['termid'])));
+        $tid    = $db->result(sprintf("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `type`='post_tag' AND `termid`=%d", esc_sql($term['termid'])));
         $sql    = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` RIGHT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' AND `tr`.`taxonomyid`=%d ORDER BY `p`.`postid` %s", $tid, $order);
         $result = pages_query($sql);
         // 解析分页标签

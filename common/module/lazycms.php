@@ -38,6 +38,8 @@ function lazycms_gateway_updates() {
         $result['more'] = mid($body,'/<link\s+?rel="alternate"[^>]+?href="/i','"');
         if (preg_match_all('/<entry>.+?<\/entry>/is',$body,$args)) {
             foreach($args[0] as $entry) {
+                // 跳过WIKI
+                if (preg_match('/\/wiki\/(.+?)\.wiki/',$entry)) continue;
                 $content   = mid($entry,"/<content[^>]+?>.+&lt;br\/&gt;\n &lt;br\/&gt;/s","</content>");
                 $alternate = mid($entry,'/<link\s+?rel="alternate"[^>]+?href="/i','"');
                 $result['entrys'][] = array(

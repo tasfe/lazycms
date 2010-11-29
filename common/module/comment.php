@@ -212,6 +212,8 @@ function comment_create($postid) {
     $postid = intval($postid);
     if (!$postid) return false;
     if ($post = post_get($postid)) {
+        // 允许评论
+        if ($post['comments'] != 'Yes') return true;
         // 评论地址
         $post['cmt_path'] = post_get_path($post['sortid'],$post['path'], C('Comments-Path'));
         $guide = system_category_guide($post['sortid']);

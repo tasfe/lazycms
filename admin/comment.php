@@ -166,6 +166,7 @@ switch ($method) {
                 $data['ipaddr'] = long2ip($data['ip']);
                 if ($data['parent']) {
                     $parent = comment_get($data['parent']);
+                    $parent['author'] = $parent['author'] ? $parent['author'] : __('Anonymous');
                     $reply  = ' | '.sprintf(__('In reply to <a href="%s">%s</a>.'), 'javascript:;', $parent['author']);
                 } else {
                     $reply  = '';
