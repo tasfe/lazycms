@@ -255,6 +255,17 @@ var LazyCMS = window.LazyCMS = window.CMS = {
                     try { eval(xhr.getResponseHeader('X-LazyCMS-Eval')) } catch (e) {}
                 },code);
                 break;
+            // 确认
+            case 'Confirm':
+                LazyCMS.confirm(data, function(r){
+                    // 调用脚本
+                    if (r) {
+                        try { eval(xhr.getResponseHeader('X-LazyCMS-Submit')) } catch (e) {}
+                    } else {
+                        try { eval(xhr.getResponseHeader('X-LazyCMS-Cancel')) } catch (e) {}
+                    }
+                });
+                break;
             // 跳转
             case 'Redirect':
                 LazyCMS.redirect(data.Location, data.Time, data.Message);

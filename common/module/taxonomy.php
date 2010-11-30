@@ -255,11 +255,7 @@ function taxonomy_get_meta($taxonomyid) {
     $db = get_conn(); $result = array(); $taxonomyid = intval($taxonomyid);
     $rs = $db->query("SELECT * FROM `#@_term_taxonomy_meta` WHERE `taxonomyid`=%d;",$taxonomyid);
     while ($row = $db->fetch($rs)) {
-        if (is_need_unserialize($row['type'])) {
-           $result[$row['key']] = unserialize($row['value']);
-        } else {
-           $result[$row['key']] = $row['value'];
-        }
+        $result[$row['key']] = is_serialized($row['value']) ? unserialize($row['value']) : $row['value'];
     }
     return $result;
 }
@@ -457,17 +453,12 @@ function taxonomy_edit_meta($taxonomyid,$data) {
     $db = get_conn(); $taxonomyid = intval($taxonomyid);
     $data = is_array($data) ? $data : array();
     foreach ($data as $key=>$value) {
-        // 获取变量类型
-        $var_type = gettype($value);
-        // 判断是否需要序列化
-        $value = is_need_serialize($value) ? serialize($value) : $value;
         // 查询数据库里是否已经存在
         $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_term_taxonomy_meta` WHERE `taxonomyid`=%d AND `key`='%s';",array($taxonomyid,esc_sql($key))));
         // update
         if ($length > 0) {
             $db->update('#@_term_taxonomy_meta',array(
                 'value' => $value,
-                'type'  => $var_type,
             ),array(
                 'taxonomyid' => $taxonomyid,
                 'key'    => $key,
@@ -480,7 +471,6 @@ function taxonomy_edit_meta($taxonomyid,$data) {
                 'taxonomyid' => $taxonomyid,
                 'key'    => $key,
                 'value'  => $value,
-                'type'   => $var_type,
             ));
         }
     }

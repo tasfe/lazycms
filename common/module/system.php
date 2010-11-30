@@ -995,7 +995,8 @@ function system_gateway_rewrite() {
     $result = '';
     switch($type) {
         case 'tags':
-            $result = system_tags($_GET[$type]);
+            $tag    = isset($_GET[$type]) ? $_GET[$type] : '';
+            $result = system_tags($tag);
             break;
         default:
             header('HTTP/1.1 404 Not Found', true, 404);

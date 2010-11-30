@@ -169,7 +169,10 @@ class Mysql {
             }
         }
         if ($args) {
-            $query = vsprintf($query, $this->escape($args));
+            foreach($args as $k=>$v) {
+                $args[$k] = $this->escape($v);
+            }
+            $query = vsprintf($query, $args);
         }
         return $query;
     }
@@ -457,7 +460,7 @@ class Mysql {
         $vals = array();
         foreach ($data as $col => $val) {
             $cols[] = $this->identifier($col);
-            $vals[] = is_need_serialize($val) ? serialize($val) : $this->escape($val);
+            $vals[] = $this->escape($val);
         }
 
         $sql = "INSERT INTO "
@@ -479,7 +482,7 @@ class Mysql {
         // extract and quote col names from the array keys
         $set = array();
         foreach ($sets as $col => $val) {
-            $val = is_need_serialize($val) ? serialize($val) : $this->escape($val);
+            $val   = $this->escape($val);
             $set[] = $this->identifier($col)." = '".$val."'";
         }
         $where = $this->where($where);
@@ -649,27 +652,27 @@ class Mysql {
      * @return string
      */
     function escape($data){
-        if ( is_array($data) ) {
-			foreach ( (array) $data as $k => $v ) {
-				if ( is_array($v) )
-					$data[$k] = $this->escape( $v );
-				else
-					$data[$k] = $this->_real_escape( $v );
-			}
-		} else {
-			$data = $this->_real_escape( $data );
-		}
-		return $data;
-    }
-    function _real_escape($str) {
-		
+        // 空
+        if ($data === null) return '';
+        // 不是标量
+        if (!is_scalar($data)) {
+            // 是数组列表
+            if (is_array($data) && !is_assoc($data)) {
+                $data = implode(',', $data);
+            }
+            // 需要序列化
+            else {
+                $data = serialize($data);
+            }
+        }
+        
         if ( $this->conn )
-			$str = mysql_real_escape_string( $str, $this->conn );
+			$data = mysql_real_escape_string( $data, $this->conn );
 		else
-			$str = addslashes( $str );
+			$data = addslashes( $data );
 
-        return $str;
-	}
+        return $data;
+    }
     /**
      * 设置数据库连接参数
      *

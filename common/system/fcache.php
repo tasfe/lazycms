@@ -58,12 +58,10 @@ class FCache {
         $fp = fopen($hash_file, "wb");
     	if ($fp) {
     	    flock($fp, LOCK_EX);
-    	    // 保存数据类型
-    	    fwrite($fp, str_pad(gettype($data),10,' ',STR_PAD_RIGHT) , 10);
     	    $mqr = get_magic_quotes_runtime();
             if ($mqr) set_magic_quotes_runtime(0);
             // 判断是否需要序列化
-            if (is_need_serialize($data)) {
+            if (!is_scalar($data)) {
                 $data = serialize($data);
             }
             fwrite($fp, $data);
@@ -98,8 +96,6 @@ class FCache {
                 $length = filesize($hash_file);
                 $mqr = get_magic_quotes_runtime();
                 if ($mqr) set_magic_quotes_runtime(0);
-                $vartype = trim(fread($fp, 10));
-                $length  = $length - 10;
                 if ($length) {
                     $data = fread($fp, $length);
                 } else {
@@ -108,7 +104,8 @@ class FCache {
                 if ($mqr) set_magic_quotes_runtime($mqr);
                 flock($fp, LOCK_UN);
                 fclose($fp);
-                if (is_need_unserialize($vartype)) {
+
+                if (is_serialized($data)) {
                 	$data = unserialize($data);
                 }
                 // 检查文件是否过期

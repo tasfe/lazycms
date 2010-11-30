@@ -226,7 +226,8 @@ switch ($method) {
                 if (post_create($postid,$preid)) {
                     // 重新生成上一篇
                     if ($preid) post_create($preid);
-                    ajax_success($result,"LazyCMS.redirect('".$referer."');");
+                    $result = sprintf('<p>%s</p><p>%s</p>', $result, _x('[Submit] to Add New<br />[Cancel] to Back list','post'));
+                    ajax_confirm($result, "LazyCMS.redirect('".PHP_FILE."?method=new&category={$sortid}');", "LazyCMS.redirect('".$referer."');");
                 } else {
                     ajax_alert($result.__('File create failed.'),"LazyCMS.redirect('".$referer."');");
                 }
@@ -292,7 +293,7 @@ switch ($method) {
                                 $vs = explode(':',$v);
                                 $vs = array_map('esc_html',$vs); $vs[1] = isset($vs[1])?$vs[1]:$vs[0];
                                 $checked = !empty($field['d']) ? (instr($vs[0],$field['d']) ? ' checked="checked"' : null) : null;
-                                $hl.= '<label><input name="'.$field['_n'].($field['t']=='checkbox'?'['.$k.']':null).'" type="'.$field['t'].'" value="'.$vs[0].'"'.$checked.' />'.$vs[1].'</label>';
+                                $hl.= '<label><input name="'.$field['_n'].($field['t']=='checkbox'?'[]':null).'" type="'.$field['t'].'" value="'.$vs[0].'"'.$checked.' />'.$vs[1].'</label>';
                             }
                         }
                         $hl.= '</div>';

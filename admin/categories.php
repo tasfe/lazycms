@@ -121,7 +121,8 @@ switch ($method) {
                 }
                 // 生成列表页
                 if (taxonomy_create($taxonomyid)) {
-                    ajax_success($result,"LazyCMS.redirect('".PHP_FILE."');");
+                    $result = sprintf('<p>%s</p><p>%s</p>', $result, _x('[Submit] to Add New<br />[Cancel] to Back list','sort'));
+                    ajax_confirm($result, "LazyCMS.redirect('".PHP_FILE."?method=new');", "LazyCMS.redirect('".PHP_FILE."');");
                 } else {
                     ajax_alert($result.__('File create failed.'),"LazyCMS.redirect('".PHP_FILE."');");
                 }
@@ -264,7 +265,6 @@ function display_tr_categories($sorts,$n=0) {
  * @param string $action
  */
 function category_manage_page($action) {
-    $referer = referer(PHP_FILE);
     $taxonomyid  = isset($_GET['taxonomyid'])?$_GET['taxonomyid']:0;
     if ($action!='add') {
     	$_SORT = taxonomy_get($taxonomyid);
@@ -335,7 +335,7 @@ function category_manage_page($action) {
     } else {
         echo   '<button type="submit">'.__('Update Category').'</button><input type="hidden" name="taxonomyid" value="'.$taxonomyid.'" />';
     }
-    echo       '<button type="button" onclick="LazyCMS.redirect(\''.$referer.'\')">'.__('Back').'</button>';
+    echo       '<button type="button" onclick="LazyCMS.redirect(\''.PHP_FILE.'\')">'.__('Back').'</button>';
     echo     '</p>';
     echo   '</form>';
     echo '</div>';

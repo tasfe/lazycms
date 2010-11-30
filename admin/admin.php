@@ -51,7 +51,7 @@ function current_user_can($action,$is_redirect=true) {
         }
         // 普通管理员
         elseif ($user['Administrator']=='Yes') {
-            if (instr($action,(array)$user['roles'])) {
+            if (instr($action, $user['roles'])) {
                 $result = true;
             }
         }

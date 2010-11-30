@@ -111,7 +111,6 @@ CREATE TABLE `#@_option` (
   `module` char(20) NOT NULL,
   `code` char(50) NOT NULL,
   `value` longtext,
-  `type` varchar(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `opt_idx` (`code`,`module`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
@@ -134,7 +133,6 @@ CREATE TABLE `#@_user_meta` (
   `userid` int(10) unsigned NOT NULL DEFAULT '0',
   `key` char(50) NOT NULL,
   `value` longtext NOT NULL,
-  `type` varchar(10) NOT NULL,
   PRIMARY KEY (`metaid`),
   KEY `userid` (`userid`),
   KEY `key` (`key`)
@@ -184,7 +182,6 @@ CREATE TABLE `#@_post_meta` (
   `postid` bigint(20) unsigned NOT NULL,
   `key` char(50) NOT NULL,
   `value` longtext,
-  `type` varchar(10) NOT NULL,
   PRIMARY KEY (`metaid`),
   KEY `postid` (`postid`),
   KEY `key` (`key`)
@@ -249,7 +246,6 @@ CREATE TABLE `#@_term_taxonomy_meta` (
   `taxonomyid` int(10) unsigned NOT NULL,
   `key` char(50) NOT NULL,
   `value` longtext,
-  `type` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`metaid`),
   KEY `taxonomyid` (`taxonomyid`),
   KEY `key` (`key`)

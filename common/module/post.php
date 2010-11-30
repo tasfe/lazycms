@@ -259,11 +259,7 @@ function post_get_meta($postid) {
     $db = get_conn(); $result = array(); $postid = intval($postid);
     $rs = $db->query("SELECT * FROM `#@_post_meta` WHERE `postid`=%d;",$postid);
     while ($row = $db->fetch($rs)) {
-        if (is_need_unserialize($row['type'])) {
-           $result[$row['key']] = unserialize($row['value']);
-        } else {
-           $result[$row['key']] = $row['value'];
-        }
+        $result[$row['key']] = is_serialized($row['value']) ? unserialize($row['value']) : $row['value'];
     }
     return $result;
 }
@@ -278,17 +274,12 @@ function post_edit_meta($postid,$data) {
     $db = get_conn(); $postid = intval($postid);
     if (!is_array($data)) return false;
     foreach ($data as $key=>$value) {
-        // 获取变量类型
-        $var_type = gettype($value);
-        // 判断是否需要序列化
-        $value = is_need_serialize($value) ? serialize($value) : $value;
         // 查询数据库里是否已经存在
         $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_post_meta` WHERE `postid`=%d AND `key`='%s';",array($postid,esc_sql($key))));
         // update
         if ($length > 0) {
             $db->update('#@_post_meta',array(
                 'value' => $value,
-                'type'  => $var_type,
             ),array(
                 'postid' => $postid,
                 'key'    => $key,
@@ -301,7 +292,6 @@ function post_edit_meta($postid,$data) {
                 'postid' => $postid,
                 'key'    => $key,
                 'value'  => $value,
-                'type'   => $var_type,
             ));
         }
     }

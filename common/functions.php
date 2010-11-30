@@ -340,6 +340,19 @@ function ajax_echo($code,$data,$eval=null){
     }
     echo json_encode($data); ob_flush(); exit();
 }
+/**
+ * ajax confirm
+ *
+ * @param string $message   提示文字
+ * @param string $submit    确定之后执行的代码
+ * @param string $cancel    取消之后执行的代码
+ * @return void
+ */
+function ajax_confirm($message,$submit,$cancel=null) {
+    if ($submit) header('X-LazyCMS-Submit: '.$submit);
+    if ($cancel) header('X-LazyCMS-Cancel: '.$cancel);
+    return ajax_echo('Confirm',$message);
+}
 function ajax_alert($message,$eval=null){
     return ajax_echo('Alert',$message,$eval);
 }
@@ -394,7 +407,7 @@ function clear_space($content){
 function instr($needle,$haystack){
     if (empty($haystack)) { return false; }
     if (!is_array($haystack)) $haystack = explode(',',$haystack);
-    return in_array($needle,$haystack) ? true : false;
+    return in_array($needle,$haystack);
 }
 /**
  * 页面跳转
@@ -587,6 +600,46 @@ function is_ajax(){
 	return (isset($_SERVER['HTTP_X_REQUESTED_WITH'])?$_SERVER['HTTP_X_REQUESTED_WITH']:null)=='XMLHttpRequest';
 }
 /**
+ * 检查数组类型
+ *
+ * @param array $array
+ * @return bool
+ */
+function is_assoc($array) {
+    return (is_array($array) && (0 !== count(array_diff_key($array, array_keys(array_keys($array)))) || count($array)==0));
+}
+/**
+ * 检查值是否已经序列化
+ *
+ * @param mixed $data Value to check to see if was serialized.
+ * @return bool
+ */
+function is_serialized($data) {
+    // if it isn't a string, it isn't serialized
+    if (!is_string($data))
+        return false;
+    $data = trim($data);
+    if ('N;' == $data)
+        return true;
+    if (!preg_match('/^([adObis]):/', $data, $badions))
+        return false;
+    switch ($badions[1]) {
+        case 'a' :
+        case 'O' :
+        case 's' :
+            if (preg_match("/^{$badions[1]}:[0-9]+:.*[;}]\$/s", $data))
+                return true;
+            break;
+        case 'b' :
+        case 'i' :
+        case 'd' :
+            if (preg_match("/^{$badions[1]}:[0-9.E-]+;\$/", $data))
+                return true;
+            break;
+    }
+    return false;
+}
+/**
  * 判断是否请求JSON格式
  * 
  * @return bool
@@ -602,24 +655,6 @@ function is_accept_json() {
  */
 function is_json($string){
     return preg_match('/^("(\\.|[^"\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/',$string);
-}
-/**
- * 是否需要序列化
- *
- * @param mixed $value
- * @return bool
- */
-function is_need_serialize($value){
-    return !instr(strtolower(gettype($value)), 'integer,double,string,null');
-}
-/**
- * 是否需要反序列化
- *
- * @param string $type
- * @return bool
- */
-function is_need_unserialize($type){
-    return !instr(strtolower($type), 'integer,double,string,null');
 }
 /**
  * stripslashes 扩展
@@ -1217,7 +1252,7 @@ function C($key,$value=null){
             if ($db->is_table('#@_option')) {
                 $result = $db->query("SELECT `type`,`value` FROM `#@_option` WHERE `module`='%s' AND `code`='%s' LIMIT 0,1;",array($module,$code));
                 if ($data = $db->fetch($result)) {
-                    $value = is_need_unserialize($data['type']) ? unserialize($data['value']) : $data['value'];
+                    $value = is_serialized($data['value']) ? unserialize($data['value']) : $data['value'];
                     // 保存到缓存
                     fcache_set($ckey.$key,$value);
                 }
@@ -1243,17 +1278,12 @@ function C($key,$value=null){
         } else {
             // 保存到缓存
             fcache_set($ckey.$key,$value);
-            // 获取变量类型
-            $var_type = gettype($value);
-            // 判断是否需要序列化
-            $value = is_need_serialize($value) ? serialize($value) : $value;
             // 查询数据库里是否已经存在
             $length = (int) $db->result(vsprintf("SELECT COUNT(`id`) FROM `#@_option` WHERE `module`='%s' AND `code`='%s'",array(esc_sql($module),esc_sql($code))));
             // update
             if ($length > 0) {
                 $db->update('#@_option',array(
                    'value' => $value,
-                   'type'  => $var_type,
                 ),array(
                     'module' => $module,
                     'code'   => $code,
@@ -1266,7 +1296,6 @@ function C($key,$value=null){
                     'module' => $module,
                     'code'   => $code,
                     'value'  => $value,
-                    'type'   => $var_type,
                 ));
             }
         }

@@ -168,11 +168,7 @@ function user_get_meta($userid) {
     $db = get_conn(); $result = array(); $userid = intval($userid);
     $rs = $db->query("SELECT * FROM `#@_user_meta` WHERE `userid`=%d;",$userid);
     while ($row = $db->fetch($rs)) {
-        if (is_need_unserialize($row['type'])) {
-           $result[$row['key']] = unserialize($row['value']);
-        } else {
-           $result[$row['key']] = $row['value'];
-        }
+        $result[$row['key']] = is_serialized($row['value']) ? unserialize($row['value']) : $row['value'];
     }
     return $result;
 }
@@ -251,17 +247,12 @@ function user_edit_meta($userid,$data) {
     $db = get_conn(); $userid = intval($userid);
     if (!is_array($data)) return false;
     foreach ($data as $key=>$value) {
-        // 获取变量类型
-        $var_type = gettype($value);
-        // 判断是否需要序列化
-        $value = is_need_serialize($value) ? serialize($value) : $value;
         // 查询数据库里是否已经存在
         $length = (int) $db->result(vsprintf("SELECT COUNT(*) FROM `#@_user_meta` WHERE `userid`=%d AND `key`='%s';",array($userid,esc_sql($key))));
         // update
         if ($length > 0) {
             $db->update('#@_user_meta',array(
                 'value' => $value,
-                'type'  => $var_type,
             ),array(
                 'userid' => $userid,
                 'key'    => $key,
@@ -274,7 +265,6 @@ function user_edit_meta($userid,$data) {
                 'userid' => $userid,
                 'key'    => $key,
                 'value'  => $value,
-                'type'   => $var_type,
             ));
         }
     }
