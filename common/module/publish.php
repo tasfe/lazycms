@@ -32,7 +32,7 @@ function publish_add($name,$func,$args=array()) {
     return $db->insert('#@_publish',array(
        'name'  => $name,
        'func'  => $func,
-       'args'  => $args,
+       'args'  => serialize($args),
        'state' => 0,
     ));
 }
@@ -218,6 +218,8 @@ function publish_lists($data,$sortids=null,$make_post=false,$sortid=0) {
     }
     // 当前分类生成结束
     else {
+        // 发布google sitemaps
+        publish_list_sitemaps($sortid);
         // 切换到下一个分类
         $keys = array_keys($sortids);
         $key  = array_search($sortid, $keys) + 1;
@@ -238,11 +240,91 @@ function publish_lists($data,$sortids=null,$make_post=false,$sortid=0) {
                 'elapsetime' => $data['elapsetime'] + micro_time(true) - BEGIN_TIME,
                 'state'      => 2,
             );
+            // 生成google sitemaps index
+            publish_sitemap_index();
             publish_edit($data['pubid'],$sets);
         }
 
     }
     return array_merge($data,$sets);
+}
+/**
+ * 生成 sitemap index
+ *
+ * @return int
+ */
+function publish_sitemap_index() {
+    $urls = ''; publish_page_sitemaps();
+    $urls.= sprintf('<sitemap><loc>%1$s</loc><lastmod>%2$s</lastmod></sitemap>', HTTP_HOST.ROOT.'sitemap-pages.xml', W3cDate());
+    $lists = taxonomy_get_list('category');
+    foreach ($lists as $taxonomyid) {
+        $taxonomy = taxonomy_get($taxonomyid);
+        $urls.= sprintf('<sitemap><loc>%1$s</loc><lastmod>%2$s</lastmod></sitemap>', HTTP_HOST.ROOT.$taxonomy['path'].'/sitemap.xml', W3cDate());
+    }
+    $xml = system_sitemaps('sitemapindex', $urls);
+    $map = ABS_PATH.'/sitemaps.xml';
+    mkdirs(dirname($map));
+    return file_put_contents($map, $xml);
+}
+/**
+ * 发布单页面 googlemaps
+ *
+ * @return int
+ */
+function publish_page_sitemaps() {
+    $db = get_conn(); $urls = '';
+    $rs = $db->query("SELECT `postid` FROM `#@_post` WHERE `type`='page' ORDER BY `postid` DESC LIMIT 50000;");
+    while ($data = $db->fetch($rs)) {
+        $post = post_get($data['postid']);
+        $post['path'] = post_get_path($post['sortid'],$post['path']);
+        $path = HTTP_HOST.ROOT.$post['path'];
+        $urls.= sprintf('<url><loc>%1$s</loc><changefreq>daily</changefreq><lastmod>%2$s</lastmod><priority>0.9</priority></url>', $path, W3cDate($post['edittime']?$post['edittime']:$post['datetime']));
+    }
+    $xml = system_sitemaps('urlset', $urls);
+    $map = ABS_PATH.'/sitemap-pages.xml';
+    mkdirs(dirname($map));
+    return file_put_contents($map, $xml);
+}
+/**
+ * 发布列表 google sitemaps
+ *
+ * @param int $sortid
+ * @return int
+ */
+function publish_list_sitemaps($sortid) {
+    $db  = get_conn(); $taxonomy = taxonomy_get($sortid);
+    // 载入模版
+    $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.$taxonomy['list']);
+    // 标签块信息
+    $block = tpl_get_block($html,'post,list','list'); $pages = 1; $urls = '';
+    if ($block) {
+        // 每页条数
+        $number = tpl_get_attr($block['tag'], 'number');
+        // 文章总数
+        $count  = $db->result(sprintf("SELECT COUNT(`objectid`) FROM `#@_term_relation` WHERE `taxonomyid`=%d;", esc_sql($sortid)));
+        // 总页数
+        $pages = ceil($count/$number); $pages = ((int)$pages == 0) ? 1 : $pages;
+    }
+    // 分页
+    for ($page=1; $page<=$pages; $page++) {
+        $file = $page==1 ? '' : 'index'.$page.C('HTMLFileSuffix');
+        $path = HTTP_HOST.ROOT.$taxonomy['path'].'/'.$file;
+        $urls.= sprintf('<url><loc>%1$s</loc><changefreq>daily</changefreq><lastmod>%2$s</lastmod><priority>0.5</priority></url>', $path, W3cDate());
+    }
+    // 文章页
+    $rs  = $db->query("SELECT `postid` FROM `#@_post` WHERE `sortid`=%d AND `type`='post' ORDER BY `postid` DESC LIMIT %d;", $sortid, 50000-$pages);
+    while ($data = $db->fetch($rs)) {
+        $post = post_get($data['postid']);
+        $post['path'] = post_get_path($post['sortid'],$post['path']);
+        // 文件不保存在本目录下的文件不加入索引
+        if (strncmp($post['path'], $taxonomy['path'], strlen($taxonomy['path'])) !== 0) continue;
+        $path = HTTP_HOST.ROOT.$post['path'];
+        $urls.= sprintf('<url><loc>%1$s</loc><changefreq>weekly</changefreq><lastmod>%2$s</lastmod><priority>0.8</priority></url>', $path, W3cDate($post['edittime']?$post['edittime']:$post['datetime']));
+    }
+    $xml = system_sitemaps('urlset', $urls);
+    $map = ABS_PATH.'/'.$taxonomy['path'].'/sitemap.xml';
+    mkdirs(dirname($map));
+    return file_put_contents($map, $xml);
 }
 /**
  * 删除进程
@@ -254,4 +336,12 @@ function publish_delete($listids) {
     $db = get_conn(); if (empty($listids)) return false;
     $listids = is_array($listids) ? implode(',', $listids) : $listids;
     return $db->query("DELETE FROM `#@_publish` WHERE `pubid` IN({$listids})");
+}
+/**
+ * 清空进程
+ *
+ * @return void
+ */
+function publish_empty() {
+    $db = get_conn(); return $db->truncate('#@_publish');
 }

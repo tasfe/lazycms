@@ -38,10 +38,10 @@ $method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 switch ($method) {
     // 强力插入
 	case 'new':
-	    // 权限检查
-	    current_user_can('model-new');
-	    // 重置标题
+        // 重置标题
 	    system_head('title',__('Add New Model'));
+        // 权限检查
+	    current_user_can('model-new');
 	    // 添加JS事件
 	    system_head('loadevents','model_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
@@ -53,10 +53,10 @@ switch ($method) {
 	case 'edit':
 	    // 所属
         $parent_file = 'model.php';
-	    // 权限检查
-	    current_user_can('model-edit');
 	    // 重置标题
 	    system_head('title',__('Edit Model'));
+        // 权限检查
+	    current_user_can('model-edit');
 	    // 添加JS事件
 	    system_head('loadevents','model_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';

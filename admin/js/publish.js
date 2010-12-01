@@ -41,3 +41,11 @@ function publish_delete(pubid){
         }
     });
 }
+// 清空
+function publish_empty(){
+    LazyCMS.confirm(_('Confirm Empty?'),function(r){
+        if (r) {
+            LazyCMS.postAction('publish.php', {method:'bulk', action:'empty'}, '1');
+        }
+    });
+}

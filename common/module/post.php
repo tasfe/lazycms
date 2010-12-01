@@ -92,8 +92,9 @@ function post_edit($postid,$data) {
                     $data['edittime'] = time();
                 }
                 // 删除旧文件
-                elseif (is_file(ABS_PATH.'/'.$post['path']))
+                elseif (is_file(ABS_PATH.'/'.$post['path'])){
                     unlink(ABS_PATH.'/'.$post['path']);
+                }
             }
         }
         $category = isset($data['category']) ? $data['category'] : null;

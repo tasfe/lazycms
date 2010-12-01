@@ -273,7 +273,7 @@ function taxonomy_get_relation($type, $objectid) {
         $tt_ids[] = $tt['taxonomyid'];
     }
     $in_tt_ids = "'" . implode("', '", $tt_ids) . "'";
-    $rs = $db->query("SELECT DISTINCT(`tr`.`taxonomyid`) AS `taxonomyid`,`tr`.`order` AS `order` FROM `#@_term_taxonomy` AS `tt` RIGHT JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%d AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
+    $rs = $db->query("SELECT DISTINCT(`tr`.`taxonomyid`) AS `taxonomyid`,`tr`.`order` AS `order` FROM `#@_term_relation` AS `tr` LEFT JOIN `#@_term_taxonomy` AS `tt` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%d AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
     while ($taxonomy = $db->fetch($rs)) {
         $result[$taxonomy['order']] = $taxonomy['taxonomyid'];
     }
@@ -298,7 +298,7 @@ function taxonomy_make_relation($type,$objectid,$taxonomies) {
     $tt_ids = array_diff($tt_ids,$taxonomies);
     $in_tt_ids = "'" . implode("', '", $tt_ids) . "'";
     // 先删除关系
-    $rs = $db->query("SELECT DISTINCT(`tr`.`taxonomyid`) AS `taxonomyid` FROM `#@_term_taxonomy` AS `tt` RIGHT JOIN `#@_term_relation` AS `tr` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%d AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
+    $rs = $db->query("SELECT DISTINCT(`tr`.`taxonomyid`) AS `taxonomyid` FROM `#@_term_relation` AS `tr` LEFT JOIN `#@_term_taxonomy` AS `tt` ON `tt`.`taxonomyid`=`tr`.`taxonomyid` WHERE `tr`.`objectid`=%d AND `tt`.`taxonomyid` IN({$in_tt_ids});",$objectid);
     while ($taxonomy = $db->fetch($rs)) {
         taxonomy_delete_relation($objectid,$taxonomy['taxonomyid']);
     }
@@ -367,7 +367,7 @@ function taxonomy_add($type,$name,$parentid=0,$data=null) {
  */
 function taxonomy_add_tag($name) {
     $db = get_conn(); $type = 'post_tag';
-    $taxonomyid = $db->result(sprintf("SELECT `taxonomyid` FROM `#@_term_taxonomy` AS `tt` RIGHT JOIN `#@_term` AS `t` ON `tt`.`termid`=`t`.`termid` WHERE `tt`.`type`='%s' AND `t`.`name`='%s' LIMIT 0,1;",esc_sql($type),esc_sql($name)));
+    $taxonomyid = $db->result(sprintf("SELECT `taxonomyid` FROM `#@_term` AS `t` LEFT JOIN `#@_term_taxonomy` AS `tt` ON `tt`.`termid`=`t`.`termid` WHERE `tt`.`type`='%s' AND `t`.`name`='%s' LIMIT 0,1;",esc_sql($type),esc_sql($name)));
     if (!$taxonomyid) {
         $taxonomyid = $db->insert('#@_term_taxonomy',array(
            'type'   => $type,
@@ -531,6 +531,8 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
         // 标签块信息
         $block  = tpl_get_block($html,'post,list','list');
         if ($block) {
+            // 扩展字段过滤
+            $meta   = tpl_get_attr($block['tag'],'meta');
             // 每页条数
             $number = tpl_get_attr($block['tag'],'number');
             // 排序方式
@@ -543,8 +545,27 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
             $order  = instr(strtoupper($order),'ASC,DESC') ? $order : 'DESC';
             // 设置每页显示数
             pages_init($number, $page);
-            // 拼装sql
-            $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE `taxonomyid`=%d ORDER BY `objectid` %s", esc_sql($taxonomyid), esc_sql($order));
+            // 自定义字段
+            if ($meta && (strpos($meta,':') !== false || strncasecmp($meta, 'find(', 5) === 0)) {
+                // meta="find(value,field)"
+                if (strncasecmp($meta, 'find(', 5) === 0) {
+                    $index = strrpos($meta, ',');
+                    $field = substring($meta, $index+1, strrpos($meta,')'));
+                    $value = substring($meta, 5, $index);
+                    $where = sprintf(" AND FIND_IN_SET('%s', `pm`.`value`)", esc_sql($value));
+                }
+                // meta="field:value"
+                elseif (($pos=strpos($meta,':')) !== false) {
+                    $field = substr($meta, 0, $pos);
+                    $value = substr($meta, $pos + 1);
+                    $where = sprintf(" AND `pm`.`value`='%s'", esc_sql($value));
+                }
+                $sql = sprintf("SELECT DISTINCT(`tr`.`objectid`) AS `postid` FROM `#@_term_relation` AS `tr` LEFT JOIN `#@_post_meta` AS `pm` ON `tr`.`objectid`=`pm`.`postid` WHERE `tr`.`taxonomyid`=%1\$d AND `pm`.`key`='%3\$s' %4\$s ORDER BY `objectid` %2\$s", esc_sql($taxonomyid), $order, esc_sql($field), $where);
+            } else {
+                // 拼装sql
+                $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE `taxonomyid`=%d ORDER BY `objectid` %s", esc_sql($taxonomyid), esc_sql($order));
+            }
+
 
             $result = pages_query($sql);
             // 解析分页标签

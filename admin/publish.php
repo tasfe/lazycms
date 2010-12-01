@@ -93,6 +93,10 @@ switch ($method) {
                 publish_delete($listids);
 	            ajax_success(__('Process deleted.'),"LazyCMS.redirect('".referer()."');");
 	            break;
+            case 'empty':
+                publish_empty();
+                ajax_success(__('Process emptied.'),"LazyCMS.redirect('".referer()."');");
+                break;
             default:
                 ajax_alert(__('Parameter is invalid.'));
                 break;
@@ -200,6 +204,7 @@ function table_nav() {
     echo         '<option value="delete">'.__('Delete').'</option>';
     echo     '</select>';
     echo     '<button type="button">'.__('Apply').'</button>';
+    echo     '<button type="button" onclick="publish_empty()">'.__('Empty').'</button>';
     echo     pages_list($page_url);
     echo '</div>';
 }

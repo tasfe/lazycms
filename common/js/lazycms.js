@@ -723,7 +723,7 @@ window._ = LazyCMS.translate;
         if (url=='' || typeof url=='undefined') url = self.location.href;
         $('.table-nav',form).each(function(i){
             var _this  = $(this);
-            $('button[type=button]',_this).click(function(){
+            $('button[type=button]:not([onclick])',_this).click(function(){
                 var button  = $(this), listids = [] ,action = $('select[name=actions]',_this).val(),
                 // 提交方法
                 submit = function(url,data) {

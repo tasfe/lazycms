@@ -225,34 +225,63 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
     $type = $tpl->get_attr($tag,'type');
     // 类型为必填
     if (!$type) return null;
+    // 扩展字段过滤
+    $meta   = tpl_get_attr($tag,'meta');
     // 分类ID
     $sortid = $tpl->get_attr($tag,'sortid');
+    // 被排除的分类ID
+    $notsid = $tpl->get_attr($tag,'sortid','!=');
     // 显示条数
     $number = $tpl->get_attr($tag,'number');
     // 斑马线实现
     $zebra  = $tpl->get_attr($tag,'zebra');
     // 校验数据
     $sortid = validate_is($sortid,VALIDATE_IS_LIST) ? $sortid : null;
+    $notsid = validate_is($notsid,VALIDATE_IS_LIST) ? $notsid : null;
     $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
     $zebra  = validate_is($zebra,VALIDATE_IS_NUMERIC) ? $zebra : 0;
     // 处理
     switch ($type) {
         case 'new': case 'hot': case 'chill':
             $sortid = $sortid===null ? tpl_get_var('sortid') : $sortid;
-            $where  = $sortid ? " AND `tr`.`taxonomyid` IN({$sortid})" : '';
-            switch ($type) {
-                case 'new'  : $order = 'ORDER BY `p`.`postid` DESC'; break;
-                case 'hot'  : $order = 'ORDER BY `p`.`views` DESC, `p`.`postid` DESC'; break;
-                case 'chill': $order = 'ORDER BY `p`.`views` ASC, `p`.`postid` DESC'; break;
+            if ($sortid) {
+                $where = " AND `tr`.`taxonomyid` IN({$sortid})";
+            } else {
+                $list  = taxonomy_get_list('category');
+                $where = $list ? sprintf(" AND `tr`.`taxonomyid` IN(%s)", implode(',', $list)) : '';
             }
-            $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` RIGHT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' %s %s LIMIT %d;",$where,$order,$number);
+            $where .= $notsid ? " AND `tr`.`taxonomyid` NOT IN({$notsid})" : '';
+            switch ($type) {
+                case 'new'  : $order = '`p`.`postid` DESC'; break;
+                case 'hot'  : $order = '`p`.`views` DESC, `p`.`postid` DESC'; break;
+                case 'chill': $order = '`p`.`views` ASC, `p`.`postid` DESC'; break;
+            }
+            // 自定义字段
+            if ($meta && (strpos($meta,':') !== false || strncasecmp($meta, 'find(', 5) === 0)) {
+                // meta="find(value,field)"
+                if (strncasecmp($meta, 'find(', 5) === 0) {
+                    $index = strrpos($meta, ',');
+                    $field = substring($meta, $index+1, strrpos($meta,')'));
+                    $value = substring($meta, 5, $index);
+                    $where.= sprintf(" AND FIND_IN_SET('%s', `pm`.`value`)", esc_sql($value));
+                }
+                // meta="field:value"
+                elseif (($pos=strpos($meta,':')) !== false) {
+                    $field = substr($meta, 0, $pos);
+                    $value = substr($meta, $pos + 1);
+                    $where.= sprintf(" AND `pm`.`value`='%s'", esc_sql($value));
+                }
+                $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM (`#@_term_relation` AS `tr` LEFT JOIN `#@_post` AS `p` ON `p`.`postid`=`tr`.`objectid`) LEFT JOIN `#@_post_meta` AS `pm` ON `p`.`postid`=`pm`.`postid` WHERE `p`.`type`='post' AND `pm`.`key`='%4\$s' %1\$s ORDER BY %2\$s LIMIT %3\$d;", $where, $order, $number, esc_sql($field));
+            } else {
+                $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_term_relation` AS `tr` LEFT JOIN `#@_post` AS `p` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' %1\$s ORDER BY %2\$s LIMIT %3\$d;",$where,$order,$number);
+            }
             break;
         case 'related':
             $_keywords = tpl_get_var('_keywords');
             if ($_keywords) {
                 $postid = tpl_get_var('postid');
                 $ids = implode(',', $_keywords);
-                $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` RIGHT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' AND `tr`.`taxonomyid` IN(%s) AND `p`.`postid`<>%d LIMIT %d;",$ids,$postid,$number);
+                $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_term_relation` AS `tr` LEFT JOIN `#@_post` AS `p` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' AND `tr`.`taxonomyid` IN(%s) AND `p`.`postid`<>%d LIMIT %d;",$ids,$postid,$number);
             } else {
                 $sql = null;
             }
@@ -420,7 +449,7 @@ function system_tags($tag) {
         // 显示Tags相关的文章列表
         $term   = term_get_byname($tag);
         $tid    = $db->result(sprintf("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `type`='post_tag' AND `termid`=%d", esc_sql($term['termid'])));
-        $sql    = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_post` AS `p` RIGHT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' AND `tr`.`taxonomyid`=%d ORDER BY `p`.`postid` %s", $tid, $order);
+        $sql    = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_term_relation` AS `tr` LEFT JOIN `#@_post` AS `p` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' AND `tr`.`taxonomyid`=%d ORDER BY `p`.`postid` %s", $tid, $order);
         $result = pages_query($sql);
         // 解析分页标签
         if (stripos($html,'{pagelist') !== false) {
@@ -560,7 +589,12 @@ function system_head($key,$value=null) {
     static $head = array();
     // 赋值
     if (!is_null($value)) {
-    	$head[$key] = $value;
+        if (isset($head[$key]) && is_array($value)) {
+            $head[$key] = array_merge((array)$head[$key], $value);
+        } else {
+            $head[$key] = $value;
+        }
+
     }
     return isset($head[$key])?$head[$key]:array();
 }
@@ -791,6 +825,7 @@ function system_jslang() {
         'No record!'        => __('No record!'),
         'Confirm Logout?'   => __('Confirm Logout?'),
         'Confirm Delete?'   => __('Confirm Delete?'),
+        'Confirm Empty?'   => __('Confirm Empty?'),
         'Latest Version:'   => __('Latest Version:'),
         'Did not select any action!' => __('Did not select any action!'),
         // 密码强度
@@ -981,7 +1016,18 @@ function system_phpinfo($info = INFO_ALL) {
     // match class "v" td cells an pass them to callback function
     return preg_replace_callback('%(<td class="v">)(.*?)(</td>)%i', '_system_phpinfo_v_callback', $output);
 }
-
+/**
+ * @param string $type  urlset,sitemapindex
+ * @param string $inner
+ * @return string
+ */
+function system_sitemaps($type,$inner) {
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>';
+    $xml.= '<'.$type.' xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+    $xml.= $inner;
+    $xml.= '</'.$type.'>';
+    return $xml;
+}
 /**
  * rewrite
  *

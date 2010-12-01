@@ -96,6 +96,27 @@ function path_format($path,$data=null) {
     return strftime($path);
 }
 /**
+ * W3c Datetime
+ *
+ * @param int $timestamp
+ * @return string
+ */
+function W3cDate($timestamp=0) {
+    if (!$timestamp) $timestamp = time();
+    if (version_compare(PHP_VERSION,'5.1.0','>='))
+        return date('c', $timestamp);
+    
+    $date    = date('Y-m-d\TH:i:s', $timestamp);
+    $matches = array();
+    if (preg_match('/^([\-+])(\d{2})(\d{2})$/', date('O', $timestamp), $matches)) {
+        $date .= $matches[1] . $matches[2] . ':' . $matches[3];
+    } else {
+        $date .= 'Z';
+    }
+    return $date;
+
+}
+/**
  * 时间格式化
  *
  * @param  $format
@@ -746,6 +767,23 @@ function mid($content,$start,$end=null,$clear=null){
         }
     }
     return $result;
+}
+/**
+ * 截取子字符串
+ *
+ * @param string $string
+ * @param int $start
+ * @param int $end
+ * @return bool|string
+ */
+function substring($string, $start, $end=null) {
+    if ($end === null) {
+        return substr($string, $start);
+    } elseif($end > $start) {
+        return substr($string, $start, $end - $start);
+    } else {
+        return false;
+    }
 }
 /**
  * IP地理位置解析

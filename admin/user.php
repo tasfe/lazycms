@@ -31,10 +31,10 @@ $method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 switch ($method) {
     // 强力插入
 	case 'new':
-	    // 权限检查
-	    current_user_can('user-new');
-	    // 重置标题
+        // 重置标题
 	    system_head('title',__('Add New User'));
+        // 权限检查
+	    current_user_can('user-new');
 	    // 添加JS事件
 	    system_head('loadevents','user_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
@@ -46,10 +46,10 @@ switch ($method) {
 	case 'edit':
 	    // 所属
         $parent_file = 'user.php';
+        // 重置标题
+	    system_head('title',__('Edit User'));
 	    // 权限检查
 	    current_user_can('user-edit');
-	    // 重置标题
-	    system_head('title',__('Edit User'));
 	    // 添加JS事件
 	    system_head('loadevents','user_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';

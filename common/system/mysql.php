@@ -511,6 +511,15 @@ class Mysql {
         return $this->query($sql);
     }
     /**
+     * 清空表
+     *
+     * @param string $table
+     * @return resource
+     */
+    function truncate($table) {
+        return $this->query("TRUNCATE TABLE `{$table}`;");
+    }
+    /**
      * 列出表里的所有字段
      *
      * @param string $table    表名

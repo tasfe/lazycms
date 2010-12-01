@@ -341,14 +341,15 @@ class Template {
     /**
      * 取得一个属性值
      *
-     * @param  $tag
-     * @param  $attr
+     * @param string $tag
+     * @param string $attr
+     * @param string $separator
      * @return string
      */
-    function get_attr($tag,$attr) {
-        $value = mid($tag, $attr.'="','"');
+    function get_attr($tag,$attr,$separator='=') {
+        $value = mid($tag, $attr.$separator.'"','"');
         if ($value === null)
-            $value = mid($tag, $attr."='","'");
+            $value = mid($tag, $attr.$separator."'","'");
         return $value;
     }
     /**
@@ -472,13 +473,14 @@ function tpl_get_block_inner($block) {
 /**
  * 取得属性
  *
- * @param  $tag
- * @param  $attr
+ * @param string $tag
+ * @param string $attr
+ * @param string $separator
  * @return string
  */
-function tpl_get_attr($tag, $attr) {
+function tpl_get_attr($tag, $attr,$separator='=') {
     $tpl = _tpl_get_object();
-    return $tpl->get_attr($tag, $attr);
+    return $tpl->get_attr($tag, $attr,$separator);
 }
 /**
  * 解析模版变量

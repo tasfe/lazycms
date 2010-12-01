@@ -23,29 +23,25 @@ $php_file = isset($php_file) ? $php_file : 'post.php';
 require dirname(__FILE__).'/admin.php';
 // 查询管理员信息
 $_USER = user_current();
-// 标题
-if ('page.php' == $php_file) {
-    system_head('title',  __('Pages'));
-} else {
-    system_head('title',  __('Posts'));
-}
-system_head('styles', array('css/post'));
-system_head('scripts',array('js/post'));
 // 方法
 $method = isset($_REQUEST['method'])?$_REQUEST['method']:null;
 
 switch ($method) {
     // 强力插入
     case 'new':
+        if ('page.php' == $php_file) {
+            system_head('title',__('Add New Page'));
+            current_user_can('page-new');
+        } else {
+            system_head('title',__('Add New Post'));
+            current_user_can('post-new');
+        }
+        system_head('styles', array('css/post'));
         system_head('scripts',array('js/xheditor','js/post'));
         system_head('jslang',system_editor_lang());
-        if ('page.php' == $php_file) {
-            current_user_can('page-new');
-            system_head('title',__('Add New Page'));
-        } else {
-            current_user_can('post-new');
-            system_head('title',__('Add New Post'));
-        }
+        system_head('jslang',array(
+            'Please enter the title or content!' => __('Please enter the title or content!'),
+        ));
 	    system_head('loadevents','post_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
 	    post_manage_page('add');	    
@@ -53,24 +49,27 @@ switch ($method) {
 	    break;
 	// 编辑
 	case 'edit':
-        system_head('scripts',array('js/xheditor','js/post'));
-        system_head('jslang',system_editor_lang());
         if ('page.php' == $php_file) {
             // 所属
             $parent_file = 'page.php';
-            // 权限检查
-            current_user_can('page-edit');
             // 重置标题
             system_head('title',__('Edit Page'));
+            // 权限检查
+            current_user_can('page-edit');
         } else {
             // 所属
             $parent_file = 'post.php';
-            // 权限检查
-            current_user_can('post-edit');
             // 重置标题
             system_head('title',__('Edit Post'));
+            // 权限检查
+            current_user_can('post-edit');
         }
-
+        system_head('styles', array('css/post'));
+        system_head('scripts',array('js/xheditor','js/post'));
+        system_head('jslang',system_editor_lang());
+        system_head('jslang',array(
+            'Please enter the title or content!' => __('Please enter the title or content!'),
+        ));
 	    system_head('loadevents','post_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
 	    post_manage_page('edit');	    
@@ -226,6 +225,10 @@ switch ($method) {
                 if (post_create($postid,$preid)) {
                     // 重新生成上一篇
                     if ($preid) post_create($preid);
+                    // 生成单页 sitemaps
+                    if ('page.php' == $php_file) {
+                        publish_page_sitemaps();
+                    }
                     $result = sprintf('<p>%s</p><p>%s</p>', $result, _x('[Submit] to Add New<br />[Cancel] to Back list','post'));
                     ajax_confirm($result, "LazyCMS.redirect('".PHP_FILE."?method=new&category={$sortid}');", "LazyCMS.redirect('".$referer."');");
                 } else {
@@ -326,12 +329,16 @@ switch ($method) {
 	    break;
     default:
         if ('page.php' == $php_file) {
+            system_head('title',  __('Pages'));
             current_user_can('page-list');
             $add_new = _x('Add New','page');
         } else {
+            system_head('title',  __('Posts'));
             current_user_can('post-list');
             $add_new = _x('Add New','post');
         }
+        system_head('styles', array('css/post'));
+        system_head('scripts',array('js/post'));
         system_head('loadevents','post_list_init');
 	    $model    = isset($_REQUEST['model'])?$_REQUEST['model']:'';
         $search   = isset($_REQUEST['query'])?$_REQUEST['query']:'';
