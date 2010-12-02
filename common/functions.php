@@ -1288,7 +1288,7 @@ function C($key,$value=null){
         $value = fcache_get($ckey.$key);
         if ($value === null) {
             if ($db->is_table('#@_option')) {
-                $result = $db->query("SELECT `type`,`value` FROM `#@_option` WHERE `module`='%s' AND `code`='%s' LIMIT 0,1;",array($module,$code));
+                $result = $db->query("SELECT `value` FROM `#@_option` WHERE `module`='%s' AND `code`='%s' LIMIT 0,1;",array($module,$code));
                 if ($data = $db->fetch($result)) {
                     $value = is_serialized($data['value']) ? unserialize($data['value']) : $data['value'];
                     // 保存到缓存
