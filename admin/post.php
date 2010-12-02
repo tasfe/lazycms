@@ -553,7 +553,7 @@ function post_manage_page($action) {
     $content  = isset($_DATA['content'])?$_DATA['content']:null;
     $comments = isset($_DATA['comments'])?$_DATA['comments']:'Yes';
     $template = isset($_DATA['template'])?$_DATA['template']:null;
-    $keywords = isset($_DATA['keywords'])?post_get_keywords($_DATA['keywords']):null;
+    $keywords = isset($_DATA['keywords'])?taxonomy_get_keywords($_DATA['keywords']):null;
     $categories  = isset($_DATA['category'])?$_DATA['category']:array();
     $description = isset($_DATA['description'])?$_DATA['description']:null;
     

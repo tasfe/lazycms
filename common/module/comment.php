@@ -246,7 +246,7 @@ function comment_create($postid) {
                 tpl_set_var(array(
                     'guide'    => $guide ? $guide.' &gt;&gt; '.$title : $title,
                     'title'    => $title,
-                    'keywords' => post_get_keywords($post['keywords']),
+                    'keywords' => taxonomy_get_keywords($post['keywords']),
                     'description' => $post['description'],
                 ));
 
@@ -332,7 +332,7 @@ function comment_create($postid) {
                             'guide'    => $guide ? $guide.' &gt;&gt; '.$title : $title,
                             'title'    => $title,
                             'pagelist' => pages_list(ROOT.$basename.'_$'.$suffix, '!_$', $page, $pages, $length),
-                            'keywords' => post_get_keywords($post['keywords']),
+                            'keywords' => taxonomy_get_keywords($post['keywords']),
                             'description' => $post['description'],
                         ));
 
@@ -356,7 +356,7 @@ function comment_create($postid) {
             tpl_set_var(array(
                 'guide'    => $guide ? $guide.' &gt;&gt; '.$title : $title,
                 'title'    => $title,
-                'keywords' => post_get_keywords($post['keywords']),
+                'keywords' => taxonomy_get_keywords($post['keywords']),
                 'description' => $post['description'],
             ));
 

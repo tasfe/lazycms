@@ -68,7 +68,7 @@ function post_edit($postid,$data) {
                 // 文章添加大于24小时
                 if (time()-$post['edittime'] > 86400) {
                     // 生成临时转向文件
-                    $post['keywords'] = post_get_keywords($post['keywords']);
+                    $post['keywords'] = taxonomy_get_keywords($post['keywords']);
                     if (strncmp($data['path'],'/',1) === 0) {
                         $path = ltrim($data['path'], '/');
                     } elseif ($post['sortid'] > 0) {
@@ -131,7 +131,7 @@ function post_edit($postid,$data) {
             array_walk($keywords,create_function('&$s','$s=esc_html(trim($s));'));
             // 强力插入关键词
             foreach($keywords as $key) {
-                $taxonomies[] = taxonomy_add_tag($key);
+                $taxonomies[] = taxonomy_add_tag($key, 'post_tag');
             }
             $data['keywords'] = implode(',',$keywords);
             // 创建关系
@@ -208,20 +208,6 @@ function post_get_taxonomy($categories) {
         $result[$taxonomyid] = taxonomy_get($taxonomyid);
     }
     return $result;
-}
-/**
- * 文章关键词
- *
- * @param  $keywords
- * @return string
- */
-function post_get_keywords($keywords) {
-    $result = array();
-    foreach((array)$keywords as $taxonomyid) {
-        $taxonomy   = taxonomy_get($taxonomyid);
-        $result[] = str_replace(chr(44), '&#44;', $taxonomy['name']);
-    }
-    return implode(',', $result);
 }
 /**
  * 查询文章路径
@@ -399,7 +385,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
             'digg'     => $post['digg'],
             'date'     => $post['datetime'],
             'edittime' => $post['edittime'],
-            'keywords' => post_get_keywords($post['keywords']),
+            'keywords' => taxonomy_get_keywords($post['keywords']),
             'prepage'  => post_prepage($post['sortid'],$post['postid'],$preid),
             'nextpage' => post_nextpage($post['sortid'],$post['postid'],$nextid),
             'cmt_state'    => $post['comments'],

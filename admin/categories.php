@@ -283,7 +283,7 @@ function category_manage_page($action) {
     $path    = isset($_SORT['path'])?$_SORT['path']:null;
     $list    = isset($_SORT['list'])?$_SORT['list']:null;
     $page    = isset($_SORT['page'])?$_SORT['page']:null;
-    $keywords = isset($_SORT['keywords'])?$_SORT['keywords']:null;
+    $keywords = isset($_SORT['keywords'])?taxonomy_get_keywords($_SORT['keywords']):null;
     $description = isset($_SORT['description'])?$_SORT['description']:null;
     $models = model_gets(0);
     echo '<div class="wrap">';

@@ -299,7 +299,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
             $post = post_get($data['postid']);
             $post['sort'] = taxonomy_get($post['sortid']);
             $post['path'] = post_get_path($post['sortid'],$post['path']);
-            $post['keywords'] = post_get_keywords($post['keywords']);
+            $post['keywords'] = taxonomy_get_keywords($post['keywords']);
             // 文章内容
             if ($post['content'] && strpos($post['content'],'<!--pagebreak-->')!==false) {
                 $contents = explode('<!--pagebreak-->', $post['content']);

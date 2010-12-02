@@ -238,6 +238,7 @@ function taxonomy_get($taxonomyid) {
         if ($meta = taxonomy_get_meta($taxonomy['taxonomyid'])) {
             $taxonomy = array_merge($taxonomy,$meta);
         }
+        $taxonomy['keywords'] = taxonomy_get_relation('sort_tag',$taxonomy['taxonomyid']);
         // 保存到缓存
         fcache_set($prefix.$taxonomyid,$taxonomy);
         
@@ -279,6 +280,20 @@ function taxonomy_get_relation($type, $objectid) {
     }
     ksort($result);
     return $result;
+}
+/**
+ * 获取关键词
+ *
+ * @param  $keywords
+ * @return string
+ */
+function taxonomy_get_keywords($keywords) {
+    $result = array();
+    foreach((array)$keywords as $taxonomyid) {
+        $taxonomy = taxonomy_get($taxonomyid);
+        $result[] = str_replace(chr(44), '&#44;', $taxonomy['name']);
+    }
+    return implode(',', $result);
 }
 /**
  * 建立分类关系
@@ -362,11 +377,12 @@ function taxonomy_add($type,$name,$parentid=0,$data=null) {
 /**
  * 添加Tag
  *
- * @param  $name
+ * @param string $name
+ * @param string $type
  * @return array|null
  */
-function taxonomy_add_tag($name) {
-    $db = get_conn(); $type = 'post_tag';
+function taxonomy_add_tag($name, $type='post_tag') {
+    $db = get_conn();
     $taxonomyid = $db->result(sprintf("SELECT `taxonomyid` FROM `#@_term` AS `t` LEFT JOIN `#@_term_taxonomy` AS `tt` ON `tt`.`termid`=`t`.`termid` WHERE `tt`.`type`='%s' AND `t`.`name`='%s' LIMIT 0,1;",esc_sql($type),esc_sql($name)));
     if (!$taxonomyid) {
         $taxonomyid = $db->insert('#@_term_taxonomy',array(
@@ -415,12 +431,19 @@ function taxonomy_edit($taxonomyid,$data) {
                 // 分隔失败，使用空格分隔关键词
                 if (count($keywords)==1) $keywords = explode(' ',$data['keywords']);
             }
+            $taxonomies = array();
             // 移除重复的关键词
             $keywords = array_unique($keywords);
             // 去除关键词两边的空格，转义HTML
             array_walk($keywords,create_function('&$s','$s=esc_html(trim($s));'));
+            // 强力插入关键词
+            foreach($keywords as $key) {
+                $taxonomies[] = taxonomy_add_tag($key, 'sort_tag');
+            }
             // 组合关键词
             $data['keywords'] = implode(',', $keywords);
+            // 创建关系
+            taxonomy_make_relation('sort_tag',$taxonomyid,$taxonomies);
         }
         // 判断数据应该放在哪里
         foreach ($data as $field=>$value) {
@@ -432,6 +455,8 @@ function taxonomy_edit($taxonomyid,$data) {
                 $meta_rows[$field] = $value;
             }
         }
+        // 清理字段
+        unset($meta_rows['keywords']);
         // 更新数据
         if (!empty($term_rows['name'])) $taxonomy_rows['termid'] = term_add($term_rows['name']);
         if ($taxonomy_rows) $db->update('#@_term_taxonomy',$taxonomy_rows,array('taxonomyid'=>$taxonomyid));
@@ -608,7 +633,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                         'content'  => $content,
                         'date'     => $post['datetime'],
                         'edittime' => $post['edittime'],
-                        'keywords' => post_get_keywords($post['keywords']),
+                        'keywords' => taxonomy_get_keywords($post['keywords']),
                         'description' => $post['description'],
                     );
                     // 设置分类变量
@@ -685,7 +710,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
             'guide'    => system_category_guide($taxonomy['taxonomyid']),
             'title'    => $taxonomy['name'],
             'content'  => $taxonomy['content'],
-            'keywords' => $taxonomy['keywords'],
+            'keywords' => taxonomy_get_keywords($taxonomy['keywords']),
             'description' => $taxonomy['description'],
         ));
 
