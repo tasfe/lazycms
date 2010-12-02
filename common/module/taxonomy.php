@@ -684,6 +684,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
             'count'    => $taxonomy['count'],
             'guide'    => system_category_guide($taxonomy['taxonomyid']),
             'title'    => $taxonomy['name'],
+            'content'  => $taxonomy['content'],
             'keywords' => $taxonomy['keywords'],
             'description' => $taxonomy['description'],
         ));

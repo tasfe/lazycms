@@ -32,7 +32,7 @@ require ADMIN_PATH.'/admin.php'; error_reporting(0);
 $type = isset($_GET['type'])?$_GET['type']:null;
 $ver  = isset($_GET['ver'])?$_GET['ver']:0;
 $load = isset($_GET['load'])?$_GET['load']:null;
-$load = preg_replace( '/[^a-z0-9,_-]+/i', '', $load );
+$load = preg_replace( '/[^a-z0-9,_\-\.]+/i', '', $load );
 $ckey = sprintf('loader.%s.%s.%d', $type, $load, $ver);
 $load = explode(',', $load);
 if ( empty($load) ) exit;

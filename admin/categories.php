@@ -23,7 +23,6 @@ require dirname(__FILE__).'/admin.php';
 $_USER = user_current();
 // 标题
 system_head('title',  __('Categories'));
-system_head('styles', array('css/categories'));
 system_head('scripts',array('js/categories'));
 // 动作
 $method  = isset($_REQUEST['method'])?$_REQUEST['method']:null;
@@ -37,6 +36,9 @@ switch ($method) {
     case 'new':
 	    // 重置标题
 	    system_head('title',__('Add New Category'));
+        system_head('styles', array('css/xheditor.plugins'));
+        system_head('scripts',array('js/xheditor'));
+        system_head('jslang',system_editor_lang());
 	    // 添加JS事件
 	    system_head('loadevents','sort_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
@@ -48,6 +50,9 @@ switch ($method) {
 	case 'edit':
 	    // 重置标题
 	    system_head('title',__('Edit Category'));
+        system_head('styles', array('css/xheditor.plugins'));
+        system_head('scripts',array('js/xheditor'));
+        system_head('jslang',system_editor_lang());
 	    // 添加JS事件
 	    system_head('loadevents','sort_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
@@ -62,11 +67,12 @@ switch ($method) {
             if (isset($_POST['path']))
                 $_POST['path'] = trim($_POST['path'],'/');
             
-            $parent = isset($_POST['parent'])?$_POST['parent']:'0';
-            $name   = isset($_POST['name'])?$_POST['name']:null;
-            $path   = isset($_POST['path'])?$_POST['path']:null;
-            $list   = isset($_POST['list'])?$_POST['list']:null;
-            $page   = isset($_POST['page'])?$_POST['page']:null;
+            $parent   = isset($_POST['parent'])?$_POST['parent']:'0';
+            $name     = isset($_POST['name'])?$_POST['name']:null;
+            $content  = isset($_POST['content'])?$_POST['content']:null;
+            $path     = isset($_POST['path'])?$_POST['path']:null;
+            $list     = isset($_POST['list'])?$_POST['list']:null;
+            $page     = isset($_POST['page'])?$_POST['page']:null;
             $keywords = isset($_POST['keywords'])?$_POST['keywords']:null;
             $description = isset($_POST['description'])?$_POST['description']:null;
 
@@ -93,11 +99,12 @@ switch ($method) {
                 // 编辑
                 if ($taxonomyid) {
                     $info = array(
-                        'parent' => esc_html($parent),
-                        'name'   => esc_html($name),
-                        'path'   => esc_html($path),
-                        'list'   => esc_html($list),
-                        'page'   => esc_html($page),
+                        'parent'   => esc_html($parent),
+                        'name'     => esc_html($name),
+                        'content'  => $content,
+                        'path'     => esc_html($path),
+                        'list'     => esc_html($list),
+                        'page'     => esc_html($page),
                         'keywords' => esc_html($keywords),
                         'description' => esc_html($description),
                     );
@@ -110,9 +117,10 @@ switch ($method) {
                     $parent   = esc_html($parent);
                     $name     = esc_html($name);
                     $taxonomy = taxonomy_add('category',$name,$parent,array(
-                        'path'  => esc_html($path),
-                        'list'  => esc_html($list),
-                        'page'  => esc_html($page),
+                        'path'     => esc_html($path),
+                        'content'  => $content,
+                        'list'     => esc_html($list),
+                        'page'     => esc_html($page),
                         'keywords' => esc_html($keywords),
                         'description' => esc_html($description),
                     ));
@@ -271,6 +279,7 @@ function category_manage_page($action) {
     }
     $parent  = isset($_SORT['parent'])?$_SORT['parent']:null;
     $name    = isset($_SORT['name'])?$_SORT['name']:null;
+    $content = isset($_SORT['content'])?$_SORT['content']:null;
     $path    = isset($_SORT['path'])?$_SORT['path']:null;
     $list    = isset($_SORT['list'])?$_SORT['list']:null;
     $page    = isset($_SORT['page'])?$_SORT['page']:null;
@@ -293,6 +302,13 @@ function category_manage_page($action) {
     echo               '<th><label for="name">'._x('Name','sort').'<span class="resume">'.__('(required)').'</span></label></th>';
     echo               '<td><input class="text" id="name" name="name" type="text" size="30" value="'.$name.'" /></td>';
     echo           '</tr>';
+    echo               '<tr>';
+    echo                   '<th><label for="content">'._x('Content','sort').'</label></th>';
+    echo                   '<td><label for="need_cnt">';
+    echo                       '<input type="checkbox" name="need_cnt" value="1" id="need_cnt"'.($content?' checked="checked"':'').' onclick="sort_toggle_content(this.checked);" />'.__('Need content').'</label>';
+    echo                       '<div class="content'.($content ? '' : ' hide').'">'.editor('content', $content).'</div>';
+    echo                   '</td>';
+    echo               '</tr>';
     echo           '<tr>';
     echo               '<th><label for="path">'._x('Path','sort').'<span class="resume">'.__('(required)').'</span></label></th>';
     echo               '<td><input class="text" id="path" name="path" type="text" size="70" value="'.$path.'" /><div class="rules">';

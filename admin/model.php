@@ -438,6 +438,7 @@ function model_manage_page($action) {
                 echo                       '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$i.'" /></td>';
                 echo                       '<td><strong class="edit"><a href="#'.$i.'">'.$field['l'].'</a></strong><br/><div class="row-actions">'.$actions.'</div>'.$textarea.'</td>';
                 echo                       '<td>'.$field['n'].'</td>';
+                echo                       '<td>{$model.'.$field['n'].'}</td>';
                 echo                       '<td>'.model_get_types($field['t']).'</td>';
                 echo                       '<td>'.(empty($field['d'])?'NULL':$field['d']).'</td>';
                 echo                    '</tr>';
@@ -476,6 +477,7 @@ function fields_table_thead() {
     echo     '<th class="check-column"><input type="checkbox" name="select" value="all" /></th>';
     echo     '<th>'._x('Label','model').'</th>';
     echo     '<th>'._x('Field','model').'</th>';
+    echo     '<th>'._x('Tag','model').'</th>';
     echo     '<th>'._x('Type','model').'</th>';
     echo     '<th>'._x('Default','model').'</th>';
     echo '</tr>';

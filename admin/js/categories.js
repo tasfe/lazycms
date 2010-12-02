@@ -49,3 +49,15 @@ function sort_delete(sortid){
         }
     });
 }
+/**
+ * 切换内容编辑器显示模式
+ *
+ * @param mode
+ */
+function sort_toggle_content(mode) {
+    if (mode) {
+        $('form#sortmanage div.content').removeClass('hide');
+    } else {
+        $('form#sortmanage div.content').addClass('hide');
+    }
+}
