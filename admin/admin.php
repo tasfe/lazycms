@@ -20,18 +20,18 @@
 // 定义管理后台路径
 defined('ADMIN_PATH') or define('ADMIN_PATH', dirname(__FILE__));
 // 加载公共文件
-require ADMIN_PATH.'/../global.php';
+include ADMIN_PATH.'/../global.php';
 // 后台的目录
 define('ADMIN',ROOT.str_replace('\\','/',substr(ADMIN_PATH,strlen(ABS_PATH)+1)).'/');
 // js css 加载类
-require_file(COM_PATH.'/system/loader.php');
+include_file(COM_PATH.'/system/loader.php');
 // 添加 CSS
 func_add_callback('loader_add_css', language(), sprintf('/admin/css/%s.css', language()));
 // 加载公共模块
 include_modules();
 // 检查是否已配置
 defined('NO_REDIRECT') or define('NO_REDIRECT', false);
-if (!NO_REDIRECT && (!is_file(COM_PATH.'/config.php') || !installed())) {
+if (!NO_REDIRECT && (!is_file(ABS_PATH.'/config.php') || !installed())) {
     redirect(ADMIN.'install.php');
 }
 /**

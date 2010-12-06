@@ -145,7 +145,7 @@ function user_get($param,$type=0){
             $where = sprintf("`authcode`='%s'",esc_sql($param));
             break;
     }
-    $rs = $db->query("SELECT * FROM `#@_user` WHERE {$where} LIMIT 0,1;");
+    $rs = $db->query("SELECT * FROM `#@_user` WHERE {$where} LIMIT 1 OFFSET 0;");
     // 判断用户是否存在
     if ($user = $db->fetch($rs)) {
         if ($meta = user_get_meta($user['userid'])) {

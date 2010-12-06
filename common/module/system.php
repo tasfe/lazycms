@@ -194,7 +194,7 @@ function system_tpl_plugin($tag_name,$tag) {
                 if ($content) {
                     $dicts = term_gets();
                     if (!empty($dicts)) {
-                        require_file(COM_PATH.'/system/keyword.php');
+                        include_file(COM_PATH.'/system/keyword.php');
                         $splitword = new keyword($dicts);
                         $content   = $splitword->tags($content, $link, mt_rand($tag_min,$tag_max));
                     }
@@ -271,9 +271,9 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
                     $value = substr($meta, $pos + 1);
                     $where.= sprintf(" AND `pm`.`value`='%s'", esc_sql($value));
                 }
-                $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM (`#@_term_relation` AS `tr` LEFT JOIN `#@_post` AS `p` ON `p`.`postid`=`tr`.`objectid`) LEFT JOIN `#@_post_meta` AS `pm` ON `p`.`postid`=`pm`.`postid` WHERE `p`.`type`='post' AND `pm`.`key`='%4\$s' %1\$s ORDER BY %2\$s LIMIT %3\$d;", $where, $order, $number, esc_sql($field));
+                $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM (`#@_term_relation` AS `tr` LEFT JOIN `#@_post` AS `p` ON `p`.`postid`=`tr`.`objectid`) LEFT JOIN `#@_post_meta` AS `pm` ON `p`.`postid`=`pm`.`postid` WHERE `p`.`type`='post' AND `pm`.`key`='%4\$s' %1\$s ORDER BY %2\$s LIMIT %3\$d OFFSET 0;", $where, $order, $number, esc_sql($field));
             } else {
-                $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_term_relation` AS `tr` LEFT JOIN `#@_post` AS `p` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' %1\$s ORDER BY %2\$s LIMIT %3\$d;",$where,$order,$number);
+                $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_term_relation` AS `tr` LEFT JOIN `#@_post` AS `p` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' %1\$s ORDER BY %2\$s LIMIT %3\$d OFFSET 0;",$where,$order,$number);
             }
             break;
         case 'related':
@@ -281,7 +281,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
             if ($_keywords) {
                 $postid = tpl_get_var('postid');
                 $ids = implode(',', $_keywords);
-                $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_term_relation` AS `tr` LEFT JOIN `#@_post` AS `p` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' AND `tr`.`taxonomyid` IN(%s) AND `p`.`postid`<>%d LIMIT %d;",$ids,$postid,$number);
+                $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_term_relation` AS `tr` LEFT JOIN `#@_post` AS `p` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' AND `tr`.`taxonomyid` IN(%s) AND `p`.`postid`<>%d LIMIT %d OFFSET 0;",$ids,$postid,$number);
             } else {
                 $sql = null;
             }
@@ -375,7 +375,7 @@ function system_tpl_comments_plugin($tag_name,$tag,$block) {
         case 'new':
             $postid = $tpl->get_var('postid');
             $insql  = $postid ? sprintf(" AND `postid`=%d", esc_sql($postid)) : '';
-            $sql    = "SELECT * FROM `#@_comments` WHERE `approved`='1' {$insql} ORDER BY `cmtid` DESC LIMIT {$number};";
+            $sql    = "SELECT * FROM `#@_comments` WHERE `approved`='1' {$insql} ORDER BY `cmtid` DESC LIMIT {$number} OFFSET 0;";
 
             break;
         default:

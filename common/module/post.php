@@ -181,7 +181,7 @@ function post_get($postid) {
     $post = fcache_get($ckey);
     if ($post !== null) return $post;
 
-    $rs = $db->query("SELECT * FROM `#@_post` WHERE `postid`=%d LIMIT 0,1;",$postid);
+    $rs = $db->query("SELECT * FROM `#@_post` WHERE `postid`=%d LIMIT 1 OFFSET 0;",$postid);
     // 判断文章是否存在
     if ($post = $db->fetch($rs)) {
         // 取得分类关系
@@ -492,7 +492,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
  */
 function post_prepage($sortid,$postid,&$preid=0) {
     $db    = get_conn();
-    $preid = $db->result(sprintf("SELECT `objectid` FROM `#@_term_relation` WHERE `taxonomyid`=%d AND `objectid`<%d ORDER BY `objectid` DESC LIMIT 1;", esc_sql($sortid), esc_sql($postid)));
+    $preid = $db->result(sprintf("SELECT `objectid` FROM `#@_term_relation` WHERE `taxonomyid`=%d AND `objectid`<%d ORDER BY `objectid` DESC LIMIT 1 OFFSET 0;", esc_sql($sortid), esc_sql($postid)));
     if ($preid) {
         $post = post_get($preid);
         $post['path'] = post_get_path($post['sortid'],$post['path']);
@@ -516,7 +516,7 @@ function post_prepage($sortid,$postid,&$preid=0) {
  */
 function post_nextpage($sortid,$postid,&$nextid=0) {
     $db     = get_conn();
-    $nextid = $db->result(sprintf("SELECT `objectid` FROM `#@_term_relation` WHERE `taxonomyid`=%d AND `objectid`>%d ORDER BY `objectid` ASC LIMIT 1;", esc_sql($sortid), esc_sql($postid)));
+    $nextid = $db->result(sprintf("SELECT `objectid` FROM `#@_term_relation` WHERE `taxonomyid`=%d AND `objectid`>%d ORDER BY `objectid` ASC LIMIT 1 OFFSET 0;", esc_sql($sortid), esc_sql($postid)));
     if ($nextid) {
         $post = post_get($nextid);
         $post['path'] = post_get_path($post['sortid'],$post['path']);

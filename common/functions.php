@@ -27,25 +27,34 @@ defined('COM_PATH') or die('Restricted access!');
 
 
 /**
- * 解析DSN
+ * 解析 PHP info
  *
- * @param string $DSN
- *          DSN format: mysql://root:123456@localhost:3306/prefix/dbname
- * @return array|null
+ * @return array
  */
-function parse_dsn($DSN){
-    if (empty($DSN)) return null;
-    if (preg_match('/^(\w+):\/\/([^\/:]+)(:([^@]+)?)?@([\w\-\.]+(:(\d+))?)(\/([\w\-]+)\/([\w\-]+)|\/([\w\-]+))$/i',trim($DSN),$info)) {
-        return array(
-            'host'  => isset($info[5])?$info[5]:null,
-            'user'  => isset($info[2])?$info[2]:null,
-            'pwd'   => isset($info[4])?$info[4]:null,
-            'name'  => isset($info[11])?$info[11]:$info[10],
-            'scheme'=> isset($info[1])?$info[1]:null,
-            'prefix'=> !empty($info[9])?$info[9].'_' : null,
-        );
+function parse_phpinfo() {
+    ob_start(); phpinfo(INFO_MODULES); $s = ob_get_contents(); ob_end_clean();
+    $s = strip_tags($s, '<h2><th><td>');
+    $s = preg_replace('/<th[^>]*>([^<]+)<\/th>/', '<info>\1</info>', $s);
+    $s = preg_replace('/<td[^>]*>([^<]+)<\/td>/', '<info>\1</info>', $s);
+    $t = preg_split('/(<h2[^>]*>[^<]+<\/h2>)/', $s, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $r = array(); $count = count($t);
+    $p1 = '<info>([^<]+)<\/info>';
+    $p2 = '/'.$p1.'\s*'.$p1.'\s*'.$p1.'/';
+    $p3 = '/'.$p1.'\s*'.$p1.'/';
+    for ($i = 1; $i < $count; $i++) {
+        if (preg_match('/<h2[^>]*>([^<]+)<\/h2>/', $t[$i], $matchs)) {
+            $name = trim($matchs[1]);
+            $vals = explode("\n", $t[$i + 1]);
+            foreach ($vals AS $val) {
+                if (preg_match($p2, $val, $matchs)) { // 3cols
+                    $r[$name][trim($matchs[1])] = array(trim($matchs[2]), trim($matchs[3]));
+                } elseif (preg_match($p3, $val, $matchs)) { // 2cols
+                    $r[$name][trim($matchs[1])] = trim($matchs[2]);
+                }
+            }
+        }
     }
-    return null;
+    return $r;
 }
 /**
  * 解析路径 /tags/CMS
@@ -145,36 +154,20 @@ function time_format($format,$time) {
 }
 /**
  * 取得数据库连接对象
- *
- * @param string $DSN	        DSN format: mysql://root:123456@localhost:3306/lazy/lazycms
- * @param bool   $pconnect      是否使用长连接，默认不使用
- * @return object
  */
-function get_conn($DSN=null,$pconnect=false){
-    static $db; $guid = guid(array($DSN,$pconnect));
-    if (isset($db[$guid]) && is_object($db[$guid])) return $db[$guid];
-    $config = parse_dsn($DSN);
-    if (empty($config)) {
-        if (defined('DB_HOST') && defined('DB_USER') && defined('DB_PWD') && defined('DB_NAME') && defined('DB_PREFIX')) {
-            $config = array(
-                'host'  => DB_HOST,
-                'user'  => DB_USER,
-                'pwd'   => DB_PWD,
-                'name'  => DB_NAME,
-                'prefix'=> DB_PREFIX,
-            );
+function &get_conn(){
+    global $db;
+    if (is_null($db) || get_class($db)=='DBQuery_NOOP') {
+        if (!class_exists('DBQuery'))
+            include COM_PATH.'/system/dbquery.php';
+
+        if (defined('DB_DSN') && defined('DB_USER') && defined('DB_PWD')) {
+            $db = DBQuery::factory(DB_DSN, DB_USER, DB_PWD);
+        } else {
+            $db = new DBQuery_NOOP();
         }
     }
-    // 加载类
-    if (!class_exists('Mysql')) {
-        require_file(COM_PATH.'/system/mysql.php');
-    }
-    // 实例话mysql类
-    $mysql = new Mysql($config,$pconnect);
-    if ($mysql->conn && $mysql->errno()==0) {
-        $db[$guid] = $mysql;
-    }
-    return $mysql;
+    return $db;
 }
 /**
  * 输出编辑器
@@ -794,7 +787,7 @@ function substring($string, $start, $end=null) {
 function ip2addr($ip) {
     static $QQWry;
 	if ( is_null($QQWry) ) {
-        require_file(COM_PATH.'/system/qqwry.php');
+        include_file(COM_PATH.'/system/qqwry.php');
         $QQWry = new QQWry(COM_PATH.'/QQWry.Dat');
     }
     return $QQWry->ip2addr($ip);
@@ -807,7 +800,7 @@ function ip2addr($ip) {
  */
 function jsmin($js) {
     if (!class_exists('JSMin')) {
-        require_file(COM_PATH.'/system/jsmin.php');
+        include_file(COM_PATH.'/system/jsmin.php');
     }
     return JSMin::minify($js);
 }
@@ -820,7 +813,7 @@ function jsmin($js) {
  */
 function pinyin($str, $ucfirst=true) {
     if (!function_exists('_pinyin_get_object')) {
-        require_file(COM_PATH.'/system/pinyin.php');
+        include_file(COM_PATH.'/system/pinyin.php');
     }
     $pinyin = _pinyin_get_object();
     return $pinyin->encode($str, $ucfirst);
@@ -837,7 +830,7 @@ function pinyin($str, $ucfirst=true) {
  */
 function pages_list($url,$mode='$',$page=null,$total=null,$length=null) {
     if (!function_exists('_pages_get_object')) {
-        require_file(COM_PATH.'/system/pages.php');
+        include_file(COM_PATH.'/system/pages.php');
     }
     $pages = _pages_get_object();
     if ($page !== null)   $pages->page   = $page;
@@ -853,7 +846,7 @@ function pages_list($url,$mode='$',$page=null,$total=null,$length=null) {
  */
 function http_status_desc($code) {
     if (!function_exists('_httplib_get_object')) {
-        require_file(COM_PATH.'/system/httplib.php');
+        include_file(COM_PATH.'/system/httplib.php');
     }
     $http = _httplib_get_object();
     return $http->status_desc($code);
@@ -866,7 +859,7 @@ function http_status_desc($code) {
  */
 function time_zone_set($timezone) {
     if (!function_exists('_timezone_get_object')) {
-        require_file(COM_PATH.'/system/timezone.php');
+        include_file(COM_PATH.'/system/timezone.php');
     }
     $zone = _timezone_get_object();
     return $zone->set_zone($timezone);
@@ -878,7 +871,7 @@ function time_zone_set($timezone) {
  */
 function time_zone_group() {
     if (!function_exists('_timezone_get_object')) {
-        require_file(COM_PATH.'/system/timezone.php');
+        include_file(COM_PATH.'/system/timezone.php');
     }
     $zone = _timezone_get_object();
     return $zone->get_group();
@@ -981,13 +974,13 @@ function get_dir_array($path,$ext='*'){
 function include_modules() {
     static $loaded; if ($loaded) return true;
     // 加载模版处里类
-    require_file(COM_PATH.'/system/template.php');
+    include_file(COM_PATH.'/system/template.php');
     // 加载分页类
-    require_file(COM_PATH.'/system/pages.php');
+    include_file(COM_PATH.'/system/pages.php');
     // 查询模块列表
     $modules = get_dir_array('@/module','php');
     foreach ($modules as $file) {
-        require_file(COM_PATH.'/module/'.$file);
+        include_file(COM_PATH.'/module/'.$file);
     }
     // 执行函数回调
     global $LC_func_callback;
@@ -1114,11 +1107,11 @@ function rmdirs($path){
  * @param  $path
  * @return bool
  */
-function require_file($path){
+function include_file($path){
     static $paths = array();
     if (is_file($path)) {
         if (!isset($paths[$path])) {
-            require $path;
+            include $path;
             $paths[$path] = true;
             return true;
         }
@@ -1283,12 +1276,12 @@ function C($key,$value=null){
     // 取值
     if($key && func_num_args()==1) {
         // 数据库链接有问题
-        if (!($db->conn && $db->errno()==0)) return null; 
+        if ($db && !$db->ready) return null;
         // 先从缓存里取值
         $value = fcache_get($ckey.$key);
         if ($value === null) {
             if ($db->is_table('#@_option')) {
-                $result = $db->query("SELECT `value` FROM `#@_option` WHERE `module`='%s' AND `code`='%s' LIMIT 0,1;",array($module,$code));
+                $result = $db->query("SELECT `value` FROM `#@_option` WHERE `module`='%s' AND `code`='%s' LIMIT 1 OFFSET 0;",array($module,$code));
                 if ($data = $db->fetch($result)) {
                     $value = is_serialized($data['value']) ? unserialize($data['value']) : $data['value'];
                     // 保存到缓存
@@ -1346,7 +1339,7 @@ if (!function_exists('json_encode')) {
     function json_encode($value){
         global $_json;
         if (!$_json) {
-            require_file(COM_PATH.'/system/json.php');
+            include_file(COM_PATH.'/system/json.php');
             $_json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
         }
         return $_json->encode($value);
@@ -1357,7 +1350,7 @@ if (!function_exists('json_decode')) {
     function json_decode($json){
         global $_json;
         if (!$_json) {
-            require_file(COM_PATH.'/system/json.php');
+            include_file(COM_PATH.'/system/json.php');
             $_json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
         }
         return $_json->decode($json);

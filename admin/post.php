@@ -20,7 +20,7 @@
 // 文件名
 $php_file = isset($php_file) ? $php_file : 'post.php';
 // 加载公共文件
-require dirname(__FILE__).'/admin.php';
+include dirname(__FILE__).'/admin.php';
 // 查询管理员信息
 $_USER = user_current();
 // 方法

@@ -18,7 +18,7 @@
  * +---------------------------------------------------------------------------+
  */
 // 加载公共文件
-require dirname(__FILE__).'/admin.php';
+include dirname(__FILE__).'/admin.php';
 // 查询管理员信息
 $_USER = user_current();
 // 动作
@@ -57,7 +57,7 @@ switch ($method) {
     // 默认页面
     default:
         // HTTPLIB
-        require COM_PATH.'/system/httplib.php';
+        include COM_PATH.'/system/httplib.php';
         $db = get_conn(); $http_test = httplib_test();
         // 设置标题
         system_head('title',__('Control Panel'));
@@ -109,7 +109,12 @@ switch ($method) {
         echo                '<p><label>'.__('Server API :').'</label>'.PHP_SAPI.'</p>';
         echo                '<p><label>'.__('LazyCMS Version:').'</label><span class="version">'.LAZY_VERSION.'</span><span class="latest"><img class="os" src="'.ADMIN.'images/loading.gif" /></span></p>';
         echo                '<p><label>'.__('PHP Version:').'</label>'.PHP_VERSION.'&nbsp; '.test_result(version_compare(PHP_VERSION,'4.3.3','>')).'</p>';
-        echo                '<p><label>'.__('MySQL Version:').'</label>'.$db->version().'&nbsp; '.test_result(version_compare($db->version(),'4.1.0','>')).'</p>';
+        if (instr($db->scheme,'mysql,mysqli')) {
+            $version = '4.1.0';
+        } elseif (instr($db->scheme,'sqlite2,sqlite3,pdo_sqlite2,pdo_sqlite')) {
+            $version = '2.8.0';
+        }
+        echo                '<p><label>'.__('DB Driver:').'</label>'.$db->scheme.'&nbsp;'.$db->version().'&nbsp; '.test_result(version_compare($db->version(),$version,'>=')).'</p>';
         echo                '<p><label>'.__('GD Library:').'</label>'.(function_exists('gd_info') ? GD_VERSION : __('Not Supported')).'&nbsp; '.test_result(function_exists('gd_info')).'</p>';
         echo                '<p><label>'.__('Iconv Support:').'</label>'.(function_exists('iconv') ? ICONV_VERSION : __('Not Supported')).'&nbsp; '.test_result(function_exists('iconv')).'</p>';
         echo                '<p><label>'.__('Multibyte Support:').'</label>'.(extension_loaded('mbstring') ? 'mbstring' : __('Not Supported')).'&nbsp; '.test_result(extension_loaded('mbstring')).'</p>';
@@ -133,7 +138,7 @@ switch ($method) {
         echo            '<h3>'.__('Recent Comments').'</h3>';
         echo            '<div class="inside comments">';
         $i  = 0;
-        $rs = $db->query("SELECT * FROM `#@_comments` ORDER BY `cmtid` DESC LIMIT 5;");
+        $rs = $db->query("SELECT * FROM `#@_comments` ORDER BY `cmtid` DESC LIMIT 5 OFFSET 0;");
         while ($data = $db->fetch($rs)) {
             $data['avatar'] = get_avatar($data['mail'], 50, 'mystery');
             $data['author'] = $data['author'] ? $data['author'] : __('Anonymous');

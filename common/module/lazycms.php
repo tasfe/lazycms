@@ -29,7 +29,7 @@ function lazycms_gateway_updates() {
     $result = fcache_get($ckey);
     if ($result !== null) return $result;
     // 加载HTTP类
-    require COM_PATH.'/system/httplib.php';
+    include COM_PATH.'/system/httplib.php';
     // get feeds
     $r    = @httplib_get('http://code.google.com/feeds/p/lazycms/svnchanges/basic');
     $code = httplib_retrieve_response_code($r);

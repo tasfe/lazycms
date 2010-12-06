@@ -26,6 +26,14 @@ function install_init() {
     });
     $('#password1').val('').keyup( install_check_pass_strength );
     $('#password2').val('').keyup( install_check_pass_strength );
+
+    var dbtype = $('select#dbtype');
+    if (dbtype.is('select')) {
+        dbtype.change(function(){
+            install_change_dbtype(this.value);
+        });
+        install_change_dbtype(dbtype.val());
+    }
 }
 // 验证密码强弱
 function install_check_pass_strength() {
@@ -34,4 +42,15 @@ function install_check_pass_strength() {
             $('#password1').val(),
             $('#password2').val()
     );
+}
+// 改变数据库类型
+function install_change_dbtype(type) {
+    // sqlite
+    if (type.substr(0,6)=='sqlite' || type.substr(0,10)=='pdo_sqlite') {
+        $('input#uname,input#pwd').parents('tr').hide();
+    }
+    // mysql
+    else {
+        $('input#uname,input#pwd').parents('tr').show();
+    }
 }

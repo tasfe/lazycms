@@ -59,14 +59,25 @@ class Pages {
      * @return mixed
      */
     function query($sql) {
-        $args = func_get_args();
-        $sql  = array_shift( $args );
-        $sql  = preg_replace('/SELECT (.+) FROM/iU','SELECT SQL_CALC_FOUND_ROWS \1 FROM',rtrim($sql, ';'),1);
-        $sql .= sprintf(' LIMIT %d OFFSET %d;', $this->size, ($this->page - 1) * $this->size); array_unshift($args,$sql);
+        $csql = preg_replace_callback(
+                    '/SELECT (.+) FROM/iU',
+                    create_function('$matches','
+                        if (preg_match(\'/DISTINCT\s*\([^\)]+\)/i\',$matches[1], $match)) {
+                            $field = $match[0];
+                        } else {
+                            $field = "*";
+                        }
+                        return sprintf("SELECT COUNT(%s) FROM", $field);
+                    '),
+                    rtrim($sql, ';'), 1
+                );
+        $csql = preg_replace('/\sORDER\s+BY.+$/i', '', $csql, 1);
+
+        $sql .= sprintf(' LIMIT %d OFFSET %d;', $this->size, ($this->page - 1) * $this->size);
         // 执行结果
-        $result = call_user_func_array(array(&$this->_db,'query'), $args);
+        $result = $this->_db->query($sql);
         // 总记录数
-        $this->total  = $this->_db->result("SELECT FOUND_ROWS();");
+        $this->total  = $this->_db->result($csql);
         $this->pages  = ceil($this->total/$this->size);
         $this->pages  = ((int)$this->pages == 0) ? 1 : $this->pages;
         if ((int)$this->page < (int)$this->pages) {
@@ -87,7 +98,7 @@ class Pages {
      * @return array|null
      */
     function fetch($resource,$type=1) {
-        if (is_resource($resource)) {
+        if (is_resource($resource) || is_object($resource)) {
             return $this->_db->fetch($resource,$type);
         }
     }
@@ -207,8 +218,7 @@ function pages_init($size=10, $page=null) {
  */
 function pages_query($sql) {
     $pages = _pages_get_object();
-    $args  = func_get_args();
-    return call_user_func_array(array(&$pages,'query'), $args);
+    return $pages->query($sql);
 }
 /**
  * 取得数据集

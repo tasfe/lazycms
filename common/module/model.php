@@ -81,7 +81,7 @@ function model_get($param,$type=0,$language=null) {
             $where = sprintf("WHERE `language`='%s' AND `code`='%s'",esc_sql($language),esc_sql($param));
             break;
     }
-    $rs = $db->query("SELECT * FROM `#@_model` {$where} LIMIT 0,1;");
+    $rs = $db->query("SELECT * FROM `#@_model` {$where} LIMIT 1 OFFSET 0;");
     // 判断是否存在
     if ($model = $db->fetch($rs)) {
         $model['langcode'] = sprintf('%s:%s',$model['language'],$model['code']);

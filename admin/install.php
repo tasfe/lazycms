@@ -22,91 +22,52 @@ defined('ADMIN_PATH') or define('ADMIN_PATH',dirname(__FILE__));
 // 禁止重复跳转
 define('NO_REDIRECT',true);
 // 加载公共文件
-require ADMIN_PATH.'/admin.php';
+include ADMIN_PATH.'/admin.php';
 // 检查系统是否已经安装
 if (installed()) redirect(ADMIN);
 // 系统需要安装
-$config_exist = is_file(COM_PATH.'/config.php');
+$config_exist = is_file(ABS_PATH.'/config.php');
 
 $setup = isset($_POST['setup']) ? $_POST['setup'] : 'default';
 
 switch($setup) {
     case 'install':
         if (validate_is_post()) {
-            validate_check('license',VALIDATE_EMPTY,__('You must accept the license before they can continue the installation!'));
+            $dbtype = isset($_POST['dbtype']) ? $_POST['dbtype'] : null;
 
+            validate_check('license',VALIDATE_EMPTY,__('You must accept the license before they can continue the installation!'));
+            // 配置文件不存在，需要填写表前缀
             if (!$config_exist) {
                 validate_check('prefix', '/^[\w]+$/i', __('"Table Prefix" can only contain numbers, letters, and underscores.'));
             }
-
+            // 用户名
             validate_check('adminname',VALIDATE_EMPTY,__('You must provide a valid username.'));
-
+            // 密码
             validate_check('password1',VALIDATE_EQUAL,__('Your passwords do not match. Please try again.'),'password2');
-
+            // 验证EMAIL
             validate_check(array(
                 array('email',VALIDATE_EMPTY,__('Please enter an e-mail address.')),
                 array('email',VALIDATE_IS_EMAIL,__('You must provide an e-mail address.'))
             ));
-
             if (validate_is_ok()) {
+                $writable = false;
                 fcache_flush();
-                $writable = true;
+                // 需要设置数据库配置
                 if (!$config_exist) {
                     $dbname = isset($_POST['dbname'])?$_POST['dbname']:null;
                     $uname  = isset($_POST['uname'])?$_POST['uname']:null;
                     $pwd    = isset($_POST['pwd'])?$_POST['pwd']:null;
                     $dbhost = isset($_POST['dbhost'])?$_POST['dbhost']:null;
                     $prefix = isset($_POST['prefix'])?$_POST['prefix']:null;
-                    $db = new Mysql();
-                    $db->config(array(
-                        'name'   => $dbname,
-                        'host'   => $dbhost,
-                        'user'   => $uname,
-                        'pwd'    => $pwd,
-                        'prefix' => $prefix,
-                    ));
-                    // 链接成功
-                    if (@$db->connect()) {
-                        // 检查数据库版本
-                        if (!version_compare($db->version(), '4.1', '>=')) {
-                            ajax_error(__('MySQL database version lower than 4.1, please upgrade MySQL!'));
-                        }
-                        // 数据库没有创建，自动创建数据库
-                        if (!$db->is_database($dbname)) {
-                            $db->query("CREATE DATABASE `{$dbname}` CHARACTER SET utf8 COLLATE utf8_general_ci;");
-                        }
-                        @$db->select_db();
+                    // mysql DSN
+                    if (instr($dbtype,'mysql,mysqli')) {
+                        $db_dsn = sprintf('%1$s:host=%2$s;name=%3$s;prefix=%4$s;', $dbtype, $dbhost, $dbname, $prefix);
                     }
-                    // 数据库链接错误
-                    if ($db->errno()==1045) {
-                        header('X-Dialog-title: '.json_encode(__('Error establishing a database connection')));
-                        echo '<div style="padding:0 20px;">';
-                        echo '<h2>'.__('Error establishing a database connection').'</h2>';
-                        echo '<p>'.sprintf(__('This either means that the username and password information in your <code>common/config.php</code> file is incorrect or we can\'t contact the database server at <code>%s</code>.'),$dbhost).' '.__('This could mean your host\'s database server is down.').'</p>';
-                        echo '<ul>';
-                        echo    '<li>'.__('Are you sure you have the correct username and password?').'</li>';
-                        echo    '<li>'.__('Are you sure that you have typed the correct hostname?').'</li>';
-                        echo    '<li>'.__('Are you sure that the database server is running?').'</li>';
-                        echo '</ul>';
-                        echo '<p>'.__('If you\'re unsure what these terms mean you should probably contact your host.').' '.__('If you still need help you can always visit the <a href="http://lazycms.com/support/">LazyCMS Support Forums</a>.').'</p>';
-                        echo '</div>';
-                        exit();
+                    // sqlite DSN
+                    elseif (instr($dbtype,'sqlite2,sqlite3,pdo_sqlite2,pdo_sqlite')) {
+                        $db_dsn = sprintf('%1$s:name=%2$s;prefix=%3$s;', $dbtype, $dbname, $prefix);
                     }
-                    // 无法选择数据库
-                    elseif ($db->errno()==1049) {
-                        header('X-Dialog-title: '.json_encode(__('Can\'t select database')));
-                        echo '<div style="padding:0 20px;">';
-                        echo '<h2>'.__('Can\'t select database').'</h2>';
-                        echo '<p>'.sprintf(__('We were able to connect to the database server (which means your username and password is okay) but not able to select the <code>%s</code> database.'),$dbname).'</p>';
-                        echo '<ul>';
-                        echo    '<li>'.__('Are you sure it exists?').'</li>';
-                        echo    '<li>'.sprintf(__('Does the user <code>%s</code> have permission to use the <code>%s</code> database?'),$uname,$dbname).'</li>';
-                        echo    '<li>'.sprintf(__('On some systems the name of your database is prefixed with your username, so it would be like <code>%s_%s</code>. Could that be the problem?'),$uname,$dbname).'</li>';
-                        echo '</ul>';
-                        echo '<p>'.__('If you don\'t know how to set up a database you should <strong>contact your host</strong>.').' '.__('If all else fails you may find help at the <a href="http://lazycms.com/support/">LazyCMS Support Forums</a>.').'</p>';
-                        echo '</div>';
-                        exit();
-                    }
+
                     // 检查 config.sample.php 文件是否存在
                     if (!is_file(COM_PATH.'/config.sample.php')) {
                         ajax_error(__('Sorry, I need a common/config.sample.php file to work from. Please re-upload this file from your LazyCMS installation.'));
@@ -115,11 +76,8 @@ switch($setup) {
                     $configs = file(COM_PATH.'/config.sample.php');
                     foreach ($configs as $num => $line) {
                         switch(substr($line,0,16)) {
-                            case "define('DB_NAME'":
-                                $configs[$num] = str_replace("database_name_here", $dbname, $line);
-                                break;
-                            case "define('DB_HOST'":
-                                $configs[$num] = str_replace("localhost", $dbhost, $line);
+                            case "define('DB_DSN',":
+                                $configs[$num] = str_replace("database_dsn_here", $db_dsn, $line);
                                 break;
                             case "define('DB_USER'":
                                 $configs[$num] = str_replace("username_here", $uname, $line);
@@ -127,28 +85,22 @@ switch($setup) {
                             case "define('DB_PWD',":
                                 $configs[$num] = str_replace("password_here", $pwd, $line);
                                 break;
-                            case "define('DB_PREFI":
-                                $configs[$num] = str_replace("lazy_", $prefix, $line);
-                                break;
                         }
                     }
                     // 检查是否具有写入权限
                     if ($writable = is_writable(COM_PATH.'/')) {
                         $config = implode('', $configs);
-                        file_put_contents(COM_PATH.'/config.php', $config);
+                        file_put_contents(ABS_PATH.'/config.php', $config);
                     }
                     // 定义数据库链接
-                    define('DB_NAME',$dbname);
-                    define('DB_HOST',$dbhost);
+                    define('DB_DSN',$db_dsn);
                     define('DB_USER',$uname);
                     define('DB_PWD',$pwd);
-                    define('DB_PREFIX',$prefix);
-                } else {
-                    $db = get_conn();
                 }
+                $db = get_conn();
                 $query = install_schema();
                 // 创建数据表
-                $db->delta($query);
+                $db->batch($query);
                 // 是否安装初始数据
                 $initial = isset($_POST['initial'])?$_POST['initial']:null;
                 // 安装默认设置
@@ -193,9 +145,33 @@ switch($setup) {
             $html.=     '<table class="data-table">';
             $html.=         '<thead><tr><th colspan="3">'.__('Database Configuration').'</th></tr></thead>';
             $html.=         '<tbody>';
-            $html.=             '<tr><th class="w150"><label for="dbname">'.__('Database Name').'</label></th><td><input class="text" type="text" name="dbname" id="dbname" value="test" /></td><td>'.__('The name of the database you want to run LazyCMS in.').'</td></tr>';
-            $html.=             '<tr><th><label for="uname">'.__('UserName').'</label></th><td><input class="text" type="text" name="uname" id="uname" value="username" /></td><td>'.__('Your MySQL username').'</td></tr>';
-            $html.=             '<tr><th><label for="pwd">'.__('Password').'</label></th><td><input class="text" type="text" name="pwd" id="pwd" value="password" /></td><td>'.__('...and MySQL password.').'</td></tr>';
+            $html.=             '<tr><th class="w150"><label for="dbtype">'.__('Database Type').'</label></th><td><select name="dbtype" id="dbtype">';
+            // sqlite3
+            $phpinfo = parse_phpinfo();
+            $sqlite  = isset($phpinfo['pdo_sqlite']) ? array_shift($phpinfo['pdo_sqlite']) == 'enabled' : false;
+            if ($r = class_exists('SQLite3')) {
+                $version = SQLite3::version();
+                $html.=             sprintf('<option value="sqlite3">SQLite %s</option>', $version['versionString']);
+            } elseif (extension_loaded('pdo_sqlite') && $sqlite) {
+                $version = array_shift($phpinfo['pdo_sqlite']);
+                $value   = version_compare($version, '3.0.0', '<') ? 'pdo_sqlite2' : 'pdo_sqlite';
+                $html.=             sprintf('<option value="%s">PDO_SQLite %s</option>', $value, $version);
+            }
+            // sqlite2
+            if ($r = function_exists('sqlite_libversion')) {
+                $html.=             sprintf('<option value="sqlite2">SQLite %s</option>', sqlite_libversion());
+            }
+            // mysql
+            if ($r = function_exists('mysqli_get_client_info')) {
+                $html.=             sprintf('<option value="mysqli">MySQLi %s</option>', mysqli_get_client_info());
+            }
+            if ($r = function_exists('mysql_get_client_info')) {
+                $html.=             sprintf('<option value="mysql">MySQL %s</option>', mysql_get_client_info());
+            }
+            $html.=             '</select></td><td>'.__('Recommended to use SQLite 3.x or MySQLi.').'</td></tr>';
+            $html.=             '<tr><th><label for="dbname">'.__('Database Name').'</label></th><td><input class="text" type="text" name="dbname" id="dbname" value="test" /></td><td>'.__('The name of the database you want to run LazyCMS in.').'</td></tr>';
+            $html.=             '<tr><th><label for="uname">'.__('UserName').'</label></th><td><input class="text" type="text" name="uname" id="uname" value="" /></td><td>'.__('Your MySQL username').'</td></tr>';
+            $html.=             '<tr><th><label for="pwd">'.__('Password').'</label></th><td><input class="text" type="text" name="pwd" id="pwd" value="" /></td><td>'.__('...and MySQL password.').'</td></tr>';
             $html.=             '<tr><th><label for="dbhost">'.__('Database Host').'</label></th><td><input class="text" type="text" name="dbhost" id="dbhost" value="localhost" /></td><td>'.__('You should be able to get this info from your web host, if <code>localhost</code> does not work.').'</td></tr>';
             $html.=             '<tr><th><label for="prefix">'.__('Table prefix').'</label></th><td><input class="text" type="text" name="prefix" id="prefix" value="lazy_" /></td><td>'.__('If you want to run multiple LazyCMS installations in a single database, change this.').'</td></tr>';
             $html.=         '</tbody>';
@@ -237,14 +213,38 @@ switch($setup) {
         $html.=         '</tbody>';
         $html.=     '</table>';
         // HTTPLIB
-        require COM_PATH.'/system/httplib.php';
+        include COM_PATH.'/system/httplib.php';
         $http_test = httplib_test();
         $html.=     '<table class="data-table">';
         $html.=         '<thead><tr><th colspan="3">'.__('Required Settings').'</th></tr></thead>';
         $html.=         '<tbody>';
         $html.=             '<tr class="thead"><th>'.__('Test').'</th><th class="w100">'.__('Require').'</th><th class="w150">'.__('Current').'</th></tr>';
         $html.=             '<tr><td>'.__('PHP Version').'</td><td>4.3.3+</td><td>'.test_result(version_compare(PHP_VERSION,'4.3.3','>')).'&nbsp; '.PHP_VERSION.'</td></tr>';
-        $html.=             '<tr><td>'.__('MySQL Client Version').'</td><td>4.1.0+</td><td>'.test_result(function_exists('mysql_get_client_info')).'&nbsp; '.(function_exists('mysql_get_client_info') ? mysql_get_client_info() : __('Not Supported')).'</td></tr>';
+        $html.=             '<tr><td>'.__('DB Driver').'</td><td>SQLite 2.8.0+<br />MySQL 4.1.0+</td><td>';
+        // sqlite
+        $phpinfo = parse_phpinfo();
+        $sqlite  = isset($phpinfo['pdo_sqlite']) ? array_shift($phpinfo['pdo_sqlite']) == 'enabled' : false;
+        if ($r = class_exists('SQLite3')) {
+            $version = SQLite3::version();
+            $html.=             test_result($r).'&nbsp; SQLite '.$version['versionString'];
+        } elseif (extension_loaded('pdo_sqlite') && $sqlite) {
+            $version = array_shift($phpinfo['pdo_sqlite']);
+            $html.=             test_result($sqlite).'&nbsp; SQLite '.$version;
+        } elseif ($r = function_exists('sqlite_libversion')) {
+            $html.=             test_result($r).'&nbsp; SQLite '.sqlite_libversion();
+        } else {
+            $html.=             test_result(false).'&nbsp; SQLite '.__('Not Supported');
+        }
+        $html.=                 '<br />';
+        // mysql
+        if ($r = function_exists('mysql_get_client_info')) {
+            $html.=             test_result($r).'&nbsp; MySQL '.mysql_get_client_info();
+        } elseif ($r = function_exists('mysqli_get_client_info')) {
+            $html.=             test_result($r).'&nbsp; MySQL '.mysqli_get_client_info();
+        } else {
+            $html.=             test_result(false).'&nbsp; MySQL '.__('Not Supported');
+        }
+        $html.=             '</td></tr>';
         $html.=             '<tr><td>'.__('GD Library').'</td><td>2.0.0+</td><td>'.test_result(function_exists('gd_info')).'&nbsp; '.(function_exists('gd_info') ? GD_VERSION : __('Not Supported')).'</td></tr>';
         $html.=             '<tr><td>'.__('Iconv Support').'</td><td>2.0.0+</td><td>'.test_result(function_exists('iconv')).'&nbsp; '.(function_exists('iconv') ? ICONV_VERSION : __('Not Supported')).'</td></tr>';
         $html.=             '<tr><td>'.__('Multibyte Support').'</td><td>'.__('Support').'</td><td>'.test_result(extension_loaded('mbstring')).'&nbsp; '.(extension_loaded('mbstring') ? 'mbstring' : __('Not Supported')).'</td></tr>';
@@ -258,8 +258,8 @@ switch($setup) {
         $paths = array(
             '/',
             '/error.log',
+            '/config.php',
             '/common/.cache/',
-            '/common/config.php',
         );
         foreach($paths as $path) {
             $is_read  = is_readable(ABS_PATH.$path);

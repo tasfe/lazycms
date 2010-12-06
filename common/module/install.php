@@ -26,8 +26,11 @@ defined('COM_PATH') or die('Restricted access!');
  */
 function installed() {
     $result = false;
+    // 能取到安装日期
     if (C('Installed')) {
-        $db = get_conn();
+        $db = @get_conn();
+        // 数据库链接不正确
+        if (!$db) return $result;
         $tables = array(
             'option','model','user','user_meta',
             'publish','post','post_meta','comments',

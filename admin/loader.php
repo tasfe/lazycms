@@ -27,7 +27,7 @@ defined('ADMIN_PATH') or define('ADMIN_PATH',dirname(__FILE__));
 // 禁止跳转
 define('NO_REDIRECT',true);
 // 加载公共文件
-require ADMIN_PATH.'/admin.php'; error_reporting(0);
+include ADMIN_PATH.'/admin.php'; error_reporting(0);
 // 获取相关变量
 $type = isset($_GET['type'])?$_GET['type']:null;
 $ver  = isset($_GET['ver'])?$_GET['ver']:0;

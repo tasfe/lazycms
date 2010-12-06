@@ -53,6 +53,6 @@ if (publish_check_process()) echo "addLoadEvent(common_publish);";
     </div>
 
     <div id="admin-body">
-        <?php require(ADMIN_PATH.'/admin-header-menu.php');?>
+        <?php include(ADMIN_PATH.'/admin-header-menu.php');?>
         <div id="admin-content">
             

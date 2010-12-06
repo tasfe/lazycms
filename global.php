@@ -30,23 +30,21 @@ define('ABS_PATH',dirname(__FILE__));
 define('COM_PATH',ABS_PATH.'/common');
 
 // 加载项目配置
-if (is_file(COM_PATH.'/config.php'))
-    require COM_PATH.'/config.php';
+if (is_file(ABS_PATH.'/config.php'))
+    include ABS_PATH.'/config.php';
 
 // 定义系统常量
-require COM_PATH."/defines.php";
+include COM_PATH."/defines.php";
 // 加载公共函数库
-require COM_PATH.'/functions.php';
-// 加载数据库访问类
-require COM_PATH.'/system/mysql.php';
+include COM_PATH.'/functions.php';
 // 加载验证类
-require COM_PATH.'/system/validate.php';
+include COM_PATH.'/system/validate.php';
 // 加载cookie库
-require COM_PATH.'/system/cookie.php';
+include COM_PATH.'/system/cookie.php';
 // 加载文件缓存类
-require COM_PATH.'/system/fcache.php';
+include COM_PATH.'/system/fcache.php';
 // 加载本地化语言类库
-require COM_PATH.'/system/l10n.php';
+include COM_PATH.'/system/l10n.php';
 // 设置系统时区
 time_zone_set(C('Timezone'));
 // 开始时间

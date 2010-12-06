@@ -27,7 +27,7 @@ defined('COM_PATH') or die('Restricted access!');
  */
 function term_get_byid($termid) {
     $db = get_conn(); $termid = intval($termid);
-    $rs = $db->query("SELECT * FROM `#@_term` WHERE `termid`=%d LIMIT 0,1;",$termid);
+    $rs = $db->query("SELECT * FROM `#@_term` WHERE `termid`=%d LIMIT 1 OFFSET 0;",$termid);
     if ($term = $db->fetch($rs)) {
         return $term;
     }
@@ -41,7 +41,7 @@ function term_get_byid($termid) {
  */
 function term_get_byname($name) {
     $db = get_conn();
-    $rs = $db->query("SELECT * FROM `#@_term` WHERE `name`='%s' LIMIT 0,1;",$name);
+    $rs = $db->query("SELECT * FROM `#@_term` WHERE `name`='%s' LIMIT 1 OFFSET 0;",$name);
     if ($term = $db->fetch($rs)) {
         return $term;
     }
@@ -55,7 +55,7 @@ function term_get_byname($name) {
  */
 function term_add($name) {
     $db = get_conn();
-    $termid = $db->result(sprintf("SELECT `termid` FROM `#@_term` WHERE `name`='%s' LIMIT 0,1;",esc_sql($name)));
+    $termid = $db->result(sprintf("SELECT `termid` FROM `#@_term` WHERE `name`='%s' LIMIT 1 OFFSET 0;",esc_sql($name)));
     if (!$termid) {
         $termid = $db->insert('#@_term',array(
             'name' => $name,
@@ -91,13 +91,13 @@ function term_gets($content=null) {
     if (mb_strlen($content,'UTF-8') > 1024)
         $content = mb_substr($content,0,1024,'UTF-8');
 
-    require_file(COM_PATH.'/system/keyword.php');
+    include_file(COM_PATH.'/system/keyword.php');
     $splitword = new keyword($dicts);
     $keywords  = $splitword->get($content);
     // 本地分词失败或分词较少
     if (C('Tags-Service') && (empty($keywords) || count($keywords)<=3)) {
         // 使用keyword.lazycms.com的网络分词
-        require_file(COM_PATH.'/system/httplib.php');
+        include_file(COM_PATH.'/system/httplib.php');
         $r = @httplib_post('http://keyword.lazycms.com/related_kw.php',array(
             'timeout' => 3,
             'body'    => array('title' => $content)
@@ -230,7 +230,7 @@ function taxonomy_get($taxonomyid) {
     $taxonomy   = fcache_get($prefix.$taxonomyid);
     if ($taxonomy !== null) return $taxonomy;
 
-    $rs = $db->query("SELECT * FROM `#@_term_taxonomy` WHERE `taxonomyid`=%d LIMIT 0,1;",$taxonomyid);
+    $rs = $db->query("SELECT * FROM `#@_term_taxonomy` WHERE `taxonomyid`=%d LIMIT 1 OFFSET 0;",$taxonomyid);
     if ($taxonomy = $db->fetch($rs)) {
         if ($term = term_get_byid($taxonomy['termid'])) {
             $taxonomy = array_merge($taxonomy,$term);
@@ -383,7 +383,7 @@ function taxonomy_add($type,$name,$parentid=0,$data=null) {
  */
 function taxonomy_add_tag($name, $type='post_tag') {
     $db = get_conn();
-    $taxonomyid = $db->result(sprintf("SELECT `taxonomyid` FROM `#@_term` AS `t` LEFT JOIN `#@_term_taxonomy` AS `tt` ON `tt`.`termid`=`t`.`termid` WHERE `tt`.`type`='%s' AND `t`.`name`='%s' LIMIT 0,1;",esc_sql($type),esc_sql($name)));
+    $taxonomyid = $db->result(sprintf("SELECT `taxonomyid` FROM `#@_term` AS `t` LEFT JOIN `#@_term_taxonomy` AS `tt` ON `tt`.`termid`=`t`.`termid` WHERE `tt`.`type`='%s' AND `t`.`name`='%s' LIMIT 1 OFFSET 0;",esc_sql($type),esc_sql($name)));
     if (!$taxonomyid) {
         $taxonomyid = $db->insert('#@_term_taxonomy',array(
            'type'   => $type,
@@ -709,7 +709,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
             'count'    => $taxonomy['count'],
             'guide'    => system_category_guide($taxonomy['taxonomyid']),
             'title'    => $taxonomy['name'],
-            'content'  => $taxonomy['content'],
+            'content'  => isset($taxonomy['content']) ? $taxonomy['content'] : '',
             'keywords' => taxonomy_get_keywords($taxonomy['keywords']),
             'description' => $taxonomy['description'],
         ));

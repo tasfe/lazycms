@@ -23,7 +23,7 @@
  * @version $Id$
  */
 // 加载公共文件
-require dirname(__FILE__).'/../global.php';
+include dirname(__FILE__).'/../global.php';
 // 加载模块
 include_modules();
 // 获取参数

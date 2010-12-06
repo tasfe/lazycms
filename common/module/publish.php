@@ -64,7 +64,7 @@ function publish_check_process() {
 function publish_exec() {
     $db = get_conn();
     // 取出未执行进程，开始执行
-    $rs = $db->query("SELECT * FROM `#@_publish` WHERE (`state`=0 OR `state`=1) ORDER BY `pubid` ASC LIMIT 1;");
+    $rs = $db->query("SELECT * FROM `#@_publish` WHERE (`state`=0 OR `state`=1) ORDER BY `pubid` ASC LIMIT 1 OFFSET 0;");
     if ($data = $db->fetch($rs)) {
         if (!function_exists($data['func'])) {
             $sets = array('state' => 2);
@@ -273,7 +273,7 @@ function publish_sitemap_index() {
  */
 function publish_page_sitemaps() {
     $db = get_conn(); $urls = '';
-    $rs = $db->query("SELECT `postid` FROM `#@_post` WHERE `type`='page' ORDER BY `postid` DESC LIMIT 50000;");
+    $rs = $db->query("SELECT `postid` FROM `#@_post` WHERE `type`='page' ORDER BY `postid` DESC LIMIT 50000 OFFSET 0;");
     while ($data = $db->fetch($rs)) {
         $post = post_get($data['postid']);
         $post['path'] = post_get_path($post['sortid'],$post['path']);
@@ -312,7 +312,7 @@ function publish_list_sitemaps($sortid) {
         $urls.= sprintf('<url><loc>%1$s</loc><changefreq>daily</changefreq><lastmod>%2$s</lastmod><priority>0.5</priority></url>', $path, W3cDate());
     }
     // 文章页
-    $rs  = $db->query("SELECT `postid` FROM `#@_post` WHERE `sortid`=%d AND `type`='post' ORDER BY `postid` DESC LIMIT %d;", $sortid, 50000-$pages);
+    $rs  = $db->query("SELECT `postid` FROM `#@_post` WHERE `sortid`=%d AND `type`='post' ORDER BY `postid` DESC LIMIT %d OFFSET 0;", $sortid, 50000-$pages);
     while ($data = $db->fetch($rs)) {
         $post = post_get($data['postid']);
         $post['path'] = post_get_path($post['sortid'],$post['path']);
