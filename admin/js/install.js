@@ -47,10 +47,10 @@ function install_check_pass_strength() {
 function install_change_dbtype(type) {
     // sqlite
     if (type.substr(0,6)=='sqlite' || type.substr(0,10)=='pdo_sqlite') {
-        $('input#uname,input#pwd').parents('tr').hide();
+        $('input#uname,input#pwd,input#dbhost').parents('tr').hide();
     }
     // mysql
     else {
-        $('input#uname,input#pwd').parents('tr').show();
+        $('input#uname,input#pwd,input#dbhost').parents('tr').show();
     }
 }

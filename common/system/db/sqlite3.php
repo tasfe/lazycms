@@ -42,6 +42,7 @@ class DB_Sqlite3 extends DBQuery {
             }
             $this->open($this->name);
             if ($this->conn && $this->conn->lastErrorCode()==0) {
+                $this->apply_plugins();
                 $this->ready = true;
             }
         }
@@ -55,13 +56,25 @@ class DB_Sqlite3 extends DBQuery {
      * @return bool
      */
     function open($dbname, $flags=null) {
-        if ($flags===null) $flags = SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE;
+        if ($flags === null) $flags = SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE;
         $this->conn = new SQLite3($dbname, $flags, null);
         // 验证连接是否正确
         if ($this->conn->lastErrorCode() > 0) {
             return throw_error(sprintf(__('Database connect error:%s'), $this->conn->lastErrorMsg()), E_LAZY_ERROR);
         }
+        // 设置字段模式
+        $this->conn->exec("PRAGMA short_column_names=ON;");
+        // 设置10秒等待
+        $this->conn->busyTimeout(10000);
         return $this->conn;
+    }
+    /**
+     * 执行自定义函数
+     *
+     * @return void
+     */
+    function apply_plugins() {
+        $this->conn->createFunction('UCASE', 'strtoupper', 1);
     }
     /**
      * 执行查询
@@ -77,12 +90,16 @@ class DB_Sqlite3 extends DBQuery {
         $args = func_get_args(); $afters = array();
 
         $sql = call_user_func_array(array(&$this,'prepare'), $args);
-        $sql = $this->process($sql, $afters);
+        $sql = $this->process($sql, $befores, $afters);
 
         if ( preg_match("/^\\s*(insert|delete|update|replace|alter table|create) /i",$sql) ) {
         	$func = 'exec';
         } else {
         	$func = 'query';
+        }
+        // 执行前置sql
+        if ($befores) {
+            foreach ($befores as $v) $this->query($v);
         }
         $this->sql = $sql;
         if (!($result = $this->conn->$func($sql))) {

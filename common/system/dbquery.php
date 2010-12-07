@@ -166,7 +166,7 @@ class DBQuery {
      * @return resource
      */
     function truncate($table) {
-        return $this->query(sprintf("TRUNCATE TABLE `%s`;", $table));
+        return $this->query(sprintf("DELETE FROM `%s`;", $table));
     }
 
     /**
@@ -241,14 +241,15 @@ class DBQuery {
      * 处理 SQLite
      *
      * @param string $sql
-     * @param array $after
+     * @param array &$before
+     * @param array &$after
      * @return string
      */
-    function process($sql, &$after=null) {
+    function process($sql, &$before=null, &$after=null) {
         $sql = str_replace('`', '"', $sql);
         $result = $after = array(); $charlist = '`"[]\'';
-        if (preg_match("/^\\s*CREATE\s*TABLE\s*([^ ]*)/i", $sql, $matches)) {
-            preg_match("/\((.*)\)/ms", $sql, $match);
+        if (preg_match('/^\s*CREATE\s+TABLE\s+([^ ]*)/is', $sql, $matches)) {
+            preg_match('/\((.*)\)/ms', $sql, $match);
             $inner = trim($match[1]);
             $inner = str_ireplace(' unsigned', '', $inner);
             $lines = explode("\n", $inner);
@@ -274,12 +275,26 @@ class DBQuery {
                 // 处理字段类型
                 $line = preg_replace('/ NOT\s*NULL/i', '', $line);
                 $line = preg_replace('/ (bigint|int|smallint|tinyint)\([0-9]+\)/i', ' INTEGER', $line);
-                $line = preg_replace('/ ((char|varchar)\([0-9]+\)|(tinytext|text|longtext|timestamp))/i', ' TEXT', $line);
+                $line = preg_replace('/ (char\([0-9]+\)|(tinytext|text|longtext))/i', ' TEXT', $line);
                 $line = preg_replace('/ enum\([^\)]+\)/i', ' TEXT', $line);
-                $line = preg_replace('/ decimal\([^\)]+\)/i', ' REAL', $line);
+                $line = preg_replace('/ decimal(\([^\)]+\))/i', ' NUMERIC\1', $line);
+                $line = preg_replace('/ varchar(\([^\)]+\))/i', ' VARCHAR\1', $line);
+                $line = preg_replace('/ timestamp/i', ' TIMESTAMP', $line);
                 $result[] = $line;
             }
             $sql = sprintf("%s (\n%s\n);", $matches[0], implode(",\n", $result));
+        }
+        // SELECT COUNT(DISTINCT("postid"))
+        elseif (version_compare($this->version(),'3.0.0','<') && preg_match('/^(\s*SELECT\s+)COUNT\s*\(\s*(DISTINCT\s*\(\s*[^\)]+\s*\))\s*\)(\s+FROM )/isU', $sql, $matches)) {
+            $create_view = preg_replace('/^(\s*SELECT\s+)COUNT\s*\(\s*(DISTINCT\s*\(\s*[^\)]+\s*\))\s*\)(\s+FROM )/is', '\1\2\3', $sql);
+            $view_name   = md5($create_view);
+            $create_view = sprintf('CREATE TEMP VIEW "%s" AS %s;', $view_name, $create_view);
+            $before[]    = $create_view;
+            $sql         = sprintf('SELECT COUNT(*) FROM "%s";', $view_name);
+        }
+        // SELECT
+        elseif(preg_match('/^\s*SELECT .+ FROM /is', $sql, $matches)) {
+            $sql = preg_replace('/BINARY\s*/i', '', $sql);
         }
         // TODO alter table
         elseif (false) {

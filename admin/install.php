@@ -50,7 +50,7 @@ switch($setup) {
                 array('email',VALIDATE_IS_EMAIL,__('You must provide an e-mail address.'))
             ));
             if (validate_is_ok()) {
-                $writable = false;
+                $writable = true;
                 fcache_flush();
                 // 需要设置数据库配置
                 if (!$config_exist) {

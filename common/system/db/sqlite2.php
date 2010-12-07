@@ -45,6 +45,7 @@ class DB_Sqlite2 extends DBQuery {
             }
             $this->open($this->name);
             if ($this->conn && sqlite_last_error($this->conn)==0) {
+                $this->apply_plugins();
                 $this->ready = true;
             }
         }
@@ -67,7 +68,19 @@ class DB_Sqlite2 extends DBQuery {
         if (!$this->conn) {
             return throw_error(sprintf(__('Database connect error:%s'), $error), E_LAZY_ERROR);
         }
+        // 设置字段模式
+        sqlite_exec($this->conn,"PRAGMA short_column_names=ON;");
+        // 设置10秒等待
+        sqlite_busy_timeout($this->conn, 10000);
         return $this->conn;
+    }
+    /**
+     * 执行自定义函数
+     *
+     * @return void
+     */
+    function apply_plugins() {
+        sqlite_create_function($this->conn, 'UCASE', 'strtoupper', 1);
     }
     /**
      * 执行查询
@@ -83,12 +96,16 @@ class DB_Sqlite2 extends DBQuery {
         $args = func_get_args(); $afters = array();
 
         $sql = call_user_func_array(array(&$this,'prepare'), $args);
-        $sql = $this->process($sql, $afters);
+        $sql = $this->process($sql, $befores, $afters);
 
         if ( preg_match("/^\\s*(insert|delete|update|replace|alter table|create) /i",$sql) ) {
         	$func = 'sqlite_exec';
         } else {
         	$func = 'sqlite_query';
+        }
+        // 执行前置sql
+        if ($befores) {
+            foreach ($befores as $v) $this->query($v);
         }
         $this->sql = $sql;
         if (!($result = $func($this->conn, $sql))) {

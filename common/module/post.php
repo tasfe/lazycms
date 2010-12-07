@@ -65,6 +65,7 @@ function post_edit($postid,$data) {
             // 删除旧文件
             if ($data['path'] != $post['path']) {
                 $post['path'] = post_get_path($post['sortid'],$post['path']);
+                $post['edittime'] = $post['edittime'] ? $post['edittime'] : time();
                 // 文章添加大于24小时
                 if (time()-$post['edittime'] > 86400) {
                     // 生成临时转向文件
@@ -152,7 +153,7 @@ function post_edit($postid,$data) {
  */
 function post_path_exists($postid,$path) {
     if (strpos($path,'%ID')!==false && strpos($path,'%MD5')!==false) return false;
-    $db = get_conn(); $db->delete('#@_post',array('datetime' => 0)); // 删除添加失败的文章
+    $db = get_conn();
     if ($postid) {
         $sql = sprintf("SELECT COUNT(`postid`) FROM `#@_post` WHERE `path`='%s' AND `postid`<>'%d';", esc_sql($path), esc_sql($postid));
     } else {

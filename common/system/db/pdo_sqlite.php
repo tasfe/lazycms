@@ -43,6 +43,7 @@ class DB_PDO_SQLite extends DBQuery {
             $this->scheme = isset($config['scheme']) ? substr($config['scheme'], 4) : $this->scheme;
             $this->open($this->name);
             if ($this->conn && $this->errno()==0) {
+                $this->apply_plugins();
                 $this->ready = true;
             }
         }
@@ -60,9 +61,18 @@ class DB_PDO_SQLite extends DBQuery {
         if ($this->errno() != 0) {
             return throw_error(sprintf(__('Database connect error:%s'), $this->error()), E_LAZY_ERROR);
         }
+        // 设置字段模式
+        $this->conn->exec("PRAGMA short_column_names=ON;");
         return $this->conn;
     }
-
+    /**
+     * 执行自定义函数
+     *
+     * @return void
+     */
+    function apply_plugins() {
+        $this->conn->sqliteCreateFunction('UCASE', 'strtoupper', 1);
+    }
     /**
      * 执行查询
      *
@@ -74,15 +84,19 @@ class DB_PDO_SQLite extends DBQuery {
         if (!is_object($this->conn)) {
             return throw_error(__('Supplied argument is not a valid SQLite object.'),E_LAZY_ERROR);
         }
-        $args = func_get_args(); $afters = array();
+        $args = func_get_args();
 
         $sql = call_user_func_array(array(&$this,'prepare'), $args);
-        $sql = $this->process($sql, $afters);
+        $sql = $this->process($sql, $befores, $afters);
 
         if ( preg_match("/^\\s*(insert|delete|update|replace|alter table|create) /i",$sql) ) {
         	$func = 'exec';
         } else {
         	$func = 'query';
+        }
+        // 执行前置sql
+        if ($befores) {
+            foreach ($befores as $v) $this->query($v);
         }
         $this->sql = $sql;
         $result = $this->conn->$func($sql);

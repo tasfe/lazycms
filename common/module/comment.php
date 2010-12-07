@@ -273,7 +273,7 @@ function comment_create($postid) {
 
                 $db = get_conn(); $i = $length = 0; $page = 1;
                 $rs = $db->query("SELECT * FROM `#@_comments` WHERE `postid`=%d AND `approved`='1' ORDER BY `cmtid` {$order};", $post['postid']);
-                $total = $db->result("SELECT FOUND_ROWS();");
+                $total = $db->result(sprintf("SELECT COUNT(`cmtid`) FROM `#@_comments` WHERE `postid`=%d AND `approved`='1';", $post['postid']));
                 $pages = ceil($total / $number);
                 $pages = ((int)$pages == 0) ? 1 : $pages;
 
