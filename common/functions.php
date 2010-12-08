@@ -269,6 +269,26 @@ function handler_error($errno,$errstr,$errfile,$errline) {
     return throw_error($errstr,$errno,$errfile,$errline);
 }
 /**
+ * 取得错误信息
+ *
+ * @return array
+ */
+function last_error($error=true) {
+    global $LC_ERRNO, $LC_ERROR,$LC_ERRFILE,$LC_ERRLINE;
+    // 清理错误
+    if ($error === null)
+        $LC_ERRNO = $LC_ERROR = $LC_ERRFILE = $LC_ERRLINE = null;
+    // 没有错误
+    if (!$LC_ERRNO) return null;
+    // 有错误
+    return array(
+        'errno' => $LC_ERRNO,
+        'error' => $LC_ERROR,
+        'file'  => $LC_ERRFILE,
+        'line'  => $LC_ERRLINE,
+    );
+}
+/**
  * 异常处里函数
  *
  * @param  $errstr          错误消息
@@ -276,13 +296,15 @@ function handler_error($errno,$errstr,$errfile,$errline) {
  * @return bool
  */
 function throw_error($errstr,$errno=E_LAZY_NOTICE,$errfile=null,$errline=0){
-    if (error_reporting() === 0) return false;
+    global $LC_ERRNO, $LC_ERROR,$LC_ERRFILE,$LC_ERRLINE;
     $string  = $file = null;
     $traces  = debug_backtrace();
     $error   = $traces[0]; unset($traces[0]);
     $errstr  = rel_root($errstr);
     $errfile = rel_root($errfile ? $errfile : $error['file']);
     $errline = rel_root($errline ? $errline : $error['line']);
+    $LC_ERRNO = $errno; $LC_ERROR = $errstr; $LC_ERRFILE = $errfile; $LC_ERRLINE = $errline;
+    if (error_reporting() === 0) return false;
     foreach($traces as $i=>$trace) {
         $file  = isset($trace['file']) ? rel_root($trace['file']) : $file;
         $line  = isset($trace['line']) ? $trace['line'] : null;
@@ -316,7 +338,7 @@ function throw_error($errstr,$errno=E_LAZY_NOTICE,$errfile=null,$errline=0){
     $log.= "[File]:\r\n\t{$errfile} ({$errline})\r\n";
     $log.= $string?"[Trace]:\r\n{$string}\r\n":'';
     // 记录日志
-    error_log($log,3,ABS_PATH.'/error.log');
+    error_log($log, 3, ABS_PATH.'/error.log');
     // 处里错误
     switch ($errno) {
         case E_LAZY_ERROR:

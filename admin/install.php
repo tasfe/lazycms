@@ -67,6 +67,14 @@ switch($setup) {
                     elseif (instr($dbtype,'sqlite2,sqlite3,pdo_sqlite2,pdo_sqlite')) {
                         $db_dsn = sprintf('%1$s:name=%2$s;prefix=%3$s;', $dbtype, $dbname, $prefix);
                     }
+                    // 清理之前的错误
+                    $err = last_error(null);
+                    // 测试数据库链接信息
+                    $db  = @DBQuery::factory($db_dsn, $uname, $pwd);
+                    // 取得错误信息
+                    $err = last_error();
+                    // 有错误，提示
+                    if ($err) ajax_alert($err['error']);
 
                     // 检查 config.sample.php 文件是否存在
                     if (!is_file(COM_PATH.'/config.sample.php')) {
@@ -169,7 +177,7 @@ switch($setup) {
                 $html.=             sprintf('<option value="mysql">MySQL %s</option>', mysql_get_client_info());
             }
             $html.=             '</select></td><td>'.__('Recommended to use SQLite 3.x or MySQLi.').'</td></tr>';
-            $html.=             '<tr><th><label for="dbname">'.__('Database Name').'</label></th><td><input class="text" type="text" name="dbname" id="dbname" value="test" /></td><td>'.__('The name of the database you want to run LazyCMS in.').'</td></tr>';
+            $html.=             '<tr><th><label for="dbname">'.__('Database Name').'</label></th><td><input class="text" type="text" name="dbname" id="dbname" value="test" rel="'.str_rand(10).'" /></td><td>'.__('The name of the database you want to run LazyCMS in.').'</td></tr>';
             $html.=             '<tr><th><label for="uname">'.__('UserName').'</label></th><td><input class="text" type="text" name="uname" id="uname" value="" /></td><td>'.__('Your MySQL username').'</td></tr>';
             $html.=             '<tr><th><label for="pwd">'.__('Password').'</label></th><td><input class="text" type="text" name="pwd" id="pwd" value="" /></td><td>'.__('...and MySQL password.').'</td></tr>';
             $html.=             '<tr><th><label for="dbhost">'.__('Database Host').'</label></th><td><input class="text" type="text" name="dbhost" id="dbhost" value="localhost" /></td><td>'.__('You should be able to get this info from your web host, if <code>localhost</code> does not work.').'</td></tr>';

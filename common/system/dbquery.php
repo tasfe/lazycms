@@ -58,9 +58,9 @@ class DBQuery {
             }
             if ($scheme && !isset($config['scheme']))
                 $config['scheme'] = $scheme;
-            if ($user && !isset($config['user']))
+            if ($user!==null && !isset($config['user']))
                 $config['user'] = $user;
-            if ($pwd && !isset($config['pwd']))
+            if ($pwd!==null && !isset($config['pwd']))
                 $config['pwd'] = $pwd;
         }
         if ($scheme && $config) {
@@ -248,41 +248,49 @@ class DBQuery {
     function process($sql, &$before=null, &$after=null) {
         $sql = str_replace('`', '"', $sql);
         $result = $after = array(); $charlist = '`"[]\'';
-        if (preg_match('/^\s*CREATE\s+TABLE\s+([^ ]*)/is', $sql, $matches)) {
-            preg_match('/\((.*)\)/ms', $sql, $match);
-            $inner = trim($match[1]);
-            $inner = str_ireplace(' unsigned', '', $inner);
-            $lines = explode("\n", $inner);
-            foreach ($lines as $line) {
-                $line = rtrim(trim($line),',');
-                // 处理主键
-                if (preg_match('/^PRIMARY\s*KEY.+$/i', $line)) continue;
-                // 处理唯一索引
-                if (preg_match('/^UNIQUE\s*KEY\s*([^ ]+)\s*(\(.+\))$/i', $line, $match)) {
-                    $after[] = sprintf('CREATE UNIQUE INDEX `%2$s_%1$s` ON `%2$s` %3$s;', trim($match[1],$charlist), trim($matches[1],$charlist), $match[2]);
-                    continue;
+        if (preg_match('/^(\s*CREATE\s+TABLE\s+)(IF\s+NOT\s+EXISTS\s+([^\s]+)|[^\s]+)/is', $sql, $matches)) {
+            $table = isset($matches[3])?$matches[3]:$matches[2];
+            // 版本低于3.0 AND 表已存在
+            if (version_compare($this->version(),'3.0.0','<')
+                    && preg_match('/^IF\s+NOT\s+EXISTS/i', $matches[2])
+                    && $this->is_table(trim($table,$charlist))) {
+                $sql = 'SELECT 1;';
+            } else {
+                preg_match('/\((.*)\)/ms', $sql, $match);
+                $inner = trim($match[1]);
+                $inner = str_ireplace(' unsigned', '', $inner);
+                $lines = explode("\n", $inner);
+                foreach ($lines as $line) {
+                    $line = rtrim(trim($line),',');
+                    // 处理主键
+                    if (preg_match('/^PRIMARY\s*KEY.+$/i', $line)) continue;
+                    // 处理唯一索引
+                    if (preg_match('/^UNIQUE\s*KEY\s*([^ ]+)\s*(\(.+\))$/i', $line, $match)) {
+                        $after[] = sprintf('CREATE UNIQUE INDEX `%2$s_%1$s` ON `%2$s` %3$s;', trim($match[1],$charlist), trim($table,$charlist), $match[2]);
+                        continue;
+                    }
+                    // 处理普通索引
+                    if (preg_match('/^KEY\s*([^ ]+)\s*(\(.+\))$/i', $line, $match)) {
+                        $after[] = sprintf('CREATE INDEX `%2$s_%1$s` ON `%2$s` %3$s;', trim($match[1],$charlist), trim($table,$charlist), $match[2]);
+                        continue;
+                    }
+                    // 处理自动编号
+                    if (strpos($line, 'AUTO_INCREMENT') !== false) {
+                        preg_match('/^([^ ]+).+/i', $line, $match);
+                        $line = sprintf('%s INTEGER PRIMARY KEY NOT NULL', $match[1]);
+                    }
+                    // 处理字段类型
+                    $line = preg_replace('/ NOT\s*NULL/i', '', $line);
+                    $line = preg_replace('/ (bigint|int|smallint|tinyint)\([0-9]+\)/i', ' INTEGER', $line);
+                    $line = preg_replace('/ (char\([0-9]+\)|(tinytext|text|longtext))/i', ' TEXT', $line);
+                    $line = preg_replace('/ enum\([^\)]+\)/i', ' TEXT', $line);
+                    $line = preg_replace('/ decimal(\([^\)]+\))/i', ' NUMERIC\1', $line);
+                    $line = preg_replace('/ varchar(\([^\)]+\))/i', ' VARCHAR\1', $line);
+                    $line = preg_replace('/ timestamp/i', ' TIMESTAMP', $line);
+                    $result[] = $line;
                 }
-                // 处理普通索引
-                if (preg_match('/^KEY\s*([^ ]+)\s*(\(.+\))$/i', $line, $match)) {
-                    $after[] = sprintf('CREATE INDEX `%2$s_%1$s` ON `%2$s` %3$s;', trim($match[1],$charlist), trim($matches[1],$charlist), $match[2]);
-                    continue;
-                }
-                // 处理自动编号
-                if (strpos($line, 'AUTO_INCREMENT') !== false) {
-                    preg_match('/^([^ ]+).+/i', $line, $match);
-                    $line = sprintf('%s INTEGER PRIMARY KEY NOT NULL', $match[1]);
-                }
-                // 处理字段类型
-                $line = preg_replace('/ NOT\s*NULL/i', '', $line);
-                $line = preg_replace('/ (bigint|int|smallint|tinyint)\([0-9]+\)/i', ' INTEGER', $line);
-                $line = preg_replace('/ (char\([0-9]+\)|(tinytext|text|longtext))/i', ' TEXT', $line);
-                $line = preg_replace('/ enum\([^\)]+\)/i', ' TEXT', $line);
-                $line = preg_replace('/ decimal(\([^\)]+\))/i', ' NUMERIC\1', $line);
-                $line = preg_replace('/ varchar(\([^\)]+\))/i', ' VARCHAR\1', $line);
-                $line = preg_replace('/ timestamp/i', ' TIMESTAMP', $line);
-                $result[] = $line;
+                $sql = sprintf("%s%s (\n%s\n);", $matches[1], $table, implode(",\n", $result));
             }
-            $sql = sprintf("%s (\n%s\n);", $matches[0], implode(",\n", $result));
         }
         // SELECT COUNT(DISTINCT("postid"))
         elseif (version_compare($this->version(),'3.0.0','<') && preg_match('/^(\s*SELECT\s+)COUNT\s*\(\s*(DISTINCT\s*\(\s*[^\)]+\s*\))\s*\)(\s+FROM )/isU', $sql, $matches)) {

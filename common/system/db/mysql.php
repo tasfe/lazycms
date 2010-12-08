@@ -77,7 +77,7 @@ class DB_Mysql extends DBQuery {
         
         // 验证连接是否正确
         if (!$this->conn) {
-            return throw_error(sprintf(__('Database connect error:%s'), mysql_error($this->conn)),E_LAZY_ERROR);
+            return throw_error(sprintf(__('Database connect error:%s'), mysql_error()),E_LAZY_ERROR);
         }
         return $this->conn;
     }

@@ -64,4 +64,4 @@ load_textdomain(); if (!IS_CLI) C('Compress') ? ob_start('ob_compress') : ob_sta
 // 删除没用的系统变量
 unset($_ENV,$HTTP_ENV_VARS,$HTTP_SERVER_VARS,$HTTP_SESSION_VARS,$HTTP_POST_VARS,$HTTP_GET_VARS,$HTTP_POST_FILES,$HTTP_COOKIE_VARS);
 // 禁止直接访问此文件
-str_replace('\\','/',__FILE__) != $_SERVER["SCRIPT_FILENAME"] or die(__('Restricted access!'));
+strtolower(substr($_SERVER['SCRIPT_FILENAME'],-strlen(__FILE__))) != strtolower(__FILE__) or die(__('Restricted access!'));

@@ -48,9 +48,17 @@ function install_change_dbtype(type) {
     // sqlite
     if (type.substr(0,6)=='sqlite' || type.substr(0,10)=='pdo_sqlite') {
         $('input#uname,input#pwd,input#dbhost').parents('tr').hide();
+        var dbname = $('input#dbname').val();
+        if (dbname.substr(-3) != '.db') {
+            $('input#dbname').val($('input#dbname').attr('rel') + '.db');
+        }
     }
     // mysql
     else {
         $('input#uname,input#pwd,input#dbhost').parents('tr').show();
+        var dbname = $('input#dbname').val();
+        if (dbname.substr(-3) == '.db') {
+            $('input#dbname').val('test');
+        }
     }
 }

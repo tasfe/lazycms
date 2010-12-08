@@ -74,7 +74,7 @@ function install_defaults($initial) {
     // 默认设置
     $options = array(
         // 2.0
-        'Installed'         => time(),
+        'Installed'         => W3cDate(),
         'SiteTitle'         => __('My Site'),
         'Language'          => 'zh-CN',
         'Compress'          => 0,
@@ -109,7 +109,7 @@ function install_defaults($initial) {
  */
 function install_schema() {
     return <<<SQL
-CREATE TABLE `#@_option` (
+CREATE TABLE IF NOT EXISTS `#@_option` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `module` char(20) NOT NULL,
   `code` char(50) NOT NULL,
@@ -118,7 +118,7 @@ CREATE TABLE `#@_option` (
   UNIQUE KEY `opt_idx` (`code`,`module`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `#@_user` (
+CREATE TABLE IF NOT EXISTS `#@_user` (
   `userid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` char(20) NOT NULL,
   `pass` char(32) NOT NULL,
@@ -131,7 +131,7 @@ CREATE TABLE `#@_user` (
   KEY `authcode` (`authcode`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `#@_user_meta` (
+CREATE TABLE IF NOT EXISTS `#@_user_meta` (
   `metaid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `userid` int(10) unsigned NOT NULL DEFAULT '0',
   `key` char(50) NOT NULL,
@@ -141,7 +141,7 @@ CREATE TABLE `#@_user_meta` (
   KEY `key` (`key`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `#@_model` (
+CREATE TABLE IF NOT EXISTS `#@_model` (
   `modelid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `language` char(10) NOT NULL DEFAULT 'en',
   `code` char(50) NOT NULL,
@@ -154,7 +154,7 @@ CREATE TABLE `#@_model` (
   UNIQUE KEY `code` (`language`,`code`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `#@_post` (
+CREATE TABLE IF NOT EXISTS `#@_post` (
   `postid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `sortid` int(10) unsigned NOT NULL DEFAULT '0',
   `userid` int(10) unsigned NOT NULL DEFAULT '0',
@@ -180,7 +180,7 @@ CREATE TABLE `#@_post` (
   KEY `userid` (`userid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `#@_post_meta` (
+CREATE TABLE IF NOT EXISTS `#@_post_meta` (
   `metaid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `postid` bigint(20) unsigned NOT NULL,
   `key` char(50) NOT NULL,
@@ -190,7 +190,7 @@ CREATE TABLE `#@_post_meta` (
   KEY `key` (`key`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `#@_comments` (
+CREATE TABLE IF NOT EXISTS `#@_comments` (
   `cmtid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `postid` bigint(20) unsigned NOT NULL,
   `author` varchar(255) NOT NULL,
@@ -207,7 +207,7 @@ CREATE TABLE `#@_comments` (
   KEY `postid` (`postid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE `#@_publish` (
+CREATE TABLE IF NOT EXISTS `#@_publish` (
   `pubid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `total` int(10) unsigned NOT NULL DEFAULT '0',
@@ -219,14 +219,14 @@ CREATE TABLE `#@_publish` (
   PRIMARY KEY (`pubid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `#@_term` (
+CREATE TABLE IF NOT EXISTS `#@_term` (
   `termid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` char(35) NOT NULL,
   PRIMARY KEY (`termid`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `#@_term_relation` (
+CREATE TABLE IF NOT EXISTS `#@_term_relation` (
   `objectid` bigint(20) unsigned NOT NULL,
   `taxonomyid` int(10) unsigned NOT NULL,
   `order` smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -234,7 +234,7 @@ CREATE TABLE `#@_term_relation` (
   KEY `objectid` (`objectid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE `#@_term_taxonomy` (
+CREATE TABLE IF NOT EXISTS `#@_term_taxonomy` (
   `taxonomyid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `termid` bigint(20) unsigned NOT NULL,
   `type` char(20) NOT NULL DEFAULT 'category',
@@ -244,7 +244,7 @@ CREATE TABLE `#@_term_taxonomy` (
   KEY `type` (`type`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE `#@_term_taxonomy_meta` (
+CREATE TABLE IF NOT EXISTS `#@_term_taxonomy_meta` (
   `metaid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `taxonomyid` int(10) unsigned NOT NULL,
   `key` char(50) NOT NULL,

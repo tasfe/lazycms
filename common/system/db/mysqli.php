@@ -72,8 +72,8 @@ class DB_Mysqli extends DBQuery {
         }
 
         // 验证连接是否正确
-        if (!$this->conn) {
-            return throw_error(sprintf(__('Database connect error:%s'), mysqli_error($this->conn)),E_LAZY_ERROR);
+        if (mysqli_connect_errno()) {
+            return throw_error(sprintf(__('Database connect error:%s'), mysqli_connect_error()),E_LAZY_ERROR);
         }
         return $this->conn;
     }
@@ -146,6 +146,50 @@ class DB_Mysqli extends DBQuery {
                     $result = mysqli_affected_rows($this->conn);
                 }
             }
+        }
+        return $result;
+    }
+    /**
+     * 检查是否存在数据库
+     *
+     * @param  $dbname
+     * @return bool
+     */
+    function is_database($dbname){
+        $res = $this->query("SHOW DATABASES;");
+        while ($rs = $this->fetch($res,0)) {
+        	if ($dbname == $rs[0]) return true;
+        }
+        return false;
+    }
+    /**
+     * 判断数据表是否存在
+     *
+     * 注意表名的大小写，是有区别的
+     *
+     * @param string $table    table
+     * @return bool
+     */
+    function is_table($table){
+        $res = $this->query(sprintf("SHOW TABLES FROM `%s`;", $this->name));
+        if (!strncasecmp($table,'#@_',3))
+            $table = str_replace('#@_',$this->prefix,$table);
+
+        while ($rs = $this->fetch($res,0)) {
+        	if ($table == $rs[0]) return true;
+        }
+        return false;
+    }
+    /**
+     * 列出表里的所有字段
+     *
+     * @param string $table    表名
+     */
+    function list_fields($table){
+        $result = array();
+        $res = $this->query(sprintf("SHOW COLUMNS FROM `%s`;", $table));
+        while ($rs = $this->fetch($res)) {
+        	$result[] = $rs['Field'];
         }
         return $result;
     }
