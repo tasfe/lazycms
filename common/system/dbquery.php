@@ -289,7 +289,11 @@ class DBQuery {
                     $line = preg_replace('/ timestamp/i', ' TIMESTAMP', $line);
                     $result[] = $line;
                 }
-                $sql = sprintf("%s%s (\n%s\n);", $matches[1], $table, implode(",\n", $result));
+                if (version_compare($this->version(),'3.0.0','<')) {
+                    $sql = sprintf("%s%s (\n%s\n);", $matches[1], $table, implode(",\n", $result));
+                } else {
+                    $sql = sprintf("%s (\n%s\n);", $matches[0], implode(",\n", $result));
+                }
             }
         }
         // SELECT COUNT(DISTINCT("postid"))
