@@ -259,7 +259,7 @@ function publish_sitemap_index() {
     $lists = taxonomy_get_list('category');
     foreach ($lists as $taxonomyid) {
         $taxonomy = taxonomy_get($taxonomyid);
-        $urls.= sprintf('<sitemap><loc>%1$s</loc><lastmod>%2$s</lastmod></sitemap>', HTTP_HOST.ROOT.$taxonomy['path'].'/sitemap.xml', W3cDate());
+        $urls.= sprintf('<sitemap><loc>%1$s</loc><lastmod>%2$s</lastmod></sitemap>', HTTP_HOST.ROOT.xmlencode($taxonomy['path']).'/sitemap.xml', W3cDate());
     }
     $xml = system_sitemaps('sitemapindex', $urls);
     $map = ABS_PATH.'/sitemaps.xml';
@@ -278,7 +278,7 @@ function publish_page_sitemaps() {
         $post = post_get($data['postid']);
         $post['path'] = post_get_path($post['sortid'],$post['path']);
         $path = HTTP_HOST.ROOT.$post['path'];
-        $urls.= sprintf('<url><loc>%1$s</loc><changefreq>daily</changefreq><lastmod>%2$s</lastmod><priority>0.9</priority></url>', $path, W3cDate($post['edittime']?$post['edittime']:$post['datetime']));
+        $urls.= sprintf('<url><loc>%1$s</loc><changefreq>daily</changefreq><lastmod>%2$s</lastmod><priority>0.9</priority></url>', xmlencode($path), W3cDate($post['edittime']?$post['edittime']:$post['datetime']));
     }
     $xml = system_sitemaps('urlset', $urls);
     $map = ABS_PATH.'/sitemap-pages.xml';
@@ -309,7 +309,7 @@ function publish_list_sitemaps($sortid) {
     for ($page=1; $page<=$pages; $page++) {
         $file = $page==1 ? '' : 'index'.$page.C('HTMLFileSuffix');
         $path = HTTP_HOST.ROOT.$taxonomy['path'].'/'.$file;
-        $urls.= sprintf('<url><loc>%1$s</loc><changefreq>daily</changefreq><lastmod>%2$s</lastmod><priority>0.5</priority></url>', $path, W3cDate());
+        $urls.= sprintf('<url><loc>%1$s</loc><changefreq>daily</changefreq><lastmod>%2$s</lastmod><priority>0.5</priority></url>', xmlencode($path), W3cDate());
     }
     // 文章页
     $rs  = $db->query("SELECT `postid` FROM `#@_post` WHERE `sortid`=%d AND `type`='post' ORDER BY `postid` DESC LIMIT %d OFFSET 0;", $sortid, 50000-$pages);
@@ -319,7 +319,7 @@ function publish_list_sitemaps($sortid) {
         // 文件不保存在本目录下的文件不加入索引
         if (strncmp($post['path'], $taxonomy['path'], strlen($taxonomy['path'])) !== 0) continue;
         $path = HTTP_HOST.ROOT.$post['path'];
-        $urls.= sprintf('<url><loc>%1$s</loc><changefreq>weekly</changefreq><lastmod>%2$s</lastmod><priority>0.8</priority></url>', $path, W3cDate($post['edittime']?$post['edittime']:$post['datetime']));
+        $urls.= sprintf('<url><loc>%1$s</loc><changefreq>weekly</changefreq><lastmod>%2$s</lastmod><priority>0.8</priority></url>', xmlencode($path), W3cDate($post['edittime']?$post['edittime']:$post['datetime']));
     }
     $xml = system_sitemaps('urlset', $urls);
     $map = ABS_PATH.'/'.$taxonomy['path'].'/sitemap.xml';

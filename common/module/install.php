@@ -143,6 +143,7 @@ CREATE TABLE IF NOT EXISTS `#@_user_meta` (
 
 CREATE TABLE IF NOT EXISTS `#@_model` (
   `modelid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `type` char(20) NOT NULL,
   `language` char(10) NOT NULL DEFAULT 'en',
   `code` char(50) NOT NULL,
   `name` varchar(50) NOT NULL,

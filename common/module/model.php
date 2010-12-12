@@ -206,3 +206,67 @@ function model_get_types($type=null) {
     );
     return empty($type) ? $types : $types[$type];
 }
+/**
+ * 模型字段转换为HTML
+ *
+ * @param array $field
+ * @return string
+ */
+function model_field2html($field) {
+    $hl = '';
+    switch ($field['t']) {
+        case 'input':
+            $hl.= '<input class="text" id="'.$field['_n'].'" name="'.$field['_n'].'" type="text" style="width:'.$field['w'].'" maxlength="'.$field['c'].'" value="'.$field['d'].'" />';
+            break;
+        case 'textarea':
+            $hl.= '<textarea class="text" name="'.$field['_n'].'" id="'.$field['_n'].'" style="width:'.$field['w'].'" rows="8">'.$field['d'].'</textarea>';
+            break;
+        case 'select':
+            $values = explode("\n",$field['s']);
+            $hl.= '<select name="'.$field['_n'].'" id="'.$field['_n'].'" edit="true" style="width:'.$field['w'].'">';
+            foreach ($values as $k=>$v) {
+                $v = trim($v);
+                if ($v!='') {
+                    $vs = explode(':',$v);
+                    $vs = array_map('esc_html',$vs); $vs[1] = isset($vs[1])?$vs[1]:$vs[0];
+                    $selected = !empty($field['d']) ? (strval($vs[0])==strval($field['d']) ? ' selected="selected"' : null) : null;
+                    $hl.= '<option value="'.$vs[0].'"'.$selected.'>'.$vs[1].'</option>';
+                }
+            }
+            $hl.= '</select>';
+            break;
+        case 'radio': case 'checkbox':
+            $values = explode("\n",$field['s']);
+            $hl.= '<div id="'.$field['_n'].'" style="width:'.$field['w'].'">';
+            foreach ($values as $k=>$v) {
+                $v = trim($v);
+                if ($v!='') {
+                    $vs = explode(':',$v);
+                    $vs = array_map('esc_html',$vs); $vs[1] = isset($vs[1])?$vs[1]:$vs[0];
+                    $checked = !empty($field['d']) ? (instr($vs[0],$field['d']) ? ' checked="checked"' : null) : null;
+                    $hl.= '<label><input name="'.$field['_n'].($field['t']=='checkbox'?'[]':null).'" type="'.$field['t'].'" value="'.$vs[0].'"'.$checked.' />'.$vs[1].'</label>';
+                }
+            }
+            $hl.= '</div>';
+            break;
+        case 'basic': case 'editor':
+            $options = array();
+            $options['width'] = $field['w'];
+            $plugins = implode(',', $field['a']);
+            if ($field['t']=='basic') {
+                $options['tools']  = 'Blocktag,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,BackColor,|,Align,List,Outdent,Indent,|,Link,'.$plugins;
+                $options['height'] = '120';
+            } elseif ($field['t']=='editor') {
+                $options['height'] = '280';
+                $options['tools']  = 'Source,Preview,Pastetext,|,Blocktag,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,'.
+                                     'BackColor,Removeformat,|,Align,List,Outdent,Indent,|,Link,Unlink,'.$plugins.',|,Fullscreen';
+
+            }
+            $hl.= editor($field['_n'],$field['d'],$options);
+            break;
+        case 'upfile':
+            $hl.= '<input class="text" id="'.$field['_n'].'" name="'.$field['_n'].'" type="text" style="width:'.$field['w'].'" />&nbsp;<button type="button">'.__('Browse...').'</button>';
+            break;
+    }
+    return $hl;
+}

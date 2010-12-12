@@ -229,7 +229,7 @@ class Httplib {
 			$str_headers.= $r['headers'];
 		}
         // referer
-        if (!isset($r['headers']['referer']))
+        if (!isset($r['headers']['referer']) && !isset($r['headers']['Referer']))
             $str_headers.= sprintf("Referer: %s\r\n",$aurl['referer']);
 
         // connection
@@ -314,7 +314,7 @@ class Httplib {
 		curl_setopt( $handle, CURLOPT_RETURNTRANSFER, true );
 		curl_setopt( $handle, CURLOPT_USERAGENT, $r['user-agent'] );
 		curl_setopt( $handle, CURLOPT_MAXREDIRS, $r['redirection'] );
-        if (!isset($r['headers']['referer'])) {
+        if (!isset($r['headers']['referer']) && !isset($r['headers']['Referer']))
             curl_setopt( $handle, CURLOPT_REFERER, $aurl['referer'] );
         }
 
@@ -442,7 +442,7 @@ class Httplib {
 				$user_agent_extra_headers .= "\r\n$header: $value";
             
             // referer
-            if (!isset($r['headers']['referer']))
+            if (!isset($r['headers']['referer']) && !isset($r['headers']['Referer']))
                 $user_agent_extra_headers.= sprintf("\r\nReferer: %s",$aurl['referer']);
 
             // connection
@@ -536,7 +536,7 @@ class Httplib {
 			$str_headers = $r['headers'];
 
         // referer
-        if (!isset($r['headers']['referer']))
+        if (!isset($r['headers']['referer']) && !isset($r['headers']['Referer']))
             $str_headers.= sprintf("Referer: %s\r\n",$aurl['referer']);
 
         // connection

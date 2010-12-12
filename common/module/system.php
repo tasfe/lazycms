@@ -802,6 +802,7 @@ function system_menu($menus) {
 
     return true;
 }
+
 /**
  * js公共语言包
  *
