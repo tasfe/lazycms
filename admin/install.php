@@ -161,7 +161,7 @@ switch($setup) {
                 $version = SQLite3::version();
                 $html.=             sprintf('<option value="sqlite3">SQLite %s</option>', $version['versionString']);
             } elseif (extension_loaded('pdo_sqlite') && $sqlite) {
-                $version = array_shift($phpinfo['pdo_sqlite']);
+                $version = $phpinfo['pdo_sqlite']['SQLite Library'];
                 $value   = version_compare($version, '3.0.0', '<') ? 'pdo_sqlite2' : 'pdo_sqlite';
                 $html.=             sprintf('<option value="%s">PDO_SQLite %s</option>', $value, $version);
             }
@@ -236,7 +236,7 @@ switch($setup) {
             $version = SQLite3::version();
             $html.=             test_result($r).'&nbsp; SQLite '.$version['versionString'];
         } elseif (extension_loaded('pdo_sqlite') && $sqlite) {
-            $version = array_shift($phpinfo['pdo_sqlite']);
+            $version = $phpinfo['pdo_sqlite']['SQLite Library'];
             $html.=             test_result($sqlite).'&nbsp; SQLite '.$version;
         } elseif ($r = function_exists('sqlite_libversion')) {
             $html.=             test_result($r).'&nbsp; SQLite '.sqlite_libversion();

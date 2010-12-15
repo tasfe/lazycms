@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS `#@_model` (
   `path` char(255) NOT NULL,
   `page` varchar(50) NOT NULL,
   `fields` longtext NOT NULL,
-  `state` tinyint(1) NOT NULL DEFAULT '0',
+  `state` enum('enabled','disabled') NOT NULL DEFAULT 'enabled',
   PRIMARY KEY (`modelid`),
   UNIQUE KEY `code` (`language`,`code`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;

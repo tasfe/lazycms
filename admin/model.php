@@ -159,7 +159,7 @@ switch ($method) {
 	        case 'enabled':
 	            foreach ($listids as $modelid) {
 	            	model_edit($modelid,array(
-	            	  'state' => 0
+	            	  'state' => 'enabled'
 	            	));
 	            }
 	            ajax_success(__('Models enabled.'),"LazyCMS.redirect('".PHP_FILE."');");
@@ -168,7 +168,7 @@ switch ($method) {
 	        case 'disabled':
 	            foreach ($listids as $modelid) {
 	            	model_edit($modelid,array(
-	            	  'state' => 1
+	            	  'state' => 'disabled'
 	            	));
 	            }
 	            ajax_success(__('Models disabled.'),"LazyCMS.redirect('".PHP_FILE."');");
@@ -222,12 +222,12 @@ switch ($method) {
 	    $hl.= '<a href="javascript:;" class="help">'.get_icon('f1').'</a>';
 	    $hl.= '<form id="model-field-table">';
 	    $hl.= '<table class="model-field-table">';
-	    $hl.=    '<tr><th><label for="field_l">'._x('Label','model').'</label></th><td><input class="text" id="field_l" name="l" type="text" size="35" value="'.$l.'" />';
+	    $hl.=    '<tr><th><label for="field_l">'._x('Label','field').'</label></th><td><input class="text" id="field_l" name="l" type="text" size="35" value="'.$l.'" />';
 	    $hl.=    '<label for="field_is_help"><input type="checkbox" id="field_is_help"'.($h?' checked="checked"':null).' />'.__('Need help').'</label></td></tr>';
-	    $hl.=    '<tr id="field_help" class="hide"><th class="vt"><label for="field_h">'._x('Help','model').'</label></th><td><textarea class="text" name="h" id="field_h" rows="2" cols="40">'.$h.'</textarea></td></tr>';
-	    $hl.=    '<tr><th><label for="field_n">'._x('Field','model').'</label></th><td><input class="text" id="field_n" name="n" type="text" size="30" value="'.$n.'" />';
+	    $hl.=    '<tr id="field_help" class="hide"><th class="vt"><label for="field_h">'._x('Help','field').'</label></th><td><textarea class="text" name="h" id="field_h" rows="2" cols="40">'.$h.'</textarea></td></tr>';
+	    $hl.=    '<tr><th><label for="field_n">'._x('Field','field').'</label></th><td><input class="text" id="field_n" name="n" type="text" size="30" value="'.$n.'" />';
 	    $hl.=    '<label for="can_search"><input type="checkbox" id="can_search" name="so" value="1"'.($so?' checked="checked"':null).' />'.__('Can search').'</label></td></tr>';
-	    $hl.=    '<tr><th><label for="field_t">'._x('Type','model').'</label></th><td>';
+	    $hl.=    '<tr><th><label for="field_t">'._x('Type','field').'</label></th><td>';
 	    $hl.=        '<select id="field_t" name="t">'; $types = model_get_types();
 	    foreach ($types as $type=>$text) {
 	        $selected = $type==$t?' selected="selected"':null;
@@ -251,7 +251,7 @@ switch ($method) {
 	    $hl.=        '</select>&nbsp;<a href="javascript:;" rule="+">'.get_icon('b3').'</a><a href="javascript:;" rule="-">'.get_icon('b4').'</a>';
 	    $hl.=        '<br/><textarea class="text" name="v" id="field_v" rows="3" cols="40">'.$v.'</textarea></td>';
 	    $hl.=    '</tr>';
-	    $hl.=    '<tr id="field_serialize" class="hide"><th class="vt"><label for="field_s">'._x('Serialize','model').'</label></th><td><textarea class="text" name="s" id="field_s" rows="3" cols="40">'.$s.'</textarea></td></tr>';
+	    $hl.=    '<tr id="field_serialize" class="hide"><th class="vt"><label for="field_s">'._x('Serialize','field').'</label></th><td><textarea class="text" name="s" id="field_s" rows="3" cols="40">'.$s.'</textarea></td></tr>';
 	    $hl.=    '<tr id="field_toolbar" class="hide"><th class="vt"><label>'.__('Toolbar').'</label></th><td class="toolbar">';
 	    $hl.=        '<label><input type="checkbox" name="a[]"'.(instr('Img', $a)?' checked="checked"':null).' value="Img" /> '.__('Insert Image').'</label>';
 	    $hl.=        '<label><input type="checkbox" name="a[]"'.(instr('Flash', $a)?' checked="checked"':null).' value="Flash" /> '.__('Insert Flash').'</label>';
@@ -263,14 +263,14 @@ switch ($method) {
         $hl.=        '<label><input type="checkbox" name="a[]"'.(instr('Removelink', $a)?' checked="checked"':null).' value="Removelink" /> '.__('Remove external links').'</label>';
         $hl.=    '</td></tr>';
 	    $hl.=    '<tr id="field_length" class="hide">';
-	    $hl.=        '<th><label for="field_c">'._x('Length','model').'</label></th>';
+	    $hl.=        '<th><label for="field_c">'._x('Length','field').'</label></th>';
 	    $hl.=        '<td><select name="c" id="field_c" edit="true" default="'.$c.'">';
 	    foreach (array(10,20,30,50,100,255) as $v) {
             $hl.=       '<option value="'.$v.'">'.$v.'</option>';
         }
 	    $hl.=        '</select></td>';
 	    $hl.=    '</tr>';
-	    $hl.=    '<tr id="field_default" class="hide"><th><label for="field_d">'._x('Default','model').'</label></th><td><input class="text" id="field_d" name="d" type="text" size="40" value="'.$d.'" /></td></tr>';
+	    $hl.=    '<tr id="field_default" class="hide"><th><label for="field_d">'._x('Default','field').'</label></th><td><input class="text" id="field_d" name="d" type="text" size="40" value="'.$d.'" /></td></tr>';
 	    $hl.= '</table>';
 	    $hl.= '<div class="buttons"><button type="button" rel="save">'.__('Save').'</button><button type="button" rel="close">'.__('Cancel').'</button></div>';
 	    $hl.= '<input type="hidden" name="id" value="'.$id.'" />';
@@ -307,7 +307,7 @@ switch ($method) {
                 echo           '<td><strong><a href="'.$href.'">'.$model['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
                 echo           '<td>'.$model['code'].'</td>';
                 echo           '<td>'.code2lang($model['language']).'</td>';
-                echo           '<td>'.get_icon('c'.($model['state']+3)).'</td>';
+                echo           '<td>'.get_icon($model['state']).'</td>';
                 echo       '</tr>';
             }
         } else {
@@ -358,6 +358,7 @@ function table_thead() {
  * @param string $action
  */
 function model_manage_page($action) {
+    global $method;
     $referer = referer(PHP_FILE);
     $modelid  = isset($_GET['modelid'])?$_GET['modelid']:0;
     if ($action!='add') {
@@ -377,6 +378,13 @@ function model_manage_page($action) {
     echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="modelmanage" id="modelmanage">';
     echo     '<fieldset>';
     echo       '<table class="form-table">';
+    echo           '<tr>';
+    echo               '<th><label for="type">'._x('Type','model').'</label></th>';
+    echo               '<td><select name="type" id="type">';
+    echo                  '<option value="post">'._x('Post','model').'</option>';
+    echo                  '<option value="sort">'._x('Category','model').'</option>';
+    echo               '</select></td>';
+    echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="language">'._x('Language','model').'</label></th>';
     echo               '<td><select name="language" id="language">';
@@ -438,7 +446,6 @@ function model_manage_page($action) {
                 echo                       '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$i.'" /></td>';
                 echo                       '<td><strong class="edit"><a href="#'.$i.'">'.$field['l'].'</a></strong><br/><div class="row-actions">'.$actions.'</div>'.$textarea.'</td>';
                 echo                       '<td>'.$field['n'].'</td>';
-                echo                       '<td>{$model.'.$field['n'].'}</td>';
                 echo                       '<td>'.model_get_types($field['t']).'</td>';
                 echo                       '<td>'.(empty($field['d'])?'NULL':$field['d']).'</td>';
                 echo                    '</tr>';
@@ -475,11 +482,10 @@ function model_manage_page($action) {
 function fields_table_thead() {
     echo '<tr class="nodrop">';
     echo     '<th class="check-column"><input type="checkbox" name="select" value="all" /></th>';
-    echo     '<th>'._x('Label','model').'</th>';
-    echo     '<th>'._x('Field','model').'</th>';
-    echo     '<th>'._x('Tag','model').'</th>';
-    echo     '<th>'._x('Type','model').'</th>';
-    echo     '<th>'._x('Default','model').'</th>';
+    echo     '<th>'._x('Label','field').'</th>';
+    echo     '<th>'._x('Field','field').'</th>';
+    echo     '<th>'._x('Type','field').'</th>';
+    echo     '<th>'._x('Default','field').'</th>';
     echo '</tr>';
 }
 /**

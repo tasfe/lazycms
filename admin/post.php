@@ -480,7 +480,7 @@ function post_manage_page($action) {
     }
     
     $postid  = isset($_GET['postid'])?$_GET['postid']:0;
-    $models  = model_gets(0);
+    $models  = model_gets('post', 'enabled');
     $suffix  = C('HTMLFileSuffix');
     if ($action=='add') {
         $mcode  = isset($_GET['model'])?$_GET['model']:null;
@@ -564,7 +564,7 @@ function post_manage_page($action) {
     echo       '<a href="javascript:;" class="toggle" title="'.__('Click to toggle').'"><br/></a>';
     echo       '<h3>'.__('More attribute').'</h3>';
     echo       '<table class="form-table">';
-    echo           '<tbody class="more-attr">';
+    echo           '<tbody>';
     echo               '<tr>';
     echo                   '<th><label for="template">'._x('Page Template','post').'</label></th>';
     echo                   '<td>';

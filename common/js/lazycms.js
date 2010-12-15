@@ -54,7 +54,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
         s.orisuccess = s.success;
         // 自定义success
         s.success = function(data, status, xhr) {
-            if (xhr && xhr.getResponseHeader('X-Powered-By')) {
+            if (xhr && xhr.getResponseHeader('X-Powered-By') && s.url.toLowerCase().indexOf('.php') != -1) {
                 if (xhr.getResponseHeader('X-Powered-By').indexOf("\x4c\x61\x7a\x79\x43\x4d\x53") == -1) return ;
             }
             var data = LazyCMS.ajaxSuccess.apply(this,arguments);

@@ -101,14 +101,17 @@ function model_get($param,$type=0,$language=null) {
     return null;
 }
 /**
- * 查询所有模型信息
+ * 查询模型
  *
- * @return unknown
+ * @param string $type  post,sort
+ * @param string $state enabled,disabled
+ * @return array
  */
-function model_gets($state=null) {
-    $db = get_conn(); $result = array(); $conditions = array();
-    $where = is_null($state) ? null : sprintf("WHERE `state`='%s'",esc_sql($state));
-    $rs = $db->query("SELECT * FROM `#@_model` {$where} ORDER BY `modelid` ASC;");
+function model_gets($type=null, $state=null) {
+    $db = get_conn(); $result = array();
+    $where = is_null($state) ? null : sprintf(" AND `state`='%s'",esc_sql($state));
+    $where.= is_null($type) ? null : sprintf(" AND `type`='%s'",esc_sql($type));
+    $rs = $db->query("SELECT * FROM `#@_model` WHERE 1 {$where} ORDER BY `modelid` ASC;");
     while ($row = $db->fetch($rs)) {
         $result[] = model_get_byid($row['modelid']);
     }

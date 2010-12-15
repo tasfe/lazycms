@@ -32,7 +32,7 @@ function model_delete(modelid){
 function model_state(action,modelid){
     return LazyCMS.postAction('model.php', {method:'bulk', action:action}, modelid);
 }
-// 添加用户页面初始化
+// 添加模型面初始化
 function model_manage_init() {
 	var wrap = $('#fields'),
 	// 表格拖动
@@ -87,7 +87,10 @@ function model_manage_init() {
             }
             v.scrollTop(2000);
     };
-	
+    // 绑定切换事件
+	$('#modelmanage select#type').change(function(){
+        //LazyCMS.redirect(this.value);
+    });
 	// 绑定表格拖动事件
 	if ($('tbody tr.empty',wrap).is('tr')===false) {
 	   table_drag(); actions();

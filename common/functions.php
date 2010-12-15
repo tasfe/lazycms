@@ -1046,8 +1046,10 @@ function get_avatar($email, $size=96, $default='') {
  */
 function get_icon($name) {
     switch ($name) {
-        case 'passed': $name = 'b8'; break;
-        case 'draft':  $name = 'b9'; break;
+        case 'passed':      $name = 'b8'; break;
+        case 'draft':       $name = 'b9'; break;
+        case 'enabled':     $name = 'c3'; break;
+        case 'disabled':    $name = 'c4'; break;
 
     }
     return '<img src="'.ROOT.'common/images/blank.gif" class="os '.$name.'" alt="" />';

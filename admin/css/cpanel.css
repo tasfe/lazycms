@@ -18,7 +18,7 @@
  */
 
 .wrap fieldset.closed .inside{ display:none; }
-.wrap fieldset { display:table; }
+.wrap fieldset { display:block; }
 .wrap fieldset .inside{ padding:0 10px; }
 .wrap fieldset .inside .empty{ padding:10px; }
 

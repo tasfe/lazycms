@@ -314,7 +314,7 @@ class Httplib {
 		curl_setopt( $handle, CURLOPT_RETURNTRANSFER, true );
 		curl_setopt( $handle, CURLOPT_USERAGENT, $r['user-agent'] );
 		curl_setopt( $handle, CURLOPT_MAXREDIRS, $r['redirection'] );
-        if (!isset($r['headers']['referer']) && !isset($r['headers']['Referer']))
+        if (!isset($r['headers']['referer']) && !isset($r['headers']['Referer'])) {
             curl_setopt( $handle, CURLOPT_REFERER, $aurl['referer'] );
         }
 

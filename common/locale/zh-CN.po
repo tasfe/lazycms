@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-12-07 03:20+0800\n"
+"POT-Creation-Date: 2010-12-14 23:08+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.net>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
@@ -27,229 +27,229 @@ msgstr "受限制的访问！"
 msgid "Back"
 msgstr "返回"
 
-#: common/functions.php:326
-#: common/functions.php:334
+#: common/functions.php:348
+#: common/functions.php:356
 msgid "System Error"
 msgstr "系统错误"
 
-#: common/functions.php:437
+#: common/functions.php:459
 #, php-format
 msgid "<a href=\"%s\">%d seconds after goto %s.</a>"
 msgstr "<a href=\"%s\">%d 秒后转向 %s。</a>"
 
-#: common/functions.php:453
+#: common/functions.php:475
 msgid "Redirecting..."
 msgstr "正在重定向..."
 
-#: common/functions.php:1169
+#: common/functions.php:1277
 msgid "Afrikaans"
 msgstr "布尔文(南非洲的荷兰文)"
 
-#: common/functions.php:1170
+#: common/functions.php:1278
 msgid "Albanian"
 msgstr "阿尔巴尼亚文"
 
-#: common/functions.php:1171
+#: common/functions.php:1279
 msgid "Arabic"
 msgstr "阿拉伯文"
 
-#: common/functions.php:1172
+#: common/functions.php:1280
 msgid "Belarusian"
 msgstr "白俄罗斯语"
 
-#: common/functions.php:1173
+#: common/functions.php:1281
 msgid "Bulgarian"
 msgstr "保加利亚文"
 
-#: common/functions.php:1174
+#: common/functions.php:1282
 msgid "Catalan"
 msgstr "加泰罗尼亚语"
 
-#: common/functions.php:1175
+#: common/functions.php:1283
 msgid "Chinese (Simplified)"
 msgstr "中文(简体)"
 
-#: common/functions.php:1176
+#: common/functions.php:1284
 msgid "Chinese (Traditional)"
 msgstr "中文(繁体)"
 
-#: common/functions.php:1177
+#: common/functions.php:1285
 msgid "Croatian"
 msgstr "克罗地亚文"
 
-#: common/functions.php:1178
+#: common/functions.php:1286
 msgid "Czech"
 msgstr "捷克语"
 
-#: common/functions.php:1179
+#: common/functions.php:1287
 msgid "Danish"
 msgstr "丹麦语"
 
-#: common/functions.php:1180
+#: common/functions.php:1288
 msgid "Dutch"
 msgstr "荷兰语"
 
-#: common/functions.php:1181
+#: common/functions.php:1289
 msgid "English"
 msgstr "英语"
 
-#: common/functions.php:1182
+#: common/functions.php:1290
 msgid "Estonian"
 msgstr "爱沙尼亚语"
 
-#: common/functions.php:1183
+#: common/functions.php:1291
 msgid "Filipino"
 msgstr "菲律宾文"
 
-#: common/functions.php:1184
+#: common/functions.php:1292
 msgid "Finnish"
 msgstr "芬兰语"
 
-#: common/functions.php:1185
+#: common/functions.php:1293
 msgid "French"
 msgstr "法语"
 
-#: common/functions.php:1186
+#: common/functions.php:1294
 msgid "Galician"
 msgstr "加利西亚语"
 
-#: common/functions.php:1187
+#: common/functions.php:1295
 msgid "German"
 msgstr "德语"
 
-#: common/functions.php:1188
+#: common/functions.php:1296
 msgid "Greek"
 msgstr "希腊语"
 
-#: common/functions.php:1189
+#: common/functions.php:1297
 msgid "Hebrew"
 msgstr "希伯来语"
 
-#: common/functions.php:1190
+#: common/functions.php:1298
 msgid "Hindi"
 msgstr "印度文"
 
-#: common/functions.php:1191
+#: common/functions.php:1299
 msgid "Hungarian"
 msgstr "匈牙利语"
 
-#: common/functions.php:1192
+#: common/functions.php:1300
 msgid "Icelandic"
 msgstr "冰岛语"
 
-#: common/functions.php:1193
+#: common/functions.php:1301
 msgid "Indonesian"
 msgstr "印尼文"
 
-#: common/functions.php:1194
+#: common/functions.php:1302
 msgid "Irish"
 msgstr "爱尔兰文"
 
-#: common/functions.php:1195
+#: common/functions.php:1303
 msgid "Italian"
 msgstr "意大利语"
 
-#: common/functions.php:1196
+#: common/functions.php:1304
 msgid "Japanese"
 msgstr "日语"
 
-#: common/functions.php:1197
+#: common/functions.php:1305
 msgid "Korean"
 msgstr "朝鲜语"
 
-#: common/functions.php:1198
+#: common/functions.php:1306
 msgid "Latvian"
 msgstr "拉脱维亚语"
 
-#: common/functions.php:1199
+#: common/functions.php:1307
 msgid "Lithuanian"
 msgstr "立陶宛语"
 
-#: common/functions.php:1200
+#: common/functions.php:1308
 msgid "Macedonian"
 msgstr "马其顿文"
 
-#: common/functions.php:1201
+#: common/functions.php:1309
 msgid "Malay"
 msgstr "马来文"
 
-#: common/functions.php:1202
+#: common/functions.php:1310
 msgid "Maltese"
 msgstr "马耳他文"
 
-#: common/functions.php:1203
+#: common/functions.php:1311
 msgid "Norwegian"
 msgstr "挪威语"
 
-#: common/functions.php:1204
+#: common/functions.php:1312
 msgid "Persian"
 msgstr "波斯语"
 
-#: common/functions.php:1205
+#: common/functions.php:1313
 msgid "Polish"
 msgstr "波兰语"
 
-#: common/functions.php:1206
+#: common/functions.php:1314
 msgid "Portuguese"
 msgstr "葡萄牙语"
 
-#: common/functions.php:1207
+#: common/functions.php:1315
 msgid "Romanian"
 msgstr "罗马尼亚语"
 
-#: common/functions.php:1208
+#: common/functions.php:1316
 msgid "Russian"
 msgstr "俄语"
 
-#: common/functions.php:1209
+#: common/functions.php:1317
 msgid "Serbian"
 msgstr "塞尔维亚文"
 
-#: common/functions.php:1210
+#: common/functions.php:1318
 msgid "Slovak"
 msgstr "斯洛伐克文"
 
-#: common/functions.php:1211
+#: common/functions.php:1319
 msgid "Slovenian"
 msgstr "斯洛文尼亚文"
 
-#: common/functions.php:1212
+#: common/functions.php:1320
 msgid "Spanish"
 msgstr "西班牙语"
 
-#: common/functions.php:1213
+#: common/functions.php:1321
 msgid "Swahili"
 msgstr "非洲的斯瓦希里文"
 
-#: common/functions.php:1214
+#: common/functions.php:1322
 msgid "Swedish"
 msgstr "瑞典语"
 
-#: common/functions.php:1215
+#: common/functions.php:1323
 msgid "Thai"
 msgstr "泰文"
 
-#: common/functions.php:1216
+#: common/functions.php:1324
 msgid "Turkish"
 msgstr "土耳其文"
 
-#: common/functions.php:1217
+#: common/functions.php:1325
 msgid "Ukrainian"
 msgstr "乌克兰文"
 
-#: common/functions.php:1218
+#: common/functions.php:1326
 msgid "Vietnamese"
 msgstr "越南文"
 
-#: common/functions.php:1219
+#: common/functions.php:1327
 msgid "Welsh"
 msgstr "威尔士语"
 
-#: common/functions.php:1220
+#: common/functions.php:1328
 msgid "Yiddish"
 msgstr "意第绪语"
 
-#: common/functions.php:1448
+#: common/functions.php:1556
 msgid "The start position cannot exceed initial string length."
 msgstr "起始位置不能超过初始字符串的长度。"
 
@@ -298,23 +298,23 @@ msgstr "未知"
 msgid "Your PHP installation appears to be missing the %s extension which is required by LazyCMS."
 msgstr "您的 PHP 似乎缺少 LazyCMS 所需的 %s 扩展。"
 
-#: common/system/db/pdo_sqlite.php:61
+#: common/system/db/pdo_sqlite.php:62
 #: common/system/db/mysqli.php:76
-#: common/system/db/sqlite2.php:68
-#: common/system/db/sqlite3.php:62
+#: common/system/db/sqlite2.php:69
+#: common/system/db/sqlite3.php:63
 #: common/system/db/mysql.php:80
 #, php-format
 msgid "Database connect error:%s"
 msgstr "数据库链接错误：%s"
 
-#: common/system/db/pdo_sqlite.php:75
-#: common/system/db/sqlite3.php:75
+#: common/system/db/pdo_sqlite.php:85
+#: common/system/db/sqlite3.php:88
 msgid "Supplied argument is not a valid SQLite object."
 msgstr "提供的参数不是一个有效的SQLite对象。"
 
-#: common/system/db/pdo_sqlite.php:90
-#: common/system/db/sqlite2.php:95
-#: common/system/db/sqlite3.php:89
+#: common/system/db/pdo_sqlite.php:104
+#: common/system/db/sqlite2.php:112
+#: common/system/db/sqlite3.php:106
 #, php-format
 msgid "SQLite Query Error:%s"
 msgstr "SQLite 查询错误：%s"
@@ -346,45 +346,49 @@ msgstr "提供的参数不是一个有效的MySQL的链接资源。"
 msgid "MySQL Query Error:%s"
 msgstr "MySQL 查询错误：%s"
 
-#: common/system/db/sqlite2.php:81
+#: common/system/db/sqlite2.php:94
 msgid "Supplied argument is not a valid SQLite-Link resource."
 msgstr "提供的参数不是一个有效的SQLite的链接资源。"
 
-#: common/module/model.php:197
+#: common/module/model.php:200
 msgid "Input"
 msgstr "输入框"
 
-#: common/module/model.php:198
+#: common/module/model.php:201
 msgid "Textarea"
 msgstr "文本域"
 
-#: common/module/model.php:199
+#: common/module/model.php:202
 msgid "Radio"
 msgstr "单选项"
 
-#: common/module/model.php:200
+#: common/module/model.php:203
 msgid "Check box"
 msgstr "复选框"
 
-#: common/module/model.php:201
+#: common/module/model.php:204
 msgid "Drop-down menu"
 msgstr "下拉菜单"
 
-#: common/module/model.php:202
+#: common/module/model.php:205
 msgid "Basic editor"
 msgstr "基本编辑器"
 
-#: common/module/model.php:203
+#: common/module/model.php:206
 msgid "Adv editor"
 msgstr "高级编辑器"
 
-#: common/module/model.php:204
+#: common/module/model.php:207
 msgid "Date Selector"
 msgstr "日期选择器"
 
-#: common/module/model.php:205
+#: common/module/model.php:208
 msgid "File upload box"
 msgstr "文件上传框"
+
+#: common/module/model.php:271
+msgid "Browse..."
+msgstr "浏览..."
 
 #: common/module/install.php:58
 msgid "Rock it!"
@@ -400,6 +404,7 @@ msgid "My Site"
 msgstr "我的站点"
 
 #: common/module/install.php:101
+#: common/module/system.php:155
 msgid "Home"
 msgstr "首页"
 
@@ -427,20 +432,14 @@ msgstr "没有评论！"
 msgid "The page is in the making, please visit later ..."
 msgstr "页面正在制作中,请稍后访问……"
 
-#: common/module/post.php:505
-#: common/module/post.php:529
-#: admin/install.bak.php:278
-#: admin/install.bak.php:287
-#: admin/install.bak.php:290
-#: admin/install.bak.php:291
-#: admin/install.bak.php:292
-#: admin/install.bak.php:293
-#: admin/install.php:236
-#: admin/install.php:245
-#: admin/install.php:248
-#: admin/install.php:249
-#: admin/install.php:250
-#: admin/install.php:251
+#: common/module/post.php:506
+#: common/module/post.php:530
+#: admin/install.php:244
+#: admin/install.php:253
+#: admin/install.php:256
+#: admin/install.php:257
+#: admin/install.php:258
+#: admin/install.php:259
 #: admin/index.php:118
 #: admin/index.php:119
 #: admin/index.php:120
@@ -448,43 +447,42 @@ msgstr "页面正在制作中,请稍后访问……"
 msgid "Not Supported"
 msgstr "不支持"
 
-#: common/module/post.php:583
+#: common/module/post.php:584
 msgid "The post doesn't exist or has been deleted!"
 msgstr "该文章不存在或已删除！"
 
-#: common/module/post.php:587
+#: common/module/post.php:588
 msgid "The post doesn't comment!"
 msgstr "该文章不能评论！"
 
-#: common/module/post.php:593
+#: common/module/post.php:594
 msgid "Please enter a comment on the contents!"
 msgstr "请输入评论内容！"
 
-#: common/module/post.php:594
+#: common/module/post.php:595
 #, php-format
 msgid "Maximum %d characters of Comment content!"
 msgstr "评论内容最多个 %d 个字！"
 
-#: common/module/post.php:598
-#: admin/install.bak.php:48
+#: common/module/post.php:599
 #: admin/install.php:50
 #: admin/user.php:97
 msgid "You must provide an e-mail address."
 msgstr "请输入一个有效的电子邮件地址。"
 
-#: common/module/post.php:613
+#: common/module/post.php:614
 msgid "You speak too fast, rest!"
 msgstr "您说话太快了,休息一下吧!"
 
-#: common/module/post.php:617
+#: common/module/post.php:618
 msgid "You can not send duplicate comment!"
 msgstr "您不能发送重复的评论内容！"
 
-#: common/module/post.php:630
+#: common/module/post.php:631
 msgid "Comment on the success!"
 msgstr "发表评论成功！"
 
-#: common/module/post.php:632
+#: common/module/post.php:633
 msgid "Comment failed!"
 msgstr "发表评论失败！"
 
@@ -588,7 +586,7 @@ msgid "Export"
 msgstr "导出模型"
 
 #: common/module/system.php:92
-#: admin/model.php:420
+#: admin/model.php:427
 msgctxt "model"
 msgid "Fields"
 msgstr "字段管理"
@@ -663,57 +661,57 @@ msgid "Posts"
 msgstr "文章"
 
 #: common/module/system.php:526
-#: common/module/system.php:825
+#: common/module/system.php:826
 #: admin/categories.php:196
 #: admin/model.php:314
-#: admin/model.php:447
+#: admin/model.php:453
 #: admin/publish.php:75
 msgid "No record!"
 msgstr "没有记录！"
 
-#: common/module/system.php:814
+#: common/module/system.php:815
 msgid "Alert"
 msgstr "系统提示"
 
-#: common/module/system.php:815
+#: common/module/system.php:816
 msgid "Submit"
 msgstr "确认"
 
-#: common/module/system.php:816
+#: common/module/system.php:817
 msgid "Confirm"
 msgstr "操作确认"
 
-#: common/module/system.php:817
-#: common/module/system.php:849
+#: common/module/system.php:818
+#: common/module/system.php:850
 #: admin/model.php:275
 msgid "Cancel"
 msgstr "取消"
 
-#: common/module/system.php:818
+#: common/module/system.php:819
 #: admin/model.php:275
 msgid "Save"
 msgstr "保存"
 
-#: common/module/system.php:819
+#: common/module/system.php:820
 msgid "Close"
 msgstr "关闭"
 
-#: common/module/system.php:820
+#: common/module/system.php:821
 #: admin/categories.php:250
 #: admin/model.php:300
-#: admin/model.php:434
+#: admin/model.php:441
 #: admin/index.php:151
 #: admin/user.php:184
 #: admin/user.php:187
 msgid "Edit"
 msgstr "编辑"
 
-#: common/module/system.php:821
+#: common/module/system.php:822
 #: admin/categories.php:218
 #: admin/categories.php:251
 #: admin/model.php:304
 #: admin/model.php:336
-#: admin/model.php:435
+#: admin/model.php:442
 #: admin/publish.php:63
 #: admin/publish.php:204
 #: admin/index.php:152
@@ -722,618 +720,617 @@ msgstr "编辑"
 msgid "Delete"
 msgstr "删除"
 
-#: common/module/system.php:822
+#: common/module/system.php:823
 msgid "Search"
 msgstr "搜索"
 
-#: common/module/system.php:823
+#: common/module/system.php:824
 msgid "Address:"
 msgstr "地址："
 
-#: common/module/system.php:824
+#: common/module/system.php:825
 msgid "Insert Map"
 msgstr "插入地图"
 
-#: common/module/system.php:826
+#: common/module/system.php:827
 msgid "Confirm Logout?"
 msgstr "确定要退出吗？"
 
-#: common/module/system.php:827
+#: common/module/system.php:828
 msgid "Confirm Delete?"
 msgstr "确定要删除吗？"
 
-#: common/module/system.php:828
+#: common/module/system.php:829
 msgid "Confirm Empty?"
 msgstr "确定要清空吗？"
 
-#: common/module/system.php:829
+#: common/module/system.php:830
 msgid "Latest Version:"
 msgstr "最新版本："
 
-#: common/module/system.php:830
+#: common/module/system.php:831
 msgid "Did not select any action!"
 msgstr "没有选择任何操作。"
 
-#: common/module/system.php:832
-#: admin/install.bak.php:230
-#: admin/install.php:188
+#: common/module/system.php:833
+#: admin/install.php:196
 #: admin/user.php:283
 #: admin/user.php:297
 msgid "Strength indicator"
 msgstr "强度"
 
-#: common/module/system.php:833
+#: common/module/system.php:834
 msgid "Very weak"
 msgstr "非常弱"
 
-#: common/module/system.php:834
+#: common/module/system.php:835
 msgid "Weak"
 msgstr "弱"
 
-#: common/module/system.php:835
+#: common/module/system.php:836
 msgid "Medium"
 msgstr "中"
 
-#: common/module/system.php:836
+#: common/module/system.php:837
 msgid "Strong"
 msgstr "强"
 
-#: common/module/system.php:837
+#: common/module/system.php:838
 msgid "Mismatch"
 msgstr "不匹配"
 
-#: common/module/system.php:850
+#: common/module/system.php:851
 msgid "Paragraph"
 msgstr "普通段落"
 
-#: common/module/system.php:851
+#: common/module/system.php:852
 msgid "Heading 1"
 msgstr "标题1"
 
-#: common/module/system.php:852
+#: common/module/system.php:853
 msgid "Heading 2"
 msgstr "标题2"
 
-#: common/module/system.php:853
+#: common/module/system.php:854
 msgid "Heading 3"
 msgstr "标题3"
 
-#: common/module/system.php:854
+#: common/module/system.php:855
 msgid "Heading 4"
 msgstr "标题4"
 
-#: common/module/system.php:855
+#: common/module/system.php:856
 msgid "Heading 5"
 msgstr "标题5"
 
-#: common/module/system.php:856
+#: common/module/system.php:857
 msgid "Heading 6"
 msgstr "标题6"
 
-#: common/module/system.php:857
+#: common/module/system.php:858
 msgid "Preformatted"
 msgstr "已编排格式"
 
-#: common/module/system.php:858
+#: common/module/system.php:859
 msgid "Address"
 msgstr "地址"
 
-#: common/module/system.php:859
+#: common/module/system.php:860
 msgid "xx-small"
 msgstr "极小"
 
-#: common/module/system.php:860
+#: common/module/system.php:861
 msgid "x-small"
 msgstr "特小"
 
-#: common/module/system.php:861
+#: common/module/system.php:862
 msgid "small"
 msgstr "小"
 
-#: common/module/system.php:862
+#: common/module/system.php:863
 msgid "medium"
 msgstr "中"
 
-#: common/module/system.php:863
+#: common/module/system.php:864
 msgid "large"
 msgstr "大"
 
-#: common/module/system.php:864
+#: common/module/system.php:865
 msgid "x-large"
 msgstr "特大"
 
-#: common/module/system.php:865
+#: common/module/system.php:866
 msgid "xx-large"
 msgstr "极大"
 
-#: common/module/system.php:866
+#: common/module/system.php:867
 msgid "Align left"
 msgstr "左对齐"
 
-#: common/module/system.php:867
+#: common/module/system.php:868
 msgid "Align center"
 msgstr "居中"
 
-#: common/module/system.php:868
+#: common/module/system.php:869
 msgid "Align right"
 msgstr "右对齐"
 
-#: common/module/system.php:869
+#: common/module/system.php:870
 msgid "Align full"
 msgstr "两端对齐"
 
-#: common/module/system.php:870
+#: common/module/system.php:871
 msgid "Ordered list"
 msgstr "数字列表"
 
-#: common/module/system.php:871
+#: common/module/system.php:872
 msgid "Unordered list"
 msgstr "符号列表"
 
-#: common/module/system.php:872
+#: common/module/system.php:873
 msgid "Use Ctrl+V on your keyboard to paste the text."
 msgstr "使用键盘快捷键(Ctrl+V)把内容粘贴到方框里，按 确定"
 
-#: common/module/system.php:873
+#: common/module/system.php:874
 msgid "Ok"
 msgstr "确定"
 
-#: common/module/system.php:874
+#: common/module/system.php:875
 msgid "Flv URL:"
 msgstr "Flv文件:"
 
-#: common/module/system.php:875
+#: common/module/system.php:876
 msgid "Link URL:"
 msgstr "链接地址:"
 
-#: common/module/system.php:876
+#: common/module/system.php:877
 msgid "Target:&nbsp;&nbsp;"
 msgstr "打开方式:"
 
-#: common/module/system.php:877
+#: common/module/system.php:878
 msgid "Link Text:"
 msgstr "链接文字:"
 
-#: common/module/system.php:878
+#: common/module/system.php:879
 msgid "Img URL:&nbsp;"
 msgstr "图片文件:"
 
-#: common/module/system.php:879
+#: common/module/system.php:880
 msgid "Alt text:"
 msgstr "替换文本:"
 
-#: common/module/system.php:880
+#: common/module/system.php:881
 msgid "Alignment:"
 msgstr "对齐方式:"
 
-#: common/module/system.php:881
+#: common/module/system.php:882
 msgid "Dimension:"
 msgstr "宽度高度:"
 
-#: common/module/system.php:882
+#: common/module/system.php:883
 msgid "Border:&nbsp;&nbsp;&nbsp;"
 msgstr "边框大小:"
 
-#: common/module/system.php:883
+#: common/module/system.php:884
 msgid "Hspace:&nbsp;&nbsp;&nbsp;"
 msgstr "水平间距:"
 
-#: common/module/system.php:884
+#: common/module/system.php:885
 msgid "Vspace:"
 msgstr "垂直间距:"
 
-#: common/module/system.php:885
+#: common/module/system.php:886
 msgid "Flash URL:"
 msgstr "动画文件:"
 
-#: common/module/system.php:886
+#: common/module/system.php:887
 msgid "Media URL:"
 msgstr "媒体文件:"
 
-#: common/module/system.php:887
+#: common/module/system.php:888
 msgid "Rows&Cols:&nbsp;&nbsp;"
 msgstr "行数列数:"
 
-#: common/module/system.php:888
+#: common/module/system.php:889
 msgid "Headers:&nbsp;&nbsp;&nbsp;&nbsp;"
 msgstr "标题单元:"
 
-#: common/module/system.php:889
+#: common/module/system.php:890
 msgid "CellSpacing:"
 msgstr "表格间距:"
 
-#: common/module/system.php:890
+#: common/module/system.php:891
 msgid "CellPadding:"
 msgstr "表格填充:"
 
-#: common/module/system.php:891
+#: common/module/system.php:892
 msgid "Caption:&nbsp;&nbsp;&nbsp;&nbsp;"
 msgstr "表格标题:"
 
-#: common/module/system.php:892
+#: common/module/system.php:893
 msgid "Border:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 msgstr "边框大小:"
 
-#: common/module/system.php:893
+#: common/module/system.php:894
 #: admin/login.php:82
 msgid "Default"
 msgstr "默认"
 
-#: common/module/system.php:894
+#: common/module/system.php:895
 msgid "New window"
 msgstr "新窗口"
 
-#: common/module/system.php:895
+#: common/module/system.php:896
 msgid "Same window"
 msgstr "当前窗口"
 
-#: common/module/system.php:896
+#: common/module/system.php:897
 msgid "Parent window"
 msgstr "父窗口"
 
-#: common/module/system.php:897
+#: common/module/system.php:898
 msgctxt "xhe"
 msgid "Left"
 msgstr "左对齐"
 
-#: common/module/system.php:898
+#: common/module/system.php:899
 msgctxt "xhe"
 msgid "Right"
 msgstr "右对齐"
 
-#: common/module/system.php:899
+#: common/module/system.php:900
 msgctxt "xhe"
 msgid "Top"
 msgstr "顶端"
 
-#: common/module/system.php:900
+#: common/module/system.php:901
 msgctxt "xhe"
 msgid "Middle"
 msgstr "居中"
 
-#: common/module/system.php:901
+#: common/module/system.php:902
 msgctxt "xhe"
 msgid "Center"
 msgstr "居中"
 
-#: common/module/system.php:902
+#: common/module/system.php:903
 msgctxt "xhe"
 msgid "Baseline"
 msgstr "基线"
 
-#: common/module/system.php:903
+#: common/module/system.php:904
 msgctxt "xhe"
 msgid "Bottom"
 msgstr "底边"
 
-#: common/module/system.php:904
+#: common/module/system.php:905
 msgid "None"
 msgstr "无"
 
-#: common/module/system.php:905
+#: common/module/system.php:906
 msgid "First row"
 msgstr "第一行"
 
-#: common/module/system.php:906
+#: common/module/system.php:907
 msgid "First column"
 msgstr "第一列"
 
-#: common/module/system.php:907
+#: common/module/system.php:908
 msgid "Both"
 msgstr "第一行和第一列"
 
-#: common/module/system.php:908
+#: common/module/system.php:909
 msgid "xhEditor is a platform independent WYSWYG XHTML editor based by jQuery,released as Open Source under <a href=\"http://www.gnu.org/licenses/lgpl.html\" target=\"_blank\">LGPL</a>."
 msgstr "xhEditor是基于jQuery开发的跨平台轻量XHTML编辑器，基于<a href=\"http://www.gnu.org/licenses/lgpl.html\" target=\"_blank\">LGPL</a>开源协议发布。"
 
-#: common/module/system.php:909
+#: common/module/system.php:910
 msgid "Smile"
 msgstr "微笑"
 
-#: common/module/system.php:910
+#: common/module/system.php:911
 msgid "Tongue"
 msgstr "吐舌头"
 
-#: common/module/system.php:911
+#: common/module/system.php:912
 msgid "Titter"
 msgstr "偷笑"
 
-#: common/module/system.php:912
+#: common/module/system.php:913
 msgid "Laugh"
 msgstr "大笑"
 
-#: common/module/system.php:913
+#: common/module/system.php:914
 msgid "Sad"
 msgstr "难过"
 
-#: common/module/system.php:914
+#: common/module/system.php:915
 msgid "Wronged"
 msgstr "委屈"
 
-#: common/module/system.php:915
+#: common/module/system.php:916
 msgid "Fast cry"
 msgstr "快哭了"
 
-#: common/module/system.php:916
+#: common/module/system.php:917
 msgid "Cry"
 msgstr "哭"
 
-#: common/module/system.php:917
+#: common/module/system.php:918
 msgid "Wail"
 msgstr "大哭"
 
-#: common/module/system.php:918
+#: common/module/system.php:919
 msgid "Mad"
 msgstr "生气"
 
-#: common/module/system.php:919
+#: common/module/system.php:920
 msgid "Knock"
 msgstr "敲打"
 
-#: common/module/system.php:920
+#: common/module/system.php:921
 msgid "Curse"
 msgstr "骂人"
 
-#: common/module/system.php:921
+#: common/module/system.php:922
 msgid "Crazy"
 msgstr "抓狂"
 
-#: common/module/system.php:922
+#: common/module/system.php:923
 msgid "Angry"
 msgstr "发火"
 
-#: common/module/system.php:923
+#: common/module/system.php:924
 msgid "Oh my"
 msgstr "惊讶"
 
-#: common/module/system.php:924
+#: common/module/system.php:925
 msgid "Awkward"
 msgstr "尴尬"
 
-#: common/module/system.php:925
+#: common/module/system.php:926
 msgid "Panic"
 msgstr "惊恐"
 
-#: common/module/system.php:926
+#: common/module/system.php:927
 msgid "Shy"
 msgstr "害羞"
 
-#: common/module/system.php:927
+#: common/module/system.php:928
 msgid "Cute"
 msgstr "可怜"
 
-#: common/module/system.php:928
+#: common/module/system.php:929
 msgid "Envy"
 msgstr "羡慕"
 
-#: common/module/system.php:929
+#: common/module/system.php:930
 msgid "Proud"
 msgstr "得意"
 
-#: common/module/system.php:930
+#: common/module/system.php:931
 msgid "Struggle"
 msgstr "奋斗"
 
-#: common/module/system.php:931
+#: common/module/system.php:932
 msgid "Quiet"
 msgstr "安静"
 
-#: common/module/system.php:932
+#: common/module/system.php:933
 msgid "Shut up"
 msgstr "闭嘴"
 
-#: common/module/system.php:933
+#: common/module/system.php:934
 msgid "Doubt"
 msgstr "疑问"
 
-#: common/module/system.php:934
+#: common/module/system.php:935
 msgid "Despise"
 msgstr "鄙视"
 
-#: common/module/system.php:935
+#: common/module/system.php:936
 msgid "Sleep"
 msgstr "睡觉"
 
-#: common/module/system.php:936
+#: common/module/system.php:937
 msgid "Bye"
 msgstr "再见"
 
-#: common/module/system.php:937
+#: common/module/system.php:938
 msgid "Cut (Ctrl+X)"
 msgstr "剪切 (Ctrl+X)"
 
-#: common/module/system.php:938
+#: common/module/system.php:939
 msgid "Copy (Ctrl+C)"
 msgstr "复制 (Ctrl+C)"
 
-#: common/module/system.php:939
+#: common/module/system.php:940
 msgid "Paste (Ctrl+V)"
 msgstr "粘贴 (Ctrl+V)"
 
-#: common/module/system.php:940
+#: common/module/system.php:941
 msgid "Paste as plain text"
 msgstr "粘贴文本"
 
-#: common/module/system.php:941
+#: common/module/system.php:942
 msgid "Block tag"
 msgstr "段落标签"
 
-#: common/module/system.php:942
+#: common/module/system.php:943
 msgid "Font family"
 msgstr "字体"
 
-#: common/module/system.php:943
+#: common/module/system.php:944
 msgid "Font size"
 msgstr "字体大小"
 
-#: common/module/system.php:944
+#: common/module/system.php:945
 msgid "Bold (Ctrl+B)"
 msgstr "加粗 (Ctrl+B)"
 
-#: common/module/system.php:945
+#: common/module/system.php:946
 msgid "Italic (Ctrl+I)"
 msgstr "斜体 (Ctrl+I)"
 
-#: common/module/system.php:946
+#: common/module/system.php:947
 msgid "Underline (Ctrl+U)"
 msgstr "下划线 (Ctrl+U)"
 
-#: common/module/system.php:947
+#: common/module/system.php:948
 msgid "Strikethrough (Ctrl+S)"
 msgstr "删除线 (Ctrl+S)"
 
-#: common/module/system.php:948
+#: common/module/system.php:949
 msgid "Select text color"
 msgstr "字体颜色"
 
-#: common/module/system.php:949
+#: common/module/system.php:950
 msgid "Select background color"
 msgstr "背景颜色"
 
-#: common/module/system.php:950
+#: common/module/system.php:951
 msgid "SelectAll (Ctrl+A)"
 msgstr "全选 (Ctrl+A)"
 
-#: common/module/system.php:951
+#: common/module/system.php:952
 msgid "Remove formatting"
 msgstr "删除文字格式"
 
-#: common/module/system.php:952
+#: common/module/system.php:953
 msgid "Align"
 msgstr "对齐"
 
-#: common/module/system.php:953
+#: common/module/system.php:954
 msgid "List"
 msgstr "列表"
 
-#: common/module/system.php:954
+#: common/module/system.php:955
 msgid "Outdent (Shift+Tab)"
 msgstr "减少缩进 (Shift+Tab)"
 
-#: common/module/system.php:955
+#: common/module/system.php:956
 msgid "Indent (Tab)"
 msgstr "增加缩进 (Tab)"
 
-#: common/module/system.php:956
+#: common/module/system.php:957
 msgid "Insert/edit link (Ctrl+K)"
 msgstr "超链接 (Ctrl+K)"
 
-#: common/module/system.php:957
+#: common/module/system.php:958
 msgid "Unlink"
 msgstr "取消超链接"
 
-#: common/module/system.php:958
+#: common/module/system.php:959
 msgid "Insert/edit image"
 msgstr "图片"
 
-#: common/module/system.php:959
+#: common/module/system.php:960
 msgid "Insert/edit flash"
 msgstr "Flash动画"
 
-#: common/module/system.php:960
+#: common/module/system.php:961
 msgid "Insert/edit media"
 msgstr "多媒体文件"
 
-#: common/module/system.php:961
+#: common/module/system.php:962
 msgid "Insert Flv Video"
 msgstr "插入Flv视频"
 
-#: common/module/system.php:962
+#: common/module/system.php:963
 #: admin/model.php:262
 msgid "Insert Pagebreak"
 msgstr "插入分页符"
 
-#: common/module/system.php:963
+#: common/module/system.php:964
 msgid "Insert Google map"
 msgstr "插入Google地图"
 
-#: common/module/system.php:964
+#: common/module/system.php:965
 msgid "Google Maps"
 msgstr "Google地图"
 
-#: common/module/system.php:965
+#: common/module/system.php:966
 #: admin/model.php:263
 msgid "Remove external links"
 msgstr "移除站外链接"
 
-#: common/module/system.php:966
+#: common/module/system.php:967
 msgid "Emotions"
 msgstr "表情"
 
-#: common/module/system.php:967
+#: common/module/system.php:968
 msgid "Insert a new table"
 msgstr "表格"
 
-#: common/module/system.php:968
+#: common/module/system.php:969
 msgid "Edit source code"
 msgstr "源代码"
 
-#: common/module/system.php:969
+#: common/module/system.php:970
 msgid "Preview"
 msgstr "预览"
 
-#: common/module/system.php:970
+#: common/module/system.php:971
 msgid "Print (Ctrl+P)"
 msgstr "打印 (Ctrl+P)"
 
-#: common/module/system.php:971
+#: common/module/system.php:972
 msgid "Toggle fullscreen (Esc)"
 msgstr "全屏编辑 (Esc)"
 
-#: common/module/system.php:972
+#: common/module/system.php:973
 msgid "About xhEditor"
 msgstr "关于 xhEditor"
 
-#: common/module/system.php:973
+#: common/module/system.php:974
 msgid "Click to open link"
 msgstr "点击打开链接"
 
-#: common/module/system.php:974
+#: common/module/system.php:975
 msgid "Current textarea is hidden, please make it show before initialization xhEditor, or directly initialize the height."
 msgstr "当前textarea处于隐藏状态，请将之显示后再初始化xhEditor，或者直接设置textarea的width和height样式"
 
-#: common/module/system.php:975
-#: common/module/system.php:986
+#: common/module/system.php:976
+#: common/module/system.php:987
 msgid "Upload file extension required for this: "
 msgstr "上传文件的扩展名必需为："
 
-#: common/module/system.php:976
+#: common/module/system.php:977
 msgid "You can only drag and drop the same type of file."
 msgstr "每次只能拖放上传同一类型文件"
 
-#: common/module/system.php:977
+#: common/module/system.php:978
 msgid "File uploading,please wait..."
 msgstr "文件上传中，请稍候……"
 
-#: common/module/system.php:978
+#: common/module/system.php:979
 msgid "Please do not upload more then {$upMultiple} files."
 msgstr "请不要一次上传超过{$upMultiple}个文件"
 
-#: common/module/system.php:979
+#: common/module/system.php:980
 msgid "File uploading(Esc cancel)"
 msgstr "文件上传中(Esc取消上传)"
 
-#: common/module/system.php:980
+#: common/module/system.php:981
 msgid " upload interface error!"
 msgstr " 上传接口发生错误！"
 
-#: common/module/system.php:981
+#: common/module/system.php:982
 msgid "return error:"
 msgstr "返回的错误内容为:"
 
-#: common/module/system.php:982
+#: common/module/system.php:983
 msgid "Close (Esc)"
 msgstr "关闭 (Esc)"
 
-#: common/module/system.php:983
+#: common/module/system.php:984
 msgid "Currently not supported by your browser, use keyboard shortcuts(Ctrl+X) instead."
 msgstr "您的浏览器安全设置不允许使用剪切操作，请使用键盘快捷键(Ctrl + X)来完成"
 
-#: common/module/system.php:984
+#: common/module/system.php:985
 msgid "Currently not supported by your browser, use keyboard shortcuts(Ctrl+C) instead."
 msgstr "您的浏览器安全设置不允许使用复制操作，请使用键盘快捷键(Ctrl + C)来完成"
 
-#: common/module/system.php:985
+#: common/module/system.php:986
 msgid "Currently not supported by your browser, use keyboard shortcuts(Ctrl+V) instead."
 msgstr "您的浏览器安全设置不允许使用粘贴操作，请使用键盘快捷键(Ctrl + V)来完成"
 
@@ -1467,13 +1464,13 @@ msgid "Apply"
 msgstr "应用"
 
 #: admin/categories.php:230
-#: admin/categories.php:302
+#: admin/categories.php:301
 msgctxt "sort"
 msgid "Name"
 msgstr "分类名称"
 
 #: admin/categories.php:231
-#: admin/categories.php:313
+#: admin/categories.php:305
 msgctxt "sort"
 msgid "Path"
 msgstr "列表目录"
@@ -1487,59 +1484,63 @@ msgstr "文章数"
 msgid "Create List"
 msgstr "生成列表"
 
-#: admin/categories.php:295
+#: admin/categories.php:294
 msgctxt "sort"
 msgid "Parent"
 msgstr "上级目录"
 
-#: admin/categories.php:297
+#: admin/categories.php:296
 msgid "&mdash; no parent &mdash;"
 msgstr "&mdash; 无父级 &mdash;"
 
-#: admin/categories.php:302
-#: admin/categories.php:313
-#: admin/model.php:388
-#: admin/model.php:396
+#: admin/categories.php:301
+#: admin/categories.php:305
+#: admin/model.php:395
+#: admin/model.php:403
 #: admin/user.php:264
 #: admin/user.php:272
 msgid "(required)"
 msgstr "(必填)"
 
-#: admin/categories.php:306
-msgctxt "sort"
-msgid "Content"
-msgstr "分类内容"
-
-#: admin/categories.php:308
-msgid "Need content"
-msgstr "需要内容"
-
-#: admin/categories.php:315
+#: admin/categories.php:307
 msgid "Category ID"
 msgstr "分类ID"
 
-#: admin/categories.php:316
-#: admin/model.php:399
+#: admin/categories.php:308
+#: admin/model.php:406
 msgid "MD5 Value"
 msgstr "MD5值"
 
-#: admin/categories.php:317
-#: admin/model.php:400
+#: admin/categories.php:309
+#: admin/model.php:407
 msgid "Pinyin"
 msgstr "拼音"
 
-#: admin/categories.php:321
+#: admin/categories.php:313
 msgid "List Template"
 msgstr "列表模板"
 
-#: admin/categories.php:329
-#: admin/model.php:408
+#: admin/categories.php:321
+#: admin/model.php:415
 msgid "Page Template"
 msgstr "内容模板"
 
-#: admin/categories.php:332
+#: admin/categories.php:324
 msgid "Use the model set"
 msgstr "使用模型设置"
+
+#: admin/categories.php:333
+#: admin/model.php:426
+#: admin/index.php:81
+#: admin/index.php:104
+#: admin/index.php:125
+#: admin/index.php:137
+msgid "Click to toggle"
+msgstr "点击切换"
+
+#: admin/categories.php:334
+msgid "More attribute"
+msgstr "更多属性"
 
 #: admin/categories.php:338
 msgctxt "sort"
@@ -1564,7 +1565,7 @@ msgid "Update Category"
 msgstr "更新分类"
 
 #: admin/model.php:29
-#: admin/model.php:492
+#: admin/model.php:497
 msgctxt "field"
 msgid "Add New"
 msgstr "添加字段"
@@ -1718,8 +1719,8 @@ msgid "Error Message"
 msgstr "错误信息"
 
 #: admin/model.php:225
-#: admin/model.php:478
-msgctxt "model"
+#: admin/model.php:484
+msgctxt "field"
 msgid "Label"
 msgstr "表单文字"
 
@@ -1728,13 +1729,13 @@ msgid "Need help"
 msgstr "需要帮助"
 
 #: admin/model.php:227
-msgctxt "model"
+msgctxt "field"
 msgid "Help"
 msgstr "帮助信息"
 
 #: admin/model.php:228
-#: admin/model.php:479
-msgctxt "model"
+#: admin/model.php:485
+msgctxt "field"
 msgid "Field"
 msgstr "字段名"
 
@@ -1743,8 +1744,8 @@ msgid "Can search"
 msgstr "可以搜索"
 
 #: admin/model.php:230
-#: admin/model.php:481
-msgctxt "model"
+#: admin/model.php:486
+msgctxt "field"
 msgid "Type"
 msgstr "输入类型"
 
@@ -1765,7 +1766,7 @@ msgid "Verify rule"
 msgstr "验证规则"
 
 #: admin/model.php:254
-msgctxt "model"
+msgctxt "field"
 msgid "Serialize"
 msgstr "序列值"
 
@@ -1798,15 +1799,15 @@ msgid "Insert Google Map"
 msgstr "插入Google地图"
 
 #: admin/model.php:266
-msgctxt "model"
+msgctxt "field"
 msgid "Length"
 msgstr "长度"
 
 #: admin/model.php:273
-#: admin/model.php:482
-msgctxt "model"
+#: admin/model.php:487
+msgctxt "field"
 msgid "Default"
-msgstr "默认值"
+msgstr "默认"
 
 #: admin/model.php:302
 #: admin/model.php:334
@@ -1823,19 +1824,19 @@ msgid "Export"
 msgstr "导出"
 
 #: admin/model.php:348
-#: admin/model.php:388
+#: admin/model.php:395
 msgctxt "model"
 msgid "Name"
 msgstr "模型名称"
 
 #: admin/model.php:349
-#: admin/model.php:392
+#: admin/model.php:399
 msgctxt "model"
 msgid "Code"
 msgstr "模型标识"
 
 #: admin/model.php:350
-#: admin/model.php:381
+#: admin/model.php:388
 msgctxt "model"
 msgid "Language"
 msgstr "所属语言"
@@ -1845,392 +1846,271 @@ msgctxt "model"
 msgid "State"
 msgstr "状态"
 
-#: admin/model.php:392
+#: admin/model.php:381
+msgctxt "model"
+msgid "Type"
+msgstr "模型类型"
+
+#: admin/model.php:383
+msgctxt "model"
+msgid "Post"
+msgstr "文章模型"
+
+#: admin/model.php:384
+msgctxt "model"
+msgid "Category"
+msgstr "分类模型"
+
+#: admin/model.php:399
 msgid "(required,only)"
 msgstr "(必填，唯一)"
 
-#: admin/model.php:396
+#: admin/model.php:403
 msgctxt "model"
 msgid "Path"
 msgstr "生成规则"
 
-#: admin/model.php:398
+#: admin/model.php:405
 msgid "Post ID"
 msgstr "文章ID"
 
-#: admin/model.php:419
-#: admin/index.php:81
-#: admin/index.php:104
-#: admin/index.php:125
-#: admin/index.php:137
-msgid "Click to toggle"
-msgstr "点击切换"
-
-#: admin/model.php:462
+#: admin/model.php:468
 msgid "Add Model"
 msgstr "添加模型"
 
-#: admin/model.php:464
+#: admin/model.php:470
 msgid "Update Model"
 msgstr "更新模型"
 
-#: admin/model.php:480
-msgctxt "model"
-msgid "Tag"
-msgstr "模版标签"
-
-#: admin/model.php:491
+#: admin/model.php:496
 msgctxt "field"
 msgid "Delete"
 msgstr "删除字段"
 
-#: admin/install.bak.php:36
 #: admin/install.php:38
 msgid "You must accept the license before they can continue the installation!"
 msgstr "您必须接受LazyCMS的许可协议，才能继续安装。"
 
-#: admin/install.bak.php:39
 #: admin/install.php:41
 msgid "\"Table Prefix\" can only contain numbers, letters, and underscores."
 msgstr "“表名前缀”只能含有数字、字母以及下划线。"
 
-#: admin/install.bak.php:42
 #: admin/install.php:44
 msgid "You must provide a valid username."
 msgstr "请输入您的管理员名称。"
 
-#: admin/install.bak.php:44
 #: admin/install.php:46
 #: admin/user.php:104
 msgid "Your passwords do not match. Please try again."
 msgstr "您两次输入的密码不符，请重试。"
 
-#: admin/install.bak.php:47
 #: admin/install.php:49
 #: admin/user.php:96
 msgid "Please enter an e-mail address."
 msgstr "请输入一个电子邮件地址。"
 
-#: admin/install.bak.php:82
-#: admin/install.bak.php:84
-msgid "Error establishing a database connection"
-msgstr "数据库连接错误"
-
-#: admin/install.bak.php:85
-#, php-format
-msgid "This either means that the username and password information in your <code>/config.php</code> file is incorrect or we can't contact the database server at <code>%s</code>."
-msgstr "您在 <code>/config.php</code> 文件中提供的数据库用户名和密码可能不正确，或者无法连接到 <code>%s</code> 上的数据库服务器，"
-
-#: admin/install.bak.php:85
-msgid "This could mean your host's database server is down."
-msgstr "这意味着您的主机数据库服务器已停止工作。"
-
-#: admin/install.bak.php:87
-msgid "Are you sure you have the correct username and password?"
-msgstr "您确认您提供的用户名和密码正确么？"
-
-#: admin/install.bak.php:88
-msgid "Are you sure that you have typed the correct hostname?"
-msgstr "您确认您提供的主机名正确么？"
-
-#: admin/install.bak.php:89
-msgid "Are you sure that the database server is running?"
-msgstr "您确认数据库服务器正常运行么？"
-
-#: admin/install.bak.php:91
-msgid "If you're unsure what these terms mean you should probably contact your host."
-msgstr "如果您无法确定这些问题，请联系您的主机管理员。"
-
-#: admin/install.bak.php:91
-msgid "If you still need help you can always visit the <a href=\"http://lazycms.com/support/\">LazyCMS Support Forums</a>."
-msgstr "如果您仍需帮助，请访问 <a href=\"http://lazycms.com/support/\">LazyCMS 支持论坛</a>。"
-
-#: admin/install.bak.php:97
-#: admin/install.bak.php:99
-msgid "Can't select database"
-msgstr "无法选择数据库"
-
-#: admin/install.bak.php:100
-#, php-format
-msgid "We were able to connect to the database server (which means your username and password is okay) but not able to select the <code>%s</code> database."
-msgstr "我们可以和数据库服务器建立连接（说明您提供的用户名和密码正确），但是我们无法选择 <code>%s</code> 数据库。"
-
-#: admin/install.bak.php:102
-msgid "Are you sure it exists?"
-msgstr "您确认数据库存在？"
-
-#: admin/install.bak.php:103
-#, php-format
-msgid "Does the user <code>%s</code> have permission to use the <code>%s</code> database?"
-msgstr "您确认用户 <code>%s</code> 拥有使用 <code>%s</code> 数据库的权限？"
-
-#: admin/install.bak.php:104
-#, php-format
-msgid "On some systems the name of your database is prefixed with your username, so it would be like <code>%s_%s</code>. Could that be the problem?"
-msgstr "在某些系统上您的数据库名可能还包含了您用户名的前缀，例如 <code>%s_%s</code>，问题会不会出在这里？"
-
-#: admin/install.bak.php:106
-msgid "If you don't know how to set up a database you should <strong>contact your host</strong>."
-msgstr "如果您不知道如何设置一个数据库，您应该<strong>联系您的主机管理员</strong>。"
-
-#: admin/install.bak.php:106
-msgid "If all else fails you may find help at the <a href=\"http://lazycms.com/support/\">LazyCMS Support Forums</a>."
-msgstr "如果所有办法还没有解决您的问题，您可以在 <a href=\"http://lazycms.com/support/\">LazyCMS 支持论坛</a>上寻求帮助。"
-
-#: admin/install.bak.php:112
-#: admin/install.php:73
+#: admin/install.php:81
 msgid "Sorry, I need a common/config.sample.php file to work from. Please re-upload this file from your LazyCMS installation."
 msgstr "抱歉，我需要 common/config.sample.php 文件作为向导工作的基础，请重新上传此文件。"
 
-#: admin/install.bak.php:176
-#: admin/install.php:134
+#: admin/install.php:142
 msgid "All right sparky! You've made it through of the installation. If you are ready, time now to&hellip;"
 msgstr "非常好！您已顺利完成安装。若您准备好了，现在就去 &hellip;"
 
-#: admin/install.bak.php:178
-#: admin/install.php:136
+#: admin/install.php:144
 msgid "Create config.php failed, Please manually create."
 msgstr "创建config.php文件失败，请手动创建。"
 
-#: admin/install.bak.php:186
-#: admin/install.php:144
+#: admin/install.php:152
 msgid "Welcome to LazyCMS! Below you should enter your database connection details. If you're not sure about these, contact your host."
 msgstr "欢迎使用LazyCMS！ 请在下方输入数据库相关信息。若您不清楚，请咨询主机提供商。"
 
-#: admin/install.bak.php:188
-#: admin/install.php:146
+#: admin/install.php:154
 msgid "Database Configuration"
 msgstr "数据库配置"
 
-#: admin/install.bak.php:190
-#: admin/install.php:148
+#: admin/install.php:156
 msgid "Database Type"
 msgstr "数据库类型"
 
-#: admin/install.bak.php:213
-#: admin/install.php:171
+#: admin/install.php:179
 msgid "Recommended to use SQLite 3.x or MySQLi."
 msgstr "推荐使用 SQLite 3.x 或 MySQLi。"
 
-#: admin/install.bak.php:214
-#: admin/install.php:172
+#: admin/install.php:180
 msgid "Database Name"
 msgstr "数据库名"
 
-#: admin/install.bak.php:214
-#: admin/install.php:172
+#: admin/install.php:180
 msgid "The name of the database you want to run LazyCMS in."
 msgstr "您希望 LazyCMS 使用哪个数据库运行？"
 
-#: admin/install.bak.php:215
-#: admin/install.bak.php:227
-#: admin/install.php:173
-#: admin/install.php:185
+#: admin/install.php:181
+#: admin/install.php:193
 msgid "UserName"
 msgstr "用户名"
 
-#: admin/install.bak.php:215
-#: admin/install.php:173
+#: admin/install.php:181
 msgid "Your MySQL username"
 msgstr "您的 MySQL 用户名"
 
-#: admin/install.bak.php:216
-#: admin/install.php:174
+#: admin/install.php:182
 #: admin/login.php:79
 #: admin/user.php:281
 msgid "Password"
 msgstr "密码"
 
-#: admin/install.bak.php:216
-#: admin/install.php:174
+#: admin/install.php:182
 msgid "...and MySQL password."
 msgstr "... 以及 MySQL 密码。"
 
-#: admin/install.bak.php:217
-#: admin/install.php:175
+#: admin/install.php:183
 msgid "Database Host"
 msgstr "数据库主机"
 
-#: admin/install.bak.php:217
-#: admin/install.php:175
+#: admin/install.php:183
 msgid "You should be able to get this info from your web host, if <code>localhost</code> does not work."
 msgstr "通常情况下，应填写 <code>localhost</code>，若测试连接失败，请联系主机提供商咨询。"
 
-#: admin/install.bak.php:218
-#: admin/install.php:176
+#: admin/install.php:184
 msgid "Table prefix"
 msgstr "表名前缀"
 
-#: admin/install.bak.php:218
-#: admin/install.php:176
+#: admin/install.php:184
 msgid "If you want to run multiple LazyCMS installations in a single database, change this."
 msgstr "若您希望在一个数据库中存放多个 LazyCMS 的数据，请修改本项以做区分。"
 
-#: admin/install.bak.php:222
-#: admin/install.php:180
+#: admin/install.php:188
 msgid "Please provide the following information. Don’t worry, you can always change these settings later."
 msgstr "您需要填写一些基本信息。无需担心填错，这些信息以后可以再次修改。"
 
-#: admin/install.bak.php:224
-#: admin/install.php:182
+#: admin/install.php:190
 msgid "Information needed"
 msgstr "需要您提供的信息"
 
-#: admin/install.bak.php:226
-#: admin/install.php:184
+#: admin/install.php:192
 msgid "Site Title"
 msgstr "站点标题"
 
-#: admin/install.bak.php:227
-#: admin/install.php:185
+#: admin/install.php:193
 msgid "Administrator account."
 msgstr "管理员帐户。"
 
-#: admin/install.bak.php:229
-#: admin/install.php:187
+#: admin/install.php:195
 msgid "Password, twice"
 msgstr "密码，两次"
 
-#: admin/install.bak.php:231
-#: admin/install.php:189
+#: admin/install.php:197
 msgid "Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! \" ? $ % ^ & )."
 msgstr "提示：您的密码最好至少包含 7 个字符。为了保证密码强度，使用大小写字母，数字和符号，例如 ! \" ? $ % ^ & )。"
 
-#: admin/install.bak.php:233
-#: admin/install.php:191
+#: admin/install.php:199
 msgid "Your E-mail"
 msgstr "电子邮箱"
 
-#: admin/install.bak.php:233
-#: admin/install.php:191
+#: admin/install.php:199
 msgid "Double-check your email address before continuing."
 msgstr "请仔细检查邮件地址后继续。"
 
-#: admin/install.bak.php:236
-#: admin/install.php:194
+#: admin/install.php:202
 msgid "Installing initial data"
 msgstr "安装初始化数据"
 
-#: admin/install.bak.php:237
-#: admin/install.php:195
+#: admin/install.php:203
 #, php-format
 msgid "I accept the <a href=\"%s\" target=\"_blank\">License</a>"
 msgstr "我接受LazyCMS的<a href=\"%s\" target=\"_blank\">许可协议</a>"
 
-#: admin/install.bak.php:240
-#: admin/install.php:198
+#: admin/install.php:206
 msgid "Install"
 msgstr "安装"
 
-#: admin/install.bak.php:250
-#: admin/install.php:208
+#: admin/install.php:216
 msgid "System Information"
 msgstr "系统信息"
 
-#: admin/install.bak.php:252
-#: admin/install.php:210
+#: admin/install.php:218
 msgid "Server OS"
 msgstr "服务器系统"
 
-#: admin/install.bak.php:253
-#: admin/install.php:211
+#: admin/install.php:219
 msgid "Server Software"
 msgstr "服务器软件"
 
-#: admin/install.bak.php:254
-#: admin/install.php:212
+#: admin/install.php:220
 msgid "Server API"
 msgstr "服务器 API"
 
-#: admin/install.bak.php:261
-#: admin/install.php:219
+#: admin/install.php:227
 msgid "Required Settings"
 msgstr "必需的设置"
 
-#: admin/install.bak.php:263
-#: admin/install.php:221
+#: admin/install.php:229
 msgid "Test"
 msgstr "测试"
 
-#: admin/install.bak.php:263
-#: admin/install.php:221
+#: admin/install.php:229
 msgid "Require"
 msgstr "需求"
 
-#: admin/install.bak.php:263
-#: admin/install.php:221
+#: admin/install.php:229
 msgid "Current"
 msgstr "当前"
 
-#: admin/install.bak.php:264
-#: admin/install.php:222
+#: admin/install.php:230
 msgid "PHP Version"
 msgstr "PHP版本"
 
-#: admin/install.bak.php:265
-#: admin/install.php:223
+#: admin/install.php:231
 msgid "DB Driver"
 msgstr "数据驱动"
 
-#: admin/install.bak.php:290
-#: admin/install.php:248
+#: admin/install.php:256
 msgid "GD Library"
 msgstr "图形绘制库"
 
-#: admin/install.bak.php:291
-#: admin/install.php:249
+#: admin/install.php:257
 msgid "Iconv Support"
 msgstr "字符集转换"
 
-#: admin/install.bak.php:292
-#: admin/install.php:250
+#: admin/install.php:258
 msgid "Multibyte Support"
 msgstr "多字节字符串处理支持"
 
-#: admin/install.bak.php:292
-#: admin/install.bak.php:293
-#: admin/install.php:250
-#: admin/install.php:251
+#: admin/install.php:258
+#: admin/install.php:259
 msgid "Support"
 msgstr "支持"
 
-#: admin/install.bak.php:293
-#: admin/install.php:251
+#: admin/install.php:259
 msgid "Remote URL Open"
 msgstr "打开远程URL"
 
-#: admin/install.bak.php:297
-#: admin/install.php:255
+#: admin/install.php:263
 msgid "Directory Permissions"
 msgstr "目录权限"
 
-#: admin/install.bak.php:299
-#: admin/install.php:257
+#: admin/install.php:265
 msgid "Path"
 msgstr "路径"
 
-#: admin/install.bak.php:299
-#: admin/install.php:257
+#: admin/install.php:265
 msgid "Read"
 msgstr "读"
 
-#: admin/install.bak.php:299
-#: admin/install.php:257
+#: admin/install.php:265
 msgid "Write"
 msgstr "写"
 
-#: admin/install.bak.php:326
-#: admin/install.php:284
+#: admin/install.php:292
 msgid "Continue"
 msgstr "继续"
 
-#: admin/install.bak.php:327
-#: admin/install.php:285
+#: admin/install.php:293
 msgid "Try Again"
 msgstr "再试一次"
 
-#: admin/install.bak.php:328
-#: admin/install.php:286
+#: admin/install.php:294
 msgid "Display PHP Information"
 msgstr "显示PHP信息"
 
@@ -2773,118 +2653,110 @@ msgctxt "post"
 msgid "[Submit] to Add New<br />[Cancel] to Back list"
 msgstr "[确认] 添加文章<br />[取消] 返回列表"
 
-#: admin/post.php:320
-msgid "Browse..."
-msgstr "浏览..."
-
-#: admin/post.php:417
-#: admin/post.php:472
+#: admin/post.php:361
+#: admin/post.php:416
 msgid "Create"
 msgstr "生成"
 
-#: admin/post.php:480
+#: admin/post.php:424
 msgid "View all categories"
 msgstr "查看全部分类"
 
-#: admin/post.php:485
+#: admin/post.php:429
 msgid "Filter"
 msgstr "过滤"
 
-#: admin/post.php:501
-#: admin/post.php:591
+#: admin/post.php:445
+#: admin/post.php:535
 msgctxt "post"
 msgid "Title"
 msgstr "标题"
 
-#: admin/post.php:502
-#: admin/post.php:568
+#: admin/post.php:446
+#: admin/post.php:512
 msgctxt "post"
 msgid "Model"
 msgstr "模型"
 
-#: admin/post.php:504
-#: admin/post.php:583
+#: admin/post.php:448
+#: admin/post.php:527
 msgctxt "post"
 msgid "Categories"
 msgstr "分类"
 
-#: admin/post.php:506
+#: admin/post.php:450
 msgctxt "post"
 msgid "Tags"
 msgstr "标签"
 
-#: admin/post.php:508
+#: admin/post.php:452
 msgctxt "post"
 msgid "Date"
 msgstr "日期"
 
-#: admin/post.php:528
+#: admin/post.php:472
 msgid "Please Add Category!"
 msgstr "请先添加文章分类！"
 
-#: admin/post.php:594
+#: admin/post.php:538
 msgid "Auto get keywords"
 msgstr "自动获取关键词"
 
-#: admin/post.php:598
+#: admin/post.php:542
 msgctxt "post"
 msgid "Content"
 msgstr "内容"
 
-#: admin/post.php:605
+#: admin/post.php:549
 msgctxt "post"
 msgid "Path"
 msgstr "路径"
 
-#: admin/post.php:621
-msgid "More attribute"
-msgstr "更多属性"
-
-#: admin/post.php:625
+#: admin/post.php:569
 msgctxt "post"
 msgid "Page Template"
 msgstr "页面模板"
 
-#: admin/post.php:628
+#: admin/post.php:572
 msgid "Use the category set"
 msgstr "使用分类设置"
 
-#: admin/post.php:635
+#: admin/post.php:579
 msgctxt "post"
 msgid "Keywords"
 msgstr "关键词"
 
-#: admin/post.php:636
+#: admin/post.php:580
 msgid "Get"
 msgstr "获取"
 
-#: admin/post.php:639
+#: admin/post.php:583
 msgctxt "post"
 msgid "Description"
 msgstr "Meta简述"
 
-#: admin/post.php:644
+#: admin/post.php:588
 msgctxt "post"
 msgid "Other"
 msgstr "其它选项"
 
-#: admin/post.php:646
+#: admin/post.php:590
 msgid "Allow Comments"
 msgstr "允许评论"
 
-#: admin/post.php:648
+#: admin/post.php:592
 msgid "Update all Pages"
 msgstr "更新所有页面"
 
-#: admin/post.php:649
+#: admin/post.php:593
 msgid "Update Category Lists"
 msgstr "更新分类列表"
 
-#: admin/post.php:659
+#: admin/post.php:603
 msgid "Add Post"
 msgstr "添加文章"
 
-#: admin/post.php:663
+#: admin/post.php:607
 msgid "Update Post"
 msgstr "更新文章"
 
@@ -3046,6 +2918,77 @@ msgstr "标签服务"
 msgid "(Get the Network tags of service)"
 msgstr "(获取网络标签服务)"
 
+#, fuzzy
+#~ msgctxt "field"
+#~ msgid "Tag"
+#~ msgstr "模版标签"
+#~ msgctxt "sort"
+#~ msgid "Content"
+#~ msgstr "分类内容"
+#~ msgid "Need content"
+#~ msgstr "需要内容"
+#~ msgctxt "model"
+#~ msgid "Default"
+#~ msgstr "默认值"
+#~ msgid "Error establishing a database connection"
+#~ msgstr "数据库连接错误"
+#~ msgid ""
+#~ "This either means that the username and password information in your "
+#~ "<code>/config.php</code> file is incorrect or we can't contact the "
+#~ "database server at <code>%s</code>."
+#~ msgstr ""
+#~ "您在 <code>/config.php</code> 文件中提供的数据库用户名和密码可能不正确，或"
+#~ "者无法连接到 <code>%s</code> 上的数据库服务器，"
+#~ msgid "This could mean your host's database server is down."
+#~ msgstr "这意味着您的主机数据库服务器已停止工作。"
+#~ msgid "Are you sure you have the correct username and password?"
+#~ msgstr "您确认您提供的用户名和密码正确么？"
+#~ msgid "Are you sure that you have typed the correct hostname?"
+#~ msgstr "您确认您提供的主机名正确么？"
+#~ msgid "Are you sure that the database server is running?"
+#~ msgstr "您确认数据库服务器正常运行么？"
+#~ msgid ""
+#~ "If you're unsure what these terms mean you should probably contact your "
+#~ "host."
+#~ msgstr "如果您无法确定这些问题，请联系您的主机管理员。"
+#~ msgid ""
+#~ "If you still need help you can always visit the <a href=\"http://lazycms."
+#~ "com/support/\">LazyCMS Support Forums</a>."
+#~ msgstr ""
+#~ "如果您仍需帮助，请访问 <a href=\"http://lazycms.com/support/\">LazyCMS 支"
+#~ "持论坛</a>。"
+#~ msgid "Can't select database"
+#~ msgstr "无法选择数据库"
+#~ msgid ""
+#~ "We were able to connect to the database server (which means your username "
+#~ "and password is okay) but not able to select the <code>%s</code> database."
+#~ msgstr ""
+#~ "我们可以和数据库服务器建立连接（说明您提供的用户名和密码正确），但是我们无"
+#~ "法选择 <code>%s</code> 数据库。"
+#~ msgid "Are you sure it exists?"
+#~ msgstr "您确认数据库存在？"
+#~ msgid ""
+#~ "Does the user <code>%s</code> have permission to use the <code>%s</code> "
+#~ "database?"
+#~ msgstr "您确认用户 <code>%s</code> 拥有使用 <code>%s</code> 数据库的权限？"
+#~ msgid ""
+#~ "On some systems the name of your database is prefixed with your username, "
+#~ "so it would be like <code>%s_%s</code>. Could that be the problem?"
+#~ msgstr ""
+#~ "在某些系统上您的数据库名可能还包含了您用户名的前缀，例如 <code>%s_%s</"
+#~ "code>，问题会不会出在这里？"
+#~ msgid ""
+#~ "If you don't know how to set up a database you should <strong>contact "
+#~ "your host</strong>."
+#~ msgstr ""
+#~ "如果您不知道如何设置一个数据库，您应该<strong>联系您的主机管理员</"
+#~ "strong>。"
+#~ msgid ""
+#~ "If all else fails you may find help at the <a href=\"http://lazycms.com/"
+#~ "support/\">LazyCMS Support Forums</a>."
+#~ msgstr ""
+#~ "如果所有办法还没有解决您的问题，您可以在 <a href=\"http://lazycms.com/"
+#~ "support/\">LazyCMS 支持论坛</a>上寻求帮助。"
 #~ msgid ""
 #~ "Your PHP installation appears to be missing the MySQLi extension which is "
 #~ "required by LazyCMS."

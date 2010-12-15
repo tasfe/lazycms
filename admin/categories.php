@@ -279,13 +279,12 @@ function category_manage_page($action) {
     }
     $parent  = isset($_SORT['parent'])?$_SORT['parent']:null;
     $name    = isset($_SORT['name'])?$_SORT['name']:null;
-    $content = isset($_SORT['content'])?$_SORT['content']:null;
     $path    = isset($_SORT['path'])?$_SORT['path']:null;
     $list    = isset($_SORT['list'])?$_SORT['list']:null;
     $page    = isset($_SORT['page'])?$_SORT['page']:null;
     $keywords = isset($_SORT['keywords'])?taxonomy_get_keywords($_SORT['keywords']):null;
     $description = isset($_SORT['description'])?$_SORT['description']:null;
-    $models = model_gets(0);
+    $models = model_gets(null, 'enabled');
     echo '<div class="wrap">';
     echo   '<h2>'.system_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="sortmanage" id="sortmanage">';
@@ -302,13 +301,6 @@ function category_manage_page($action) {
     echo               '<th><label for="name">'._x('Name','sort').'<span class="resume">'.__('(required)').'</span></label></th>';
     echo               '<td><input class="text" id="name" name="name" type="text" size="30" value="'.$name.'" /></td>';
     echo           '</tr>';
-    echo               '<tr>';
-    echo                   '<th><label for="content">'._x('Content','sort').'</label></th>';
-    echo                   '<td><label for="need_cnt">';
-    echo                       '<input type="checkbox" name="need_cnt" value="1" id="need_cnt"'.($content?' checked="checked"':'').' onclick="sort_toggle_content(this.checked);" />'.__('Need content').'</label>';
-    echo                       '<div class="content'.($content ? '' : ' hide').'">'.editor('content', $content).'</div>';
-    echo                   '</td>';
-    echo               '</tr>';
     echo           '<tr>';
     echo               '<th><label for="path">'._x('Path','sort').'<span class="resume">'.__('(required)').'</span></label></th>';
     echo               '<td><input class="text" id="path" name="path" type="text" size="70" value="'.$path.'" /><div class="rules">';
@@ -334,6 +326,14 @@ function category_manage_page($action) {
     echo                   '</select>';
     echo               '</td>';
     echo           '</tr>';
+    echo       '</tbody>';
+    echo   '</table>';
+    echo '</fieldset>';
+    echo '<fieldset cookie="true">';
+    echo     '<a href="javascript:;" class="toggle" title="'.__('Click to toggle').'"><br/></a>';
+    echo     '<h3>'.__('More attribute').'</h3>';
+    echo     '<table class="form-table">';
+    echo         '<tbody>';
     echo           '<tr>';
     echo               '<th><label for="keywords">'._x('Keywords','sort').'</label></th>';
     echo               '<td><input class="text" type="text" size="70" name="keywords" id="keywords" value="'.$keywords.'" /></td>';

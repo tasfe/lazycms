@@ -22,6 +22,7 @@ function sort_list_init() {
 }
 function sort_manage_init() {
     var wrap = $('#sortmanage'),sortid = $('input:hidden[name=sortid]',wrap).val();
+        wrap.semiauto();
     // 绑定分类选择事件
     $('select[name=parent]',wrap).change(function(){
         var selected = $('option:selected',this);
@@ -33,6 +34,13 @@ function sort_manage_init() {
 	$('div.rules > a',wrap).click(function(){
 	    var val = this.href.replace(self.location,'').replace('#','');
 	    $('input[name=path]',wrap).insertVal(val); return false;
+	});
+    // 绑定展开事件
+	$('fieldset').each(function(i){
+	    var fieldset = $(this);
+	    $('a.toggle,h3',this).click(function(){
+	        fieldset.toggleClass('closed');
+	    });
 	});
     // 提交事件
     $('form#sortmanage').ajaxSubmit();
@@ -48,16 +56,4 @@ function sort_delete(sortid){
             LazyCMS.postAction('categories.php', {method:'bulk', action:'delete'}, sortid);
         }
     });
-}
-/**
- * 切换内容编辑器显示模式
- *
- * @param mode
- */
-function sort_toggle_content(mode) {
-    if (mode) {
-        $('form#sortmanage div.content').removeClass('hide');
-    } else {
-        $('form#sortmanage div.content').addClass('hide');
-    }
 }
