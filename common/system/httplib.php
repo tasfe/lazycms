@@ -265,7 +265,7 @@ class Httplib {
             return throw_error($headers['response']['code'].': '.$headers['response']['message'],E_LAZY_WARNING);
 
         // 重定向到新的位置
-		if ('HEAD' != $r['method'] && isset($headers['headers']['location'])) {
+		if ('HEAD' != $r['method'] && $r['redirection']>0 && isset($headers['headers']['location'])) {
 			if ($r['redirection']-- > 0) {
 				return $this->request($headers['headers']['location'], $r);
 			} else {
@@ -390,7 +390,7 @@ class Httplib {
 		curl_close( $handle );
 
 		// See #11305 - When running under safe mode, redirection is disabled above. Handle it manually.
-		if ( !empty($headers['headers']['location']) && (ini_get('safe_mode') || ini_get('open_basedir')) ) {
+		if ( !empty($headers['headers']['location']) && $r['redirection']>0 && (ini_get('safe_mode') || ini_get('open_basedir')) ) {
 			if ( $r['redirection']-- > 0 ) {
 				return $this->request($headers['headers']['location'], $r);
 			} else {
