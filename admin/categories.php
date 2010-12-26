@@ -34,63 +34,63 @@ current_user_can('categories');
 switch ($method) {
     // 强力插入
     case 'new':
-	    // 重置标题
-	    system_head('title',__('Add New Category'));
+        // 重置标题
+        system_head('title', __('Add New Category'));
         system_head('styles', array('css/xheditor.plugins'));
-        system_head('scripts',array('js/xheditor'));
-        system_head('jslang',system_editor_lang());
-	    // 添加JS事件
-	    system_head('loadevents','sort_manage_init');
-	    include ADMIN_PATH.'/admin-header.php';
+        system_head('scripts', array('js/xheditor'));
+        system_head('jslang', system_editor_lang());
+        // 添加JS事件
+        system_head('loadevents', 'sort_manage_init');
+        include ADMIN_PATH . '/admin-header.php';
         // 显示页面
-	    category_manage_page('add');
-        include ADMIN_PATH.'/admin-footer.php';
+        category_manage_page('add');
+        include ADMIN_PATH . '/admin-footer.php';
         break;
     // 活塞式运动，你懂得。。。
-	case 'edit':
-	    // 重置标题
-	    system_head('title',__('Edit Category'));
+    case 'edit':
+        // 重置标题
+        system_head('title', __('Edit Category'));
         system_head('styles', array('css/xheditor.plugins'));
-        system_head('scripts',array('js/xheditor'));
-        system_head('jslang',system_editor_lang());
-	    // 添加JS事件
-	    system_head('loadevents','sort_manage_init');
-	    include ADMIN_PATH.'/admin-header.php';
-	    category_manage_page('edit');
-        include ADMIN_PATH.'/admin-footer.php';
-	    break;
+        system_head('scripts', array('js/xheditor'));
+        system_head('jslang', system_editor_lang());
+        // 添加JS事件
+        system_head('loadevents', 'sort_manage_init');
+        include ADMIN_PATH . '/admin-header.php';
+        category_manage_page('edit');
+        include ADMIN_PATH . '/admin-footer.php';
+        break;
     // 保存
 	case 'save':
         $taxonomyid  = isset($_POST['taxonomyid'])?$_POST['taxonomyid']:0;
         if (validate_is_post()) {
             // 路径两边不允许出现 斜杠
             if (isset($_POST['path']))
-                $_POST['path'] = trim($_POST['path'],'/');
-            
-            $parent   = isset($_POST['parent'])?$_POST['parent']:'0';
-            $name     = isset($_POST['name'])?$_POST['name']:null;
-            $content  = isset($_POST['content'])?$_POST['content']:null;
-            $path     = isset($_POST['path'])?$_POST['path']:null;
-            $list     = isset($_POST['list'])?$_POST['list']:null;
-            $page     = isset($_POST['page'])?$_POST['page']:null;
-            $keywords = isset($_POST['keywords'])?$_POST['keywords']:null;
-            $description = isset($_POST['description'])?$_POST['description']:null;
+                $_POST['path'] = trim($_POST['path'], '/');
+
+            $parent   = isset($_POST['parent']) ? $_POST['parent'] : '0';
+            $name     = isset($_POST['name']) ? $_POST['name'] : null;
+            $content  = isset($_POST['content']) ? $_POST['content'] : null;
+            $path     = isset($_POST['path']) ? $_POST['path'] : null;
+            $list     = isset($_POST['list']) ? $_POST['list'] : null;
+            $page     = isset($_POST['page']) ? $_POST['page'] : null;
+            $keywords = isset($_POST['keywords']) ? $_POST['keywords'] : null;
+            $description = isset($_POST['description']) ? $_POST['description'] : null;
 
             validate_check(array(
-                array('name',VALIDATE_EMPTY,_x('The name field is empty.','sort')),
-                array('name',VALIDATE_LENGTH,_x('The name field length must be %d-%d characters.','sort'),1,30),
+                array('name', VALIDATE_EMPTY, _x('The name field is empty.', 'sort')),
+                array('name', VALIDATE_LENGTH, _x('The name field length must be %d-%d characters.', 'sort'), 1, 30),
             ));
             // 验证路径
-            $path_exists = taxonomy_path_exists($taxonomyid,path_format($path,array('PY'=>$name)));
+            $path_exists = taxonomy_path_exists($taxonomyid, path_format($path, array('PY' => $name)));
             validate_check(array(
-                array('path',VALIDATE_EMPTY,_x('The path field is empty.','sort')),
-                array('path',VALIDATE_IS_PATH,sprintf(_x('The path can not contain any of the following characters %s','sort'), esc_html('* : < > | \\'))),
-                array('path',(!$path_exists),_x('The path already exists.','sort')),
+                array('path', VALIDATE_EMPTY, _x('The path field is empty.', 'sort')),
+                array('path', VALIDATE_IS_PATH, sprintf(_x('The path can not contain any of the following characters %s', 'sort'), esc_html('* : < > | \\'))),
+                array('path', (!$path_exists), _x('The path already exists.', 'sort')),
             ));
-            
+
             if ($description) {
                 validate_check(array(
-                    array('description',VALIDATE_LENGTH,__('Description the field up to 255 characters.'),0,255),
+                    array('description', VALIDATE_LENGTH, __('Description the field up to 255 characters.'), 0, 255),
                 ));
             }
 
@@ -108,20 +108,20 @@ switch ($method) {
                         'keywords' => esc_html($keywords),
                         'description' => esc_html($description),
                     );
-                    taxonomy_edit($taxonomyid,$info);
+                    taxonomy_edit($taxonomyid, $info);
                     $result = __('Category updated.');
-                } 
+                }
                 // 强力插入了
                 else {
                     $path     = esc_html($path);
                     $parent   = esc_html($parent);
                     $name     = esc_html($name);
-                    $taxonomy = taxonomy_add('category',$name,$parent,array(
-                        'path'     => esc_html($path),
-                        'content'  => $content,
-                        'list'     => esc_html($list),
-                        'page'     => esc_html($page),
-                        'keywords' => esc_html($keywords),
+                    $taxonomy = taxonomy_add('category', $name, $parent, array(
+                        'path'      => esc_html($path),
+                        'content'   => $content,
+                        'list'      => esc_html($list),
+                        'page'      => esc_html($page),
+                        'keywords'  => esc_html($keywords),
                         'description' => esc_html($description),
                     ));
                     $taxonomyid = $taxonomy['taxonomyid'];
@@ -129,10 +129,10 @@ switch ($method) {
                 }
                 // 生成列表页
                 if (taxonomy_create($taxonomyid)) {
-                    $result = sprintf('<p>%s</p><p>%s</p>', $result, _x('[Submit] to Add New<br />[Cancel] to Back list','sort'));
-                    ajax_confirm($result, "LazyCMS.redirect('".PHP_FILE."?method=new');", "LazyCMS.redirect('".PHP_FILE."');");
+                    $result = sprintf('<p>%s</p><p>%s</p>', $result, _x('[Submit] to Add New<br />[Cancel] to Back list', 'sort'));
+                    ajax_confirm($result, "LazyCMS.redirect('" . PHP_FILE . "?method=new');", "LazyCMS.redirect('" . PHP_FILE . "');");
                 } else {
-                    ajax_alert($result.__('File create failed.'),"LazyCMS.redirect('".PHP_FILE."');");
+                    ajax_alert($result . __('File create failed.'), "LazyCMS.redirect('" . PHP_FILE . "');");
                 }
             }
         }
@@ -240,7 +240,7 @@ function table_thead() {
  * @return string
  */
 function display_tr_categories($sorts,$n=0) {
-    static $func = null; if (!$func) $func = __FUNCTION__; 
+    static $func = null; if (!$func) $func = __FUNCTION__;
     $hl = ''; $space = str_repeat('&mdash; ',$n);
     foreach ($sorts as $sort) {
         $path    = ROOT.$sort['path'].'/';
@@ -273,87 +273,101 @@ function display_tr_categories($sorts,$n=0) {
  * @param string $action
  */
 function category_manage_page($action) {
-    $taxonomyid  = isset($_GET['taxonomyid'])?$_GET['taxonomyid']:0;
-    if ($action!='add') {
-    	$_SORT = taxonomy_get($taxonomyid);
+    $taxonomyid = isset($_GET['taxonomyid']) ? $_GET['taxonomyid'] : 0;
+    if ($action != 'add') {
+        $_SORT = taxonomy_get($taxonomyid);
     }
-    $parent  = isset($_SORT['parent'])?$_SORT['parent']:null;
-    $name    = isset($_SORT['name'])?$_SORT['name']:null;
-    $path    = isset($_SORT['path'])?$_SORT['path']:null;
-    $list    = isset($_SORT['list'])?$_SORT['list']:null;
-    $page    = isset($_SORT['page'])?$_SORT['page']:null;
-    $keywords = isset($_SORT['keywords'])?taxonomy_get_keywords($_SORT['keywords']):null;
-    $description = isset($_SORT['description'])?$_SORT['description']:null;
-    $models = model_gets(null, 'enabled');
+    $parent = isset($_SORT['parent']) ? $_SORT['parent'] : null;
+    $name   = isset($_SORT['name']) ? $_SORT['name'] : null;
+    $path   = isset($_SORT['path']) ? $_SORT['path'] : null;
+    $list   = isset($_SORT['list']) ? $_SORT['list'] : null;
+    $page   = isset($_SORT['page']) ? $_SORT['page'] : null;
+    $models = model_gets('Category', 'enabled');
+    $keywords = isset($_SORT['keywords']) ? taxonomy_get_keywords($_SORT['keywords']) : null;
+    $description = isset($_SORT['description']) ? $_SORT['description'] : null;
     echo '<div class="wrap">';
-    echo   '<h2>'.system_head('title').'</h2>';
-    echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="sortmanage" id="sortmanage">';
-    echo     '<fieldset>';
-    echo       '<table class="form-table">';
-    echo           '<tr>';
-    echo               '<th><label for="parent">'._x('Parent','sort').'</label></th>';
-    echo               '<td><select name="parent" id="parent">';
-    echo                   '<option value="0" path="" model="">'.__('&mdash; no parent &mdash;').'</option>';
-    echo                    dropdown_categories($taxonomyid,$parent);
-    echo               '</select></td>';
-    echo           '</tr>';
-    echo           '<tr>';
-    echo               '<th><label for="name">'._x('Name','sort').'<span class="resume">'.__('(required)').'</span></label></th>';
-    echo               '<td><input class="text" id="name" name="name" type="text" size="30" value="'.$name.'" /></td>';
-    echo           '</tr>';
-    echo           '<tr>';
-    echo               '<th><label for="path">'._x('Path','sort').'<span class="resume">'.__('(required)').'</span></label></th>';
-    echo               '<td><input class="text" id="path" name="path" type="text" size="70" value="'.$path.'" /><div class="rules">';
-    echo                   '<a href="#%ID" title="%ID">['.__('Category ID').']</a>';
-    echo                   '<a href="#%MD5" title="%MD5">['.__('MD5 Value').']</a>';
-    echo                   '<a href="#%PY" title="%PY">['.__('Pinyin').']</a>';
-    echo               '</div></td>';
-    echo           '</tr>';
-    echo           '<tr>';
-    echo               '<th><label for="listtemplate">'.__('List Template').'</label></th>';
-    echo               '<td>';
-    echo                   '<select id="listtemplate" name="list">';
-    echo                       options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$list);
-    echo                   '</select>';
-    echo               '</td>';
-    echo           '</tr>';
-    echo           '<tr>';
-    echo               '<th><label for="pagetemplate">'.__('Page Template').'</label></th>';
-    echo               '<td>';
-    echo                   '<select id="pagetemplate" name="page">';
-    echo                       $models?'<option value="">'.__('Use the model set').'</option>':null;
-    echo                       options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$page);
-    echo                   '</select>';
-    echo               '</td>';
-    echo           '</tr>';
-    echo       '</tbody>';
-    echo   '</table>';
-    echo '</fieldset>';
-    echo '<fieldset cookie="true">';
-    echo     '<a href="javascript:;" class="toggle" title="'.__('Click to toggle').'"><br/></a>';
-    echo     '<h3>'.__('More attribute').'</h3>';
-    echo     '<table class="form-table">';
-    echo         '<tbody>';
-    echo           '<tr>';
-    echo               '<th><label for="keywords">'._x('Keywords','sort').'</label></th>';
-    echo               '<td><input class="text" type="text" size="70" name="keywords" id="keywords" value="'.$keywords.'" /></td>';
-    echo           '</tr>';
-    echo           '<tr>';
-    echo               '<th><label for="description">'._x('Description','sort').'<br /><span class="resume">'.__('(Maximum of 250)').'</span></label></th>';
-    echo               '<td><textarea class="text" cols="70" rows="5" id="description" name="description">'.$description.'</textarea></td>';
-    echo           '</tr>'; 
-    echo       '</table>';
-    echo     '</fieldset>';
-
-    echo     '<p class="submit">';
-    if ($action=='add') {
-        echo   '<button type="submit">'.__('Add Category').'</button>';
-    } else {
-        echo   '<button type="submit">'.__('Update Category').'</button><input type="hidden" name="taxonomyid" value="'.$taxonomyid.'" />';
+    echo    '<h2>' . system_head('title') . '</h2>';
+    echo    '<form action="' . PHP_FILE . '?method=save" method="post" name="sortmanage" id="sortmanage">';
+    echo    '<fieldset>';
+    echo        '<table class="form-table">';
+    echo            '<tbody>';
+    echo                '<tr>';
+    echo                    '<th><label for="parent">' . _x('Parent', 'sort') . '</label></th>';
+    echo                    '<td><select name="parent" id="parent">';
+    echo                        '<option value="0" path="">' . __('&mdash; no parent &mdash;') . '</option>';
+    echo                        dropdown_categories($taxonomyid, $parent);
+    echo                    '</select></td>';
+    echo                '</tr>';
+    if ($models) {
+        echo            '<tr>';
+        echo                '<th><label for="model">' . _x('Model', 'sort') . '</label></th>';
+        echo                '<td><select name="model" id="model"' . ($action == 'add' ? ' cookie="true"' : '') . '>';
+        foreach ($models as $model) {
+            echo                '<option value="' . $model['langcode'] . '">' . $model['name'] . '</option>';
+        }
+        echo                '</select></td>';
+        echo            '</tr>';
     }
-    echo       '<button type="button" onclick="LazyCMS.redirect(\''.PHP_FILE.'\')">'.__('Back').'</button>';
-    echo     '</p>';
-    echo   '</form>';
+    echo                '<tr>';
+    echo                    '<th><label for="name">' . _x('Name', 'sort') . '<span class="resume">' . __('(required)') . '</span></label></th>';
+    echo                    '<td><input class="text" id="name" name="name" type="text" size="30" value="' . $name . '" /></td>';
+    echo                '</tr>';
+    echo                '<tr>';
+    echo                    '<th><label for="path">' . _x('Path', 'sort') . '<span class="resume">' . __('(required)') . '</span></label></th>';
+    echo                    '<td><input class="text" id="path" name="path" type="text" size="70" value="' . $path . '" /><div class="rules">';
+    echo                        '<a href="#%ID" title="%ID">[' . __('Category ID') . ']</a>';
+    echo                        '<a href="#%MD5" title="%MD5">[' . __('MD5 Value') . ']</a>';
+    echo                        '<a href="#%PY" title="%PY">[' . __('Pinyin') . ']</a>';
+    echo                    '</div></td>';
+    echo                '</tr>';
+    echo            '</tbody>';
+    echo            '<tbody class="extend-attr"></tbody>';
+    echo            '<tbody>';
+    echo                '<tr>';
+    echo                    '<th><label for="listtemplate">' . __('List Template') . '</label></th>';
+    echo                    '<td>';
+    echo                        '<select id="listtemplate" name="list">';
+    echo                        options(system_themes_path(), C('TemplateSuffixs'), '<option value="#value#"#selected#>#name#</option>', $list);
+    echo                        '</select>';
+    echo                    '</td>';
+    echo                '</tr>';
+    echo                '<tr>';
+    echo                    '<th><label for="pagetemplate">' . __('Page Template') . '</label></th>';
+    echo                    '<td>';
+    echo                        '<select id="pagetemplate" name="page">';
+    echo                        model_gets('Post', 'enabled') ? '<option value="">' . __('Use the model set') . '</option>' : null;
+    echo                        options(system_themes_path(), C('TemplateSuffixs'), '<option value="#value#"#selected#>#name#</option>', $page);
+    echo                        '</select>';
+    echo                    '</td>';
+    echo                '</tr>';
+    echo            '</tbody>';
+    echo        '</table>';
+    echo    '</fieldset>';
+    echo    '<fieldset cookie="true">';
+    echo        '<a href="javascript:;" class="toggle" title="' . __('Click to toggle') . '"><br/></a>';
+    echo        '<h3>' . __('More attribute') . '</h3>';
+    echo        '<table class="form-table">';
+    echo            '<tbody>';
+    echo            '<tr>';
+    echo                '<th><label for="keywords">' . _x('Keywords', 'sort') . '</label></th>';
+    echo                '<td><input class="text" type="text" size="70" name="keywords" id="keywords" value="' . $keywords . '" /></td>';
+    echo            '</tr>';
+    echo            '<tr>';
+    echo                '<th><label for="description">' . _x('Description', 'sort') . '<br /><span class="resume">' . __('(Maximum of 250)') . '</span></label></th>';
+    echo                '<td><textarea class="text" cols="70" rows="5" id="description" name="description">' . $description . '</textarea></td>';
+    echo            '</tr>';
+    echo        '</table>';
+    echo    '</fieldset>';
+
+    echo    '<p class="submit">';
+    if ($action == 'add') {
+        echo    '<button type="submit">' . __('Add Category') . '</button>';
+    } else {
+        echo    '<button type="submit">' . __('Update Category') . '</button><input type="hidden" name="taxonomyid" value="' . $taxonomyid . '" />';
+    }
+    echo        '<button type="button" onclick="LazyCMS.redirect(\'' . PHP_FILE . '\')">' . __('Back') . '</button>';
+    echo    '</p>';
+    echo    '</form>';
     echo '</div>';
 }
 /**

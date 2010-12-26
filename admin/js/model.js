@@ -86,11 +86,28 @@ function model_manage_init() {
                 v.val(v.val().replace( s +';\n',''));
             }
             v.scrollTop(2000);
+    },
+    // 切换模型类型
+    switch_type = function(type) {
+        var wrap = $('form#modelmanage');
+        switch (type) {
+            case 'Category':
+                $('#listtemplate', wrap).parents('tr').show();
+                $('#pagetemplate', wrap).parents('tr').hide();
+                break;
+            case 'Post': default:
+                $('#listtemplate', wrap).parents('tr').hide();
+                $('#pagetemplate', wrap).parents('tr').show();
+                break;
+        }
+
     };
     // 绑定切换事件
-	$('#modelmanage select#type').change(function(){
-        //LazyCMS.redirect(this.value);
+	$('#modelmanage input[name=type]').click(function(){
+        switch_type(this.value);
     });
+    // 切换模型类型
+    switch_type($('#modelmanage input[name=type]:checked').val());
 	// 绑定表格拖动事件
 	if ($('tbody tr.empty',wrap).is('tr')===false) {
 	   table_drag(); actions();

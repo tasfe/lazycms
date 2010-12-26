@@ -148,6 +148,7 @@ CREATE TABLE IF NOT EXISTS `#@_model` (
   `code` char(50) NOT NULL,
   `name` varchar(50) NOT NULL,
   `path` char(255) NOT NULL,
+  `list` varchar(50) NOT NULL,
   `page` varchar(50) NOT NULL,
   `fields` longtext NOT NULL,
   `state` enum('enabled','disabled') NOT NULL DEFAULT 'enabled',

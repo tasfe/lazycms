@@ -70,9 +70,11 @@ switch ($method) {
 	    current_user_can($purview);
 
         if (validate_is_post()) {
+            $type     = isset($_POST['type'])?$_POST['type']:null;
             $name     = isset($_POST['name'])?$_POST['name']:null;
             $code     = isset($_POST['code'])?$_POST['code']:null;
             $path     = isset($_POST['path'])?$_POST['path']:null;
+            $list     = isset($_POST['list'])?$_POST['list']:null;
             $page     = isset($_POST['page'])?$_POST['page']:null;
             $fields   = isset($_POST['field'])?$_POST['field']:null;
             $language = isset($_POST['language'])?$_POST['language']:language();
@@ -116,10 +118,16 @@ switch ($method) {
 
             // 安全有保证，做爱做的事吧！
             if (validate_is_ok()) {
+                switch ($type) {
+                    case 'Category': $page = null; break;
+                    case 'Post': default: $list = null; break;
+                }
                 $info = array(
+                    'type'     => esc_html($type),
                     'code'     => esc_html($code),
                     'name'     => esc_html($name),
                     'path'     => esc_html($path),
+                    'list'     => esc_html($list),
                     'page'     => esc_html($page),
                     'language' => esc_html($language),
                 );
@@ -305,6 +313,7 @@ switch ($method) {
                 echo       '<tr>';
                 echo           '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$model['modelid'].'" /></td>';
                 echo           '<td><strong><a href="'.$href.'">'.$model['name'].'</a></strong><br/><div class="row-actions">'.$actions.'</div></td>';
+                echo           '<td>'._x($model['type'],'model').'</td>';
                 echo           '<td>'.$model['code'].'</td>';
                 echo           '<td>'.code2lang($model['language']).'</td>';
                 echo           '<td>'.get_icon($model['state']).'</td>';
@@ -346,6 +355,7 @@ function table_thead() {
     echo '<tr>';
     echo     '<th class="check-column"><input type="checkbox" name="select" value="all" /></th>';
     echo     '<th>'._x('Name','model').'</th>';
+    echo     '<th>'._x('Type','model').'</th>';
     echo     '<th>'._x('Code','model').'</th>';
     echo     '<th>'._x('Language','model').'</th>';
     echo     '<th>'._x('State','model').'</th>';
@@ -368,10 +378,11 @@ function model_manage_page($action) {
     $default  = sprintf('%%Y%%m%%d/%%ID%s',$suffix);
     $language = isset($_MODEL['language'])?$_MODEL['language']:language();
     $name     = isset($_MODEL['name'])?$_MODEL['name']:null;
+    $type     = isset($_MODEL['type'])?$_MODEL['type']:'Post';
     $code     = isset($_MODEL['code'])?$_MODEL['code']:null;
     $path     = isset($_MODEL['path'])?$_MODEL['path']:$default;
-    $list     = isset($_MODEL['list'])?$_MODEL['list']:null;
-    $page     = isset($_MODEL['page'])?$_MODEL['page']:null;
+    $list     = empty($_MODEL['list'])?'list.html':$_MODEL['list'];
+    $page     = empty($_MODEL['page'])?'default.html':$_MODEL['page'];
     $fields   = isset($_MODEL['fields'])?$_MODEL['fields']:null;
     echo '<div class="wrap">';
     echo   '<h2>'.system_head('title').'</h2>';
@@ -379,18 +390,18 @@ function model_manage_page($action) {
     echo     '<fieldset>';
     echo       '<table class="form-table">';
     echo           '<tr>';
-    echo               '<th><label for="type">'._x('Type','model').'</label></th>';
-    echo               '<td><select name="type" id="type">';
-    echo                  '<option value="post">'._x('Post','model').'</option>';
-    echo                  '<option value="sort">'._x('Category','model').'</option>';
-    echo               '</select></td>';
-    echo           '</tr>';
-    echo           '<tr>';
     echo               '<th><label for="language">'._x('Language','model').'</label></th>';
     echo               '<td><select name="language" id="language">';
     echo                  '<option value="en"'.($language=='en'?' selected="selected"':null).'>'.__('English').'</option>';
     echo                   options('@.locale','lang','<option value="#value#"#selected#>#name#</option>',$language);
     echo               '</select></td>';
+    echo           '</tr>';
+    echo           '<tr>';
+    echo               '<th><label>'._x('Type','model').'</label></th>';
+    echo               '<td>';
+    echo                   '<label for="type_post"><input type="radio" name="type" id="type_post" value="Post"'.($type=='Post'?' checked="checked"':'').' />'._x('Post','model').'</label>';
+    echo                   '<label for="type_sort"><input type="radio" name="type" id="type_sort" value="Category"'.($type=='Category'?' checked="checked"':'').' />'._x('Category','model').'</label>';
+    echo               '</td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="name">'._x('Name','model').'<span class="resume">'.__('(required)').'</span></label></th>';
@@ -411,6 +422,14 @@ function model_manage_page($action) {
     echo                   '<a href="#%d" title="%d">['.strftime('%d').']</a>';
     echo                   '<a href="#%a" title="%a">['.strftime('%a').']</a>';
     echo               '</div></td>';
+    echo           '</tr>';
+    echo           '<tr>';
+    echo               '<th><label for="listtemplate">'.__('List Template').'</label></th>';
+    echo               '<td>';
+    echo                   '<select id="listtemplate" name="list">';
+    echo                        options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$list);
+    echo                   '</select>';
+    echo               '</td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label for="pagetemplate">'.__('Page Template').'</label></th>';

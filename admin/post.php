@@ -480,7 +480,7 @@ function post_manage_page($action) {
     }
     
     $postid  = isset($_GET['postid'])?$_GET['postid']:0;
-    $models  = model_gets('post', 'enabled');
+    $models  = model_gets('Post', 'enabled');
     $suffix  = C('HTMLFileSuffix');
     if ($action=='add') {
         $mcode  = isset($_GET['model'])?$_GET['model']:null;
