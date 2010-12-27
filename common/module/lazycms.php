@@ -27,7 +27,7 @@ function lazycms_gateway_updates() {
     $result = array();
     $ckey   = 'lazycms.gateway.updates';
     $result = fcache_get($ckey);
-    if ($result !== null) return $result;
+    if (fcache_not_null($result)) return $result;
     // 加载HTTP类
     include COM_PATH.'/system/httplib.php';
     // get feeds

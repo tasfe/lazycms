@@ -71,7 +71,7 @@ function model_get($param,$type=0,$language=null) {
         $ckey = $ckeys[$type];
     }
     $model = fcache_get($ckey.$param);
-    if ($model !== null) return $model;
+    if (fcache_not_null($model)) return $model;
 
     switch($type){
         case 0:

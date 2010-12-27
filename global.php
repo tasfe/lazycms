@@ -22,17 +22,15 @@
  */
 // 检查环境是否适合做爱做的事
 !version_compare(PHP_VERSION, '4.3.3', '<') or die('PHP version lower than 4.3.3, upgrade PHP!<br/>&lt;<a href="http://php.net/downloads.php" target="_blank">http://php.net/downloads.php</a>&gt;');
-
+// 设置错误等级
+error_reporting() === E_ALL & ~E_NOTICE or error_reporting(E_ALL & ~E_NOTICE);
 // 定义项目物理跟路径
 define('ABS_PATH',dirname(__FILE__));
-
 // 定义项目物理公共目录
 define('COM_PATH',ABS_PATH.'/common');
-
 // 加载项目配置
 if (is_file(ABS_PATH.'/config.php'))
     include ABS_PATH.'/config.php';
-
 // 定义系统常量
 include COM_PATH."/defines.php";
 // 加载公共函数库

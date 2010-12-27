@@ -180,7 +180,7 @@ function post_get($postid) {
     $db   = get_conn();
     $ckey = sprintf('post.%d',$postid);
     $post = fcache_get($ckey);
-    if ($post !== null) return $post;
+    if (fcache_not_null($post)) return $post;
 
     $rs = $db->query("SELECT * FROM `#@_post` WHERE `postid`=%d LIMIT 1 OFFSET 0;",$postid);
     // 判断文章是否存在
@@ -608,7 +608,7 @@ function post_gateway_send_comment() {
     $authcode = authcode();
     $cachekey = sprintf('comment.send.%s', $authcode);
     $session  = fcache_get($cachekey);
-    if ($session !== null) {
+    if (fcache_not_null($session)) {
         // 说话太快，歇歇吧！
         if (time()-$session['time'] <= 3) {
             return ajax_error(__('You speak too fast, rest!'));

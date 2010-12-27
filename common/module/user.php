@@ -132,7 +132,7 @@ function user_get($param,$type=0){
     $ckeys = array('user.userid.','user.name.','user.authcode.');
     $ckey  = $ckeys[$type];
     $user  = fcache_get($ckey.$param);
-    if ($user !== null) return $user;
+    if (fcache_not_null($user)) return $user;
 
     switch($type){
         case 0:

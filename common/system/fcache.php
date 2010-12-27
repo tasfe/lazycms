@@ -60,6 +60,7 @@ class FCache {
     	    flock($fp, LOCK_EX);
     	    $mqr = get_magic_quotes_runtime();
             if ($mqr) set_magic_quotes_runtime(0);
+            if ($data === null) $data = new LC_Null();
             // 判断是否需要序列化
             if (!is_scalar($data)) {
                 $data = serialize($data);
@@ -142,6 +143,7 @@ class FCache {
         return rmdirs(CACHE_PATH);
     }
 }
+class LC_Null { }
 /**
  * 实例化对象
  *
@@ -153,7 +155,29 @@ function &_fcache_get_object() {
 		$fcache = new FCache();
 	return $fcache;
 }
-
+/**
+ * 判断cache结果
+ *
+ * @param mixed $data
+ * @return bool
+ */
+function fcache_is_null($data) {
+    if ($data === null)
+        return true;
+    if (is_object($data)) {
+        return get_class($data) == 'LC_Null';
+    }
+    return false;
+}
+/**
+ * 判断cache结果
+ *
+ * @param mixed $data
+ * @return bool
+ */
+function fcache_not_null($data) {
+    return fcache_is_null($data) === false;
+}
 function fcache_file($key) {
     $fcache = _fcache_get_object();
     return $fcache->file($key);

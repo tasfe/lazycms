@@ -74,7 +74,7 @@ function term_add($name) {
 function term_gets($content=null) {
     $ckey  = 'terms.dicts';
     $dicts = fcache_get($ckey);
-    if ($dicts === null) {
+    if (fcache_is_null($dicts)) {
         $db = get_conn(); $dicts = array();
         // 读取关键词列表
         $rs = $db->query("SELECT `name` FROM `#@_term`");
@@ -228,7 +228,7 @@ function taxonomy_get($taxonomyid) {
     $db = get_conn(); $prefix = 'taxonomy.';
     $taxonomyid = intval($taxonomyid);
     $taxonomy   = fcache_get($prefix.$taxonomyid);
-    if ($taxonomy !== null) return $taxonomy;
+    if (fcache_not_null($taxonomy)) return $taxonomy;
 
     $rs = $db->query("SELECT * FROM `#@_term_taxonomy` WHERE `taxonomyid`=%d LIMIT 1 OFFSET 0;",$taxonomyid);
     if ($taxonomy = $db->fetch($rs)) {

@@ -46,7 +46,7 @@ header("Cache-Control: public, max-age={$expire}");
 
 // 从缓存读取
 $out = fcache_get($ckey);
-if ($out !== null) {
+if (fcache_not_null($out)) {
     if ($type == 'css') {
         header('Content-Type: text/css; charset=utf-8');
     } elseif ($type == 'js') {
@@ -91,7 +91,7 @@ switch ($type) {
         // 替换系统常量
         $out = preg_replace('/^(\\s*ADMIN).+/m',"$1: '".ADMIN."',",$out);
         $out = preg_replace('/^(\\s*ROOT).+/m',"$1: '".ROOT."',",$out);
-        $out = jsmin($out);
+        //$out = jsmin($out);
 		break;
 }
 // 保存数据到缓存

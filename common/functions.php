@@ -1387,7 +1387,7 @@ function C($key,$value=null){
         if ($db && !$db->ready) return null;
         // 先从缓存里取值
         $value = fcache_get($ckey.$key);
-        if ($value === null) {
+        if (fcache_is_null($value)) {
             if ($db->is_table('#@_option')) {
                 $result = $db->query("SELECT `value` FROM `#@_option` WHERE `module`='%s' AND `code`='%s' LIMIT 1 OFFSET 0;",array($module,$code));
                 if ($data = $db->fetch($result)) {

@@ -256,10 +256,18 @@ class L10n {
 	}
 
     function load_file($file){
+        $ckey   = sprintf('l10n.%s', $file);
+        $result = fcache_get($ckey);
+        if (fcache_not_null($result)) {
+            $this->entries = $result;
+            return true;
+        }
 		$reader = new L10n_Reader($file);
         if (!$reader->is_resource())
 			return false;
-        return $this->load_mo($reader);
+        $result = $this->load_mo($reader);
+        fcache_set($ckey, $this->entries);
+        return $result; 
 	}
 
     function load_mo($reader) {
