@@ -562,21 +562,23 @@ function esc_js($str) {
         "'\\x'.(ord('\\1')<16? '0': '').dechex(ord('\\1'))", $str);
 }
 /**
- * 全概率计算函数
+ * 全概率计算
  *
- * @param  $ps  array('a'=>0.5,'b'=>0.2,'c'=>0.4)
+ * @param array $input array('a'=>0.5,'b'=>0.2,'c'=>0.4)
+ * @param int $pow 小数点位数
  * @return array key
  */
-function random($ps){
-    $much = 10000;
-    $max  = array_sum($ps) * $much;
+function random($input, $pow=2){
+    $much = pow(10,$pow);
+    $max  = array_sum($input) * $much;
     $rand = mt_rand(1,$max);
     $base = 0;
-    foreach ($ps as $k=>$v) {
-        if ($base*$much < $rand && $rand <= ($base+$v)*$much) {
+    foreach ($input as $k=>$v) {
+        $min = $base * $much + 1; $max = ($base + $v) * $much;
+        if ($min<=$rand && $rand <= $max) {
             return $k;
         } else {
-            $base = $v;
+            $base+= $v;
         }
     }
     return false;

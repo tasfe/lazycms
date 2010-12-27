@@ -91,7 +91,6 @@ switch ($type) {
         // 替换系统常量
         $out = preg_replace('/^(\\s*ADMIN).+/m',"$1: '".ADMIN."',",$out);
         $out = preg_replace('/^(\\s*ROOT).+/m',"$1: '".ROOT."',",$out);
-        //$out = jsmin($out);
 		break;
 }
 // 保存数据到缓存
