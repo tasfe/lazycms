@@ -294,7 +294,7 @@ function category_manage_page($action) {
     echo                '<tr>';
     echo                    '<th><label for="parent">' . _x('Parent', 'sort') . '</label></th>';
     echo                    '<td><select name="parent" id="parent">';
-    echo                        '<option value="0" path="">' . __('&mdash; no parent &mdash;') . '</option>';
+    echo                        '<option value="0" path="">' . __('&mdash; No Parent &mdash;') . '</option>';
     echo                        dropdown_categories($taxonomyid, $parent);
     echo                    '</select></td>';
     echo                '</tr>';
@@ -303,6 +303,7 @@ function category_manage_page($action) {
         echo                '<th><label for="model">' . _x('Model', 'sort') . '</label></th>';
         echo                '<td><select name="model" id="model"' . ($action == 'add' ? ' cookie="true"' : '') . '>';
         foreach ($models as $model) {
+            echo                '<option value="">' . __('&mdash; No Model &mdash;') . '</option>';
             echo                '<option value="' . $model['langcode'] . '">' . $model['name'] . '</option>';
         }
         echo                '</select></td>';

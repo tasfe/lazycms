@@ -476,7 +476,7 @@ window._ = LazyCMS.translate;
      *              styles:css 样式,
      *              masked:是否需要遮罩，默认true,
      *              close:是否显示关闭按钮，默认true,
-     *              float:浮动位置，默认居中，参数：c,lt,rt,lb,rb,
+     *              way:浮动位置，默认居中，参数：c,lt,rt,lb,rb,
      *              remove:点击关闭按钮触发的事件,
      *              buttons:按钮
      *          }
@@ -493,7 +493,7 @@ window._ = LazyCMS.translate;
             name:null,
             masked:true,
             close:true,
-			float:'c',
+			way:'c',
 			className:'dialog',
             remove:function(){ LazyCMS.removeDialog(opts.name); },
             buttons:[]
@@ -563,7 +563,7 @@ window._ = LazyCMS.translate;
             dialog.width(width);
         }
         var overflow = dialog.css('overflow');
-        if (opts.float) dialog.float({float:opts.float,top:styles.top});
+        if (opts.way) dialog.way({way:opts.way,top:styles.top});
         dialog.css({overflow:''}).show();
         if (overflow=='auto') {
             var wrapper = $('div.wrapper',dialog),
@@ -779,10 +779,10 @@ window._ = LazyCMS.translate;
      *          lb|LeftBottom:左下角
      *          rb|RightBottom:右下角
      */
-	$.fn.float = function(opts) {
+	$.fn.way = function(opts) {
 		var _this = this,way = 'c',css = function(){};
 		if (typeof opts == 'object') {
-			way = opts.float;
+			way = opts.way;
 		} else if (typeof opts == 'string') {
 			way = opts; opts = {};
 		}

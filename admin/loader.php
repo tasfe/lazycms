@@ -25,7 +25,7 @@
 // 定义管理后台路径
 defined('ADMIN_PATH') or define('ADMIN_PATH',dirname(__FILE__));
 // 禁止跳转
-define('NO_REDIRECT',true);
+define('NO_REDIRECT', true);
 // 加载公共文件
 include ADMIN_PATH.'/admin.php'; error_reporting(0);
 // 获取相关变量
@@ -84,7 +84,15 @@ switch ($type) {
 		foreach ($load as $js) {
             if (isset($loads[$js])) {
         		foreach ($loads[$js] as $src) {
-                    $out.= "/* file:".rel_root($src)." */\n".file_get_contents($src) . "\n\n";
+        		    $index   = strrpos($src, '.');
+        		    $src_min = substr($src, 0, $index).'.min'.substr($src, $index);
+        		    // 压缩文件存在
+        		    if (is_file($src_min)) {
+        		        $content = file_get_contents($src_min);
+        		    } else {
+        		        $content = jsmin(file_get_contents($src));
+        		    }
+                    $out.= "/* file:".rel_root($src)." */\n". $content . "\n\n";
         		}
         	}
         }

@@ -22,7 +22,7 @@ defined('COM_PATH') or die('Restricted access!');
 // 默认的缓存目录
 defined('CACHE_PATH') or define('CACHE_PATH',COM_PATH.'/.cache');
 // 默认过期时间
-define('DATACACHE_EXPIRE',31536000);
+define('DATACACHE_EXPIRE', 31536000);
 /**
  * 数据缓存类
  *
@@ -72,7 +72,7 @@ class FCache {
             // 默认永不过期
             $expire = $expire===0 ? DATACACHE_EXPIRE : $expire;
             // 写入过期时间
-            touch($hash_file, time() + abs($expire));
+            touch($hash_file, time() + abs($expire), time());
             
             $result = true;
     	}

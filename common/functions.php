@@ -568,17 +568,18 @@ function esc_js($str) {
  * @param int $pow 小数点位数
  * @return array key
  */
-function random($input, $pow=2){
-    $much = pow(10,$pow);
+function random($input, $pow = 2) {
+    $much = pow(10, $pow);
     $max  = array_sum($input) * $much;
-    $rand = mt_rand(1,$max);
+    $rand = mt_rand(1, $max);
     $base = 0;
-    foreach ($input as $k=>$v) {
-        $min = $base * $much + 1; $max = ($base + $v) * $much;
-        if ($min<=$rand && $rand <= $max) {
+    foreach ($input as $k => $v) {
+        $min = $base * $much + 1;
+        $max = ($base + $v) * $much;
+        if ($min <= $rand && $rand <= $max) {
             return $k;
         } else {
-            $base+= $v;
+            $base += $v;
         }
     }
     return false;

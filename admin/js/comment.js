@@ -29,7 +29,7 @@ function comment_reply(cmtid) {
     var tr = $('#cmt-' + cmtid); LazyCMS.removeDialog('cmt_dialog');
     if ($('div.cmt_dialog', tr).is('div')===false) $('.row-actions', tr).after('<div class="cmt_dialog"></div>');
     $('.cmt_dialog', tr).dialog({
-        name:'cmt_dialog', title:_('Reply comment'), masked: false, float:null, styles: {position:'absolute'},
+        name:'cmt_dialog', title:_('Reply comment'), masked: false, way:null, styles: {position:'absolute'},
         body:[
             '<div class="wrapper">',
                 '<form action="' + LazyCMS.ADMIN + 'comment.php?method=reply" method="post" name="cmt_reply_frm" id="cmt_reply_frm">',
@@ -57,7 +57,7 @@ function comment_edit(cmtid) {
     if ($('div.cmt_dialog', tr).is('div')===false) $('.row-actions', tr).after('<div class="cmt_dialog"></div>');
     $.getJSON(LazyCMS.ADMIN + 'comment.php', {method: 'get', cmtid: cmtid} ,function(r){
         $('.cmt_dialog', tr).dialog({
-            name:'cmt_dialog', title:_('Edit comment'), masked: false, float:null, styles: {position:'absolute'},
+            name:'cmt_dialog', title:_('Edit comment'), masked: false, way:null, styles: {position:'absolute'},
             body:[
                 '<div class="wrapper">',
                     '<form action="' + LazyCMS.ADMIN + 'comment.php?method=edit" method="post" name="cmt_edit_frm" id="cmt_edit_frm">',

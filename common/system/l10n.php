@@ -257,10 +257,16 @@ class L10n {
 
     function load_file($file){
         $ckey   = sprintf('l10n.%s', $file);
-        $result = fcache_get($ckey);
-        if (fcache_not_null($result)) {
-            $this->entries = $result;
-            return true;
+        $cfile  = fcache_file($ckey);
+        $cmtime = is_file($cfile) ? filectime($cfile) : time();
+        $fmtime = filemtime($file);
+        // 缓存修改时间大于源文件修改时间
+        if ($cmtime > $fmtime) {
+            $result = fcache_get($ckey);
+            if (fcache_not_null($result)) {
+                $this->entries = $result;
+                return true;
+            }
         }
 		$reader = new L10n_Reader($file);
         if (!$reader->is_resource())
