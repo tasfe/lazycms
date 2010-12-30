@@ -66,10 +66,10 @@ switch ($method) {
             // 路径两边不允许出现 斜杠
             if (isset($_POST['path']))
                 $_POST['path'] = trim($_POST['path'], '/');
-
+            $mcode    = isset($_POST['model']) ? $_POST['model'] : null;
+            $model    = model_get_bycode($mcode);
             $parent   = isset($_POST['parent']) ? $_POST['parent'] : '0';
             $name     = isset($_POST['name']) ? $_POST['name'] : null;
-            $content  = isset($_POST['content']) ? $_POST['content'] : null;
             $path     = isset($_POST['path']) ? $_POST['path'] : null;
             $list     = isset($_POST['list']) ? $_POST['list'] : null;
             $page     = isset($_POST['page']) ? $_POST['page'] : null;
@@ -88,6 +88,21 @@ switch ($method) {
                 array('path', (!$path_exists), _x('The path already exists.', 'sort')),
             ));
 
+            // 验证自定义的字段
+            if ($model['fields']) {
+                foreach($model['fields'] as $field) {
+                    if (empty($field['v'])) continue;
+                    $last_rules = array();
+                    $rules = explode("\n",$field['v']);
+                    foreach($rules as $rule) {
+                        if (strpos($rule,'|')===false) continue;
+                        $VRS = explode('|',rtrim($rule,';')); array_unshift($VRS,$field['_n']);
+                        $last_rules[] = $VRS;
+                    }
+                    validate_check($last_rules);
+                }
+            }
+
             if ($description) {
                 validate_check(array(
                     array('description', VALIDATE_LENGTH, __('Description the field up to 255 characters.'), 0, 255),
@@ -96,19 +111,25 @@ switch ($method) {
 
             // 安全有保证，做爱做的事吧！
             if (validate_is_ok()) {
+                $data = array(
+                    'model'     => esc_html($mcode),
+                    'path'      => esc_html($path),
+                    'list'      => esc_html($list),
+                    'page'      => esc_html($page),
+                    'keywords'  => esc_html($keywords),
+                    'description' => esc_html($description),
+                );
+                // 获取模型字段值
+                if ($model['fields']) {
+                    foreach($model['fields'] as $field) {
+                        $data['meta'][$field['n']] = isset($_POST[$field['_n']]) ? $_POST[$field['_n']] : null;
+                    }
+                }
                 // 编辑
                 if ($taxonomyid) {
-                    $info = array(
-                        'parent'   => esc_html($parent),
-                        'name'     => esc_html($name),
-                        'content'  => $content,
-                        'path'     => esc_html($path),
-                        'list'     => esc_html($list),
-                        'page'     => esc_html($page),
-                        'keywords' => esc_html($keywords),
-                        'description' => esc_html($description),
-                    );
-                    taxonomy_edit($taxonomyid, $info);
+                    $data['parent'] = esc_html($parent);
+                    $data['name']   = esc_html($name);
+                    taxonomy_edit($taxonomyid, $data);
                     $result = __('Category updated.');
                 }
                 // 强力插入了
@@ -116,14 +137,7 @@ switch ($method) {
                     $path     = esc_html($path);
                     $parent   = esc_html($parent);
                     $name     = esc_html($name);
-                    $taxonomy = taxonomy_add('category', $name, $parent, array(
-                        'path'      => esc_html($path),
-                        'content'   => $content,
-                        'list'      => esc_html($list),
-                        'page'      => esc_html($page),
-                        'keywords'  => esc_html($keywords),
-                        'description' => esc_html($description),
-                    ));
+                    $taxonomy = taxonomy_add('category', $name, $parent, $data);
                     $taxonomyid = $taxonomy['taxonomyid'];
                     $result = __('Category created.');
                 }
@@ -173,6 +187,40 @@ switch ($method) {
                 ajax_alert(__('Parameter is invalid.'));
                 break;
 	    }
+	    break;
+    // 获取扩展字段
+	case 'extend-attr':
+        $model  = null; $hl = '';
+	    $mcode  = isset($_REQUEST['model'])?$_REQUEST['model']:null;
+	    $sortid = isset($_REQUEST['sortid'])?$_REQUEST['sortid']:0;
+        $suffix = C('HTMLFileSuffix');
+        if ($sortid) {
+            $taxonomy = taxonomy_get($sortid);
+        }
+        if ($mcode) {
+            $model = model_get_bycode($mcode);
+            $path  = isset($taxonomy['list'])?$taxonomy['list']:$model['list'];
+        } else {
+            $path  = isset($taxonomy['list'])?$taxonomy['list']:'list'.$suffix;
+        }
+        header('X-LazyCMS-List: '.$path);
+	    if ($model) {
+	    	foreach ($model['fields'] as $field) {
+                if (isset($taxonomy['meta'][$field['n']])) {
+                    $field['d'] = $taxonomy['meta'][$field['n']];
+                }
+	    		$hl.= '<tr>';
+                $hl.=    '<th><label for="'.$field['_n'].'">'.$field['l'];
+                if (!empty($field['h'])) {
+                    $hl.=    '<span class="resume">'.$field['h'].'</span>';
+                }
+                $hl.=        '</label>';
+                $hl.=    '</th>';
+                $hl.=    '<td>'.model_field2html($field).'</td>';
+                $hl.= '</tr>';
+	    	}
+	    }
+        ajax_return($hl);
 	    break;
     default:
 	    system_head('loadevents','sort_list_init');
@@ -279,6 +327,8 @@ function category_manage_page($action) {
     }
     $parent = isset($_SORT['parent']) ? $_SORT['parent'] : null;
     $name   = isset($_SORT['name']) ? $_SORT['name'] : null;
+    $mcode  = isset($_SORT['model']) ? $_SORT['model'] : null;
+    $model  = $mcode ? model_get_bycode($mcode) : array('langcode'=>'');
     $path   = isset($_SORT['path']) ? $_SORT['path'] : null;
     $list   = isset($_SORT['list']) ? $_SORT['list'] : null;
     $page   = isset($_SORT['page']) ? $_SORT['page'] : null;
@@ -302,9 +352,10 @@ function category_manage_page($action) {
         echo            '<tr>';
         echo                '<th><label for="model">' . _x('Model', 'sort') . '</label></th>';
         echo                '<td><select name="model" id="model"' . ($action == 'add' ? ' cookie="true"' : '') . '>';
-        foreach ($models as $model) {
-            echo                '<option value="">' . __('&mdash; No Model &mdash;') . '</option>';
-            echo                '<option value="' . $model['langcode'] . '">' . $model['name'] . '</option>';
+        echo                    '<option value="">' . __('&mdash; No Model &mdash;') . '</option>';
+        foreach ($models as $m) {
+            $selected = isset($model['langcode']) && $m['langcode']==$model['langcode']?' selected="selected"':'';
+            echo                '<option value="' . $m['langcode'] . '"'.$selected.'>' . $m['name'] . '</option>';
         }
         echo                '</select></td>';
         echo            '</tr>';

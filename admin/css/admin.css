@@ -59,12 +59,13 @@ body { font-size:12px; font-family:"Lucida Grande",Verdana,Arial,"Bitstream Vera
     /* 选中 */
     #admin-menu li.current a.toggle{ background-position: left -178px; }
     #admin-menu li.current a.text{ border:solid 1px #B5B5B5 !important; background: url(../images/menu-current-bgs.png) repeat-x left top; *background-position: left 1px; color:#FFF;}
-    #admin-menu li.current div.sub dl{ border-top: none !important; border-bottom: solid #B5B5B5 1px !important; }
+    #admin-menu li.current div.sub{ border-top: none !important; }
+    #admin-menu li.current div.sub dl{ border-bottom: solid #B5B5B5 1px !important; }
     #admin-menu li.current div.sub dd{ border-left: solid #B5B5B5 1px; border-right: solid #B5B5B5 1px; }
     /* 展开菜单 */
     #admin-menu li.expand a.last { -moz-border-radius-bottomleft:0px; -moz-border-radius-bottomright: 0px; -webkit-border-bottom-right-radius: 0px; -webkit-border-bottom-left-radius: 0px; -khtml-border-bottom-right-radius: 0px; -khtml-border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; }
     #admin-menu li.expand a.toggle{ display:inline; }
-    #admin-menu li.expand div.sub{ display:block; }
+    #admin-menu li.expand div.sub{ display:block; border-top: solid #DFDFDF 1px; }
 
     /* 默认样式 */
     #admin-menu li.head{ position:relative; z-index:1; }
@@ -77,8 +78,8 @@ body { font-size:12px; font-family:"Lucida Grande",Verdana,Arial,"Bitstream Vera
     #admin-menu li.last div.sub dl{ border-top:none; border-bottom: solid #DFDFDF 1px; }
 
 
-    #admin-menu div.sub{ display:none; _height:0px; font-size:12px; }
-        #admin-menu div.sub dl{ margin:0; border-top: solid #DFDFDF 1px; }
+    #admin-menu div.sub{ display:none; font-size:12px; }
+        #admin-menu div.sub dl{ margin:0; }
         #admin-menu div.sub dt{ display:none; }
         #admin-menu div.sub dd{ background-color:#fff; margin:0; zoom:100%; overflow:visible; border-left: solid #DFDFDF 1px; border-right: solid #DFDFDF 1px; }
         #admin-menu div.sub dd a{ line-height:22px; padding:0 10px; }

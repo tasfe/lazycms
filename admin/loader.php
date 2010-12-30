@@ -29,13 +29,13 @@ define('NO_REDIRECT', true);
 // 加载公共文件
 include ADMIN_PATH.'/admin.php'; error_reporting(0);
 // 获取相关变量
-$type = isset($_GET['type'])?$_GET['type']:null;
-$ver  = isset($_GET['ver'])?$_GET['ver']:0;
-$load = isset($_GET['load'])?$_GET['load']:null;
-$load = preg_replace( '/[^a-z0-9,_\-\.]+/i', '', $load );
-$ckey = sprintf('loader.%s.%s.%d', $type, $load, $ver);
+$type = isset($_GET['type']) ? $_GET['type'] : null;
+$ver  = isset($_GET['ver']) ? $_GET['ver'] : 0;
+$load = isset($_GET['load']) ? $_GET['load'] : null;
+$load = preg_replace('/[^a-z0-9,_\-\.]+/i', '', $load);
+$ckey = sprintf('loader.%s.%s.%s', $type, $load, $ver);
 $load = explode(',', $load);
-if ( empty($load) ) exit;
+if (empty($load)) exit;
 
 // 缓存日期，默认365天
 $expire = 31536000;

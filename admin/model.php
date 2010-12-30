@@ -111,15 +111,17 @@ switch ($method) {
                 // 模型标识已存在
                 array('code',!$is_exist,_x('The code already exists.','model')),
             ));
-
-            validate_check(array(
-                array('path',VALIDATE_EMPTY,_x('The path field is empty.','model')),
-            ));
+            
+            if ($type == 'Post') {
+                validate_check(array(
+                    array('path',VALIDATE_EMPTY,_x('The path field is empty.','model')),
+                ));
+            }
 
             // 安全有保证，做爱做的事吧！
             if (validate_is_ok()) {
                 switch ($type) {
-                    case 'Category': $page = null; break;
+                    case 'Category': $page = $path = null; break;
                     case 'Post': default: $list = null; break;
                 }
                 $info = array(
@@ -381,8 +383,8 @@ function model_manage_page($action) {
     $type     = isset($_MODEL['type'])?$_MODEL['type']:'Post';
     $code     = isset($_MODEL['code'])?$_MODEL['code']:null;
     $path     = isset($_MODEL['path'])?$_MODEL['path']:$default;
-    $list     = empty($_MODEL['list'])?'list.html':$_MODEL['list'];
-    $page     = empty($_MODEL['page'])?'default.html':$_MODEL['page'];
+    $list     = empty($_MODEL['list'])?'list'.$suffix:$_MODEL['list'];
+    $page     = empty($_MODEL['page'])?'default'.$suffix:$_MODEL['page'];
     $fields   = isset($_MODEL['fields'])?$_MODEL['fields']:null;
     echo '<div class="wrap">';
     echo   '<h2>'.system_head('title').'</h2>';

@@ -20,6 +20,7 @@ function sort_list_init() {
 	// 绑定提交事件
 	$('#sortlist').actions();
 }
+
 function sort_manage_init() {
     var wrap = $('#sortmanage'),sortid = $('input:hidden[name=sortid]',wrap).val();
         wrap.semiauto();
@@ -30,6 +31,17 @@ function sort_manage_init() {
             $('input[name=path]',wrap).val(selected.attr('path'));
         }
     });
+    // 绑定模型选择事件
+	if ($('select[name=model]',wrap).is('select')) {
+        var taxonomyid = $('input[name=taxonomyid]', wrap).val(),
+            mcode      = $('select[name=model]', wrap).val();
+	    // 绑定模型切换事件
+    	$('select[name=model]',wrap).change(function(){
+            sort_manage_extend_attr.call(wrap, this.value, taxonomyid);
+    	});
+	    // 初始化
+        sort_manage_extend_attr.call(wrap, mcode, taxonomyid);
+	}
     // 绑定规则点击
 	$('div.rules > a',wrap).click(function(){
 	    var val = this.href.replace(self.location,'').replace('#','');
@@ -45,7 +57,21 @@ function sort_manage_init() {
     // 提交事件
     $('form#sortmanage').ajaxSubmit();
 }
-// 生成文章
+// 获取扩展字段
+function sort_manage_extend_attr(model, taxonomyid) {
+    var wrap = this, list = '',
+        params = {method:'extend-attr',model:model};
+        params = typeof(taxonomyid)!='undefined' ? $.extend(params,{sortid:taxonomyid}) : params;
+
+    $.post(LazyCMS.ADMIN + 'categories.php', params, function(data, status, xhr) {
+        $('tbody.extend-attr', wrap).html(data);
+        if (list = xhr.getResponseHeader('X-LazyCMS-List')) {
+            $('select#listtemplate', wrap).val(list);
+        }
+        LazyCMS.eselect();
+    });
+}
+// 生成分类
 function sort_create(sortid) {
     return LazyCMS.postAction('categories.php', {method:'bulk', action:'createlists'}, sortid);
 }

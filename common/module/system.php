@@ -162,7 +162,7 @@ function system_tpl_plugin($tag_name,$tag) {
             break;
         case '$jquery':
             $version = tpl_get_attr($tag,'ver');
-            $version = $version ? $version : '1.4.2';
+            $version = $version ? $version : '1.4.4';
             $result  = 'http://ajax.googleapis.com/ajax/libs/jquery/'.$version.'/jquery.min.js';
             break;
         case '$keywords': case '$keyword':

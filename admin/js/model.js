@@ -93,11 +93,11 @@ function model_manage_init() {
         switch (type) {
             case 'Category':
                 $('#listtemplate', wrap).parents('tr').show();
-                $('#pagetemplate', wrap).parents('tr').hide();
+                $('#pagetemplate,#path', wrap).parents('tr').hide();
                 break;
             case 'Post': default:
                 $('#listtemplate', wrap).parents('tr').hide();
-                $('#pagetemplate', wrap).parents('tr').show();
+                $('#pagetemplate,#path', wrap).parents('tr').show();
                 break;
         }
 
