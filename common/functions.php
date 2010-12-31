@@ -456,7 +456,7 @@ function instr($needle,$haystack){
 function redirect($url,$time=0,$msg='') {
 	// 多行URL地址支持
     $url = str_replace(array("\n", "\r"), '', $url);
-    if (empty($msg)) $msg = sprintf(__('<a href="%s">%d seconds after goto %s.</a>'),$url,$time,$url);
+    if (empty($msg)) $msg = sprintf(__('<a href="%1$s">%2$d seconds after goto %1$s.</a>'),$url,$time);
     if (!headers_sent()) header("Content-Type:text/html; charset=utf-8");
     if (is_ajax()) {
         $data = array('Location' => $url);
