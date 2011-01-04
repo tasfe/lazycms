@@ -236,7 +236,10 @@ function taxonomy_get($taxonomyid) {
             $taxonomy = array_merge($taxonomy,$term);
         }
         if ($meta = taxonomy_get_meta($taxonomy['taxonomyid'])) {
-            $taxonomy = array_merge($taxonomy,$meta);
+            foreach (array('path','page','list','model','description') as $field) {
+                $taxonomy[$field] = $meta[$field]; unset($meta[$field]);
+            }
+            $taxonomy['meta'] = $meta;
         }
         $taxonomy['keywords'] = taxonomy_get_relation('sort_tag',$taxonomy['taxonomyid']);
         // 保存到缓存
@@ -647,7 +650,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                     // 设置自定义字段
                     if (isset($post['meta'])) {
                         foreach((array)$post['meta'] as $k=>$v) {
-                            tpl_set_var('model.'.$k, $v);
+                            tpl_set_var('post.'.$k, $v);
                         }
                     }
                     // 解析二级内嵌标签
@@ -713,7 +716,12 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
             'keywords' => taxonomy_get_keywords($taxonomy['keywords']),
             'description' => $taxonomy['description'],
         ));
-
+        // 设置自定义字段
+        if (isset($taxonomy['meta'])) {
+            foreach((array)$taxonomy['meta'] as $k=>$v) {
+                tpl_set_var('sort.'.$k, $v);
+            }
+        }
         $html = tpl_parse($html);
         // 生成的文件路径
         $file = ABS_PATH.'/'.$taxonomy['path'].'/index' . ($page==1 ? '' : $page) . $suffix;

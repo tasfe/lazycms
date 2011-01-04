@@ -369,12 +369,10 @@ function throw_error($errstr,$errno=E_LAZY_NOTICE,$errfile=null,$errline=0){
  * @return void
  */
 function ajax_echo($code,$data,$eval=null){
-    if (!headers_sent()) {
-        if ($code) header('X-LazyCMS-Code: '.$code);
-        if ($eval) header('X-LazyCMS-Eval: '.$eval);
-        header('Content-Type: application/json; charset=utf-8');
-    }
-    echo json_encode($data); ob_flush(); exit();
+    if ($code) header('X-LazyCMS-Code: '.$code);
+    if ($eval) header('X-LazyCMS-Eval: '.$eval);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($data); exit();
 }
 /**
  * ajax confirm

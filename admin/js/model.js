@@ -217,7 +217,10 @@ function model_field_manage(id,params) {
             // 绑定保存按钮
             $('button[rel=save]',this).click(function(){
                 var error = [],fields = [], type = $('#field_t').val(), index = 0, selector = 'input[name=l],input[name=n],input[name=so],select[name=t],[name=w]',
-                    label = $.trim($('input[name=l]',dialog).val()), name = $.trim($('input[name=n]',dialog).val());
+                    label = $.trim($('input[name=l]',dialog).val()), name = $.trim($('input[name=n]',dialog).val()),
+                    mtype = $('form#modelmanage input[name=type]:checked').val();
+                // 分类模型，限制字段
+                if (mtype == 'Category') fields = ['path','page','list','model','description'];
                 // 取消样式
                 $('.input_error,.textarea_error',dialog).removeClass('input_error').removeClass('textarea_error');
                 // 获取已经添加的字段
@@ -229,7 +232,7 @@ function model_field_manage(id,params) {
                 if (name=='') {
                     error.push({'id':'n','text':_('The name field is empty.')});
                 } else if ($.inArray(name,fields)!=-1) {
-                    error.push({'id':'n','text':_('The name already exists.')});
+                    error.push({'id':'n','text':_('The name already exists or system field.')});
                 }
                 if (error.length > 0) {
                     $(dialog).error(error);

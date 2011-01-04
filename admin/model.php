@@ -28,9 +28,9 @@ system_head('scripts',array('js/model'));
 system_head('jslang',array(
     'Add New' => _x('Add New','field'),
     'Edit'    => _x('Edit','field'),
-    'The label field is empty.' => _x('The label field is empty.','field'),
-    'The name field is empty.'  => _x('The name field is empty.','field'),
-    'The name already exists.'  => _x('The name already exists.','field'),
+    'The label field is empty.'                 => _x('The label field is empty.','field'),
+    'The name field is empty.'                  => _x('The name field is empty.','field'),
+    'The name already exists or system field.'  => _x('The name already exists or system field.','field'),
 ));
 // 动作
 $method = isset($_REQUEST['method'])?$_REQUEST['method']:null;

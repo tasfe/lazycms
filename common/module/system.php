@@ -334,7 +334,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
             // 设置自定义字段
             if (isset($post['meta'])) {
                 foreach((array)$post['meta'] as $k=>$v) {
-                    $tpl->set_var('model.'.$k, $v);
+                    $tpl->set_var('post.'.$k, $v);
                 }
             }
             // 解析二级内嵌标签
@@ -503,7 +503,7 @@ function system_tags($tag) {
                 // 设置自定义字段
                 if (isset($post['meta'])) {
                     foreach((array)$post['meta'] as $k=>$v) {
-                        tpl_set_var('model.'.$k, $v);
+                        tpl_set_var('post.'.$k, $v);
                     }
                 }
                 // 解析二级内嵌标签
@@ -1002,8 +1002,7 @@ function system_phpinfo($info = INFO_ALL) {
         $matches[2] = preg_replace('/(?<!\s)([;@])(?!\s)/', "$1 ", $matches[2]);
         return $matches[1] . $matches[2] . $matches[3];
     }
-    ob_start();
-    phpinfo($info);
+    ob_start(); phpinfo($info);
     $output = preg_replace(array('/^.*<body[^>]*>/is', '/<\/body[^>]*>.*$/is'), '', ob_get_clean(), 1);
 
     $output = preg_replace('/width="[0-9]+"/i', 'width="100%"', $output);

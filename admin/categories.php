@@ -122,7 +122,7 @@ switch ($method) {
                 // 获取模型字段值
                 if ($model['fields']) {
                     foreach($model['fields'] as $field) {
-                        $data['meta'][$field['n']] = isset($_POST[$field['_n']]) ? $_POST[$field['_n']] : null;
+                        $data[$field['n']] = isset($_POST[$field['_n']]) ? $_POST[$field['_n']] : null;
                     }
                 }
                 // 编辑

@@ -65,8 +65,7 @@ body { font-size:12px; font-family:"Lucida Grande",Verdana,Arial,"Bitstream Vera
     /* 展开菜单 */
     #admin-menu li.expand a.last { -moz-border-radius-bottomleft:0px; -moz-border-radius-bottomright: 0px; -webkit-border-bottom-right-radius: 0px; -webkit-border-bottom-left-radius: 0px; -khtml-border-bottom-right-radius: 0px; -khtml-border-bottom-left-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; }
     #admin-menu li.expand a.toggle{ display:inline; }
-    #admin-menu li.expand div.sub{ display:block; border-top: solid #DFDFDF 1px; }
-
+    #admin-menu li.expand div.sub{ display:block; }
     /* 默认样式 */
     #admin-menu li.head{ position:relative; z-index:1; }
     #admin-menu li.head a:hover{ text-decoration:none; }
@@ -76,10 +75,9 @@ body { font-size:12px; font-family:"Lucida Grande",Verdana,Arial,"Bitstream Vera
     #admin-menu a.last{ border-bottom:solid 1px #DFDFDF !important; -moz-border-radius-bottomleft: 6px; -moz-border-radius-bottomright: 6px; -webkit-border-bottom-right-radius: 6px; -webkit-border-bottom-left-radius: 6px; -khtml-border-bottom-right-radius: 6px; -khtml-border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; }
     #admin-menu a.first { -moz-border-radius-topleft :6px; -moz-border-radius-topright: 6px; -webkit-border-top-right-radius: 6px; -webkit-border-top-left-radius: 6px; -khtml-border-top-right-radius: 6px; -khtml-border-top-left-radius: 6px; border-top-right-radius: 6px; border-top-left-radius: 6px; }
     #admin-menu li.last div.sub dl{ border-top:none; border-bottom: solid #DFDFDF 1px; }
-
-
+    /* 子菜单 */
     #admin-menu div.sub{ display:none; font-size:12px; }
-        #admin-menu div.sub dl{ margin:0; }
+        #admin-menu div.sub dl{ display:block; zoom:1; overflow:visible; margin:0; border-top: solid #DFDFDF 1px; }
         #admin-menu div.sub dt{ display:none; }
         #admin-menu div.sub dd{ background-color:#fff; margin:0; zoom:100%; overflow:visible; border-left: solid #DFDFDF 1px; border-right: solid #DFDFDF 1px; }
         #admin-menu div.sub dd a{ line-height:22px; padding:0 10px; }

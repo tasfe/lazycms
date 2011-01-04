@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-12-31 17:52+0800\n"
+"POT-Creation-Date: 2011-01-04 18:52+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.net>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
@@ -1266,8 +1266,8 @@ msgstr "字段名字为空。"
 
 #: admin/model.php:33
 msgctxt "field"
-msgid "The name already exists."
-msgstr "字段名已存在，请重新输入字段名。"
+msgid "The name already exists or system field."
+msgstr "字段名已存在或已被系统占用，请重新输入字段名。"
 
 #: admin/model.php:42
 msgid "Add New Model"
@@ -1826,220 +1826,220 @@ msgstr "(获取网络标签服务)"
 msgid "System Error"
 msgstr "系统错误"
 
-#: common/functions.php:459
+#: common/functions.php:457
 #, php-format
 msgid "<a href=\"%1$s\">%2$d seconds after goto %1$s.</a>"
 msgstr "<a href=\"%1$s\">%2$d 秒后转向 %1$s。</a>"
 
-#: common/functions.php:475
+#: common/functions.php:473
 msgid "Redirecting..."
 msgstr "正在重定向..."
 
-#: common/functions.php:1280
+#: common/functions.php:1278
 msgid "Afrikaans"
 msgstr "布尔文(南非洲的荷兰文)"
 
-#: common/functions.php:1281
+#: common/functions.php:1279
 msgid "Albanian"
 msgstr "阿尔巴尼亚文"
 
-#: common/functions.php:1282
+#: common/functions.php:1280
 msgid "Arabic"
 msgstr "阿拉伯文"
 
-#: common/functions.php:1283
+#: common/functions.php:1281
 msgid "Belarusian"
 msgstr "白俄罗斯语"
 
-#: common/functions.php:1284
+#: common/functions.php:1282
 msgid "Bulgarian"
 msgstr "保加利亚文"
 
-#: common/functions.php:1285
+#: common/functions.php:1283
 msgid "Catalan"
 msgstr "加泰罗尼亚语"
 
-#: common/functions.php:1286
+#: common/functions.php:1284
 msgid "Chinese (Simplified)"
 msgstr "中文(简体)"
 
-#: common/functions.php:1287
+#: common/functions.php:1285
 msgid "Chinese (Traditional)"
 msgstr "中文(繁体)"
 
-#: common/functions.php:1288
+#: common/functions.php:1286
 msgid "Croatian"
 msgstr "克罗地亚文"
 
-#: common/functions.php:1289
+#: common/functions.php:1287
 msgid "Czech"
 msgstr "捷克语"
 
-#: common/functions.php:1290
+#: common/functions.php:1288
 msgid "Danish"
 msgstr "丹麦语"
 
-#: common/functions.php:1291
+#: common/functions.php:1289
 msgid "Dutch"
 msgstr "荷兰语"
 
-#: common/functions.php:1293
+#: common/functions.php:1291
 msgid "Estonian"
 msgstr "爱沙尼亚语"
 
-#: common/functions.php:1294
+#: common/functions.php:1292
 msgid "Filipino"
 msgstr "菲律宾文"
 
-#: common/functions.php:1295
+#: common/functions.php:1293
 msgid "Finnish"
 msgstr "芬兰语"
 
-#: common/functions.php:1296
+#: common/functions.php:1294
 msgid "French"
 msgstr "法语"
 
-#: common/functions.php:1297
+#: common/functions.php:1295
 msgid "Galician"
 msgstr "加利西亚语"
 
-#: common/functions.php:1298
+#: common/functions.php:1296
 msgid "German"
 msgstr "德语"
 
-#: common/functions.php:1299
+#: common/functions.php:1297
 msgid "Greek"
 msgstr "希腊语"
 
-#: common/functions.php:1300
+#: common/functions.php:1298
 msgid "Hebrew"
 msgstr "希伯来语"
 
-#: common/functions.php:1301
+#: common/functions.php:1299
 msgid "Hindi"
 msgstr "印度文"
 
-#: common/functions.php:1302
+#: common/functions.php:1300
 msgid "Hungarian"
 msgstr "匈牙利语"
 
-#: common/functions.php:1303
+#: common/functions.php:1301
 msgid "Icelandic"
 msgstr "冰岛语"
 
-#: common/functions.php:1304
+#: common/functions.php:1302
 msgid "Indonesian"
 msgstr "印尼文"
 
-#: common/functions.php:1305
+#: common/functions.php:1303
 msgid "Irish"
 msgstr "爱尔兰文"
 
-#: common/functions.php:1306
+#: common/functions.php:1304
 msgid "Italian"
 msgstr "意大利语"
 
-#: common/functions.php:1307
+#: common/functions.php:1305
 msgid "Japanese"
 msgstr "日语"
 
-#: common/functions.php:1308
+#: common/functions.php:1306
 msgid "Korean"
 msgstr "朝鲜语"
 
-#: common/functions.php:1309
+#: common/functions.php:1307
 msgid "Latvian"
 msgstr "拉脱维亚语"
 
-#: common/functions.php:1310
+#: common/functions.php:1308
 msgid "Lithuanian"
 msgstr "立陶宛语"
 
-#: common/functions.php:1311
+#: common/functions.php:1309
 msgid "Macedonian"
 msgstr "马其顿文"
 
-#: common/functions.php:1312
+#: common/functions.php:1310
 msgid "Malay"
 msgstr "马来文"
 
-#: common/functions.php:1313
+#: common/functions.php:1311
 msgid "Maltese"
 msgstr "马耳他文"
 
-#: common/functions.php:1314
+#: common/functions.php:1312
 msgid "Norwegian"
 msgstr "挪威语"
 
-#: common/functions.php:1315
+#: common/functions.php:1313
 msgid "Persian"
 msgstr "波斯语"
 
-#: common/functions.php:1316
+#: common/functions.php:1314
 msgid "Polish"
 msgstr "波兰语"
 
-#: common/functions.php:1317
+#: common/functions.php:1315
 msgid "Portuguese"
 msgstr "葡萄牙语"
 
-#: common/functions.php:1318
+#: common/functions.php:1316
 msgid "Romanian"
 msgstr "罗马尼亚语"
 
-#: common/functions.php:1319
+#: common/functions.php:1317
 msgid "Russian"
 msgstr "俄语"
 
-#: common/functions.php:1320
+#: common/functions.php:1318
 msgid "Serbian"
 msgstr "塞尔维亚文"
 
-#: common/functions.php:1321
+#: common/functions.php:1319
 msgid "Slovak"
 msgstr "斯洛伐克文"
 
-#: common/functions.php:1322
+#: common/functions.php:1320
 msgid "Slovenian"
 msgstr "斯洛文尼亚文"
 
-#: common/functions.php:1323
+#: common/functions.php:1321
 msgid "Spanish"
 msgstr "西班牙语"
 
-#: common/functions.php:1324
+#: common/functions.php:1322
 msgid "Swahili"
 msgstr "非洲的斯瓦希里文"
 
-#: common/functions.php:1325
+#: common/functions.php:1323
 msgid "Swedish"
 msgstr "瑞典语"
 
-#: common/functions.php:1326
+#: common/functions.php:1324
 msgid "Thai"
 msgstr "泰文"
 
-#: common/functions.php:1327
+#: common/functions.php:1325
 msgid "Turkish"
 msgstr "土耳其文"
 
-#: common/functions.php:1328
+#: common/functions.php:1326
 msgid "Ukrainian"
 msgstr "乌克兰文"
 
-#: common/functions.php:1329
+#: common/functions.php:1327
 msgid "Vietnamese"
 msgstr "越南文"
 
-#: common/functions.php:1330
+#: common/functions.php:1328
 msgid "Welsh"
 msgstr "威尔士语"
 
-#: common/functions.php:1331
+#: common/functions.php:1329
 msgid "Yiddish"
 msgstr "意第绪语"
 
-#: common/functions.php:1559
+#: common/functions.php:1557
 msgid "The start position cannot exceed initial string length."
 msgstr "起始位置不能超过初始字符串的长度。"
 

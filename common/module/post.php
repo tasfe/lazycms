@@ -409,7 +409,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
         // 设置自定义字段
         if (isset($post['meta'])) {
             foreach((array)$post['meta'] as $k=>$v) {
-                tpl_set_var('model.'.$k, $v);
+                tpl_set_var('post.'.$k, $v);
             }
         }
         // 文章导航
