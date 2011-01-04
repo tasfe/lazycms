@@ -130,7 +130,7 @@ function publish_posts($data,$mode='all'){
     // 生成结束
     if ($length === 0) {
         $sets = array(
-            'elapsetime' => $data['elapsetime'] + micro_time(true) - BEGIN_TIME,
+            'elapsetime' => $data['elapsetime'] + micro_time(true) - __BEGIN__,
             'state'      => 2,
         );
         publish_edit($data['pubid'],$sets);
@@ -138,7 +138,7 @@ function publish_posts($data,$mode='all'){
         // 更新进度
         $sets = array(
             'complete'   => $data['complete'] + $length,
-            'elapsetime' => $data['elapsetime'] + micro_time(true) - BEGIN_TIME,
+            'elapsetime' => $data['elapsetime'] + micro_time(true) - __BEGIN__,
         );
         publish_edit($data['pubid'],$sets);
     }
@@ -212,7 +212,7 @@ function publish_lists($data,$sortids=null,$make_post=false,$sortid=0) {
         // 更新进度
         $sets = array(
             'complete'   => ++$data['complete'],
-            'elapsetime' => $data['elapsetime'] + micro_time(true) - BEGIN_TIME,
+            'elapsetime' => $data['elapsetime'] + micro_time(true) - __BEGIN__,
         );
         publish_edit($data['pubid'],$sets);
     }
@@ -225,7 +225,7 @@ function publish_lists($data,$sortids=null,$make_post=false,$sortid=0) {
         $key  = array_search($sortid, $keys) + 1;
         if (isset($keys[$key])) {
             $sets = array(
-                'elapsetime' => $data['elapsetime'] + micro_time(true) - BEGIN_TIME,
+                'elapsetime' => $data['elapsetime'] + micro_time(true) - __BEGIN__,
                 'args'       => array(
                     'lists'  => $sortids,
                     'mpost'  => $make_post,
@@ -237,7 +237,7 @@ function publish_lists($data,$sortids=null,$make_post=false,$sortid=0) {
         // 全部生成结束
         else {
             $sets = array(
-                'elapsetime' => $data['elapsetime'] + micro_time(true) - BEGIN_TIME,
+                'elapsetime' => $data['elapsetime'] + micro_time(true) - __BEGIN__,
                 'state'      => 2,
             );
             // 生成google sitemaps index

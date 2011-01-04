@@ -32,7 +32,7 @@ define('COM_PATH',ABS_PATH.'/common');
 if (is_file(ABS_PATH.'/config.php'))
     include ABS_PATH.'/config.php';
 // 定义系统常量
-include COM_PATH."/defines.php";
+include COM_PATH.'/defines.php';
 // 加载公共函数库
 include COM_PATH.'/functions.php';
 // 加载验证类
@@ -46,7 +46,7 @@ include COM_PATH.'/system/l10n.php';
 // 设置系统时区
 time_zone_set(C('Timezone'));
 // 开始时间
-define('BEGIN_TIME',micro_time(true));
+define('__BEGIN__', micro_time(true));
 // 处理错误
 set_error_handler('handler_error');
 // 处理系统变量
@@ -63,3 +63,5 @@ load_textdomain(); if (!IS_CLI) C('Compress') ? ob_start('ob_compress') : ob_sta
 unset($_ENV,$HTTP_ENV_VARS,$HTTP_SERVER_VARS,$HTTP_SESSION_VARS,$HTTP_POST_VARS,$HTTP_GET_VARS,$HTTP_POST_FILES,$HTTP_COOKIE_VARS);
 // 禁止直接访问此文件
 strtolower(substr($_SERVER['SCRIPT_FILENAME'],-strlen(__FILE__))) != strtolower(__FILE__) or die(__('Restricted access!'));
+// 输出脚本执行时间
+register_shutdown_function(create_function('$begin', 'header("X-Run-Period: " . (micro_time(true) - $begin));'), __BEGIN__);

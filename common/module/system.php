@@ -155,9 +155,9 @@ function system_tpl_plugin($tag_name,$tag) {
             if (!$name) $name = __('Home');
             $name = esc_html($name);
             if ($guide) {
-                $result = '<a href="'.ROOT.'" title="'.$name.'">'.$name.'</a> &gt;&gt; '.$guide;
+                $result = '<a href="'.ROOT.'" title="'.$name.'" class="first">'.$name.'</a> &gt;&gt; '.$guide;
             } else {
-                $result = '<a href="'.ROOT.'" title="'.$name.'">'.$name.'</a> &gt;&gt; '.tpl_get_var('title');
+                $result = '<a href="'.ROOT.'" title="'.$name.'" class="first">'.$name.'</a> &gt;&gt; '.tpl_get_var('title');
             }
             break;
         case '$jquery':
