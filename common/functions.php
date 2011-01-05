@@ -342,18 +342,26 @@ function throw_error($errstr,$errno=E_LAZY_NOTICE,$errfile=null,$errline=0){
     // 处里错误
     switch ($errno) {
         case E_LAZY_ERROR:
-            // 格式化为HTML
-            $html = str_replace("\t",str_repeat('&nbsp; ',2),nl2br(esc_html($log)));
-            // 不是ajax请求，格式化成HTML完成页面
-            $html = is_ajax() ? $html : error_page(__('System Error'),$html,true);
+            // 命令行模式
+            if (IS_CLI) $html = $log;
+            else {
+                // 格式化为HTML
+                $html = str_replace("\t",str_repeat('&nbsp; ',2),nl2br(esc_html($log)));
+                // 不是ajax请求，格式化成HTML完成页面
+                $html = is_ajax() ? $html : error_page(__('System Error'),$html,true);
+            }
             // 输出错误信息，并停止程序
             echo $html; exit();
             break;
         case E_LAZY_WARNING: case E_LAZY_NOTICE:
-            // 格式化为HTML
-            $html = str_replace("\t",str_repeat('&nbsp; ',2),nl2br(esc_html($log)));
-            // 不是ajax请求，格式化成HTML完成页面
-            $html = is_ajax() ? $html : error_page(__('System Error'),$html,true);
+            // 命令行模式
+            if (IS_CLI) $html = $log;
+            else {
+                // 格式化为HTML
+                $html = str_replace("\t",str_repeat('&nbsp; ',2),nl2br(esc_html($log)));
+                // 不是ajax请求，格式化成HTML完成页面
+                $html = is_ajax() ? $html : error_page(__('System Error'),$html,true);
+            }
             echo $html;
             break;
         default: break;
@@ -371,7 +379,9 @@ function throw_error($errstr,$errno=E_LAZY_NOTICE,$errfile=null,$errline=0){
 function ajax_echo($code,$data,$eval=null){
     if ($code) header('X-LazyCMS-Code: '.$code);
     if ($eval) header('X-LazyCMS-Eval: '.$eval);
-    header('Content-Type: application/json; charset=utf-8');
+    if (is_accept_json()) {
+        header('Content-Type: application/json; charset=utf-8');
+    }
     echo json_encode($data); exit();
 }
 /**
@@ -517,7 +527,7 @@ function referer($default='',$back_server_referer=true){
 function rel_root($path){
     $abs_path = str_replace(DIRECTORY_SEPARATOR,'/',ABS_PATH.DIRECTORY_SEPARATOR);
     $src_path = str_replace(DIRECTORY_SEPARATOR,'/',$path);
-    return str_replace($abs_path,ROOT,$src_path);
+    return str_replace($abs_path, (IS_CLI ? '/' : ROOT), $src_path);
 }
 /**
  * 转义sql语句
