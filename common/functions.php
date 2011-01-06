@@ -98,9 +98,9 @@ function path_format($path,$data=null) {
                 $md5 = md5($path.$v);
             }
         }
-        if ($py)  $path = str_replace('%PY',  $py,  $path);
-        if ($id)  $path = str_replace('%ID',  $id,  $path);
-        if ($md5) $path = str_replace('%MD5', $md5, $path);
+        if ($py)  $path = str_replace(array('%PY','%py'),   $py,  $path);
+        if ($id)  $path = str_replace(array('%ID','%id'),   $id,  $path);
+        if ($md5) $path = str_replace(array('%MD5','%md5'), $md5, $path);
     }
     return strftime($path);
 }
@@ -381,8 +381,11 @@ function ajax_echo($code,$data,$eval=null){
     if ($eval) header('X-LazyCMS-Eval: '.$eval);
     if (is_accept_json()) {
         header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($data);
+    } else {
+        echo $data;
     }
-    echo json_encode($data); exit();
+    exit();
 }
 /**
  * ajax confirm
