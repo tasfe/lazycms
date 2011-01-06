@@ -4,7 +4,7 @@ cwd=$(cd "$(dirname "$0")"; pwd);
 
 echo "Compressor Starting ...";
 
-for file in `ls common/js/ | grep -v min.js`; do
+for file in `ls $cwd"/../../common/js/" | grep -v min.js`; do
     target=${file%.*}.min.${file##*.};
     echo "Compress: $file to $target ...";
     java -jar "$cwd"/yuicompressor-2.4.2.jar --type js --charset utf-8 "$cwd"/../../common/js/"$file" -o "$cwd"/../../common/js/"$target";
