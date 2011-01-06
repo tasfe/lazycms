@@ -20,8 +20,6 @@
 defined('COM_PATH') or die('Restricted access!');
 // 定义返回类型
 define('CLIENT_MULTI_RESULTS', 0x20000);
-// 加载父类
-include_file(dirname(__FILE__).'/abs_mysql.php');
 /**
  * mysql 访问类
  * 

@@ -18,8 +18,6 @@
  * +---------------------------------------------------------------------------+
  */
 defined('COM_PATH') or die('Restricted access!');
-// 加载父类
-include_file(dirname(__FILE__).'/abs_mysql.php');
 /**
  * mysqli 访问类
  *
