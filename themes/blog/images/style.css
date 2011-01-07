@@ -20,8 +20,8 @@
 @import "../../../common/css/reset.css";
 @import "../../../common/css/common.css";
 /* 全局样式 */
-body { height:100%; margin:0; background: #F7FBFF; text-align:left;}
-body,td,th,p,div { color: #333333; line-height: 130%; font-family: "Verdana"; font-size: 12px;}
+body { height:100%; margin:0; text-align:left;}
+body,td,th,p,div { line-height: 130%; font-family: "Verdana"; font-size: 12px;}
 dl,dt,dd,form{ margin:0; padding:0;}
 img,input,button,select{ vertical-align:middle; }
 img{ border:none; }
@@ -30,3 +30,16 @@ img{ border:none; }
 a:link    { color: #0B55C4; text-decoration: none; }
 a:visited { color: #0B55C4; text-decoration: none; }
 a:hover   { text-decoration: underline; }
+
+.wrapper{ width:940px; margin:0 auto; position:relative; clear:both; }
+
+/* header */
+#header{  }
+    #header h1{ font-size:18px; line-height:1; margin:25px 0 5px 15px; }
+    #header .desc{ color:#333; margin-left:15px; }
+    #header #menu{ margin:10px 0 0 0; padding:0 10px; border-bottom: 5px solid #333; zoom:1; overflow:auto; clear: both; display: block; }
+    #header #menu li{ display:block; float:left; font-size:14px; color:#333; list-style:none; padding:3px 0; }
+    #header #menu li a{ display:block; padding: 0 14px; border: 1px solid #FFF; border-right:solid 1px #999; }
+    #header #menu li.active{ background-color: #000; }
+    #header #menu li.active a{ color: #FFFFFF; border: 1px solid #000; }
+    #header #menu li.last a{ border: 1px solid #FFF; }
