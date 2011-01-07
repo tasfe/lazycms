@@ -1,0 +1,9 @@
+
+Categories:
+  - 博客: blog
+    - Personal: blog/Personal
+      Internet: blog/Internet
+      Developer: blog/Developer
+      Webgame: blog/Webgame
+      LazyCMS: blog/LazyCMS
+  - 相册: photo

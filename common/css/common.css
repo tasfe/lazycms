@@ -76,6 +76,38 @@ kbd, code { font-family:Consolas, Monaco, Courier, monospace; background-color:#
 /* loading */
 .loading{ border:solid 1px #666666; background:#FFFFDF; padding:1px; padding-right:10px;}
 
+/* error and tips */
+.input_error, .textarea_error, .ul_error { border:solid 1px #FF0000 !important; background:#fff url(../images/invalid-line.gif) repeat-x left bottom !important;}
+
+/* 分页样式 */
+.pages { display:table; }
+.pages a, .pages span { display:block; float:left; background:#fff; border:solid 1px #DEDEDE; padding:1px 3px; margin-right:2px; text-align:center; text-decoration:none; -moz-border-radius:5px; -webkit-border-radius:5px; -khtml-border-radius:5px; border-radius:5px;}
+.pages a:hover{ position:relative; line-height:130%; padding:0 5px; font-size:24px; z-index:100; margin:-8px 0 0 -8px; text-decoration:none;}
+.pages a:hover + a{ position:relative; line-height:130%; padding:0 5px; font-size:18px; z-index:90; margin:-4px 0 0 -4px; text-decoration:none;}
+.pages span.active{ color:#990000 !important; font-weight:bold; }
+
+/* 浮动窗口
+----------------------------------------------------------------------------------------------------*/
+.window { position:absolute; background:#D4E6EE; border:solid 1px #8ab0de; word-wrap:break-word; overflow:hidden; }
+	.window h1 { font-size:12px; line-height:22px; background:#fff url(../images/bg_top.png) repeat-x left top; margin:0; padding:0 5px; clear:both; border-bottom:solid 1px #8ab0de; white-space:nowrap; }
+	.window a.close { position:absolute; width:36px; height:17px; background:url(../images/close.png) no-repeat 0 1px; text-indent:-9999px; right:0px; top:0px;}
+	.window a.close:hover{ background-position: 0 -17px; }
+	.window .help{ position:absolute; top:0; right:38px; }
+	.window .wrapper { padding:5px; overflow: auto; clear:both; }
+	.window .wrapper .icon{ width:32px; height:32px; float:left; margin:5px 10px 0 10px; _margin-left:4px; background-image:url(../images/info_icons.png); background-repeat:no-repeat; }
+    .window .wrapper .content{ max-width:520px; min-width:320px; margin:5px 10px 0 0; float:left; }
+    .window .wrapper .content h6{ line-height:130%; margin:2px 0 0 0; }
+	.window .buttons { text-align:right; clear:both; padding:3px; }
+	.window .buttons button{ margin:0 0 0 6px;}
+
+/* 密码强度
+----------------------------------------------------------------------------------------------------*/
+.pass-strength { width:150px; background-color: #eee; border-color: #ddd !important; border-style: solid; border-width: 1px; margin: 5px 5px 5px 0px; padding: 1px 2px; text-align: center; -moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px; }
+    .pass-strength.bad { background-color: #ffb78c; border-color: #ff853c !important;}
+    .pass-strength.good { background-color: #ffec8b; border-color: #ffcc00 !important;}
+    .pass-strength.short { background-color: #ffa0a0; border-color: #f04040 !important;}
+    .pass-strength.strong { background-color: #c3ff88; border-color: #8dff1c !important;}
+
 /* Percentage width */
 .wp{ width: 100% !important; }
 .wp5 { width: 5% !important; }	

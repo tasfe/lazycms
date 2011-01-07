@@ -51,7 +51,7 @@ function post_manage_init() {
     });
     // 绑定获取关键词事件
     $('button[rel=keywords]',wrap).click(function(){
-        $('input#keywords').val('Loading...').getTerms($('input#title',wrap).val()+' '+$('textarea#content',wrap).val());
+        $('input#keywords').val('Loading...').getTerms($('input#title',wrap).val(), $('textarea#content',wrap).val());
     });
     
 	// 提交事件

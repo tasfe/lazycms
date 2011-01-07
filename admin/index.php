@@ -46,9 +46,10 @@ switch ($method) {
         break;
     // 取得关键词
     case 'terms':
+        $title   = isset($_REQUEST['title'])?$_REQUEST['title']:null;
         $content = isset($_REQUEST['content'])?$_REQUEST['content']:null;
-        if ($content) {
-            $terms = term_gets($content);
+        if ($title || $content) {
+            $terms = term_gets($title, $content);
         } else {
             $terms = array();
         }

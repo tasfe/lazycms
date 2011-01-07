@@ -56,24 +56,4 @@ if ($.browser.msie && $.browser.version == '6.0') {
         if ($('li a',this).hasClass('active') === false) $('li a:eq(0)',this).addClass('active');
         return this;
     }
-    /**
-     * 更新
-     */
-    $.fn.updates = function(){
-        var _this = this,updates = $('<ul></ul>');
-        $.getJSON(CMS.ROOT + 'common/gateway.php?func=lazycms_updates',function(r){
-            $('.load',_this).remove();
-            $.each(r.entrys,function(i,entry){
-                updates.append([
-                    '<li>',
-                        '<p><a href="' + entry.link + '" target="_blank" class="revision">r' + entry.id + '</a>' + entry.updated + '</p>',
-                        '<p class="comments">' + entry.content + '</p>',
-                    '</li>'
-                ].join('\n'));
-            });
-            updates.append('<li><p class="more"><a href="' + r.more + '" target="_blank">---- More&gt;&gt; </a></p></li>');
-            _this.append(updates);
-        });
-        return this;
-    }
 })(jQuery);

@@ -325,13 +325,15 @@ function category_manage_page($action) {
     if ($action != 'add') {
         $_SORT = taxonomy_get($taxonomyid);
     }
+    $suffix = C('HTMLFileSuffix');
+    $pmodel = model_gets('Post', 'enabled');
     $parent = isset($_SORT['parent']) ? $_SORT['parent'] : null;
     $name   = isset($_SORT['name']) ? $_SORT['name'] : null;
     $mcode  = isset($_SORT['model']) ? $_SORT['model'] : null;
     $model  = $mcode ? model_get_bycode($mcode) : array('langcode'=>'');
     $path   = isset($_SORT['path']) ? $_SORT['path'] : null;
-    $list   = isset($_SORT['list']) ? $_SORT['list'] : null;
-    $page   = isset($_SORT['page']) ? $_SORT['page'] : null;
+    $list   = isset($_SORT['list']) ? $_SORT['list'] : 'list'.$suffix;
+    $page   = isset($_SORT['page']) ? $_SORT['page'] : ($pmodel ? null : 'default' . $suffix);
     $models = model_gets('Category', 'enabled');
     $keywords = isset($_SORT['keywords']) ? taxonomy_get_keywords($_SORT['keywords']) : null;
     $description = isset($_SORT['description']) ? $_SORT['description'] : null;
@@ -387,7 +389,7 @@ function category_manage_page($action) {
     echo                    '<th><label for="pagetemplate">' . __('Page Template') . '</label></th>';
     echo                    '<td>';
     echo                        '<select id="pagetemplate" name="page">';
-    echo                        model_gets('Post', 'enabled') ? '<option value="">' . __('Use the model set') . '</option>' : null;
+    echo                        $pmodel ? '<option value="">' . __('Use the model set') . '</option>' : null;
     echo                        options(system_themes_path(), C('TemplateSuffixs'), '<option value="#value#"#selected#>#name#</option>', $page);
     echo                        '</select>';
     echo                    '</td>';

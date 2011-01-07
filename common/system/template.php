@@ -65,7 +65,7 @@ class Template {
      * @return mixed
      */
     function load_file($file) {
-        return $this->load(file_get_contents($file));
+        return is_file($file) ? $this->load(file_get_contents($file)) : '';
     }
     /**
      * 执行插件

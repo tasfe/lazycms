@@ -68,10 +68,11 @@ function term_add($name) {
 /**
  * 根据词库取得措辞
  *
+ * @param string $title
  * @param string $content
  * @return array
  */
-function term_gets($content=null) {
+function term_gets($title=null, $content=null) {
     $ckey  = 'terms.dicts';
     $dicts = fcache_get($ckey);
     if (fcache_is_null($dicts)) {
@@ -84,7 +85,7 @@ function term_gets($content=null) {
         fcache_set($ckey,$dicts);
     }
     // 不输入文章，只返回词库
-    if ($content === null) return $dicts;
+    if ($title===null && $content === null) return $dicts;
     // 开始分词
     $content = clear_space(strip_tags($content));
     if (trim($content) == '') return null;
@@ -98,9 +99,8 @@ function term_gets($content=null) {
     if (C('Tags-Service') && (empty($keywords) || count($keywords)<=3)) {
         // 使用keyword.lazycms.com的网络分词
         include_file(COM_PATH.'/system/httplib.php');
-        $r = @httplib_post('http://keyword.lazycms.com/related_kw.php',array(
-            'timeout' => 3,
-            'body'    => array('title' => $content)
+        $r = @httplib_get(sprintf('http://keyword.lazycms.com/related_kw.php?title=%s&content=%s', rawurlencode($title), rawurlencode($content)),array(
+            'timeout' => 3
         ));
         $code = httplib_retrieve_response_code($r);
         if ($code == '200') {

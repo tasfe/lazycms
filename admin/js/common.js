@@ -108,15 +108,16 @@ if ($.browser.msie && $.browser.version == '6.0') {
     /**
      * 内容分词
      *
+     * @param title
      * @param content
      */
-    $.fn.getTerms = function(content) {
+    $.fn.getTerms = function(title, content) {
         var data = [], _this = this;
         // 处理分词内容
         content = $.trim(content.replace(/\<[^>]+?\>|\r|\n|\t|  /ig,''));
         if (content.length > 1024) content.substr(0,1024);
-        if (content!='') {
-            $.post(LazyCMS.ADMIN + 'index.php',{method:'terms',content:content},function(r){
+        if (title != '' || content != '') {
+            $.post(LazyCMS.ADMIN + 'index.php',{method:'terms', title:title, content:content},function(r){
                 if (r) {
                     _this.val(r.join(','));
                 } else {

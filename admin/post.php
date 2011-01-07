@@ -170,7 +170,7 @@ switch ($method) {
                 $path = esc_html(rtrim($path,'/'));
                 // 自动获取关键词
                 if ($autokeys && empty($keywords)) {
-                    $keywords = term_gets($title.' '.$content);
+                    $keywords = term_gets($title, $content);
                 }
                 // 添加主分类
                 if ($sortid > 0) {
