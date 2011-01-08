@@ -18,9 +18,8 @@
  */
 /* Basic Links
 ----------------------------------------------------------------------------------------------------*/
-a:link    { color: #0B55C4; text-decoration: none; }
-a:visited { color: #0B55C4; text-decoration: none; }
-a:hover   { text-decoration: underline; }
+a:link,a:visited  { color: #0B55C4; text-decoration: none; }
+a:hover, a:active { text-decoration: underline; }
 
 /* row actions */
 .row-actions { visibility: hidden; }

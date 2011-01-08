@@ -1209,6 +1209,9 @@ function mkdirs($path, $mode = 0775){
  * @return bool
  */
 function rmdirs($path){
+    // 不允许删除根目录
+    if ($path=='/' || realpath($path)==ABS_PATH)
+        return false;
     $error_level = error_reporting(0);
     if ($dh = opendir($path)) {
         while (false !== ($file=readdir($dh))) {

@@ -47,13 +47,14 @@ if ($.browser.msie && $.browser.version == '6.0') {
      * 初始化菜单
      */
     $.fn.init_menu = function(){
-        $('li a',this).removeClass('active');
-        $('li a',this).each(function(){
-            if (CMS.URI.Url.substr(0,this.href.length) == this.href) {
+        $('li',this).removeClass('active');
+        $('li',this).each(function(){
+            var href = $('a', this).get(0).href;
+            if (CMS.URI.Url.substr(0, href.length) == href) {
                 $(this).addClass('active');
             }
         });
-        if ($('li a',this).hasClass('active') === false) $('li a:eq(0)',this).addClass('active');
+        if ($('li',this).hasClass('active') === false) $('li:eq(0)',this).addClass('active');
         return this;
     }
 })(jQuery);

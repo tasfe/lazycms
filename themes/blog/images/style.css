@@ -27,19 +27,111 @@ img,input,button,select{ vertical-align:middle; }
 img{ border:none; }
 	
 /* 连接样式 */
-a:link    { color: #0B55C4; text-decoration: none; }
-a:visited { color: #0B55C4; text-decoration: none; }
-a:hover   { text-decoration: underline; }
+a:link,a:visited  { color: #0B55C4; text-decoration: none; }
+a:hover, a:active { text-decoration: underline; }
+
+.pages a, .pages span { margin-right:5px; }
 
 .wrapper{ width:940px; margin:0 auto; position:relative; clear:both; }
 
 /* header */
 #header{  }
-    #header h1{ font-size:18px; line-height:1; margin:25px 0 5px 15px; }
+    #header h1, #header h2{ font-size:18px; line-height:1; margin:25px 0 5px 15px; }
     #header .desc{ color:#333; margin-left:15px; }
     #header #menu{ margin:10px 0 0 0; padding:0 10px; border-bottom: 5px solid #333; zoom:1; overflow:auto; clear: both; display: block; }
     #header #menu li{ display:block; float:left; font-size:14px; color:#333; list-style:none; padding:3px 0; }
     #header #menu li a{ display:block; padding: 0 14px; border: 1px solid #FFF; border-right:solid 1px #999; }
-    #header #menu li.active{ background-color: #000; }
-    #header #menu li.active a{ color: #FFFFFF; border: 1px solid #000; }
+    #header #menu li a:link,#header #menu li a:visited { color:#000; }
+    #header #menu li a:hover,#header #menu li a:active { color:#0066CC; }
+    #header #menu li.active{ background-color: #000; position:relative; left: -1px; }
+    #header #menu li.active a{ color: #FFFFFF; border: 1px solid #000 !important; }
     #header #menu li.last a{ border: 1px solid #FFF; }
+
+/* layout */
+#layout { margin-top:10px; }
+    /* blog list */
+    #blog_list { width:650px; float:left; margin-left:20px; }
+    #blog_list .title{ font-size:14px; }
+    #blog_list .title a:link,#blog_list .title a:visited{ color:#000; text-decoration:underline; }
+    #blog_list .title a:hover, #blog_list .title a:active{ text-decoration:none; background-color:#000; color:#FFF; }
+    #blog_list div.date{ color: #666666; font-size: 11px; margin: 2px 0 8px; }
+    #blog_list div.content{ color: #333333; font-size: 14px; line-height: 20px; }
+    #blog_list div.content a:link,#blog_list div.content a:visited{ color: #0066CC; font-size: 14px; text-decoration: underline; }
+    #blog_list div.content a:hover,#blog_list div.content a:active{ background-color: #0066CC; color:#FFF; text-decoration: none; }
+    #blog_list div.more{ margin: 14px 0 16px; }
+    #blog_list div.more a:link,#blog_list div.more a:visited{ color: #0066CC; font-size: 14px; text-decoration: underline; }
+    #blog_list div.more a:hover,#blog_list div.more a:active{ background-color: #0066CC; color:#FFF; text-decoration: none; }
+    #blog_list div.toobar{ padding-bottom:5px; color: #666666; font-size: 12px; margin-top: 5px; text-align: right; border-bottom: 3px solid #333; }
+    #blog_list div.toobar span.tags a{ margin-right:5px; }
+    #blog_list div.toobar a:link,#blog_list div.toobar a:visited{ color:#333; text-decoration:underline; }
+    #blog_list div.toobar a:hover, #blog_list div.toobar a:active{ text-decoration:none; background-color:#333; color:#FFF; }
+    #blog_list .pages{ margin-top:20px; }
+
+    #mod_block{ width:220px; float:right; margin-right:20px; }
+    #mod_block .container{ width:100%; }
+    #mod_block .container h2{ font-size:16px; }
+        #categories div.item,#archives div.item{ margin-left:5px; margin-bottom:5px; line-height:24px; border-bottom: 1px solid #333; }
+        #categories div.item a,#archives div.item a{ margin-right:3px; font-family:Georgia, sans-serif; }
+        #categories div.item span,#archives div.item span{ color:#666; }
+
+    /* blog page */
+    #blog_page { padding:0 20px; }
+        #blog_page h1{ font-size:18px; }
+        #blog_page div.date{ color: #666666; font-size: 11px; margin: 2px 0 8px; }
+        #blog_page div.content{ color: #333333; font-size: 14px; line-height: 20px; }
+        #blog_page div.content a:link,#blog_page div.content a:visited{ color: #0066CC; font-size: 14px; text-decoration: underline; }
+        #blog_page div.content a:hover,#blog_page div.content a:active{ background-color: #0066CC; color:#FFF; text-decoration: none; }
+        #blog_page div.tags{ margin:20px 0; }
+        #blog_page div.tags a{margin-right:5px;}
+        #blog_page div.tags a:link,#blog_page div.tags a:visited{ color:#0066CC; text-decoration:none; }
+        #blog_page div.tags a:hover, #blog_page div.tags a:active{ text-decoration:none; background-color:#0066CC; color:#FFF; }
+        #blog_page div.toobar{padding-bottom:5px; color: #666666; font-size: 12px; margin-top: 5px; text-align: right; border-bottom: 3px solid #333;}
+        #blog_page div.toobar div.info { margin:10px 0; }
+        #blog_page div.toobar div.link span{ margin-left:10px; }
+        #blog_page div.toobar a:link,#blog_page div.toobar a:visited{ color:#333; text-decoration:underline; }
+        #blog_page div.toobar a:hover, #blog_page div.toobar a:active{ text-decoration:none; background-color:#333; color:#FFF; }
+
+    /* tags */
+    #tags { width:650px; float:left; margin-left:20px; }
+        #tags h1{ font-size:16px; padding-bottom:3px; border-bottom: 3px solid #333; }
+        #tags .pages{ width:100%; padding-bottom:3px; margin-bottom:10px; border-bottom: 2px solid #666; }
+        #tags p{ margin:8px 0; padding-bottom:3px; border-bottom: 1px solid #999; }
+        #tags p em{ font-size:9px; color:#666; }
+
+    /* gbook */
+    #gbook div.content{ margin:10px; padding:10px; border-bottom: 3px solid #333; }
+
+    /* comments */
+    div.comments { margin:10px; margin-top:5px; padding:10px; padding-left:20px; border-bottom: 3px solid #333; }
+        div.comments .top { position:relative; }
+        div.comments .top h3{ font-size:16px; margin:0; margin-bottom:10px; }
+        div.comments .top a{ position:absolute; right:20px; }
+        div.comments .top a:link, div.comments .top a:visited{ color:#333; text-decoration:underline; }
+        div.comments .top a:hover, div.comments .top a:active{ text-decoration:none; background-color:#333; color:#FFF; }
+        div.comments .top a em{ font-style:normal; color:#F70000; margin:0 1px; }
+        div.comments .info { margin:5px 0; }
+        div.comments .info p{ margin:5px 0; }
+        div.comments .info label{ display:inline-block; }
+        div.comments .textarea { margin:5px 0; }
+        div.comments .textarea textarea { width:576px; height:90px; font-size:14px; padding:6px; text-align:left; }
+        div.comments .bottom button{ margin-right:6px; }
+
+        div.comment_list{ margin-top:5px; padding:10px; }
+        div.comment_list .pages{ width:100%; padding-bottom:3px; margin-bottom:10px; border-bottom: 2px solid #333; }
+        div.comment_list .dt{ }
+        div.comment_list .author{ float:left; color:#0B3B8C; }
+        div.comment_list .author img{ margin-right:3px; }
+        div.comment_list .author .name, div.comment_list .author a{ vertical-align:middle; }
+        div.comment_list .address{ color:#8D8D8D; margin-right:10px; vertical-align:middle; }
+        div.comment_list .post-time{ float:right; color:#8D8D8D; }
+        div.comment_list .dd { padding:5px 0; margin-top:5px; margin-bottom:10px; border-bottom:1px solid #333; }
+        div.comment_list .dd .comments{ border:solid 1px #ddd; }
+        div.comment_list .dd .citation { background:#FFFEF5; border:1px solid #D1D5DB; padding:3px 3px 10px; }
+        div.comment_list .dd .citation-title { line-height:25px; padding-left:5px; padding-right:5px; }
+        div.comment_list .dd .citation .content { padding-left:8px; padding-right:8px; }
+        div.comment_list .dd .content { font-size:14px; word-wrap:break-word; overflow:hidden; margin-bottom:0; line-height:25px; }
+        div.comment_list .dd .toolbar { text-align:right; }
+        div.comment_list .dd .toolbar a { margin-left:8px; }
+
+/* footer */
+#footer { text-align:center; border-top:solid 3px #333; padding:10px 0; margin-top:20px; color:#666; }

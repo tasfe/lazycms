@@ -14,19 +14,9 @@
 <body>
 {include file="inc/header.html" /}
 <div id="layout" class="wrapper">
-    <div id="blog_page">
-        <h1>{$title}</h1>
-        <div class="date">{$date mode="Y年m月d日 H:i"}</div>
+    <div id="gbook">
         <div class="content">
             {$content}
-        </div>
-        <div class="tags">关键词: {tags}<a href="{$inst}tags.php?q={$name}" title="{$name}">{$name}</a>{/tags}</div>
-        <div class="toobar">
-            <div class="info">
-                <a href="{$sortpath}" title="{$sortname}">类别：{$sortname}</a> | 浏览({$views}) |
-                <a href="{$path}#cmt_list">评论(<span class="cmt-count">0</span>)</a>
-            </div>
-            <div class="link"><span class="prepage">上一篇：{$prepage}</span><span class="nextpage">下一篇：{$nextpage}</span></div>
         </div>
         <!-- 文章评论 -->
         <script type="text/javascript" src="images/comment.js">

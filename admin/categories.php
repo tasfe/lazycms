@@ -63,7 +63,7 @@ switch ($method) {
 	case 'save':
         $taxonomyid  = isset($_POST['taxonomyid'])?$_POST['taxonomyid']:0;
         if (validate_is_post()) {
-            // 路径两边不允许出现 斜杠
+            // 路径两边不允许出现 /
             if (isset($_POST['path']))
                 $_POST['path'] = trim($_POST['path'], '/');
             $mcode    = isset($_POST['model']) ? $_POST['model'] : null;
@@ -291,7 +291,7 @@ function display_tr_categories($sorts,$n=0) {
     static $func = null; if (!$func) $func = __FUNCTION__;
     $hl = ''; $space = str_repeat('&mdash; ',$n);
     foreach ($sorts as $sort) {
-        $path    = ROOT.$sort['path'].'/';
+        $path    = ROOT . $sort['path'] . '/';
         $href    = PHP_FILE.'?method=edit&taxonomyid='.$sort['taxonomyid'];
         $actions = '<span class="create"><a href="javascript:;" onclick="sort_create('.$sort['taxonomyid'].')">'.__('Create List').'</a> | </span>';
         $actions.= '<span class="add_post"><a href="'.ADMIN.'post.php?method=new&category='.$sort['taxonomyid'].'">'._x('Add New','post').'</a> | </span>';

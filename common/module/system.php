@@ -299,7 +299,6 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
             $post = post_get($data['postid']);
             $post['sort'] = taxonomy_get($post['sortid']);
             $post['path'] = post_get_path($post['sortid'],$post['path']);
-            $post['keywords'] = taxonomy_get_keywords($post['keywords']);
             // 文章内容
             if ($post['content'] && strpos($post['content'],'<!--pagebreak-->')!==false) {
                 $contents = explode('<!--pagebreak-->', $post['content']);
@@ -315,13 +314,14 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
                 'userid'   => $post['userid'],
                 'author'   => $post['author'],
                 'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
+                'comment'  => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment_count&postid='.$post['postid'].'"></script>',
                 'digg'     => $post['digg'],
                 'title'    => $post['title'],
                 'path'     => ROOT.$post['path'],
                 'content'  => $content,
                 'date'     => $post['datetime'],
                 'edittime' => $post['edittime'],
-                'keywords' => $post['keywords'],
+                'keywords' => taxonomy_get_keywords($post['keywords']),
                 'description' => $post['description'],
             );
             // 设置分类变量
@@ -342,6 +342,27 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
                 foreach ($block['sub'] as $sblock) {
                     $sblock['name'] = strtolower($sblock['name']);
                     switch($sblock['name']) {
+                        // 解析tags
+                        case 'tags':
+                            $t_inner = $t_guid = '';
+                            if ($post['keywords']) {
+                                $intpl = new Template();
+                                $sblock['inner'] = $intpl->get_block_inner($sblock);
+                                foreach(post_get_taxonomy($post['keywords']) as $tt) {
+                                    $intpl->clean();
+                                    $intpl->set_var(array(
+                                        'name' => $tt['name'],
+                                        'path' => ROOT.'tags.php?q='.$tt['name'],
+                                    ));
+                                    $t_inner.= $intpl->parse($sblock['inner']);
+                                }
+                                // 生成标签块的唯一ID
+                                $t_guid = guid($sblock['tag']);
+                                // 把标签块替换成变量标签
+                                $inner = str_replace($sblock['tag'], '{$'.$t_guid.'}', $inner);
+                            }
+                            $tpl->set_var($t_guid, $t_inner);
+                            break;
                         // TODO 解析图片标签
                         case 'images':
                             $inner = str_replace($sblock['tag'],'',$inner);

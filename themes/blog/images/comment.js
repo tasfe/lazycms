@@ -31,8 +31,8 @@ if (cmtstate=='Yes') {
  */
 function comment_jsonp_info(url) {
     $.getJSON(url + '&callback=?', function(data){
-        var wrap = $('form#cmt_form'), post = $('#post');
-        $('span.cmt-count', post).text(data[0]);
+        var wrap = $('form#cmt_form');
+        $('span.cmt-count').text(data[0]);
         $('div.top em:eq(0)', wrap).text(data[0]);
         $('div.top em:eq(1)', wrap).text(data[1]);
     });
@@ -64,7 +64,7 @@ function comment_reply_form(cmtid) {
     return [
         '<div class="comments" id="cmt_reply_form_' + cmtid + '">',
             '<form action="' + replyurl + '" method="post" name="cmt_form" id="cmt_form">',
-                '<div class="top">' + (cmtid ? '<strong>回复评论:</strong>' : '<strong>网友评论:</strong><a href="#cmt_list">已有<em>0</em>条评论，共<em>0</em>人参与评论。</a>') + '</div>',
+                '<div class="top">' + (cmtid ? '<strong>回复评论:</strong>' : '<h3>网友评论:</h3><a href="#cmt_list">已有<em>0</em>条评论，共<em>0</em>人参与评论。</a>') + '</div>',
                 '<div class="info">',
                     '<p><label for="author">名&nbsp; &nbsp; &nbsp; 称：</label><input class="text" name="author" id="author" type="text" size="20" /></p>',
                     '<p><label for="mail">电子邮件：</label><input class="text" name="mail" id="mail" type="text" size="30" /></p>',
