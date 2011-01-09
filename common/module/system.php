@@ -20,9 +20,13 @@
 defined('COM_PATH') or die('Restricted access!');
 
 // 注册模版变量处理函数
-func_add_callback('tpl_add_plugin', 'system_tpl_plugin');
-func_add_callback('tpl_add_plugin', 'system_tpl_list_plugin');
-func_add_callback('tpl_add_plugin', 'system_tpl_comments_plugin');
+func_add_callback('tpl_add_plugin', array(
+    'system_tpl_plugin',
+    'system_tpl_list_plugin',
+    'system_tpl_comments_plugin',
+    'system_tpl_categories_plugin',
+    'system_tpl_archives_plugin',
+));
 // 添加 CSS
 func_add_callback('loader_add_css', array(
     'reset'             => array('/common/css/reset.css'),
@@ -213,28 +217,29 @@ function system_tpl_plugin($tag_name,$tag) {
 /**
  * 处理列表
  *
- * @param  $tag_name
- * @param  $tag
- * @return
+ * @param string $tag_name
+ * @param string $tag
+ * @param array $block
+ * @return string|null
  */
 function system_tpl_list_plugin($tag_name,$tag,$block) {
     if (!instr($tag_name,'post,list')) return null;
     // 实例化模版对象
-    $tpl = new Template();
+    $tpl = tpl_init('post_list');
     // 列表类型
-    $type = $tpl->get_attr($tag,'type');
+    $type = tpl_get_attr($tag, 'type');
     // 类型为必填
     if (!$type) return null;
     // 扩展字段过滤
     $meta   = tpl_get_attr($tag,'meta');
     // 分类ID
-    $sortid = $tpl->get_attr($tag,'sortid');
+    $sortid = tpl_get_attr($tag,'sortid');
     // 被排除的分类ID
-    $notsid = $tpl->get_attr($tag,'sortid','!=');
+    $notsid = tpl_get_attr($tag,'sortid','!=');
     // 显示条数
-    $number = $tpl->get_attr($tag,'number');
+    $number = tpl_get_attr($tag,'number');
     // 斑马线实现
-    $zebra  = $tpl->get_attr($tag,'zebra');
+    $zebra  = tpl_get_attr($tag,'zebra');
     // 校验数据
     $sortid = validate_is($sortid,VALIDATE_IS_LIST) ? $sortid : null;
     $notsid = validate_is($notsid,VALIDATE_IS_LIST) ? $notsid : null;
@@ -294,7 +299,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
     if ($sql) {
         $db = get_conn(); $i = 0;
         $rs = $db->query($sql);
-        $inner = $tpl->get_block_inner($block);
+        $inner = tpl_get_block_inner($block);
         while ($data = $db->fetch($rs)) {
             $post = post_get($data['postid']);
             $post['sort'] = taxonomy_get($post['sortid']);
@@ -329,12 +334,12 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
                 $vars['sortname'] = $post['sort']['name'];
                 $vars['sortpath'] = ROOT.$post['sort']['path'].'/';
             }
-            $tpl->clean();
-            $tpl->set_var($vars);
+            tpl_clean($tpl);
+            tpl_set_var($vars, $tpl);
             // 设置自定义字段
             if (isset($post['meta'])) {
                 foreach((array)$post['meta'] as $k=>$v) {
-                    $tpl->set_var('post.'.$k, $v);
+                    tpl_set_var('post.'.$k, $v, $tpl);
                 }
             }
             // 解析二级内嵌标签
@@ -346,22 +351,22 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
                         case 'tags':
                             $t_inner = $t_guid = '';
                             if ($post['keywords']) {
-                                $intpl = new Template();
+                                $intpl = tpl_init('post_list_tags');
                                 $sblock['inner'] = $intpl->get_block_inner($sblock);
                                 foreach(post_get_taxonomy($post['keywords']) as $tt) {
-                                    $intpl->clean();
-                                    $intpl->set_var(array(
+                                    tpl_clean($intpl);
+                                    tpl_set_var(array(
                                         'name' => $tt['name'],
                                         'path' => ROOT.'tags.php?q='.$tt['name'],
-                                    ));
-                                    $t_inner.= $intpl->parse($sblock['inner']);
+                                    ), $intpl);
+                                    $t_inner.= tpl_parse($sblock['inner'], $intpl);
                                 }
                                 // 生成标签块的唯一ID
                                 $t_guid = guid($sblock['tag']);
                                 // 把标签块替换成变量标签
                                 $inner = str_replace($sblock['tag'], '{$'.$t_guid.'}', $inner);
                             }
-                            $tpl->set_var($t_guid, $t_inner);
+                            tpl_set_var($t_guid, $t_inner, $tpl);
                             break;
                         // TODO 解析图片标签
                         case 'images':
@@ -370,31 +375,114 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
                     }
                 }
             }
-            $result.= $tpl->parse($inner);
+            $result.= tpl_parse($inner, $tpl);
             $i++;
         }
     }
     return $result;
 }
+/**
+ * 处理分类
+ *
+ * @param string $tag_name
+ * @param string $tag
+ * @param array $block
+ * @return string|null
+ */
+function system_tpl_categories_plugin($tag_name,$tag,$block) {
+    if (!instr($tag_name,'sort,categories')) return null;
+    // 实例化模版对象
+    $tpl = tpl_init('post_sort');
+    // 列表类型
+    $sortid = tpl_get_attr($tag, 'sortid');
+    // 取得
+    $sorts  = taxonomy_get_trees($sortid);
+    if (isset($sorts['subs']))
+        $sorts = $sorts['subs'];
+    
+    $result = null;
+    if ($sorts) {
+        $inner = tpl_get_block_inner($block);
+        foreach ($sorts as $taxonomyid=>$taxonomy) {
+            $vars = array(
+                'sortid'    => $taxonomyid,
+                'name'      => $taxonomy['name'],
+                'path'      => ROOT.$taxonomy['path'].'/',
+                'count'     => $taxonomy['count'],
+            );
+            tpl_clean($tpl);
+            tpl_set_var($vars, $tpl);
+            // 设置自定义字段
+            if (isset($taxonomy['meta'])) {
+                foreach((array)$taxonomy['meta'] as $k=>$v) {
+                    tpl_set_var('sort.'.$k, $v, $tpl);
+                }
+            }
+            $result.= tpl_parse($inner, $tpl);
+        }
+    }
+    return $result;
+}
+function system_tpl_archives_plugin($tag_name,$tag,$block) {
+    if (!instr($tag_name,'archives')) return null;
+    // 实例化模版对象
+    $tpl = tpl_init('post_archives');
+    // 列表类型
+    $sortid = tpl_get_attr($tag, 'sortid');
+    // 取得
+    $sorts  = taxonomy_get_trees($sortid);
+    if (isset($sorts['subs']))
+        $sorts = $sorts['subs'];
 
+    $result = null;
+    if ($sorts) {
+        $inner = tpl_get_block_inner($block);
+        foreach ($sorts as $taxonomyid=>$taxonomy) {
+            $vars = array(
+                'sortid'    => $taxonomyid,
+                'name'      => $taxonomy['name'],
+                'path'      => ROOT.$taxonomy['path'].'/',
+                'count'     => $taxonomy['count'],
+            );
+            tpl_clean($tpl);
+            tpl_set_var($vars, $tpl);
+            // 设置自定义字段
+            if (isset($taxonomy['meta'])) {
+                foreach((array)$taxonomy['meta'] as $k=>$v) {
+                    tpl_set_var('sort.'.$k, $v, $tpl);
+                }
+            }
+            $result.= tpl_parse($inner, $tpl);
+        }
+    }
+    return $result;
+}
+/**
+ * 处理评论
+ *
+ * @param string $tag_name
+ * @param string $tag
+ * @param array $block
+ * @return string|null
+ */
 function system_tpl_comments_plugin($tag_name,$tag,$block) {
     if (!instr($tag_name,'comment,comments')) return null;
     // 实例化模版对象
-    $tpl = new Template();
+    $tpl = tpl_init('post_comments');
     // 列表类型
-    $type = $tpl->get_attr($tag,'type');
+    $type = tpl_get_attr($tag,'type');
     // 类型为必填
     if (!$type) return null;
     // 显示条数
-    $number = $tpl->get_attr($tag,'number');
+    $number = tpl_get_attr($tag,'number');
     // 斑马线实现
-    $zebra  = $tpl->get_attr($tag,'zebra');
+    $zebra  = tpl_get_attr($tag,'zebra');
     $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
     $zebra  = validate_is($zebra,VALIDATE_IS_NUMERIC) ? $zebra : 0;
     // 处理类型
     switch($type) {
         case 'new':
-            $postid = $tpl->get_var('postid');
+            $postid = tpl_get_var('postid', $tpl);
             $insql  = $postid ? sprintf(" AND `postid`=%d", esc_sql($postid)) : '';
             $sql    = "SELECT * FROM `#@_comments` WHERE `approved`='1' {$insql} ORDER BY `cmtid` DESC LIMIT {$number} OFFSET 0;";
 
@@ -407,7 +495,7 @@ function system_tpl_comments_plugin($tag_name,$tag,$block) {
     if ($sql) {
         $db = get_conn(); $i = 0;
         $rs = $db->query($sql);
-        $inner = $tpl->get_block_inner($block);
+        $inner = tpl_get_block_inner($block);
         while ($data = $db->fetch($rs)) {
             $data['ip']      = long2ip($data['ip']);
             $data['ipaddr']  = ip2addr($data['ip']);
@@ -417,11 +505,11 @@ function system_tpl_comments_plugin($tag_name,$tag,$block) {
             } else {
                 $data['ip'] = substr_replace($data['ip'], '*', strrpos($data['ip'], '.')+1);
             }
-            $tpl->clean();
+            tpl_clean($tpl);
             if ($post = post_get($data['postid'])) {
-                $tpl->set_var('path', ROOT.post_get_path($post['sortid'], $post['path']));
+                tpl_set_var('path', ROOT.post_get_path($post['sortid'], $post['path']), $tpl);
             }
-            $tpl->set_var(array(
+            tpl_set_var(array(
                 'zebra'   => ($i % ($zebra + 1)) ? '0' : '1',
                 'cmtid'   => $data['cmtid'],
                 'avatar'  => get_avatar($data['mail'], 16, 'mystery'),
@@ -433,8 +521,8 @@ function system_tpl_comments_plugin($tag_name,$tag,$block) {
                 'content' => nl2br($data['content']),
                 'agent'   => $data['agent'],
                 'date'    => $data['date'],
-            ));
-            $result.= $tpl->parse($inner);
+            ), $tpl);
+            $result.= tpl_parse($inner, $tpl);
             $i++;
         }
     }

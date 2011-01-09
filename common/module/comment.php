@@ -182,10 +182,10 @@ function comment_people($postid) {
  */
 function comment_parse_reply($comment, $sblock) {
     static $func; if (!$func) $func = __FUNCTION__;
-    $tpl = new Template();
-    $sblock['inner'] = $tpl->get_block_inner($sblock);
-    $tpl->clean();
-    $tpl->set_var(array(
+    $tpl = tpl_init('post_comment_reply');
+    $sblock['inner'] = tpl_get_block_inner($sblock);
+    tpl_clean($tpl);
+    tpl_set_var(array(
         'cmtid'   => $comment['cmtid'],
         'avatar'  => get_avatar($comment['mail'], 16, 'mystery'),
         'author'  => $comment['author'] ? $comment['author'] : __('Anonymous'),
@@ -196,11 +196,11 @@ function comment_parse_reply($comment, $sblock) {
         'content' => nl2br($comment['content']),
         'agent'   => $comment['agent'],
         'date'    => $comment['date'],
-    ));
+    ), $tpl);
     if (isset($comment['parents'])) {
-        $tpl->set_var('contents_deep', $func($comment['parents'], $sblock));
+        tpl_set_var('contents_deep', $func($comment['parents'], $sblock), $tpl);
     }
-    return $tpl->parse($sblock['inner']);
+    return tpl_parse($sblock['inner'], $tpl);
 }
 /**
  * 生成评论

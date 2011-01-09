@@ -372,20 +372,79 @@ class Template {
     }
 }
 /**
- * 取得模版实例
+ * 初始化模版实例
  *
+ * @param string $type
  * @return Template
  */
-function &_tpl_get_object() {
-    static $template;
-	if ( is_null($template) )
-		$template = new Template();
-	return $template;
+function &tpl_init($type=null) {
+    global $LC_templates;
+    if ($type === null) $type = 'LC_TEMPLATE';
+    if (!isset($LC_templates[$type]))
+        $LC_templates[$type] = new Template();
+    return $LC_templates[$type];
 }
 /**
- * 加载文件 
+ * 取得模版实例
  *
- * @param  $file
+ * @param object $tpl
+ * @return Template
+ */
+function &_tpl_get_object($tpl=null) {
+    if ($tpl && is_object($tpl) && get_class($tpl)=='Template')
+        return $tpl;
+    else
+        return tpl_init();
+}
+/**
+ * 清理内部数组
+ *
+ * @param object $tpl
+ * @return void
+ */
+function tpl_clean($tpl=null) {
+    $tpl = _tpl_get_object($tpl);
+    return $tpl->clean();
+}
+/**
+ * 变量赋值
+ *
+ * @param mixed $key
+ * @param mixed $val
+ * @param object $tpl
+ * @return bool
+ */
+function tpl_set_var($key, $val=null, $tpl=null) {
+    if (is_array($key)) $tpl = &$val;
+    $tpl = _tpl_get_object($tpl);
+    return $tpl->set_var($key, $val);
+}
+/**
+ * 查询变量
+ *
+ * @param string $key
+ * @param object $tpl
+ * @return array
+ */
+function tpl_get_var($key, $tpl=null) {
+    $tpl = _tpl_get_object($tpl);
+    return $tpl->get_var($key);
+}
+/**
+ * 解析模版变量
+ *
+ * @param string $html
+ * @param object $tpl
+ * @return string
+ */
+function tpl_parse($html, $tpl=null) {
+    $tpl = _tpl_get_object($tpl);
+    return $tpl->parse($html);
+}
+/**
+ * 加载模版文件
+ *
+ * @param string $file
  * @return mixed
  */
 function tpl_loadfile($file) {
@@ -398,20 +457,29 @@ function tpl_loadfile($file) {
  * @param  $func
  * @return void
  */
-function tpl_add_plugin($func) {
+function tpl_add_plugin($funcs) {
     global $LC_tpl_plugins;
     $LC_tpl_plugins = empty($LC_tpl_plugins) ? array() : $LC_tpl_plugins;
-    if (!in_array($func,$LC_tpl_plugins)) {
-        $LC_tpl_plugins[] = $func;
+    if (is_array($funcs)) {
+        foreach ($funcs as $func) {
+            if (!in_array($func, $LC_tpl_plugins)) {
+                $LC_tpl_plugins[] = $func;
+            }
+        }
         return true;
+    } else {
+        if (!in_array($funcs, $LC_tpl_plugins)) {
+            $LC_tpl_plugins[] = $funcs;
+            return true;
+        }
     }
     return false;
 }
 /**
  * 使用插件
- * 
- * @param  $tag_name
- * @param  $tag
+ *
+ * @param string $tag_name
+ * @param string $tag
  * @return mixed
  */
 function tpl_apply_plugins($tag_name, $tag) {
@@ -419,38 +487,8 @@ function tpl_apply_plugins($tag_name, $tag) {
     return $tpl->apply_plugins($tag_name, $tag);
 }
 /**
- * 清理内部数组
- *
- * @return void
- */
-function tpl_clean() {
-    $tpl = _tpl_get_object();
-    return $tpl->clean();
-}
-/**
- * 变量赋值
- *
- * @param mixed $key
- * @param mixed $val
- * @return array
- */
-function tpl_set_var($key,$val=null) {
-    $tpl = _tpl_get_object();
-    return $tpl->set_var($key,$val);   
-}
-/**
- * 查询变量
- *
- * @param string $key
- * @return array
- */
-function tpl_get_var($key) {
-    $tpl = _tpl_get_object();
-    return $tpl->get_var($key);   
-}
-/**
  * 取得单个标签块
- * 
+ *
  * @param string $html
  * @param string $tag_name
  * @param string $type
@@ -463,7 +501,7 @@ function tpl_get_block($html,$tag_name,$type=null) {
 /**
  * 取得标签块内容
  *
- * @param  $block
+ * @param array $block
  * @return string
  */
 function tpl_get_block_inner($block) {
@@ -478,17 +516,7 @@ function tpl_get_block_inner($block) {
  * @param string $separator
  * @return string
  */
-function tpl_get_attr($tag, $attr,$separator='=') {
+function tpl_get_attr($tag, $attr, $separator='=') {
     $tpl = _tpl_get_object();
     return $tpl->get_attr($tag, $attr,$separator);
-}
-/**
- * 解析模版变量
- *
- * @param  $html
- * @return mixed
- */
-function tpl_parse($html) {
-    $tpl = _tpl_get_object();
-    return $tpl->parse($html);
 }

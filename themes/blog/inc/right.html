@@ -1,16 +1,12 @@
 <div id="categories" class="container">
     <h2>文章分类</h2>
-    <div class="item"><a href="#">Personal</a><span>(10)</span></div>
-    <div class="item"><a href="#">Internet</a><span>(10)</span></div>
-    <div class="item"><a href="#">Developer</a><span>(10)</span></div>
-    <div class="item"><a href="#">Webgame</a><span>(10)</span></div>
-    <div class="item"><a href="#">LazyCMS</a><span>(10)</span></div>
+    {sort sortid="1"}
+    <div class="item"><a href="{$path}">{$name}</a><span>({$count})</span></div>
+    {/sort}
 </div>
 <div id="archives" class="container">
     <h2>文章存档</h2>
-    <div class="item"><a href="#">2010-01</a><span>(10)</span></div>
-    <div class="item"><a href="#">2010-03</a><span>(10)</span></div>
-    <div class="item"><a href="#">2010-07</a><span>(10)</span></div>
-    <div class="item"><a href="#">2010-09</a><span>(10)</span></div>
-    <div class="item"><a href="#">2010-11</a><span>(10)</span></div>
+    {archives}
+    <div class="item"><a href="{$path}">{$date mode=""}</a><span>({$count})</span></div>
+    {/archives}
 </div>

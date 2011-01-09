@@ -662,15 +662,15 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                                 case 'tags':
                                     $t_inner = $t_guid = '';
                                     if ($post['keywords']) {
-                                        $tpl = new Template();
-                                        $sblock['inner'] = $tpl->get_block_inner($sblock);
+                                        $tpl = tpl_init('taxonomy_tags');
+                                        $sblock['inner'] = tpl_get_block_inner($sblock);
                                         foreach(post_get_taxonomy($post['keywords']) as $tt) {
-                                            $tpl->clean();
-                                            $tpl->set_var(array(
+                                            tpl_clean($tpl);
+                                            tpl_set_var(array(
                                                 'name' => $tt['name'],
                                                 'path' => ROOT.'tags.php?q='.$tt['name'],
-                                            ));
-                                            $t_inner.= $tpl->parse($sblock['inner']);
+                                            ), $tpl);
+                                            $t_inner.= tpl_parse($sblock['inner'], $tpl);
                                         }
                                         // 生成标签块的唯一ID
                                         $t_guid = guid($sblock['tag']);
