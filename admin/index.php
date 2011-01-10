@@ -156,7 +156,7 @@ switch ($method) {
             echo                '<img src="'.$data['avatar'].'" width="50" height="50" alt="'.esc_html($data['author']).'" />';
             echo                '<div class="comment-wrap">';
             if ($post = post_get($data['postid'])) {
-                $path = post_get_path($post['sortid'],$post['path']);
+                $path = post_get_path($post['listid'],$post['path']);
                 echo                '<h4><a href="'.ROOT.$path.'#cmt_list" target="_blank">'.$post['title'].'</a></h4>';
             } else {
                 echo                '<h4>'.__('The post has been deleted.').'</h4>';

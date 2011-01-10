@@ -231,31 +231,48 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
     // 类型为必填
     if (!$type) return null;
     // 扩展字段过滤
-    $meta   = tpl_get_attr($tag,'meta');
+    $meta    = tpl_get_attr($tag,'meta');
     // 分类ID
-    $sortid = tpl_get_attr($tag,'sortid');
+    $listid  = tpl_get_attr($tag,'listid');
     // 被排除的分类ID
-    $notsid = tpl_get_attr($tag,'sortid','!=');
+    $notlid  = tpl_get_attr($tag,'listid','!=');
+    // 子分类ID
+    $listsub = tpl_get_attr($tag,'listsub');
+    // 被排除的子分类ID
+    $notsid  = tpl_get_attr($tag,'listsub','!=');
     // 显示条数
-    $number = tpl_get_attr($tag,'number');
+    $number  = tpl_get_attr($tag,'number');
     // 斑马线实现
-    $zebra  = tpl_get_attr($tag,'zebra');
+    $zebra   = tpl_get_attr($tag,'zebra');
     // 校验数据
-    $sortid = validate_is($sortid,VALIDATE_IS_LIST) ? $sortid : null;
-    $notsid = validate_is($notsid,VALIDATE_IS_LIST) ? $notsid : null;
-    $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
-    $zebra  = validate_is($zebra,VALIDATE_IS_NUMERIC) ? $zebra : 0;
+    $listid  = validate_is($listid, VALIDATE_IS_LIST) ? $listid : null;
+    $notlid  = validate_is($notlid,VALIDATE_IS_LIST) ? $notlid : null;
+    $listsub = $listsub == 'me' ? $listsub : validate_is($listsub,VALIDATE_IS_LIST) ? $listsub : null;
+    $notsid  = validate_is($notsid,VALIDATE_IS_LIST) ? $notsid : null;
+    $number  = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
+    $zebra   = validate_is($zebra,VALIDATE_IS_NUMERIC) ? $zebra : 0;
     // 处理
     switch ($type) {
         case 'new': case 'hot': case 'chill':
-            $sortid = $sortid===null ? tpl_get_var('sortid') : $sortid;
-            if ($sortid) {
-                $where = " AND `tr`.`taxonomyid` IN({$sortid})";
+            $listid = $listid===null ? tpl_get_var('listid') : $listid;
+            // 查询IDs
+            if ($listid) {
+                $listids = taxonomy_get_ids($listid, $listsub);
             } else {
-                $list  = taxonomy_get_list('category');
-                $where = $list ? sprintf(" AND `tr`.`taxonomyid` IN(%s)", implode(',', $list)) : '';
+                $listids = taxonomy_get_list('category');
             }
-            $where .= $notsid ? " AND `tr`.`taxonomyid` NOT IN({$notsid})" : '';
+            // 排除IDs
+            $notlids = $notlid ? explode(',', $notlid) : array();
+            if ($notsid) {
+                $notsids = explode(',', $notsid);
+                $notlids = array_merge($notlids, $notsids);
+            }
+            // 删掉排除的IDs
+            foreach ($listids as $k=>$id) {
+                if (in_array($id,$notlids))
+                    unset($listids[$k]);
+            }
+            $where = $listids ? sprintf(" AND `tr`.`taxonomyid` IN(%s)", implode(',', $listids)) : '';
             switch ($type) {
                 case 'new'  : $order = '`p`.`postid` DESC'; break;
                 case 'hot'  : $order = '`p`.`views` DESC, `p`.`postid` DESC'; break;
@@ -302,8 +319,8 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
         $inner = tpl_get_block_inner($block);
         while ($data = $db->fetch($rs)) {
             $post = post_get($data['postid']);
-            $post['sort'] = taxonomy_get($post['sortid']);
-            $post['path'] = post_get_path($post['sortid'],$post['path']);
+            $post['list'] = taxonomy_get($post['listid']);
+            $post['path'] = post_get_path($post['listid'],$post['path']);
             // 文章内容
             if ($post['content'] && strpos($post['content'],'<!--pagebreak-->')!==false) {
                 $contents = explode('<!--pagebreak-->', $post['content']);
@@ -315,7 +332,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
             $vars = array(
                 'zebra'    => ($i % ($zebra + 1)) ? '0' : '1',
                 'postid'   => $post['postid'],
-                'sortid'   => $post['sortid'],
+                'listid'   => $post['listid'],
                 'userid'   => $post['userid'],
                 'author'   => $post['author'],
                 'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
@@ -330,9 +347,9 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
                 'description' => $post['description'],
             );
             // 设置分类变量
-            if (isset($post['sort'])) {
-                $vars['sortname'] = $post['sort']['name'];
-                $vars['sortpath'] = ROOT.$post['sort']['path'].'/';
+            if (isset($post['list'])) {
+                $vars['listname'] = $post['list']['name'];
+                $vars['listpath'] = ROOT.$post['list']['path'].'/';
             }
             tpl_clean($tpl);
             tpl_set_var($vars, $tpl);
@@ -394,9 +411,9 @@ function system_tpl_categories_plugin($tag_name,$tag,$block) {
     // 实例化模版对象
     $tpl = tpl_init('post_sort');
     // 列表类型
-    $sortid = tpl_get_attr($tag, 'sortid');
+    $listid = tpl_get_attr($tag, 'listid');
     // 取得
-    $sorts  = taxonomy_get_trees($sortid);
+    $sorts  = taxonomy_get_trees($listid);
     if (isset($sorts['subs']))
         $sorts = $sorts['subs'];
     
@@ -405,10 +422,10 @@ function system_tpl_categories_plugin($tag_name,$tag,$block) {
         $inner = tpl_get_block_inner($block);
         foreach ($sorts as $taxonomyid=>$taxonomy) {
             $vars = array(
-                'sortid'    => $taxonomyid,
+                'listid'    => $taxonomyid,
                 'name'      => $taxonomy['name'],
                 'path'      => ROOT.$taxonomy['path'].'/',
-                'count'     => $taxonomy['count'],
+                'count'     => taxonomy_update_count($taxonomyid),
             );
             tpl_clean($tpl);
             tpl_set_var($vars, $tpl);
@@ -423,35 +440,42 @@ function system_tpl_categories_plugin($tag_name,$tag,$block) {
     }
     return $result;
 }
+
 function system_tpl_archives_plugin($tag_name,$tag,$block) {
     if (!instr($tag_name,'archives')) return null;
     // 实例化模版对象
     $tpl = tpl_init('post_archives');
-    // 列表类型
-    $sortid = tpl_get_attr($tag, 'sortid');
+    // 分类ID类型
+    $listid = tpl_get_attr($tag, 'listid');
+    if ($listid) {
+        $listids = taxonomy_get_ids($listid);
+        $length  = count($listids);
+        if ($length == 1) {
+            $where = sprintf(' AND `tr`.`taxonomyid`=%d', array_pop($listids));
+        } elseif($length > 1) {
+            $where = sprintf(' AND `tr`.`taxonomyid` IN(%s)', implode(',', $listids));
+        }
+    }
+    $db = get_conn(); $archives = array();
+    $rs = $db->query("SELECT FROM_UNIXTIME(`p`.`datetime`,'%Y-%m-%d') AS `date`, COUNT(DISTINCT(`p`.`postid`)) AS `count` FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' {$where} GROUP BY `date` ORDER BY `date` DESC;");
+    while ($data = $db->fetch($rs)) {
+        $archives[] = $data;
+    }
     // 取得
-    $sorts  = taxonomy_get_trees($sortid);
-    if (isset($sorts['subs']))
-        $sorts = $sorts['subs'];
-
     $result = null;
-    if ($sorts) {
+    if ($archives) {
         $inner = tpl_get_block_inner($block);
-        foreach ($sorts as $taxonomyid=>$taxonomy) {
+        if (stripos($inner, '{$name}')===false) {
+            // TODO 名称格式化
+        }
+        foreach ($archives as $archive) {
             $vars = array(
-                'sortid'    => $taxonomyid,
-                'name'      => $taxonomy['name'],
-                'path'      => ROOT.$taxonomy['path'].'/',
-                'count'     => $taxonomy['count'],
+                'name'      => $archive['date'],
+                'path'      => ROOT.$archive['date'].'/',
+                'count'     => $archive['count'],
             );
             tpl_clean($tpl);
             tpl_set_var($vars, $tpl);
-            // 设置自定义字段
-            if (isset($taxonomy['meta'])) {
-                foreach((array)$taxonomy['meta'] as $k=>$v) {
-                    tpl_set_var('sort.'.$k, $v, $tpl);
-                }
-            }
             $result.= tpl_parse($inner, $tpl);
         }
     }
@@ -507,7 +531,7 @@ function system_tpl_comments_plugin($tag_name,$tag,$block) {
             }
             tpl_clean($tpl);
             if ($post = post_get($data['postid'])) {
-                tpl_set_var('path', ROOT.post_get_path($post['sortid'], $post['path']), $tpl);
+                tpl_set_var('path', ROOT.post_get_path($post['listid'], $post['path']), $tpl);
             }
             tpl_set_var(array(
                 'zebra'   => ($i % ($zebra + 1)) ? '0' : '1',
@@ -575,8 +599,8 @@ function system_tags($tag) {
             while ($data = pages_fetch($result)) {
                 $post = post_get($data['postid']);
                 if (empty($post)) continue;
-                $post['sort'] = taxonomy_get($post['sortid']);
-                $post['path'] = post_get_path($post['sortid'],$post['path']);
+                $post['list'] = taxonomy_get($post['listid']);
+                $post['path'] = post_get_path($post['listid'],$post['path']);
                 // 文章内容
                 if ($post['content'] && strpos($post['content'],'<!--pagebreak-->')!==false) {
                     $contents = explode('<!--pagebreak-->', $post['content']);
@@ -588,7 +612,7 @@ function system_tags($tag) {
                 $vars = array(
                     'zebra'    => ($i % ($zebra + 1)) ? '0' : '1',
                     'postid'   => $post['postid'],
-                    'sortid'   => $post['sortid'],
+                    'listid'   => $post['listid'],
                     'userid'   => $post['userid'],
                     'author'   => $post['author'],
                     'title'    => $post['title'],
@@ -602,9 +626,9 @@ function system_tags($tag) {
                     'description' => $post['description'],
                 );
                 // 设置分类变量
-                if (isset($post['sort'])) {
-                    $vars['sortname'] = $post['sort']['name'];
-                    $vars['sortpath'] = ROOT.$post['sort']['path'].'/';
+                if (isset($post['list'])) {
+                    $vars['listname'] = $post['list']['name'];
+                    $vars['listpath'] = ROOT.$post['list']['path'].'/';
                 }
                 // 清理数据
                 tpl_clean();
@@ -663,12 +687,12 @@ if (!function_exists('system_category_guide')) :
 /**
  * 生成导航
  *
- * @param int $sortid
+ * @param int $listid
  * @return string
  */
-function system_category_guide($sortid) {
-    if (empty($sortid)) return ; $result = '';
-    if ($taxonomy = taxonomy_get($sortid)) {
+function system_category_guide($listid) {
+    if (empty($listid)) return ; $result = '';
+    if ($taxonomy = taxonomy_get($listid)) {
         $result = '<a href="'.ROOT.$taxonomy['path'].'/" title="'.esc_html($taxonomy['name']).'">'.esc_html($taxonomy['name']).'</a>';
         if ($taxonomy['parent']) {
             $result = system_category_guide($taxonomy['parent'])." &gt;&gt; ".$result;

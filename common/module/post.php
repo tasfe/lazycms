@@ -64,7 +64,7 @@ function post_edit($postid,$data) {
             ));
             // 删除旧文件
             if ($data['path'] != $post['path']) {
-                $post['path'] = post_get_path($post['sortid'],$post['path']);
+                $post['path'] = post_get_path($post['listid'],$post['path']);
                 $post['edittime'] = $post['edittime'] ? $post['edittime'] : time();
                 // 文章添加大于24小时
                 if (time()-$post['edittime'] > 86400) {
@@ -72,8 +72,8 @@ function post_edit($postid,$data) {
                     $post['keywords'] = taxonomy_get_keywords($post['keywords']);
                     if (strncmp($data['path'],'/',1) === 0) {
                         $path = ltrim($data['path'], '/');
-                    } elseif ($post['sortid'] > 0) {
-                        $taxonomy = taxonomy_get($post['sortid']);
+                    } elseif ($post['listid'] > 0) {
+                        $taxonomy = taxonomy_get($post['listid']);
                         $path = $taxonomy['path'].'/'.$data['path'];
                     }
                     $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('Template-404')));
@@ -213,12 +213,12 @@ function post_get_taxonomy($categories) {
 /**
  * 查询文章路径
  *
- * @param int $sortid
+ * @param int $listid
  * @param string $path
  * @param string $prefix
  * @return string
  */
-function post_get_path($sortid,$path,$prefix='') {
+function post_get_path($listid,$path,$prefix='') {
     if ($prefix) {
         $prefix = !substr_compare($prefix,'/',strlen($prefix)-1,1) ? $prefix : $prefix.'/';
         if (strncmp($prefix,'/',1) === 0) {
@@ -227,8 +227,8 @@ function post_get_path($sortid,$path,$prefix='') {
     }
     if (strncmp($path,'/',1) === 0) {
         $path = ltrim($prefix,'/').ltrim($path, '/');
-    } elseif ($sortid > 0) {
-        $taxonomy = taxonomy_get($sortid);
+    } elseif ($listid > 0) {
+        $taxonomy = taxonomy_get($listid);
         if (isset($taxonomy['path'])) {
             $path  = $taxonomy['path'].'/'.$prefix.$path;
         }
@@ -306,7 +306,7 @@ function post_delete($postid) {
     if (!$postid) return false;
     if ($post = post_get($postid)) {
         // 查询路径
-        $post['path'] = post_get_path($post['sortid'],$post['path']);
+        $post['path'] = post_get_path($post['listid'],$post['path']);
         // 删除文件
         if (is_file(ABS_PATH.'/'.$post['path'])) {
             if (!unlink(ABS_PATH.'/'.$post['path'])) {
@@ -341,13 +341,13 @@ function post_create($postid,&$preid=0,&$nextid=0) {
     if ($post = post_get($postid)) {
         $b_guid = $inner = ''; comment_create($post['postid']); // 生成评论
         // 处理文章
-        $post['sort']     = taxonomy_get($post['sortid']);
-        $post['cmt_path'] = post_get_path($post['sortid'],$post['path'], C('Comments-Path'));
-        $post['path']     = post_get_path($post['sortid'],$post['path']);
+        $post['list']     = taxonomy_get($post['listid']);
+        $post['cmt_path'] = post_get_path($post['listid'],$post['path'], C('Comments-Path'));
+        $post['path']     = post_get_path($post['listid'],$post['path']);
         // 模版设置优先级：页面设置>分类设置>模型设置
         if (empty($post['template'])) {
-            if ($post['sortid'] > 0) {
-                $taxonomy = taxonomy_get($post['sortid']);
+            if ($post['listid'] > 0) {
+                $taxonomy = taxonomy_get($post['listid']);
                 $post['template'] = $taxonomy['page'];
             }
             // 使用模型设置
@@ -379,7 +379,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
         
         $vars = array(
             'postid'   => $post['postid'],
-            'sortid'   => $post['sortid'],
+            'listid'   => $post['listid'],
             'userid'   => $post['userid'],
             'author'   => $post['author'],
             'views'    => sprintf($views,'true'),
@@ -387,8 +387,8 @@ function post_create($postid,&$preid=0,&$nextid=0) {
             'date'     => $post['datetime'],
             'edittime' => $post['edittime'],
             'keywords' => taxonomy_get_keywords($post['keywords']),
-            'prepage'  => post_prepage($post['sortid'],$post['postid'],$preid),
-            'nextpage' => post_nextpage($post['sortid'],$post['postid'],$nextid),
+            'prepage'  => post_prepage($post['listid'],$post['postid'],$preid),
+            'nextpage' => post_nextpage($post['listid'],$post['postid'],$nextid),
             'cmt_state'    => $post['comments'],
             'cmt_ajaxinfo' => ROOT.'common/gateway.php?func=post_ajax_comment&postid='.$post['postid'],
             'cmt_replyurl' => ROOT.'common/gateway.php?func=post_send_comment&postid='.$post['postid'],
@@ -398,9 +398,9 @@ function post_create($postid,&$preid=0,&$nextid=0) {
             '_keywords'    => $post['keywords'],
         );
         // 设置分类变量
-        if (isset($post['sort'])) {
-            $vars['sortname'] = $post['sort']['name'];
-            $vars['sortpath'] = ROOT.$post['sort']['path'].'/';
+        if (isset($post['list'])) {
+            $vars['listname'] = $post['list']['name'];
+            $vars['listpath'] = ROOT.$post['list']['path'].'/';
         }
         // 清理数据
         tpl_clean();
@@ -413,7 +413,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
             }
         }
         // 文章导航
-        $guide = system_category_guide($post['sortid']);
+        $guide = system_category_guide($post['listid']);
 
         // 文章分页
         if ($post['content'] && strpos($post['content'],'<!--pagebreak-->')!==false) {
@@ -486,22 +486,22 @@ function post_create($postid,&$preid=0,&$nextid=0) {
 /**
  * 上一页
  *
- * @param int $sortid
+ * @param int $listid
  * @param int $postid
  * @param int &$preid
  * @return string
  */
-function post_prepage($sortid,$postid,&$preid=0) {
+function post_prepage($listid,$postid,&$preid=0) {
     $db    = get_conn();
-    $preid = $db->result(sprintf("SELECT `objectid` FROM `#@_term_relation` WHERE `taxonomyid`=%d AND `objectid`<%d ORDER BY `objectid` DESC LIMIT 1 OFFSET 0;", esc_sql($sortid), esc_sql($postid)));
+    $preid = $db->result(sprintf("SELECT `objectid` FROM `#@_term_relation` WHERE `taxonomyid`=%d AND `objectid`<%d ORDER BY `objectid` DESC LIMIT 1 OFFSET 0;", esc_sql($listid), esc_sql($postid)));
     if ($preid) {
         $post = post_get($preid);
-        $post['path'] = post_get_path($post['sortid'],$post['path']);
+        $post['path'] = post_get_path($post['listid'],$post['path']);
         $result = '<a href="'.ROOT.$post['path'].'">'.$post['title'].'</a>';
-    } elseif($sortid) {
+    } elseif($listid) {
         $post = post_get($postid);
-        $post['sort'] = taxonomy_get($post['sortid']);
-        $result = '<a href="'.ROOT.$post['sort']['path'].'/">['.$post['sort']['name'].']</a>';
+        $post['list'] = taxonomy_get($post['listid']);
+        $result = '<a href="'.ROOT.$post['list']['path'].'/">['.$post['list']['name'].']</a>';
     } else {
         $result = '['.__('Not Supported').']';
     }
@@ -510,22 +510,22 @@ function post_prepage($sortid,$postid,&$preid=0) {
 /**
  * 下一页
  *
- * @param int $sortid
+ * @param int $listid
  * @param int $postid
  * @param int &$nextid
  * @return string
  */
-function post_nextpage($sortid,$postid,&$nextid=0) {
+function post_nextpage($listid,$postid,&$nextid=0) {
     $db     = get_conn();
-    $nextid = $db->result(sprintf("SELECT `objectid` FROM `#@_term_relation` WHERE `taxonomyid`=%d AND `objectid`>%d ORDER BY `objectid` ASC LIMIT 1 OFFSET 0;", esc_sql($sortid), esc_sql($postid)));
+    $nextid = $db->result(sprintf("SELECT `objectid` FROM `#@_term_relation` WHERE `taxonomyid`=%d AND `objectid`>%d ORDER BY `objectid` ASC LIMIT 1 OFFSET 0;", esc_sql($listid), esc_sql($postid)));
     if ($nextid) {
         $post = post_get($nextid);
-        $post['path'] = post_get_path($post['sortid'],$post['path']);
+        $post['path'] = post_get_path($post['listid'],$post['path']);
         $result = '<a href="'.ROOT.$post['path'].'">'.$post['title'].'</a>';
-    } elseif($sortid) {
+    } elseif($listid) {
         $post = post_get($postid);
-        $post['sort'] = taxonomy_get($post['sortid']);
-        $result = '<a href="'.ROOT.$post['sort']['path'].'/">['.$post['sort']['name'].']</a>';
+        $post['list'] = taxonomy_get($post['listid']);
+        $result = '<a href="'.ROOT.$post['list']['path'].'/">['.$post['list']['name'].']</a>';
     } else {
         $result = '['.__('Not Supported').']';
     }

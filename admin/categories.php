@@ -192,10 +192,10 @@ switch ($method) {
 	case 'extend-attr':
         $model  = null; $hl = '';
 	    $mcode  = isset($_REQUEST['model'])?$_REQUEST['model']:null;
-	    $sortid = isset($_REQUEST['sortid'])?$_REQUEST['sortid']:0;
+	    $listid = isset($_REQUEST['listid'])?$_REQUEST['listid']:0;
         $suffix = C('HTMLFileSuffix');
-        if ($sortid) {
-            $taxonomy = taxonomy_get($sortid);
+        if ($listid) {
+            $taxonomy = taxonomy_get($listid);
         }
         if ($mcode) {
             $model = model_get_bycode($mcode);
@@ -288,8 +288,8 @@ function table_thead() {
  * @return string
  */
 function display_tr_categories($sorts,$n=0) {
-    static $func = null; if (!$func) $func = __FUNCTION__;
-    $hl = ''; $space = str_repeat('&mdash; ',$n);
+    $func  = __FUNCTION__; $hl = '';
+    $space = str_repeat('&mdash; ',$n);
     foreach ($sorts as $sort) {
         $path    = ROOT . $sort['path'] . '/';
         $href    = PHP_FILE.'?method=edit&taxonomyid='.$sort['taxonomyid'];
@@ -433,7 +433,7 @@ function category_manage_page($action) {
  * @return string
  */
 function dropdown_categories($taxonomyid,$selected=0,$trees=null) {
-    static $func = null,$n = 0; if (!$func) $func = __FUNCTION__;
+    static $n = 0; $func = __FUNCTION__;
     if ($trees===null) $trees = taxonomy_get_trees();
     $hl = ''; $space = str_repeat('&nbsp; &nbsp; ',$n); $n++;
     foreach ($trees as $tree) {

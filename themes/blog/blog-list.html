@@ -15,7 +15,7 @@
 {include file="inc/header.html" /}
 <div id="layout" class="wrapper">
     <div id="blog_list">
-        {list type="list" number="10"}
+        {list type="list" number="10" listsub="me"}
         <h3 class="title"><a href="{$path}">{$title}</a></h3>
         <div class="date">{$date mode="Y年m月d日 H:i"}</div>
         <div class="content">
@@ -23,7 +23,7 @@
         </div>
         <!--div class="more"><a href="{$path}">阅读全文&gt;&gt;</a></div-->
         <div class="toobar">
-            <a href="{$sortpath}" title="查看该分类中所有文章">类别：{$sortname}</a> |
+            <a href="{$listpath}" title="查看该分类中所有文章">类别：{$listname}</a> |
             <a href="{$path}#cmt_list" title="查看该文章的所有评论">评论({$comment})</a> |
             <a href="{$path}" title="浏览全文">浏览({$views})</a>
         </div>

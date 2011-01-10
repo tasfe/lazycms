@@ -424,6 +424,16 @@ class DBQuery {
         }
         return true;
     }
+    /**
+     * FROM_UNIXTIME
+     *
+     * @param int $timestamp
+     * @param string $format
+     * @return string
+     */
+    function strftime($timestamp, $format) {
+        return strftime($format, $timestamp);
+    }
 }
 
 class DBQuery_NOOP {

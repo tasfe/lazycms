@@ -112,7 +112,7 @@ switch ($method) {
             $model    = model_get_bycode($mcode);
             $create   = isset($_POST['create'])?$_POST['create']:array();
             $comments = isset($_POST['comments'])?$_POST['comments']:'No';
-            $sortid   = isset($_POST['sortid'])?$_POST['sortid']:0;
+            $listid   = isset($_POST['listid'])?$_POST['listid']:0;
             $type     = isset($_POST['type'])?$_POST['type']:'page';
             $category = isset($_POST['category'])?$_POST['category']:array();
             $title    = isset($_POST['title'])?$_POST['title']:null;
@@ -125,7 +125,7 @@ switch ($method) {
 
 
             if ('post.php' == $php_file) {
-                validate_check('sortid',VALIDATE_EMPTY,_x('Please select a main category.','post'));
+                validate_check('listid',VALIDATE_EMPTY,_x('Please select a main category.','post'));
             }
 
 
@@ -173,12 +173,12 @@ switch ($method) {
                     $keywords = term_gets($title, $content);
                 }
                 // 添加主分类
-                if ($sortid > 0) {
-                    array_unshift($category,$sortid);
+                if ($listid > 0) {
+                    array_unshift($category,$listid);
                 }
                 // 获取数据
                 $data = array(
-                    'sortid'   => $sortid,
+                    'listid'   => $listid,
                     'type'     => $type,
                     'category' => $category,
                     'model'    => esc_html($mcode),
@@ -230,7 +230,7 @@ switch ($method) {
                         publish_page_sitemaps();
                     }
                     $result = sprintf('<p>%s</p><p>%s</p>', $result, _x('[Submit] to Add New<br />[Cancel] to Back list','post'));
-                    ajax_confirm($result, "LazyCMS.redirect('".PHP_FILE."?method=new&category={$sortid}');", "LazyCMS.redirect('".$referer."');");
+                    ajax_confirm($result, "LazyCMS.redirect('".PHP_FILE."?method=new&category={$listid}');", "LazyCMS.redirect('".$referer."');");
                 } else {
                     ajax_alert($result.__('File create failed.'),"LazyCMS.redirect('".$referer."');");
                 }
@@ -351,7 +351,7 @@ switch ($method) {
                 $edit_url = PHP_FILE.'?method=edit&postid='.$post['postid'];
                 $post['count'] = comment_count($post['postid']);
                 // 检查文件是否已生成
-                $post['path'] = post_get_path($post['sortid'],$post['path']);
+                $post['path'] = post_get_path($post['listid'],$post['path']);
                 if (is_file(ABS_PATH.'/'.$post['path'])) {
                     $browse   = get_icon('b6').'<a href="'.ROOT.$post['path'].'" target="_blank">'.ROOT.$post['path'].'</a>';
                 } else {
@@ -484,11 +484,11 @@ function post_manage_page($action) {
     $suffix  = C('HTMLFileSuffix');
     if ($action=='add') {
         $mcode  = isset($_GET['model'])?$_GET['model']:null;
-        $sortid = isset($_GET['category'])?$_GET['category']:null;
+        $listid = isset($_GET['category'])?$_GET['category']:null;
     } else {
         $_DATA  = post_get($postid);
         $mcode  = $_DATA['model'];
-        $sortid = isset($_DATA['sortid'])?$_DATA['sortid']:null;
+        $listid = isset($_DATA['listid'])?$_DATA['listid']:null;
     }
 
     $model    = $mcode ? model_get_bycode($mcode) : array_pop(array_slice($models,0,1));
@@ -526,7 +526,7 @@ function post_manage_page($action) {
         echo           '<tr class="taxonomyid">';
         echo               '<th><label for="taxonomyid">'._x('Categories','post').'</label></th>';
         echo               '<td>';
-        echo                   display_ul_categories($sortid,$categories,$trees);
+        echo                   display_ul_categories($listid,$categories,$trees);
         echo               '</td>';
         echo           '</tr>';
     }
@@ -615,24 +615,24 @@ function post_manage_page($action) {
 /**
  * 显示分类数
  *
- * @param int $sortid
+ * @param int $listid
  * @param array $categories
  * @param array $trees
  * @return string
  */
-function display_ul_categories($sortid,$categories=array(),$trees=null) {
+function display_ul_categories($listid,$categories=array(),$trees=null) {
     static $func = null;
-    $hl = sprintf('<ul %s>',is_null($func) ? 'id="sortid" class="categories"' : 'class="children"');
+    $hl = sprintf('<ul %s>',is_null($func) ? 'id="listid" class="categories"' : 'class="children"');
     if (!$func) $func = __FUNCTION__;
     if ($trees === null) $trees = taxonomy_get_trees();
     foreach ($trees as $i=>$tree) {
-        $checked = instr($tree['taxonomyid'],$categories) && $sortid!=$tree['taxonomyid'] ? ' checked="checked"' : '';
-        $main_checked = $tree['taxonomyid']==$sortid?' checked="checked"':'';
-        $hl.= sprintf('<li><input type="radio" name="sortid" value="%d"%s />',$tree['taxonomyid'],$main_checked);
+        $checked = instr($tree['taxonomyid'],$categories) && $listid!=$tree['taxonomyid'] ? ' checked="checked"' : '';
+        $main_checked = $tree['taxonomyid']==$listid?' checked="checked"':'';
+        $hl.= sprintf('<li><input type="radio" name="listid" value="%d"%s />',$tree['taxonomyid'],$main_checked);
         $hl.= sprintf('<label class="selectit" for="category-%d">',$tree['taxonomyid']);
         $hl.= sprintf('<input type="checkbox" id="category-%1$d" name="category[]" value="%1$d"%3$s />%2$s</label>',$tree['taxonomyid'],$tree['name'],$checked);
     	if (isset($tree['subs'])) {
-    		$hl.= $func($sortid,$categories,$tree['subs']);
+    		$hl.= $func($listid,$categories,$tree['subs']);
     	}
         $hl.= '</li>';
     }
@@ -650,7 +650,7 @@ function display_ul_categories($sortid,$categories=array(),$trees=null) {
  * @return string
  */
 function dropdown_categories($selected=0, $trees=null) {
-    static $func = null,$n = 0; if (!$func) $func = __FUNCTION__;
+    static $n = 0; $func = __FUNCTION__; 
     if ($trees===null) $trees = taxonomy_get_trees();
     $hl = ''; $space = str_repeat('&nbsp; &nbsp; ',$n); $n++;
     foreach ($trees as $tree) {

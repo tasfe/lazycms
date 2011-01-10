@@ -181,8 +181,8 @@ function comment_people($postid) {
  * @return mixed
  */
 function comment_parse_reply($comment, $sblock) {
-    static $func; if (!$func) $func = __FUNCTION__;
-    $tpl = tpl_init('post_comment_reply');
+    $func = __FUNCTION__;
+    $tpl  = tpl_init('post_comment_reply');
     $sblock['inner'] = tpl_get_block_inner($sblock);
     tpl_clean($tpl);
     tpl_set_var(array(
@@ -215,8 +215,8 @@ function comment_create($postid) {
         // 允许评论
         if ($post['comments'] != 'Yes') return true;
         // 评论地址
-        $post['cmt_path'] = post_get_path($post['sortid'],$post['path'], C('Comments-Path'));
-        $guide = system_category_guide($post['sortid']);
+        $post['cmt_path'] = post_get_path($post['listid'],$post['path'], C('Comments-Path'));
+        $guide = system_category_guide($post['listid']);
         $title = sprintf(__('Comment: %s'), $post['title']);
         // 加载模版
         $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('Template-Comments')));

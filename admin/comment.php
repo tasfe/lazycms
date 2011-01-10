@@ -196,7 +196,7 @@ switch ($method) {
                 echo           '<td><div class="submitted-on">'.sprintf(__('Submitted on: <b>%s</b>'),date('Y-m-d H:i:s',$data['date'])).$reply.'</div>';
                 echo               '<div class="content">'.nl2br($data['content']).'</div><div class="row-actions">'.$actions.'</div></td>';
                 if ($post = post_get($data['postid'])) {
-                    $path = post_get_path($post['sortid'],$post['path']);
+                    $path = post_get_path($post['listid'],$post['path']);
                     echo       '<td><a href="'.ADMIN.'post.php?method=edit&postid='.$data['postid'].'">'.$post['title'].'</a><br />';
                     echo           '<a class="comment-count" href="'.PHP_FILE.'?p='.$data['postid'].'"><span>'.$data['count'].'</span></a>';
                     echo           '<a href="'.ROOT.$path.'#cmt_list" target="_blank">#</a>';

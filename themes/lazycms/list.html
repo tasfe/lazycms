@@ -16,10 +16,10 @@
 <div id="guide" class="wrapper"><a class="home" href="{$inst}">当前位置</a>{$guide}</div>
 <div id="content" class="wrapper">
     <div id="posts" class="lists container">
-        <h1>{$sortname}</h1>
+        <h1>{$listname}</h1>
         {pagelist /}
         {list type="list" number="15" order="DESC"}
-        <p>[<a href="{$sortpath}">{$sortname}</a>] <a href="{$path}" title="{$title}">{$title size="30"}</a> <em>{$date mode='Y年m月d日 H:i'}</em></p>
+        <p>[<a href="{$listpath}">{$listname}</a>] <a href="{$path}" title="{$title}">{$title size="30"}</a> <em>{$date mode='Y年m月d日 H:i'}</em></p>
         {/list}
         {pagelist /}
     </div>

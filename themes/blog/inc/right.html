@@ -1,12 +1,12 @@
 <div id="categories" class="container">
     <h2>文章分类</h2>
-    {sort sortid="1"}
+    {sort listid="1"}
     <div class="item"><a href="{$path}">{$name}</a><span>({$count})</span></div>
     {/sort}
 </div>
 <div id="archives" class="container">
     <h2>文章存档</h2>
-    {archives}
-    <div class="item"><a href="{$path}">{$date mode=""}</a><span>({$count})</span></div>
+    {archives listid="1"}
+    <div class="item"><a href="{$path}">{$name mode="Y F"}</a><span>({$count})</span></div>
     {/archives}
 </div>

@@ -167,8 +167,9 @@ function taxonomy_count($type='category') {
  * @return array
  */
 function taxonomy_get_list($type='category') {
+    // TODO 需要缓存
     $db = get_conn(); $result = array();
-    $rs = $db->query("SELECT * FROM `#@_term_taxonomy` WHERE `type`='%s';",$type);
+    $rs = $db->query("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `type`='%s';", $type);
     while ($row = $db->fetch($rs)) {
         $result[] = $row['taxonomyid'];
     }
@@ -200,6 +201,48 @@ function taxonomy_get_trees($parentid=0,$type='category') {
     }
     foreach($un as $v) unset($result[$v]);
     return $result;
+}
+/**
+ * 取得分类ids
+ *
+ * @param array $tree
+ * @return array
+ */
+function taxonomy_get_subids($tree) {
+    static $result = array(); $func = __FUNCTION__;
+    if (!is_array($tree)) return ;
+    foreach ($tree as $taxonomyid=>$taxonomy) {
+        $result[] = $taxonomyid;
+        if (isset($taxonomy['subs'])) {
+            $func($taxonomy['subs']);
+        }
+    }
+    return $result;
+}
+/**
+ * 取得分类ids
+ *
+ * @param string $listid
+ * @param string $listsub
+ * @return array
+ */
+function taxonomy_get_ids($listid, $listsub = 'me') {
+    $listids = array_unique(explode(',', $listid));
+    if ($listsub == 'me') {
+        foreach ($listids as $id) {
+            $t = taxonomy_get_trees($id, 'category');
+            if (isset($t['subs'])) {
+                $ids = taxonomy_get_subids($t['subs']);
+            } elseif(!isset($t['taxonomyid'])) {
+                $ids = taxonomy_get_subids($t);
+            }
+            $listids = $ids ? array_merge($listids, $ids) : $listids;
+        }
+    } elseif($listsub) {
+        $listsub = explode(',', $listsub);
+        $listids = array_merge($listids, $listsub);
+    }
+    return array_unique($listids);
 }
 /**
  * 检查分类目录是否存在
@@ -338,11 +381,26 @@ function taxonomy_make_relation($type,$objectid,$taxonomies) {
             ));
         }
         // 更新文章数
-        $count = $db->result(sprintf("SELECT COUNT(`objectid`) FROM `#@_term_relation` WHERE `taxonomyid`=%d;",esc_sql($taxonomyid)));
-        $db->update('#@_term_taxonomy',array('count'=>$count),array('taxonomyid'=>$taxonomyid));
-        taxonomy_clean_cache($taxonomyid);
+        taxonomy_update_count($taxonomyid);
     }
     return true;
+}
+/**
+ * 更新文章数
+ *
+ * @param int $taxonomyid
+ * @return void
+ */
+function taxonomy_update_count($taxonomyid) {
+    $db = get_conn();
+    if ($taxonomy = taxonomy_get($taxonomyid)) {
+        $count = $db->result(sprintf("SELECT COUNT(`objectid`) FROM `#@_term_relation` WHERE `taxonomyid`=%d;",esc_sql($taxonomyid)));
+        if ($taxonomy['count'] != $count) {
+            $db->update('#@_term_taxonomy',array('count'=>$count),array('taxonomyid'=>$taxonomyid));
+            taxonomy_clean_cache($taxonomyid);
+        }
+        return $count;
+    }
 }
 /**
  * 删除关系
@@ -560,19 +618,43 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
         $block  = tpl_get_block($html,'post,list','list');
         if ($block) {
             // 扩展字段过滤
-            $meta   = tpl_get_attr($block['tag'],'meta');
+            $meta    = tpl_get_attr($block['tag'],'meta');
+            // 子分类ID
+            $listsub = tpl_get_attr($block['tag'],'listsub');
+            // 被排除的子分类ID
+            $notsid  = tpl_get_attr($block['tag'],'listsub','!=');
             // 每页条数
-            $number = tpl_get_attr($block['tag'],'number');
+            $number  = tpl_get_attr($block['tag'],'number');
             // 排序方式
-            $order  = tpl_get_attr($block['tag'],'order');
+            $order   = tpl_get_attr($block['tag'],'order');
             // 斑马线实现
-            $zebra  = tpl_get_attr($block['tag'],'zebra');
+            $zebra   = tpl_get_attr($block['tag'],'zebra');
             // 校验数据
-            $zebra  = validate_is($zebra,VALIDATE_IS_NUMERIC) ? $zebra : 0;
-            $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
-            $order  = instr(strtoupper($order),'ASC,DESC') ? $order : 'DESC';
+            $listsub = $listsub == 'me' ? $listsub : validate_is($listsub, VALIDATE_IS_LIST) ? $listsub : null;
+            $notsid  = validate_is($notsid,VALIDATE_IS_LIST) ? $notsid : null;
+            $zebra   = validate_is($zebra,VALIDATE_IS_NUMERIC) ? $zebra : 0;
+            $number  = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
+            $order   = instr(strtoupper($order),'ASC,DESC') ? $order : 'DESC';
             // 设置每页显示数
             pages_init($number, $page);
+            $listids = array($taxonomyid);
+            if ($listsub !== null) {
+                // 查询IDs
+                $listids = taxonomy_get_ids($taxonomyid, $listsub);
+                // 排除IDs
+                $notsids = $notsid ? explode(',', $notsid) : array();
+                // 删掉排除的IDs
+                foreach ($listids as $k=>$id) {
+                    if (in_array($id,$notsids))
+                        unset($listids[$k]);
+                }
+            }
+            $length = count($listids);
+            if ($length == 1) {
+                $where = sprintf(" AND `tr`.`taxonomyid`=%d", array_pop($listids));
+            } elseif ($length > 1) {
+                $where = sprintf(" AND `tr`.`taxonomyid` IN(%s)", implode(',', $listids));
+            }
             // 自定义字段
             if ($meta && (strpos($meta,':') !== false || strncasecmp($meta, 'find(', 5) === 0)) {
                 // meta="find(value,field)"
@@ -580,21 +662,20 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                     $index = strrpos($meta, ',');
                     $field = substring($meta, $index+1, strrpos($meta,')'));
                     $value = substring($meta, 5, $index);
-                    $where = sprintf(" AND FIND_IN_SET('%s', `pm`.`value`)", esc_sql($value));
+                    $where.= sprintf(" AND FIND_IN_SET('%s', `pm`.`value`)", esc_sql($value));
                 }
                 // meta="field:value"
                 elseif (($pos=strpos($meta,':')) !== false) {
                     $field = substr($meta, 0, $pos);
                     $value = substr($meta, $pos + 1);
-                    $where = sprintf(" AND `pm`.`value`='%s'", esc_sql($value));
+                    $where.= sprintf(" AND `pm`.`value`='%s'", esc_sql($value));
                 }
-                $sql = sprintf("SELECT DISTINCT(`tr`.`objectid`) AS `postid` FROM `#@_term_relation` AS `tr` LEFT JOIN `#@_post_meta` AS `pm` ON `tr`.`objectid`=`pm`.`postid` WHERE `tr`.`taxonomyid`=%1\$d AND `pm`.`key`='%3\$s' %4\$s ORDER BY `objectid` %2\$s", esc_sql($taxonomyid), $order, esc_sql($field), $where);
+                $sql = sprintf("SELECT DISTINCT(`tr`.`objectid`) AS `postid` FROM `#@_term_relation` AS `tr` LEFT JOIN `#@_post_meta` AS `pm` ON `tr`.`objectid`=`pm`.`postid` WHERE `pm`.`key`='%2\$s' %3\$s ORDER BY `objectid` %1\$s", $order, esc_sql($field), $where);
             } else {
+                $where = str_replace('`tr`.', '', $where);
                 // 拼装sql
-                $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE `taxonomyid`=%d ORDER BY `objectid` %s", esc_sql($taxonomyid), esc_sql($order));
+                $sql = sprintf("SELECT `objectid` AS `postid` FROM `#@_term_relation` WHERE 1 %s ORDER BY `objectid` %s", $where, esc_sql($order));
             }
-
-
             $result = pages_query($sql);
             // 解析分页标签
             if (stripos($html,'{pagelist') !== false) {
@@ -610,8 +691,8 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                 while ($data = pages_fetch($result)) {
                     $post = post_get($data['postid']);
                     if (empty($post)) continue;
-                    $post['sort'] = taxonomy_get($post['sortid']);
-                    $post['path'] = post_get_path($post['sortid'],$post['path']);
+                    $post['list'] = taxonomy_get($post['listid']);
+                    $post['path'] = post_get_path($post['listid'],$post['path']);
                     // 生成文章
                     if ($make_post) post_create($post['postid']);
                     // 文章内容
@@ -625,7 +706,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                     $vars = array(
                         'zebra'    => ($i % ($zebra + 1)) ? '0' : '1',
                         'postid'   => $post['postid'],
-                        'sortid'   => $post['sortid'],
+                        'listid'   => $post['listid'],
                         'userid'   => $post['userid'],
                         'author'   => $post['author'],
                         'title'    => $post['title'],
@@ -640,9 +721,9 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                         'description' => $post['description'],
                     );
                     // 设置分类变量
-                    if (isset($post['sort'])) {
-                        $vars['sortname'] = $post['sort']['name'];
-                        $vars['sortpath'] = ROOT.$post['sort']['path'].'/';
+                    if (isset($post['list'])) {
+                        $vars['listname'] = $post['list']['name'];
+                        $vars['listpath'] = ROOT.$post['list']['path'].'/';
                     }
                     // 清理数据
                     tpl_clean();
@@ -705,9 +786,9 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
         tpl_clean();
         tpl_set_var($b_guid,$inner);
         tpl_set_var(array(
-            'sortid'   => $taxonomy['taxonomyid'],
-            'sortname' => $taxonomy['name'],
-            'sortpath' => ROOT.$taxonomy['path'].'/',
+            'listid'   => $taxonomy['taxonomyid'],
+            'listname' => $taxonomy['name'],
+            'listpath' => ROOT.$taxonomy['path'].'/',
             'termid'   => $taxonomy['termid'],
             'count'    => $taxonomy['count'],
             'guide'    => system_category_guide($taxonomy['taxonomyid']),

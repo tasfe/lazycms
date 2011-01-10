@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS `#@_model` (
 
 CREATE TABLE IF NOT EXISTS `#@_post` (
   `postid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `sortid` int(10) unsigned NOT NULL DEFAULT '0',
+  `listid` int(10) unsigned NOT NULL DEFAULT '0',
   `userid` int(10) unsigned NOT NULL DEFAULT '0',
   `type` char(20) NOT NULL,
   `model` char(75) NOT NULL,
@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS `#@_post` (
   `description` varchar(255) NOT NULL,
   PRIMARY KEY (`postid`),
   UNIQUE KEY `path` (`path`),
-  KEY `model` (`sortid`,`model`),
+  KEY `model` (`listid`,`model`),
   KEY `title` (`title`),
   KEY `author` (`author`),
   KEY `userid` (`userid`)

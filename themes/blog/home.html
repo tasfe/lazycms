@@ -26,7 +26,7 @@
 </div>
 <div id="layout" class="wrapper">
     <div id="blog_list">
-        {list type="new" number="10"}
+        {list type="new" number="10" listid="1" listsub="me"}
         <h3 class="title"><a href="{$path}">{$title}</a></h3>
         <div class="date">{$date mode="Y年m月d日 H:i"}</div>
         <div class="content">
@@ -34,7 +34,7 @@
         </div>
         <!--div class="more"><a href="{$path}">阅读全文&gt;&gt;</a></div-->
         <div class="toobar">
-            <a href="{$sortpath}" title="{$sortname}">类别：{$sortname}</a> |
+            <a href="{$listpath}" title="{$listname}">类别：{$listname}</a> |
             <a href="{$path}#cmt_list">评论({$comment})</a> |
             <a href="{$path}">浏览({$views})</a>
         </div>

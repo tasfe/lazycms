@@ -22,12 +22,12 @@ function sort_list_init() {
 }
 
 function sort_manage_init() {
-    var wrap = $('#sortmanage'),sortid = $('input:hidden[name=sortid]',wrap).val();
+    var wrap = $('#sortmanage'),listid = $('input:hidden[name=listid]',wrap).val();
         wrap.semiauto();
     // 绑定分类选择事件
     $('select[name=parent]',wrap).change(function(){
         var selected = $('option:selected',this);
-        if (typeof(sortid)=='undefined') {
+        if (typeof(listid)=='undefined') {
             $('input[name=path]',wrap).val(selected.attr('path'));
         }
     });
@@ -61,7 +61,7 @@ function sort_manage_init() {
 function sort_manage_extend_attr(model, taxonomyid) {
     var wrap = this, list = '',
         params = {method:'extend-attr',model:model};
-        params = typeof(taxonomyid)!='undefined' ? $.extend(params,{sortid:taxonomyid}) : params;
+        params = typeof(taxonomyid)!='undefined' ? $.extend(params,{listid:taxonomyid}) : params;
 
     $.post(LazyCMS.ADMIN + 'categories.php', params, function(data, status, xhr) {
         $('tbody.extend-attr', wrap).html(data);
@@ -72,14 +72,14 @@ function sort_manage_extend_attr(model, taxonomyid) {
     });
 }
 // 生成分类
-function sort_create(sortid) {
-    return LazyCMS.postAction('categories.php', {method:'bulk', action:'createlists'}, sortid);
+function sort_create(listid) {
+    return LazyCMS.postAction('categories.php', {method:'bulk', action:'createlists'}, listid);
 }
 // 删除分类
-function sort_delete(sortid){
+function sort_delete(listid){
     LazyCMS.confirm(_('Confirm Delete?'),function(r){
         if (r) {
-            LazyCMS.postAction('categories.php', {method:'bulk', action:'delete'}, sortid);
+            LazyCMS.postAction('categories.php', {method:'bulk', action:'delete'}, listid);
         }
     });
 }

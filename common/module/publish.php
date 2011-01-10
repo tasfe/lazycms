@@ -148,15 +148,15 @@ function publish_posts($data,$mode='all'){
  * 生成列表
  *
  * @param array $data
- * @param array $sortids
+ * @param array $listids
  * @param bool $make_post 是否生成文章
- * @param int $sortid
+ * @param int $listid
  * @return array
  */
-function publish_lists($data,$sortids=null,$make_post=false,$sortid=0) {
+function publish_lists($data,$listids=null,$make_post=false,$listid=0) {
     if (isset($data['total']) && 0 >= $data['total'] && $data['state']==0) {
         $db = get_conn(); $lists = array();
-        $taxonomy_list = $sortids===null ? taxonomy_get_list('category') : $sortids;
+        $taxonomy_list = $listids===null ? taxonomy_get_list('category') : $listids;
         // 计算要生成的总页数
         foreach($taxonomy_list as $taxonomyid) {
             if ($taxonomy = taxonomy_get($taxonomyid)) {
@@ -194,21 +194,21 @@ function publish_lists($data,$sortids=null,$make_post=false,$sortid=0) {
                 'listid' => isset($keys[0]) ? $keys[0] : 0,
             )
         );
-        $sortids = $sets['args']['lists'];
-        $sortid  = $sets['args']['listid'];
+        $listids = $sets['args']['lists'];
+        $listid  = $sets['args']['listid'];
         publish_edit($data['pubid'],$sets);
         $data = array_merge($data,$sets);
     }
     // 正在生成的分类ID
     $generated = 0;
     // 计算应该生成第几页
-    foreach((array)$sortids as $id=>$v) {
-        if ($id == $sortid) break;
+    foreach((array)$listids as $id=>$v) {
+        if ($id == $listid) break;
         $generated+= $v;
     }
     $page = $data['complete'] - $generated + 1;
     // 生成成功
-    if (taxonomy_create($sortid,$page,$make_post)) {
+    if (taxonomy_create($listid,$page,$make_post)) {
         // 更新进度
         $sets = array(
             'complete'   => ++$data['complete'],
@@ -219,15 +219,15 @@ function publish_lists($data,$sortids=null,$make_post=false,$sortid=0) {
     // 当前分类生成结束
     else {
         // 发布google sitemaps
-        publish_list_sitemaps($sortid);
+        publish_list_sitemaps($listid);
         // 切换到下一个分类
-        $keys = array_keys($sortids);
-        $key  = array_search($sortid, $keys) + 1;
+        $keys = array_keys($listids);
+        $key  = array_search($listid, $keys) + 1;
         if (isset($keys[$key])) {
             $sets = array(
                 'elapsetime' => $data['elapsetime'] + micro_time(true) - __BEGIN__,
                 'args'       => array(
-                    'lists'  => $sortids,
+                    'lists'  => $listids,
                     'mpost'  => $make_post,
                     'listid' => $keys[$key],
                 )
@@ -276,7 +276,7 @@ function publish_page_sitemaps() {
     $rs = $db->query("SELECT `postid` FROM `#@_post` WHERE `type`='page' ORDER BY `postid` DESC LIMIT 50000 OFFSET 0;");
     while ($data = $db->fetch($rs)) {
         $post = post_get($data['postid']);
-        $post['path'] = post_get_path($post['sortid'],$post['path']);
+        $post['path'] = post_get_path($post['listid'],$post['path']);
         $path = HTTP_HOST.ROOT.$post['path'];
         $urls.= sprintf('<url><loc>%1$s</loc><changefreq>daily</changefreq><lastmod>%2$s</lastmod><priority>0.9</priority></url>', xmlencode($path), W3cDate($post['edittime']?$post['edittime']:$post['datetime']));
     }
@@ -288,11 +288,11 @@ function publish_page_sitemaps() {
 /**
  * 发布列表 google sitemaps
  *
- * @param int $sortid
+ * @param int $listid
  * @return int
  */
-function publish_list_sitemaps($sortid) {
-    $db  = get_conn(); $taxonomy = taxonomy_get($sortid);
+function publish_list_sitemaps($listid) {
+    $db  = get_conn(); $taxonomy = taxonomy_get($listid);
     // 载入模版
     $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.$taxonomy['list']);
     // 标签块信息
@@ -301,7 +301,7 @@ function publish_list_sitemaps($sortid) {
         // 每页条数
         $number = tpl_get_attr($block['tag'], 'number');
         // 文章总数
-        $count  = $db->result(sprintf("SELECT COUNT(`objectid`) FROM `#@_term_relation` WHERE `taxonomyid`=%d;", esc_sql($sortid)));
+        $count  = $db->result(sprintf("SELECT COUNT(`objectid`) FROM `#@_term_relation` WHERE `taxonomyid`=%d;", esc_sql($listid)));
         // 总页数
         $pages = ceil($count/$number); $pages = ((int)$pages == 0) ? 1 : $pages;
     }
@@ -312,10 +312,10 @@ function publish_list_sitemaps($sortid) {
         $urls.= sprintf('<url><loc>%1$s</loc><changefreq>daily</changefreq><lastmod>%2$s</lastmod><priority>0.5</priority></url>', xmlencode($path), W3cDate());
     }
     // 文章页
-    $rs  = $db->query("SELECT `postid` FROM `#@_post` WHERE `sortid`=%d AND `type`='post' ORDER BY `postid` DESC LIMIT %d OFFSET 0;", $sortid, 50000-$pages);
+    $rs  = $db->query("SELECT `postid` FROM `#@_post` WHERE `listid`=%d AND `type`='post' ORDER BY `postid` DESC LIMIT %d OFFSET 0;", $listid, 50000-$pages);
     while ($data = $db->fetch($rs)) {
         $post = post_get($data['postid']);
-        $post['path'] = post_get_path($post['sortid'],$post['path']);
+        $post['path'] = post_get_path($post['listid'],$post['path']);
         // 文件不保存在本目录下的文件不加入索引
         if (strncmp($post['path'], $taxonomy['path'], strlen($taxonomy['path'])) !== 0) continue;
         $path = HTTP_HOST.ROOT.$post['path'];
