@@ -56,6 +56,8 @@ class Template {
         $html = preg_replace('/<title>/isU',"<meta name=\"generator\" content=\"LazyCMS ".LAZY_VERSION."\" />\n\${0}",$html);
         // 格式化图片、css、js路径
         $html = preg_replace('/(<(((script|link|img|input|embed|object|base|area|map|table|td|th|tr).+?(src|href|background))|((param).+?(src|value)))=([^\/]+?))((images|scripts)\/.{0,}?\>)/i','${1}'.ROOT.system_themes_path().'/${10}',$html);
+        // TODO 判断模版里是否有php标签，如果有，则编译成预编译代码
+        
         return $html;
     }
     /**
@@ -115,6 +117,14 @@ class Template {
             $this->_vars[strtolower($key)] = $this->encode($val);
         }
         return true;
+    }
+    /**
+     * 取得所有变量
+     *
+     * @return array
+     */
+    function get_vars() {
+        return $this->_vars;
     }
     /**
      * 取得变量
@@ -229,12 +239,29 @@ class Template {
      * @param  $html
      * @return mixed
      */
-    function process_blocks($html, $blocks=null) {
+    function process_blocks($html) {
         // 取得所有块标签
-        $blocks = $blocks===null ? $this->get_blocks($html) : $blocks;
+        $blocks = $this->get_blocks($html);
         // 处理所有标签
         foreach ($blocks as $block) {
             $html = str_replace($block['tag'], $this->apply_plugins($block['name'], $block['tag'], $block), $html);
+        }
+        return $html;
+    }
+    /**
+     * 处理子标签
+     *
+     * @param string $html
+     * @param array $subs
+     * @param array $vars
+     * @return string
+     */
+    function parse_subs($html, $subs, $vars) {
+        foreach($subs as $block) {
+            $result = $this->apply_plugins($block['name'], $block['tag'], $block, $vars);
+            $guid = guid($block['tag']);
+            $html = str_replace($block['tag'], '{$'.$guid.'}' , $html);
+            $this->set_var($guid, $result);
         }
         return $html;
     }
@@ -267,20 +294,6 @@ class Template {
         return $this->decode($html);
     }
     /**
-     * 处理子标签
-     *
-     * @param string $html
-     * @param array $subs
-     * @param array $vars
-     * @return string
-     */
-    function parse_sub($html, $subs, $vars) {
-        foreach($subs as $block) {
-            $html = str_replace($block['tag'], $this->apply_plugins($block['name'], $block['tag'], $block, $vars), $html);
-        }
-        return $html;
-    }
-    /**
      * 解析模版
      *
      * @param string $html
@@ -290,7 +303,7 @@ class Template {
      */
     function parse($html, $block=null, $vars=null) {
         if ($block && isset($block['sub']))
-            $html = $this->parse_sub($html, $block, $vars);
+            $html = $this->parse_subs($html, $block['sub'], $vars);
         
         $html = $this->process_blocks($html);
         $html = $this->process_vars($html);
@@ -451,27 +464,29 @@ function tpl_get_var($key, $tpl=null) {
     return $tpl->get_var($key);
 }
 /**
+ * 取得所有变量
+ *
+ * @param object $tpl
+ * @return array
+ */
+function tpl_get_vars($tpl=null) {
+    $tpl = _tpl_get_object($tpl);
+    return $tpl->get_vars();
+}
+/**
  * 解析模版
  *
  * @param string $html
  * @param array $block
- * @param array $vars
  * @param object $tpl
  * @return mixed|string
  */
-function tpl_parse($html, $block=null, $vars=null, $tpl=null) {
-    $args = func_get_args();
-    $num  = func_num_args();
-    for ($i = 1; $i < $num; $i++) {
-        if (is_object($args[$i]) && get_class($args[$i])=='Template') {
-            if ($i == 1 ) $block = null;
-            if ($i == 2 ) $vars = null;
-            $tpl = $args[$i];
-            break;
-        }
+function tpl_parse($html, $block=null, $tpl=null) {
+    if (is_object($block) && get_class($block)=='Template') {
+        $tpl = $block; $block = null;
     }
     $tpl = _tpl_get_object($tpl);
-    return $tpl->parse($html, $block, $vars);
+    return $tpl->parse($html, $block, $tpl->get_vars());
 }
 /**
  * 加载模版文件

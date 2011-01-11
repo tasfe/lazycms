@@ -328,21 +328,6 @@ function taxonomy_get_relation($type, $objectid) {
     return $result;
 }
 /**
- * 获取关键词
- *
- * @param array $keywords
- * @param bool $isjoin
- * @return array|string
- */
-function taxonomy_get_keywords($keywords, $isjoin=false) {
-    $result = array();
-    foreach((array)$keywords as $taxonomyid) {
-        $taxonomy = taxonomy_get($taxonomyid);
-        $result[$taxonomyid] = str_replace(chr(44), '&#44;', $taxonomy['name']);
-    }
-    return $isjoin ? implode(',', $result) : $result;
-}
-/**
  * 建立分类关系
  *
  * @param  $type
@@ -717,7 +702,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                         'content'  => $content,
                         'date'     => $post['datetime'],
                         'edittime' => $post['edittime'],
-                        'keywords' => taxonomy_get_keywords($post['keywords']),
+                        'keywords' => post_get_taxonomy($post['keywords']),
                         'description' => $post['description'],
                     );
                     // 设置分类变量
@@ -741,7 +726,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                         }
                     }
                     // 解析变量
-                    $inner.= tpl_parse($block['inner'], $block, get_defined_vars()); $i++;
+                    $inner.= tpl_parse($block['inner'], $block); $i++;
                 }
             } else {
                 $inner = __('The page is in the making, please visit later ...');
@@ -765,7 +750,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
             'count'    => $taxonomy['count'],
             'guide'    => system_category_guide($taxonomy['taxonomyid']),
             'title'    => $taxonomy['name'],
-            'keywords' => taxonomy_get_keywords($taxonomy['keywords']),
+            'keywords' => post_get_taxonomy($taxonomy['keywords']),
             'description' => $taxonomy['description'],
         ));
         // 设置自定义字段

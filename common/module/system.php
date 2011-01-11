@@ -24,9 +24,11 @@ func_add_callback('tpl_add_plugin', array(
     'system_tpl_plugin',
     'system_tpl_list_plugin',
     'system_tpl_comments_plugin',
+    'system_tpl_comments_contents_plugin',
     'system_tpl_categories_plugin',
     'system_tpl_archives_plugin',
-    'system_tpl_tags_plugin',
+    'system_tpl__tags_plugin',
+
 ));
 // 添加 CSS
 func_add_callback('loader_add_css', array(
@@ -344,7 +346,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
                 'content'  => $content,
                 'date'     => $post['datetime'],
                 'edittime' => $post['edittime'],
-                'keywords' => taxonomy_get_keywords($post['keywords']),
+                'keywords' => post_get_taxonomy($post['keywords']),
                 'description' => $post['description'],
             );
             // 设置分类变量
@@ -367,7 +369,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
                 }
             }
             // 解析标签
-            $result.= tpl_parse($inner, $block, get_defined_vars(), $tpl);
+            $result.= tpl_parse($inner, $block, $tpl);
             $i++;
         }
     }
@@ -382,24 +384,42 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
  * @param array $vars
  * @return string|null
  */
-function system_tpl_tags_plugin($tag_name,$tag,$block,$vars) {
+function system_tpl__tags_plugin($tag_name,$tag,$block,$vars) {
     if ($tag_name != 'tags') return null;
     $result   = null;
-    $keywords = $vars['post']['keywords'];
+    $keywords = isset($vars['keywords']) ? $vars['keywords'] : null;
     if ($keywords) {
         $tpl = tpl_init('post_list_tags');
         $block['inner'] = tpl_get_block_inner($block);
-        $keywords       = post_get_taxonomy($keywords);
-        foreach($keywords as $tag) {
+        foreach($keywords as $id=>$tag) {
             tpl_clean($tpl);
             tpl_set_var(array(
-                'name' => $tag['name'],
-                'path' => ROOT.'search.php?t=tags&q='.$tag['name'],
+                'tagid' => $id,
+                'name'  => $tag,
+                'path'  => ROOT.'search.php?t=tags&q='.rawurlencode($tag),
             ), $tpl);
             $result.= tpl_parse($block['inner'], $tpl);
         }
     }
     return $result;
+}
+/**
+ * 处理评论
+ *
+ * @param string $tag_name
+ * @param string $tag
+ * @param array $block
+ * @param array $vars
+ * @return string|null
+ */
+function system_tpl_comments_contents_plugin($tag_name,$tag,$block,$vars) {
+    if (!instr($tag_name,'content,contents')) return null;
+    $inner = null;
+    if (isset($vars['postid']) && isset($vars['cmtid'])) {
+        $reply = comment_get_trees($vars['postid'], $vars['cmtid']);
+        $inner = $reply ? comment_parse_reply($reply, $block) : '';
+    }
+    return $inner;
 }
 /**
  * 处理分类
@@ -438,7 +458,7 @@ function system_tpl_categories_plugin($tag_name,$tag,$block) {
                     tpl_set_var('list.'.$k, $v, $tpl);
                 }
             }
-            $result.= tpl_parse($inner, $block, get_defined_vars(), $tpl);
+            $result.= tpl_parse($inner, $block, $tpl);
         }
     }
     return $result;
@@ -483,7 +503,7 @@ function system_tpl_archives_plugin($tag_name,$tag,$block) {
             );
             tpl_clean($tpl);
             tpl_set_var($vars, $tpl);
-            $result.= tpl_parse($inner, $block, get_defined_vars(), $tpl);
+            $result.= tpl_parse($inner, $block, $tpl);
         }
     }
     return $result;
@@ -552,7 +572,7 @@ function system_tpl_comments_plugin($tag_name,$tag,$block) {
                 'agent'   => $data['agent'],
                 'date'    => $data['date'],
             ), $tpl);
-            $result.= tpl_parse($inner, $block, get_defined_vars(), $tpl);
+            $result.= tpl_parse($inner, $block, $tpl);
             $i++;
         }
     }

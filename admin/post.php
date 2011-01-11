@@ -374,14 +374,14 @@ switch ($method) {
 
                 if ('post.php' == $php_file) {
                     $categories = array();
-                    foreach(post_get_taxonomy($post['category']) as $category) {
-                        $categories[] = '<a href="'.PHP_FILE.'?category='.$category['taxonomyid'].'">'.$category['name'].'</a>';
+                    foreach(post_get_taxonomy($post['category']) as $taxonomyid=>$category) {
+                        $categories[] = '<a href="'.PHP_FILE.'?category='.$taxonomyid.'">'.$category.'</a>';
                     }
                     echo empty($categories) ? '<td>'.__('None').'</td>' : '<td>'.implode(',' , $categories).'</td>';
                 }
                 $tags = array();
-                foreach(post_get_taxonomy($post['keywords']) as $keyword) {
-                    $tags[] = '<a href="'.PHP_FILE.'?category='.$keyword['taxonomyid'].'">'.$keyword['name'].'</a>';
+                foreach(post_get_taxonomy($post['keywords']) as $keyid=>$keyword) {
+                    $tags[] = '<a href="'.PHP_FILE.'?category='.$keyid.'">'.$keyword.'</a>';
                 }
                 echo empty($tags) ? '<td>'.__('None').'</td>' : '<td>'.implode(',' , $tags).'</td>';
                 
@@ -497,7 +497,7 @@ function post_manage_page($action) {
     $content  = isset($_DATA['content'])?$_DATA['content']:null;
     $comments = isset($_DATA['comments'])?$_DATA['comments']:'Yes';
     $template = isset($_DATA['template'])?$_DATA['template']:null;
-    $keywords = isset($_DATA['keywords'])?taxonomy_get_keywords($_DATA['keywords'], true):null;
+    $keywords = isset($_DATA['keywords'])?post_get_taxonomy($_DATA['keywords'], true):null;
     $categories  = isset($_DATA['category'])?$_DATA['category']:array();
     $description = isset($_DATA['description'])?$_DATA['description']:null;
     

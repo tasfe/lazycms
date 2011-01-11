@@ -81,7 +81,7 @@ function post_edit($postid,$data) {
                         'path'  => ROOT.$post['path'],
                         'url'   => ROOT.$path,
                         'title' => $post['title'],
-                        'keywords' => taxonomy_get_keywords($post['keywords']),
+                        'keywords' => post_get_taxonomy($post['keywords']),
                         'description' => $post['description'],
                     ));
                     $html = tpl_parse($html);
@@ -197,19 +197,6 @@ function post_get($postid) {
     return null;
 }
 /**
- * 文章分类
- *
- * @param  $categories
- * @return array
- */
-function post_get_taxonomy($categories) {
-    $result = array();
-    foreach((array)$categories as $taxonomyid) {
-        $result[$taxonomyid] = taxonomy_get($taxonomyid);
-    }
-    return $result;
-}
-/**
  * 查询文章路径
  *
  * @param int $listid
@@ -235,6 +222,21 @@ function post_get_path($listid,$path,$prefix='') {
         $path = $prefix.$path;
     }
     return $path;
+}
+/**
+ * 获取关键词
+ *
+ * @param array $keywords
+ * @param bool $isjoin
+ * @return array|string
+ */
+function post_get_taxonomy($keywords, $isjoin=false) {
+    $result = array();
+    foreach((array)$keywords as $taxonomyid) {
+        $taxonomy = taxonomy_get($taxonomyid);
+        $result[$taxonomyid] = str_replace(chr(44), '&#44;', $taxonomy['name']);
+    }
+    return $isjoin ? implode(',', $result) : $result;
 }
 /**
  * 获取文章的详细信息
@@ -362,11 +364,12 @@ function post_create($postid,&$preid=0,&$nextid=0) {
         $block  = tpl_get_block($html,'tag,tags');
         if ($block && $post['keywords']) {
             $block['inner'] = tpl_get_block_inner($block);
-            foreach(post_get_taxonomy($post['keywords']) as $taxonomy) {
+            $keywords       = post_get_taxonomy($post['keywords']);
+            foreach($keywords as $taxonomy) {
                 tpl_clean();
                 tpl_set_var(array(
-                    'name' => $taxonomy['name'],
-                    'path' => ROOT.'search.php?t=tags&q='.$taxonomy['name'],
+                    'name' => $taxonomy,
+                    'path' => ROOT.'search.php?t=tags&q='.rawurlencode($taxonomy),
                 ));
                 $inner.= tpl_parse($block['inner']);
             }
@@ -375,7 +378,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
             // 把标签块替换成变量标签
             $html = str_replace($block['tag'], '{$'.$b_guid.'}', $html);
         }
-        
+
         $vars = array(
             'postid'   => $post['postid'],
             'userid'   => $post['userid'],
@@ -384,7 +387,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
             'digg'     => $post['digg'],
             'date'     => $post['datetime'],
             'edittime' => $post['edittime'],
-            'keywords' => taxonomy_get_keywords($post['keywords']),
+            'keywords' => post_get_taxonomy($post['keywords']),
             'prepage'  => post_prepage($post['listid'],$post['postid'],$preid),
             'nextpage' => post_nextpage($post['listid'],$post['postid'],$nextid),
             'cmt_state'    => $post['comments'],

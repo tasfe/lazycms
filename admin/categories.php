@@ -335,7 +335,7 @@ function category_manage_page($action) {
     $list   = isset($_SORT['list']) ? $_SORT['list'] : 'list'.$suffix;
     $page   = isset($_SORT['page']) ? $_SORT['page'] : ($pmodel ? null : 'default' . $suffix);
     $models = model_gets('Category', 'enabled');
-    $keywords = isset($_SORT['keywords']) ? taxonomy_get_keywords($_SORT['keywords'], true) : null;
+    $keywords = isset($_SORT['keywords']) ? post_get_taxonomy($_SORT['keywords'], true) : null;
     $description = isset($_SORT['description']) ? $_SORT['description'] : null;
     echo '<div class="wrap">';
     echo    '<h2>' . system_head('title') . '</h2>';

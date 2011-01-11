@@ -246,11 +246,11 @@ function comment_create($postid) {
                 tpl_set_var(array(
                     'guide'    => $guide ? $guide.' &gt;&gt; '.$title : $title,
                     'title'    => $title,
-                    'keywords' => taxonomy_get_keywords($post['keywords']),
+                    'keywords' => post_get_taxonomy($post['keywords']),
                     'description' => $post['description'],
                 ));
 
-                $html = tpl_parse($html, $block, get_defined_vars());
+                $html = tpl_parse($html, $block);
                 // 生成的文件路径
                 $file = ABS_PATH.'/'.$post['cmt_path'];
                 // 创建目录
@@ -291,6 +291,7 @@ function comment_create($postid) {
                     tpl_clean();
                     tpl_set_var(array(
                         'zebra'   => ($i % ($zebra + 1)) ? '0' : '1',
+                        'postid'  => $post['postid'],
                         'cmtid'   => $data['cmtid'],
                         'avatar'  => get_avatar($data['mail'], 16, 'mystery'),
                         'author'  => $data['author'] ? $data['author'] : __('Anonymous'),
@@ -302,26 +303,8 @@ function comment_create($postid) {
                         'agent'   => $data['agent'],
                         'date'    => $data['date'],
                     ));
-                    // TODO 解析二级内嵌标签
-                    if (isset($block['sub'])) {
-                        foreach ($block['sub'] as $sblock) {
-                            $sblock['name'] = strtolower($sblock['name']);
-                            switch($sblock['name']) {
-                                // 解析tags
-                                case 'content': case 'contents':
-                                    $c_reply = comment_get_trees($post['postid'], $data['cmtid']);
-                                    $c_inner = $c_reply ? comment_parse_reply($c_reply, $sblock) : '';
-                                    // 生成标签块的唯一ID
-                                    $c_guid = guid($sblock['tag']);
-                                    // 把标签块替换成变量标签
-                                    $block['inner'] = str_replace($sblock['tag'], '{$'.$c_guid.'}', $block['inner']);
-                                    tpl_set_var($c_guid, $c_inner);
-                                    break;
-                            }
-                        }
-                    }
                     // 解析变量
-                    $inner.= tpl_parse($block['inner'], $block, get_defined_vars()); $i++; $length++;
+                    $inner.= tpl_parse($block['inner'], $block); $i++; $length++;
                     // 分页
                     if (($i%$number)==0 || $i==$total) {
                         // 所需要的标签和数据都不存在，不需要生成页面
@@ -332,7 +315,7 @@ function comment_create($postid) {
                             'guide'    => $guide ? $guide.' &gt;&gt; '.$title : $title,
                             'title'    => $title,
                             'pagelist' => pages_list(ROOT.$basename.'_$'.$suffix, '!_$', $page, $pages, $length),
-                            'keywords' => taxonomy_get_keywords($post['keywords']),
+                            'keywords' => post_get_taxonomy($post['keywords']),
                             'description' => $post['description'],
                         ));
 
@@ -356,7 +339,7 @@ function comment_create($postid) {
             tpl_set_var(array(
                 'guide'    => $guide ? $guide.' &gt;&gt; '.$title : $title,
                 'title'    => $title,
-                'keywords' => taxonomy_get_keywords($post['keywords']),
+                'keywords' => post_get_taxonomy($post['keywords']),
                 'description' => $post['description'],
             ));
 

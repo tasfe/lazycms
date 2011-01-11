@@ -123,7 +123,7 @@ if ($tag && $block) {
                 }
             }
             // 解析标签
-            $inner.= tpl_parse($block['inner'], $block, get_defined_vars()); $i++;
+            $inner.= tpl_parse($block['inner'], $block); $i++;
         }
     } else {
         $inner = __('No record!');
