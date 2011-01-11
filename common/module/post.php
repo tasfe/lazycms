@@ -69,20 +69,19 @@ function post_edit($postid,$data) {
                 // 文章添加大于24小时
                 if (time()-$post['edittime'] > 86400) {
                     // 生成临时转向文件
-                    $post['keywords'] = taxonomy_get_keywords($post['keywords']);
                     if (strncmp($data['path'],'/',1) === 0) {
                         $path = ltrim($data['path'], '/');
                     } elseif ($post['listid'] > 0) {
                         $taxonomy = taxonomy_get($post['listid']);
                         $path = $taxonomy['path'].'/'.$data['path'];
                     }
-                    $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('Template-404')));
+                    $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('TPL-404')));
                     tpl_clean();
                     tpl_set_var(array(
                         'path'  => ROOT.$post['path'],
                         'url'   => ROOT.$path,
                         'title' => $post['title'],
-                        'keywords' => $post['keywords'],
+                        'keywords' => taxonomy_get_keywords($post['keywords']),
                         'description' => $post['description'],
                     ));
                     $html = tpl_parse($html);
@@ -367,7 +366,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
                 tpl_clean();
                 tpl_set_var(array(
                     'name' => $taxonomy['name'],
-                    'path' => ROOT.'tags.php?q='.$taxonomy['name'],
+                    'path' => ROOT.'search.php?t=tags&q='.$taxonomy['name'],
                 ));
                 $inner.= tpl_parse($block['inner']);
             }
@@ -379,7 +378,6 @@ function post_create($postid,&$preid=0,&$nextid=0) {
         
         $vars = array(
             'postid'   => $post['postid'],
-            'listid'   => $post['listid'],
             'userid'   => $post['userid'],
             'author'   => $post['author'],
             'views'    => sprintf($views,'true'),
@@ -394,13 +392,17 @@ function post_create($postid,&$preid=0,&$nextid=0) {
             'cmt_replyurl' => ROOT.'common/gateway.php?func=post_send_comment&postid='.$post['postid'],
             'cmt_listsurl' => ROOT.$post['cmt_path'],
             'description'  => $post['description'],
-            // 内部使用的变量，不能被当作标签输出
-            '_keywords'    => $post['keywords'],
         );
         // 设置分类变量
         if (isset($post['list'])) {
+            $vars['listid']   = $post['list']['taxonomyid'];
             $vars['listname'] = $post['list']['name'];
             $vars['listpath'] = ROOT.$post['list']['path'].'/';
+            if (isset($post['list']['meta'])) {
+                foreach((array)$post['list']['meta'] as $k=>$v) {
+                    $vars['list.'.$k] = $v;
+                }
+            }
         }
         // 清理数据
         tpl_clean();

@@ -36,7 +36,8 @@
         <div class="toobar">
             <a href="{$listpath}" title="{$listname}">类别：{$listname}</a> |
             <a href="{$path}#cmt_list">评论({$comment})</a> |
-            <a href="{$path}">浏览({$views})</a>
+            <a href="{$path}">浏览({$views})</a> |
+            <span class="tags">标签为 {tags}<a href="{$inst}search.php?t=tags&q={$name}" title="{$name}">{$name}</a>{/tags}</span>
         </div>
         {/list}
         <br />

@@ -73,12 +73,13 @@ class Template {
      * @param string $tag_name
      * @param string $tag
      * @param array $block 标签信息，嵌套标签需要传
+     * @param array $vars  导入的变量
      * @return mixed
      */
-    function apply_plugins($tag_name,$tag,$block=null) {
+    function apply_plugins($tag_name,$tag,$block=null,$vars=null) {
         $result = null; $tag_name = strtolower($tag_name);
         foreach ((array)$this->_plugins as $func) {
-            $result = call_user_func($func,$tag_name,$tag,$block);
+            $result = call_user_func($func,$tag_name,$tag,$block,$vars);
             if (null !== $result) break;
         }
         return $result;
@@ -228,12 +229,12 @@ class Template {
      * @param  $html
      * @return mixed
      */
-    function process_blocks($html) {
+    function process_blocks($html, $blocks=null) {
         // 取得所有块标签
-        $blocks = $this->get_blocks($html);
+        $blocks = $blocks===null ? $this->get_blocks($html) : $blocks;
         // 处理所有标签
         foreach ($blocks as $block) {
-            $html = str_replace($block['tag'],$this->apply_plugins($block['name'],$block['tag'],$block),$html);
+            $html = str_replace($block['tag'], $this->apply_plugins($block['name'], $block['tag'], $block), $html);
         }
         return $html;
     }
@@ -266,12 +267,31 @@ class Template {
         return $this->decode($html);
     }
     /**
+     * 处理子标签
+     *
+     * @param string $html
+     * @param array $subs
+     * @param array $vars
+     * @return string
+     */
+    function parse_sub($html, $subs, $vars) {
+        foreach($subs as $block) {
+            $html = str_replace($block['tag'], $this->apply_plugins($block['name'], $block['tag'], $block, $vars), $html);
+        }
+        return $html;
+    }
+    /**
      * 解析模版
      *
      * @param string $html
-     * @return mixed
+     * @param array $block
+     * @param array $vars
+     * @return mixed|string
      */
-    function parse($html) {
+    function parse($html, $block=null, $vars=null) {
+        if ($block && isset($block['sub']))
+            $html = $this->parse_sub($html, $block, $vars);
+        
         $html = $this->process_blocks($html);
         $html = $this->process_vars($html);
         return $html;
@@ -296,16 +316,16 @@ class Template {
         }
         // datemode
         $date = $this->get_attr($tag,'mode');
-        if (strlen($date) > 0 && is_numeric($value)) {
+        if (strlen($date) > 0 && (is_numeric($value) || $value = strtotime($value))) {
             switch (strval($date)) {
                 case '0':
-                    $result = date('Y-n-j G:i:s',$value);
+                    $result = date('Y-n-j G:i:s', $value);
                     break;
                 case '1':
-                    $result = date('Y-m-d H:i:s',$value);
+                    $result = date('Y-m-d H:i:s', $value);
                     break;
                 default:
-                    $result = date($date,$value);
+                    $result = date($date, $value);
                     break;
             }
         }
@@ -431,15 +451,27 @@ function tpl_get_var($key, $tpl=null) {
     return $tpl->get_var($key);
 }
 /**
- * 解析模版变量
+ * 解析模版
  *
  * @param string $html
+ * @param array $block
+ * @param array $vars
  * @param object $tpl
- * @return string
+ * @return mixed|string
  */
-function tpl_parse($html, $tpl=null) {
+function tpl_parse($html, $block=null, $vars=null, $tpl=null) {
+    $args = func_get_args();
+    $num  = func_num_args();
+    for ($i = 1; $i < $num; $i++) {
+        if (is_object($args[$i]) && get_class($args[$i])=='Template') {
+            if ($i == 1 ) $block = null;
+            if ($i == 2 ) $vars = null;
+            $tpl = $args[$i];
+            break;
+        }
+    }
     $tpl = _tpl_get_object($tpl);
-    return $tpl->parse($html);
+    return $tpl->parse($html, $block, $vars);
 }
 /**
  * 加载模版文件
@@ -474,17 +506,6 @@ function tpl_add_plugin($funcs) {
         }
     }
     return false;
-}
-/**
- * 使用插件
- *
- * @param string $tag_name
- * @param string $tag
- * @return mixed
- */
-function tpl_apply_plugins($tag_name, $tag) {
-    $tpl = _tpl_get_object();
-    return $tpl->apply_plugins($tag_name, $tag);
 }
 /**
  * 取得单个标签块

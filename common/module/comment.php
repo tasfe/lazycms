@@ -219,7 +219,7 @@ function comment_create($postid) {
         $guide = system_category_guide($post['listid']);
         $title = sprintf(__('Comment: %s'), $post['title']);
         // 加载模版
-        $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('Template-Comments')));
+        $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('TPL-Comments')));
         // 解析分页标签
         if (stripos($html,'{pagelist') !== false) {
             $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU','{$pagelist}', $html);
@@ -250,7 +250,7 @@ function comment_create($postid) {
                     'description' => $post['description'],
                 ));
 
-                $html = tpl_parse($html);
+                $html = tpl_parse($html, $block, get_defined_vars());
                 // 生成的文件路径
                 $file = ABS_PATH.'/'.$post['cmt_path'];
                 // 创建目录
@@ -302,7 +302,7 @@ function comment_create($postid) {
                         'agent'   => $data['agent'],
                         'date'    => $data['date'],
                     ));
-                    // 解析二级内嵌标签
+                    // TODO 解析二级内嵌标签
                     if (isset($block['sub'])) {
                         foreach ($block['sub'] as $sblock) {
                             $sblock['name'] = strtolower($sblock['name']);
@@ -321,7 +321,7 @@ function comment_create($postid) {
                         }
                     }
                     // 解析变量
-                    $inner.= tpl_parse($block['inner']); $i++; $length++;
+                    $inner.= tpl_parse($block['inner'], $block, get_defined_vars()); $i++; $length++;
                     // 分页
                     if (($i%$number)==0 || $i==$total) {
                         // 所需要的标签和数据都不存在，不需要生成页面

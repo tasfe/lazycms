@@ -26,6 +26,7 @@ func_add_callback('tpl_add_plugin', array(
     'system_tpl_comments_plugin',
     'system_tpl_categories_plugin',
     'system_tpl_archives_plugin',
+    'system_tpl_tags_plugin',
 ));
 // 添加 CSS
 func_add_callback('loader_add_css', array(
@@ -170,7 +171,8 @@ function system_tpl_plugin($tag_name,$tag) {
             $result  = 'http://ajax.googleapis.com/ajax/libs/jquery/'.$version.'/jquery.min.js';
             break;
         case '$keywords': case '$keyword':
-            $result = tpl_get_var('keywords');
+            $keywords   = tpl_get_var('keywords');
+            $result     = implode(',', $keywords);
             break;
         case '$description':
             $result = tpl_get_var('description');
@@ -299,10 +301,10 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
             }
             break;
         case 'related':
-            $_keywords = tpl_get_var('_keywords');
-            if ($_keywords) {
+            $keywords = tpl_get_var('keywords');
+            if ($keywords) {
                 $postid = tpl_get_var('postid');
-                $ids = implode(',', $_keywords);
+                $ids = implode(',', array_keys($keywords));
                 $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_term_relation` AS `tr` LEFT JOIN `#@_post` AS `p` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' AND `tr`.`taxonomyid` IN(%s) AND `p`.`postid`<>%d LIMIT %d OFFSET 0;",$ids,$postid,$number);
             } else {
                 $sql = null;
@@ -332,7 +334,6 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
             $vars = array(
                 'zebra'    => ($i % ($zebra + 1)) ? '0' : '1',
                 'postid'   => $post['postid'],
-                'listid'   => $post['listid'],
                 'userid'   => $post['userid'],
                 'author'   => $post['author'],
                 'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
@@ -348,8 +349,14 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
             );
             // 设置分类变量
             if (isset($post['list'])) {
+                $vars['listid']   = $post['list']['taxonomyid'];
                 $vars['listname'] = $post['list']['name'];
                 $vars['listpath'] = ROOT.$post['list']['path'].'/';
+                if (isset($post['list']['meta'])) {
+                    foreach((array)$post['list']['meta'] as $k=>$v) {
+                        $vars['list.'.$k] = $v;
+                    }
+                }
             }
             tpl_clean($tpl);
             tpl_set_var($vars, $tpl);
@@ -359,41 +366,37 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
                     tpl_set_var('post.'.$k, $v, $tpl);
                 }
             }
-            // 解析二级内嵌标签
-            if (isset($block['sub'])) {
-                foreach ($block['sub'] as $sblock) {
-                    $sblock['name'] = strtolower($sblock['name']);
-                    switch($sblock['name']) {
-                        // 解析tags
-                        case 'tags':
-                            $t_inner = $t_guid = '';
-                            if ($post['keywords']) {
-                                $intpl = tpl_init('post_list_tags');
-                                $sblock['inner'] = $intpl->get_block_inner($sblock);
-                                foreach(post_get_taxonomy($post['keywords']) as $tt) {
-                                    tpl_clean($intpl);
-                                    tpl_set_var(array(
-                                        'name' => $tt['name'],
-                                        'path' => ROOT.'tags.php?q='.$tt['name'],
-                                    ), $intpl);
-                                    $t_inner.= tpl_parse($sblock['inner'], $intpl);
-                                }
-                                // 生成标签块的唯一ID
-                                $t_guid = guid($sblock['tag']);
-                                // 把标签块替换成变量标签
-                                $inner = str_replace($sblock['tag'], '{$'.$t_guid.'}', $inner);
-                            }
-                            tpl_set_var($t_guid, $t_inner, $tpl);
-                            break;
-                        // TODO 解析图片标签
-                        case 'images':
-                            $inner = str_replace($sblock['tag'],'',$inner);
-                            break;
-                    }
-                }
-            }
-            $result.= tpl_parse($inner, $tpl);
+            // 解析标签
+            $result.= tpl_parse($inner, $block, get_defined_vars(), $tpl);
             $i++;
+        }
+    }
+    return $result;
+}
+/**
+ * 处理tags 标签
+ *
+ * @param string $tag_name
+ * @param string $tag
+ * @param array $block
+ * @param array $vars
+ * @return string|null
+ */
+function system_tpl_tags_plugin($tag_name,$tag,$block,$vars) {
+    if ($tag_name != 'tags') return null;
+    $result   = null;
+    $keywords = $vars['post']['keywords'];
+    if ($keywords) {
+        $tpl = tpl_init('post_list_tags');
+        $block['inner'] = tpl_get_block_inner($block);
+        $keywords       = post_get_taxonomy($keywords);
+        foreach($keywords as $tag) {
+            tpl_clean($tpl);
+            tpl_set_var(array(
+                'name' => $tag['name'],
+                'path' => ROOT.'search.php?t=tags&q='.$tag['name'],
+            ), $tpl);
+            $result.= tpl_parse($block['inner'], $tpl);
         }
     }
     return $result;
@@ -432,15 +435,22 @@ function system_tpl_categories_plugin($tag_name,$tag,$block) {
             // 设置自定义字段
             if (isset($taxonomy['meta'])) {
                 foreach((array)$taxonomy['meta'] as $k=>$v) {
-                    tpl_set_var('sort.'.$k, $v, $tpl);
+                    tpl_set_var('list.'.$k, $v, $tpl);
                 }
             }
-            $result.= tpl_parse($inner, $tpl);
+            $result.= tpl_parse($inner, $block, get_defined_vars(), $tpl);
         }
     }
     return $result;
 }
-
+/**
+ * 文章存档
+ *
+ * @param string $tag_name
+ * @param string $tag
+ * @param array $block
+ * @return string|null
+ */
 function system_tpl_archives_plugin($tag_name,$tag,$block) {
     if (!instr($tag_name,'archives')) return null;
     // 实例化模版对象
@@ -457,7 +467,7 @@ function system_tpl_archives_plugin($tag_name,$tag,$block) {
         }
     }
     $db = get_conn(); $archives = array();
-    $rs = $db->query("SELECT FROM_UNIXTIME(`p`.`datetime`,'%Y-%m-%d') AS `date`, COUNT(DISTINCT(`p`.`postid`)) AS `count` FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' {$where} GROUP BY `date` ORDER BY `date` DESC;");
+    $rs = $db->query("SELECT FROM_UNIXTIME(`p`.`datetime`,'%Y-%m') AS `date`, COUNT(DISTINCT(`p`.`postid`)) AS `count` FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' {$where} GROUP BY `date` ORDER BY `date` DESC;");
     while ($data = $db->fetch($rs)) {
         $archives[] = $data;
     }
@@ -465,18 +475,15 @@ function system_tpl_archives_plugin($tag_name,$tag,$block) {
     $result = null;
     if ($archives) {
         $inner = tpl_get_block_inner($block);
-        if (stripos($inner, '{$name}')===false) {
-            // TODO 名称格式化
-        }
         foreach ($archives as $archive) {
             $vars = array(
-                'name'      => $archive['date'],
-                'path'      => ROOT.$archive['date'].'/',
-                'count'     => $archive['count'],
+                'name'  => $archive['date'],
+                'path'  => ROOT.'search.php?t=archives&q='.$archive['date'],
+                'count' => $archive['count'],
             );
             tpl_clean($tpl);
             tpl_set_var($vars, $tpl);
-            $result.= tpl_parse($inner, $tpl);
+            $result.= tpl_parse($inner, $block, get_defined_vars(), $tpl);
         }
     }
     return $result;
@@ -506,10 +513,9 @@ function system_tpl_comments_plugin($tag_name,$tag,$block) {
     // 处理类型
     switch($type) {
         case 'new':
-            $postid = tpl_get_var('postid', $tpl);
+            $postid = tpl_get_var('postid');
             $insql  = $postid ? sprintf(" AND `postid`=%d", esc_sql($postid)) : '';
             $sql    = "SELECT * FROM `#@_comments` WHERE `approved`='1' {$insql} ORDER BY `cmtid` DESC LIMIT {$number} OFFSET 0;";
-
             break;
         default:
             $sql = null;
@@ -546,143 +552,12 @@ function system_tpl_comments_plugin($tag_name,$tag,$block) {
                 'agent'   => $data['agent'],
                 'date'    => $data['date'],
             ), $tpl);
-            $result.= tpl_parse($inner, $tpl);
+            $result.= tpl_parse($inner, $block, get_defined_vars(), $tpl);
             $i++;
         }
     }
-    
     return $result;
 }
-/**
- * 标签
- *
- * @param string $tag
- * @return mixed
- */
-function system_tags($tag) {
-    $db = get_conn();
-    $inner  = $b_guid = '';
-    // 载入模版
-    $html   = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('Template-Tags')));
-    // 标签块信息
-    $block  = tpl_get_block($html,'post,list','list');
-    if ($tag && $block) {
-        // 每页条数
-        $number = tpl_get_attr($block['tag'],'number');
-        // 排序方式
-        $order  = tpl_get_attr($block['tag'],'order');
-        // 斑马线实现
-        $zebra  = tpl_get_attr($block['tag'],'zebra');
-        // 校验数据
-        $zebra  = validate_is($zebra,VALIDATE_IS_NUMERIC) ? $zebra : 0;
-        $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
-        $order  = instr(strtoupper($order),'ASC,DESC') ? $order : 'DESC';
-        // 设置每页显示数
-        pages_init($number);
-        // 显示Tags相关的文章列表
-        $term   = term_get_byname($tag);
-        $tid    = $db->result(sprintf("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `type`='post_tag' AND `termid`=%d", esc_sql($term['termid'])));
-        $sql    = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_term_relation` AS `tr` LEFT JOIN `#@_post` AS `p` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' AND `tr`.`taxonomyid`=%d ORDER BY `p`.`postid` %s", $tid, $order);
-        $result = pages_query($sql);
-        // 解析分页标签
-        if (stripos($html,'{pagelist') !== false) {
-            $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU',
-                pages_list(PHP_FILE.'?q='.rawurlencode($tag).'&page=$'),
-                $html
-            );
-        }
-        // 数据存在
-        if ($result) {
-            $i = 0;
-            // 取得标签块内容
-            $block['inner'] = tpl_get_block_inner($block);
-            while ($data = pages_fetch($result)) {
-                $post = post_get($data['postid']);
-                if (empty($post)) continue;
-                $post['list'] = taxonomy_get($post['listid']);
-                $post['path'] = post_get_path($post['listid'],$post['path']);
-                // 文章内容
-                if ($post['content'] && strpos($post['content'],'<!--pagebreak-->')!==false) {
-                    $contents = explode('<!--pagebreak-->', $post['content']);
-                    $content  = array_shift($contents);
-                } else {
-                    $content  = $post['content'];
-                }
-                // 设置文章变量
-                $vars = array(
-                    'zebra'    => ($i % ($zebra + 1)) ? '0' : '1',
-                    'postid'   => $post['postid'],
-                    'listid'   => $post['listid'],
-                    'userid'   => $post['userid'],
-                    'author'   => $post['author'],
-                    'title'    => $post['title'],
-                    'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
-                    'digg'     => $post['digg'],
-                    'path'     => ROOT.$post['path'],
-                    'content'  => $content,
-                    'datetime' => $post['datetime'],
-                    'edittime' => $post['edittime'],
-                    'keywords' => $post['keywords'],
-                    'description' => $post['description'],
-                );
-                // 设置分类变量
-                if (isset($post['list'])) {
-                    $vars['listname'] = $post['list']['name'];
-                    $vars['listpath'] = ROOT.$post['list']['path'].'/';
-                }
-                // 清理数据
-                tpl_clean();
-                tpl_set_var($vars);
-                // 设置自定义字段
-                if (isset($post['meta'])) {
-                    foreach((array)$post['meta'] as $k=>$v) {
-                        tpl_set_var('post.'.$k, $v);
-                    }
-                }
-                // 解析二级内嵌标签
-                if (isset($block['sub'])) {
-                    foreach ($block['sub'] as $sblock) {
-                        $sblock['name'] = strtolower($sblock['name']);
-                        switch($sblock['name']) {
-                            // TODO 解析图片标签
-                            case 'images':
-                                $block['inner'] = str_replace($sblock['tag'],'',$block['inner']);
-                                break;
-                        }
-                    }
-                }
-
-                // 解析变量
-                $inner.= tpl_parse($block['inner']); $i++;
-            }
-        } else {
-            $inner = __('No record!');
-        }
-        // 生成标签块的唯一ID
-        $b_guid = guid($block['tag']);
-        // 把标签块替换成变量标签
-        $html   = str_replace($block['tag'], '{$'.$b_guid.'}', $html);
-        // 清理模版内部变量
-        tpl_clean();
-        tpl_set_var($b_guid,$inner);
-        tpl_set_var(array(
-            'guide'    => 'Tags &gt;&gt; '.$tag,
-            'title'    => $tag,
-            'keywords' => $tag,
-        ));
-    } else {
-        if (stripos($html,'{pagelist') !== false) {
-            $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU', '', $html);
-        }
-        tpl_clean();
-        tpl_set_var(array(
-            'title'    => 'Tags',
-            'keywords' => 'Tags',
-        ));
-    }
-    return tpl_parse($html);    
-}
-
 if (!function_exists('system_category_guide')) :
 /**
  * 生成导航
@@ -1160,27 +1035,4 @@ function system_sitemaps($type,$inner) {
     $xml.= $inner;
     $xml.= '</'.$type.'>';
     return $xml;
-}
-/**
- * rewrite
- *
- * @return mixed|string
- */
-function system_gateway_rewrite() {
-    // 获取参数
-    $path   = isset($_GET['path']) ? substr('/'.rtrim(trim($_GET['path']),'/'), strlen(ROOT)) : null;
-    $paths  = parse_path($path);
-    $type   = isset($paths[0]) ? strtolower($paths[0]) : null;
-    $result = '';
-    switch($type) {
-        case 'tags':
-            $tag    = isset($_GET[$type]) ? $_GET[$type] : '';
-            $result = system_tags($tag);
-            break;
-        default:
-            header('HTTP/1.1 404 Not Found', true, 404);
-            redirect(ROOT, 3, __('Restricted access!'));
-            break;
-    }
-    return $result;
 }

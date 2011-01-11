@@ -22,11 +22,11 @@
         <div class="post">
             <h2><a href="{$path}" title="{$title}">{$title}</a></h2>
             <div class="entry-meta">发表于 <span class="date">{$date mode='Y年m月d日 H:i'}</span> 由 <span class="author">{$author}</span></div>
-            <div class="entry-content">{$content link="[$inst]tags.php?q=$" tags="5-10"}</div>
+            <div class="entry-content">{$content link="[$inst]search.php?t=tags&q=$" tags="5-10"}</div>
             <div class="entry-utility">
                 发表在 [<a href="{$listpath}" title="{$listname}">{$listname}</a>] |
                 <a href="{$path}#cmt_list">{$comment} 评论</a> |
-                <span class="tags">标签为 {tags}<a href="{$inst}tags.php?q={$name}" title="{$name}">{$name}</a>{/tags}</span>
+                <span class="tags">标签为 {tags}<a href="{$inst}search.php?t=tags&q={$name}" title="{$name}">{$name}</a>{/tags}</span>
             </div>
         </div>
         {/list}

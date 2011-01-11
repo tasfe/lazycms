@@ -330,16 +330,17 @@ function taxonomy_get_relation($type, $objectid) {
 /**
  * 获取关键词
  *
- * @param  $keywords
- * @return string
+ * @param array $keywords
+ * @param bool $isjoin
+ * @return array|string
  */
-function taxonomy_get_keywords($keywords) {
+function taxonomy_get_keywords($keywords, $isjoin=false) {
     $result = array();
     foreach((array)$keywords as $taxonomyid) {
         $taxonomy = taxonomy_get($taxonomyid);
-        $result[] = str_replace(chr(44), '&#44;', $taxonomy['name']);
+        $result[$taxonomyid] = str_replace(chr(44), '&#44;', $taxonomy['name']);
     }
-    return implode(',', $result);
+    return $isjoin ? implode(',', $result) : $result;
 }
 /**
  * 建立分类关系
@@ -706,7 +707,6 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                     $vars = array(
                         'zebra'    => ($i % ($zebra + 1)) ? '0' : '1',
                         'postid'   => $post['postid'],
-                        'listid'   => $post['listid'],
                         'userid'   => $post['userid'],
                         'author'   => $post['author'],
                         'title'    => $post['title'],
@@ -722,8 +722,14 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                     );
                     // 设置分类变量
                     if (isset($post['list'])) {
+                        $vars['listid']   = $post['list']['taxonomyid'];
                         $vars['listname'] = $post['list']['name'];
                         $vars['listpath'] = ROOT.$post['list']['path'].'/';
+                        if (isset($post['list']['meta'])) {
+                            foreach((array)$post['list']['meta'] as $k=>$v) {
+                                $vars['list.'.$k] = $v;
+                            }
+                        }
                     }
                     // 清理数据
                     tpl_clean();
@@ -734,42 +740,8 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                             tpl_set_var('post.'.$k, $v);
                         }
                     }
-                    // 解析二级内嵌标签
-                    if (isset($block['sub'])) {
-                        foreach ($block['sub'] as $sblock) {
-                            $sblock['name'] = strtolower($sblock['name']);
-                            switch($sblock['name']) {
-                                // 解析tags
-                                case 'tags':
-                                    $t_inner = $t_guid = '';
-                                    if ($post['keywords']) {
-                                        $tpl = tpl_init('taxonomy_tags');
-                                        $sblock['inner'] = tpl_get_block_inner($sblock);
-                                        foreach(post_get_taxonomy($post['keywords']) as $tt) {
-                                            tpl_clean($tpl);
-                                            tpl_set_var(array(
-                                                'name' => $tt['name'],
-                                                'path' => ROOT.'tags.php?q='.$tt['name'],
-                                            ), $tpl);
-                                            $t_inner.= tpl_parse($sblock['inner'], $tpl);
-                                        }
-                                        // 生成标签块的唯一ID
-                                        $t_guid = guid($sblock['tag']);
-                                        // 把标签块替换成变量标签
-                                        $block['inner'] = str_replace($sblock['tag'], '{$'.$t_guid.'}', $block['inner']);
-                                    }
-                                    tpl_set_var($t_guid, $t_inner);
-                                    break;
-                                // TODO 解析图片标签
-                                case 'images':
-                                    $block['inner'] = str_replace($sblock['tag'],'',$block['inner']);
-                                    break;
-                            }
-                        }
-                    }
-
                     // 解析变量
-                    $inner.= tpl_parse($block['inner']); $i++;
+                    $inner.= tpl_parse($block['inner'], $block, get_defined_vars()); $i++;
                 }
             } else {
                 $inner = __('The page is in the making, please visit later ...');
@@ -793,14 +765,13 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
             'count'    => $taxonomy['count'],
             'guide'    => system_category_guide($taxonomy['taxonomyid']),
             'title'    => $taxonomy['name'],
-            'content'  => isset($taxonomy['content']) ? $taxonomy['content'] : '',
             'keywords' => taxonomy_get_keywords($taxonomy['keywords']),
             'description' => $taxonomy['description'],
         ));
         // 设置自定义字段
         if (isset($taxonomy['meta'])) {
             foreach((array)$taxonomy['meta'] as $k=>$v) {
-                tpl_set_var('sort.'.$k, $v);
+                tpl_set_var('list.'.$k, $v);
             }
         }
         $html = tpl_parse($html);
