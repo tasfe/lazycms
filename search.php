@@ -24,130 +24,150 @@ include_modules();
 // 处理 PATH_INFO
 if (!empty($_SERVER['PATH_INFO']))
     parse_path(ltrim($_SERVER['PATH_INFO'], '/'));
+
 // 获取参数
-$t = isset($_REQUEST['t']) ? trim($_REQUEST['t']) : null;
-$q = isset($_REQUEST['q']) ? trim($_REQUEST['q']) : null;
-
-switch ($t) {
-    case 'tags':
-        break;
-    case 'search':
-        break;
-    case 'archives':
-        break;
-}
-
-$db = get_conn();
-$inner  = $b_guid = '';
+$t  = isset($_REQUEST['t']) ? trim($_REQUEST['t']) : null;
+$q  = isset($_REQUEST['q']) ? trim($_REQUEST['q']) : null;
 // 载入模版
-$html   = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('TPL-Search')));
-// 标签块信息
-$block  = tpl_get_block($html,'post,list','list');
-if ($tag && $block) {
-    // 每页条数
-    $number = tpl_get_attr($block['tag'],'number');
-    // 排序方式
-    $order  = tpl_get_attr($block['tag'],'order');
-    // 斑马线实现
-    $zebra  = tpl_get_attr($block['tag'],'zebra');
-    // 校验数据
-    $zebra  = validate_is($zebra,VALIDATE_IS_NUMERIC) ? $zebra : 0;
-    $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
-    $order  = instr(strtoupper($order),'ASC,DESC') ? $order : 'DESC';
-    // 设置每页显示数
-    pages_init($number);
-    // 显示Tags相关的文章列表
-    $term   = term_get_byname($tag);
-    $tid    = $db->result(sprintf("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `type`='post_tag' AND `termid`=%d", esc_sql($term['termid'])));
-    $sql    = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_term_relation` AS `tr` LEFT JOIN `#@_post` AS `p` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' AND `tr`.`taxonomyid`=%d ORDER BY `p`.`postid` %s", $tid, $order);
-    $result = pages_query($sql);
-    // 解析分页标签
-    if (stripos($html,'{pagelist') !== false) {
-        $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU',
-            pages_list(PHP_FILE.'?t='.rawurlencode($t).'&q='.rawurlencode($tag).'&page=$'),
-            $html
-        );
-    }
-    // 数据存在
-    if ($result) {
-        $i = 0;
-        // 取得标签块内容
-        $block['inner'] = tpl_get_block_inner($block);
-        while ($data = pages_fetch($result)) {
-            $post = post_get($data['postid']);
-            if (empty($post)) continue;
-            $post['list'] = taxonomy_get($post['listid']);
-            $post['path'] = post_get_path($post['listid'],$post['path']);
-            // 文章内容
-            if ($post['content'] && strpos($post['content'],'<!--pagebreak-->')!==false) {
-                $contents = explode('<!--pagebreak-->', $post['content']);
-                $content  = array_shift($contents);
-            } else {
-                $content  = $post['content'];
+$html  = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('TPL-Search')));
+if ($t && $q) {
+    $title    = esc_html($q);
+    $keywords = esc_html($q);
+    // 标签块信息
+    $block = tpl_get_block($html,'post,list','list');
+    if ($block) {
+        $db = get_conn(); $sql = null; $inner = $guid = '';
+        // 每页条数
+        $number = tpl_get_attr($block['tag'],'number');
+        // 排序方式
+        $order  = tpl_get_attr($block['tag'],'order');
+        // 斑马线实现
+        $zebra  = tpl_get_attr($block['tag'],'zebra');
+        // 校验数据
+        $zebra  = validate_is($zebra,VALIDATE_IS_NUMERIC) ? $zebra : 0;
+        $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
+        $order  = instr(strtoupper($order),'ASC,DESC') ? $order : 'DESC';
+        // 设置每页显示数
+        pages_init($number);
+        // 选择类型
+        switch ($t) {
+            case 'tags':
+                $guide  = __('Tags').' &gt;&gt; '.$title;
+                $term   = term_get_byname($q);
+                $tid    = $db->result(sprintf("SELECT `taxonomyid` FROM `#@_term_taxonomy` WHERE `type`='post_tag' AND `termid`=%d", esc_sql($term['termid'])));
+                $sql    = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_term_relation` AS `tr` LEFT JOIN `#@_post` AS `p` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' AND `tr`.`taxonomyid`=%d ORDER BY `p`.`postid` %s", $tid, $order);
+                break;
+            case 'search':
+                $guide = __('Search').' &gt;&gt; '.$title;
+                
+                break;
+            case 'archives':
+                $guide  = __('Archives').' &gt;&gt; '.$title;
+                $sql    = sprintf("SELECT DISTINCT(`p`.`postid`) AS `postid` FROM `#@_post` AS `p` LEFT JOIN `#@_term_relation` AS `tr` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' AND FROM_UNIXTIME(`p`.`datetime`,'%%Y-%%m')='%s' ORDER BY `p`.`postid` %s;", $q, $order);
+                break;
+        }
+        // sql
+        if ($sql) {
+            $result = pages_query($sql);
+            // 解析分页标签
+            if (stripos($html,'{pagelist') !== false) {
+                $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU',
+                    pages_list(PHP_FILE.'?t='.rawurlencode($t).'&q='.rawurlencode($q).'&page=$'),
+                    $html
+                );
             }
-            // 设置文章变量
-            $vars = array(
-                'zebra'    => ($i % ($zebra + 1)) ? '0' : '1',
-                'postid'   => $post['postid'],
-                'userid'   => $post['userid'],
-                'author'   => $post['author'],
-                'title'    => $post['title'],
-                'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
-                'comment'  => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment_count&postid='.$post['postid'].'"></script>',
-                'digg'     => $post['digg'],
-                'path'     => ROOT.$post['path'],
-                'content'  => $content,
-                'datetime' => $post['datetime'],
-                'edittime' => $post['edittime'],
-                'keywords' => $post['keywords'],
-                'description' => $post['description'],
-            );
-            // 设置分类变量
-            if (isset($post['list'])) {
-                $vars['listid']   = $post['list']['taxonomyid'];
-                $vars['listname'] = $post['list']['name'];
-                $vars['listpath'] = ROOT.$post['list']['path'].'/';
-                if (isset($post['list']['meta'])) {
-                    foreach((array)$post['list']['meta'] as $k=>$v) {
-                        $vars['list.'.$k] = $v;
+        } else {
+            $result = array();
+        }
+        // 数据存在
+        if ($result) {
+            $i = 0;
+            // 取得标签块内容
+            $block['inner'] = tpl_get_block_inner($block);
+            while ($data = pages_fetch($result)) {
+                $post = post_get($data['postid']);
+                if (empty($post)) continue;
+                $post['list'] = taxonomy_get($post['listid']);
+                $post['path'] = post_get_path($post['listid'],$post['path']);
+                // 文章内容
+                if ($post['content'] && strpos($post['content'],'<!--pagebreak-->')!==false) {
+                    $contents = explode('<!--pagebreak-->', $post['content']);
+                    $content  = array_shift($contents);
+                } else {
+                    $content  = $post['content'];
+                }
+                // 设置文章变量
+                $vars = array(
+                    'zebra'    => ($i % ($zebra + 1)) ? '0' : '1',
+                    'postid'   => $post['postid'],
+                    'userid'   => $post['userid'],
+                    'author'   => $post['author'],
+                    'title'    => $post['title'],
+                    'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
+                    'comment'  => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment_count&postid='.$post['postid'].'"></script>',
+                    'digg'     => $post['digg'],
+                    'path'     => ROOT.$post['path'],
+                    'content'  => $content,
+                    'datetime' => $post['datetime'],
+                    'edittime' => $post['edittime'],
+                    'keywords' => post_get_taxonomy($post['keywords']),
+                    'description' => $post['description'],
+                );
+                // 设置分类变量
+                if (isset($post['list'])) {
+                    $vars['listid']   = $post['list']['taxonomyid'];
+                    $vars['listname'] = $post['list']['name'];
+                    $vars['listpath'] = ROOT.$post['list']['path'].'/';
+                    if (isset($post['list']['meta'])) {
+                        foreach((array)$post['list']['meta'] as $k=>$v) {
+                            $vars['list.'.$k] = $v;
+                        }
                     }
                 }
-            }
-            // 清理数据
-            tpl_clean();
-            tpl_set_var($vars);
-            // 设置自定义字段
-            if (isset($post['meta'])) {
-                foreach((array)$post['meta'] as $k=>$v) {
-                    tpl_set_var('post.'.$k, $v);
+                // 清理数据
+                tpl_clean();
+                tpl_set_var($vars);
+                // 设置自定义字段
+                if (isset($post['meta'])) {
+                    foreach((array)$post['meta'] as $k=>$v) {
+                        tpl_set_var('post.'.$k, $v);
+                    }
                 }
+                // 解析标签
+                $inner.= tpl_parse($block['inner'], $block); $i++;
             }
-            // 解析标签
-            $inner.= tpl_parse($block['inner'], $block); $i++;
         }
-    } else {
-        $inner = __('No record!');
+        // 没数据
+        else {
+            $inner = __('No record!');
+        }
+        // 生成标签块的唯一ID
+        $guid = guid($block['tag']);
+        // 把标签块替换成变量标签
+        $html = str_replace($block['tag'], '{$'.$guid.'}', $html);
+        // 清理模版内部变量
+        tpl_clean();
+        tpl_set_var($guid, $inner);
     }
-    // 生成标签块的唯一ID
-    $b_guid = guid($block['tag']);
-    // 把标签块替换成变量标签
-    $html   = str_replace($block['tag'], '{$'.$b_guid.'}', $html);
-    // 清理模版内部变量
-    tpl_clean();
-    tpl_set_var($b_guid,$inner);
-    tpl_set_var(array(
-        'guide'    => 'Tags &gt;&gt; '.$tag,
-        'title'    => $tag,
-        'keywords' => $tag,
-    ));
-} else {
-    if (stripos($html,'{pagelist') !== false) {
-        $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU', '', $html);
+    // 模版标签不正确 
+    else {
+        $title = $guide = __('Template tag is not correct');
+        tpl_clean();
     }
-    tpl_clean();
-    tpl_set_var(array(
-        'title'    => 'Tags',
-        'keywords' => 'Tags',
-    ));
 }
+// 参数不正确
+else {
+    $title = $guide = __('Arguments is not correct');
+    tpl_clean();
+}
+// 分页标签还没解析
+if (stripos($html,'{pagelist') !== false) {
+    $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU', '', $html);
+}
+// 设置变量
+tpl_set_var(array(
+    'guide'    => $guide,
+    'title'    => $title,
+    'keywords' => $keywords,
+));
 echo tpl_parse($html);

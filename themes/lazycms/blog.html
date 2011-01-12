@@ -26,7 +26,7 @@
             <div class="entry-utility">
                 发表在 [<a href="{$listpath}" title="{$listname}">{$listname}</a>] |
                 <a href="{$path}#cmt_list">{$comment} 评论</a> |
-                <span class="tags">标签为 {tags}<a href="{$inst}search.php?t=tags&q={$name}" title="{$name}">{$name}</a>{/tags}</span>
+                <span class="tags">标签：{tags number="5"}<a href="{$inst}search.php?t=tags&q={$name}" title="{$name}">{$name}</a>{/tags}</span>
             </div>
         </div>
         {/list}

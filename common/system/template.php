@@ -275,19 +275,14 @@ class Template {
         if (preg_match_all('/\{\$([\w\.\-]++)\b[^\}]*+\}/',$html,$r)) {
             $tags = $r[1];
             foreach ($r[0] as $k => $tag) {
-                // 内部标签，不能被解析
-                if (!strncmp($tags[$k],'_',1)) {
-                    $value = null;
-                } else {
-                    // 应用插件解析
-                    $value = $this->apply_plugins('$'.$tags[$k], $tag);
-                    // 解析变量
-                    if (null === $value) {
-                        $value = $this->get_var($tags[$k]);
-                    }
-                    // 处理变量属性
-                    $value = $this->process_attr($value, $tag);
+                // 应用插件解析
+                $value = $this->apply_plugins('$'.$tags[$k], $tag);
+                // 解析变量
+                if (null === $value) {
+                    $value = $this->get_var($tags[$k]);
                 }
+                // 处理变量属性
+                $value = $this->process_attr($value, $tag);
                 $html  = str_replace($tag, $value, $html);
             }
         }
@@ -356,7 +351,7 @@ class Template {
                 case 'urlencode': case 'url':
                     $result = rawurlencode($result);
                     break;
-                case 'htmlencode':
+                case 'htmlencode': case 'html': 
                     $result = esc_html($result);
                     break;
             }

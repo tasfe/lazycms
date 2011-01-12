@@ -174,7 +174,7 @@ function system_tpl_plugin($tag_name,$tag) {
             break;
         case '$keywords': case '$keyword':
             $keywords   = tpl_get_var('keywords');
-            $result     = implode(',', $keywords);
+            $result     = is_array($keywords) ? implode(',', $keywords) : $keywords;
             break;
         case '$description':
             $result = tpl_get_var('description');
@@ -385,13 +385,16 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
  * @return string|null
  */
 function system_tpl__tags_plugin($tag_name,$tag,$block,$vars) {
-    if ($tag_name != 'tags') return null;
-    $result   = null;
+    if (!instr($tag_name,'tags,keywords')) return null;
+    $result   = null; $i = 1;
     $keywords = isset($vars['keywords']) ? $vars['keywords'] : null;
     if ($keywords) {
-        $tpl = tpl_init('post_list_tags');
+        $tpl    = tpl_init('post_list_tags');
+        $number = tpl_get_attr($tag,'number');
+        $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : null;
         $block['inner'] = tpl_get_block_inner($block);
         foreach($keywords as $id=>$tag) {
+            if ($number && $i > $number) break;
             tpl_clean($tpl);
             tpl_set_var(array(
                 'tagid' => $id,
@@ -399,6 +402,7 @@ function system_tpl__tags_plugin($tag_name,$tag,$block,$vars) {
                 'path'  => ROOT.'search.php?t=tags&q='.rawurlencode($tag),
             ), $tpl);
             $result.= tpl_parse($block['inner'], $tpl);
+            $i++;
         }
     }
     return $result;
