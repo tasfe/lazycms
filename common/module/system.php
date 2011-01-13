@@ -155,6 +155,11 @@ function system_tpl_plugin($tag_name,$tag) {
             break;
         case '$cms': case '$lazycms':
             $result = '<span id="lazycms">Powered by: <a href="http://lazycms.com/" style="font-weight:bold" target="_blank" title="LazyCMS">LazyCMS</a> '.LAZY_VERSION.'</span>';
+            /*$result.= '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=system_counter">';
+            if ($postid = tpl_get_var('postid'))
+                $result.= sprintf('var postid = %d;', $postid);
+            
+            $result.= '</script>';*/
             break;
         case '$guide':
             $name  = tpl_get_attr($tag,'name');
@@ -1059,4 +1064,8 @@ function system_sitemaps($type,$inner) {
     $xml.= $inner;
     $xml.= '</'.$type.'>';
     return $xml;
+}
+
+function system_gateway_counter() {
+    echo 'var scripts = document.getElementsByTagName("script"); eval(scripts[ scripts.length - 1 ].innerHTML);';
 }
