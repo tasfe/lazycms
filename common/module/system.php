@@ -28,7 +28,6 @@ func_add_callback('tpl_add_plugin', array(
     'system_tpl_categories_plugin',
     'system_tpl_archives_plugin',
     'system_tpl__tags_plugin',
-
 ));
 // 添加 CSS
 func_add_callback('loader_add_css', array(
@@ -154,12 +153,10 @@ function system_tpl_plugin($tag_name,$tag) {
             $result = C('Language');
             break;
         case '$cms': case '$lazycms':
+            tpl_set_arg('func', 'system_counter');
+            $query  = tpl_get_args(); $query = $query ? str_replace('%2C',',','?' . http_build_query($query)) : '';
             $result = '<span id="lazycms">Powered by: <a href="http://lazycms.com/" style="font-weight:bold" target="_blank" title="LazyCMS">LazyCMS</a> '.LAZY_VERSION.'</span>';
-            /*$result.= '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=system_counter">';
-            if ($postid = tpl_get_var('postid'))
-                $result.= sprintf('var postid = %d;', $postid);
-            
-            $result.= '</script>';*/
+            $result.= sprintf('<script type="text/javascript" src="'.ROOT.'common/gateway.php%s"></script>', $query);
             break;
         case '$guide':
             $name  = tpl_get_attr($tag,'name');
@@ -1025,6 +1022,35 @@ function system_editor_lang() {
     );
 }
 /**
+ * 添加统计函数
+ *
+ * @param string|array $type
+ * @param string $func
+ * @return bool
+ */
+function system_add_counter($type, $func=null) {
+    global $LC_tpl_counter; $_this = __FUNCTION__;
+    $LC_tpl_counter = empty($LC_tpl_counter) ? array() : $LC_tpl_counter;
+    if (is_array($type)) {
+        foreach ($type as $k=>$v) {
+            $_this($k, $v);
+        }
+    } else {
+        if (function_exists($func)) {
+            $LC_tpl_counter[$type] = $func;
+        }
+    }
+    return true;
+}
+/**
+ * 取得统计器
+ *
+ * @return array
+ */
+function system_get_counter() {
+    global $LC_tpl_counter; return $LC_tpl_counter;
+}
+/**
  * 取得PHPINFO
  *
  * @param int $info
@@ -1054,18 +1080,27 @@ function system_phpinfo($info = INFO_ALL) {
     return preg_replace_callback('%(<td class="v">)(.*?)(</td>)%i', '_system_phpinfo_v_callback', $output);
 }
 /**
+ * google sitemap
+ *
  * @param string $type  urlset,sitemapindex
  * @param string $inner
  * @return string
  */
-function system_sitemaps($type,$inner) {
+function system_sitemaps($type, $inner) {
     $xml = '<?xml version="1.0" encoding="UTF-8"?>';
     $xml.= '<'.$type.' xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
     $xml.= $inner;
     $xml.= '</'.$type.'>';
     return $xml;
 }
-
+/**
+ * 系统统计
+ *
+ * @return void
+ */
 function system_gateway_counter() {
-    echo 'var scripts = document.getElementsByTagName("script"); eval(scripts[ scripts.length - 1 ].innerHTML);';
+    $counter  = isset($_GET['counter']) ? $_GET['counter'] : null;
+    $callback = system_get_counter();
+    if (isset($callback[$counter]))
+        return call_user_func($callback[$counter]);
 }

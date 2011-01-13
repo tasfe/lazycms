@@ -18,7 +18,10 @@
  * +---------------------------------------------------------------------------+
  */
 defined('COM_PATH') or die('Restricted access!');
-
+//  添加统计器类型
+func_add_callback('system_add_counter', array(
+    'post_page' => 'post_counter'
+));
 /**
  * 添加文章
  *
@@ -359,9 +362,8 @@ function post_create($postid,&$preid=0,&$nextid=0) {
         }
         // 加载模版
         $html  = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html($post['template']));
-        $views = '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'&updated=%s"></script>';
         // 解析tags
-        $block  = tpl_get_block($html,'tag,tags');
+        $block = tpl_get_block($html,'tag,tags');
         if ($block && $post['keywords']) {
             $block['inner'] = tpl_get_block_inner($block);
             $keywords       = post_get_taxonomy($post['keywords']);
@@ -383,7 +385,9 @@ function post_create($postid,&$preid=0,&$nextid=0) {
             'postid'   => $post['postid'],
             'userid'   => $post['userid'],
             'author'   => $post['author'],
-            'views'    => sprintf($views,'true'),
+            'views'    => sprintf('<span id="lc_post_views_%d">0</span>', $post['postid']),
+            'comment'  => sprintf('<span id="lc_post_comment_%d">0</span>', $post['postid']),
+            'people'   => sprintf('<span id="lc_post_people_%d">0</span>', $post['postid']),
             'digg'     => $post['digg'],
             'date'     => $post['datetime'],
             'edittime' => $post['edittime'],
@@ -411,6 +415,10 @@ function post_create($postid,&$preid=0,&$nextid=0) {
         tpl_clean();
         tpl_set_var($b_guid,$inner);
         tpl_set_var($vars);
+        tpl_set_arg(array(
+            'counter' => 'post_page',
+            'postid'  => $post['postid'],
+        ));
         // 设置自定义字段
         if (isset($post['meta'])) {
             foreach((array)$post['meta'] as $k=>$v) {
@@ -440,7 +448,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
                 } else {
                     $path  = $basename.'_'.$page.$suffix;
                     $title = $post['title'].' ('.$page.')';
-                    tpl_set_var('views',sprintf($views,'false'));
+                    tpl_set_arg('updated', 'false');
                 }
 
                 tpl_set_var(array(
@@ -537,24 +545,27 @@ function post_nextpage($listid,$postid,&$nextid=0) {
     return $result;
 }
 /**
- * 显示浏览量
+ * 文章统计
  *
- * @return int|string
+ * @return string
  */
-function post_gateway_views() {
-    $postid  = isset($_REQUEST['postid'])  ? $_REQUEST['postid']  : 0;
-    $updated = isset($_REQUEST['updated']) ? $_REQUEST['updated'] : null;
+function post_counter() {
+    $postid = isset($_GET['postid'])  ? $_GET['postid']  : 0;
     if (post_get($postid)) {
         $db = get_conn();
-        $views = $db->result(sprintf("SELECT `views` FROM `#@_post` WHERE `postid`=%d",esc_sql($postid)));
-        if ($updated=='true' || $updated=='1') {
+        $views = $db->result(sprintf("SELECT `views` FROM `#@_post` WHERE `postid`=%d", esc_sql($postid)));
+        if ($updated!='false' && $updated!='0') {
             $views++; no_cache();
             $db->update('#@_post',array('views' => $views),array( 'postid' => $postid));
         }
     } else {
         $views = 0;
     }
-    return 'document.write('.esc_js($views).');';
+    header('Content-Type: text/javascript; charset=utf-8');
+    $html = sprintf("document.getElementById('lc_post_views_%1\$d') && (document.getElementById('lc_post_views_%1\$d').innerHTML = %2\$d);\n", $postid, $views);
+    $html.= sprintf("document.getElementById('lc_post_comment_%1\$d') && (document.getElementById('lc_post_comment_%1\$d').innerHTML = %2\$d);\n", $postid, comment_count($postid));
+    $html.= sprintf("document.getElementById('lc_post_people_%1\$d') && (document.getElementById('lc_post_people_%1\$d').innerHTML = %2\$d);\n", $postid, comment_people($postid));
+    return $html;
 }
 /**
  * 显示评论信息

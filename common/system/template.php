@@ -26,6 +26,7 @@ defined('COM_PATH') or die('Restricted access!');
  */
 class Template {
     var $_vars    = array();
+    var $_args    = array();
     var $_plugins = array();
     function __construct(){
         global $LC_tpl_plugins;
@@ -96,13 +97,57 @@ class Template {
         $this->_vars = array();
     }
     /**
+     * 设置参数
+     *
+     * @param string|array $field
+     * @param mixed $value
+     * @return bool
+     */
+    function set_arg($field, $value=null) {
+        // 空key不赋值
+        if (empty($field)) return true;
+        // 批量赋值
+    	if (is_array($field)) {
+            foreach ($field as $k=>$v) {
+                if (empty($k)) continue;
+                $this->set_arg($k, $v);
+    		}
+        }
+        // 单个赋值
+        else {
+            $count = count($this->_args[$field]);
+            if (isset($this->_args[$field]) && $count==1)
+                $this->_args[$field] = array($this->_args[$field], $value);
+            elseif (isset($this->_args[$field]) && $count>1)
+                $this->_args[$field][] = $value;
+            else
+                $this->_args[$field] = $value;
+        }
+        return true;
+    }
+    /**
+     * 取得变量
+     *
+     * @return array
+     */
+    function get_args() {
+        $result = array();
+        foreach($this->_args as $k=>$v) {
+            if (is_array($v) && !is_assoc($v))
+                $result[$k] = implode(',', $v);
+            else
+                $result[$k] = $v;
+        }
+        return $result;
+    }
+    /**
      * 设置变量
      *
      * @param string|array $key
      * @param mixed $val
      * @return bool
      */
-    function set_var($key,$val=null) {
+    function set_var($key, $val=null) {
         // 空key不赋值
         if (empty($key)) return true;
         // 批量赋值
@@ -484,14 +529,31 @@ function tpl_parse($html, $block=null, $tpl=null) {
     return $tpl->parse($html, $block, $tpl->get_vars());
 }
 /**
+ * 设置参数
+ *
+ * @param string|array $field
+ * @param mixed $value
+ * @return bool
+ */
+function tpl_set_arg($field, $value=null) {
+    return tpl_init()->set_arg($field, $value);
+}
+/**
+ * 取得所有参数
+ *
+ * @return array
+ */
+function tpl_get_args() {
+    return tpl_init()->get_args();
+}
+/**
  * 加载模版文件
  *
  * @param string $file
  * @return mixed
  */
 function tpl_loadfile($file) {
-    $tpl = _tpl_get_object();
-    return $tpl->load_file($file);
+    return tpl_init()->load_file($file);
 }
 /**
  * 添加插件
@@ -500,8 +562,7 @@ function tpl_loadfile($file) {
  * @return void
  */
 function tpl_add_plugin($funcs) {
-    global $LC_tpl_plugins;
-    $LC_tpl_plugins = empty($LC_tpl_plugins) ? array() : $LC_tpl_plugins;
+    global $LC_tpl_plugins; $LC_tpl_plugins = empty($LC_tpl_plugins) ? array() : $LC_tpl_plugins;
     if (is_array($funcs)) {
         foreach ($funcs as $func) {
             if (!in_array($func, $LC_tpl_plugins)) {
@@ -526,8 +587,7 @@ function tpl_add_plugin($funcs) {
  * @return array|null
  */
 function tpl_get_block($html,$tag_name,$type=null) {
-    $tpl = _tpl_get_object();
-    return $tpl->get_block($html,$tag_name,$type);
+    return tpl_init()->get_block($html,$tag_name,$type);
 }
 /**
  * 取得标签块内容
@@ -536,8 +596,7 @@ function tpl_get_block($html,$tag_name,$type=null) {
  * @return string
  */
 function tpl_get_block_inner($block) {
-    $tpl = _tpl_get_object();
-    return $tpl->get_block_inner($block);
+    return tpl_init()->get_block_inner($block);
 }
 /**
  * 取得属性
@@ -548,6 +607,5 @@ function tpl_get_block_inner($block) {
  * @return string
  */
 function tpl_get_attr($tag, $attr, $separator='=') {
-    $tpl = _tpl_get_object();
-    return $tpl->get_attr($tag, $attr,$separator);
+    return tpl_init()->get_attr($tag, $attr,$separator);
 }

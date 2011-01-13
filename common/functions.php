@@ -1012,14 +1012,11 @@ function func_add_callback() {
     $args = func_get_args();
     $func = array_shift($args);
     
-    if (function_exists($func)) {
-        $LC_func_callback[] = array(
-            'func' => $func,
-            'args' => $args,
-        );
-        return true;
-    }
-    return false;
+    $LC_func_callback[] = array(
+        'func' => $func,
+        'args' => $args,
+    );
+    return true;
 }
 /**
  * 头像
@@ -1550,7 +1547,7 @@ if (!function_exists('http_build_query')) {
                 $v = '0';
 
             if ( is_array($v) || is_object($v) )
-                array_push($ret,http_build_query($v, '', $sep, $k, $urlencode));
+                array_push($ret, http_build_query($v, '', $sep, $k, $urlencode));
             elseif ( $urlencode )
                 array_push($ret, $k.'='.urlencode($v));
             else
