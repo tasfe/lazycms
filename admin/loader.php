@@ -86,19 +86,21 @@ switch ($type) {
         		foreach ($loads[$js] as $src) {
         		    $index   = strrpos($src, '.');
         		    $src_min = substr($src, 0, $index).'.min'.substr($src, $index);
-        		    // 压缩文件存在
-        		    if (is_file($src_min)) {
-        		        $content = file_get_contents($src_min);
-        		    } else {
-        		        $content = jsmin(file_get_contents($src));
+                    // min文件是否存在
+                    $is_file = is_file($src_min);
+        		    // 读取文件
+        		    $content = file_get_contents($is_file ? $src_min : $src);
+                    // 替换系统常量
+        		    if (substr($src,-10)=='lazycms.js') {
+                        $content = preg_replace('/^(\\s*ADMIN).+/m',"$1: '".ADMIN."',",$content);
+                        $content = preg_replace('/^(\\s*ROOT).+/m',"$1: '".ROOT."',",$content);
         		    }
+                    // jsmin
+                    if (!$is_file && filesize($src) <= 50*1024) $content = jsmin($content);
                     $out.= "/* file:".rel_root($src)." */\n". $content . "\n\n";
         		}
         	}
         }
-        // 替换系统常量
-        $out = preg_replace('/^(\\s*ADMIN).+/m',"$1: '".ADMIN."',",$out);
-        $out = preg_replace('/^(\\s*ROOT).+/m',"$1: '".ROOT."',",$out);
 		break;
 }
 // 保存数据到缓存
