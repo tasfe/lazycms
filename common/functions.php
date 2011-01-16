@@ -369,11 +369,22 @@ function throw_error($errstr,$errno=E_LAZY_NOTICE,$errfile=null,$errline=0){
     return false;
 }
 /**
+ * jQuery
+ * 
+ * @param string $js
+ * @return string
+ */
+function jQuery($js) {
+    if (!headers_sent())
+        header('Content-Type: application/javascript; charset=utf-8');
+    return sprintf('jQuery && (function($) { %s })(jQuery);', $js);
+}
+/**
  * 输出ajax规范的json字符串
  *
- * @param  $code
- * @param  $data
- * @param  $eval
+ * @param string $code
+ * @param mixed $data
+ * @param string $eval
  * @return void
  */
 function ajax_echo($code,$data,$eval=null){

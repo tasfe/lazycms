@@ -132,7 +132,7 @@ func_add_callback('system_purview_add', array(
  * @param  $tag
  * @return mixed    null 说明没有解析成功，会继续
  */
-function system_tpl_plugin($tag_name,$tag) {
+function system_tpl_plugin($tag_name,$tag,$block,$vars) {
     switch ($tag_name) {
         case '$sitename':
             $result = C('SiteTitle');
@@ -154,19 +154,19 @@ function system_tpl_plugin($tag_name,$tag) {
             break;
         case '$cms': case '$lazycms':
             tpl_set_arg('func', 'system_counter');
-            $query  = tpl_get_args(); $query = $query ? str_replace('%2C',',','?' . http_build_query($query)) : '';
+            $query  = tpl_get_args(); $query = $query ? '?' . http_build_query($query) : '';
             $result = '<span id="lazycms">Powered by: <a href="http://lazycms.com/" style="font-weight:bold" target="_blank" title="LazyCMS">LazyCMS</a> '.LAZY_VERSION.'</span>';
             $result.= sprintf('<script type="text/javascript" src="'.ROOT.'common/gateway.php%s"></script>', $query);
             break;
         case '$guide':
             $name  = tpl_get_attr($tag,'name');
-            $guide = tpl_get_var('guide');
+            $guide = isset($vars['guide']) ? $vars['guide'] : null;
             if (!$name) $name = __('Home');
             $name = esc_html($name);
             if ($guide) {
                 $result = '<a href="'.ROOT.'" title="'.$name.'" class="first">'.$name.'</a> &gt;&gt; '.$guide;
             } else {
-                $result = '<a href="'.ROOT.'" title="'.$name.'" class="first">'.$name.'</a> &gt;&gt; '.tpl_get_var('title');
+                $result = '<a href="'.ROOT.'" title="'.$name.'" class="first">'.$name.'</a> &gt;&gt; '.$vars['title'];
             }
             break;
         case '$jquery':
@@ -175,12 +175,12 @@ function system_tpl_plugin($tag_name,$tag) {
             $result  = 'http://ajax.googleapis.com/ajax/libs/jquery/'.$version.'/jquery.min.js';
             break;
         case '$keywords': case '$keyword':
-            $keywords   = tpl_get_var('keywords');
-            $result     = is_array($keywords) ? implode(',', $keywords) : $keywords;
+            $keywords = isset($vars['keywords']) ? $vars['keywords'] : null;
+            $result   = is_array($keywords) ? implode(',', $keywords) : $keywords;
             break;
         case '$description':
-            $result = tpl_get_var('description');
-            if (!$result) $result = tpl_get_var('title');
+            $result = isset($vars['description']) ? $vars['description'] : null;
+            if (!$result) $result = isset($vars['title']) ? $vars['title'] : null;
             break;
         case '$content':
             // 关键词链接地址
@@ -200,7 +200,7 @@ function system_tpl_plugin($tag_name,$tag) {
                 $tag_min = validate_is($tag_min,VALIDATE_IS_NUMERIC) ? $tag_min : 10;
                 $tag_max = validate_is($tag_max,VALIDATE_IS_NUMERIC) ? $tag_max : 10;
                 // 文章内容
-                $content = tpl_get_var('content');
+                $content = isset($vars['content']) ? $vars['content'] : null;
                 if ($content) {
                     $dicts = term_gets();
                     if (!empty($dicts)) {
@@ -228,10 +228,10 @@ function system_tpl_plugin($tag_name,$tag) {
  * @param array $block
  * @return string|null
  */
-function system_tpl_list_plugin($tag_name,$tag,$block) {
+function system_tpl_list_plugin($tag_name,$tag,$block,$vars) {
     if (!instr($tag_name,'post,list')) return null;
     // 实例化模版对象
-    $tpl = tpl_init('post_list');
+    $tpl = tpl_init('post-list-plugin');
     // 列表类型
     $type = tpl_get_attr($tag, 'type');
     // 类型为必填
@@ -260,7 +260,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
     // 处理
     switch ($type) {
         case 'new': case 'hot': case 'chill':
-            $listid = $listid===null ? tpl_get_var('listid') : $listid;
+            $listid = $listid===null ? (isset($vars['listid']) ? $vars['listid'] : null) : $listid;
             // 查询IDs
             if ($listid) {
                 $listids = taxonomy_get_ids($listid, $listsub);
@@ -305,9 +305,9 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
             }
             break;
         case 'related':
-            $keywords = tpl_get_var('keywords');
+            $keywords = isset($vars['keywords']) ? $vars['keywords'] : null;
             if ($keywords) {
-                $postid = tpl_get_var('postid');
+                $postid = isset($vars['postid']) ? $vars['postid'] : null;
                 $ids = implode(',', array_keys($keywords));
                 $sql = sprintf("SELECT DISTINCT(`p`.`postid`) FROM `#@_term_relation` AS `tr` LEFT JOIN `#@_post` AS `p` ON `p`.`postid`=`tr`.`objectid` WHERE `p`.`type`='post' AND `tr`.`taxonomyid` IN(%s) AND `p`.`postid`<>%d LIMIT %d OFFSET 0;",$ids,$postid,$number);
             } else {
@@ -340,8 +340,9 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
                 'postid'   => $post['postid'],
                 'userid'   => $post['userid'],
                 'author'   => $post['author'],
-                'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
-                'comment'  => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment_count&postid='.$post['postid'].'"></script>',
+                'views'    => sprintf('<span class="lc_post_views_%d">0</span>', $post['postid']),
+                'comment'  => sprintf('<span class="lc_post_comment_%d">0</span>', $post['postid']),
+                'people'   => sprintf('<span class="lc_post_people_%d">0</span>', $post['postid']),
                 'digg'     => $post['digg'],
                 'title'    => $post['title'],
                 'path'     => ROOT.$post['path'],
@@ -364,6 +365,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block) {
             }
             tpl_clean($tpl);
             tpl_set_var($vars, $tpl);
+            tpl_set_counter('post-list', $post['postid']);
             // 设置自定义字段
             if (isset($post['meta'])) {
                 foreach((array)$post['meta'] as $k=>$v) {
@@ -391,7 +393,7 @@ function system_tpl__tags_plugin($tag_name,$tag,$block,$vars) {
     $result   = null; $i = 1;
     $keywords = isset($vars['keywords']) ? $vars['keywords'] : null;
     if ($keywords) {
-        $tpl    = tpl_init('post_list_tags');
+        $tpl    = tpl_init('list-tags-plugin');
         $number = tpl_get_attr($tag,'number');
         $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : null;
         $block['inner'] = tpl_get_block_inner($block);
@@ -438,7 +440,7 @@ function system_tpl_comments_contents_plugin($tag_name,$tag,$block,$vars) {
 function system_tpl_categories_plugin($tag_name,$tag,$block) {
     if (!instr($tag_name,'sort,categories')) return null;
     // 实例化模版对象
-    $tpl = tpl_init('post_sort');
+    $tpl = tpl_init('post-sort-plugin');
     // 列表类型
     $listid = tpl_get_attr($tag, 'listid');
     // 取得
@@ -480,7 +482,7 @@ function system_tpl_categories_plugin($tag_name,$tag,$block) {
 function system_tpl_archives_plugin($tag_name,$tag,$block) {
     if (!instr($tag_name,'archives')) return null;
     // 实例化模版对象
-    $tpl = tpl_init('post_archives');
+    $tpl = tpl_init('post-archives-plugin');
     // 分类ID类型
     $listid = tpl_get_attr($tag, 'listid');
     if ($listid) {
@@ -522,10 +524,10 @@ function system_tpl_archives_plugin($tag_name,$tag,$block) {
  * @param array $block
  * @return string|null
  */
-function system_tpl_comments_plugin($tag_name,$tag,$block) {
+function system_tpl_comments_plugin($tag_name,$tag,$block,$vars) {
     if (!instr($tag_name,'comment,comments')) return null;
     // 实例化模版对象
-    $tpl = tpl_init('post_comments');
+    $tpl = tpl_init('post-comments-plugin');
     // 列表类型
     $type = tpl_get_attr($tag,'type');
     // 类型为必填
@@ -539,7 +541,7 @@ function system_tpl_comments_plugin($tag_name,$tag,$block) {
     // 处理类型
     switch($type) {
         case 'new':
-            $postid = tpl_get_var('postid');
+            $postid = isset($vars['postid']) ? $vars['postid'] : null;
             $insql  = $postid ? sprintf(" AND `postid`=%d", esc_sql($postid)) : '';
             $sql    = "SELECT * FROM `#@_comments` WHERE `approved`='1' {$insql} ORDER BY `cmtid` DESC LIMIT {$number} OFFSET 0;";
             break;
@@ -1099,8 +1101,14 @@ function system_sitemaps($type, $inner) {
  * @return void
  */
 function system_gateway_counter() {
-    $counter  = isset($_GET['counter']) ? $_GET['counter'] : null;
+    $result   = null;
+    $counters = isset($_GET['counter']) ? $_GET['counter'] : null;
     $callback = system_get_counter();
-    if (isset($callback[$counter]))
-        return call_user_func($callback[$counter]);
+    if ($counters) {
+        foreach ($counters as $counter=>$args) {
+            if (isset($callback[$counter]))
+                $result.= call_user_func($callback[$counter], $args);
+        }
+    }
+    return $result;
 }

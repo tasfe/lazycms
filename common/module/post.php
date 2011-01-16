@@ -20,7 +20,8 @@
 defined('COM_PATH') or die('Restricted access!');
 //  添加统计器类型
 func_add_callback('system_add_counter', array(
-    'post_page' => 'post_counter'
+    'post-page' => 'post_counter',
+    'post-list' => 'post_list_counter',
 ));
 /**
  * 添加文章
@@ -57,6 +58,7 @@ function post_edit($postid,$data) {
     $postid = intval($postid);
     $post_rows = $meta_rows = array();
     if ($post = post_get($postid)) {
+        $tpl  = tpl_init('page-404');
         $data = is_array($data) ? $data : array();
         // 格式化路径
         if (isset($data['path'])) {
@@ -79,15 +81,15 @@ function post_edit($postid,$data) {
                         $path = $taxonomy['path'].'/'.$data['path'];
                     }
                     $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('TPL-404')));
-                    tpl_clean();
+                    tpl_clean($tpl);
                     tpl_set_var(array(
                         'path'  => ROOT.$post['path'],
                         'url'   => ROOT.$path,
                         'title' => $post['title'],
                         'keywords' => post_get_taxonomy($post['keywords']),
                         'description' => $post['description'],
-                    ));
-                    $html = tpl_parse($html);
+                    ), $tpl);
+                    $html = tpl_parse($html, $tpl);
                     $file = ABS_PATH.'/'.$post['path'];
                     mkdirs(dirname($file));
                     file_put_contents($file,$html);
@@ -343,6 +345,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
     $postid = intval($postid);
     if (!$postid) return false;
     if ($post = post_get($postid)) {
+        $tpl  = tpl_init('post');
         $b_guid = $inner = ''; comment_create($post['postid']); // 生成评论
         // 处理文章
         $post['list']     = taxonomy_get($post['listid']);
@@ -361,33 +364,15 @@ function post_create($postid,&$preid=0,&$nextid=0) {
             }
         }
         // 加载模版
-        $html  = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html($post['template']));
-        // 解析tags
-        $block = tpl_get_block($html,'tag,tags');
-        if ($block && $post['keywords']) {
-            $block['inner'] = tpl_get_block_inner($block);
-            $keywords       = post_get_taxonomy($post['keywords']);
-            foreach($keywords as $taxonomy) {
-                tpl_clean();
-                tpl_set_var(array(
-                    'name' => $taxonomy,
-                    'path' => ROOT.'search.php?t=tags&q='.rawurlencode($taxonomy),
-                ));
-                $inner.= tpl_parse($block['inner']);
-            }
-            // 生成标签块的唯一ID
-            $b_guid = guid($block['tag']);
-            // 把标签块替换成变量标签
-            $html = str_replace($block['tag'], '{$'.$b_guid.'}', $html);
-        }
-
+        $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html($post['template']));
+        
         $vars = array(
             'postid'   => $post['postid'],
             'userid'   => $post['userid'],
             'author'   => $post['author'],
-            'views'    => sprintf('<span id="lc_post_views_%d">0</span>', $post['postid']),
-            'comment'  => sprintf('<span id="lc_post_comment_%d">0</span>', $post['postid']),
-            'people'   => sprintf('<span id="lc_post_people_%d">0</span>', $post['postid']),
+            'views'    => sprintf('<span class="lc_post_views_%d">0</span>', $post['postid']),
+            'comment'  => sprintf('<span class="lc_post_comment_%d">0</span>', $post['postid']),
+            'people'   => sprintf('<span class="lc_post_people_%d">0</span>', $post['postid']),
             'digg'     => $post['digg'],
             'date'     => $post['datetime'],
             'edittime' => $post['edittime'],
@@ -412,19 +397,18 @@ function post_create($postid,&$preid=0,&$nextid=0) {
             }
         }
         // 清理数据
-        tpl_clean();
-        tpl_set_var($b_guid,$inner);
-        tpl_set_var($vars);
-        tpl_set_arg(array(
-            'counter' => 'post_page',
-            'postid'  => $post['postid'],
-        ));
+        tpl_clean($tpl);
+        tpl_set_var($b_guid, $inner, $tpl);
+        tpl_set_var($vars, $tpl);
         // 设置自定义字段
         if (isset($post['meta'])) {
             foreach((array)$post['meta'] as $k=>$v) {
-                tpl_set_var('post.'.$k, $v);
+                tpl_set_var('post.'.$k, $v, $tpl);
             }
         }
+        // 清空之前的变量
+        tpl_clean_args();
+        tpl_set_counter('post-page', $post['postid']);
         // 文章导航
         $guide = system_category_guide($post['listid']);
 
@@ -456,8 +440,8 @@ function post_create($postid,&$preid=0,&$nextid=0) {
                     'title'   => $title,
                     'content' => $content,
                     'path'    => ROOT.$path,
-                ));
-                $pagehtml = tpl_parse($html);
+                ), $tpl);
+                $pagehtml = tpl_parse($html, $tpl);
                 // 解析分页标签
                 if (stripos($pagehtml,'{pagelist') !== false) {
                     $pagehtml = preg_replace('/\{(pagelist)[^\}]*\/\}/isU',
@@ -480,12 +464,12 @@ function post_create($postid,&$preid=0,&$nextid=0) {
                 'title'   => $post['title'],
                 'content' => $post['content'],
                 'path'    => ROOT.$post['path'],
-            ));
+            ), $tpl);
             // 解析分页标签
             if (stripos($html,'{pagelist') !== false) {
                 $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU','',$html);
             }
-            $html = tpl_parse($html);
+            $html = tpl_parse($html, $tpl);
             // 生成的文件路径
             $file = ABS_PATH.'/'.$post['path'];
             // 创建目录
@@ -549,8 +533,8 @@ function post_nextpage($listid,$postid,&$nextid=0) {
  *
  * @return string
  */
-function post_counter() {
-    $postid = isset($_GET['postid'])  ? $_GET['postid']  : 0;
+function post_counter($postid) {
+    $updated = isset($_GET['updated']) ? $_GET['updated'] : null;
     if (post_get($postid)) {
         $db = get_conn();
         $views = $db->result(sprintf("SELECT `views` FROM `#@_post` WHERE `postid`=%d", esc_sql($postid)));
@@ -561,11 +545,27 @@ function post_counter() {
     } else {
         $views = 0;
     }
-    header('Content-Type: text/javascript; charset=utf-8');
-    $html = sprintf("document.getElementById('lc_post_views_%1\$d') && (document.getElementById('lc_post_views_%1\$d').innerHTML = %2\$d);\n", $postid, $views);
-    $html.= sprintf("document.getElementById('lc_post_comment_%1\$d') && (document.getElementById('lc_post_comment_%1\$d').innerHTML = %2\$d);\n", $postid, comment_count($postid));
-    $html.= sprintf("document.getElementById('lc_post_people_%1\$d') && (document.getElementById('lc_post_people_%1\$d').innerHTML = %2\$d);\n", $postid, comment_people($postid));
-    return $html;
+    $js = '$("span.lc_post_views_'.$postid.'").text('.$views.');';
+    $js.= '$("span.lc_post_comment_'.$postid.'").text('.comment_count($postid).');';
+    $js.= '$("span.lc_post_people_'.$postid.'").text('.comment_people($postid).');';
+    return jQuery($js);
+}
+/**
+ * 列表统计
+ *
+ * @param string $listids
+ * @return string
+ */
+function post_list_counter($listids) {
+    $db = get_conn(); $js = '';
+    if (!validate_is($listids, VALIDATE_IS_LIST)) return '';
+    $rs = $db->query(sprintf("SELECT `postid`,`views` FROM `#@_post` WHERE `postid` IN(%s)", $listids));
+    while ($data = $db->fetch($rs)) {
+        $js.= '$("span.lc_post_views_'.$data['postid'].'").text('.$data['views'].');';
+        $js.= '$("span.lc_post_comment_'.$data['postid'].'").text('.comment_count($data['postid']).');';
+        $js.= '$("span.lc_post_people_'.$data['postid'].'").text('.comment_people($data['postid']).');';
+    }
+    return jQuery($js);
 }
 /**
  * 显示评论信息

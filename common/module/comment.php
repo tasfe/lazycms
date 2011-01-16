@@ -182,7 +182,7 @@ function comment_people($postid) {
  */
 function comment_parse_reply($comment, $sblock) {
     $func = __FUNCTION__;
-    $tpl  = tpl_init('post_comment_reply');
+    $tpl  = tpl_init('post-comment-reply');
     $sblock['inner'] = tpl_get_block_inner($sblock);
     tpl_clean($tpl);
     tpl_set_var(array(
@@ -212,6 +212,8 @@ function comment_create($postid) {
     $postid = intval($postid);
     if (!$postid) return false;
     if ($post = post_get($postid)) {
+        // 初始化
+        $tpl = tpl_init('comments');
         // 允许评论
         if ($post['comments'] != 'Yes') return true;
         // 评论地址
@@ -241,16 +243,16 @@ function comment_create($postid) {
             $html   = str_replace($block['tag'], '{$'.$b_guid.'}', $html);
             // 没有评论
             if (comment_count($post['postid'],'1') == 0) {
-                tpl_clean();
-                tpl_set_var($b_guid, __('No comment!'));
+                tpl_clean($tpl);
+                tpl_set_var($b_guid, __('No comment!'), $tpl);
                 tpl_set_var(array(
                     'guide'    => $guide ? $guide.' &gt;&gt; '.$title : $title,
                     'title'    => $title,
                     'keywords' => post_get_taxonomy($post['keywords']),
                     'description' => $post['description'],
-                ));
+                ), $tpl);
 
-                $html = tpl_parse($html, $block);
+                $html = tpl_parse($html, $block, $tpl);
                 // 生成的文件路径
                 $file = ABS_PATH.'/'.$post['cmt_path'];
                 // 创建目录
@@ -288,7 +290,7 @@ function comment_create($postid) {
                         $data['ip'] = substr_replace($data['ip'], '*', strrpos($data['ip'], '.')+1);
                     }
                     // 清理数据
-                    tpl_clean();
+                    tpl_clean($tpl);
                     tpl_set_var(array(
                         'zebra'   => ($i % ($zebra + 1)) ? '0' : '1',
                         'postid'  => $post['postid'],
@@ -302,24 +304,24 @@ function comment_create($postid) {
                         'content' => nl2br($data['content']),
                         'agent'   => $data['agent'],
                         'date'    => $data['date'],
-                    ));
+                    ), $tpl);
                     // 解析变量
-                    $inner.= tpl_parse($block['inner'], $block); $i++; $length++;
+                    $inner.= tpl_parse($block['inner'], $block, $tpl); $i++; $length++;
                     // 分页
                     if (($i%$number)==0 || $i==$total) {
                         // 所需要的标签和数据都不存在，不需要生成页面
                         if ($inner=='' && $page>1) return false;
-                        tpl_clean();
-                        tpl_set_var($b_guid, $inner);
+                        tpl_clean($tpl);
+                        tpl_set_var($b_guid, $inner, $tpl);
                         tpl_set_var(array(
                             'guide'    => $guide ? $guide.' &gt;&gt; '.$title : $title,
                             'title'    => $title,
                             'pagelist' => pages_list(ROOT.$basename.'_$'.$suffix, '!_$', $page, $pages, $length),
                             'keywords' => post_get_taxonomy($post['keywords']),
                             'description' => $post['description'],
-                        ));
+                        ), $tpl);
 
-                        $out  = tpl_parse($html);
+                        $out  = tpl_parse($html, $tpl);
                         // 生成的文件路径
                         $file = ABS_PATH.'/'.$basename . ($page==1 ? '' : '_'.$page) . $suffix;
                         // 创建目录
@@ -335,15 +337,15 @@ function comment_create($postid) {
         }
         // 没有标签
         else {
-            tpl_clean();
+            tpl_clean($tpl);
             tpl_set_var(array(
                 'guide'    => $guide ? $guide.' &gt;&gt; '.$title : $title,
                 'title'    => $title,
                 'keywords' => post_get_taxonomy($post['keywords']),
                 'description' => $post['description'],
-            ));
+            ), $tpl);
 
-            $html = tpl_parse($html);
+            $html = tpl_parse($html, $tpl);
             // 生成的文件路径
             $file = ABS_PATH.'/'.$post['cmt_path'];
             // 创建目录

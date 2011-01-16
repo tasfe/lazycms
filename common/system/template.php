@@ -25,9 +25,11 @@ defined('COM_PATH') or die('Restricted access!');
  * @version $Id$
  */
 class Template {
+    var $type     = 'LC_TEMPLATE';
     var $_vars    = array();
     var $_args    = array();
     var $_plugins = array();
+
     function __construct(){
         global $LC_tpl_plugins;
         if (is_array($LC_tpl_plugins))
@@ -97,6 +99,14 @@ class Template {
         $this->_vars = array();
     }
     /**
+     * 清空
+     *
+     * @return void
+     */
+    function clean_args() {
+        $this->_args = array();
+    }
+    /**
      * 设置参数
      *
      * @param string|array $field
@@ -134,7 +144,7 @@ class Template {
         $result = array();
         foreach($this->_args as $k=>$v) {
             if (is_array($v) && !is_assoc($v))
-                $result[$k] = implode(',', $v);
+                $result[$k] = implode(',', array_unique($v));
             else
                 $result[$k] = $v;
         }
@@ -289,7 +299,7 @@ class Template {
         $blocks = $this->get_blocks($html);
         // 处理所有标签
         foreach ($blocks as $block) {
-            $html = str_replace($block['tag'], $this->apply_plugins($block['name'], $block['tag'], $block), $html);
+            $html = str_replace($block['tag'], $this->apply_plugins($block['name'], $block['tag'], $block, $this->_vars), $html);
         }
         return $html;
     }
@@ -298,12 +308,11 @@ class Template {
      *
      * @param string $html
      * @param array $subs
-     * @param array $vars
      * @return string
      */
-    function parse_subs($html, $subs, $vars) {
+    function parse_subs($html, $subs) {
         foreach($subs as $block) {
-            $result = $this->apply_plugins($block['name'], $block['tag'], $block, $vars);
+            $result = $this->apply_plugins($block['name'], $block['tag'], $block, $this->_vars);
             $guid = guid($block['tag']);
             $html = str_replace($block['tag'], '{$'.$guid.'}' , $html);
             $this->set_var($guid, $result);
@@ -321,7 +330,7 @@ class Template {
             $tags = $r[1];
             foreach ($r[0] as $k => $tag) {
                 // 应用插件解析
-                $value = $this->apply_plugins('$'.$tags[$k], $tag);
+                $value = $this->apply_plugins('$'.$tags[$k], $tag, null, $this->_vars);
                 // 解析变量
                 if (null === $value) {
                     $value = $this->get_var($tags[$k]);
@@ -338,12 +347,11 @@ class Template {
      *
      * @param string $html
      * @param array $block
-     * @param array $vars
      * @return mixed|string
      */
-    function parse($html, $block=null, $vars=null) {
+    function parse($html, $block=null) {
         if ($block && isset($block['sub']))
-            $html = $this->parse_subs($html, $block['sub'], $vars);
+            $html = $this->parse_subs($html, $block['sub']);
         
         $html = $this->process_blocks($html);
         $html = $this->process_vars($html);
@@ -384,7 +392,7 @@ class Template {
         }
         // code
         $code = $this->get_attr($tag,'code');
-        if (strlen($result) > 0 && $code) {
+        if (is_scalar($result) && strlen($result) > 0 && $code) {
             $code = strtolower($code);
             switch ($code) {
                 case 'javascript': case 'js':
@@ -453,8 +461,10 @@ class Template {
 function &tpl_init($type=null) {
     global $LC_templates;
     if ($type === null) $type = 'LC_TEMPLATE';
-    if (!isset($LC_templates[$type]))
+    if (!isset($LC_templates[$type])) {
         $LC_templates[$type] = new Template();
+        $LC_templates[$type]->type = $type;
+    }
     return $LC_templates[$type];
 }
 /**
@@ -464,8 +474,10 @@ function &tpl_init($type=null) {
  * @return Template
  */
 function &_tpl_get_object($tpl=null) {
-    if ($tpl && is_object($tpl) && get_class($tpl)=='Template')
-        return $tpl;
+    global $LC_templates;
+    if ($tpl && is_object($tpl) && get_class($tpl)=='Template') {
+        return $LC_templates[$tpl->type];
+    }
     else
         return tpl_init();
 }
@@ -482,7 +494,7 @@ function tpl_clean($tpl=null) {
 /**
  * 变量赋值
  *
- * @param mixed $key
+ * @param string|mixed $key
  * @param mixed $val
  * @param object $tpl
  * @return bool
@@ -526,7 +538,15 @@ function tpl_parse($html, $block=null, $tpl=null) {
         $tpl = $block; $block = null;
     }
     $tpl = _tpl_get_object($tpl);
-    return $tpl->parse($html, $block, $tpl->get_vars());
+    return $tpl->parse($html, $block);
+}
+/**
+ * 清空
+ *
+ * @return void
+ */
+function tpl_clean_args() {
+    return tpl_init()->clean_args();
 }
 /**
  * 设置参数
@@ -537,6 +557,16 @@ function tpl_parse($html, $block=null, $tpl=null) {
  */
 function tpl_set_arg($field, $value=null) {
     return tpl_init()->set_arg($field, $value);
+}
+/**
+ * 设置统计器
+ *
+ * @param string $key
+ * @param mixed $val
+ * @return bool
+ */
+function tpl_set_counter($key, $val) {
+    return tpl_set_arg(sprintf('counter[%s]',$key), $val);
 }
 /**
  * 取得所有参数

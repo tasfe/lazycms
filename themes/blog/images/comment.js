@@ -19,9 +19,6 @@ if (cmtstate=='Yes') {
         // 显示评论列表
         comment_loading(listsurl);
     });
-    
-
-
 }
 
 /**

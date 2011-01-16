@@ -26,8 +26,9 @@ if (!empty($_SERVER['PATH_INFO']))
     parse_path(ltrim($_SERVER['PATH_INFO'], '/'));
 
 // 获取参数
-$t  = isset($_REQUEST['t']) ? trim($_REQUEST['t']) : null;
-$q  = isset($_REQUEST['q']) ? trim($_REQUEST['q']) : null;
+$t   = isset($_REQUEST['t']) ? trim($_REQUEST['t']) : null;
+$q   = isset($_REQUEST['q']) ? trim($_REQUEST['q']) : null;
+$tpl = tpl_init('search');
 // 载入模版
 $html  = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('TPL-Search')));
 if ($t && $q) {
@@ -125,16 +126,17 @@ if ($t && $q) {
                     }
                 }
                 // 清理数据
-                tpl_clean();
-                tpl_set_var($vars);
+                tpl_clean($tpl);
+                tpl_set_var($vars, $tpl);
+                tpl_set_counter('post-list',$post['postid']);
                 // 设置自定义字段
                 if (isset($post['meta'])) {
                     foreach((array)$post['meta'] as $k=>$v) {
-                        tpl_set_var('post.'.$k, $v);
+                        tpl_set_var('post.'.$k, $v, $tpl);
                     }
                 }
                 // 解析标签
-                $inner.= tpl_parse($block['inner'], $block); $i++;
+                $inner.= tpl_parse($block['inner'], $block, $tpl); $i++;
             }
         }
         // 没数据
@@ -146,19 +148,19 @@ if ($t && $q) {
         // 把标签块替换成变量标签
         $html = str_replace($block['tag'], '{$'.$guid.'}', $html);
         // 清理模版内部变量
-        tpl_clean();
-        tpl_set_var($guid, $inner);
+        tpl_clean($tpl);
+        tpl_set_var($guid, $inner, $tpl);
     }
     // 模版标签不正确 
     else {
         $title = $guide = __('Template tag is not correct');
-        tpl_clean();
+        tpl_clean($tpl);
     }
 }
 // 参数不正确
 else {
     $title = $guide = __('Arguments is not correct');
-    tpl_clean();
+    tpl_clean($tpl);
 }
 // 分页标签还没解析
 if (stripos($html,'{pagelist') !== false) {
@@ -169,5 +171,5 @@ tpl_set_var(array(
     'guide'    => $guide,
     'title'    => $title,
     'keywords' => $keywords,
-));
-echo tpl_parse($html);
+), $tpl);
+echo tpl_parse($html, $tpl);
