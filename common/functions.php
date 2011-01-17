@@ -433,6 +433,23 @@ function test_result($state) {
     return $state ? '<strong style="color:#009900;">&radic;</strong>' : '<strong style="color:#FF0000;">&times;</strong>';
 }
 /**
+ * 取得用户的IP
+ *
+ * @return string
+ */
+function get_ip() {
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    } elseif (isset($_SERVER['HTTP_X_REAL_IP'])) {
+        $ip = $_SERVER['HTTP_X_REAL_IP'];
+    } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    } else {
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
+    return $ip;
+}
+/**
  * 防止浏览器缓存
  */
 function no_cache(){
@@ -1260,7 +1277,7 @@ if (!function_exists('authcode')) :
  * @return string
  */
 function authcode($data=null){
-    return guid(HTTP_HOST.$data.$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
+    return guid(HTTP_HOST.$data.get_ip().$_SERVER['HTTP_USER_AGENT']);
 }
 endif;
 /**

@@ -45,7 +45,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
 	},
     /**
      * ajax success
-     * 
+     *
      * @param xhr
      * @param s
      */
@@ -76,7 +76,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
     },
     /**
      * 模拟alert
-     * 
+     *
      * @param message   消息内容，html格式
      * @param callback  点击确定之后的回调函数
      * @param code      警告类型：Success，Error，Other
@@ -175,13 +175,13 @@ var LazyCMS = window.LazyCMS = window.CMS = {
     },
     /**
      * 创建遮罩层
-     * 
+     *
      * @param options
      *          {
      *              width:宽度，默认100%,
      *              height:高度，默认100%,
      *              opacity:透明度，默认 0.7,
-     *              background:遮罩层颜色，默认#fff              
+     *              background:遮罩层颜色，默认#fff
      *          }
      */
     masked: function(options) {
@@ -240,9 +240,9 @@ var LazyCMS = window.LazyCMS = window.CMS = {
     },
     /**
      * 统一处理ajax返回结果
-     * 
+     *
      * @param data      ajax response
-     * @param status    
+     * @param status
      * @param xhr
      */
     ajaxSuccess: function(data, status, xhr) {
@@ -283,7 +283,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
     },
     /**
      * 模拟的弹出框
-     * 
+     *
      * @param options
      * @param callback
      */
@@ -392,7 +392,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
     },
     /**
      * 等同于PHP parse_str
-     * 
+     *
      * @param str
      */
     parse_str: function(str) {
@@ -436,7 +436,7 @@ window._ = LazyCMS.translate;
  * @author: Lukin<my@lukin.cn>
  * @date:   2010/1/21 17:11
  */
-(function ($) {
+jQuery && (function ($) {
     // 取得最大的zIndex
     $.fn.maxIndex = function(){
         var max = 0;

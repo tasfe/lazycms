@@ -59,8 +59,6 @@ class Template {
         $html = preg_replace('/<title>/isU',"<meta name=\"generator\" content=\"LazyCMS ".LAZY_VERSION."\" />\n\${0}",$html);
         // 格式化图片、css、js路径
         $html = preg_replace('/(<(((script|link|img|input|embed|object|base|area|map|table|td|th|tr).+?(src|href|background))|((param).+?(src|value)))=([^\/]+?))((images|scripts)\/.{0,}?\>)/i','${1}'.ROOT.system_themes_path().'/${10}',$html);
-        // TODO 判断模版里是否有php标签，如果有，则编译成预编译代码
-        
         return $html;
     }
     /**
@@ -97,58 +95,6 @@ class Template {
      */
     function clean(){
         $this->_vars = array();
-    }
-    /**
-     * 清空
-     *
-     * @return void
-     */
-    function clean_args() {
-        $this->_args = array();
-    }
-    /**
-     * 设置参数
-     *
-     * @param string|array $field
-     * @param mixed $value
-     * @return bool
-     */
-    function set_arg($field, $value=null) {
-        // 空key不赋值
-        if (empty($field)) return true;
-        // 批量赋值
-    	if (is_array($field)) {
-            foreach ($field as $k=>$v) {
-                if (empty($k)) continue;
-                $this->set_arg($k, $v);
-    		}
-        }
-        // 单个赋值
-        else {
-            $count = count($this->_args[$field]);
-            if (isset($this->_args[$field]) && $count==1)
-                $this->_args[$field] = array($this->_args[$field], $value);
-            elseif (isset($this->_args[$field]) && $count>1)
-                $this->_args[$field][] = $value;
-            else
-                $this->_args[$field] = $value;
-        }
-        return true;
-    }
-    /**
-     * 取得变量
-     *
-     * @return array
-     */
-    function get_args() {
-        $result = array();
-        foreach($this->_args as $k=>$v) {
-            if (is_array($v) && !is_assoc($v))
-                $result[$k] = implode(',', array_unique($v));
-            else
-                $result[$k] = $v;
-        }
-        return $result;
     }
     /**
      * 设置变量
@@ -539,42 +485,6 @@ function tpl_parse($html, $block=null, $tpl=null) {
     }
     $tpl = _tpl_get_object($tpl);
     return $tpl->parse($html, $block);
-}
-/**
- * 清空
- *
- * @return void
- */
-function tpl_clean_args() {
-    return tpl_init()->clean_args();
-}
-/**
- * 设置参数
- *
- * @param string|array $field
- * @param mixed $value
- * @return bool
- */
-function tpl_set_arg($field, $value=null) {
-    return tpl_init()->set_arg($field, $value);
-}
-/**
- * 设置统计器
- *
- * @param string $key
- * @param mixed $val
- * @return bool
- */
-function tpl_set_counter($key, $val) {
-    return tpl_set_arg(sprintf('counter[%s]',$key), $val);
-}
-/**
- * 取得所有参数
- *
- * @return array
- */
-function tpl_get_args() {
-    return tpl_init()->get_args();
 }
 /**
  * 加载模版文件

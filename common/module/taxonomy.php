@@ -603,7 +603,6 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
         // 标签块信息
         $block  = tpl_get_block($html,'post,list','list');
         if ($block) {
-            tpl_clean_args();
             // 扩展字段过滤
             $meta    = tpl_get_attr($block['tag'],'meta');
             // 子分类ID
@@ -696,9 +695,9 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                         'userid'   => $post['userid'],
                         'author'   => $post['author'],
                         'title'    => $post['title'],
-                        'views'    => sprintf('<span class="lc_post_views_%d">0</span>', $post['postid']),
-                        'comment'  => sprintf('<span class="lc_post_comment_%d">0</span>', $post['postid']),
-                        'people'   => sprintf('<span class="lc_post_people_%d">0</span>', $post['postid']),
+                        'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
+                        'comment'  => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment&postid='.$post['postid'].'"></script>',
+                        'people'   => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment_people&postid='.$post['postid'].'"></script>',
                         'digg'     => $post['digg'],
                         'path'     => ROOT.$post['path'],
                         'content'  => $content,
@@ -709,9 +708,10 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                     );
                     // 设置分类变量
                     if (isset($post['list'])) {
-                        $vars['listid']   = $post['list']['taxonomyid'];
-                        $vars['listname'] = $post['list']['name'];
-                        $vars['listpath'] = ROOT.$post['list']['path'].'/';
+                        $vars['listid']     = $post['list']['taxonomyid'];
+                        $vars['listname']   = $post['list']['name'];
+                        $vars['listpath']   = ROOT.$post['list']['path'].'/';
+                        $vars['listcount']  = '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=taxonomy_count&listid='.$post['list']['taxonomyid'].'"></script>';
                         if (isset($post['list']['meta'])) {
                             foreach((array)$post['list']['meta'] as $k=>$v) {
                                 $vars['list.'.$k] = $v;
@@ -721,7 +721,6 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
                     // 清理数据
                     tpl_clean($tpl);
                     tpl_set_var($vars, $tpl);
-                    tpl_set_counter('post-list', $post['postid']);
                     // 设置自定义字段
                     if (isset($post['meta'])) {
                         foreach((array)$post['meta'] as $k=>$v) {
@@ -746,15 +745,14 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
         tpl_clean($tpl);
         tpl_set_var($b_guid, $inner, $tpl);
         tpl_set_var(array(
-            'listid'   => $taxonomy['taxonomyid'],
-            'listname' => $taxonomy['name'],
-            'listpath' => ROOT.$taxonomy['path'].'/',
-            'termid'   => $taxonomy['termid'],
-            'count'    => $taxonomy['count'],
-            'guide'    => system_category_guide($taxonomy['taxonomyid']),
-            'title'    => $taxonomy['name'],
-            'keywords' => post_get_taxonomy($taxonomy['keywords']),
-            'description' => $taxonomy['description'],
+            'listid'        => $taxonomy['taxonomyid'],
+            'listname'      => $taxonomy['name'],
+            'listpath'      => ROOT.$taxonomy['path'].'/',
+            'count'         => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=taxonomy_count&listid='.$taxonomy['taxonomyid'].'"></script>',
+            'guide'         => system_category_guide($taxonomy['taxonomyid']),
+            'title'         => $taxonomy['name'],
+            'keywords'      => post_get_taxonomy($taxonomy['keywords']),
+            'description'   => $taxonomy['description'],
         ), $tpl);
         // 设置自定义字段
         if (isset($taxonomy['meta'])) {
@@ -771,4 +769,18 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
         return file_put_contents($file,$html);
     }
     return true;
+}
+/**
+ * 文章数
+ *
+ * @return string
+ */
+function taxonomy_gateway_count() {
+    $listid = isset($_GET['listid']) ? $_GET['listid'] : 0;
+    if ($taxonomy = taxonomy_get($listid)) {
+        $count = $taxonomy['count'];
+    } else {
+        $count = 0;
+    }
+    return 'document.write('.$count.');';
 }

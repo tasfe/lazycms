@@ -38,7 +38,7 @@ function comment_add($postid,$content,$parent=0,$user=null) {
         'author'   => $author,
         'mail'     => $email,
         'url'      => $url,
-        'ip'       => sprintf('%u',ip2long($_SERVER['REMOTE_ADDR'])),
+        'ip'       => sprintf('%u',ip2long(get_ip())),
         'agent'    => esc_html($_SERVER['HTTP_USER_AGENT']),
         'date'     => time(),
         'content'  => $content,

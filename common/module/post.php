@@ -18,11 +18,6 @@
  * +---------------------------------------------------------------------------+
  */
 defined('COM_PATH') or die('Restricted access!');
-//  添加统计器类型
-func_add_callback('system_add_counter', array(
-    'post-page' => 'post_counter',
-    'post-list' => 'post_list_counter',
-));
 /**
  * 添加文章
  *
@@ -370,9 +365,9 @@ function post_create($postid,&$preid=0,&$nextid=0) {
             'postid'   => $post['postid'],
             'userid'   => $post['userid'],
             'author'   => $post['author'],
-            'views'    => sprintf('<span class="lc_post_views_%d">0</span>', $post['postid']),
-            'comment'  => sprintf('<span class="lc_post_comment_%d">0</span>', $post['postid']),
-            'people'   => sprintf('<span class="lc_post_people_%d">0</span>', $post['postid']),
+            'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
+            'comment'  => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment&postid='.$post['postid'].'"></script>',
+            'people'   => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment_people&postid='.$post['postid'].'"></script>',
             'digg'     => $post['digg'],
             'date'     => $post['datetime'],
             'edittime' => $post['edittime'],
@@ -387,9 +382,10 @@ function post_create($postid,&$preid=0,&$nextid=0) {
         );
         // 设置分类变量
         if (isset($post['list'])) {
-            $vars['listid']   = $post['list']['taxonomyid'];
-            $vars['listname'] = $post['list']['name'];
-            $vars['listpath'] = ROOT.$post['list']['path'].'/';
+            $vars['listid']     = $post['list']['taxonomyid'];
+            $vars['listname']   = $post['list']['name'];
+            $vars['listpath']   = ROOT.$post['list']['path'].'/';
+            $vars['listcount']  = '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=taxonomy_count&listid='.$post['list']['taxonomyid'].'"></script>';
             if (isset($post['list']['meta'])) {
                 foreach((array)$post['list']['meta'] as $k=>$v) {
                     $vars['list.'.$k] = $v;
@@ -406,9 +402,6 @@ function post_create($postid,&$preid=0,&$nextid=0) {
                 tpl_set_var('post.'.$k, $v, $tpl);
             }
         }
-        // 清空之前的变量
-        tpl_clean_args();
-        tpl_set_counter('post-page', $post['postid']);
         // 文章导航
         $guide = system_category_guide($post['listid']);
 
@@ -432,7 +425,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
                 } else {
                     $path  = $basename.'_'.$page.$suffix;
                     $title = $post['title'].' ('.$page.')';
-                    tpl_set_arg('updated', 'false');
+                    tpl_set_var('views', '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'&updated=false"></script>');
                 }
 
                 tpl_set_var(array(
@@ -529,11 +522,23 @@ function post_nextpage($listid,$postid,&$nextid=0) {
     return $result;
 }
 /**
- * 文章统计
+ * 显示评论信息
+ *
+ * @return
+ */
+function post_gateway_ajax_comment() {
+    $postid = isset($_GET['postid'])  ? $_GET['postid']  : 0;
+    $comment_count  = comment_count($postid);
+    $comment_people = comment_people($postid);
+    return array($comment_count,$comment_people);
+}
+/**
+ * 文章浏览数
  *
  * @return string
  */
-function post_counter($postid) {
+function post_gateway_views() {
+    $postid  = isset($_GET['postid'])  ? $_GET['postid']  : 0;
     $updated = isset($_GET['updated']) ? $_GET['updated'] : null;
     if (post_get($postid)) {
         $db = get_conn();
@@ -545,48 +550,25 @@ function post_counter($postid) {
     } else {
         $views = 0;
     }
-    $js = '$("span.lc_post_views_'.$postid.'").text('.$views.');';
-    $js.= '$("span.lc_post_comment_'.$postid.'").text('.comment_count($postid).');';
-    $js.= '$("span.lc_post_people_'.$postid.'").text('.comment_people($postid).');';
-    return jQuery($js);
-}
-/**
- * 列表统计
- *
- * @param string $listids
- * @return string
- */
-function post_list_counter($listids) {
-    $db = get_conn(); $js = '';
-    if (!validate_is($listids, VALIDATE_IS_LIST)) return '';
-    $rs = $db->query(sprintf("SELECT `postid`,`views` FROM `#@_post` WHERE `postid` IN(%s)", $listids));
-    while ($data = $db->fetch($rs)) {
-        $js.= '$("span.lc_post_views_'.$data['postid'].'").text('.$data['views'].');';
-        $js.= '$("span.lc_post_comment_'.$data['postid'].'").text('.comment_count($data['postid']).');';
-        $js.= '$("span.lc_post_people_'.$data['postid'].'").text('.comment_people($data['postid']).');';
-    }
-    return jQuery($js);
-}
-/**
- * 显示评论信息
- *
- * @return
- */
-function post_gateway_ajax_comment() {
-    $postid  = isset($_REQUEST['postid'])  ? $_REQUEST['postid']  : 0;
-    $comment_count  = comment_count($postid);
-    $comment_people = comment_people($postid);
-    return array($comment_count,$comment_people);
+    return 'document.write('.$views.');';
 }
 /**
  * 评论数量
  *
  * @return string
  */
-function post_gateway_comment_count() {
-    $postid = isset($_REQUEST['postid'])  ? $_REQUEST['postid']  : 0;
-    $comment_count  = comment_count($postid);
-    return 'document.write('.esc_js($comment_count).');';
+function post_gateway_comment() {
+    $postid = isset($_GET['postid']) ? $_GET['postid'] : 0;
+    return 'document.write('.comment_count($postid).');';
+}
+/**
+ * 评论人数量
+ *
+ * @return string
+ */
+function post_gateway_comment_people() {
+    $postid = isset($_GET['postid']) ? $_GET['postid'] : 0;
+    return 'document.write('.comment_people($postid).');';
 }
 /**
  * 发表评论

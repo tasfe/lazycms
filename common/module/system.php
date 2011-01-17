@@ -153,10 +153,7 @@ function system_tpl_plugin($tag_name,$tag,$block,$vars) {
             $result = C('Language');
             break;
         case '$cms': case '$lazycms':
-            tpl_set_arg('func', 'system_counter');
-            $query  = tpl_get_args(); $query = $query ? '?' . http_build_query($query) : '';
             $result = '<span id="lazycms">Powered by: <a href="http://lazycms.com/" style="font-weight:bold" target="_blank" title="LazyCMS">LazyCMS</a> '.LAZY_VERSION.'</span>';
-            $result.= sprintf('<script type="text/javascript" src="'.ROOT.'common/gateway.php%s"></script>', $query);
             break;
         case '$guide':
             $name  = tpl_get_attr($tag,'name');
@@ -340,9 +337,9 @@ function system_tpl_list_plugin($tag_name,$tag,$block,$vars) {
                 'postid'   => $post['postid'],
                 'userid'   => $post['userid'],
                 'author'   => $post['author'],
-                'views'    => sprintf('<span class="lc_post_views_%d">0</span>', $post['postid']),
-                'comment'  => sprintf('<span class="lc_post_comment_%d">0</span>', $post['postid']),
-                'people'   => sprintf('<span class="lc_post_people_%d">0</span>', $post['postid']),
+                'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
+                'comment'  => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment&postid='.$post['postid'].'"></script>',
+                'people'   => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment_people&postid='.$post['postid'].'"></script>',
                 'digg'     => $post['digg'],
                 'title'    => $post['title'],
                 'path'     => ROOT.$post['path'],
@@ -354,9 +351,10 @@ function system_tpl_list_plugin($tag_name,$tag,$block,$vars) {
             );
             // 设置分类变量
             if (isset($post['list'])) {
-                $vars['listid']   = $post['list']['taxonomyid'];
-                $vars['listname'] = $post['list']['name'];
-                $vars['listpath'] = ROOT.$post['list']['path'].'/';
+                $vars['listid']     = $post['list']['taxonomyid'];
+                $vars['listname']   = $post['list']['name'];
+                $vars['listpath']   = ROOT.$post['list']['path'].'/';
+                $vars['listcount']  = '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=taxonomy_count&listid='.$post['list']['taxonomyid'].'"></script>';
                 if (isset($post['list']['meta'])) {
                     foreach((array)$post['list']['meta'] as $k=>$v) {
                         $vars['list.'.$k] = $v;
@@ -365,7 +363,6 @@ function system_tpl_list_plugin($tag_name,$tag,$block,$vars) {
             }
             tpl_clean($tpl);
             tpl_set_var($vars, $tpl);
-            tpl_set_counter('post-list', $post['postid']);
             // 设置自定义字段
             if (isset($post['meta'])) {
                 foreach((array)$post['meta'] as $k=>$v) {
@@ -1024,35 +1021,6 @@ function system_editor_lang() {
     );
 }
 /**
- * 添加统计函数
- *
- * @param string|array $type
- * @param string $func
- * @return bool
- */
-function system_add_counter($type, $func=null) {
-    global $LC_tpl_counter; $_this = __FUNCTION__;
-    $LC_tpl_counter = empty($LC_tpl_counter) ? array() : $LC_tpl_counter;
-    if (is_array($type)) {
-        foreach ($type as $k=>$v) {
-            $_this($k, $v);
-        }
-    } else {
-        if (function_exists($func)) {
-            $LC_tpl_counter[$type] = $func;
-        }
-    }
-    return true;
-}
-/**
- * 取得统计器
- *
- * @return array
- */
-function system_get_counter() {
-    global $LC_tpl_counter; return $LC_tpl_counter;
-}
-/**
  * 取得PHPINFO
  *
  * @param int $info
@@ -1094,21 +1062,4 @@ function system_sitemaps($type, $inner) {
     $xml.= $inner;
     $xml.= '</'.$type.'>';
     return $xml;
-}
-/**
- * 系统统计
- *
- * @return void
- */
-function system_gateway_counter() {
-    $result   = null;
-    $counters = isset($_GET['counter']) ? $_GET['counter'] : null;
-    $callback = system_get_counter();
-    if ($counters) {
-        foreach ($counters as $counter=>$args) {
-            if (isset($callback[$counter]))
-                $result.= call_user_func($callback[$counter], $args);
-        }
-    }
-    return $result;
 }

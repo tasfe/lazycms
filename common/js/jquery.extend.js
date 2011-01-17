@@ -22,7 +22,7 @@
  * @author  Lukin <my@lukin.cn>
  * @version $Id$
  */
-(function ($) {
+jQuery && (function ($) {
     /**
      * 在光标位置插入值
      *

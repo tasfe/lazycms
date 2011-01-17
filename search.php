@@ -105,7 +105,8 @@ if ($t && $q) {
                     'author'   => $post['author'],
                     'title'    => $post['title'],
                     'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
-                    'comment'  => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment_count&postid='.$post['postid'].'"></script>',
+                    'comment'  => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment&postid='.$post['postid'].'"></script>',
+                    'people'   => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment_people&postid='.$post['postid'].'"></script>',
                     'digg'     => $post['digg'],
                     'path'     => ROOT.$post['path'],
                     'content'  => $content,
@@ -116,9 +117,10 @@ if ($t && $q) {
                 );
                 // 设置分类变量
                 if (isset($post['list'])) {
-                    $vars['listid']   = $post['list']['taxonomyid'];
-                    $vars['listname'] = $post['list']['name'];
-                    $vars['listpath'] = ROOT.$post['list']['path'].'/';
+                    $vars['listid']     = $post['list']['taxonomyid'];
+                    $vars['listname']   = $post['list']['name'];
+                    $vars['listpath']   = ROOT.$post['list']['path'].'/';
+                    $vars['listcount']  = '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=taxonomy_count&listid='.$post['list']['taxonomyid'].'"></script>';
                     if (isset($post['list']['meta'])) {
                         foreach((array)$post['list']['meta'] as $k=>$v) {
                             $vars['list.'.$k] = $v;
@@ -128,7 +130,6 @@ if ($t && $q) {
                 // 清理数据
                 tpl_clean($tpl);
                 tpl_set_var($vars, $tpl);
-                tpl_set_counter('post-list',$post['postid']);
                 // 设置自定义字段
                 if (isset($post['meta'])) {
                     foreach((array)$post['meta'] as $k=>$v) {
