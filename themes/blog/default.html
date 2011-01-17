@@ -13,7 +13,20 @@
 
 <body>
 {include file="inc/header.html" /}
-{$content}
+<div id="layout" class="wrapper">
+    <div id="main">
+        <div class="content">
+            {$content}{pagelist /}
+        </div>
+        <!-- 文章评论 -->
+        <script type="text/javascript" src="images/comment.js">
+            var cmtstate = '{$CMT_State}',
+                replyurl = '{$CMT_ReplyUrl}',
+                ajaxinfo = '{$CMT_AjaxInfo}',
+                listsurl = '{$CMT_ListsUrl}';
+        </script>
+    </div>
+</div>
 {include file="inc/footer.html" /}
 </body>
 </html>

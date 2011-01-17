@@ -137,6 +137,7 @@ class Validate {
      * @return bool
      */
     function is($str,$type){
+        if ($str === null) return $str;
         switch ($type) {
             case VALIDATE_IS_NUMERIC: case 'IS_NUMERIC':
                 $pattern = '/^\d+$/';

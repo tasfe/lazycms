@@ -18,7 +18,7 @@
         <h1>{$title}</h1>
         <div class="date">{$date mode="Y年m月d日 H:i"}</div>
         <div class="content">
-            {$content}
+            {$content link="[$inst]search.php?t=tags&q=$" tags="5-10"}{pagelist /}
         </div>
         <div class="tags">关键词: {tags}<a href="{$inst}search.php?t=tags&q={$name code='url'}" title="{$name}">{$name}</a>{/tags}</div>
         <div class="toobar">

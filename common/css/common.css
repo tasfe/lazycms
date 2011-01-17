@@ -81,9 +81,8 @@ kbd, code { font-family:Consolas, Monaco, Courier, monospace; background-color:#
 
 /* 分页样式 */
 .pages { display:table; }
-.pages a, .pages span { display:block; float:left; background:#fff; border:solid 1px #DEDEDE; padding:1px 3px; margin-right:2px; text-align:center; text-decoration:none; -moz-border-radius:5px; -webkit-border-radius:5px; -khtml-border-radius:5px; border-radius:5px;}
-.pages a:hover{ position:relative; line-height:130%; padding:0 5px; font-size:24px; z-index:100; margin:-8px 0 0 -8px; text-decoration:none;}
-.pages a:hover + a{ position:relative; line-height:130%; padding:0 5px; font-size:18px; z-index:90; margin:-4px 0 0 -4px; text-decoration:none;}
+.pages a, .pages span { display:block; float:left; background:#fff; border:solid 1px #DEDEDE; padding:1px 3px; margin-right:2px; text-align:center; text-decoration:none; }
+.pages a:link, .pages a:active, .pages a:visited, .pages a:hover{ text-decoration:none !important;}
 .pages span.active{ color:#990000 !important; font-weight:bold; }
 
 /* 浮动窗口

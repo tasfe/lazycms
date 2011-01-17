@@ -73,6 +73,10 @@ a:hover, a:active { text-decoration: underline; }
         #categories div.item,#archives div.item{ margin-left:5px; margin-bottom:5px; line-height:24px; border-bottom: 1px solid #333; }
         #categories div.item a,#archives div.item a{ margin-right:3px; font-family:Georgia, sans-serif; }
         #categories div.item span,#archives div.item span{ color:#666; }
+        #comments p{ margin-left:5px; padding-bottom:5px; border-bottom: 1px solid #333; }
+        #comments p strong{ display:block; clear:both; color:#0066CC; }
+        #comments p em{ display:block; clear:both; font-size:11px; color:#666; }
+        #comments p a{ clear:both; color:#333; text-decoration:underline; }
 
     /* blog page */
     #blog_page { padding:0 20px; }
@@ -97,6 +101,9 @@ a:hover, a:active { text-decoration: underline; }
         #tags .pages{ width:100%; padding-bottom:3px; margin-bottom:10px; border-bottom: 2px solid #666; }
         #tags p{ margin:8px 0; padding-bottom:3px; border-bottom: 1px solid #999; }
         #tags p em{ font-size:9px; color:#666; }
+
+    /* main */
+    #main div.content{ margin:10px; padding:10px; border-bottom: 3px solid #333; }
 
     /* gbook */
     #gbook div.content{ margin:10px; padding:10px; border-bottom: 3px solid #333; }

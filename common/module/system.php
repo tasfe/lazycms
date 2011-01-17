@@ -531,6 +531,8 @@ function system_tpl_comments_plugin($tag_name,$tag,$block,$vars) {
     if (!$type) return null;
     // 显示条数
     $number = tpl_get_attr($tag,'number');
+    // postid
+    $postid = tpl_get_attr($tag,'postid');
     // 斑马线实现
     $zebra  = tpl_get_attr($tag,'zebra');
     $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
@@ -538,14 +540,15 @@ function system_tpl_comments_plugin($tag_name,$tag,$block,$vars) {
     // 处理类型
     switch($type) {
         case 'new':
-            $postid = isset($vars['postid']) ? $vars['postid'] : null;
+            if ($postid == 'me')
+                $postid = isset($vars['postid']) ? $vars['postid'] : null;
+            $postid = validate_is($postid, VALIDATE_IS_NUMERIC) ? $postid : null;
             $insql  = $postid ? sprintf(" AND `postid`=%d", esc_sql($postid)) : '';
             $sql    = "SELECT * FROM `#@_comments` WHERE `approved`='1' {$insql} ORDER BY `cmtid` DESC LIMIT {$number} OFFSET 0;";
             break;
         default:
             $sql = null;
     }
-
     $result = null;
     if ($sql) {
         $db = get_conn(); $i = 0;

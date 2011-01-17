@@ -18,7 +18,6 @@
     <ul id="menu">
         <li class="active"><a href="{$inst}index.html">首页</a></li>
         <li><a href="{$inst}blog/">博客</a></li>
-        <li><a href="{$inst}photo/">相册</a></li>
         <li><a href="{$inst}about.html">关于</a></li>
         <li class="last"><a href="{$inst}gbook.html">留言</a></li>
     </ul>
@@ -29,15 +28,11 @@
         {list type="new" number="10" listid="1" listsub="me"}
         <h3 class="title"><a href="{$path}">{$title}</a></h3>
         <div class="date">{$date mode="Y年m月d日 H:i"}</div>
-        <div class="content">
-            {$content}
-        </div>
-        <!--div class="more"><a href="{$path}">阅读全文&gt;&gt;</a></div-->
+        <div class="content">{$content link="[$inst]search.php?t=tags&q=$" tags="5-10"}</div>
         <div class="toobar">
             <a href="{$listpath}" title="{$listname}">类别：{$listname}</a> |
             <a href="{$path}#cmt_list">评论({$comment})</a> |
-            <a href="{$path}">浏览({$views})</a> |
-            <span class="tags">标签：{tags number="5"}<a href="{$inst}search.php?t=tags&q={$name code='url'}" title="{$name}">{$name}</a>{/tags}</span>
+            <a href="{$path}">浏览({$views})</a>
         </div>
         {/list}
         <br />
@@ -47,9 +42,14 @@
         {include file="inc/right.html" /}
         <div id="comments" class="container">
             <h2>最新评论</h2>
+            {comments type="new" number="10"}
+            <p><strong>{$author}</strong><em>{$date mode="Y-m-d H:i"}</em><a href="{$path}#cmt_list">{$content size="50"}</a></p>
+            {/comments}
         </div>
         <div id="links" class="container">
             <h2>友情链接</h2>
+            <a href="http://www.lukin.net/" target="_blank">Lukin</a>
+            <a href="http://jianzhan.sh.cn/" target="_blank">上海网站建设</a>
         </div>
     </div>
     <div class="clear"><br /></div>

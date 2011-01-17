@@ -27,6 +27,9 @@ a:hover, a:active { text-decoration: underline; }
 /* number */
 .number{ font-family:Georgia,"Times New Roman","Bitstream Charter",Times,serif; }
 
+/* pages */
+.pages a, .pages span { -moz-border-radius:5px; -webkit-border-radius:5px; -khtml-border-radius:5px; border-radius:5px; }
+
 /* 表单table
 ----------------------------------------------------------------------------------------------------*/
 .form-table{ width:100%; border:0 none; clear:both; margin-bottom:0px; margin-top:0.5em; border-collapse:collapse; }

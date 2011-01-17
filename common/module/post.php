@@ -365,7 +365,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
             'postid'   => $post['postid'],
             'userid'   => $post['userid'],
             'author'   => $post['author'],
-            'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>',
+            'views'    => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'&updated=true"></script>',
             'comment'  => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment&postid='.$post['postid'].'"></script>',
             'people'   => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_comment_people&postid='.$post['postid'].'"></script>',
             'digg'     => $post['digg'],
@@ -425,7 +425,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
                 } else {
                     $path  = $basename.'_'.$page.$suffix;
                     $title = $post['title'].' ('.$page.')';
-                    tpl_set_var('views', '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'&updated=false"></script>');
+                    tpl_set_var('views', '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=post_views&postid='.$post['postid'].'"></script>', $tpl);
                 }
 
                 tpl_set_var(array(
@@ -543,7 +543,7 @@ function post_gateway_views() {
     if (post_get($postid)) {
         $db = get_conn();
         $views = $db->result(sprintf("SELECT `views` FROM `#@_post` WHERE `postid`=%d", esc_sql($postid)));
-        if ($updated!='false' && $updated!='0') {
+        if ($updated=='true' || $updated=='1') {
             $views++; no_cache();
             $db->update('#@_post',array('views' => $views),array( 'postid' => $postid));
         }
