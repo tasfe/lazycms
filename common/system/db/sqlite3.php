@@ -42,7 +42,6 @@ class DB_Sqlite3 extends DBQuery {
             }
             $this->open($this->name);
             if ($this->conn && $this->conn->lastErrorCode()==0) {
-                $this->apply_plugins();
                 $this->ready = true;
             }
         }
@@ -66,6 +65,9 @@ class DB_Sqlite3 extends DBQuery {
         $this->conn->exec("PRAGMA short_column_names=ON;");
         // 设置10秒等待
         $this->conn->busyTimeout(10000);
+        // 注入自定义函数
+        $this->apply_plugins();
+        
         return $this->conn;
     }
     /**

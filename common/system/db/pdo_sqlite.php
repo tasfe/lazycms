@@ -72,6 +72,7 @@ class DB_PDO_SQLite extends DBQuery {
      */
     function apply_plugins() {
         $this->conn->sqliteCreateFunction('UCASE', 'strtoupper', 1);
+        $this->conn->sqliteCreateFunction('FROM_UNIXTIME', array('DBQuery', 'strftime'), 2);
     }
     /**
      * 执行查询

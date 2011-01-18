@@ -45,7 +45,6 @@ class DB_Sqlite2 extends DBQuery {
             }
             $this->open($this->name);
             if ($this->conn && sqlite_last_error($this->conn)==0) {
-                $this->apply_plugins();
                 $this->ready = true;
             }
         }
@@ -72,6 +71,9 @@ class DB_Sqlite2 extends DBQuery {
         sqlite_exec($this->conn,"PRAGMA short_column_names=ON;");
         // 设置10秒等待
         sqlite_busy_timeout($this->conn, 10000);
+        // 注入自定义函数
+        $this->apply_plugins();
+        
         return $this->conn;
     }
     /**
