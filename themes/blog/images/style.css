@@ -77,6 +77,8 @@ a:hover, a:active { text-decoration: underline; }
         #comments p strong{ display:block; clear:both; color:#0066CC; }
         #comments p em{ display:block; clear:both; font-size:11px; color:#666; }
         #comments p a{ clear:both; color:#333; text-decoration:underline; }
+        #links p{ margin-left:5px; padding-bottom:5px; border-bottom: 1px solid #333; }
+        #links p em{ display:block; font-size:11px; color:#666; }
 
     /* blog page */
     #blog_page { padding:0 20px; }

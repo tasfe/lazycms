@@ -115,7 +115,7 @@ if ($.browser.msie && $.browser.version == '6.0') {
         var data = [], _this = this;
         // 处理分词内容
         content = $.trim(content.replace(/\<[^>]+?\>|\r|\n|\t|  /ig,''));
-        if (content.length > 1024) content.substr(0,1024);
+        if (content.length > 512) content.substr(0,512);
         if (title != '' || content != '') {
             $.post(LazyCMS.ADMIN + 'index.php',{method:'terms', title:title, content:content},function(r){
                 if (r) {

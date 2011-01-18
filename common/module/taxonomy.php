@@ -88,8 +88,8 @@ function term_gets($title=null, $content=null) {
     // 开始分词
     $content = clear_space(strip_tags($content));
     if (trim($content) == '') return null;
-    if (mb_strlen($content,'UTF-8') > 1024)
-        $content = mb_substr($content,0,1024,'UTF-8');
+    if (mb_strlen($content,'UTF-8') > 512)
+        $content = mb_substr($content,0,512,'UTF-8');
 
     include_file(COM_PATH.'/system/keyword.php');
     $splitword = new keyword($dicts);
@@ -101,8 +101,7 @@ function term_gets($title=null, $content=null) {
         $r = @httplib_get(sprintf('http://keyword.lazycms.com/related_kw.php?title=%s&content=%s', rawurlencode($title), rawurlencode($content)),array(
             'timeout' => 3
         ));
-        $code = httplib_retrieve_response_code($r);
-        if ($code == '200') {
+        if (httplib_retrieve_response_code($r) == '200') {
             $keys = array();
             $xml  = httplib_retrieve_body($r);
             // 取出关键词为数组
@@ -234,6 +233,8 @@ function taxonomy_get_ids($listid, $listsub = 'me') {
                 $ids = taxonomy_get_subids($t['subs']);
             } elseif(!isset($t['taxonomyid'])) {
                 $ids = taxonomy_get_subids($t);
+            } else {
+                $ids = null;
             }
             $listids = $ids ? array_merge($listids, $ids) : $listids;
         }
