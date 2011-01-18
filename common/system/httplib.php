@@ -644,7 +644,7 @@ class Httplib {
 		if ( ! empty($r['cookies']) ) {
 			$cookies_header = '';
 			foreach ( (array) $r['cookies'] as $cookie ) {
-                if (!empty($cookie['name']) && empty($cookie['value'])) {
+                if (!empty($cookie['name']) && !empty($cookie['value'])) {
                     $cookies_header .= $cookie['name'] . '=' . urlencode( $cookie['value'] ) . '; ';
                 }
 			}
