@@ -30,7 +30,7 @@ $t   = isset($_REQUEST['t']) ? trim($_REQUEST['t']) : null;
 $q   = isset($_REQUEST['q']) ? trim($_REQUEST['q']) : null;
 $tpl = tpl_init('search');
 // 载入模版
-$html  = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('TPL-Search')));
+$html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('TPL-Search')));
 if ($t && $q) {
     $title    = esc_html($q);
     $keywords = esc_html($q);
@@ -160,7 +160,8 @@ if ($t && $q) {
 }
 // 参数不正确
 else {
-    $title = $guide = __('Arguments is not correct');
+    $title    = $guide = __('Arguments is not correct');
+    $keywords = null;
     tpl_clean($tpl);
 }
 // 分页标签还没解析
