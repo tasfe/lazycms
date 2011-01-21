@@ -45,7 +45,7 @@ a:hover, a:active { text-decoration: underline; }
     #header #menu li a:hover,#header #menu li a:active { color:#0066CC; }
     #header #menu li.active{ background-color: #000; position:relative; left: -1px; }
     #header #menu li.active a{ color: #FFFFFF; border: 1px solid #000 !important; }
-    #menu li.active a:visited { color:#FFF; }
+    #header #menu li.active a:visited { color:#FFF; }
     #header #menu li.last a{ border: 1px solid #FFF; }
 
 /* layout */
