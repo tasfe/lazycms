@@ -56,7 +56,7 @@ class Template {
                 $html = str_replace($r[0][$i],$this->load_file($base.$file),$html);
             }
         }
-        $html = preg_replace('/<title>/isU',"<meta name=\"generator\" content=\"LazyCMS ".LAZY_VERSION."\" />\n\${0}",$html);
+        $html = preg_replace('/<title>/isU',"<meta name=\"generator\" content=\"LazyCMS ".LAZY_VERSION."\" />\n\${0}",$html, 1);
         // 格式化图片、css、js路径
         $html = preg_replace('/(<(((script|link|img|input|embed|object|base|area|map|table|td|th|tr).+?(src|href|background))|((param).+?(src|value)))=([^\/]+?))((images|scripts)\/.{0,}?\>)/i','${1}'.ROOT.system_themes_path().'/${10}',$html);
         return $html;

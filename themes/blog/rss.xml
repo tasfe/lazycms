@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title><![CDATA[{$sitename}]]></title>
+        <description><![CDATA[{$description}]]></description>
+        <link>{$host}{$inst}</link>
+        <language>zh-CN</language>
+        <generator>LazyCMS {$version}</generator>
+        <ttl>5</ttl>
+        {list type="new" number="10" listid="1" listsub="me"}
+        <item>
+            <title><![CDATA[{$title}]]></title>
+            <link><![CDATA[{$host}{$path}]]></link>
+            <description><![CDATA[{$content link="[$inst]search.php?t=tags&q=$" tags="5-10"}]]></description>
+            <pubDate>{$date mode="Y年m月d日 H:i"}</pubDate>
+            <category><![CDATA[{$listname}]]></category>
+            <author><![CDATA[Lukin]]></author>
+            <guid>{$host}{$path}</guid>
+        </item>
+        {/list}
+    </channel>
+</rss>

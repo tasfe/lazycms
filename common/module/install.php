@@ -84,7 +84,7 @@ function install_defaults($initial) {
         'TPL-404'           => '~404.html',
         'TPL-Search'        => '~search.html',
         'TPL-Comments'      => '~comments.html',
-        'TemplateSuffixs'   => 'htm,html',
+        'TemplateSuffixs'   => 'htm,html,xml',
         'HTMLFileSuffix'    => '.html',
         'Comments-Path'     => 'comments/',
     );

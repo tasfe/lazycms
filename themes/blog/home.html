@@ -9,6 +9,7 @@
 <script type="text/javascript" src="{$inst}common/js/lazycms.js?ver={$ver}"></script>
 <script type="text/javascript" src="images/script.js">CMS.ROOT='{$inst}';</script>
 <link href="images/style.css" rel="stylesheet" type="text/css" />
+<link rel="alternate" type="application/rss+xml" title="订阅该的博客文章"  href="{$host}{$inst}rss.xml" />
 </head>
 
 <body>
@@ -53,6 +54,9 @@
             <p><a href="http://iluke.cn/" target="_blank">Luke’s ideas!</a></p>
             <p><a href="http://houzi.in/" target="_blank">猴子's Weblog</a></p>
             <p><a href="http://tokenx.com/" target="_blank">Token’s X Blog</a></p>
+        </div>
+        <div id="rss" class="container">
+            <p><a href="{$host}{$inst}rss.xml" target="_blank"><img src="images/rss.gif" alt="订阅该的博客文章" border="0" /></a></p>
         </div>
     </div>
     <div class="clear"><br /></div>
