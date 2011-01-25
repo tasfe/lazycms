@@ -586,6 +586,37 @@ function system_tpl_comments_plugin($tag_name,$tag,$block,$vars) {
     }
     return $result;
 }
+/**
+ * 处理需要关联生成的文件
+ *
+ * @param string $tag
+ * @return bool
+ */
+function system_porcess_create($tag) {
+    $create = tpl_get_attr($tag,'create');
+    if ($create) {
+        $actions = explode(';', $create);
+        foreach((array)$actions as $action) {
+            if (($pos=strpos($action,':')) !== false) {
+                $method = substr($action,0,$pos);
+                $lists  = substr($action,$pos+1);
+                switch($method) {
+                    case 'postid':
+                        foreach((array)explode(',', $lists) as $postid) {
+                            post_create($postid);
+                        }
+                        break;
+                    case 'listid':
+                        foreach((array)explode(',', $lists) as $listid) {
+                            taxonomy_create($listid);
+                        }
+                        break;
+                }
+            }
+        }
+    }
+    return true;
+}
 if (!function_exists('system_category_guide')) :
 /**
  * 生成导航

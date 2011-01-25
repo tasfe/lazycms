@@ -272,6 +272,8 @@ function comment_create($postid) {
                 $zebra  = validate_is($zebra,VALIDATE_IS_NUMERIC) ? $zebra : 0;
                 $number = validate_is($number,VALIDATE_IS_NUMERIC) ? $number : 10;
                 $order  = instr(strtoupper($order),'ASC,DESC') ? $order : 'DESC';
+                // 处理关联
+                system_porcess_create($block['tag']);
 
                 $db = get_conn(); $i = $length = 0; $page = 1;
                 $rs = $db->query("SELECT * FROM `#@_comments` WHERE `postid`=%d AND `approved`='1' ORDER BY `cmtid` {$order};", $post['postid']);
@@ -332,6 +334,7 @@ function comment_create($postid) {
                         $page++; $inner = ''; $length = 0;
                     }
                 }
+
                 return true;
             }
         }
