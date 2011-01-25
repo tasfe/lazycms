@@ -83,7 +83,7 @@ class PinYin {
      * @return string
      */
     function _pinyin($char){
-        if (strlen($char) == 3 && $this->fp) {
+        if (strlen($char) == 3 && is_resource($this->fp)) {
             $offset = $this->char2dec($char);
             // 判断 off 值
             if ($offset >= 0) {
@@ -95,7 +95,7 @@ class PinYin {
     }
     
     function __destruct() {
-        if ($this->fp) {
+        if (is_resource($this->fp)) {
             fclose($this->fp);
         }
     }
