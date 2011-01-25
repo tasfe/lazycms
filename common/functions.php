@@ -390,7 +390,7 @@ function jQuery($js) {
 function ajax_echo($code,$data,$eval=null){
     if ($code) header('X-LazyCMS-Code: '.$code);
     if ($eval) header('X-LazyCMS-Eval: '.$eval);
-    if (is_accept_json()) {
+    if (is_accept_json() || !is_scalar($data)) {
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($data);
     } else {

@@ -30,6 +30,15 @@ define('DATACACHE_EXPIRE', 31536000);
  * @version $Id$
  */
 class FCache {
+    
+    function __construct(){ }
+
+    function FCache() {
+        register_shutdown_function( array(&$this, '__destruct') );
+
+        $args = func_get_args();
+        call_user_func_array( array(&$this, '__construct'), $args );
+    }
     /**
      * 取得缓存路径
      *
@@ -57,7 +66,10 @@ class FCache {
         $error_level = error_reporting(0);
         $fp = fopen($hash_file, "wb");
     	if ($fp) {
-    	    flock($fp, LOCK_EX);
+            // 延长过期时间，防止高并发情况出现
+            touch($hash_file, time() + 30);
+
+            flock($fp, LOCK_EX);
     	    $mqr = get_magic_quotes_runtime();
             if ($mqr) set_magic_quotes_runtime(0);
             if ($data === null) $data = new LC_Null();
@@ -141,6 +153,39 @@ class FCache {
      */
     function flush() {
         return rmdirs(CACHE_PATH);
+    }
+    /**
+     * 执行过期文件清理
+     *
+     * @return bool
+     */
+    function gc($path) {
+        $error_level = error_reporting(0);
+        if ($dh = opendir($path)) {
+            while (false !== ($file=readdir($dh))) {
+                if ($file != '.' && $file != '..') {
+                    $file_path = $path.'/'.$file;
+                    // 文件夹
+                    if (is_dir($file_path)) {
+                        $this->gc($file_path);
+                    }
+                    // 文件
+                    elseif (is_file($file_path)) {
+                        $last_time = filemtime($file_path);
+                        if ($last_time < time()) {
+                            unlink($file_path);
+                        }
+                    }
+                }
+            }
+            closedir($dh);
+        }
+        error_reporting($error_level);
+        return true;
+    }
+    
+    function __destruct() {
+        return $this->gc(CACHE_PATH);
     }
 }
 class LC_Null { }

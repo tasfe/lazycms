@@ -84,6 +84,7 @@ class DB_Sqlite2 extends DBQuery {
     function apply_plugins() {
         sqlite_create_function($this->conn, 'UCASE', 'strtoupper', 1);
         sqlite_create_function($this->conn, 'FROM_UNIXTIME', array('DBQuery', 'strftime'), 2);
+        sqlite_create_function($this->conn, 'FIND_IN_SET', 'instr', 2);
     }
     /**
      * 执行查询

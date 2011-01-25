@@ -54,7 +54,12 @@ if (function_exists($func_name)) {
     }
     // HTML输出
     elseif($result) {
-        echo $result;
+        if (is_scalar($result)) {
+            echo $result;
+        } else {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode($result);
+        }
     }
 } else {
     die(__('Restricted access!'));

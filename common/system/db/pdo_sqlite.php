@@ -56,7 +56,7 @@ class DB_PDO_SQLite extends DBQuery {
      * @return bool
      */
     function open($dbname) {
-        $this->conn = new PDO(sprintf('%s:%s', $this->scheme, $dbname));
+        $this->conn = new PDO(sprintf('%s:%s', $this->scheme, $dbname), null, null);
         // 验证连接是否正确
         if ($this->errno() != 0) {
             return throw_error(sprintf(__('Database connect error:%s'), $this->error()), E_LAZY_ERROR);
@@ -73,6 +73,7 @@ class DB_PDO_SQLite extends DBQuery {
     function apply_plugins() {
         $this->conn->sqliteCreateFunction('UCASE', 'strtoupper', 1);
         $this->conn->sqliteCreateFunction('FROM_UNIXTIME', array('DBQuery', 'strftime'), 2);
+        $this->conn->sqliteCreateFunction('FIND_IN_SET', 'instr', 2);
     }
     /**
      * 执行查询
