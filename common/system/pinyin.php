@@ -47,13 +47,19 @@ class PinYin {
      *
      * @param string $str   汉字
      * @param bool $ucfirst 首字母大写
+     * @param bool $polyphony 忽略多音节
      * @return string
      */
-    function encode($str,$ucfirst=true) {
-        $ret = ''; $len = strlen($str);
-        for ($i = 0; $i < $len; $i = $i + 3) {
-            $py   = $this->_pinyin(substr($str, $i, 3));
-            $ret .= $ucfirst ? ucfirst($py) : $py;
+    function encode($str, $ucfirst=true, $polyphony=true) {
+        $ret = ''; $len = mb_strlen($str, 'UTF-8');
+        for ($i = 0; $i < $len; $i++) {
+            $py = $this->pinyin(mb_substr($str, $i, 1, 'UTF-8'));
+            if ($ucfirst && strpos($py, ',') !== false) {
+                $pys = explode(',', $py);
+                $ret.= implode(',', array_map('ucfirst', ($polyphony ? array_slice($pys, 0, 1) : $pys)));
+            } else {
+                $ret.= $ucfirst ? ucfirst($py) : $py;
+            }
         }
         return $ret;
     }
@@ -81,8 +87,8 @@ class PinYin {
             $offset = $this->char2dec($char);
             // 判断 off 值
             if ($offset >= 0) {
-                fseek($this->fp, ($offset - 19968) << 3, SEEK_SET);
-                return trim(fread($this->fp, 8));
+                fseek($this->fp, ($offset - 19968) << 4, SEEK_SET);
+                return trim(fread($this->fp, 16));
             }
         }
         return $char;
