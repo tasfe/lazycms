@@ -198,7 +198,12 @@ class Httplib {
     function request_fsockopen($url,$agrs) {
         $r = $agrs;
         // 解析url
-        $aurl = $this->parse_url($url); $host = $aurl['host']; if ('localhost' == strtolower($host)) $host = '127.0.0.1';
+        $aurl = $this->parse_url($url);
+        $host = $aurl['host']; if ('localhost' == strtolower($host)) $host = '127.0.0.1';
+        // 安全请求
+        if ($aurl['scheme'] == 'https' && extension_loaded('openssl')) {
+            $host = 'ssl://'.$host; $aurl['port'] = 443;
+        }
         // 连接服务器
         $start_delay = time();
         $error_level = error_reporting(0);
@@ -267,11 +272,14 @@ class Httplib {
         // 重定向到新的位置
 		if ('HEAD' != $r['method'] && $r['redirection']>0 && isset($headers['headers']['location'])) {
 			if ($r['redirection']-- > 0) {
-				return $this->request($headers['headers']['location'], $r);
+				return $this->request($this->format_url($aurl, $headers['headers']['location']), $r);
 			} else {
                 return throw_error(__('Too many redirects.'),E_LAZY_WARNING);
 			}
 		}
+        if (isset($headers['headers']['location'])) {
+            $headers['headers']['location'] = $this->format_url($aurl, $headers['headers']['location']);
+        }
         // If the body was chunk encoded, then decode it.
 		if (!empty($process['body']) && isset($headers['headers']['transfer-encoding']) && 'chunked' == $headers['headers']['transfer-encoding'])
 			$process['body'] = $this->decode_chunked($process['body']);
@@ -312,6 +320,8 @@ class Httplib {
 
 		curl_setopt( $handle, CURLOPT_URL, $url);
 		curl_setopt( $handle, CURLOPT_RETURNTRANSFER, true );
+        curl_setopt( $handle, CURLOPT_SSL_VERIFYHOST, false );
+        curl_setopt( $handle, CURLOPT_SSL_VERIFYPEER, false );
 		curl_setopt( $handle, CURLOPT_USERAGENT, $r['user-agent'] );
 		curl_setopt( $handle, CURLOPT_MAXREDIRS, $r['redirection'] );
         if (!isset($r['headers']['referer']) && !isset($r['headers']['Referer'])) {
@@ -359,7 +369,9 @@ class Httplib {
 			return array('headers'=>array(),'body'=>'','response'=>array('code'=>false,'message'=>false),'cookies'=>array());
 		}
 
+		$error_level = error_reporting(0);
 		$str_response = curl_exec( $handle );
+        error_reporting($error_level);
 
         if ( !empty($str_response) ) {
 			$length = curl_getinfo($handle, CURLINFO_HEADER_SIZE);
@@ -392,12 +404,14 @@ class Httplib {
 		// See #11305 - When running under safe mode, redirection is disabled above. Handle it manually.
 		if ( !empty($headers['headers']['location']) && $r['redirection']>0 && (ini_get('safe_mode') || ini_get('open_basedir')) ) {
 			if ( $r['redirection']-- > 0 ) {
-				return $this->request($headers['headers']['location'], $r);
+				return $this->request($this->format_url($aurl, $headers['headers']['location']), $r);
 			} else {
                 return throw_error(__('Too many redirects.'),E_LAZY_WARNING);
 			}
 		}
-
+        if (isset($headers['headers']['location'])) {
+            $headers['headers']['location'] = $this->format_url($aurl, $headers['headers']['location']);
+        }
 		if ( true === $r['decompress'] && true === $this->should_decode($headers['headers']) ) {
             $error_level = error_reporting(0);
             $the_body    = $this->decompress( $the_body );
@@ -458,7 +472,9 @@ class Httplib {
             error_reporting($error_level);
 		}
 
+        $error_level = error_reporting(0);
         $handle = fopen($url, 'r');
+        error_reporting($error_level);
 
         if (! $handle)
 			return throw_error(sprintf(__('Could not open handle for fopen() to %s'), $url),E_LAZY_WARNING);
@@ -525,7 +541,11 @@ class Httplib {
     function request_streams($url,$agrs) {
         $r = $agrs;
         // 解析url
-        $aurl = $this->parse_url($url); $host = $aurl['host']; if ('localhost' == strtolower($host)) $host = '127.0.0.1';
+        $aurl = $this->parse_url($url);
+        $host = $aurl['host']; if ('localhost' == strtolower($host)) $host = '127.0.0.1';
+
+        if ( 'http' != $aurl['scheme'] && 'https' != $aurl['scheme'] )
+			$url = str_replace($aurl['scheme'], 'http', $url);
 
         // Convert Header array to string.
 		$str_headers = '';
@@ -552,6 +572,10 @@ class Httplib {
 				'header'            => $str_headers,
 				'ignore_errors'     => true, // Return non-200 requests.
 				'timeout'           => $r['timeout'],
+                'ssl'               => array(
+                    'verify_peer'   => false,
+                    'verify_host'   => false,
+                )
 			)
 		);
         
@@ -563,7 +587,9 @@ class Httplib {
         //print_r($arr_context);exit;
         $context = stream_context_create($arr_context);
 
+        $error_level = error_reporting(0);
         $handle = fopen($url, 'r', false, $context);
+        error_reporting($error_level);
 
         if ( ! $handle )
             return throw_error(sprintf(__('Could not open handle for fopen() to %s'), $url),E_LAZY_WARNING);
@@ -605,6 +631,30 @@ class Httplib {
             'response'  => $headers['response'],
             'cookies'   => $headers['cookies'],
         );
+    }
+    /**
+     * 格式化url
+     *
+     * @param array $aurl
+     * @param string $location
+     * @return string
+     */
+    function format_url($aurl, $location) {
+        $scheme = $aurl['scheme'].'://';
+        if (strncmp($scheme, $location, strlen($scheme)) === 0)
+            return $location;
+        $url = $scheme.$aurl['host'];
+        if (strncmp($location, '/', 1) === 0) {
+            $url.= $location;
+        } else {
+            $query = dirname($aurl['query']);
+            if (substr($aurl['query'],-1) == '/') {
+                $url.= $aurl['query'].$location;
+            } else {
+                $url .= ($query == '/' ? $query : $query . '/') . $location;
+            }
+        }
+        return $url;
     }
     /**
      * 解析URL
