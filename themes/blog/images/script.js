@@ -14,12 +14,13 @@ jQuery && (function ($) {
     $.ajaxSetup({
         beforeSend: LazyCMS.success,
         error:function(xhr,status,error) {
-            var title = $.parseJSON(xhr.getResponseHeader('X-Dialog-title'));
-                title = title || _('System Error');
-            LazyCMS.dialog({
-                title:title, styles:{ overflow:'auto', width:'700px',height:'350px' }, body: xhr.responseText
-            });
-            LazyCMS.Loading.remove();
+            if (xhr && xhr.getResponseHeader('Date')) {
+                var title = $.parseJSON(xhr.getResponseHeader('X-Dialog-title'));
+                    title = title || _('System Error');
+                LazyCMS.dialog({
+                    title:title, styles:{ overflow:'auto', width:'700px',height:'350px' }, body: xhr.responseText
+                });
+            }
         },
         complete: function(){
             LazyCMS.Loading.remove();
