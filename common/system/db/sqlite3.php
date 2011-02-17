@@ -56,7 +56,12 @@ class DB_Sqlite3 extends DBQuery {
      */
     function open($dbname, $flags=null) {
         if ($flags === null) $flags = SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE;
-        $this->conn = new SQLite3($dbname, $flags, null);
+        if ($this->is_database($dbname)) {
+            $this->conn = new SQLite3($dbname, $flags, null);
+        } else {
+            return throw_error(_('Database is not found!'), E_LAZY_ERROR);
+        }
+
         // 验证连接是否正确
         if ($this->conn->lastErrorCode() > 0) {
             return throw_error(sprintf(__('Database connect error:%s'), $this->conn->lastErrorMsg()), E_LAZY_ERROR);

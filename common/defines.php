@@ -53,7 +53,7 @@ if(!defined('PHP_FILE')) {
     }
 }
 // Web root
-define('ROOT',str_replace('\\','/',substr(dirname(PHP_FILE),0,-strlen(substr(realpath('.'),strlen(ABS_PATH)))+1)));
+defined('ROOT') or define('ROOT', str_replace('\\', '/', substr((($p = dirname(PHP_FILE)) == '/' ? $p : $p . '/'), 0, ($i = strlen(substr(realpath('.'), strlen(ABS_PATH)))) > 0 ? -$i : strlen(dirname(PHP_FILE)) + 1)));
 // Http scheme
 define('HTTP_SCHEME',(($scheme=isset($_SERVER['HTTPS'])?$_SERVER['HTTPS']:null)=='off' || empty($scheme))?'http':'https');
 // 非命令行模式
