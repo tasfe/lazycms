@@ -41,11 +41,12 @@ func_add_callback('loader_add_css', array(
     'cpanel'            => array('/admin/css/cpanel.css'),
     'user'              => array('/admin/css/user.css'),
     'model'             => array('/admin/css/model.css'),
-    'post'              => array('/admin/css/post.css', array('xheditor.plugins')),
+    'post'              => array('/admin/css/post.css'),
     'publish'           => array('/admin/css/publish.css'),
     'options'           => array('/admin/css/options.css'),
     'comment'           => array('/admin/css/comment.css'),
-    'xheditor.plugins'  => array('/common/css/xheditor.plugins.css'),
+    'xheditor'          => array('/common/css/xheditor.plugins.css'),
+    'datePicker'        => array('/common/css/datePicker.css'),
 ));
 // 添加js
 func_add_callback('loader_add_js', array(
@@ -65,6 +66,8 @@ func_add_callback('loader_add_js', array(
     'comment'           => array('/admin/js/comment.js'),
     'xheditor'          => array('/common/editor/xheditor.js', array('xheditor.plugins')),
     'xheditor.plugins'  => array('/common/js/xheditor.plugins.js'),
+    'date'              => array('/common/js/date.js'),
+    'datePicker'        => array('/common/js/jquery.datePicker.js', array('date')),
 ));
 // 系统权限
 func_add_callback('system_purview_add', array(
@@ -661,7 +664,6 @@ function system_head($key,$value=null) {
         } else {
             $head[$key] = $value;
         }
-
     }
     return isset($head[$key])?$head[$key]:array();
 }

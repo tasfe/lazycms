@@ -171,9 +171,6 @@ if ($.browser.msie && $.browser.version == '6.0') {
     }
 })(jQuery);
 
-
-
-
 // 执行生成进度
 function common_publish() {
     $('form#publishlist').publish();

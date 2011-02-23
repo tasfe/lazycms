@@ -36,13 +36,13 @@ switch ($method) {
             system_head('title',__('Add New Post'));
             current_user_can('post-new');
         }
-        system_head('styles', array('css/post'));
-        system_head('scripts',array('js/xheditor','js/post'));
+        system_head('styles', array('css/post','css/xheditor','css/datePicker'));
+        system_head('scripts',array('js/post','js/xheditor','js/datePicker'));
         system_head('jslang',system_editor_lang());
         system_head('jslang',array(
             'Please enter the title or content!' => __('Please enter the title or content!'),
         ));
-	    system_head('loadevents','post_manage_init');
+	    system_head('loadevents', 'post_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
 	    post_manage_page('add');	    
 	    include ADMIN_PATH.'/admin-footer.php';
@@ -64,13 +64,13 @@ switch ($method) {
             // 权限检查
             current_user_can('post-edit');
         }
-        system_head('styles', array('css/post'));
-        system_head('scripts',array('js/xheditor','js/post'));
+        system_head('styles', array('css/post','css/xheditor','css/datePicker'));
+        system_head('scripts',array('js/post','js/xheditor','js/datePicker'));
         system_head('jslang',system_editor_lang());
         system_head('jslang',array(
             'Please enter the title or content!' => __('Please enter the title or content!'),
         ));
-	    system_head('loadevents','post_manage_init');
+	    system_head('loadevents', 'post_manage_init');
 	    include ADMIN_PATH.'/admin-header.php';
 	    post_manage_page('edit');	    
 	    include ADMIN_PATH.'/admin-footer.php';
@@ -500,7 +500,7 @@ function post_manage_page($action) {
     $keywords = isset($_DATA['keywords'])?post_get_taxonomy($_DATA['keywords'], true):null;
     $categories  = isset($_DATA['category'])?$_DATA['category']:array();
     $description = isset($_DATA['description'])?$_DATA['description']:null;
-    
+
     echo '<div class="wrap">';
     echo   '<h2>'.system_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="postmanage" id="postmanage">';

@@ -270,6 +270,9 @@ function model_field2html($field) {
         case 'upfile':
             $hl.= '<input class="text" id="'.$field['_n'].'" name="'.$field['_n'].'" type="text" style="width:'.$field['w'].'" />&nbsp;<button type="button">'.__('Browse...').'</button>';
             break;
+        case 'date':
+            $hl.= '<input class="text date-pick" id="'.$field['_n'].'" name="'.$field['_n'].'" type="text" style="width:'.$field['w'].'" />';
+            break;
     }
     return $hl;
 }
