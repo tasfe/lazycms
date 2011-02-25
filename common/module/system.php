@@ -1099,3 +1099,26 @@ function system_sitemaps($type, $inner) {
     $xml.= '</'.$type.'>';
     return $xml;
 }
+/**
+ * @param  $content
+ * @return void
+ */
+function system_localized_images($content) {
+    include_file(COM_PATH.'/system/httplib.php');
+    if (preg_match_all('/<img[^>]+src\s*=([^\s\>]+)[^>]*>/i', $content, $matchs)) {
+        foreach ($matchs[1] as $url) {
+            $url  = trim(trim(trim($url),'"'), "'");
+            $aurl = httplib_parse_url($url);
+            $resp = httplib_get($url, array(
+                'timeout'   => 60,
+                'headers'   => array(
+                    'referer' => $aurl['referer'],
+                ),
+            ));
+            $code = httplib_retrieve_response_code($resp);
+            if ($code == 200) {
+                $body = httplib_retrieve_body($resp);
+            }
+        }
+    }
+}

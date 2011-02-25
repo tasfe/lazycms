@@ -68,7 +68,7 @@ function post_manage_extend_attr(model,postid) {
         if (path = xhr.getResponseHeader('X-LazyCMS-Path')) {
             $('input#path',wrap).val(path);
         }
-        LazyCMS.eselect(); $('.date-pick').datePicker({
+        LazyCMS.eselect(); wrap.semiauto(); $('.date-pick').datePicker({
             startDate: Date.fromString('1900-01-01').asString()
         });
     });

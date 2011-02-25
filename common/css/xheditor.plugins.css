@@ -24,3 +24,6 @@
 .xhePlugins_btnRemoveLink { width:20px !important; background:transparent url(../editor/plugins/removelink/icon.gif) no-repeat center center; }
 
 .xhePageBreak { background:url(../editor/plugins/pagebreak/pagebreak.gif) no-repeat scroll center top #FFFFFF; border-color:#CCCCCC -moz-use-text-color -moz-use-text-color; border-right:0 none; border-style:dotted none none; border-width:1px 0 0; display:block; height:12px; margin-top:15px; width:100%; }
+
+.xhe_botbar { margin-top:5px; }
+.xhe_botbar button { margin-right:5px; }

@@ -271,6 +271,7 @@ switch ($method) {
         $hl.=        '<label><input type="checkbox" name="a[]"'.(instr('GoogleMap', $a)?' checked="checked"':null).' value="GoogleMap" /> '.__('Insert Google Map').'</label>';
 	    $hl.=        '<label><input type="checkbox" name="a[]"'.(instr('Pagebreak', $a)?' checked="checked"':null).' value="Pagebreak" /> '.__('Insert Pagebreak').'</label>';
         $hl.=        '<label><input type="checkbox" name="a[]"'.(instr('Removelink', $a)?' checked="checked"':null).' value="Removelink" /> '.__('Remove external links').'</label>';
+        $hl.=        '<label><input type="checkbox" name="a[]"'.(instr('LocalizedImages', $a)?' checked="checked"':null).' value="LocalizedImages" /> '.__('Localized Images').'</label>';
         $hl.=    '</td></tr>';
 	    $hl.=    '<tr id="field_length" class="hide">';
 	    $hl.=        '<th><label for="field_c">'._x('Length','field').'</label></th>';

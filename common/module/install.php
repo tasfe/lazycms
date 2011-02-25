@@ -255,6 +255,19 @@ CREATE TABLE IF NOT EXISTS `#@_term_taxonomy_meta` (
   KEY `taxonomyid` (`taxonomyid`),
   KEY `key` (`key`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `#@_files` (
+  `fileid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `md5sum` char(32) CHARACTER SET utf8 NOT NULL,
+  `type` char(5) CHARACTER SET utf8 NOT NULL,
+  `size` int(10) unsigned NOT NULL DEFAULT '0',
+  `path` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `userid` int(10) unsigned NOT NULL DEFAULT '0',
+  `addtime` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`fileid`),
+  UNIQUE KEY `md5sum` (`md5sum`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 SQL;
 }
 

@@ -195,7 +195,7 @@ function editor($id,$content,$options=null) {
         switch ($options['toobar']) {
             case 'full':
                 $options['tools'] = 'Source,Preview,Pastetext,|,Blocktag,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,'.
-                                    'BackColor,Removeformat,|,Align,List,Outdent,Indent,|,Link,Unlink,Img,Flash,Flv,Emot,Table,GoogleMap,Pagebreak,Removelink,|,'.
+                                    'BackColor,Removeformat,|,Align,List,Outdent,Indent,|,Link,Unlink,Img,Flash,Flv,Emot,Table,GoogleMap,Pagebreak,Removelink,LocalizedImages,|,'.
                                     'Fullscreen';
                 break;
             case 'simple':
@@ -207,8 +207,20 @@ function editor($id,$content,$options=null) {
         }
     }
 
+    $botbar = array();
+    if (instr('Pagebreak', $options['tools'])) {
+        $botbar[] = '<button type="button" onclick="xhe_'.$id.'.exec(\'Pagebreak\');">'.__('Insert Pagebreak').'</button>';
+    }
+    if (instr('Removelink', $options['tools'])) {
+        $botbar[] = '<button type="button" onclick="xhe_'.$id.'.exec(\'Removelink\');">'.__('Remove external links').'</button>';
+    }
+    if (instr('LocalizedImages', $options['tools'])) {
+        $botbar[] = '<input cookie="true" type="checkbox" name="LocalizedImages['.$id.']" id="LocalizedImages_'.$id.'" value="1" /><label for="LocalizedImages_'.$id.'">'.__('Localized Images').'</label>';
+    }
+
     $ht = '<textarea class="text" id="'.$id.'" name="'.$id.'">'.esc_html($content).'</textarea>';
-    $ht.= '<script type="text/javascript">$(\'textarea[name='.$id.']\').xheditor($.extend('.json_encode($options).',{"plugins":xhePlugins,"beforeSetSource":xheFilter.SetSource,"beforeGetSource":xheFilter.GetSource}));</script>';
+    $ht.= '<script type="text/javascript">var xhe_'.$id.' = $(\'textarea[name='.$id.']\').xheditor($.extend('.json_encode($options).',{"plugins":xhePlugins,"beforeSetSource":xheFilter.SetSource,"beforeGetSource":xheFilter.GetSource}));</script>';
+    if (!empty($botbar)) $ht.= '<div class="xhe_botbar">'.implode('', $botbar).'</div>';
     return $ht;
 }
 
@@ -862,7 +874,7 @@ function mid($content,$start,$end=null,$clear=null){
  */
 function format_url($base, $html) {
     if (preg_match_all('/<(img|script)[^>]+src=([^\s]+)[^>]*>|<(a|link)[^>]+href=([^\s]+)[^>]*>/iU', $html, $matchs)) {
-        $pase_url  = httplib_parse_url($base);
+        $pase_url  = parse_url($base);
         $base_host = sprintf('%s://%s',   $pase_url['scheme'], $pase_url['host']);
         if (($pos=strpos($pase_url['path'], '#')) !== false) {
             $base_path = rtrim(dirname(substr($pase_url['path'], 0, $pos)), '\\/');
