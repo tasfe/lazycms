@@ -139,7 +139,7 @@ switch ($method) {
         echo            '<h3>'.__('Recent Comments').'</h3>';
         echo            '<div class="inside comments">';
         $i  = 0;
-        $rs = $db->query("SELECT * FROM `#@_comments` ORDER BY `cmtid` DESC LIMIT 5 OFFSET 0;");
+        $rs = $db->query("SELECT * FROM `#@_comment` ORDER BY `cmtid` DESC LIMIT 5 OFFSET 0;");
         while ($data = $db->fetch($rs)) {
             $data['avatar'] = get_avatar($data['mail'], 50, 'mystery');
             $data['author'] = $data['author'] ? $data['author'] : __('Anonymous');

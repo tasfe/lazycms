@@ -128,7 +128,6 @@ switch ($method) {
                 validate_check('listid',VALIDATE_EMPTY,_x('Please select a main category.','post'));
             }
 
-
             validate_check(array(
                 array('title',VALIDATE_EMPTY,_x('The title field is empty.','post')),
                 array('title',VALIDATE_LENGTH,_x('The title field length must be %d-%d characters.','post'),1,255),
@@ -166,6 +165,19 @@ switch ($method) {
 
             // 安全有保证，做爱做的事吧！
             if (validate_is_ok()) {
+                // 下载远程图片
+                if (isset($_POST['LocalizedImages'])) {
+                    // 下载主编辑器图片
+                    if (isset($_POST['LocalizedImages']['content']) && $_POST['LocalizedImages']['content']) {
+                        $content = media_localized_images($content); unset($_POST['LocalizedImages']['content']);
+                    }
+                    // 下载其他编辑器图片
+                    foreach((array)$_POST['LocalizedImages'] as $field=>$v) {
+                        if ($v) {
+                            $_POST[$field] = media_localized_images($_POST[$field]);
+                        }
+                    }
+                }
                 // 处理路径
                 $path = esc_html(rtrim($path,'/'));
                 // 自动获取关键词
@@ -187,6 +199,7 @@ switch ($method) {
                     'comments' => $comments,
                     'description' => esc_html($description),
                 );
+
                 // 获取模型字段值
                 if ($model['fields']) {
                     foreach($model['fields'] as $field) {
@@ -194,12 +207,7 @@ switch ($method) {
                     }
                 }
 
-                // 下载远程图片
-                foreach($_POST['LocalizedImages'] as $field=>$v) {
-                    if ($v) {
-                        system_localized_images($_POST[$field]);
-                    }
-                }
+
 
 
                 // 更新
@@ -546,7 +554,7 @@ function post_manage_page($action) {
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="content">'._x('Content','post').'</label></th>';
-    echo                   '<td>'.editor('content', $content).'</td>';
+    echo                   '<td>'.editor('content', media_decode($content)).'</td>';
     echo               '</tr>';
     echo           '</tbody>';
     echo           '<tbody class="extend-attr"></tbody>';

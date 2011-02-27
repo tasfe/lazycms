@@ -265,7 +265,7 @@ function model_field2html($field) {
                                      'BackColor,Removeformat,|,Align,List,Outdent,Indent,|,Link,Unlink,'.$plugins.',|,Fullscreen';
 
             }
-            $hl.= editor($field['_n'],$field['d'],$options);
+            $hl.= editor($field['_n'],media_decode($field['d']),$options);
             break;
         case 'upfile':
             $hl.= '<input class="text" id="'.$field['_n'].'" name="'.$field['_n'].'" type="text" style="width:'.$field['w'].'" />&nbsp;<button type="button">'.__('Browse...').'</button>';

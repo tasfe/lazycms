@@ -135,7 +135,7 @@ switch ($method) {
             $where.= ' AND `ip`='.esc_sql(sprintf('%u', ip2long($ipaddr)));
         }
         
-        $result = pages_query("SELECT * FROM `#@_comments` {$where} ORDER BY `cmtid` DESC");
+        $result = pages_query("SELECT * FROM `#@_comment` {$where} ORDER BY `cmtid` DESC");
         // 分页地址
         $page_url = PHP_FILE.'?'.http_build_query($query);
         $pend_len = comment_count(0, '0');

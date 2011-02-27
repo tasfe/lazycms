@@ -547,7 +547,7 @@ function system_tpl_comments_plugin($tag_name,$tag,$block,$vars) {
                 $postid = isset($vars['postid']) ? $vars['postid'] : null;
             $postid = validate_is($postid, VALIDATE_IS_NUMERIC) ? $postid : null;
             $insql  = $postid ? sprintf(" AND `postid`=%d", esc_sql($postid)) : '';
-            $sql    = "SELECT * FROM `#@_comments` WHERE `approved`='1' {$insql} ORDER BY `cmtid` DESC LIMIT {$number} OFFSET 0;";
+            $sql    = "SELECT * FROM `#@_comment` WHERE `approved`='1' {$insql} ORDER BY `cmtid` DESC LIMIT {$number} OFFSET 0;";
             break;
         default:
             $sql = null;
@@ -1098,27 +1098,4 @@ function system_sitemaps($type, $inner) {
     $xml.= $inner;
     $xml.= '</'.$type.'>';
     return $xml;
-}
-/**
- * @param  $content
- * @return void
- */
-function system_localized_images($content) {
-    include_file(COM_PATH.'/system/httplib.php');
-    if (preg_match_all('/<img[^>]+src\s*=([^\s\>]+)[^>]*>/i', $content, $matchs)) {
-        foreach ($matchs[1] as $url) {
-            $url  = trim(trim(trim($url),'"'), "'");
-            $aurl = httplib_parse_url($url);
-            $resp = httplib_get($url, array(
-                'timeout'   => 60,
-                'headers'   => array(
-                    'referer' => $aurl['referer'],
-                ),
-            ));
-            $code = httplib_retrieve_response_code($resp);
-            if ($code == 200) {
-                $body = httplib_retrieve_body($resp);
-            }
-        }
-    }
 }

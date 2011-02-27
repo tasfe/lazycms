@@ -56,11 +56,7 @@ class DB_PDO_SQLite extends DBQuery {
      * @return bool
      */
     function open($dbname) {
-        if ($this->is_database($dbname)) {
-            $this->conn = new PDO(sprintf('%s:%s', $this->scheme, $dbname), null, null);
-        } else {
-            return throw_error(_('Database is not found!'), E_LAZY_ERROR);
-        }
+        $this->conn = new PDO(sprintf('%s:%s', $this->scheme, $dbname), null, null);
         // 验证连接是否正确
         if ($this->errno() != 0) {
             return throw_error(sprintf(__('Database connect error:%s'), $this->error()), E_LAZY_ERROR);

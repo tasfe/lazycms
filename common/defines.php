@@ -67,3 +67,5 @@ if (!IS_CLI) {
 }
 // 模版目录
 defined('TEMPLATE') or define('TEMPLATE','themes');
+// 上传目录
+defined('MEDIA_PATH') or define('MEDIA_PATH','medias');

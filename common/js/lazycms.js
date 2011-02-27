@@ -641,7 +641,7 @@ jQuery && (function ($) {
             var c = LazyCMS.getCookie(name + '_select', 's' + i);
             if (c !== null) {
                 $('option:selected',this).attr('selected',false);
-                $('option[value=' + c + ']',this).attr('selected',true);
+                $('option[value="' + c + '"]',this).attr('selected',true);
             }
         }).change(function(){
             LazyCMS.setCookie(name + '_select', 's' + $(this).attr('guid'), this.value, opts);

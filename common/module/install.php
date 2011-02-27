@@ -33,7 +33,7 @@ function installed() {
         if (!$db) return $result;
         $tables = array(
             'option','model','user','user_meta',
-            'publish','post','post_meta','comments',
+            'publish','post','post_meta','comment','media',
             'term','term_relation','term_taxonomy','term_taxonomy_meta',
         );
         $table_ok = true;
@@ -192,7 +192,7 @@ CREATE TABLE IF NOT EXISTS `#@_post_meta` (
   KEY `key` (`key`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `#@_comments` (
+CREATE TABLE IF NOT EXISTS `#@_comment` (
   `cmtid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `postid` bigint(20) unsigned NOT NULL,
   `author` varchar(255) NOT NULL,
@@ -256,23 +256,17 @@ CREATE TABLE IF NOT EXISTS `#@_term_taxonomy_meta` (
   KEY `key` (`key`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `#@_files` (
-  `fileid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `md5sum` char(32) CHARACTER SET utf8 NOT NULL,
-  `type` char(5) CHARACTER SET utf8 NOT NULL,
+CREATE TABLE IF NOT EXISTS `#@_media` (
+  `mediaid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `md5sum` char(32) NOT NULL,
+  `type` char(5) NOT NULL,
   `size` int(10) unsigned NOT NULL DEFAULT '0',
-  `path` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `path` varchar(255) NOT NULL,
   `userid` int(10) unsigned NOT NULL DEFAULT '0',
   `addtime` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`fileid`),
+  PRIMARY KEY (`mediaid`),
   UNIQUE KEY `md5sum` (`md5sum`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 SQL;
 }
-
-
-
-
-
-
