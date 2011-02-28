@@ -1054,6 +1054,8 @@ function system_editor_lang() {
         'Currently not supported by your browser, use keyboard shortcuts(Ctrl+C) instead.' => __('Currently not supported by your browser, use keyboard shortcuts(Ctrl+C) instead.'),
         'Currently not supported by your browser, use keyboard shortcuts(Ctrl+V) instead.' => __('Currently not supported by your browser, use keyboard shortcuts(Ctrl+V) instead.'),
         'Upload file extension required for this: ' => __('Upload file extension required for this: '),
+        'Upload' => __('Upload'),
+        'Upload file' => __('Upload file'),
     );
 }
 /**

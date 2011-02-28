@@ -205,6 +205,7 @@ function editor($id,$content,$options=null) {
                 $options['tools'] = 'mini';
                 break;
         }
+        unset($options['toobar']);
     }
 
     $botbar = array();
@@ -217,6 +218,8 @@ function editor($id,$content,$options=null) {
     if (instr('LocalizedImages', $options['tools'])) {
         $botbar[] = '<input cookie="true" type="checkbox" name="LocalizedImages['.$id.']" id="LocalizedImages_'.$id.'" value="1" /><label for="LocalizedImages_'.$id.'">'.__('Localized Images').'</label>';
     }
+
+    $options['upImgUrl'] = 'upload.php';
 
     $ht = '<textarea class="text" id="'.$id.'" name="'.$id.'">'.esc_html($content).'</textarea>';
     $ht.= '<script type="text/javascript">var xhe_'.$id.' = $(\'textarea[name='.$id.']\').xheditor($.extend('.json_encode($options).',{"plugins":xhePlugins,"beforeSetSource":xheFilter.SetSource,"beforeGetSource":xheFilter.GetSource}));</script>';

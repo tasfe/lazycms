@@ -86,7 +86,7 @@ var regEntities=/[<>"®©]/g;
 
 $.xheditor=function(textarea,options)
 {
-	var defaults={skin:'default',tools:'full',clickCancelDialog:true,linkTag:false,internalScript:false,inlineScript:false,internalStyle:true,inlineStyle:true,showBlocktag:false,forcePtag:true,upLinkExt:"zip,rar,txt",upImgExt:"jpg,jpeg,gif,png",upFlashExt:"swf",upMediaExt:"wmv,avi,wma,mp3,mid",modalWidth:350,modalHeight:220,modalTitle:true,defLinkText:_('Click to open link'),layerShadow:3,emotMark:false,upBtnText:'上传',cleanPaste:2,hoverExecDelay:100,html5Upload:true,upMultiple:99};
+	var defaults={skin:'default',tools:'full',clickCancelDialog:true,linkTag:false,internalScript:false,inlineScript:false,internalStyle:true,inlineStyle:true,showBlocktag:false,forcePtag:true,upLinkExt:"zip,rar,txt",upImgExt:"jpg,jpeg,gif,png",upFlashExt:"swf",upMediaExt:"wmv,avi,wma,mp3,mid",modalWidth:350,modalHeight:220,modalTitle:true,defLinkText:_('Click to open link'),layerShadow:3,emotMark:false,upBtnText:_('Upload'),cleanPaste:2,hoverExecDelay:100,html5Upload:true,upMultiple:99};
 	var _this=this,_text=textarea,_jText=$(_text),_jForm=_jText.closest('form'),_jTools,_jArea,_win,_jWin,_doc,_jDoc;
 	var bookmark;
 	var bInit=false,bSource=false,bFullscreen=false,bCleanPaste=false,outerScroll,bShowBlocktag=false,sLayoutStyle='',ev=null,timer,bDisableHoverExec=false,bQuickHoverExec=false;
@@ -1404,7 +1404,7 @@ $.xheditor=function(textarea,options)
 		{
 			jUpBtn.click(function(){
 				bShowPanel=false;//防止按钮面板被关闭
-				_this.showIframeModal('上传文件',toUrl.substr(1),setUploadMsg,null,null,function(){bShowPanel=true;});
+				_this.showIframeModal(_('Upload file'),toUrl.substr(1),setUploadMsg,null,null,function(){bShowPanel=true;});
 			});
 		}
 		else

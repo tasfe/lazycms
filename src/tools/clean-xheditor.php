@@ -218,6 +218,8 @@ function translate($source,$target) {
 		array("'您的浏览器安全设置不允许使用复制操作，请使用键盘快捷键(Ctrl + C)来完成'","_('Currently not supported by your browser, use keyboard shortcuts(Ctrl+C) instead.')"),
 		array("'您的浏览器安全设置不允许使用粘贴操作，请使用键盘快捷键(Ctrl + V)来完成'","_('Currently not supported by your browser, use keyboard shortcuts(Ctrl+V) instead.')"),
 		array("'上传文件扩展名必需为: '","_('Upload file extension required for this: ')"),
+        array("'上传'","_('Upload')"),
+        array("'上传文件'","_('Upload file')"),
     );
     $content = file_get_contents(ABS_PATH.'/'.$source);
     foreach($translates as $t) {
