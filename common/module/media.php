@@ -28,6 +28,7 @@ defined('COM_PATH') or die('Restricted access!');
 function media_localized_images($content) {
     include_file(COM_PATH.'/system/httplib.php');
     if (preg_match_all('/<img[^>]+src\s*=([^\s\>]+)[^>]*>/i', $content, $matchs)) {
+        $suffixs   = 'gif,jpg,jpe,jpeg,png,bmp';
         $matchs[1] = array_unique($matchs[1]);
         foreach ($matchs[1] as $url) {
             $str = $url;
@@ -44,11 +45,16 @@ function media_localized_images($content) {
             ));
             if (httplib_retrieve_response_code($resp) == 200) {
                 // 取得文件后缀
-                $ctype  = httplib_retrieve_header($resp, 'content-type');
-                if (($pos=strrpos($ctype, '/')) !== false) {
-                    $suffix = substr($ctype, $pos + 1);
-                } else {
-                    $suffix = pathinfo($aurl['path'], PATHINFO_EXTENSION);
+                $suffix = pathinfo($aurl['path'], PATHINFO_EXTENSION);
+                if (!instr($suffix, $suffixs)) {
+                    $ctype = httplib_retrieve_header($resp, 'content-type');
+                    if (($pos=strrpos($ctype, '/')) !== false) {
+                        $suffix = substr($ctype, $pos + 1);
+                    }
+                    // 文件后缀还不正确,强制指定jpg
+                    if (!instr($suffix, $suffixs)) {
+                        $suffix = 'jpg';
+                    }
                 }
                 $body   = httplib_retrieve_body($resp);
                 $md5sum = md5($body);
@@ -56,11 +62,11 @@ function media_localized_images($content) {
                 if ($media = media_get($md5sum)) {
                     $mediaid = $media['mediaid'];
                 } else {
-                    $file = ABS_PATH . '/' . MEDIA_PATH . '/images/' . $md5sum . '.' . $suffix;
-                    mkdirs(dirname($file)); file_put_contents($file, $body);
+                    $file = $md5sum . '.' . $suffix;
+                    $path = ABS_PATH . '/' . MEDIA_PATH . '/images/' . date('Y-m-d', time()) . '/' . $file;
+                    mkdirs(dirname($path)); file_put_contents($path, $body);
                     // 添加
-                    $path    = ROOT . MEDIA_PATH . '/images/' . $md5sum . '.' . $suffix;
-                    $mediaid = media_add($md5sum, pathinfo($file, PATHINFO_FILENAME), $suffix, strlen($body), $path);
+                    $mediaid = media_add('images', $md5sum, $file, strlen($body), $suffix);
                 }
                 // 替换原始内容
                 $content = str_replace($str, '"['.$mediaid.']"', $content);
@@ -101,7 +107,11 @@ function media_decode($content) {
     if (preg_match_all('/(<img[^>]+src\s*=")\[(\d+)\]("[^>]*>)/i', $content, $matchs)) {
         foreach ($matchs[2] as $i=>$id) {
             $media   = media_get($id);
-            $content = str_replace($matchs[0][$i], $matchs[1][$i].$media['path'].$matchs[3][$i], $content);
+            $content = str_replace(
+                $matchs[0][$i],
+                $matchs[1][$i] . ROOT . MEDIA_PATH . '/' . $media['folder'] . '/' . date('Y-m-d', $media['addtime']) . '/' . $media['md5sum'] . '.' . $media['suffix'] . $matchs[3][$i],
+                $content
+            );
         }
     }
     return $content;
@@ -109,23 +119,23 @@ function media_decode($content) {
 /**
  * 添加媒体
  *
+ * @param string $folder
  * @param string $md5sum
  * @param string $name
- * @param string $type
  * @param int $size
- * @param string $path
+ * @param string $suffix
  * @return int|bool
  */
-function media_add($md5sum, $name, $type, $size, $path) {
+function media_add($folder, $md5sum, $name, $size, $suffix) {
     global $_USER; $db = get_conn();
     // 获取管理员信息
     if (!isset($_USER)) $_USER = user_current(false);
     return $db->insert('#@_media', array(
-        'name'      => $name,
+        'folder'    => $folder,
         'md5sum'    => $md5sum,
-        'type'      => $type,
+        'name'      => $name,
+        'suffix'    => $suffix,
         'size'      => $size,
-        'path'      => $path,
         'userid'    => $_USER['userid'],
         'addtime'   => time(),
     ));

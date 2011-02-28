@@ -207,9 +207,6 @@ switch ($method) {
                     }
                 }
 
-
-
-
                 // 更新
                 if ($postid) {
                     $data['path']    = $path;
@@ -554,7 +551,7 @@ function post_manage_page($action) {
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="content">'._x('Content','post').'</label></th>';
-    echo                   '<td>'.editor('content', media_decode($content)).'</td>';
+    echo                   '<td>'.editor('content', $content).'</td>';
     echo               '</tr>';
     echo           '</tbody>';
     echo           '<tbody class="extend-attr"></tbody>';

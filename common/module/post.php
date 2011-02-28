@@ -184,6 +184,8 @@ function post_get($postid) {
     $rs = $db->query("SELECT * FROM `#@_post` WHERE `postid`=%d LIMIT 1 OFFSET 0;",$postid);
     // 判断文章是否存在
     if ($post = $db->fetch($rs)) {
+        // 还原图片地址
+        $post['content'] = media_decode($post['content']);
         // 取得分类关系
         $post['category'] = taxonomy_get_relation('category',$postid);
         $post['keywords'] = taxonomy_get_relation('post_tag',$postid);

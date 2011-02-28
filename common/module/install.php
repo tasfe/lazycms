@@ -258,15 +258,17 @@ CREATE TABLE IF NOT EXISTS `#@_term_taxonomy_meta` (
 
 CREATE TABLE IF NOT EXISTS `#@_media` (
   `mediaid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `folder` char(10) NOT NULL,
   `name` varchar(255) NOT NULL,
   `md5sum` char(32) NOT NULL,
-  `type` char(5) NOT NULL,
+  `suffix` char(5) NOT NULL,
   `size` int(10) unsigned NOT NULL DEFAULT '0',
-  `path` varchar(255) NOT NULL,
   `userid` int(10) unsigned NOT NULL DEFAULT '0',
   `addtime` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`mediaid`),
-  UNIQUE KEY `md5sum` (`md5sum`)
+  UNIQUE KEY `md5sum` (`md5sum`),
+  KEY `folder` (`folder`),
+  KEY `suffix` (`suffix`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 SQL;
 }
