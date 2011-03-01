@@ -37,7 +37,7 @@ a:hover, a:active { text-decoration: underline; }
 	.form-table label{ cursor:pointer; }
     .form-table label input{ margin-right:3px; }
 	.form-table th, .form-table td { border:none; }
-	.form-table th{ width:160px; padding:10px; text-align:left; vertical-align:top; font-weight:normal; }
+	.form-table th{ width:125px; padding:10px; text-align:left; vertical-align:top; font-weight:normal; }
 	.form-table td{ line-height:20px; margin-bottom:9px; padding:4px 10px 12px; }
 	.form-table td label{ margin-right:5px; }
 	.form-table td .rules { }

@@ -78,15 +78,17 @@ function install_defaults($initial) {
         'SiteTitle'         => __('My Site'),
         'Language'          => 'zh-CN',
         'Compress'          => 0,
-        'Tags-Service'      => 1,
+        'TAG-Open'          => 1,
         'Timezone'          => 'Asia/Shanghai',
         'Template'          => 'lazycms',
         'TPL-404'           => '~404.html',
         'TPL-Search'        => '~search.html',
-        'TPL-Comments'      => '~comments.html',
-        'TemplateSuffixs'   => 'htm,html,xml',
-        'HTMLFileSuffix'    => '.html',
-        'Comments-Path'     => 'comments/',
+        'TPL-Comment'       => '~comments.html',
+        'TPL-Exts'          => 'htm,html,xml',
+        'HTML-Ext'          => '.html',
+        'CMT-Path'          => 'comments/',
+        'UPIMG-Exts'        => 'gif,jpg,jpe,jpeg,png,bmp',
+        'UPFILE-Exts'       => 'zip,tar,rar,phps',
     );
     // 覆盖或升级设置
     foreach($options as $k=>$v) {

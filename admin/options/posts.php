@@ -35,8 +35,8 @@ if (validate_is_post()) {
     }
     unset($options['referer']);
     validate_check(array(
-        array('Comments-Path',VALIDATE_EMPTY,__('Please input the Comments Path.')),
-        array('Comments-Path',VALIDATE_IS_PATH,sprintf(_x('The path can not contain any of the following characters %s','setting'), esc_html('* : < > | \\'))),
+        array('CMT-Path',VALIDATE_EMPTY,__('Please input the Comments Path.')),
+        array('CMT-Path',VALIDATE_IS_PATH,sprintf(_x('The path can not contain any of the following characters %s','setting'), esc_html('* : < > | \\'))),
     ));
     if (validate_is_ok()) {
         C($options);
@@ -55,35 +55,35 @@ if (validate_is_post()) {
     echo     '<fieldset>';
     echo       '<table class="form-table">';
     echo           '<tr>';
-    echo               '<th><label for="Template-404">'.__('404 Template').'</label></th>';
-    echo               '<td><select name="TPL-404" id="Template-404">';
-    echo                       options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',C('TPL-404'));
+    echo               '<th><label for="TPL-404">'.__('404 Template').'</label></th>';
+    echo               '<td><select name="TPL-404" id="TPL-404">';
+    echo                       options(system_themes_path(),C('TPL-Exts'),'<option value="#value#"#selected#>#name#</option>',C('TPL-404'));
     echo                   '</select>';
     echo               '</td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="Template-search">'.__('Search Template').'</label></th>';
-    echo               '<td><select name="TPL-Search" id="Template-search">';
-    echo                       options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',C('TPL-Search'));
+    echo               '<th><label for="TPL-Search">'.__('Search Template').'</label></th>';
+    echo               '<td><select name="TPL-Search" id="TPL-Search">';
+    echo                       options(system_themes_path(),C('TPL-Exts'),'<option value="#value#"#selected#>#name#</option>',C('TPL-Search'));
     echo                   '</select>';
     echo               '</td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="Template-comments">'.__('Comments Template').'</label></th>';
-    echo               '<td><select name="TPL-Comments" id="Template-comments">';
-    echo                       options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',C('TPL-Comments'));
+    echo               '<th><label for="TPL-Comment">'.__('Comments Template').'</label></th>';
+    echo               '<td><select name="TPL-Comment" id="TPL-Comment">';
+    echo                       options(system_themes_path(),C('TPL-Exts'),'<option value="#value#"#selected#>#name#</option>',C('TPL-Comment'));
     echo                   '</select>';
     echo               '</td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="Comments-Path">'.__('Comments Path').'<span class="resume">'.__('(required)').'</span></label></th>';
-    echo               '<td><input class="text" id="Comments-Path" name="Comments-Path" type="text" size="30" value="'.C('Comments-Path').'" /></td>';
+    echo               '<th><label for="CMT-Path">'.__('Comments Path').'<span class="resume">'.__('(required)').'</span></label></th>';
+    echo               '<td><input class="text" id="CMT-Path" name="CMT-Path" type="text" size="30" value="'.C('CMT-Path').'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label>'.__('Tags Service').'<div class="resume">'.__('(Get the Network tags of service)').'</div></label></th>';
     echo               '<td>';
-    echo                   '<label><input name="Tags-Service" type="radio" value="1"'.(C('Tags-Service')?' checked="checked"':'').' />'.__('Enable').'</label>';
-    echo                   '<label><input name="Tags-Service" type="radio" value="0"'.(!C('Tags-Service')?' checked="checked"':'').' />'.__('Disable').'</label>';
+    echo                   '<label><input name="TAG-Open" type="radio" value="1"'.(C('TAG-Open')?' checked="checked"':'').' />'.__('Enable').'</label>';
+    echo                   '<label><input name="TAG-Open" type="radio" value="0"'.(!C('TAG-Open')?' checked="checked"':'').' />'.__('Disable').'</label>';
     echo               '</td>';
     echo           '</tr>';
     echo       '</table>';

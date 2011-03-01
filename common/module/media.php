@@ -28,7 +28,7 @@ defined('COM_PATH') or die('Restricted access!');
 function media_localized_images($content) {
     include_file(COM_PATH.'/system/httplib.php');
     if (preg_match_all('/<img[^>]+src\s*=([^\s\>]+)[^>]*>/i', $content, $matchs)) {
-        $suffixs   = 'gif,jpg,jpe,jpeg,png,bmp';
+        $suffixs   = C('UPIMG-Exts');
         $nomd5sum  = array(
             '05556151b4c76b812e0f8f5d4619e39b' => 'common/images/emots/default/despise.gif',
             '344433f16e4c7458abbefe625ea5cf79' => 'common/images/emots/default/crazy.gif',

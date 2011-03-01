@@ -346,7 +346,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
         $b_guid = $inner = ''; comment_create($post['postid']); // 生成评论
         // 处理文章
         $post['list']     = taxonomy_get($post['listid']);
-        $post['cmt_path'] = post_get_path($post['listid'],$post['path'], C('Comments-Path'));
+        $post['cmt_path'] = post_get_path($post['listid'],$post['path'], C('CMT-Path'));
         $post['path']     = post_get_path($post['listid'],$post['path']);
         // 模版设置优先级：页面设置>分类设置>模型设置
         if (empty($post['template'])) {

@@ -217,11 +217,11 @@ function comment_create($postid) {
         // 允许评论
         if ($post['comments'] != 'Yes') return true;
         // 评论地址
-        $post['cmt_path'] = post_get_path($post['listid'],$post['path'], C('Comments-Path'));
+        $post['cmt_path'] = post_get_path($post['listid'],$post['path'], C('CMT-Path'));
         $guide = system_category_guide($post['listid']);
         $title = sprintf(__('Comment: %s'), $post['title']);
         // 加载模版
-        $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('TPL-Comments')));
+        $html = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.esc_html(C('TPL-Comment')));
         // 解析分页标签
         if (stripos($html,'{pagelist') !== false) {
             $html = preg_replace('/\{(pagelist)[^\}]*\/\}/isU','{$pagelist}', $html);

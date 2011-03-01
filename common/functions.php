@@ -179,7 +179,7 @@ function &get_conn(){
  */
 function editor($id,$content,$options=null) {
     $defaults = array(
-        'width' => '700',
+        'width' => '660',
         'height'=> '280',
         'toobar' => 'full',
         'emotPath' => ROOT.'common/images/emots/',
@@ -218,7 +218,7 @@ function editor($id,$content,$options=null) {
     if (instr('LocalizedImages', $options['tools'])) {
         $botbar[] = '<input cookie="true" type="checkbox" name="LocalizedImages['.$id.']" id="LocalizedImages_'.$id.'" value="1" /><label for="LocalizedImages_'.$id.'">'.__('Localized Images').'</label>';
     }
-
+    
     $options['upImgUrl'] = 'upload.php';
 
     $ht = '<textarea class="text" id="'.$id.'" name="'.$id.'">'.esc_html($content).'</textarea>';

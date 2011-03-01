@@ -307,7 +307,7 @@ function publish_list_sitemaps($listid) {
     }
     // 分页
     for ($page=1; $page<=$pages; $page++) {
-        $file = $page==1 ? '' : 'index'.$page.C('HTMLFileSuffix');
+        $file = $page==1 ? '' : 'index'.$page.C('HTML-Ext');
         $path = HTTP_HOST.ROOT.$taxonomy['path'].'/'.$file;
         $urls.= sprintf('<url><loc>%1$s</loc><changefreq>daily</changefreq><lastmod>%2$s</lastmod><priority>0.5</priority></url>', xmlencode($path), W3cDate());
     }

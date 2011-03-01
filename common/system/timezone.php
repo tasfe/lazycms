@@ -59,7 +59,11 @@ class Timezone {
         $result = array();
         foreach ($this->get_group() as $name=>$zones) {
             foreach ($zones as $k=>$v) {
-                $result[$name.'/'.$k] = $v;
+                if ($name == $k) {
+                    $result[$name] = $v;
+                } else {
+                    $result[$name.'/'.$k] = $v;
+                }
             }
         }
         return $result;

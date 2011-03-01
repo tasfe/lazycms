@@ -35,8 +35,8 @@ if (validate_is_post()) {
     }
     unset($options['referer']);
     validate_check('SiteTitle',VALIDATE_EMPTY,__('Please input the Site Title.'));
-    validate_check('TemplateSuffixs',VALIDATE_EMPTY,__('Please input the Template suffix.'));
-    validate_check('HTMLFileSuffix',VALIDATE_EMPTY,__('Please input the HTML file suffix.'));
+    validate_check('TPL-Exts',VALIDATE_EMPTY,__('Please input the Template suffix.'));
+    validate_check('HTML-Ext',VALIDATE_EMPTY,__('Please input the HTML file suffix.'));
     if (validate_is_ok()) {
         C($options);
     }
@@ -94,17 +94,25 @@ if (validate_is_post()) {
     echo               '</td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="TemplateSuffixs">'.__('Template suffix').'<span class="resume">'.__('(required)').'</span></label></th>';
-    echo               '<td><input class="text" id="TemplateSuffixs" name="TemplateSuffixs" type="text" size="50" value="'.C('TemplateSuffixs').'" /></td>';
+    echo               '<th><label for="TPL-Exts">'.__('Template suffix').'<span class="resume">'.__('(required)').'</span></label></th>';
+    echo               '<td><input class="text" id="TPL-Exts" name="TPL-Exts" type="text" size="30" value="'.C('TPL-Exts').'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
-    echo               '<th><label for="HTMLFileSuffix">'.__('HTML file suffix').'<span class="resume">'.__('(required)').'</span></label></th>';
-    echo               '<td><select name="HTMLFileSuffix" id="HTMLFileSuffix" edit="true" default="'.C('HTMLFileSuffix').'">';
+    echo               '<th><label for="HTML-Ext">'.__('HTML file suffix').'<span class="resume">'.__('(required)').'</span></label></th>';
+    echo               '<td><select name="HTML-Ext" id="HTML-Ext" edit="true" default="'.C('HTML-Ext').'">';
     foreach(array('.htm','.html','.shtml','.php','.xml','.wml') as $suffix) {
         echo                   '<option value="'.$suffix.'">'.$suffix.'</option>';
     }
     echo                   '</select>';
     echo               '</td>';
+    echo           '</tr>';
+    echo           '<tr>';
+    echo               '<th><label for="UPIMG-Exts">'.__('Allow upload image').'</label></th>';
+    echo               '<td><input class="text" id="UPIMG-Exts" name="UPIMG-Exts" type="text" size="30" value="'.C('UPIMG-Exts').'" /></td>';
+    echo           '</tr>';
+    echo           '<tr>';
+    echo               '<th><label for="UPFILE-Exts">'.__('Allow upload file').'</label></th>';
+    echo               '<td><input class="text" id="UPFILE-Exts" name="UPFILE-Exts" type="text" size="30" value="'.C('UPFILE-Exts').'" /></td>';
     echo           '</tr>';
     echo           '<tr>';
     echo               '<th><label>'.__('Compress').'</label></th>';

@@ -253,7 +253,7 @@ switch ($method) {
         $model  = null; $hl = '';
 	    $mcode  = isset($_REQUEST['model'])?$_REQUEST['model']:null;
 	    $postid = isset($_REQUEST['postid'])?$_REQUEST['postid']:0;
-        $suffix = C('HTMLFileSuffix');
+        $suffix = C('HTML-Ext');
         if ($postid) {
             $post = post_get($postid);
         }
@@ -492,7 +492,7 @@ function post_manage_page($action) {
     
     $postid  = isset($_GET['postid'])?$_GET['postid']:0;
     $models  = model_gets('Post', 'enabled');
-    $suffix  = C('HTMLFileSuffix');
+    $suffix  = C('HTML-Ext');
     if ($action=='add') {
         $mcode  = isset($_GET['model'])?$_GET['model']:null;
         $listid = isset($_GET['category'])?$_GET['category']:null;
@@ -582,7 +582,7 @@ function post_manage_page($action) {
     echo                       '<select id="template" name="template">';
     echo                           $trees  ? '<option value="">'.__('Use the category set').'</option>' : '';
     echo                           $models && 'page.php'==$php_file ? '<option value="">'.__('Use the model set').'</option>' : '';
-    echo                           options(system_themes_path(),C('TemplateSuffixs'),'<option value="#value#"#selected#>#name#</option>',$template);
+    echo                           options(system_themes_path(),C('TPL-Exts'),'<option value="#value#"#selected#>#name#</option>',$template);
     echo                       '</select>';
     echo                   '</td>';
     echo               '</tr>';

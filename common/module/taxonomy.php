@@ -95,7 +95,7 @@ function term_gets($title=null, $content=null) {
     $splitword = new keyword($dicts);
     $keywords  = $splitword->get($content);
     // 本地分词失败或分词较少
-    if (C('Tags-Service') && (empty($keywords) || count($keywords)<=3)) {
+    if (C('TAG-Open') && (empty($keywords) || count($keywords)<=3)) {
         // 使用keyword.lazycms.com的网络分词
         include_file(COM_PATH.'/system/httplib.php');
         $r = @httplib_get(sprintf('http://keyword.lazycms.com/related_kw.php?title=%s&content=%s', rawurlencode($title), rawurlencode($content)),array(
@@ -598,7 +598,7 @@ function taxonomy_create($taxonomyid,$page=1,$make_post=false) {
         $tpl    = tpl_init('taxonomy');
         $page   = $page<1 ? 1 : intval($page);
         $inner  = $b_guid = ''; $i = 0;
-        $suffix = C('HTMLFileSuffix');
+        $suffix = C('HTML-Ext');
         // 载入模版
         $html   = tpl_loadfile(ABS_PATH.'/'.system_themes_path().'/'.$taxonomy['list']);
         // 标签块信息
