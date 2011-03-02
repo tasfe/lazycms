@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `#@_option` (
 CREATE TABLE IF NOT EXISTS `#@_user` (
   `userid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` char(20) NOT NULL,
-  `pass` char(32) NOT NULL,
+  `pass` char(40) NOT NULL,
   `mail` char(150) NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '0',
   `registered` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -262,13 +262,13 @@ CREATE TABLE IF NOT EXISTS `#@_media` (
   `mediaid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `folder` char(10) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `md5sum` char(32) NOT NULL,
+  `sha1sum` char(40) NOT NULL,
   `suffix` char(5) NOT NULL,
   `size` int(10) unsigned NOT NULL DEFAULT '0',
   `userid` int(10) unsigned NOT NULL DEFAULT '0',
   `addtime` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`mediaid`),
-  UNIQUE KEY `md5sum` (`md5sum`),
+  UNIQUE KEY `sha1sum` (`sha1sum`),
   KEY `folder` (`folder`),
   KEY `suffix` (`suffix`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

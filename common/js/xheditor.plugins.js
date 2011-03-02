@@ -33,6 +33,9 @@ var xhePlugins = window.xhePlugins = {
             jHeight = $('#xheFlvHeight',jFlv),
             jSave   = $('#xheSave',jFlv);
 
+        if (_this.settings.upVideoUrl)
+            _this.uploadInit(jUrl, _this.settings.upVideoUrl, 'flv,mp4');
+        
         jSave.click(function(){
             _this.loadBookmark();
             _this.pasteHTML('<embed width="'+jWidth.val()+'" height="'+jHeight.val()+'" lazysrc="'+jUrl.val()+'" flashvars="file='+jUrl.val()+'" src="'+LazyCMS.ROOT+'common/editor/plugins/mediaplayer/player.swf" quality="high" allowScriptAccess="always" allowFullScreen="true" type="application/x-shockwave-flash" lazytype="Flv" />');

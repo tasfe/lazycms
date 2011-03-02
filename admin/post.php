@@ -511,7 +511,14 @@ function post_manage_page($action) {
     $keywords = isset($_DATA['keywords'])?post_get_taxonomy($_DATA['keywords'], true):null;
     $categories  = isset($_DATA['category'])?$_DATA['category']:array();
     $description = isset($_DATA['description'])?$_DATA['description']:null;
-
+    $editor_opts = array(
+        'upLinkUrl'     => ADMIN.'index.php?method=upload&type=file',
+        'upLinkExt'     => C('UPFILE-Exts'),
+        'upImgUrl'      => ADMIN.'index.php?method=upload&type=image',
+        'upImgExt'      => C('UPIMG-Exts'),
+        'upFlashUrl'    => ADMIN.'index.php?method=upload&type=flash',
+        'upVideoUrl'    => ADMIN.'index.php?method=upload&type=video',
+    );
     echo '<div class="wrap">';
     echo   '<h2>'.system_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="postmanage" id="postmanage">';
@@ -541,7 +548,6 @@ function post_manage_page($action) {
         echo               '</td>';
         echo           '</tr>';
     }
-    
     echo               '<tr>';
     echo                   '<th><label for="title">'._x('Title','post').'<span class="resume">'.__('(required)').'</span></label></th>';
     echo                   '<td>';
@@ -551,7 +557,7 @@ function post_manage_page($action) {
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="content">'._x('Content','post').'</label></th>';
-    echo                   '<td>'.editor('content', $content).'</td>';
+    echo                   '<td>'.editor('content', $content, $editor_opts).'</td>';
     echo               '</tr>';
     echo           '</tbody>';
     echo           '<tbody class="extend-attr"></tbody>';

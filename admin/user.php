@@ -125,7 +125,7 @@ switch ($method) {
                     // 修改暗号
                     if ($password) {
                     	$user_info = array_merge($user_info,array(
-                    	   'pass' => md5($password), 'authcode' => '',
+                    	   'pass' => sha1($password), 'authcode' => '',
                     	));
                     }
                     user_edit($userid,$user_info);

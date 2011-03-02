@@ -123,7 +123,7 @@ switch($setup) {
                 // 管理员存在，修改管理员信息
                 if ($admin = user_get_byname($adminname)) {
                     user_edit($admin['userid'],array(
-                        'pass' => md5($password.$admin['authcode']),
+                        'pass' => sha1($password.$admin['authcode']),
                         'mail' => esc_html($email),
                         'roles' => 'ALL',
                         'Administrator' => 'Yes'

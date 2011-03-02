@@ -29,36 +29,6 @@ function media_localized_images($content) {
     include_file(COM_PATH.'/system/httplib.php');
     if (preg_match_all('/<img[^>]+src\s*=([^\s\>]+)[^>]*>/i', $content, $matchs)) {
         $suffixs   = C('UPIMG-Exts');
-        $nomd5sum  = array(
-            '05556151b4c76b812e0f8f5d4619e39b' => 'common/images/emots/default/despise.gif',
-            '344433f16e4c7458abbefe625ea5cf79' => 'common/images/emots/default/crazy.gif',
-            '68e089023da6a669bda0019487c9261a' => 'common/images/emots/default/laugh.gif',
-            'ae2bb1ad58cd2a251279992be3129798' => 'common/images/emots/default/angry.gif',
-            'd5dff372bc0fb83ca5a370d930620394' => 'common/images/emots/default/fastcry.gif',
-            '0bd0834f7ea3cc376703677b3759e79b' => 'common/images/emots/default/bye.gif',
-            '36e7068fd4b6050a9ca5e97b6c5ad105' => 'common/images/emots/default/cute.gif',
-            '7926792eaf17416c6e59e2ae43c77411' => 'common/images/emots/default/quiet.gif',
-            'ae551c1340358d0d2e708cb9cb98a378' => 'common/images/emots/default/cry.gif',
-            'db43f69d2445682946de87faeca3f320' => 'common/images/emots/default/smile.gif',
-            '1b5402269f6667281f25eaab21b81cb2' => 'common/images/emots/default/struggle.gif',
-            '4fbc8725aa18b52a49ae5f3167c2b2d8' => 'common/images/emots/default/mad.gif',
-            '89b6eca141f5150a765a7416af7de044' => 'common/images/emots/default/sleep.gif',
-            'b2b128d1603e3c81a0030619c9a78f29' => 'common/images/emots/default/sad.gif',
-            'e366f331c7e86467887cdb44f83a8127' => 'common/images/emots/default/panic.gif',
-            '20b47ef5c6c4081c7f5c1251f6c9760d' => 'common/images/emots/default/ohmy.gif',
-            '5807abd3b5c78ec8d2d23cc4b882b3af' => 'common/images/emots/default/wail.gif',
-            '90ed96b1a358301ac153a19717cd052c' => 'common/images/emots/default/titter.gif',
-            'bbe2b8079f05b831631c1fdbdc671e2d' => 'common/images/emots/default/shy.gif',
-            'fae6c3f152523d95fe152cd99b476f90' => 'common/images/emots/default/awkward.gif',
-            '301cf1b333e201d1adfe8b9ae6ff277a' => 'common/images/emots/default/tongue.gif',
-            '6658f97feb53ffb3151640f9dae1d70f' => 'common/images/emots/default/knock.gif',
-            '91f2feec64292b805884d328247f2fa3' => 'common/images/emots/default/envy.gif',
-            'bcae571397af456b800fa516d15a7d67' => 'common/images/emots/default/curse.gif',
-            '30da1edf12e5942046091bad38c90f5b' => 'common/images/emots/default/doubt.gif',
-            '68344b1f75c2b180640be3a9db31c11c' => 'common/images/emots/default/proud.gif',
-            'a09b0c20b15ea8206bd133792d6dc203' => 'common/images/emots/default/shutup.gif',
-            'bedebef3e120d4fe5a473a8fe23a293f' => 'common/images/emots/default/wronged.gif',
-        );
         $matchs[1] = array_unique($matchs[1]);
         foreach ($matchs[1] as $url) {
             $str = $url;
@@ -89,19 +59,19 @@ function media_localized_images($content) {
                         }
                     }
                     $body = httplib_retrieve_body($resp);
-                    // md5sum
-                    $md5sum = md5($body);
+                    // sha1sum
+                    $sha1sum = sha1($body);
                     // 文件存在
-                    if ($media = media_get($md5sum)) {
+                    if ($media = media_get($sha1sum)) {
                         $mediaid = $media['mediaid'];
                     }
                     // 文件不存在
                     else {
-                        $file = $md5sum . '.' . $suffix;
+                        $file = $sha1sum . '.' . $suffix;
                         $path = ABS_PATH . '/' . MEDIA_PATH . '/images/' . date('Y-m-d', time()) . '/' . $file;
                         mkdirs(dirname($path)); file_put_contents($path, $body);
                         // 添加
-                        $mediaid = media_add('images', $md5sum, $file, strlen($body), $suffix);
+                        $mediaid = media_add('images', $sha1sum, pathinfo($aurl['path'], PATHINFO_BASENAME), strlen($body), $suffix);
                     }
                     // 替换原始内容
                     $content = str_replace($str, '"['.$mediaid.']"', $content);
@@ -116,19 +86,17 @@ function media_localized_images($content) {
                     if (!instr($suffix, $suffixs)) {
                         $suffix = 'jpg';
                     }
-                    // 获取文件内容
-                    $body   = file_get_contents($path);
-                    // md5sum
-                    $md5sum = md5($body);
+                    // sha1sum
+                    $sha1sum = sha1_file($path);
                     // 不需要替换的文件
-                    if (isset($nomd5sum[$md5sum])) {
-                        if ($str != '"'.ROOT.$nomd5sum[$md5sum].'"') {
-                            $content = str_replace($str, '"'.ROOT.$nomd5sum[$md5sum].'"', $content);
+                    if ($file = media_no_add($sha1sum)) {
+                        if ($str != '"'.ROOT.$file.'"') {
+                            $content = str_replace($str, '"'.ROOT.$file.'"', $content);
                         }
                         continue;
                     }
                     // 文件存在
-                    if ($media = media_get($md5sum)) {
+                    if ($media = media_get($sha1sum)) {
                         $content = str_replace($str, '"['.$media['mediaid'].']"', $content);
                     }
                 }
@@ -136,6 +104,45 @@ function media_localized_images($content) {
         }
     }
     return $content;
+}
+/**
+ * 是否替换
+ *
+ * @param string $sha1sum
+ * @return bool|null
+ */
+function media_no_add($sha1sum) {
+    $file_sum  = array(
+        '05556151b4c76b812e0f8f5d4619e39b' => 'common/images/emots/default/despise.gif',
+        '344433f16e4c7458abbefe625ea5cf79' => 'common/images/emots/default/crazy.gif',
+        '68e089023da6a669bda0019487c9261a' => 'common/images/emots/default/laugh.gif',
+        'ae2bb1ad58cd2a251279992be3129798' => 'common/images/emots/default/angry.gif',
+        'd5dff372bc0fb83ca5a370d930620394' => 'common/images/emots/default/fastcry.gif',
+        '0bd0834f7ea3cc376703677b3759e79b' => 'common/images/emots/default/bye.gif',
+        '36e7068fd4b6050a9ca5e97b6c5ad105' => 'common/images/emots/default/cute.gif',
+        '7926792eaf17416c6e59e2ae43c77411' => 'common/images/emots/default/quiet.gif',
+        'ae551c1340358d0d2e708cb9cb98a378' => 'common/images/emots/default/cry.gif',
+        'db43f69d2445682946de87faeca3f320' => 'common/images/emots/default/smile.gif',
+        '1b5402269f6667281f25eaab21b81cb2' => 'common/images/emots/default/struggle.gif',
+        '4fbc8725aa18b52a49ae5f3167c2b2d8' => 'common/images/emots/default/mad.gif',
+        '89b6eca141f5150a765a7416af7de044' => 'common/images/emots/default/sleep.gif',
+        'b2b128d1603e3c81a0030619c9a78f29' => 'common/images/emots/default/sad.gif',
+        'e366f331c7e86467887cdb44f83a8127' => 'common/images/emots/default/panic.gif',
+        '20b47ef5c6c4081c7f5c1251f6c9760d' => 'common/images/emots/default/ohmy.gif',
+        '5807abd3b5c78ec8d2d23cc4b882b3af' => 'common/images/emots/default/wail.gif',
+        '90ed96b1a358301ac153a19717cd052c' => 'common/images/emots/default/titter.gif',
+        'bbe2b8079f05b831631c1fdbdc671e2d' => 'common/images/emots/default/shy.gif',
+        'fae6c3f152523d95fe152cd99b476f90' => 'common/images/emots/default/awkward.gif',
+        '301cf1b333e201d1adfe8b9ae6ff277a' => 'common/images/emots/default/tongue.gif',
+        '6658f97feb53ffb3151640f9dae1d70f' => 'common/images/emots/default/knock.gif',
+        '91f2feec64292b805884d328247f2fa3' => 'common/images/emots/default/envy.gif',
+        'bcae571397af456b800fa516d15a7d67' => 'common/images/emots/default/curse.gif',
+        '30da1edf12e5942046091bad38c90f5b' => 'common/images/emots/default/doubt.gif',
+        '68344b1f75c2b180640be3a9db31c11c' => 'common/images/emots/default/proud.gif',
+        'a09b0c20b15ea8206bd133792d6dc203' => 'common/images/emots/default/shutup.gif',
+        'bedebef3e120d4fe5a473a8fe23a293f' => 'common/images/emots/default/wronged.gif',
+    );
+    return isset($file_sum[$sha1sum]) ? isset($file_sum[$sha1sum]) : null;
 }
 /**
  * 取得 media 信息
@@ -149,12 +156,15 @@ function media_get($id) {
     if (fcache_not_null($data)) return $data;
 
     $db = get_conn();
-    if (strlen($id) == 32) {
-        $rs = $db->query("SELECT * FROM `#@_media` WHERE `md5sum`='%s' LIMIT 0,1;", $id);
+    if (strlen($id) == 40) {
+        $rs = $db->query("SELECT * FROM `#@_media` WHERE `sha1sum`='%s' LIMIT 0,1;", $id);
     } else {
         $rs = $db->query("SELECT * FROM `#@_media` WHERE `mediaid`=%d LIMIT 0,1;", $id);
     }
     if ($data = $db->fetch($rs)) {
+        $file = MEDIA_PATH . '/' . $data['folder'] . '/' . date('Y-m-d', $data['addtime']) . '/' . $data['sha1sum'] . '.' . $data['suffix'];
+        $data['path'] = ABS_PATH . '/' . $file;
+        $data['url']  = ROOT . $file;
         fcache_set($ckey, $data);
     }
     return $data;
@@ -171,7 +181,7 @@ function media_decode($content) {
             $media   = media_get($id);
             $content = str_replace(
                 $matchs[0][$i],
-                $matchs[1][$i] . ROOT . MEDIA_PATH . '/' . $media['folder'] . '/' . date('Y-m-d', $media['addtime']) . '/' . $media['md5sum'] . '.' . $media['suffix'] . $matchs[3][$i],
+                $matchs[1][$i] . $media['url'] . $matchs[3][$i],
                 $content
             );
         }
@@ -182,19 +192,19 @@ function media_decode($content) {
  * 添加媒体
  *
  * @param string $folder
- * @param string $md5sum
+ * @param string $sha1sum
  * @param string $name
  * @param int $size
  * @param string $suffix
  * @return int|bool
  */
-function media_add($folder, $md5sum, $name, $size, $suffix) {
+function media_add($folder, $sha1sum, $name, $size, $suffix) {
     global $_USER; $db = get_conn();
     // 获取管理员信息
     if (!isset($_USER)) $_USER = user_current(false);
-    return $db->insert('#@_media', array(
+    return @$db->insert('#@_media', array(
         'folder'    => $folder,
-        'md5sum'    => $md5sum,
+        'sha1sum'   => $sha1sum,
         'name'      => $name,
         'suffix'    => $suffix,
         'size'      => $size,

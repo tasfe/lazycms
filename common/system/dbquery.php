@@ -299,7 +299,7 @@ class DBQuery {
         // SELECT COUNT(DISTINCT("postid"))
         elseif (version_compare($this->version(),'3.0.0','<') && preg_match('/^(\s*SELECT\s+)COUNT\s*\(\s*(DISTINCT\s*\(\s*[^\)]+\s*\))\s*\)(\s+FROM )/isU', $sql, $matches)) {
             $create_view = preg_replace('/^(\s*SELECT\s+)COUNT\s*\(\s*(DISTINCT\s*\(\s*[^\)]+\s*\))\s*\)(\s+FROM )/is', '\1\2\3', $sql);
-            $view_name   = md5($create_view);
+            $view_name   = sha1($create_view);
             $create_view = sprintf('CREATE TEMP VIEW "%s" AS %s;', $view_name, $create_view);
             $before[]    = $create_view;
             $sql         = sprintf('SELECT COUNT(*) FROM "%s";', $view_name);

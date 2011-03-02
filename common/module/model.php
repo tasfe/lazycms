@@ -253,7 +253,14 @@ function model_field2html($field) {
             $hl.= '</div>';
             break;
         case 'basic': case 'editor':
-            $options = array();
+            $options = array(
+                'upLinkUrl'     => ADMIN.'index.php?method=upload&type=file',
+                'upLinkExt'     => C('UPFILE-Exts'),
+                'upImgUrl'      => ADMIN.'index.php?method=upload&type=image',
+                'upImgExt'      => C('UPIMG-Exts'),
+                'upFlashUrl'    => ADMIN.'index.php?method=upload&type=flash',
+                'upVideoUrl'    => ADMIN.'index.php?method=upload&type=video',
+            );
             $options['width'] = $field['w'];
             $plugins = implode(',', $field['a']);
             if ($field['t']=='basic') {

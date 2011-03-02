@@ -218,9 +218,6 @@ function editor($id,$content,$options=null) {
     if (instr('LocalizedImages', $options['tools'])) {
         $botbar[] = '<input cookie="true" type="checkbox" name="LocalizedImages['.$id.']" id="LocalizedImages_'.$id.'" value="1" /><label for="LocalizedImages_'.$id.'">'.__('Localized Images').'</label>';
     }
-    
-    $options['upImgUrl'] = 'upload.php';
-
     $ht = '<textarea class="text" id="'.$id.'" name="'.$id.'">'.esc_html($content).'</textarea>';
     $ht.= '<script type="text/javascript">var xhe_'.$id.' = $(\'textarea[name='.$id.']\').xheditor($.extend('.json_encode($options).',{"plugins":xhePlugins,"beforeSetSource":xheFilter.SetSource,"beforeGetSource":xheFilter.GetSource}));</script>';
     if (!empty($botbar)) $ht.= '<div class="xhe_botbar">'.implode('', $botbar).'</div>';
@@ -405,10 +402,16 @@ function jQuery($js) {
 function ajax_echo($code,$data,$eval=null){
     if ($code) header('X-LazyCMS-Code: '.$code);
     if ($eval) header('X-LazyCMS-Eval: '.$eval);
-    if (is_accept_json() || !is_scalar($data)) {
+    // 申请JSON格式
+    if (is_accept_json()) {
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($data);
-    } else {
+    }
+    elseif (!is_scalar($data)) {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($data);
+    }
+    else {
         echo $data;
     }
     exit();
@@ -925,6 +928,19 @@ function format_url($base, $html) {
     return $html;
 }
 /**
+ * 格式化大小
+ *
+ * @param int $bytes
+ * @return string
+ */
+function format_size($bytes){
+    if ($bytes == 0) return '-';
+    $units = array('bytes', 'KB', 'MB', 'GB', 'TB', 'PB');
+    $i = 0; while ($bytes >= 1024) { $bytes /= 1024; $i++; }
+    $precision = $i == 0 ? 0 : 2;
+    return number_format(round($bytes, $precision), $precision) . ' ' . $units[$i];
+}
+/**
  * 截取子字符串
  *
  * @param string $string
@@ -1228,11 +1244,10 @@ function iconvs($from,$to,$data){
  * 批量创建目录
  *
  * @param string $path   文件夹路径
- *
  * @param int    $mode   权限
  * @return bool
  */
-function mkdirs($path, $mode = 0775){
+function mkdirs($path, $mode = 0777){
     if (!is_dir($path)) {
         mkdirs(dirname($path), $mode);
         $error_level = error_reporting(0);

@@ -57,7 +57,7 @@ if (validate_is_post()) {
                 ajax_alert(__('Ban Change Password, Please contact the administrator.'));
             } else {
                 $user_info = array_merge($user_info,array(
-                   'pass' => md5($password.$_USER['authcode'])
+                   'pass' => sha1($password.$_USER['authcode'])
                 ));
             }
 

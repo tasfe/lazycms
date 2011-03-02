@@ -64,8 +64,8 @@ function user_login($username,$password){
         if ((int)$user['status']!==0) {
             return $user['status'];
         }
-        $md5_pass = md5($password.$user['authcode']);
-        if ($md5_pass == $user['pass']) {//var_dump($user,isset($user['MultiPersonLogin']) === false,(isset($user['MultiPersonLogin']) && $user['MultiPersonLogin']=='No'));
+        $sha1_pass = sha1($password.$user['authcode']);
+        if ($sha1_pass == $user['pass']) {//var_dump($user,isset($user['MultiPersonLogin']) === false,(isset($user['MultiPersonLogin']) && $user['MultiPersonLogin']=='No'));
             // 不允许多用户同时登录
             if ( isset($user['MultiPersonLogin']) === false
                 || (isset($user['MultiPersonLogin']) && $user['MultiPersonLogin']=='No')) {
@@ -73,7 +73,7 @@ function user_login($username,$password){
                 if ($authcode != $user['authcode']) {
                     // 生成需要更新的数据
                     $userinfo = array(
-                        'pass'     => md5($password.$authcode),
+                        'pass'     => sha1($password.$authcode),
                         'authcode' => $authcode,
                     );
                     // 更新数据
@@ -194,8 +194,8 @@ function user_add($name,$pass,$email,$data=null) {
     // 生成authcode
     $authcode = authcode($userid);
     $user_info = array(
-       'pass' => md5($pass.$authcode),
-       'authcode' => $authcode,
+       'pass'       => sha1($pass.$authcode),
+       'authcode'   => $authcode,
     );
     if ($data && is_array($data)) {
         $user_info = array_merge($user_info,$data);

@@ -55,6 +55,93 @@ switch ($method) {
         }
         ajax_return(empty($terms) ? '' : $terms);
         break;
+    // 文件上传
+    case 'upload':
+        // 加载文件上传类
+        include_file(COM_PATH.'/system/uploadfile.php');
+        $type   = isset($_GET['type']) ? $_GET['type'] : null;
+        $result = array('err' => '');
+        $upload = new UpLoadFile();
+        switch ($type) {
+            case 'file':
+                $folder = 'files';
+                $upload->allow_exts = C('UPFILE-Exts');
+                break;
+            case 'image':
+                $folder = 'images';
+                $upload->allow_exts = C('UPIMG-Exts');
+                break;
+            case 'flash':
+                $folder = 'flash';
+                $upload->allow_exts = 'swf';
+                break;
+            case 'video':
+                $folder = 'videos';
+                $upload->allow_exts = 'flv,mp4';
+                break;
+            default:
+                $result['err'] = __('The uploaded file type is not allowed.');
+                break;
+        }
+        if ($result['err'] == '') {
+            $upload->save_path = MEDIA_PATH . '/'.$folder.'/';
+            if ($info = $upload->save('filedata')) {
+                $error_level = error_reporting(0);
+                // 文件改名，保存到数据库
+                $sha1sum = sha1_file($info['path']);
+                // 文件不需要上传
+                if ($file = media_no_add($sha1sum)) {
+                    // 删除已上传的文件
+                    unlink($info['path']);
+                    // 修改为新地址
+                    $info['path'] = ABS_PATH . '/' . $file;
+                    $info['url']  = ROOT . $file;
+                    $info['name'] = pathinfo($file, PATHINFO_BASENAME);
+                }
+                // 文件已存在
+                elseif ($media = media_get($sha1sum)) {
+                    if (is_file($media['path'])) {
+                        // 删除已上传的文件
+                        unlink($info['path']);
+                    } else {
+                        // 修改为新地址
+                        mkdirs(dirname($media['path']));
+                        rename($info['path'], $media['path']);
+                    }
+                    // 修改为新地址
+                    $info['path'] = $media['path'];
+                    $info['url']  = $media['url'];
+                    $info['name'] = $media['name'];
+                }
+                // 文件不存在，添加
+                elseif ($mediaid = media_add($folder, $sha1sum, $info['name'], $info['size'], $info['ext'])) {
+                    $media = media_get($mediaid);
+                    // 修改为新地址
+                    mkdirs(dirname($media['path']));
+                    rename($info['path'], $media['path']);
+                    $info['path'] = $media['path'];
+                    $info['url']  = $media['url'];
+                    $info['name'] = $media['name'];
+                }
+                switch ($type) {
+                    case 'file':
+                        $result['msg'] = '!'.$info['url'].'||'.$info['name'];
+                        break;
+                    case 'flash':
+                        list($width, $height) = getimagesize($info['path']);
+                        $result['msg'] = '!'.$info['url'].'||'.$width.'||'.$height;
+                        break;
+                    default:
+                        $result['msg'] = '!'.$info['url'];
+                        break;
+                }
+                error_reporting($error_level);
+            } else {
+                $result['err'] = $upload->error();
+            }
+        }
+        ajax_return($result);
+        break;
     // 默认页面
     default:
         // HTTPLIB
