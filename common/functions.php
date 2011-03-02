@@ -179,12 +179,12 @@ function &get_conn(){
  */
 function editor($id,$content,$options=null) {
     $defaults = array(
-        'width' => '660',
-        'height'=> '280',
-        'toobar' => 'full',
-        'emotPath' => ROOT.'common/images/emots/',
-        'editorRoot' => ROOT.'common/editor/',
-        'loadCSS'    => ROOT.'common/css/xheditor.plugins.css',
+        'width'         => '660',
+        'height'        => '280',
+        'toobar'        => 'full',
+        'emotPath'      => ROOT.'common/images/emots/',
+        'editorRoot'    => ROOT.'common/editor/',
+        'loadCSS'       => ROOT.'common/css/xheditor.plugins.css',
     );
     
     $options = $options ? array_merge($defaults, $options) : $defaults;
@@ -219,7 +219,7 @@ function editor($id,$content,$options=null) {
         $botbar[] = '<input cookie="true" type="checkbox" name="LocalizedImages['.$id.']" id="LocalizedImages_'.$id.'" value="1" /><label for="LocalizedImages_'.$id.'">'.__('Localized Images').'</label>';
     }
     $ht = '<textarea class="text" id="'.$id.'" name="'.$id.'">'.esc_html($content).'</textarea>';
-    $ht.= '<script type="text/javascript">var xhe_'.$id.' = $(\'textarea[name='.$id.']\').xheditor($.extend('.json_encode($options).',{"plugins":xhePlugins,"beforeSetSource":xheFilter.SetSource,"beforeGetSource":xheFilter.GetSource}));</script>';
+    $ht.= '<script type="text/javascript">var xhe_'.$id.' = $(\'textarea[name='.$id.']\').xheditor($.extend('.json_encode($options).',{"onUpload":(typeof(onUpload)==\'function\' ? onUpload : null),"plugins":xhePlugins,"beforeSetSource":xheFilter.SetSource,"beforeGetSource":xheFilter.GetSource}));</script>';
     if (!empty($botbar)) $ht.= '<div class="xhe_botbar">'.implode('', $botbar).'</div>';
     return $ht;
 }
@@ -408,7 +408,6 @@ function ajax_echo($code,$data,$eval=null){
         echo json_encode($data);
     }
     elseif (!is_scalar($data)) {
-        header('Content-Type: application/json; charset=utf-8');
         echo json_encode($data);
     }
     else {
@@ -935,7 +934,7 @@ function format_url($base, $html) {
  */
 function format_size($bytes){
     if ($bytes == 0) return '-';
-    $units = array('bytes', 'KB', 'MB', 'GB', 'TB', 'PB');
+    $units = array('Bytes', 'KB', 'MB', 'GB', 'TB', 'PB');
     $i = 0; while ($bytes >= 1024) { $bytes /= 1024; $i++; }
     $precision = $i == 0 ? 0 : 2;
     return number_format(round($bytes, $precision), $precision) . ' ' . $units[$i];

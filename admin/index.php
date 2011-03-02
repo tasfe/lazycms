@@ -87,6 +87,11 @@ switch ($method) {
             $upload->save_path = MEDIA_PATH . '/'.$folder.'/';
             if ($info = $upload->save('filedata')) {
                 $error_level = error_reporting(0);
+                $result['msg'] = array(
+                    'id'     => 0,
+                    'size'   => $info['size'],
+                    'suffix' => $info['ext'],
+                );
                 // 文件改名，保存到数据库
                 $sha1sum = sha1_file($info['path']);
                 // 文件不需要上传
@@ -112,6 +117,7 @@ switch ($method) {
                     $info['path'] = $media['path'];
                     $info['url']  = $media['url'];
                     $info['name'] = $media['name'];
+                    $result['msg']['id'] = $media['mediaid'];
                 }
                 // 文件不存在，添加
                 elseif ($mediaid = media_add($folder, $sha1sum, $info['name'], $info['size'], $info['ext'])) {
@@ -122,17 +128,19 @@ switch ($method) {
                     $info['path'] = $media['path'];
                     $info['url']  = $media['url'];
                     $info['name'] = $media['name'];
+                    $result['msg']['id'] = $media['mediaid'];
                 }
+                $result['msg']['name'] = $info['name'];
                 switch ($type) {
                     case 'file':
-                        $result['msg'] = '!'.$info['url'].'||'.$info['name'];
+                        $result['msg']['url'] = '!'.$info['url'].'||'.$info['name'];
                         break;
                     case 'flash':
                         list($width, $height) = getimagesize($info['path']);
-                        $result['msg'] = '!'.$info['url'].'||'.$width.'||'.$height;
+                        $result['msg']['url'] = '!'.$info['url'].'||'.$width.'||'.$height;
                         break;
                     default:
-                        $result['msg'] = '!'.$info['url'];
+                        $result['msg']['url'] = '!'.$info['url'];
                         break;
                 }
                 error_reporting($error_level);
