@@ -138,11 +138,10 @@ switch ($method) {
             } elseif ($view == 'icons') {
                 $hl.= '<ul class="icons">';
                 while ($data = pages_fetch($result)) {
-                    $hl.= '<li><img src="'.ADMIN.'media.php?method=thumb&id='.$data['mediaid'].'&size=80x60" alt="'.$data['name'].'" /></li>';
+                    $hl.= '<li><img src="'.ADMIN.'media.php?method=thumb&id='.$data['mediaid'].'&size=70x60" alt="'.$data['name'].'" /></li>';
                 }
-                $hl.= '</ul>'; 
+                $hl.= '<br class="clear" /></ul>';
             }
-
         }
         $hl.=   pages_list(PHP_FILE.'?method=explorer&page=$');
         $hl.=   '</form>';

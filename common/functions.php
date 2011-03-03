@@ -971,6 +971,21 @@ function ip2addr($ip) {
     return $QQWry->ip2addr($ip);
 }
 /**
+ * 图片缩略图
+ *
+ * @param string $image
+ * @param int $max_w
+ * @param int $max_h
+ * @param null $toname
+ * @return bool|null
+ */
+function image_thumb($image, $max_w=100, $max_h=100, $toname=null) {
+    if (!class_exists('Image')) {
+        include_file(COM_PATH.'/system/image.php');
+    }
+    return Image::thumb($image, $max_w, $max_h, $toname);
+}
+/**
  * jsmin
  *
  * @param string $js

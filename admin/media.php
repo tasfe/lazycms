@@ -29,19 +29,17 @@ switch ($method) {
         $id   = isset($_GET['id']) ? $_GET['id'] : null;
         $size = isset($_GET['size']) ? $_GET['size'] : null;
         $size = explode('x', $size);
-        //header('Cache-Control: max-age='.(30*365*24*60*60));
-        header("Content-type: image/png");
-        $img = imagecreatetruecolor($size[0], $size[1]);
-        $col = imagecolorallocate($img,128,0,0);
-        imagefill($img,0,0,imagecolorallocate($img,255,255,255));
-        imagefill($img,0,0,imagecolorallocate($img,255,255,255));
-        imagestring($img, 5, (imagesx($img)-8*2)/2, 15, "No", $col);
-        imagestring($img, 5, (imagesx($img)-8*7)/2, 30, "Access!", $col);
-        imagepng($img); imagedestroy($img);
         if ($media = media_get($id)) {
-
+            image_thumb($media['path'], $size[0], $size[1]);
         } else {
-
+            header("Content-type: image/png");
+            $img = imagecreatetruecolor($size[0], $size[1]);
+            $col = imagecolorallocate($img,128,0,0);
+            imagefill($img,0,0,imagecolorallocate($img,255,255,255));
+            imagefill($img,0,0,imagecolorallocate($img,255,255,255));
+            imagestring($img, 5, (imagesx($img)-8*2)/2, 15, "No", $col);
+            imagestring($img, 5, (imagesx($img)-8*7)/2, 30, "Access!", $col);
+            imagepng($img); imagedestroy($img);
         }
         break;
 }

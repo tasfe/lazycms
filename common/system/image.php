@@ -18,7 +18,9 @@
  * +---------------------------------------------------------------------------+
  */
 defined('COM_PATH') or die('Restricted access!');
-
+/**
+ * 图片处理
+ */
 class Image {
     /**
      * 取得图片信息
@@ -41,6 +43,8 @@ class Image {
     /**
      * 缩略图
      *
+     * 不支持 bmp
+     *
      * @param string $image
      * @param int $max_w
      * @param int $max_h
@@ -50,39 +54,47 @@ class Image {
     function thumb($image, $max_w=100, $max_h=100, $toname=null) {
         // 获取原图信息
         if($info = Image::info($image)) {
+            // 输出 header
+            header('Content-type: '.$info['mime']);
             // 原图大小
             $src_w = $info['width']; $src_h = $info['height'];
             $type  = $info['type'] ? $info['type'] : strtolower(pathinfo($image, PATHINFO_EXTENSION));
             // 计算缩放比例
-            $scale = min($max_w / $src_w, $max_h / $src_h);
+            $scale = max($max_w / $src_w, $max_h / $src_h);
 
+            // 等比例缩放尺寸
+            $width  = ($src_w > $max_w) ? intval($src_w * $scale) : $src_w;
+            $height = ($src_h > $max_h) ? intval($src_h * $scale) : $src_h;
             // 缩略图尺寸
-            $width  = ((int)$src_w > (int)$max_w) ? (int)($src_w * $scale) : $src_w;
-            $height = ((int)$src_h > (int)$max_h) ? (int)($src_h * $scale) : $src_h;
-
+            $dst_w  = min($max_w,$width);
+            $dst_h  = min($max_h,$height);
             // 载入原图
             $create = 'imagecreatefrom' . ($type == 'jpg' ? 'jpeg' : $type);
             $srcimg = $create($image);
 
-            //创建缩略图
-            if ($type != 'gif' && function_exists('imagecreatetruecolor')) {
-                $thumb = imagecreatetruecolor($width, $height);
+            // 创建缩略图画布
+            if ($type == 'gif') {
+                $thumb = imagecreate($dst_w, $dst_h);
             } else {
-                $thumb = imagecreate($width, $height);
+                $thumb = imagecreatetruecolor($dst_w, $dst_h);
+            }
+
+            // 画布需要透明
+            if ($type == 'png') {
+                // 创建透明画布
+                imagealphablending($thumb, true); imagesavealpha($thumb, true);
+                imagefill($thumb, 0, 0, imagecolorallocatealpha($thumb, 0, 0, 0, 127));
+            } else {
+                $bgcolor = imagecolorallocate($thumb,255,255,255);
+                imagefill($thumb,0,0,$bgcolor);
+                imagecolortransparent($thumb, $bgcolor);
             }
 
             // 复制图片
             if (function_exists('imagecopyresampled')) {
-                imagecopyresampled($thumb, $srcimg, 0, 0, 0, 0, $width, $height, $src_w, $src_h);
+                imagecopyresampled($thumb, $srcimg, -(($width-$dst_w)*0.5), -(($height-$dst_h)*0.5), 0, 0, $width, $height, $src_w, $src_h);
             } else {
-                imagecopyresized($thumb, $srcimg, 0, 0, 0, 0, $width, $height, $src_w, $src_h);
-            }
-
-            if ('gif' == $type || 'png' == $type) {
-                // 指派一个绿色
-                $background_color = imagecolorallocate($thumb, 0, 255, 0);
-                // 设置为透明色，若注释掉该行则输出绿色的图
-                imagecolortransparent($thumb, $background_color);
+                imagecopyresized($thumb, $srcimg, -(($width-$dst_w)*0.5), -(($height-$dst_h)*0.5), 0, 0, $width, $height, $src_w, $src_h);
             }
 
             // 对jpeg图形设置隔行扫描

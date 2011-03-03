@@ -87,7 +87,7 @@ function install_defaults($initial) {
         'TPL-Exts'          => 'htm,html,xml',
         'HTML-Ext'          => '.html',
         'CMT-Path'          => 'comments/',
-        'UPIMG-Exts'        => 'gif,jpg,jpe,jpeg,png,bmp',
+        'UPIMG-Exts'        => 'gif,jpg,jpe,jpeg,png',
         'UPFILE-Exts'       => 'zip,tar,rar,phps',
     );
     // 覆盖或升级设置
