@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LazyCMS v2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-02 14:40+0800\n"
+"POT-Creation-Date: 2011-03-03 17:11+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Lukin <my@lukin.net>\n"
 "Language-Team: LazyCMS.net <my@lukin.net>\n"
@@ -182,7 +182,7 @@ msgstr "生成文章和列表"
 #: admin/post.php:428
 #: admin/comment.php:181
 #: admin/comment.php:236
-#: admin/index.php:153
+#: admin/index.php:317
 msgid "Delete"
 msgstr "删除"
 
@@ -225,7 +225,7 @@ msgstr "添加文章"
 #: admin/user.php:187
 #: admin/post.php:371
 #: admin/comment.php:180
-#: admin/index.php:152
+#: admin/index.php:316
 msgid "Edit"
 msgstr "编辑"
 
@@ -253,7 +253,7 @@ msgstr "&mdash; 无模型 &mdash;"
 #: admin/user.php:272
 #: admin/post.php:552
 #: admin/post.php:566
-#: admin/profile.php:94
+#: admin/profile.php:93
 msgid "(required)"
 msgstr "(必填)"
 
@@ -286,10 +286,10 @@ msgstr "使用模型设置"
 
 #: admin/categories.php:401
 #: admin/post.php:581
-#: admin/index.php:82
-#: admin/index.php:105
-#: admin/index.php:126
-#: admin/index.php:138
+#: admin/index.php:246
+#: admin/index.php:269
+#: admin/index.php:290
+#: admin/index.php:302
 msgid "Click to toggle"
 msgstr "点击切换"
 
@@ -424,7 +424,7 @@ msgstr "您的 MySQL 用户名"
 
 #: admin/install.php:182
 #: admin/user.php:281
-#: admin/profile.php:108
+#: admin/profile.php:107
 #: admin/login.php:79
 msgid "Password"
 msgstr "密码"
@@ -472,7 +472,7 @@ msgstr "密码，两次"
 #: admin/install.php:196
 #: admin/user.php:283
 #: admin/user.php:297
-#: admin/profile.php:112
+#: admin/profile.php:111
 msgid "Strength indicator"
 msgstr "强度"
 
@@ -547,10 +547,10 @@ msgstr "数据驱动"
 #: admin/install.php:257
 #: admin/install.php:258
 #: admin/install.php:259
-#: admin/index.php:119
-#: admin/index.php:120
-#: admin/index.php:121
-#: admin/index.php:122
+#: admin/index.php:283
+#: admin/index.php:284
+#: admin/index.php:285
+#: admin/index.php:286
 msgid "Not Supported"
 msgstr "不支持"
 
@@ -639,7 +639,7 @@ msgid "Please enter your password twice."
 msgstr "请您再次输入密码。"
 
 #: admin/user.php:132
-#: admin/profile.php:66
+#: admin/profile.php:65
 msgid "User updated."
 msgstr "用户资料更新成功。"
 
@@ -658,14 +658,14 @@ msgstr "添加用户"
 
 #: admin/user.php:232
 #: admin/user.php:264
-#: admin/profile.php:86
+#: admin/profile.php:85
 #: admin/login.php:78
 msgid "Username"
 msgstr "用户名"
 
 #: admin/user.php:233
 #: admin/user.php:272
-#: admin/profile.php:94
+#: admin/profile.php:93
 msgid "E-mail"
 msgstr "电子邮箱"
 
@@ -678,12 +678,12 @@ msgid "Registered"
 msgstr "注册日期"
 
 #: admin/user.php:268
-#: admin/profile.php:90
+#: admin/profile.php:89
 msgid "Nickname"
 msgstr "昵称"
 
 #: admin/user.php:276
-#: admin/profile.php:98
+#: admin/profile.php:97
 msgid "Website"
 msgstr "个人主页"
 
@@ -692,12 +692,12 @@ msgid "(twice,required)"
 msgstr "(两次，必填)"
 
 #: admin/user.php:287
-#: admin/profile.php:102
+#: admin/profile.php:101
 msgid "Biographical Info"
 msgstr "个人说明"
 
 #: admin/user.php:289
-#: admin/profile.php:104
+#: admin/profile.php:103
 msgid "Share a little biographical information to fill out your profile. This may be shown publicly."
 msgstr "共享您的一些信息。这个可能会被公开。"
 
@@ -706,17 +706,17 @@ msgid "New Password"
 msgstr "新密码"
 
 #: admin/user.php:293
-#: admin/profile.php:108
+#: admin/profile.php:107
 msgid "(twice)"
 msgstr "(两次)"
 
 #: admin/user.php:295
-#: admin/profile.php:110
+#: admin/profile.php:109
 msgid "If you would like to change the password type a new one. Otherwise leave this blank."
 msgstr "如果您想修改您的密码请输入一个新密码，否则请留空。"
 
 #: admin/user.php:296
-#: admin/profile.php:111
+#: admin/profile.php:110
 msgid "Type your new password again."
 msgstr "输入新密码。"
 
@@ -851,6 +851,7 @@ msgid "View all categories"
 msgstr "查看全部分类"
 
 #: admin/post.php:440
+#: admin/index.php:110
 msgid "Filter"
 msgstr "过滤"
 
@@ -981,28 +982,28 @@ msgid_plural "%s comments permanently deleted"
 msgstr[0] "已永久删除 %s 条评论"
 
 #: admin/comment.php:106
-#: admin/index.php:69
+#: admin/index.php:233
 msgid "Reply comment"
 msgstr "回复评论"
 
 #: admin/comment.php:107
-#: admin/index.php:70
+#: admin/index.php:234
 msgid "Edit comment"
 msgstr "编辑评论"
 
 #: admin/comment.php:108
 #: admin/comment.php:249
-#: admin/index.php:71
+#: admin/index.php:235
 msgid "Author"
 msgstr "作者"
 
 #: admin/comment.php:109
-#: admin/index.php:72
+#: admin/index.php:236
 msgid "Email"
 msgstr "电子邮箱"
 
 #: admin/comment.php:110
-#: admin/index.php:73
+#: admin/index.php:237
 msgid "Url"
 msgstr "网址"
 
@@ -1017,13 +1018,13 @@ msgid "Pending"
 msgstr "待审"
 
 #: admin/comment.php:150
-#: admin/index.php:98
+#: admin/index.php:262
 msgid "Approved"
 msgstr "已获准"
 
 #: admin/comment.php:164
 #: admin/comment.php:169
-#: admin/index.php:145
+#: admin/index.php:309
 msgid "Anonymous"
 msgstr "匿名"
 
@@ -1034,18 +1035,18 @@ msgstr "回复给 <a href=\"%s\">%s</a>。"
 
 #: admin/comment.php:175
 #: admin/comment.php:235
-#: admin/index.php:147
+#: admin/index.php:311
 msgid "Approve"
 msgstr "获准"
 
 #: admin/comment.php:177
 #: admin/comment.php:234
-#: admin/index.php:149
+#: admin/index.php:313
 msgid "Unapprove"
 msgstr "驳回"
 
 #: admin/comment.php:179
-#: admin/index.php:151
+#: admin/index.php:315
 msgid "Reply"
 msgstr "回复"
 
@@ -1055,7 +1056,7 @@ msgid "Submitted on: <b>%s</b>"
 msgstr "提交于：<b>%s</b>"
 
 #: admin/comment.php:205
-#: admin/index.php:162
+#: admin/index.php:326
 msgid "The post has been deleted."
 msgstr "该文章已删除！"
 
@@ -1068,138 +1069,157 @@ msgstr "评论"
 msgid "In Response To"
 msgstr "回应"
 
-#: admin/index.php:64
+#: admin/index.php:86
+msgctxt "explor"
+msgid "Type:"
+msgstr "类型："
+
+#: admin/index.php:94
+msgctxt "explor"
+msgid "Date:"
+msgstr "日期："
+
+#: admin/index.php:102
+msgctxt "explor"
+msgid "Suffix:"
+msgstr "后缀："
+
+#: admin/index.php:152
+msgid "The uploaded file type is not allowed."
+msgstr "上传的文件类型是不允许的。"
+
+#: admin/index.php:228
 msgid "Control Panel"
 msgstr "控制面板"
 
-#: admin/index.php:83
+#: admin/index.php:247
 msgid "Right Now"
 msgstr "概况"
 
-#: admin/index.php:87
+#: admin/index.php:251
 msgid "Content"
 msgstr "内容"
 
-#: admin/index.php:89
+#: admin/index.php:253
 msgid "Post"
 msgid_plural "Posts"
 msgstr[0] "文章"
 
-#: admin/index.php:90
+#: admin/index.php:254
 msgid "Page"
 msgid_plural "Pages"
 msgstr[0] "页面"
 
-#: admin/index.php:91
+#: admin/index.php:255
 msgid "Category"
 msgid_plural "Categories"
 msgstr[0] "分类目录"
 
-#: admin/index.php:95
+#: admin/index.php:259
 msgid "Discussion"
 msgstr "讨论"
 
-#: admin/index.php:97
+#: admin/index.php:261
 msgid "Comment"
 msgid_plural "Comments"
 msgstr[0] "评论"
 
-#: admin/index.php:99
-#: admin/index.php:165
+#: admin/index.php:263
+#: admin/index.php:329
 msgid "Pending"
 msgstr "待审"
 
-#: admin/index.php:106
+#: admin/index.php:270
 msgid "Server Environment"
 msgstr "服务器环境"
 
-#: admin/index.php:108
+#: admin/index.php:272
 msgid "Server OS:"
 msgstr "服务器系统："
 
-#: admin/index.php:109
+#: admin/index.php:273
 msgid "Server Software:"
 msgstr "服务器软件："
 
-#: admin/index.php:110
+#: admin/index.php:274
 msgid "Server API :"
 msgstr "服务器 API："
 
-#: admin/index.php:111
+#: admin/index.php:275
 msgid "LazyCMS Version:"
 msgstr "LazyCMS版本："
 
-#: admin/index.php:112
+#: admin/index.php:276
 msgid "PHP Version:"
 msgstr "PHP版本："
 
-#: admin/index.php:118
+#: admin/index.php:282
 msgid "DB Driver:"
 msgstr "数据驱动："
 
-#: admin/index.php:119
+#: admin/index.php:283
 msgid "GD Library:"
 msgstr "图形绘制库："
 
-#: admin/index.php:120
+#: admin/index.php:284
 msgid "Iconv Support:"
 msgstr "字符集转换："
 
-#: admin/index.php:121
+#: admin/index.php:285
 msgid "Multibyte Support:"
 msgstr "多字节字符串："
 
-#: admin/index.php:122
+#: admin/index.php:286
 msgid "Remote URL Open:"
 msgstr "打开远程URL："
 
-#: admin/index.php:127
+#: admin/index.php:291
 msgid "LazyCMS Team"
 msgstr "LazyCMS团队"
 
-#: admin/index.php:129
+#: admin/index.php:293
 msgid "Author:"
 msgstr "作者："
 
-#: admin/index.php:130
+#: admin/index.php:294
 msgid "QQ Group:"
 msgstr "QQ群号："
 
-#: admin/index.php:130
+#: admin/index.php:294
 msgid "#LazyCMS# Topics"
 msgstr "#LazyCMS# 相关话题"
 
-#: admin/index.php:131
+#: admin/index.php:295
 msgctxt "team"
 msgid "Website:"
 msgstr "官方网站："
 
-#: admin/index.php:139
+#: admin/index.php:303
 msgid "Recent Comments"
 msgstr "最新评论"
 
-#: admin/index.php:167
+#: admin/index.php:331
 #, php-format
 msgid "From %s"
 msgstr "来自 %s 的评论"
 
-#: admin/index.php:176
+#: admin/index.php:340
 msgid "No comments yet."
 msgstr "还没有任何评论。"
 
-#: admin/index.php:178
+#: admin/index.php:342
 msgid "View all"
 msgstr "查看全部"
 
-#: admin/profile.php:57
+#: admin/profile.php:56
 msgid "Ban Change Password, Please contact the administrator."
 msgstr "禁止修改密码，请联系管理员。"
 
-#: admin/profile.php:70
+#: admin/profile.php:69
 msgid "Profile"
 msgstr "我的配置"
 
-#: admin/profile.php:118
+#: admin/profile.php:117
 msgid "Update Profile"
 msgstr "更新资料"
 
@@ -1493,14 +1513,17 @@ msgid "Insert Google Map"
 msgstr "插入Google地图"
 
 #: admin/model.php:272
+#: common/functions.php:213
 msgid "Insert Pagebreak"
 msgstr "插入分页符"
 
 #: admin/model.php:273
+#: common/functions.php:216
 msgid "Remove external links"
 msgstr "移除站外链接"
 
 #: admin/model.php:274
+#: common/functions.php:219
 msgid "Localized Images"
 msgstr "本地化图片"
 
@@ -1856,224 +1879,223 @@ msgstr "(获取网络标签服务)"
 
 #: common/functions.php:363
 #: common/functions.php:375
-#: common/module/system.php:883
 msgid "System Error"
 msgstr "系统错误"
 
-#: common/functions.php:510
+#: common/functions.php:515
 #, php-format
 msgid "<a href=\"%1$s\">%2$d seconds after goto %1$s.</a>"
 msgstr "<a href=\"%1$s\">%2$d 秒后转向 %1$s。</a>"
 
-#: common/functions.php:526
+#: common/functions.php:531
 msgid "Redirecting..."
 msgstr "正在重定向..."
 
-#: common/functions.php:1343
+#: common/functions.php:1348
 msgid "Afrikaans"
 msgstr "布尔文(南非洲的荷兰文)"
 
-#: common/functions.php:1344
+#: common/functions.php:1349
 msgid "Albanian"
 msgstr "阿尔巴尼亚文"
 
-#: common/functions.php:1345
+#: common/functions.php:1350
 msgid "Arabic"
 msgstr "阿拉伯文"
 
-#: common/functions.php:1346
+#: common/functions.php:1351
 msgid "Belarusian"
 msgstr "白俄罗斯语"
 
-#: common/functions.php:1347
+#: common/functions.php:1352
 msgid "Bulgarian"
 msgstr "保加利亚文"
 
-#: common/functions.php:1348
+#: common/functions.php:1353
 msgid "Catalan"
 msgstr "加泰罗尼亚语"
 
-#: common/functions.php:1349
+#: common/functions.php:1354
 msgid "Chinese (Simplified)"
 msgstr "中文(简体)"
 
-#: common/functions.php:1350
+#: common/functions.php:1355
 msgid "Chinese (Traditional)"
 msgstr "中文(繁体)"
 
-#: common/functions.php:1351
+#: common/functions.php:1356
 msgid "Croatian"
 msgstr "克罗地亚文"
 
-#: common/functions.php:1352
+#: common/functions.php:1357
 msgid "Czech"
 msgstr "捷克语"
 
-#: common/functions.php:1353
+#: common/functions.php:1358
 msgid "Danish"
 msgstr "丹麦语"
 
-#: common/functions.php:1354
+#: common/functions.php:1359
 msgid "Dutch"
 msgstr "荷兰语"
 
-#: common/functions.php:1356
+#: common/functions.php:1361
 msgid "Estonian"
 msgstr "爱沙尼亚语"
 
-#: common/functions.php:1357
+#: common/functions.php:1362
 msgid "Filipino"
 msgstr "菲律宾文"
 
-#: common/functions.php:1358
+#: common/functions.php:1363
 msgid "Finnish"
 msgstr "芬兰语"
 
-#: common/functions.php:1359
+#: common/functions.php:1364
 msgid "French"
 msgstr "法语"
 
-#: common/functions.php:1360
+#: common/functions.php:1365
 msgid "Galician"
 msgstr "加利西亚语"
 
-#: common/functions.php:1361
+#: common/functions.php:1366
 msgid "German"
 msgstr "德语"
 
-#: common/functions.php:1362
+#: common/functions.php:1367
 msgid "Greek"
 msgstr "希腊语"
 
-#: common/functions.php:1363
+#: common/functions.php:1368
 msgid "Hebrew"
 msgstr "希伯来语"
 
-#: common/functions.php:1364
+#: common/functions.php:1369
 msgid "Hindi"
 msgstr "印度文"
 
-#: common/functions.php:1365
+#: common/functions.php:1370
 msgid "Hungarian"
 msgstr "匈牙利语"
 
-#: common/functions.php:1366
+#: common/functions.php:1371
 msgid "Icelandic"
 msgstr "冰岛语"
 
-#: common/functions.php:1367
+#: common/functions.php:1372
 msgid "Indonesian"
 msgstr "印尼文"
 
-#: common/functions.php:1368
+#: common/functions.php:1373
 msgid "Irish"
 msgstr "爱尔兰文"
 
-#: common/functions.php:1369
+#: common/functions.php:1374
 msgid "Italian"
 msgstr "意大利语"
 
-#: common/functions.php:1370
+#: common/functions.php:1375
 msgid "Japanese"
 msgstr "日语"
 
-#: common/functions.php:1371
+#: common/functions.php:1376
 msgid "Korean"
 msgstr "朝鲜语"
 
-#: common/functions.php:1372
+#: common/functions.php:1377
 msgid "Latvian"
 msgstr "拉脱维亚语"
 
-#: common/functions.php:1373
+#: common/functions.php:1378
 msgid "Lithuanian"
 msgstr "立陶宛语"
 
-#: common/functions.php:1374
+#: common/functions.php:1379
 msgid "Macedonian"
 msgstr "马其顿文"
 
-#: common/functions.php:1375
+#: common/functions.php:1380
 msgid "Malay"
 msgstr "马来文"
 
-#: common/functions.php:1376
+#: common/functions.php:1381
 msgid "Maltese"
 msgstr "马耳他文"
 
-#: common/functions.php:1377
+#: common/functions.php:1382
 msgid "Norwegian"
 msgstr "挪威语"
 
-#: common/functions.php:1378
+#: common/functions.php:1383
 msgid "Persian"
 msgstr "波斯语"
 
-#: common/functions.php:1379
+#: common/functions.php:1384
 msgid "Polish"
 msgstr "波兰语"
 
-#: common/functions.php:1380
+#: common/functions.php:1385
 msgid "Portuguese"
 msgstr "葡萄牙语"
 
-#: common/functions.php:1381
+#: common/functions.php:1386
 msgid "Romanian"
 msgstr "罗马尼亚语"
 
-#: common/functions.php:1382
+#: common/functions.php:1387
 msgid "Russian"
 msgstr "俄语"
 
-#: common/functions.php:1383
+#: common/functions.php:1388
 msgid "Serbian"
 msgstr "塞尔维亚文"
 
-#: common/functions.php:1384
+#: common/functions.php:1389
 msgid "Slovak"
 msgstr "斯洛伐克文"
 
-#: common/functions.php:1385
+#: common/functions.php:1390
 msgid "Slovenian"
 msgstr "斯洛文尼亚文"
 
-#: common/functions.php:1386
+#: common/functions.php:1391
 msgid "Spanish"
 msgstr "西班牙语"
 
-#: common/functions.php:1387
+#: common/functions.php:1392
 msgid "Swahili"
 msgstr "非洲的斯瓦希里文"
 
-#: common/functions.php:1388
+#: common/functions.php:1393
 msgid "Swedish"
 msgstr "瑞典语"
 
-#: common/functions.php:1389
+#: common/functions.php:1394
 msgid "Thai"
 msgstr "泰文"
 
-#: common/functions.php:1390
+#: common/functions.php:1395
 msgid "Turkish"
 msgstr "土耳其文"
 
-#: common/functions.php:1391
+#: common/functions.php:1396
 msgid "Ukrainian"
 msgstr "乌克兰文"
 
-#: common/functions.php:1392
+#: common/functions.php:1397
 msgid "Vietnamese"
 msgstr "越南文"
 
-#: common/functions.php:1393
+#: common/functions.php:1398
 msgid "Welsh"
 msgstr "威尔士语"
 
-#: common/functions.php:1394
+#: common/functions.php:1399
 msgid "Yiddish"
 msgstr "意第绪语"
 
-#: common/functions.php:1622
+#: common/functions.php:1627
 msgid "The start position cannot exceed initial string length."
 msgstr "起始位置不能超过初始字符串的长度。"
 
@@ -2896,49 +2918,45 @@ msgstr "太多的重定向。"
 msgid "Could not open handle for fopen() to %s"
 msgstr "无法打开处理fopen()函数到 %s"
 
-#: common/system/uploadfile.php:118
+#: common/system/uploadfile.php:136
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini."
 msgstr "上传的文件超过了 php.ini 中 upload_max_filesize 选项限制的值。 "
 
-#: common/system/uploadfile.php:119
+#: common/system/uploadfile.php:137
 msgid "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form."
 msgstr "上传文件的大小超过了 HTML 表单中 MAX_FILE_SIZE 选项指定的值。"
 
-#: common/system/uploadfile.php:120
+#: common/system/uploadfile.php:138
 msgid "The uploaded file was only partially uploaded."
 msgstr "文件只有部分被上传。"
 
-#: common/system/uploadfile.php:121
+#: common/system/uploadfile.php:139
 msgid "No file was uploaded."
 msgstr "没有文件被上传。"
 
-#: common/system/uploadfile.php:122
+#: common/system/uploadfile.php:140
 #, php-format
 msgid "The uploaded file exceeds the size limit(%s)."
 msgstr "上传的文件大小超过了限制(%s)。"
 
-#: common/system/uploadfile.php:123
+#: common/system/uploadfile.php:141
 msgid "Missing a temporary folder."
 msgstr "找不到临时文件夹。"
 
-#: common/system/uploadfile.php:124
+#: common/system/uploadfile.php:142
 msgid "Failed to write file to disk."
 msgstr "文件写入失败。"
 
-#: common/system/uploadfile.php:125
+#: common/system/uploadfile.php:143
 msgid "A PHP extension stopped the file upload."
 msgstr "PHP扩展停止了文件上传。"
 
-#: common/system/uploadfile.php:126
-msgid "The uploaded file type is not allowed."
-msgstr "上传的文件类型是不允许的。"
-
-#: common/system/uploadfile.php:127
+#: common/system/uploadfile.php:145
 #, php-format
 msgid "The uploaded file exceeds the total size limit(%s)."
 msgstr "上传文件的总大小超过了限制(%s)。"
 
-#: common/system/uploadfile.php:130
+#: common/system/uploadfile.php:148
 msgid "Unknown error"
 msgstr "未知错误"
 

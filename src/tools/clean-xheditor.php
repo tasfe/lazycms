@@ -220,6 +220,14 @@ function translate($source,$target) {
 		array("'上传文件扩展名必需为: '","_('Upload file extension required for this: ')"),
         array("'上传'","_('Upload')"),
         array("'上传文件'","_('Upload file')"),
+        array("_this.showIframeModal(_('Upload file'),toUrl.substr(1),setUploadMsg,null,null,function(){bShowPanel=true;});","var wh,w=null,h=null,i,s = toUrl.substr(1);
+                if ((i=s.indexOf('||')) != -1) {
+                    wh = s.substr(0,i);
+                    s  = s.substr(i+2);
+                    w  = wh.substr(0, wh.indexOf('x'));
+                    h  = wh.substr(wh.indexOf('x')+1);
+                }
+                _this.showIframeModal(_('Upload file'),s,setUploadMsg,w,h,function(){bShowPanel=true;});"),
     );
     $content = file_get_contents(ABS_PATH.'/'.$source);
     foreach($translates as $t) {

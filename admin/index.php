@@ -55,6 +55,100 @@ switch ($method) {
         }
         ajax_return(empty($terms) ? '' : $terms);
         break;
+    // explorer
+    case 'explorer':
+        $db = get_conn();
+        $type   = isset($_REQUEST['type']) ? $_REQUEST['type'] : 'images';
+        $date   = isset($_REQUEST['date']) ? $_REQUEST['date'] : date('Y-m');
+        $suffix = isset($_REQUEST['suffix']) ? $_REQUEST['suffix'] : null;
+        // 文件夹
+        $folders = array();
+        $rs = $db->query("SELECT `folder`,SUM(`size`) AS `size`,COUNT(`mediaid`) AS `count` FROM `#@_media` GROUP BY `folder`;");
+        while ($data = $db->fetch($rs)) {
+            $folders[$data['folder']] = $data;
+        }
+        // 日期
+        $dates = array();
+        $rs = $db->query("SELECT FROM_UNIXTIME(`addtime`,'%Y-%m') AS `date`,SUM(`size`) AS `size`,COUNT(`mediaid`) AS `count` FROM `#@_media` GROUP BY `date`;");
+        while ($data = $db->fetch($rs)) {
+            $dates[$data['date']] = $data;
+        }
+        // 后缀
+        $suffixs = array();
+        $rs = $db->query("SELECT `suffix`,SUM(`size`) AS `size`,COUNT(`mediaid`) AS `count` FROM `#@_media` GROUP BY `suffix`;");
+        while ($data = $db->fetch($rs)) {
+            $suffixs[$data['suffix']] = $data;
+        }
+            
+        $hl = '<div class="explorer">';
+        $hl.=   '<form method="post" name="explorer" action="'.PHP_FILE.'?method=explorer">';
+        $hl.=   '<div class="toobar">';
+        $hl.=       '<label for="explor_type">'._x('Type:', 'explor').'</label>';
+        $hl.=       '<select id="explor_type" name="type">';
+        $hl.=           '<option value="">&mdash; &mdash; &mdash;</option>';
+        foreach ($folders as $k=>$v) {
+            $selected = $type==$k ? ' selected="selected"' : '';
+            $hl.=       '<option value="'.$k.'"'.$selected.'>'.ucfirst($k).'</option>';
+        }
+        $hl.=       '</select>';
+        $hl.=       '<label for="explor_date">'._x('Date:', 'explor').'</label>';
+        $hl.=       '<select id="explor_date" name="date">';
+        $hl.=           '<option value="">&mdash; &mdash; &mdash;</option>';
+        foreach ($dates as $k=>$v) {
+            $selected = $date==$k ? ' selected="selected"' : '';
+            $hl.=       '<option value="'.$k.'"'.$selected.'>'.$k.'</option>';
+        }
+        $hl.=       '</select>';
+        $hl.=       '<label for="explor_suffix">'._x('Suffix:', 'explor').'</label>';
+        $hl.=       '<select id="explor_suffix" name="suffix">';
+        $hl.=           '<option value="">&mdash; &mdash;</option>';
+        foreach ($suffixs as $k=>$v) {
+            $selected = $suffix==$k ? ' selected="selected"' : '';
+            $hl.=       '<option value="'.$k.'"'.$selected.'>'.$k.'</option>';
+        }
+        $hl.=       '</select>';
+        $hl.=       '<button type="submit">'.__('Filter').'</button>';
+        $hl.=   '</div>';
+        pages_init(28);
+        $where  = $type ? sprintf(" AND `folder`='%s'", esc_sql($type)) : '';
+        $where .= $date ? sprintf(" AND FROM_UNIXTIME(`addtime`,'%%Y-%%m')='%s'", esc_sql($date)) : '';
+        $where .= $suffix ? sprintf(" AND `suffix`='%s'", esc_sql($suffix)) : '';
+        $result = pages_query("SELECT * FROM `#@_media` WHERE 1=1 {$where}");
+        if ($result) {
+            $view = $type=='images' ? 'icons' : 'list';
+            if ($view == 'list') {
+                $hl.= '<table class="data-table" cellspacing="0">';
+                $hl.=   '<thead><tr>';
+                $hl.=       '<th>'._x('Name', 'explor').'</th>';
+                $hl.=       '<th class="w100">'._x('Size', 'explor').'</th>';
+                $hl.=       '<th class="w50">'._x('Type', 'explor').'</th>';
+                $hl.=       '<th class="w150">'._x('Date', 'explor').'</th>';
+                $hl.=   '</tr></thead>';
+                $hl.=   '<tbody>';
+                while ($data = pages_fetch($result)) {
+                    $hl.=   '<tr>';
+                    $hl.=       '<td class="name">'.$data['name'].'</td>';
+                    $hl.=       '<td>'.format_size($data['size']).'</td>';
+                    $hl.=       '<td>'.$data['suffix'].'</td>';
+                    $hl.=       '<td>'.date('Y-m-d H:i:s',$data['addtime']).'</td>';
+                    $hl.=   '</tr>';
+                }
+                $hl.=   '</tbody>';
+                $hl.= '</table>';
+            } elseif ($view == 'icons') {
+                $hl.= '<ul class="icons">';
+                while ($data = pages_fetch($result)) {
+                    $hl.= '<li><img src="'.ADMIN.'media.php?method=thumb&id='.$data['mediaid'].'&size=80x60" alt="'.$data['name'].'" /></li>';
+                }
+                $hl.= '</ul>'; 
+            }
+
+        }
+        $hl.=   pages_list(PHP_FILE.'?method=explorer&page=$');
+        $hl.=   '</form>';
+        $hl.= '</div>';
+        ajax_return($hl);
+        break;
     // 文件上传
     case 'upload':
         // 加载文件上传类

@@ -53,3 +53,13 @@ a:hover, a:active { text-decoration: underline; }
 	.data-table tbody { background:#fff; border-top:solid 1px #DFDFDF; border-bottom:solid 1px #DFDFDF; }
 	.data-table tbody td{ vertical-align:top;word-wrap:break-word; overflow:hidden; }
 	.data-table .check-column { width:25px; text-align:center; }
+
+/* 文件管理器
+----------------------------------------------------------------------------------------------------*/
+.explorer {}
+.explorer .toobar { padding-bottom:5px; margin-bottom:5px; border-bottom: 1px solid #8AB0DE; }
+.explorer .toobar label{ margin-right:3px; }
+.explorer .toobar select{ margin-right:6px; }
+.explorer ul.icons { margin:0; padding:0; }
+.explorer ul.icons li { list-style:none; display:inline-block; margin:5px 7px; }
+.explorer ul.icons li img { width:70px; height:60px; }

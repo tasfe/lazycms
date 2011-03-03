@@ -55,7 +55,8 @@ var LazyCMS = window.LazyCMS = window.CMS = {
         // 自定义success
         s.success = function(data, status, xhr) {
             if (xhr && xhr.getResponseHeader('X-Powered-By') && s.url.toLowerCase().indexOf('.php') != -1) {
-                if (xhr.getResponseHeader('X-Powered-By').indexOf("\x4c\x61\x7a\x79\x43\x4d\x53") == -1) return ;
+                if (xhr.getResponseHeader('X-Powered-By').indexOf("\x4c\x61\x7a\x79\x43\x4d\x53") == -1)
+                    return s.error(xhr, status);
             }
             var data = LazyCMS.ajaxSuccess.apply(this,arguments);
             if (null!==data && s.orisuccess) {
@@ -673,7 +674,11 @@ jQuery && (function ($) {
      *
      * @param callback
      */
-    $.fn.ajaxSubmit = function(callback){
+    $.fn.ajaxSubmit = function(callback,dataType){
+        if (callback && $.type(callback) == 'string')
+            dataType = callback;
+        dataType = dataType || 'html';
+        
         return this.each(function(){
             var _this = $(this);
                 _this.submit(function(){
@@ -684,7 +689,7 @@ jQuery && (function ($) {
                     var url = _this.attr('action'); if (url==''||typeof url=='undefined') { url = self.location.href; }
                     // ajax submit
                     $.ajax({
-                        cache: false, url: url, dataType:'json',
+                        cache: false, url: url, dataType: dataType,
                         type: _this.attr('method') && _this.attr('method').toUpperCase() || 'POST',
                         data: _this.serializeArray(),
                         success: function(data, status, xhr){

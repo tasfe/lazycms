@@ -169,6 +169,24 @@ if ($.browser.msie && $.browser.version == '6.0') {
         });
         return this;
     }
+    /**
+     * 文件浏览器
+     */
+    $.fn.explorer = function() {
+        $.get(LazyCMS.ADMIN + 'index.php?method=explorer', function(r) {
+            var callback = arguments.callee;
+            LazyCMS.dialog({
+                title:'Explorer', name:'Explorer', styles:{ overflow:'auto', width:'600px',height:'400px' }, body: r
+            }, function() {
+                var $this = this;
+                $('form', $this).ajaxSubmit(callback);
+                $('.pages a',$this).click(function(){
+                    $.post(this.href, $('form', $this).serializeArray(), callback);
+                    return false;
+                });
+            });
+        });
+    }
 })(jQuery);
 
 // 执行生成进度

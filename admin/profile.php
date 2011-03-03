@@ -42,7 +42,6 @@ if (validate_is_post()) {
     if ($password || $password2) {
         validate_check('password1',VALIDATE_EQUAL,__('Your passwords do not match. Please try again.'),'password2');
     }
-
     // 验证通过
     if (validate_is_ok()) {
         $user_info = array(

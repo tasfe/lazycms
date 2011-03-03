@@ -1400,11 +1400,18 @@ $.xheditor=function(textarea,options)
 		var bHtml5Upload=settings.html5Upload,upMultiple=bHtml5Upload?settings.upMultiple:1;
 		jText.after(jUpload);jUpBtn.before(jText);
 		toUrl=toUrl.replace(/{editorRoot}/ig,editorRoot);
-		if(toUrl.substr(0,1)==='!')//自定义上传管理页
+        if(toUrl.substr(0,1)==='!')//自定义上传管理页
 		{
 			jUpBtn.click(function(){
 				bShowPanel=false;//防止按钮面板被关闭
-				_this.showIframeModal(_('Upload file'),toUrl.substr(1),setUploadMsg,null,null,function(){bShowPanel=true;});
+                var wh,w=null,h=null,i,s = toUrl.substr(1);
+                if ((i=s.indexOf('||')) != -1) {
+                    wh = s.substr(0,i);
+                    s  = s.substr(i+2);
+                    w  = wh.substr(0, wh.indexOf('x'));
+                    h  = wh.substr(wh.indexOf('x')+1);
+                }
+				_this.showIframeModal(_('Upload file'),s,setUploadMsg,w,h,function(){bShowPanel=true;});
 			});
 		}
 		else
