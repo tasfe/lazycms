@@ -162,12 +162,22 @@ function media_get($id) {
         $rs = $db->query("SELECT * FROM `#@_media` WHERE `mediaid`=%d LIMIT 0,1;", $id);
     }
     if ($data = $db->fetch($rs)) {
-        $file = MEDIA_PATH . '/' . $data['folder'] . '/' . date('Y-m-d', $data['addtime']) . '/' . $data['sha1sum'] . '.' . $data['suffix'];
+        $file = media_file($data);
         $data['path'] = ABS_PATH . '/' . $file;
         $data['url']  = ROOT . $file;
         fcache_set($ckey, $data);
     }
     return $data;
+}
+/**
+ * 获得media路径
+ *
+ * @param array $data
+ * @return string
+ */
+function media_file($data) {
+    if (!is_array($data)) $data = media_get(intval($data));
+    return MEDIA_PATH . '/' . $data['folder'] . '/' . date('Y-m-d', $data['addtime']) . '/' . $data['sha1sum'] . '.' . $data['suffix'];
 }
 /**
  * 把ID转换为实际文件
@@ -199,10 +209,10 @@ function media_decode($content) {
  * @return int|bool
  */
 function media_add($folder, $sha1sum, $name, $size, $suffix) {
-    global $_USER; $db = get_conn();
+    global $_USER;
     // 获取管理员信息
     if (!isset($_USER)) $_USER = user_current(false);
-    return @$db->insert('#@_media', array(
+    return @get_conn()->insert('#@_media', array(
         'folder'    => $folder,
         'sha1sum'   => $sha1sum,
         'name'      => $name,

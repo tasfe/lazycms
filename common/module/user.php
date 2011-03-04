@@ -182,9 +182,8 @@ function user_get_meta($userid) {
  * @return array
  */
 function user_add($name,$pass,$email,$data=null) {
-    $db = get_conn();
     // 插入用户
-    $userid = $db->insert('#@_user',array(
+    $userid = get_conn()->insert('#@_user',array(
        'name' => $name,
        'pass' => $pass,
        'mail' => $email,

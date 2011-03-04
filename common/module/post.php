@@ -28,8 +28,7 @@ defined('COM_PATH') or die('Restricted access!');
  * @return array
  */
 function post_add($title,$content,$path,$data=null) {
-    $db = get_conn(); 
-    $postid = $db->insert('#@_post',array(
+    $postid = get_conn()->insert('#@_post',array(
         'title'    => $title,
         'content'  => $content,
         'path'     => $path,
@@ -49,7 +48,6 @@ function post_add($title,$content,$path,$data=null) {
  * @return array
  */
 function post_edit($postid,$data) {
-    $db = get_conn();
     $postid = intval($postid);
     $post_rows = $meta_rows = array();
     if ($post = post_get($postid)) {
@@ -105,7 +103,7 @@ function post_edit($postid,$data) {
 
         // 更新数据
         if (!empty($post_rows)) {
-            $db->update('#@_post',$post_rows,array('postid' => $postid));
+            get_conn()->update('#@_post',$post_rows,array('postid' => $postid));
         }
         if (!empty($meta_rows)) {
             post_edit_meta($postid,$meta_rows);
@@ -152,13 +150,12 @@ function post_edit($postid,$data) {
  */
 function post_path_exists($postid,$path) {
     if (strpos($path,'%ID')!==false && strpos($path,'%MD5')!==false) return false;
-    $db = get_conn();
     if ($postid) {
         $sql = sprintf("SELECT COUNT(`postid`) FROM `#@_post` WHERE `path`='%s' AND `postid`<>'%d';", esc_sql($path), esc_sql($postid));
     } else {
         $sql = sprintf("SELECT COUNT(`postid`) FROM `#@_post` WHERE `path`='%s';",esc_sql($path));
     }
-    return !($db->result($sql) == 0);
+    return !(get_conn()->result($sql) == 0);
 }
 /**
  * 统计文章数量
@@ -167,7 +164,7 @@ function post_path_exists($postid,$path) {
  * @return int
  */
 function post_count($type) {
-    $db = get_conn(); return $db->result(sprintf("SELECT COUNT(`postid`) FROM `#@_post` WHERE `type`='%s' AND `approved`='passed';", $type));
+    return get_conn()->result(sprintf("SELECT COUNT(`postid`) FROM `#@_post` WHERE `type`='%s' AND `approved`='passed';", $type));
 }
 /**
  * 查找指定的文章
@@ -484,8 +481,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
  * @return string
  */
 function post_prepage($listid,$postid,&$preid=0) {
-    $db    = get_conn();
-    $preid = $db->result(sprintf("SELECT `objectid` FROM `#@_term_relation` WHERE `taxonomyid`=%d AND `objectid`<%d ORDER BY `objectid` DESC LIMIT 1 OFFSET 0;", esc_sql($listid), esc_sql($postid)));
+    $preid = get_conn()->result(sprintf("SELECT `objectid` FROM `#@_term_relation` WHERE `taxonomyid`=%d AND `objectid`<%d ORDER BY `objectid` DESC LIMIT 1 OFFSET 0;", esc_sql($listid), esc_sql($postid)));
     if ($preid) {
         $post = post_get($preid);
         $post['path'] = post_get_path($post['listid'],$post['path']);
@@ -508,8 +504,7 @@ function post_prepage($listid,$postid,&$preid=0) {
  * @return string
  */
 function post_nextpage($listid,$postid,&$nextid=0) {
-    $db     = get_conn();
-    $nextid = $db->result(sprintf("SELECT `objectid` FROM `#@_term_relation` WHERE `taxonomyid`=%d AND `objectid`>%d ORDER BY `objectid` ASC LIMIT 1 OFFSET 0;", esc_sql($listid), esc_sql($postid)));
+    $nextid = get_conn()->result(sprintf("SELECT `objectid` FROM `#@_term_relation` WHERE `taxonomyid`=%d AND `objectid`>%d ORDER BY `objectid` ASC LIMIT 1 OFFSET 0;", esc_sql($listid), esc_sql($postid)));
     if ($nextid) {
         $post = post_get($nextid);
         $post['path'] = post_get_path($post['listid'],$post['path']);

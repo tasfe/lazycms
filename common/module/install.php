@@ -98,9 +98,8 @@ function install_defaults($initial) {
     }
     // 安装初始化数据
     if ($initial) {
-        $db = get_conn();
         // 创建首页
-        $db->query("INSERT INTO `#@_post` VALUES (1, 0, 1, 'page', '', 'Lukin', 'index.html', '".__('Home')."', '', 0, 0, 'passed', 'No', 0, 0, 'home.html', '');");
+        get_conn()->query("INSERT INTO `#@_post` VALUES (1, 0, 1, 'page', '', 'Lukin', 'index.html', '".__('Home')."', '', 0, 0, 'passed', 'No', 0, 0, 'home.html', '');");
     }
     return true;
 }

@@ -28,12 +28,11 @@ defined('COM_PATH') or die('Restricted access!');
  * @return int
  */
 function comment_add($postid,$content,$parent=0,$user=null) {
-    $db = get_conn();
     $userid = isset($user['userid']) ? $user['userid'] : 0;
     $author = isset($user['name']) ? esc_html($user['name']) : '';
     $email  = isset($user['mail']) ? esc_html($user['mail']) : '';
     $url    = isset($user['url']) ? esc_html($user['url']) : '';
-    return $db->insert('#@_comment', array(
+    return get_conn()->insert('#@_comment', array(
         'postid'   => $postid,
         'author'   => $author,
         'mail'     => $email,
@@ -57,14 +56,14 @@ function comment_add($postid,$content,$parent=0,$user=null) {
  * @return int
  */
 function comment_edit($cmtid, $content, $status=null, $user=null) {
-    $db = get_conn(); $sets = array();
+    $sets = array();
     if ($content !== null) $sets['content'] = $content;
     if ($status !== null) $sets['approved'] = $status;
     if (isset($user['name'])) $sets['author'] = esc_html($user['name']);
     if (isset($user['mail'])) $sets['mail'] = esc_html($user['mail']);
     if (isset($user['url'])) $sets['url'] = esc_html($user['url']);
     if (isset($user['userid'])) $sets['userid'] = esc_html($user['userid']);
-    $result = $db->update('#@_comment', $sets, array('cmtid' => $cmtid));
+    $result = get_conn()->update('#@_comment', $sets, array('cmtid' => $cmtid));
     // 重新生成评论
     comment_create(comment_get_postid($cmtid));
     return $result;
@@ -76,7 +75,7 @@ function comment_edit($cmtid, $content, $status=null, $user=null) {
  * @return int
  */
 function comment_get_postid($cmtid) {
-    $db = get_conn(); return $db->result(sprintf("SELECT `postid` FROM `#@_comment` WHERE `cmtid`=%d;", $cmtid));
+    return get_conn()->result(sprintf("SELECT `postid` FROM `#@_comment` WHERE `cmtid`=%d;", $cmtid));
 }
 /**
  * 取得一条评论
@@ -140,9 +139,8 @@ function comment_get_trees($postid, $parentid=0) {
  * @return int
  */
 function comment_delete($cmtid) {
-    $db = get_conn();
     $postid = comment_get_postid($cmtid);
-    $result = $db->delete('#@_comment', array('cmtid' => $cmtid));
+    $result = get_conn()->delete('#@_comment', array('cmtid' => $cmtid));
     // 重新生成评论
     comment_create($postid);
     return $result;
@@ -155,14 +153,14 @@ function comment_delete($cmtid) {
  * @return int
  */
 function comment_count($postid,$status='all') {
-    $db = get_conn(); $where = 'WHERE 1';
+    $where = 'WHERE 1';
     if ($postid) {
         $where.= sprintf(" AND `postid`='%d'", $postid);
     }
     if ($status != 'all') {
         $where.= sprintf(" AND `approved`='%s'", strval($status));
     }
-    return $db->result("SELECT COUNT(`cmtid`) FROM `#@_comment` {$where};");
+    return get_conn()->result("SELECT COUNT(`cmtid`) FROM `#@_comment` {$where};");
 }
 /**
  * 评论人数
@@ -171,7 +169,7 @@ function comment_count($postid,$status='all') {
  * @return int
  */
 function comment_people($postid) {
-    $db = get_conn(); return $db->result(sprintf("SELECT COUNT(DISTINCT(`author`)) FROM `#@_comment` WHERE `postid`=%d;", $postid));
+    return get_conn()->result(sprintf("SELECT COUNT(DISTINCT(`author`)) FROM `#@_comment` WHERE `postid`=%d;", $postid));
 }
 /**
  * 回复盖楼

@@ -61,4 +61,7 @@ a:hover, a:active { text-decoration: underline; }
 .explorer .toobar label{ margin-right:3px; }
 .explorer .toobar select{ margin-right:6px; }
 .explorer ul.icons { margin:0; padding:0; }
-.explorer ul.icons li { width:70px; height:60px; float:left; list-style:none; display:block; margin:5px 6px; text-align:center; }
+.explorer ul.icons li { width:70px; height:60px; float:left; list-style:none; display:block; margin:8px 6px; text-align:center; }
+.explorer .botbar {  }
+.explorer .botbar .info{ float:left; line-height:22px; }
+.explorer .botbar .pages{ float:right;  }

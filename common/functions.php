@@ -584,7 +584,7 @@ function rel_root($path){
  * @return string
  */
 function esc_sql($str) {
-    $db = get_conn(); return $db->escape($str);
+    return get_conn()->escape($str);
 }
 /**
  * 转换特殊字符为HTML实体
@@ -1790,6 +1790,135 @@ if (!function_exists('gzdecode')) {
 		}
 		return $data;
 	}
+}
+
+if (!function_exists('mime_content_type')) {
+    /**
+     * Detect MIME Content-type for a file (deprecated)
+     *
+     * @param string $filename
+     * @return string
+     */
+    function mime_content_type($filename) {
+        if (function_exists('finfo_open')) {
+            $finfo    = finfo_open(FILEINFO_MIME);
+            $mimetype = finfo_file($finfo, $filename);
+            finfo_close($finfo);
+            return $mimetype;
+        } else {
+            switch (strtolower(pathinfo($filename, PATHINFO_EXTENSION))) {
+                case 'txt':
+                    return 'text/plain';
+                case 'htm': case 'html': case 'php':
+                    return 'text/html';
+                case 'css':
+                    return 'text/css';
+                case 'js':
+                    return 'application/javascript';
+                case 'json':
+                    return 'application/json';
+                case 'xml':
+                    return 'application/xml';
+                case 'swf':
+                    return 'application/x-shockwave-flash';
+                case 'flv':
+                    return 'video/x-flv';
+
+                // images
+                case 'png':
+                    return 'image/png';
+                case 'jpe': case 'jpg': case 'jpeg':
+                    return 'image/jpeg';
+                case 'gif':
+                    return 'image/gif';
+                case 'bmp':
+                    return 'image/bmp';
+                case 'ico':
+                    return 'image/x-icon';
+                case 'tiff': case 'tif':
+                    return 'image/tiff';
+                case 'svg': case 'svgz':
+                    return 'image/svg+xml';
+
+                // archives
+                case 'zip':
+                    return 'application/zip';
+                case 'rar':
+                    return 'application/rar';
+                case 'exe': case 'com': case 'bat': case 'dll':
+                    return 'application/x-msdos-program';
+                case 'msi':
+                    return 'application/x-msi';
+                case 'cab':
+                    return 'application/x-cab';
+                case 'qtl':
+                    return 'application/x-quicktimeplayer';
+
+                // audio/video
+                case 'mp3': case 'mpga': case 'mpega': case 'mp2': case 'm4a':
+                    return 'audio/mpeg';
+                case 'qt': case 'mov':
+                    return 'video/quicktime';
+                case 'mpeg': case 'mpg': case 'mpe':
+                    return 'video/mpeg';
+                case '3gp':
+                    return 'video/3gpp';
+                case 'mp4':
+                    return 'video/mp4';
+
+                // adobe
+                case 'pdf':
+                    return 'application/pdf';
+                case 'psd':
+                    return 'image/x-photoshop';
+                case 'ai': case 'ps': case 'eps': case 'epsi': case 'epsf': case 'eps2': case 'eps3':
+                    return 'application/postscript';
+                case 'psd':
+                    return 'image/x-photoshop';
+
+                // ms office
+                case 'doc': case 'dot':
+                    return 'application/msword';
+                case 'rtf':
+                    return 'application/rtf';
+                case 'xls': case 'xlb': case 'xlt':
+                    return 'application/vnd.ms-excel';
+                case 'ppt': case 'pps':
+                    return 'application/vnd.ms-powerpoint';
+                case 'xlsx':
+                    return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                case 'xltx':
+                    return 'application/vnd.openxmlformats-officedocument.spreadsheetml.template';
+                case 'pptx':
+                    return 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+                case 'ppsx':
+                    return 'application/vnd.openxmlformats-officedocument.presentationml.slideshow';
+                case 'potx':
+                    return 'application/vnd.openxmlformats-officedocument.presentationml.template';
+                case 'docx':
+                    return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+                case 'dotx':
+                    return 'application/vnd.openxmlformats-officedocument.wordprocessingml.template';
+
+                // open office
+                case 'odt':
+                    return 'application/vnd.oasis.opendocument.text';
+                case 'ods':
+                    return 'application/vnd.oasis.opendocument.spreadsheet';
+                case 'odp':
+                    return 'application/vnd.oasis.opendocument.presentation';
+                case 'odb':
+                    return 'application/vnd.oasis.opendocument.database';
+                case 'odg':
+                    return 'application/vnd.oasis.opendocument.graphics';
+                case 'odi':
+                    return 'application/vnd.oasis.opendocument.image';
+
+                default:
+                    return 'application/octet-stream';
+            }
+        }
+    }
 }
 
 /**

@@ -178,10 +178,13 @@ if ($.browser.msie && $.browser.version == '6.0') {
             LazyCMS.dialog({
                 title:'Explorer', name:'Explorer', styles:{ overflow:'auto', width:'600px',height:'400px' }, body: r
             }, function() {
-                var $this = this;
-                $('form', $this).ajaxSubmit(callback);
+                var $this = this, form = $('form', $this);
+                form.ajaxSubmit(callback);
+                $('select[rel=submit]',$this).change(function(){
+                    form.submit();
+                });
                 $('.pages a',$this).click(function(){
-                    $.post(this.href, $('form', $this).serializeArray(), callback);
+                    $.post(this.href, form.serializeArray(), callback);
                     return false;
                 });
             });

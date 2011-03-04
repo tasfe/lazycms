@@ -124,9 +124,8 @@ function model_gets($type=null, $state=null) {
  * @return array
  */
 function model_add($data) {
-    $db = get_conn();
     if (!is_array($data)) return false;
-    $modelid = $db->insert('#@_model',$data);
+    $modelid = get_conn()->insert('#@_model',$data);
     $model   = array_merge($data,array(
        'modelid' => $modelid,
     ));
@@ -140,12 +139,12 @@ function model_add($data) {
  * @return array|null
  */
 function model_edit($modelid,$data) {
-    $db = get_conn(); $modelid = intval($modelid);
+    $modelid = intval($modelid);
     $data = is_array($data) ? $data : array();
     if ($model = model_get_byid($modelid)) {
         // 更新数据
         if ($data) {
-            $db->update('#@_model',$data,array('modelid'=>$modelid));
+            get_conn()->update('#@_model',$data,array('modelid'=>$modelid));
         }
         // 清理用户缓存
         model_clean_cache($modelid);
@@ -179,12 +178,11 @@ function model_clean_cache($modelid) {
  * @return bool
  */
 function model_delete($modelid) {
-    $db = get_conn();
     $modelid = intval($modelid);
     if (!$modelid) return false;
     if (model_get_byid($modelid)) {
         model_clean_cache($modelid);
-        $db->delete('#@_model',array('modelid'=>$modelid));
+        get_conn()->delete('#@_model',array('modelid'=>$modelid));
         return true;
     }
     return false;

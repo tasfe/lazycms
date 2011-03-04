@@ -54,8 +54,6 @@ class Image {
     function thumb($image, $max_w=100, $max_h=100, $toname=null) {
         // 获取原图信息
         if($info = Image::info($image)) {
-            // 输出 header
-            header('Content-type: '.$info['mime']);
             // 原图大小
             $src_w = $info['width']; $src_h = $info['height'];
             $type  = $info['type'] ? $info['type'] : strtolower(pathinfo($image, PATHINFO_EXTENSION));
@@ -70,6 +68,10 @@ class Image {
             $dst_h  = min($max_h,$height);
             // 载入原图
             $create = 'imagecreatefrom' . ($type == 'jpg' ? 'jpeg' : $type);
+            // 不支持的图片格式
+            if (!function_exists($create))
+                return Image::not_support($dst_w, $dst_h);
+            // 原图句柄
             $srcimg = $create($image);
 
             // 创建缩略图画布
@@ -102,7 +104,9 @@ class Image {
 
             // 生成图片
             $imagefun = 'image' . ($type == 'jpg' ? 'jpeg' : $type);
-
+            // 输出 header
+            header('Content-type: '.$info['mime']);
+            
             if ($toname) {
                 mkdirs(dirname($toname)); $imagefun($thumb, $toname);
             } else {
@@ -112,6 +116,23 @@ class Image {
             return $toname;
          }
          return false;
+    }
+    /**
+     * 不支持的图像格式
+     *
+     * @param int $w
+     * @param int $h
+     * @return void
+     */
+    function not_support($w, $h) {
+        header('Content-type: image/png');
+        $img_res   = imagecreatetruecolor($w, $h);
+        $fontcolor = imagecolorallocate($img_res,128,0,0);
+        $bgcolor   = imagecolorallocate($img_res,255,255,255);
+        imagefill($img_res,0,0,$bgcolor);
+        imagestring($img_res, 5, (imagesx($img_res)-8*3)/2, 15, 'Not', $fontcolor);
+        imagestring($img_res, 5, (imagesx($img_res)-8*7)/2, 30, 'Support', $fontcolor);
+        imagepng($img_res); imagedestroy($img_res);
     }
 }
 

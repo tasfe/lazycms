@@ -156,7 +156,7 @@ function taxonomy_get_names($category,$num=3) {
  * @return int
  */
 function taxonomy_count($type='category') {
-    $db = get_conn(); return $db->result(sprintf("SELECT COUNT(`taxonomyid`) FROM `#@_term_taxonomy` WHERE `type`='%s';", $type));
+    return get_conn()->result(sprintf("SELECT COUNT(`taxonomyid`) FROM `#@_term_taxonomy` WHERE `type`='%s';", $type));
 }
 /**
  * 取得分类列表
@@ -253,13 +253,12 @@ function taxonomy_get_ids($listid, $listsub = 'me') {
  */
 function taxonomy_path_exists($taxonomyid,$path) {
     if (strpos($path,'%ID')!==false && strpos($path,'%MD5')!==false) return false;
-    $db = get_conn();
     if ($taxonomyid) {
         $sql = sprintf("SELECT COUNT(`taxonomyid`) FROM `#@_term_taxonomy_meta` WHERE `key`='path' AND `value`='%s' AND `taxonomyid`<>'%d';", esc_sql($path), esc_sql($taxonomyid));
     } else {
         $sql = sprintf("SELECT COUNT(`taxonomyid`) FROM `#@_term_taxonomy_meta` WHERE `key`='path' AND `value`='%s';",esc_sql($path));
     }
-    return !($db->result($sql) == 0);
+    return !(get_conn()->result($sql) == 0);
 }
 /**
  * 取得分类信息
@@ -396,8 +395,7 @@ function taxonomy_update_count($taxonomyid) {
  * @return bool
  */
 function taxonomy_delete_relation($objectid,$taxonomyid) {
-    $db = get_conn();
-    return $db->delete('#@_term_relation',array(
+    return get_conn()->delete('#@_term_relation',array(
         'taxonomyid' => $taxonomyid,
         'objectid'   => $objectid,
     ));
@@ -412,9 +410,9 @@ function taxonomy_delete_relation($objectid,$taxonomyid) {
  * @return array|null
  */
 function taxonomy_add($type,$name,$parentid=0,$data=null) {
-    $db = get_conn(); $parentid = intval($parentid);
+    $parentid = intval($parentid);
     $data = is_array($data) ? $data : array();
-    $taxonomyid = $db->insert('#@_term_taxonomy',array(
+    $taxonomyid = get_conn()->insert('#@_term_taxonomy',array(
        'type'   => $type,
        'parent' => $parentid,
     ));

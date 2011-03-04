@@ -17,6 +17,6 @@
  * +---------------------------------------------------------------------------+
  */
 $(document).ready(function(){
-    $("input#username").focus();
+    $('input#username').focus();
     $('form#login').ajaxSubmit();
 });

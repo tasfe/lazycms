@@ -248,6 +248,10 @@ var LazyCMS = window.LazyCMS = window.CMS = {
      */
     ajaxSuccess: function(data, status, xhr) {
         var code = xhr.getResponseHeader('X-LazyCMS-Code');
+        try {
+            data = $.isPlainObject(data) ? data : $.parseJSON(data);
+        } catch (e) { }
+        
         switch (code) {
             // 提示
             case 'Success': case 'Error': case 'Alert':

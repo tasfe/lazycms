@@ -28,8 +28,7 @@ defined('COM_PATH') or die('Restricted access!');
  * @return int
  */
 function publish_add($name,$func,$args=array()) {
-    $db = get_conn();
-    return $db->insert('#@_publish',array(
+    return get_conn()->insert('#@_publish',array(
        'name'  => $name,
        'func'  => $func,
        'args'  => serialize($args),
@@ -44,8 +43,8 @@ function publish_add($name,$func,$args=array()) {
  * @return int
  */
 function publish_edit($pubid,$data) {
-    $db = get_conn(); if (empty($data)) return false;
-    return $db->update('#@_publish', (array)$data, array('pubid' => $pubid));
+    if (empty($data)) return false;
+    return get_conn()->update('#@_publish', (array)$data, array('pubid' => $pubid));
 }
 /**
  * 检查是否有需要生成的进度
@@ -53,8 +52,7 @@ function publish_edit($pubid,$data) {
  * @return int
  */
 function publish_check_process() {
-    $db = get_conn();
-    return $db->result("SELECT COUNT(`pubid`) FROM `#@_publish` WHERE (`state`=0 OR `state`=1);");
+    return get_conn()->result("SELECT COUNT(`pubid`) FROM `#@_publish` WHERE (`state`=0 OR `state`=1);");
 }
 /**
  * 执行发布
@@ -333,9 +331,9 @@ function publish_list_sitemaps($listid) {
  * @return bool
  */
 function publish_delete($listids) {
-    $db = get_conn(); if (empty($listids)) return false;
+    if (empty($listids)) return false;
     $listids = is_array($listids) ? implode(',', $listids) : $listids;
-    return $db->query("DELETE FROM `#@_publish` WHERE `pubid` IN({$listids})");
+    return get_conn()->query("DELETE FROM `#@_publish` WHERE `pubid` IN({$listids})");
 }
 /**
  * 清空进程
@@ -343,5 +341,5 @@ function publish_delete($listids) {
  * @return void
  */
 function publish_empty() {
-    $db = get_conn(); return $db->truncate('#@_publish');
+    return get_conn()->truncate('#@_publish');
 }
