@@ -199,14 +199,26 @@ switch ($method) {
                     'comments' => $comments,
                     'description' => esc_html($description),
                 );
-
+                $post_data = $content;
                 // 获取模型字段值
                 if ($model['fields']) {
                     foreach($model['fields'] as $field) {
                         $data['meta'][$field['n']] = isset($_POST[$field['_n']])?$_POST[$field['_n']]:null;
+                        if (strlen($data['meta'][$field['n']]) > 40) $post_data.= $data['meta'][$field['n']];
                     }
                 }
-
+                // 获取所有使用的媒体
+                if (preg_match_all('/([a-z\d]{40})\.[a-zA-Z\d]+/', $post_data, $matchs)) {
+                    $data['meta']['__medias__'] = array();
+                    foreach ($matchs[1] as $sha1) {
+                        if ($media = media_get($sha1)) {
+                            $data['meta']['__medias__'][] = $media['mediaid'];
+                        }
+                    }
+                    // 过滤重复
+                    $data['meta']['__medias__'] = array_unique($data['meta']['__medias__']);
+                }
+                
                 // 更新
                 if ($postid) {
                     $data['path']    = $path;
@@ -511,14 +523,6 @@ function post_manage_page($action) {
     $keywords = isset($_DATA['keywords'])?post_get_taxonomy($_DATA['keywords'], true):null;
     $categories  = isset($_DATA['category'])?$_DATA['category']:array();
     $description = isset($_DATA['description'])?$_DATA['description']:null;
-    $editor_opts = array(
-        'upLinkUrl'     => ADMIN.'index.php?method=upload&type=file',
-        'upLinkExt'     => C('UPFILE-Exts'),
-        'upImgUrl'      => ADMIN.'index.php?method=upload&type=image',
-        'upImgExt'      => C('UPIMG-Exts'),
-        'upFlashUrl'    => ADMIN.'index.php?method=upload&type=flash',
-        'upVideoUrl'    => ADMIN.'index.php?method=upload&type=video',
-    );
     echo '<div class="wrap">';
     echo   '<h2>'.system_head('title').'</h2>';
     echo   '<form action="'.PHP_FILE.'?method=save" method="post" name="postmanage" id="postmanage">';
@@ -557,7 +561,7 @@ function post_manage_page($action) {
     echo               '</tr>';
     echo               '<tr>';
     echo                   '<th><label for="content">'._x('Content','post').'</label></th>';
-    echo                   '<td>'.editor('content', $content, $editor_opts).'</td>';
+    echo                   '<td>'.editor('content', $content).'</td>';
     echo               '</tr>';
     echo           '</tbody>';
     echo           '<tbody class="extend-attr"></tbody>';

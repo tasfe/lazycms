@@ -56,9 +56,10 @@ class Pages {
      * 执行查询
      *
      * @param string $sql
+     * @param bool $check_page
      * @return mixed
      */
-    function query($sql) {
+    function query($sql, $check_page=false) {
         $csql = preg_replace_callback(
                     '/SELECT (.+) FROM/iU',
                     create_function('$matches','
@@ -72,14 +73,14 @@ class Pages {
                     rtrim($sql, ';'), 1
                 );
         $csql = preg_replace('/\sORDER\s+BY.+$/i', '', $csql, 1);
-
-        $sql .= sprintf(' LIMIT %d OFFSET %d;', $this->size, ($this->page - 1) * $this->size);
-        // 执行结果
-        $result = $this->_db->query($sql);
         // 总记录数
         $this->total  = $this->_db->result($csql);
         $this->pages  = ceil($this->total/$this->size);
         $this->pages  = ((int)$this->pages == 0) ? 1 : $this->pages;
+        $this->page   = ($check_page && $this->page > $this->pages) ? 1 : $this->page;
+        // 执行结果
+        $result = $this->_db->query($sql.sprintf(' LIMIT %d OFFSET %d;', $this->size, ($this->page - 1) * $this->size));
+        
         if ((int)$this->page < (int)$this->pages) {
             $this->length = $this->size;
         } elseif ((int)$this->page == (int)$this->pages) {
@@ -214,11 +215,12 @@ function pages_init($size=10, $page=null) {
  * 执行分页查询
  *
  * @param string $sql
+ * @param bool $check_page
  * @return mixed
  */
-function pages_query($sql) {
+function pages_query($sql, $check_page=false) {
     $pages = _pages_get_object();
-    return $pages->query($sql);
+    return $pages->query($sql, $check_page);
 }
 /**
  * 取得数据集

@@ -215,11 +215,19 @@ function editor($id,$content,$options=null) {
     if (instr('Removelink', $options['tools'])) {
         $botbar[] = '<button type="button" onclick="xhe_'.$id.'.exec(\'Removelink\');">'.__('Remove external links').'</button>';
     }
+    //if (instr('Explorer', $options['tools'])) {
+        $botbar[] = '<button type="button" onclick="xhe_'.$id.'.exec(\'Explorer\');">'.__('Explorer').'</button>';
+    //}
     if (instr('LocalizedImages', $options['tools'])) {
         $botbar[] = '<input cookie="true" type="checkbox" name="LocalizedImages['.$id.']" id="LocalizedImages_'.$id.'" value="1" /><label for="LocalizedImages_'.$id.'">'.__('Localized Images').'</label>';
     }
     $ht = '<textarea class="text" id="'.$id.'" name="'.$id.'">'.esc_html($content).'</textarea>';
-    $ht.= '<script type="text/javascript">var xhe_'.$id.' = $(\'textarea[name='.$id.']\').xheditor($.extend('.json_encode($options).',{"onUpload":(typeof(onUpload)==\'function\' ? onUpload : null),"plugins":xhePlugins,"beforeSetSource":xheFilter.SetSource,"beforeGetSource":xheFilter.GetSource}));</script>';
+    $ht.= '<script type="text/javascript">';
+    $ht.= 'var xhe_'.$id.' = $(\'textarea[name='.$id.']\').xheditor(';
+    $ht.= '$.extend('.json_encode($options).',{"onUpload":(typeof(onUpload)==\'function\' ? onUpload : null),';
+    $ht.= '"upLinkUrl":LazyCMS.UpLinkUrl, "upLinkExt":LazyCMS.UpLinkExt, "upImgUrl":LazyCMS.UpImgUrl, "upImgExt":LazyCMS.UpImgExt, "upFlashUrl":LazyCMS.UpFlashUrl, "upVideoUrl":LazyCMS.UpVideoUrl, "upVideoExt":LazyCMS.UpVideoExt,';
+    $ht.= '"plugins":xhePlugins, "beforeSetSource":xheFilter.SetSource, "beforeGetSource":xheFilter.GetSource';
+    $ht.= '}));</script>';
     if (!empty($botbar)) $ht.= '<div class="xhe_botbar">'.implode('', $botbar).'</div>';
     return $ht;
 }
@@ -1126,17 +1134,17 @@ function get_avatar($email, $size=96, $default='') {
  * 小图标
  *
  * @param string $name
+ * @param string $alt
  * @return string
  */
-function get_icon($name) {
+function get_icon($name,$alt='') {
     switch ($name) {
         case 'passed':      $name = 'b8'; break;
         case 'draft':       $name = 'b9'; break;
         case 'enabled':     $name = 'c3'; break;
         case 'disabled':    $name = 'c4'; break;
-
     }
-    return '<img src="'.ROOT.'common/images/blank.gif" class="os '.$name.'" alt="" />';
+    return '<img src="'.ROOT.'common/images/blank.gif" class="os '.$name.'" alt="'.$alt.'" />';
 }
 /**
  * 将目录下的文件或文件夹读取成为数组

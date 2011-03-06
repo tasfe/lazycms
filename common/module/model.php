@@ -251,14 +251,7 @@ function model_field2html($field) {
             $hl.= '</div>';
             break;
         case 'basic': case 'editor':
-            $options = array(
-                'upLinkUrl'     => ADMIN.'index.php?method=upload&type=file',
-                'upLinkExt'     => C('UPFILE-Exts'),
-                'upImgUrl'      => ADMIN.'index.php?method=upload&type=image',
-                'upImgExt'      => C('UPIMG-Exts'),
-                'upFlashUrl'    => ADMIN.'index.php?method=upload&type=flash',
-                'upVideoUrl'    => ADMIN.'index.php?method=upload&type=video',
-            );
+            $options = array();
             $options['width'] = $field['w'];
             $plugins = implode(',', $field['a']);
             if ($field['t']=='basic') {
@@ -273,10 +266,10 @@ function model_field2html($field) {
             $hl.= editor($field['_n'],$field['d'],$options);
             break;
         case 'upfile':
-            $hl.= '<input class="text" id="'.$field['_n'].'" name="'.$field['_n'].'" type="text" style="width:'.$field['w'].'" />&nbsp;<button type="button" onclick="$(\'#'.$field['_n'].'\').explorer();">'.__('Browse...').'</button>';
+            $hl.= '<input class="text" id="'.$field['_n'].'" name="'.$field['_n'].'" value="'.$field['d'].'" type="text" style="width:'.$field['w'].'" />&nbsp;<button type="button" onclick="$(\'#'.$field['_n'].'\').explorer();">'.__('Browse...').'</button>';
             break;
         case 'date':
-            $hl.= '<input class="text date-pick" id="'.$field['_n'].'" name="'.$field['_n'].'" type="text" style="width:'.$field['w'].'" />';
+            $hl.= '<input class="text date-pick" id="'.$field['_n'].'" name="'.$field['_n'].'" value="'.$field['d'].'" type="text" style="width:'.$field['w'].'" />';
             break;
     }
     return $hl;

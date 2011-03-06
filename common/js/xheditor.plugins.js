@@ -34,7 +34,7 @@ var xhePlugins = window.xhePlugins = {
             jSave   = $('#xheSave',jFlv);
 
         if (_this.settings.upVideoUrl)
-            _this.uploadInit(jUrl, _this.settings.upVideoUrl, 'flv,mp4');
+            _this.uploadInit(jUrl, _this.settings.upVideoUrl, _this.settings.upVideoExt);
         
         jSave.click(function(){
             _this.loadBookmark();
@@ -76,9 +76,12 @@ var xhePlugins = window.xhePlugins = {
                 return all;
             });
             this.setSource(source);
+    }},
+    // Explorer
+    Explorer:{c:'xhePlugins_btnExplorer',t:_('Explorer'),e:function(){
+        return $(this).explorer();
     }}
 };
-
 
 
 var xheFilter = window.xheFilter = {

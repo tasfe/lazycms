@@ -890,6 +890,7 @@ function system_jslang() {
         'Edit'      => __('Edit'),
         'Delete'    => __('Delete'),
         'Search'    => __('Search'),
+        'Explorer'    => __('Explorer'),
         'Address:'    => __('Address:'),
         'Insert Map'    => __('Insert Map'),
         'No record!'        => __('No record!'),
@@ -897,7 +898,9 @@ function system_jslang() {
         'Confirm Delete?'   => __('Confirm Delete?'),
         'Confirm Empty?'   => __('Confirm Empty?'),
         'Latest Version:'   => __('Latest Version:'),
+        'Picture Viewer'    => __('Picture Viewer'),
         'Did not select any action!' => __('Did not select any action!'),
+        
         // 密码强度
         'Strength indicator' => __('Strength indicator'),
         'Very weak'          => __('Very weak'),
@@ -905,6 +908,10 @@ function system_jslang() {
         'Medium'             => __('Medium'),
         'Strong'             => __('Strong'),
         'Mismatch'           => __('Mismatch'),
+
+        // explorer
+        'Upload file extension required for this: ' => __('Upload file extension required for this: '),
+        'You can only drag and drop the same type of file.' => __('You can only drag and drop the same type of file.'),
 
     ),system_head('jslang'));
     return sprintf('$.extend(LazyCMS.L10n,%s);',json_encode($js_lang));

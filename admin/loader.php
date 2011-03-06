@@ -45,7 +45,7 @@ header('Expires: ' . gmdate( "D, d M Y H:i:s", time() + $expire ) . ' GMT');
 header("Cache-Control: public, max-age={$expire}");
 
 // 从缓存读取
-$out = fcache_get($ckey);
+/*$out = fcache_get($ckey);
 if (fcache_not_null($out)) {
     if ($type == 'css') {
         header('Content-Type: text/css; charset=utf-8');
@@ -53,7 +53,7 @@ if (fcache_not_null($out)) {
         header('Content-Type: application/x-javascript; charset=utf-8');
     }
     echo $out; exit();
-}
+}*/
 
 // 判断类型
 $out  = '';
@@ -91,10 +91,15 @@ switch ($type) {
         		    // 读取文件
         		    $content = file_get_contents($is_file ? $src_min : $src);
                     // 替换系统常量
-        		    if (substr($src,-10)=='lazycms.js') {
-                        $content = preg_replace('/^(\\s*ADMIN).+/m',"$1: '".ADMIN."',",$content);
-                        $content = preg_replace('/^(\\s*ROOT).+/m',"$1: '".ROOT."',",$content);
+        		    if (substr($src,-10) == 'lazycms.js') {
+                        $content = preg_replace('/^(\\s*ADMIN).+$/m',"\$1: '".ADMIN."',",$content);
+                        $content = preg_replace('/^(\\s*ROOT).+$/m',"\$1: '".ROOT."',",$content);
         		    }
+                    // 替换文件上传的路径
+                    elseif (substr($src,-9) == 'common.js') {
+                        $content = preg_replace('/^(\\s*LazyCMS\.UpLinkExt\\s*).+$/m', "\$1= '".C('UPFILE-Exts')."';", $content);
+                        $content = preg_replace('/^(\\s*LazyCMS\.UpImgExt\\s*).+$/m', "\$1= '".C('UPIMG-Exts')."';", $content);
+                    }
                     // jsmin
                     if (!$is_file && filesize($src) <= 50*1024) $content = jsmin($content);
                     $out.= "/* file:".rel_root($src)." */\n". $content . "\n\n";

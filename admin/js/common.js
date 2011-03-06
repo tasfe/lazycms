@@ -17,7 +17,16 @@
  * +---------------------------------------------------------------------------+
  */
 
-LazyCMS.Loading = $('<div class="loading"><img class="os" src="' + LazyCMS.ADMIN + 'images/loading.gif" />Loading...</div>').css({width:'100px',position:'fixed',top:'5px',right:'5px'});
+LazyCMS.Loading     = $('<div class="loading"><img class="os" src="' + LazyCMS.ADMIN + 'images/loading.gif" />Loading...</div>').css({width:'100px',position:'fixed',top:'5px',right:'5px'});
+
+LazyCMS.UpLinkUrl   = LazyCMS.ADMIN + 'media.php?method=upload&type=file';
+LazyCMS.UpLinkExt   = 'zip,rar,txt';
+LazyCMS.UpImgUrl    = LazyCMS.ADMIN + 'media.php?method=upload&type=image';
+LazyCMS.UpImgExt    = 'jpg,jpeg,gif,png';
+LazyCMS.UpVideoUrl  = LazyCMS.ADMIN + 'media.php?method=upload&type=video';
+LazyCMS.UpVideoExt  = 'flv,mp4';
+LazyCMS.UpFlashUrl  = LazyCMS.ADMIN + 'media.php?method=upload&type=flash';
+LazyCMS.UpFlashExt  = 'swf';
 
 // 设置全局 AJAX 默认选项
 $.ajaxSetup({
@@ -173,22 +182,174 @@ if ($.browser.msie && $.browser.version == '6.0') {
      * 文件浏览器
      */
     $.fn.explorer = function() {
-        $.get(LazyCMS.ADMIN + 'index.php?method=explorer', function(r) {
+        var input = this;
+        $.post(LazyCMS.ADMIN + 'media.php?method=explorer', function(r) {
             var callback = arguments.callee;
             LazyCMS.dialog({
-                title:'Explorer', name:'Explorer', styles:{ overflow:'auto', width:'600px',height:'400px' }, body: r
+                title:_('Explorer'), name:'Explorer', styles:{ overflow:'auto', width:'600px',height:'410px' }, body: r
             }, function() {
                 var $this = this, form = $('form', $this);
                 form.ajaxSubmit(callback);
+                // select change
                 $('select[rel=submit]',$this).change(function(){
                     form.submit();
                 });
+                // 删除原先添加的按钮
+                $('button', $this).click(function(){
+                    $('input[rel=action]', $this).remove();
+                });
+                // 刷新
+                $('button[rel=submit]', $this).click(function(){
+                    form.submit();
+                });
+                // 删除
+                $('button[rel=delete]', $this).click(function(){
+                    LazyCMS.confirm(_('Confirm Delete?'), function(r) {
+                        if (r) {
+                            form.append('<input type="hidden" rel="action" name="action" value="delete" />'); form.submit();
+                        }
+                    });
+                });
+                // 上传
+                $('button[rel=upload]', $this).click(function(){
+                    form.submit();
+                });
+                // 插入
+                $('a[insert=true]', $this).click(function(){
+                    var data = $.parseJSON($(this).parent().parent().find('textarea').val());
+                    if (input[0].pasteHTML) {
+                        var i, type, types = ['Link','Img','Flash','Video'];
+                        for (i in types) {
+                            if ($.inArray(data.suffix, LazyCMS['Up' + types[i] + 'Ext'].split(',')) != -1) {
+                                type = types[i]; break;
+                            }
+                        }
+                        // TODO insert code
+                        switch (type) {
+                            case 'Link':
+                                break;
+                            case 'Img':
+                                break;
+                            case 'Flash':
+                                break;
+                            case 'Video':
+                                break;
+                        }
+                        //input[0].pasteHTML('<img src="' + url + '" alt="" />');
+                    } else {
+                        input.val(data['url']);
+                    }
+                    return false;
+                });
+                // 绑定全选事件
+                $('input[name=select]',form).click(function(){
+                    $('input[name^=list]:checkbox,input[name=select]:checkbox',form).attr('checked',this.checked);
+                });
+                // 表格背景变色
+                $('tbody tr',form).hover(function(){
+                    $('td',this).css({'background-color':'#FFFFCC'});
+                },function(){
+                    $('td',this).css({'background-color':'#FFFFFF'});
+                });
+                // 图片actions
+                $('.icons li',form).hover(function(){
+                    $('div.mask,div.actions',this).css({'visibility': 'visible'});
+                },function(){
+                    $('div.mask,div.actions',this).css({'visibility': 'hidden'});
+                });
+                // 显示大图
+                $('.icons a', $this).click(function(){
+                    $('.loading', $this).remove();
+                    var src     = this.href, scale, width, height, max_w = $(window).width()*0.9, max_h = $(window).height()*0.9,
+                        loading = $('<div class="loading"><img src="' + LazyCMS.ROOT + 'common/images/loading.gif" class="os" alt="Loading..." /></div>').appendTo($(this).parents('li'));
+                    var image   = new Image();
+                        image.onload = function(){
+                            loading.remove();
+                            scale  = Math.min(max_w / image.width, max_h / image.height);
+                            width  = scale < 1 ? parseInt(image.width * scale) : image.width;
+                            height = scale < 1 ? parseInt(image.height * scale) : image.height;
+                            LazyCMS.dialog({
+                                title:_('Picture Viewer'), name:'PicViewer', styles:{ overflow:'auto', 'min-width':200, 'min-height':150, width:width+10,height:height+33 },
+                                body: [
+                                    '<div class="wrapper pic-viewer" rel="close">',
+                                        '<img src="' + src + '" width="' + width + '" height="' + height + '" rel="close" />',
+                                        scale < 1 ? '<a href="' + src + '" target="_blank"><img src="' + LazyCMS.ROOT + 'common/images/resize.png" width="45" height="46" alt="' + _('Open a new window') + '" /></a>' : '',
+                                    '</div>'
+                                ].join('')
+                            });
+                        };
+                        image.src = src;
+                    return false;
+                });
+                // 翻页
                 $('.pages a',$this).click(function(){
                     $.post(this.href, form.serializeArray(), callback);
                     return false;
                 });
+                // 拖放上传
+                $this.bind('dragenter dragover', function(ev){ return false; }).bind('drop',function(ev){
+                    var dataTransfer = ev.originalEvent.dataTransfer,fileList;
+                    if (dataTransfer && (fileList = dataTransfer.files) && fileList.length > 0) {
+                        var i,cmd,arrCmd = ['Link','Img','Flash','Video'],arrExt = [],strExt;
+                        for (i in arrCmd) {
+                            cmd = arrCmd[i];
+                            if (LazyCMS['Up' + cmd + 'Url'] && LazyCMS['Up' + cmd + 'Ext'] && LazyCMS['Up' + cmd + 'Url'].match(/^[^!].*/i))
+                                arrExt.push(cmd + ':,' + LazyCMS['Up' + cmd + 'Ext']); //允许上传
+                        }
+                        //禁止上传
+                        if (arrExt.length === 0) return false;
+                        else strExt = arrExt.join(',');
+
+                        var match,fileExt,cmd = null;
+                        for (i = 0; i < fileList.length; i++) {
+                            fileExt = fileList[i].fileName.replace(/.+\./, '');
+                            if (match = strExt.match(new RegExp('(\\w+):[^:]*,' + fileExt + '(?:,|$)', 'i'))) {
+                                if (!cmd) cmd = match[1];
+                                else if (cmd !== match[1]) cmd = 2;
+                            }
+                            else cmd = 1;
+                        }
+                        if (cmd === 1) alert(_('Upload file extension required for this: ') + strExt.replace(/\w+:,/g, ''));
+                        else if (cmd === 2) alert(_('You can only drag and drop the same type of file.'));
+                        else if (cmd) {
+                            $this.startUpload(fileList, LazyCMS['Up' + cmd + 'Url'], '*', function() {
+                                form.submit();
+                            });
+                        }
+                    }
+                    return false;
+                });
             });
         });
+    }
+    
+    $.fn.startUpload = function(fileList, toUrl, limitExt, callback) {
+        var i,xhr,len = fileList.length;
+        // 检查扩展名
+        for (i = 0; i < len; i++) if (!check_ext(fileList[i].fileName, limitExt)) return ;
+
+        for (i = 0; i < len; i++) {
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) if ($.isFunction(callback)) callback(xhr.responseText);
+            };
+            xhr.open('POST', toUrl);
+            xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+            xhr.setRequestHeader('Content-Disposition', 'attachment; name="filedata"; filename="' + fileList[i].fileName + '"');
+            if (xhr.sendAsBinary)
+                xhr.sendAsBinary(fileList[i].getAsBinary());
+            else
+                xhr.send(fileList[i]);
+        }
+        // 检查扩展名
+        function check_ext(filename, limitExt) {
+            if (limitExt === '*' || filename.match(new RegExp('\.(' + limitExt.replace(/,/g, '|') + ')$', 'i')))
+                return true;
+            else {
+                alert(_('Upload file extension required for this: ') + limitExt);
+                return false;
+            }
+        }
     }
 })(jQuery);
 

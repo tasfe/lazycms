@@ -33,10 +33,8 @@ function media_localized_images($content) {
         foreach ($matchs[1] as $url) {
             $str = $url;
             $url = trim(trim(trim($url),'"'), "'");
-            // [id]
-            if (validate_is($url, '/^\[\d+\]$/')) continue;
             // 符合，下载文件
-            elseif (validate_is($url, VALIDATE_IS_URL)) {
+            if (validate_is($url, VALIDATE_IS_URL)) {
                 if (strpos($url, '&amp;') !== false) $url = xmldecode($url);
                 $aurl = httplib_parse_url($url);
                 $resp = httplib_get($url, array(
@@ -61,33 +59,6 @@ function media_localized_images($content) {
                     $body = httplib_retrieve_body($resp);
                     // sha1sum
                     $sha1sum = sha1($body);
-                    // 文件存在
-                    if ($media = media_get($sha1sum)) {
-                        $mediaid = $media['mediaid'];
-                    }
-                    // 文件不存在
-                    else {
-                        $file = $sha1sum . '.' . $suffix;
-                        $path = ABS_PATH . '/' . MEDIA_PATH . '/images/' . date('Y-m-d', time()) . '/' . $file;
-                        mkdirs(dirname($path)); file_put_contents($path, $body);
-                        // 添加
-                        $mediaid = media_add('images', $sha1sum, pathinfo($aurl['path'], PATHINFO_BASENAME), strlen($body), $suffix);
-                    }
-                    // 替换原始内容
-                    $content = str_replace($str, '"['.$mediaid.']"', $content);
-                }
-            }
-            // 不符合URL，跳过
-            else {
-                $path = ABS_PATH . $url;
-                if (is_file($path)) {
-                    // 取得文件后缀
-                    $suffix = pathinfo($url, PATHINFO_EXTENSION);
-                    if (!instr($suffix, $suffixs)) {
-                        $suffix = 'jpg';
-                    }
-                    // sha1sum
-                    $sha1sum = sha1_file($path);
                     // 不需要替换的文件
                     if ($file = media_no_add($sha1sum)) {
                         if ($str != '"'.ROOT.$file.'"') {
@@ -96,9 +67,15 @@ function media_localized_images($content) {
                         continue;
                     }
                     // 文件存在
-                    if ($media = media_get($sha1sum)) {
-                        $content = str_replace($str, '"['.$media['mediaid'].']"', $content);
+                    if (!($media = media_get($sha1sum))) {
+                        $time = time();
+                        $path = ABS_PATH . '/' . MEDIA_PATH . '/images/' . date('Y-m-d', $time) . '/' . $sha1sum . '.' . $suffix;
+                        mkdirs(dirname($path)); file_put_contents($path, $body);
+                        // 添加
+                        $media = media_get(media_add('images', $sha1sum, pathinfo($aurl['path'], PATHINFO_BASENAME), strlen($body), $suffix, $time));
                     }
+                    // 替换原始内容
+                    $content = str_replace($str, '"'.$media['url'].'"', $content);
                 }
             }
         }
@@ -206,9 +183,10 @@ function media_decode($content) {
  * @param string $name
  * @param int $size
  * @param string $suffix
+ * @param int $addtime
  * @return int|bool
  */
-function media_add($folder, $sha1sum, $name, $size, $suffix) {
+function media_add($folder, $sha1sum, $name, $size, $suffix, $addtime=null) {
     global $_USER;
     // 获取管理员信息
     if (!isset($_USER)) $_USER = user_current(false);
@@ -219,6 +197,32 @@ function media_add($folder, $sha1sum, $name, $size, $suffix) {
         'suffix'    => $suffix,
         'size'      => $size,
         'userid'    => $_USER['userid'],
-        'addtime'   => time(),
+        'addtime'   => $addtime ? $addtime : time(),
     ));
+}
+/**
+ * 清空缓存
+ *
+ * @param int $id
+ * @return bool
+ */
+function media_clean_cache($id) {
+    return fcache_delete('media.id.'.$id);
+}
+/**
+ * 删除媒体
+ *
+ * @param int $id
+ * @return bool
+ */
+function media_delete($id) {
+    $id = intval($id);
+    if (!$id) return false;
+    if ($media = media_get($id)) {
+        media_clean_cache($media['mediaid']);
+        media_clean_cache($media['sha1sum']);
+        get_conn()->delete('#@_media',array('mediaid'=>$id));
+        return unlink($media['path']);
+    }
+    return false;
 }
