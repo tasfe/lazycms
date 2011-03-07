@@ -50,7 +50,6 @@ select{ padding:1px; }
 
 /* button */
 button, .button {
-    min-width:50px;
     border-width:1px;
     border-style:solid;
     border-color:#bbb #999 #999 #bbb;

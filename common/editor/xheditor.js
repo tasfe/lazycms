@@ -293,7 +293,7 @@ $.xheditor=function(textarea,options)
 		if(settings.html5Upload)jBody.bind('dragenter dragover',function(ev){var types;if((types=ev.originalEvent.dataTransfer.types)&&$.inArray('Files', types)!==-1)return false;}).bind('drop',function(ev){
 			var dataTransfer=ev.originalEvent.dataTransfer,fileList;
 			if(dataTransfer&&(fileList=dataTransfer.files)&&fileList.length>0){
-				var i,cmd,arrCmd=['Link','Img','Flash','Media'],arrExt=[],strExt;
+				var i,cmd,arrCmd=['Link','Img','Flash','Media','Video'],arrExt=[],strExt;
 				for(i in arrCmd){
 					cmd=arrCmd[i];
 					if(settings['up'+cmd+'Url']&&settings['up'+cmd+'Url'].match(/^[^!].*/i))arrExt.push(cmd+':,'+settings['up'+cmd+'Ext']);//允许上传
@@ -1130,7 +1130,7 @@ $.xheditor=function(textarea,options)
 							url=url.split('||');
 							sLink=sTemplate;
 							sLink=sLink.replace('xhe_tmpurl',url[0]);
-							sLink=sLink.replace('xhe_tmptext',url[1]?url[1]:sText);
+							sLink=sLink.replace('xhe_tmptext',url[1]?url[1].replace(/%20/g,' '):sText);
 							arrLink.push(sLink);
 						}
 					}
@@ -1140,7 +1140,7 @@ $.xheditor=function(textarea,options)
 				{//单url模式
 					url=aUrl[0].split('||');
 					if(!sText)sText=url[0];
-					sText=url[1]?url[1]:(selHtml!=='')?'':sText?sText:url[0];
+					sText=url[1]?url[1].replace(/%20/g,' '):(selHtml!=='')?'':sText?sText:url[0];
 					if(jParent.length===0)
 					{
 						if(sText)_this.pasteHTML('<a href="#xhe_tmpurl">'+sText+'</a>');
@@ -1404,14 +1404,7 @@ $.xheditor=function(textarea,options)
 		{
 			jUpBtn.click(function(){
 				bShowPanel=false;//防止按钮面板被关闭
-				var wh,w=null,h=null,i,s = toUrl.substr(1);
-                if ((i=s.indexOf('||')) != -1) {
-                    wh = s.substr(0,i);
-                    s  = s.substr(i+2);
-                    w  = wh.substr(0, wh.indexOf('x'));
-                    h  = wh.substr(wh.indexOf('x')+1);
-                }
-                _this.showIframeModal(_('Upload file'),s,setUploadMsg,w,h,function(){bShowPanel=true;});
+				_this.showIframeModal(_('Upload file'),toUrl.substr(1),setUploadMsg,null,null,function(){bShowPanel=true;});
 			});
 		}
 		else

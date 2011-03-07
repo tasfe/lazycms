@@ -36,8 +36,8 @@ switch ($method) {
     case 'new':
         // 重置标题
         system_head('title', __('Add New Category'));
-        system_head('styles', array('css/xheditor.plugins'));
-        system_head('scripts', array('js/xheditor'));
+        system_head('styles', array('css/xheditor','css/datePicker'));
+        system_head('scripts', array('js/xheditor','js/datePicker'));
         system_head('jslang', system_editor_lang());
         // 添加JS事件
         system_head('loadevents', 'sort_manage_init');
@@ -50,8 +50,8 @@ switch ($method) {
     case 'edit':
         // 重置标题
         system_head('title', __('Edit Category'));
-        system_head('styles', array('css/xheditor.plugins'));
-        system_head('scripts', array('js/xheditor'));
+        system_head('styles', array('css/xheditor','css/datePicker'));
+        system_head('scripts', array('js/xheditor','js/datePicker'));
         system_head('jslang', system_editor_lang());
         // 添加JS事件
         system_head('loadevents', 'sort_manage_init');

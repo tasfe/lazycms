@@ -61,14 +61,17 @@ a:hover, a:active { text-decoration: underline; }
     .explorer .toobar label{ margin-right:3px; }
     .explorer .toobar select{ margin-right:10px; }
     .explorer .toobar button{ margin-right:6px; }
+    .explorer .toobar span.upload{ position:relative; display:inline-block; }
+    .explorer .toobar div.infile{ display:block; width:50px; height:25px; overflow:hidden; position:absolute; top:0; left:0; text-align:right; }
+    .explorer .toobar input.file{ height:30px; position:absolute; top:0; right:0; opacity:0; -moz-opacity:0; -ms-filter:'alpha(opacity=0)'; filter:alpha(opacity=0); }
     .explorer table { margin-top:0; }
     .explorer table td { padding:3px; }
     .explorer table td.name { display:block; width:240px; height:21px; overflow:hidden; white-space:nowrap; }
     .explorer ul.icons { margin:0; margin-bottom:10px; padding:0; }
-    .explorer ul.icons li { width:70px; height:60px; position:relative; float:left; list-style:none; display:block; overflow:hidden; margin:8px 6px; text-align:center; }
-    .explorer ul.icons li div.loading{ width:70px; height:60px; background:#ffffff; position:absolute; left:0; top:0; padding:0; border:none; opacity:0.5; -moz-opacity:0.5; filter:alpha(opacity=50); }
+    .explorer ul.icons li { width:70px; height:60px; position:relative; float:left; list-style:none; display:block; overflow:hidden; margin:8px 5px; text-align:center; }
+    .explorer ul.icons li div.loading{ width:70px; height:60px; background:#ffffff; position:absolute; left:0; top:0; padding:0; border:none; opacity:0.5; -moz-opacity:0.5; -ms-filter:'alpha(opacity=50)'; filter:alpha(opacity=50); }
     .explorer ul.icons li div.loading img{ margin-top:23px; }
-    .explorer ul.icons li div.mask { width:70px; height:20px; visibility: hidden; background:#fff; position:absolute; right:0; bottom:0; opacity:0.5; -moz-opacity:0.5; filter:alpha(opacity=50); }
+    .explorer ul.icons li div.mask { width:70px; height:20px; visibility: hidden; background:#fff; position:absolute; right:0; bottom:0; opacity:0.5; -moz-opacity:0.5; -ms-filter:'alpha(opacity=50)'; filter:alpha(opacity=50); }
     .explorer ul.icons li div.actions{ width:67px; height:20px; padding-right:3px; visibility: hidden; text-align:right; position:absolute; right:0; bottom:0; }
     .explorer .botbar {  }
     .explorer .botbar .info{ float:left; line-height:22px; }

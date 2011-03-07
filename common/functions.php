@@ -179,7 +179,7 @@ function &get_conn(){
  */
 function editor($id,$content,$options=null) {
     $defaults = array(
-        'width'         => '660',
+        'width'         => '680',
         'height'        => '280',
         'toobar'        => 'full',
         'emotPath'      => ROOT.'common/images/emots/',
@@ -195,7 +195,7 @@ function editor($id,$content,$options=null) {
         switch ($options['toobar']) {
             case 'full':
                 $options['tools'] = 'Source,Preview,Pastetext,|,Blocktag,FontSize,Bold,Italic,Underline,Strikethrough,FontColor,'.
-                                    'BackColor,Removeformat,|,Align,List,Outdent,Indent,|,Link,Unlink,Img,Flash,Flv,Emot,Table,GoogleMap,Pagebreak,Removelink,LocalizedImages,|,'.
+                                    'BackColor,Removeformat,|,Align,List,Outdent,Indent,|,Link,Unlink,Img,Flash,Flv,Emot,Table,GoogleMap,Pagebreak,Explorer,Removelink,LocalizedImages,|,'.
                                     'Fullscreen';
                 break;
             case 'simple':
@@ -215,9 +215,9 @@ function editor($id,$content,$options=null) {
     if (instr('Removelink', $options['tools'])) {
         $botbar[] = '<button type="button" onclick="xhe_'.$id.'.exec(\'Removelink\');">'.__('Remove external links').'</button>';
     }
-    //if (instr('Explorer', $options['tools'])) {
+    if (instr('Explorer', $options['tools'])) {
         $botbar[] = '<button type="button" onclick="xhe_'.$id.'.exec(\'Explorer\');">'.__('Explorer').'</button>';
-    //}
+    }
     if (instr('LocalizedImages', $options['tools'])) {
         $botbar[] = '<input cookie="true" type="checkbox" name="LocalizedImages['.$id.']" id="LocalizedImages_'.$id.'" value="1" /><label for="LocalizedImages_'.$id.'">'.__('Localized Images').'</label>';
     }

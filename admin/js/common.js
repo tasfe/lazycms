@@ -188,8 +188,7 @@ if ($.browser.msie && $.browser.version == '6.0') {
             LazyCMS.dialog({
                 title:_('Explorer'), name:'Explorer', styles:{ overflow:'auto', width:'600px',height:'410px' }, body: r
             }, function() {
-                var $this = this, form = $('form', $this);
-                form.ajaxSubmit(callback);
+                var $this = this, form = $('form', $this).ajaxSubmit(callback);
                 // select change
                 $('select[rel=submit]',$this).change(function(){
                     form.submit();
@@ -211,31 +210,66 @@ if ($.browser.msie && $.browser.version == '6.0') {
                     });
                 });
                 // 上传
-                $('button[rel=upload]', $this).click(function(){
-                    form.submit();
+                $('input[name=filedata]', $this).change(function(){
+                    var file = this;
+                    var i,cmd,arrCmd = ['Link','Img','Flash','Video'],arrExt = [],strExt;
+                    for (i in arrCmd) {
+                        cmd = arrCmd[i];
+                        if (LazyCMS['Up' + cmd + 'Url'] && LazyCMS['Up' + cmd + 'Ext'] && LazyCMS['Up' + cmd + 'Url'].match(/^[^!].*/i))
+                            arrExt.push(cmd + ':,' + LazyCMS['Up' + cmd + 'Ext']); //允许上传
+                    }
+                    //禁止上传
+                    if (arrExt.length === 0) return false;
+                    else strExt = arrExt.join(',');
+
+                    var match,fileExt,fileList,cmd = null;
+                    if (file.files)
+                        fileList = file.files;
+                    else {
+                        fileList = [{fileName: file.value}];
+                    }
+                    for (i = 0; i < fileList.length; i++) {
+                        fileExt = fileList[i].fileName.replace(/.+\./, '');
+                        if (match = strExt.match(new RegExp('(\\w+):[^:]*,' + fileExt + '(?:,|$)', 'i'))) {
+                            if (!cmd) cmd = match[1];
+                            else if (cmd !== match[1]) cmd = 2;
+                        }
+                        else cmd = 1;
+                    }
+                    
+                    if (cmd === 1) alert(_('Upload file extension required for this: ') + strExt.replace(/\w+:,/g, ''));
+                    else if (cmd === 2) alert(_('You can only drag and drop the same type of file.'));
+                    else if (cmd) {
+                        $this.startUpload(file.files ? file.files : file, LazyCMS['Up' + cmd + 'Url'], '*', function() {
+                            file.value = null; form.submit();
+                        });
+                    }
                 });
                 // 插入
                 $('a[insert=true]', $this).click(function(){
                     var data = $.parseJSON($(this).parent().parent().find('textarea').val());
                     if (input[0].pasteHTML) {
-                        var i, type, types = ['Link','Img','Flash','Video'];
+                        var i, html, type, types = ['Link','Img','Flash','Video'];
                         for (i in types) {
                             if ($.inArray(data.suffix, LazyCMS['Up' + types[i] + 'Ext'].split(',')) != -1) {
                                 type = types[i]; break;
                             }
                         }
-                        // TODO insert code
                         switch (type) {
-                            case 'Link':
-                                break;
                             case 'Img':
+                                html = '<img src="' + data['url'] + '" width="' + data['width'] + '" height="' + data['height'] + '" alt="' + data['name'] + '" />';
                                 break;
                             case 'Flash':
+                                html = '<embed type="application/x-shockwave-flash" classid="clsid:d27cdb6e-ae6d-11cf-96b8-4445535400000" src="' + data['url'] + '" wmode="opaque" quality="high" menu="false" play="true" loop="true" allowfullscreen="true" height="' + data['height'] + '" width="' + data['width'] + '" />';
                                 break;
                             case 'Video':
+                                html = '<embed width="480" height="400" lazysrc="' + data['url'] + '" flashvars="file=' + data['url'] + '" src="'+LazyCMS.ROOT+'common/editor/plugins/mediaplayer/player.swf" quality="high" allowScriptAccess="always" allowFullScreen="true" type="application/x-shockwave-flash" lazytype="Flv" />';
+                                break;
+                            default: case 'Link':
+                                html = '<a href="' + data['url'] + '">' + data['name'] + '</a>';
                                 break;
                         }
-                        //input[0].pasteHTML('<img src="' + url + '" alt="" />');
+                        input[0].pasteHTML(html);
                     } else {
                         input.val(data['url']);
                     }
@@ -258,7 +292,7 @@ if ($.browser.msie && $.browser.version == '6.0') {
                     $('div.mask,div.actions',this).css({'visibility': 'hidden'});
                 });
                 // 显示大图
-                $('.icons a', $this).click(function(){
+                $('.icons a[target]', $this).click(function(){
                     $('.loading', $this).remove();
                     var src     = this.href, scale, width, height, max_w = $(window).width()*0.9, max_h = $(window).height()*0.9,
                         loading = $('<div class="loading"><img src="' + LazyCMS.ROOT + 'common/images/loading.gif" class="os" alt="Loading..." /></div>').appendTo($(this).parents('li'));
@@ -287,7 +321,7 @@ if ($.browser.msie && $.browser.version == '6.0') {
                     return false;
                 });
                 // 拖放上传
-                $this.bind('dragenter dragover', function(ev){ return false; }).bind('drop',function(ev){
+                $this.unbind().bind('dragenter dragover', function(ev){ return false; }).bind('drop',function(ev){
                     var dataTransfer = ev.originalEvent.dataTransfer,fileList;
                     if (dataTransfer && (fileList = dataTransfer.files) && fileList.length > 0) {
                         var i,cmd,arrCmd = ['Link','Img','Flash','Video'],arrExt = [],strExt;
@@ -322,24 +356,72 @@ if ($.browser.msie && $.browser.version == '6.0') {
             });
         });
     }
-    
+    /**
+     * 开始上传
+     *
+     * @param fileList
+     * @param toUrl
+     * @param limitExt
+     * @param callback
+     */
     $.fn.startUpload = function(fileList, toUrl, limitExt, callback) {
-        var i,xhr,len = fileList.length;
-        // 检查扩展名
-        for (i = 0; i < len; i++) if (!check_ext(fileList[i].fileName, limitExt)) return ;
+        // TODO 增加上传进度条
+        var multiMsg = [];
+        // HTML4 UPLOAD
+        if (fileList.type && fileList.type.toLowerCase() == 'file') {
+            var uid    = new Date().getTime(), guid = 'jUploadFrame' + uid;
+            var iframe = $('<iframe name="' + guid + '" />').appendTo('body');
+            var jForm  = $('<form action="' + toUrl + '" target="' + guid + '" method="post" enctype="multipart/form-data" class="hide"></form>').appendTo('body');
+            var jOldFile = $(fileList), jNewFile = jOldFile.clone().attr('disabled','true');
+		        jOldFile.before(jNewFile).appendTo(jForm); jForm.submit();
+            // iframe onload
+            iframe.load(function(){
+                upcallback(iframe.contents().text(), true);
+                // upload complete remove iframe and form
+                iframe.remove(); jForm.remove();
+            });
+        }
+        // HTML5 UPLOAD
+        else {
+            var i = 0, xhr, len = fileList.length;
+            // 检查扩展名
+            for (var j = 0; j < len; j++) if (!check_ext(fileList[j].fileName, limitExt)) return ;
+            // 上传文件
+            function upload_execute(text) {
+                 var func = arguments.callee;
+                // 当前文件上传完毕
+                if ((!text || (text && upcallback(text, i === len) === true)) && i < len) {
+                    xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState === 4) func(xhr.responseText);
+                    };
+                    xhr.open('POST', toUrl);
+                    xhr.setRequestHeader('Content-Type', fileList[i].type);
+                    xhr.setRequestHeader('Content-Disposition', 'attachment; name="filedata"; filename="' + fileList[i].fileName + '"');
+                    if (xhr.sendAsBinary)
+                        xhr.sendAsBinary(fileList[i].getAsBinary());
+                    else
+                        xhr.send(fileList[i]);
+                    i++;
+                }
+            }
+            // 执行上传
+            upload_execute();
+        }
+        // 上传完成的回调函数
+        function upcallback(text, finish) {
+            var data, result = false; try { data = $.parseJSON(text); } catch (e) {}
 
-        for (i = 0; i < len; i++) {
-            xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) if ($.isFunction(callback)) callback(xhr.responseText);
-            };
-            xhr.open('POST', toUrl);
-            xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-            xhr.setRequestHeader('Content-Disposition', 'attachment; name="filedata"; filename="' + fileList[i].fileName + '"');
-            if (xhr.sendAsBinary)
-                xhr.sendAsBinary(fileList[i].getAsBinary());
-            else
-                xhr.send(fileList[i]);
+            if (data.err === undefined || data.msg === undefined)
+                alert(toUrl + _(' upload interface error!') + '\r\n\r\n' + _('return error:') + ' \r\n\r\n' + text);
+            else if(data.err)
+                alert(data.err);
+            else {
+                multiMsg.push(data.msg);
+                result = true;
+            }
+            if (finish && $.isFunction(callback)) callback(multiMsg);
+            return result;
         }
         // 检查扩展名
         function check_ext(filename, limitExt) {

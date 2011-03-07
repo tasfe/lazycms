@@ -221,6 +221,8 @@ function translate($source,$target) {
         array("'上传'","_('Upload')"),
         array("'上传文件'","_('Upload file')"),
         array("arrCmd=['Link','Img','Flash','Media']","arrCmd=['Link','Img','Flash','Media','Video']"),
+        array("sText=url[1]?url[1]:","sText=url[1]?url[1].replace(/%20/g,' '):"),
+        array("sLink=sLink.replace('xhe_tmptext',url[1]?url[1]:","sLink=sLink.replace('xhe_tmptext',url[1]?url[1].replace(/%20/g,' '):"),
         /*array("_this.showIframeModal(_('Upload file'),toUrl.substr(1),setUploadMsg,null,null,function(){bShowPanel=true;});","var wh,w=null,h=null,i,s = toUrl.substr(1);
                 if ((i=s.indexOf('||')) != -1) {
                     wh = s.substr(0,i);

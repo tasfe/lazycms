@@ -203,13 +203,13 @@ var LazyCMS = window.LazyCMS = window.CMS = {
                 position:'fixed',
                 'z-index': (maxIndex + 1)
             }, options||{});
-            $.extend(styles,{'filter':'alpha(opacity=' + (100 * styles.opacity) + ')', '-moz-opacity':styles.opacity});
+            $.extend(styles,{'-ms-filter':'alpha(opacity=' + (100 * styles.opacity) + ')', 'filter':'alpha(opacity=' + (100 * styles.opacity) + ')', '-moz-opacity':styles.opacity});
             maskDiv.css(styles);
         }
         // 重置遮罩层
         else if (isMask && options) {
             if (options.opacity) {
-                $.extend(options,{'filter':'alpha(opacity=' + (100 * options.opacity) + ')', '-moz-opacity':options.opacity});
+                $.extend(options,{'-ms-filter':'alpha(opacity=' + (100 * options.opacity) + ')', 'filter':'alpha(opacity=' + (100 * options.opacity) + ')', '-moz-opacity':options.opacity});
             }
             maskDiv.css(options);
         }

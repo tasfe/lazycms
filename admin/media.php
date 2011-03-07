@@ -46,7 +46,7 @@ switch ($method) {
         }
         $db     = get_conn();
         $page   = empty($_GET['page']) ? (empty($_POST['page']) ? 1 : $_POST['page']) : $_GET['page'];
-        $type   = isset($_REQUEST['type']) ? $_REQUEST['type'] : 'images';
+        $type   = isset($_REQUEST['type']) ? $_REQUEST['type'] : null;
         $date   = isset($_REQUEST['date']) ? $_REQUEST['date'] : date('Y-m');
         $suffix = isset($_REQUEST['suffix']) ? $_REQUEST['suffix'] : null;
         // 文件夹
@@ -97,7 +97,8 @@ switch ($method) {
         $hl.=       '</select>';
         $hl.=       '<button type="button" rel="submit">'.__('Refresh').'</button>';
         $hl.=       '<button type="button" rel="delete">'.__('Delete').'</button>';
-        $hl.=       '<button type="button" rel="upload">'.__('Upload').'</button>';
+        $hl.=       '<span class="upload"><button type="button" rel="upload">'.__('Upload').'</button>';
+        $hl.=       '<div class="infile"><input class="file" type="file" name="filedata" multiple="true"></div></span>';
         $hl.=   '</div>';
         pages_init($type == 'images' ? 28 : 10, $page);
         $where  = $type ? sprintf(" AND `folder`='%s'", esc_sql($type)) : '';
@@ -118,13 +119,19 @@ switch ($method) {
                 $hl.=   '</tr></thead>';
                 $hl.=   '<tbody>';
                 while ($data = pages_fetch($result)) {
+                    $path = media_file($data);
                     $json = array(
                         'id'        => $data['mediaid'],
                         'name'      => $data['name'],
                         'suffix'    => $data['suffix'],
                         'size'      => $data['size'],
-                        'url'       => ROOT.media_file($data),
+                        'url'       => ROOT.$path,
                     );
+                    // 计算文件的高宽
+                    if (instr($data['suffix'], C('UPIMG-Exts')) || $data['suffix'] == 'swf') {
+                        list($width, $height) = getimagesize(ABS_PATH.'/'.$path);
+                        if ($width && $height) { $json['width']  = $width; $json['height'] = $height; }
+                    }
                     $hl.=   '<tr>';
                     $hl.=       '<td class="tc"><input type="checkbox" name="listids[]" value="'.$data['mediaid'].'" /><textarea class="hide">'.json_encode($json).'</textarea></td>';
                     $hl.=       '<td class="name"><a href="javascript:;" insert="true" rel="close">'.get_icon('c7',__('Insert')).'</a>';
@@ -139,13 +146,19 @@ switch ($method) {
             } elseif ($view == 'icons') {
                 $hl.= '<ul class="icons">';
                 while ($data = pages_fetch($result)) {
+                    $path = media_file($data);
                     $json = array(
                         'id'        => $data['mediaid'],
                         'name'      => $data['name'],
                         'suffix'    => $data['suffix'],
                         'size'      => $data['size'],
-                        'url'       => ROOT.media_file($data),
+                        'url'       => ROOT.$path,
                     );
+                    // 计算文件的高宽
+                    if (instr($data['suffix'], C('UPIMG-Exts')) || $data['suffix'] == 'swf') {
+                        list($width, $height) = getimagesize(ABS_PATH.'/'.$path);
+                        if ($width && $height) { $json['width']  = $width; $json['height'] = $height; }
+                    }
                     $hl .= '<li><a href="'.$json['url'].'" target="_blank"><img src="'.ADMIN.'media.php?method=thumb&id='.$data['mediaid'].'&size=70x60" alt="'.$data['name'].'" /></a>';
                     $hl .= '<div class="mask">&nbsp;</div><div class="actions"><input type="checkbox" name="listids[]" value="'.$data['mediaid'].'" />';
                     $hl .= '<textarea class="hide">'.json_encode($json).'</textarea><a href="javascript:;" insert="true" rel="close">'.get_icon('c7',__('Insert')).'</a></div></li>';
@@ -241,7 +254,7 @@ switch ($method) {
                 $result['msg']['name'] = $info['name'];
                 switch ($type) {
                     case 'file':
-                        $result['msg']['url'] = '!'.$info['url'].'||'.$info['name'];
+                        $result['msg']['url'] = '!'.$info['url'].'||'.str_replace(chr(32), '%20', $info['name']);
                         break;
                     case 'flash':
                         list($width, $height) = getimagesize($info['path']);
