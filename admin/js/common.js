@@ -212,38 +212,11 @@ if ($.browser.msie && $.browser.version == '6.0') {
                 // 上传
                 $('input[name=filedata]', $this).change(function(){
                     var file = this;
-                    var i,cmd,arrCmd = ['Link','Img','Flash','Video'],arrExt = [],strExt;
-                    for (i in arrCmd) {
-                        cmd = arrCmd[i];
-                        if (LazyCMS['Up' + cmd + 'Url'] && LazyCMS['Up' + cmd + 'Ext'] && LazyCMS['Up' + cmd + 'Url'].match(/^[^!].*/i))
-                            arrExt.push(cmd + ':,' + LazyCMS['Up' + cmd + 'Ext']); //允许上传
-                    }
-                    //禁止上传
-                    if (arrExt.length === 0) return false;
-                    else strExt = arrExt.join(',');
-
-                    var match,fileExt,fileList,cmd = null;
-                    if (file.files)
-                        fileList = file.files;
-                    else {
-                        fileList = [{fileName: file.value}];
-                    }
-                    for (i = 0; i < fileList.length; i++) {
-                        fileExt = fileList[i].fileName.replace(/.+\./, '');
-                        if (match = strExt.match(new RegExp('(\\w+):[^:]*,' + fileExt + '(?:,|$)', 'i'))) {
-                            if (!cmd) cmd = match[1];
-                            else if (cmd !== match[1]) cmd = 2;
-                        }
-                        else cmd = 1;
-                    }
-                    
-                    if (cmd === 1) alert(_('Upload file extension required for this: ') + strExt.replace(/\w+:,/g, ''));
-                    else if (cmd === 2) alert(_('You can only drag and drop the same type of file.'));
-                    else if (cmd) {
-                        $this.startUpload(file.files ? file.files : file, LazyCMS['Up' + cmd + 'Url'], '*', function() {
+                    upcheck(file.files ? file.files : [{fileName: file.value}], function(toUrl) {
+                        $this.startUpload(file.files ? file.files : file, toUrl, '*', function() {
                             file.value = null; form.submit();
                         });
-                    }
+                    });
                 });
                 // 插入
                 $('a[insert=true]', $this).click(function(){
@@ -324,35 +297,42 @@ if ($.browser.msie && $.browser.version == '6.0') {
                 $this.unbind().bind('dragenter dragover', function(ev){ return false; }).bind('drop',function(ev){
                     var dataTransfer = ev.originalEvent.dataTransfer,fileList;
                     if (dataTransfer && (fileList = dataTransfer.files) && fileList.length > 0) {
-                        var i,cmd,arrCmd = ['Link','Img','Flash','Video'],arrExt = [],strExt;
-                        for (i in arrCmd) {
-                            cmd = arrCmd[i];
-                            if (LazyCMS['Up' + cmd + 'Url'] && LazyCMS['Up' + cmd + 'Ext'] && LazyCMS['Up' + cmd + 'Url'].match(/^[^!].*/i))
-                                arrExt.push(cmd + ':,' + LazyCMS['Up' + cmd + 'Ext']); //允许上传
-                        }
-                        //禁止上传
-                        if (arrExt.length === 0) return false;
-                        else strExt = arrExt.join(',');
-
-                        var match,fileExt,cmd = null;
-                        for (i = 0; i < fileList.length; i++) {
-                            fileExt = fileList[i].fileName.replace(/.+\./, '');
-                            if (match = strExt.match(new RegExp('(\\w+):[^:]*,' + fileExt + '(?:,|$)', 'i'))) {
-                                if (!cmd) cmd = match[1];
-                                else if (cmd !== match[1]) cmd = 2;
-                            }
-                            else cmd = 1;
-                        }
-                        if (cmd === 1) alert(_('Upload file extension required for this: ') + strExt.replace(/\w+:,/g, ''));
-                        else if (cmd === 2) alert(_('You can only drag and drop the same type of file.'));
-                        else if (cmd) {
-                            $this.startUpload(fileList, LazyCMS['Up' + cmd + 'Url'], '*', function() {
+                        upcheck(fileList, function(toUrl) {
+                            $this.startUpload(fileList, toUrl, '*', function() {
                                 form.submit();
                             });
-                        }
+                        });
                     }
                     return false;
                 });
+                // 上传之前检查
+                function upcheck(fileList, callback) {
+                    var i,cmd,arrCmd = ['Link','Img','Flash','Video'],arrExt = [],strExt;
+                    for (i in arrCmd) {
+                        cmd = arrCmd[i];
+                        if (LazyCMS['Up' + cmd + 'Url'] && LazyCMS['Up' + cmd + 'Ext'] && LazyCMS['Up' + cmd + 'Url'].match(/^[^!].*/i))
+                            arrExt.push(cmd + ':,' + LazyCMS['Up' + cmd + 'Ext']); //允许上传
+                    }
+                    //禁止上传
+                    if (arrExt.length === 0) return false;
+                    else strExt = arrExt.join(',');
+
+                    var match,fileExt,cmd = null;
+                    for (i = 0; i < fileList.length; i++) {
+                        fileExt = fileList[i].fileName.replace(/.+\./, '');
+                        if (match = strExt.match(new RegExp('(\\w+):[^:]*,' + fileExt + '(?:,|$)', 'i'))) {
+                            if (!cmd) cmd = match[1];
+                            else if (cmd !== match[1]) cmd = 2;
+                        }
+                        else cmd = 1;
+                    }
+                    if (cmd === 1) alert(_('Upload file extension required for this: ') + strExt.replace(/\w+:,/g, ''));
+                    else if (cmd === 2) alert(_('You can only drag and drop the same type of file.'));
+                    else if (cmd) {
+                        if ($.isFunction(callback)) callback(LazyCMS['Up' + cmd + 'Url']);
+                    }
+                    return true;
+                }
             });
         });
     }
