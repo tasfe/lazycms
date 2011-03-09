@@ -31,12 +31,6 @@ function post_manage_init() {
             mcode  = $('select[name=model]',wrap).val();
 	    // 绑定模型切换事件
     	$('select[name=model]',wrap).change(function(){
-            if (this.value == '') {
-                $('select[name=template] option[value=""]', wrap).hide().attr('selected', false).next().attr('selected', true);
-            } else {
-                $('select[name=template]', wrap).attr('selected', false);
-                $('select[name=template] option[value=""]', wrap).show().attr('selected', true);
-            }
     	    post_manage_extend_attr.call(wrap,this.value,postid);
     	});
 	    // 初始化
@@ -73,6 +67,12 @@ function post_manage_extend_attr(model,postid) {
         $('tbody.extend-attr',wrap).html(data);
         if (path = xhr.getResponseHeader('X-LazyCMS-Path')) {
             $('input#path',wrap).val(path);
+        }
+        if (model == '') {
+            $('select[name=template] option[value=""]', wrap).hide().attr('selected', false).next().attr('selected', true);
+        } else {
+            $('select[name=template]', wrap).attr('selected', false);
+            $('select[name=template] option[value=""]', wrap).show().attr('selected', true);
         }
         LazyCMS.eselect(); $('tbody.extend-attr',wrap).semiauto(); $('.date-pick').datePicker({
             startDate: Date.fromString('1900-01-01').asString()

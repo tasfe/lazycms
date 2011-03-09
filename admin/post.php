@@ -514,7 +514,7 @@ function post_manage_page($action) {
         $listid = isset($_DATA['listid'])?$_DATA['listid']:null;
     }
 
-    $model    = $mcode ? model_get_bycode($mcode) : array_pop(array_slice($models,0,1));
+    $model    = $mcode ? model_get_bycode($mcode) : ('post.php'==$php_file ? array_pop(array_slice($models,0,1)) : null);
     $title    = isset($_DATA['title'])?$_DATA['title']:null;
     $path     = isset($_DATA['path'])?$_DATA['path']:$model['path'];
     $content  = isset($_DATA['content'])?$_DATA['content']:null;
