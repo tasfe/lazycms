@@ -246,12 +246,12 @@ var LazyCMS = window.LazyCMS = window.CMS = {
      * @param status
      * @param xhr
      */
-    ajaxSuccess: function(data, status, xhr) {
-        var code = xhr.getResponseHeader('X-LazyCMS-Code');
+    ajaxSuccess: function(r, status, xhr) {
+        var data,code = xhr.getResponseHeader('X-LazyCMS-Code');
         try {
-            data = $.isPlainObject(data) ? data : $.parseJSON(data);
+            data = $.isPlainObject(r) ? r : $.parseJSON(r);
         } catch (e) { }
-        
+
         switch (code) {
             // 提示
             case 'Success': case 'Error': case 'Alert':
@@ -281,6 +281,7 @@ var LazyCMS = window.LazyCMS = window.CMS = {
                 break;
             // 返回结果
             case 'Return': default:
+                data = r;
                 break;
         }
         if (code && $.inArray(code, ['Success','Return'])==-1) data = null;
