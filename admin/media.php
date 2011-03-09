@@ -161,7 +161,7 @@ switch ($method) {
                     }
                     $hl .= '<li class="unit"><a href="javascript:;" insert="true" rel="close"><img src="'.ADMIN.'media.php?method=thumb&id='.$data['mediaid'].'&size=70x60" alt="'.$data['name'].'" /></a>';
                     $hl .= '<div class="mask">&nbsp;</div><div class="actions"><input type="checkbox" name="listids[]" value="'.$data['mediaid'].'" />';
-                    $hl .= '<textarea class="hide">'.json_encode($json).'</textarea><a href="'.$json['url'].'" target="_blank">'.get_icon('c5',__('Insert')).'</a></div></li>';
+                    $hl .= '<textarea class="hide">'.json_encode($json).'</textarea><a href="'.$json['url'].'" target="_blank">'.get_icon('d4', __('Zoom')).'</a></div></li>';
                 }
                 $hl.= '<br class="clear" /></ul>';
             }
