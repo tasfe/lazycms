@@ -250,7 +250,9 @@ var LazyCMS = window.LazyCMS = window.CMS = {
         var data,code = xhr.getResponseHeader('X-LazyCMS-Code');
         try {
             data = $.isPlainObject(r) ? r : $.parseJSON(r);
-        } catch (e) { }
+        } catch (e) {
+            data = r;
+        }
 
         switch (code) {
             // 提示
