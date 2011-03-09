@@ -132,10 +132,10 @@ switch ($method) {
                         list($width, $height) = getimagesize(ABS_PATH.'/'.$path);
                         if ($width && $height) { $json['width']  = $width; $json['height'] = $height; }
                     }
-                    $hl.=   '<tr>';
+                    $hl.=   '<tr class="unit">';
                     $hl.=       '<td class="tc"><input type="checkbox" name="listids[]" value="'.$data['mediaid'].'" /><textarea class="hide">'.json_encode($json).'</textarea></td>';
-                    $hl.=       '<td class="name"><a href="javascript:;" insert="true" rel="close">'.get_icon('c7',__('Insert')).'</a>';
-                    $hl.=       '<a href="'.ADMIN.'media.php?method=down&id='.$data['mediaid'].'" target="_blank">'.$data['name'].'</a></td>';
+                    $hl.=       '<td class="name"><a href="javascript:;" insert="true" rel="close">'.$data['name'].'</a>';
+                    $hl.=       '<a href="'.ADMIN.'media.php?method=down&id='.$data['mediaid'].'">'.get_icon('d2',__('Download')).'</a></td>';
                     $hl.=       '<td>'.format_size($data['size']).'</td>';
                     $hl.=       '<td>'.$data['suffix'].'</td>';
                     $hl.=       '<td>'.date('Y-m-d H:i:s',$data['addtime']).'</td>';
@@ -159,9 +159,9 @@ switch ($method) {
                         list($width, $height) = getimagesize(ABS_PATH.'/'.$path);
                         if ($width && $height) { $json['width']  = $width; $json['height'] = $height; }
                     }
-                    $hl .= '<li><a href="'.$json['url'].'" target="_blank"><img src="'.ADMIN.'media.php?method=thumb&id='.$data['mediaid'].'&size=70x60" alt="'.$data['name'].'" /></a>';
+                    $hl .= '<li class="unit"><a href="javascript:;" insert="true" rel="close"><img src="'.ADMIN.'media.php?method=thumb&id='.$data['mediaid'].'&size=70x60" alt="'.$data['name'].'" /></a>';
                     $hl .= '<div class="mask">&nbsp;</div><div class="actions"><input type="checkbox" name="listids[]" value="'.$data['mediaid'].'" />';
-                    $hl .= '<textarea class="hide">'.json_encode($json).'</textarea><a href="javascript:;" insert="true" rel="close">'.get_icon('c7',__('Insert')).'</a></div></li>';
+                    $hl .= '<textarea class="hide">'.json_encode($json).'</textarea><a href="'.$json['url'].'" target="_blank">'.get_icon('c5',__('Insert')).'</a></div></li>';
                 }
                 $hl.= '<br class="clear" /></ul>';
             }
@@ -298,14 +298,12 @@ switch ($method) {
                 header('Content-type: ' . mime_content_type($media['path']));
                 header('Accept-Range : byte ');
                 header('Accept-Length: ' . $media['size']);
-                if (!instr($media['suffix'], C('UPIMG-Exts'))) {
-                    if (strpos($useragent, 'MSIE') !== false) {
-                        header('Content-Disposition: attachment; filename="'.rawurlencode($media['name']).'"');
-                    } elseif (strpos($useragent, 'Firefox') !== false) {
-                        header('Content-Disposition: attachment; filename*="utf8\' \''.rawurlencode($media['name']).'"');
-                    } else {
-                        header('Content-Disposition: attachment; filename="'.$media['name'].'"');
-                    }
+                if (strpos($useragent, 'MSIE') !== false) {
+                    header('Content-Disposition: attachment; filename="'.rawurlencode($media['name']).'"');
+                } elseif (strpos($useragent, 'Firefox') !== false) {
+                    header('Content-Disposition: attachment; filename*="utf8\' \''.rawurlencode($media['name']).'"');
+                } else {
+                    header('Content-Disposition: attachment; filename="'.$media['name'].'"');
                 }
                 readfile($media['path']);
             } else {

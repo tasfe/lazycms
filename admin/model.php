@@ -229,7 +229,7 @@ switch ($method) {
 	       __('Custom validation')          => 'CUSTOM|'.__('Error Message'),
 	    );
 	    $hl = '<div class="wrapper">';
-	    $hl.= '<a href="javascript:;" class="help">'.get_icon('f1').'</a>';
+	    $hl.= '<a href="javascript:;" class="help">'.get_icon('d1').'</a>';
 	    $hl.= '<form id="model-field-table">';
 	    $hl.= '<table class="model-field-table">';
 	    $hl.=    '<tr><th><label for="field_l">'._x('Label','field').'</label></th><td><input class="text" id="field_l" name="l" type="text" size="35" value="'.$l.'" />';

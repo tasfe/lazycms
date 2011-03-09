@@ -220,7 +220,7 @@ if ($.browser.msie && $.browser.version == '6.0') {
                 });
                 // 插入
                 $('a[insert=true]', $this).click(function(){
-                    var data = $.parseJSON($(this).parent().parent().find('textarea').val());
+                    var data = $.parseJSON($(this).parents('.unit').find('textarea').val());
                     if (input[0].pasteHTML) {
                         var i, html, type, types = ['Link','Img','Flash','Video'];
                         for (i in types) {
