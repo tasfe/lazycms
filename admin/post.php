@@ -533,6 +533,7 @@ function post_manage_page($action) {
         echo           '<tr>';
         echo               '<th><label for="model">'._x('Model','post').'</label></th>';
         echo               '<td><select name="model" id="model"'.($action=='add' ? ' cookie="true"' : '').'>';
+        echo               'page.php'==$php_file ? '<option value="">' . __('&mdash; No Model &mdash;') . '</option>' : '';
         foreach ($models as $m) {
             $selected = isset($model['langcode']) && $m['langcode']==$model['langcode']?' selected="selected"':'';
         	echo               '<option value="'.$m['langcode'].'"'.$selected.'>'.$m['name'].'</option>';

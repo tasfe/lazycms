@@ -66,7 +66,7 @@ function sort_manage_extend_attr(model, taxonomyid) {
     $.post(LazyCMS.ADMIN + 'categories.php', params, function(data, status, xhr) {
         $('tbody.extend-attr', wrap).html(data);
         if (list = xhr.getResponseHeader('X-LazyCMS-List')) {
-            $('select#listtemplate', wrap).val(list);
+            $('select#listtemplate option[value="' + list + '"]', wrap).attr('selected', true);
         }
         LazyCMS.eselect();
     });

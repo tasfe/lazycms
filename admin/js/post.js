@@ -31,6 +31,12 @@ function post_manage_init() {
             mcode  = $('select[name=model]',wrap).val();
 	    // 绑定模型切换事件
     	$('select[name=model]',wrap).change(function(){
+            if (this.value == '') {
+                $('select[name=template] option[value=""]', wrap).hide().attr('selected', false).next().attr('selected', true);
+            } else {
+                $('select[name=template]', wrap).attr('selected', false);
+                $('select[name=template] option[value=""]', wrap).show().attr('selected', true);
+            }
     	    post_manage_extend_attr.call(wrap,this.value,postid);
     	});
 	    // 初始化
@@ -63,25 +69,25 @@ function post_manage_extend_attr(model,postid) {
         params = {method:'extend-attr',model:model};    
         params = typeof(postid)!='undefined' ? $.extend(params,{postid:postid}) : params;
 
-    $.post(LazyCMS.ADMIN+'post.php',params,function(data, status, xhr) {
+    $.post(LazyCMS.URI.Url,params,function(data, status, xhr) {
         $('tbody.extend-attr',wrap).html(data);
         if (path = xhr.getResponseHeader('X-LazyCMS-Path')) {
             $('input#path',wrap).val(path);
         }
-        LazyCMS.eselect(); wrap.semiauto(); $('.date-pick').datePicker({
+        LazyCMS.eselect(); $('tbody.extend-attr',wrap).semiauto(); $('.date-pick').datePicker({
             startDate: Date.fromString('1900-01-01').asString()
         });
     });
 }
 // 生成文章
 function post_create(postid) {
-    return LazyCMS.postAction('post.php', {method:'bulk', action:'create'}, postid);
+    return LazyCMS.postAction(LazyCMS.URI.File, {method:'bulk', action:'create'}, postid);
 }
 // 删除文章
 function post_delete(postid){
     LazyCMS.confirm(_('Confirm Delete?'),function(r){
         if (r) {
-            LazyCMS.postAction('post.php', {method:'bulk', action:'delete'}, postid);
+            LazyCMS.postAction(LazyCMS.URI.File, {method:'bulk', action:'delete'}, postid);
         }
     }); 
 }

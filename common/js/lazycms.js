@@ -642,7 +642,7 @@ jQuery && (function ($) {
     // 半记忆功能
     $.fn.semiauto = function() {
         var name = LazyCMS.URI.File.substr(0,LazyCMS.URI.File.lastIndexOf('.')),
-            opts = { path: LazyCMS.URI.Path };
+            opts = { path: LazyCMS.URI.Path },last;
         // 下拉框处理
         $('select[cookie=true]',this).each(function(i){
             var t = $(this); t.attr('guid',i);
