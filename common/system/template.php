@@ -134,8 +134,15 @@ class Template {
      * @return array
      */
     function get_var($key) {
-        $key = strtolower($key);
-        return isset($this->_vars[$key]) ? $this->_vars[$key] : null;
+        if (strpos($key, '.') !== false) {
+            $val  = $this->_vars;
+            $keys = explode('.', $key);
+            foreach ($keys as $k) $val = $val[$k];
+        } else {
+            $key = strtolower($key);
+            $val = isset($this->_vars[$key]) ? $this->_vars[$key] : null;
+        }
+        return $val;
     }
     /**
      * 解析多层嵌套标签
@@ -355,6 +362,13 @@ class Template {
                     break;
             }
         }
+        // thumb
+        $width  = $this->get_attr($tag,'width');
+        $height = $this->get_attr($tag,'height');
+        if (is_scalar($value) && is_numeric($width) && is_numeric($height)) {
+            $result = image_thumb(ABS_PATH.$value, $width, $height, basename($value, '.' . pathinfo($value, PATHINFO_EXTENSION)) . '_' . $width . 'x' . $height);
+            $result = substr($result, strlen(ABS_PATH));
+        }
         // apply
         $func = $this->get_attr($tag,'func');
         if (strlen($func) > 0 && $func) {
@@ -386,7 +400,7 @@ class Template {
      * @return mixed
      */
     function encode($str) {
-        return str_replace(array(chr(36),chr(123),chr(125)), array('&#36;','&#123;','&#125;'), $str);
+        return is_array($str) ? array_map(array(&$this,'encode'), $str) : str_replace(array(chr(36),chr(123),chr(125)), array('&#36;','&#123;','&#125;'), $str);
     }
     /**
      * 反转标签

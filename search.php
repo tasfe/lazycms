@@ -85,6 +85,7 @@ if ($t && $q) {
             $i = 0;
             // 取得标签块内容
             $block['inner'] = tpl_get_block_inner($block);
+            $suffixs        = C('UPIMG-Exts');
             while ($data = pages_fetch($result)) {
                 $post = post_get($data['postid']);
                 if (empty($post)) continue;
@@ -115,15 +116,23 @@ if ($t && $q) {
                     'keywords' => post_get_taxonomy($post['keywords']),
                     'description' => $post['description'],
                 );
+                // 设置图片调用标签
+                $images = post_get_medias($post['postid'], $suffixs);
+                foreach($images as $k=>$image) {
+                    if ($k == 0) $vars['image'] = $image['url'];
+                    $vars['images'][($k+1)] = $image['url'];
+                }
                 // 设置分类变量
                 if (isset($post['list'])) {
-                    $vars['listid']     = $post['list']['taxonomyid'];
-                    $vars['listname']   = $post['list']['name'];
-                    $vars['listpath']   = ROOT.$post['list']['path'].'/';
-                    $vars['listcount']  = '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=taxonomy_count&listid='.$post['list']['taxonomyid'].'"></script>';
+                    $vars['list'] = array(
+                        'id'    => $post['list']['taxonomyid'],
+                        'name'  => $post['list']['name'],
+                        'path'  => ROOT.$post['list']['path'].'/',
+                        'count' => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=taxonomy_count&listid='.$post['list']['taxonomyid'].'"></script>',
+                    );
                     if (isset($post['list']['meta'])) {
                         foreach((array)$post['list']['meta'] as $k=>$v) {
-                            $vars['list.'.$k] = $v;
+                            $vars['list'][$k] = $v;
                         }
                     }
                 }
@@ -132,9 +141,7 @@ if ($t && $q) {
                 tpl_set_var($vars, $tpl);
                 // 设置自定义字段
                 if (isset($post['meta'])) {
-                    foreach((array)$post['meta'] as $k=>$v) {
-                        tpl_set_var('post.'.$k, $v, $tpl);
-                    }
+                    tpl_set_var('post', $post['meta'], $tpl);
                 }
                 // 解析标签
                 $inner.= tpl_parse($block['inner'], $block, $tpl); $i++;

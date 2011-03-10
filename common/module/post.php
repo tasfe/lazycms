@@ -49,7 +49,6 @@ function post_add($title,$content,$path,$data=null) {
  */
 function post_edit($postid,$data) {
     $postid = intval($postid);
-    $post_rows = $meta_rows = array();
     if ($post = post_get($postid)) {
         $tpl  = tpl_init('page-404');
         $data = is_array($data) ? $data : array();
@@ -223,6 +222,26 @@ function post_get_path($listid,$path,$prefix='') {
     return $path;
 }
 /**
+ * 取得文章的附件
+ *
+ * @param int $postid
+ * @param string $suffixs
+ * @return array
+ */
+function post_get_medias($postid, $suffixs='*') {
+    $medias = array();
+    if ($post = post_get($postid)) {
+        if (isset($post['meta']['__medias__']) && $post['meta']['__medias__']) {
+            foreach (explode(',', $post['meta']['__medias__']) as $id) {
+                if (($media=media_get($id)) && ($suffixs=='*' || instr($media['suffix'], $suffixs))) {
+                    $medias[] = $media;
+                }
+            }
+        }
+    }
+    return $medias;
+}
+/**
  * 获取关键词
  *
  * @param array $keywords
@@ -379,15 +398,23 @@ function post_create($postid,&$preid=0,&$nextid=0) {
             'cmt_listsurl' => ROOT.$post['cmt_path'],
             'description'  => $post['description'],
         );
+        // 设置图片调用标签
+        $images = post_get_medias($post['postid'], C('UPIMG-Exts'));
+        foreach($images as $k=>$image) {
+            if ($k == 0) $vars['image'] = $image['url'];
+            $vars['images'][($k+1)] = $image['url'];
+        }
         // 设置分类变量
         if (isset($post['list'])) {
-            $vars['listid']     = $post['list']['taxonomyid'];
-            $vars['listname']   = $post['list']['name'];
-            $vars['listpath']   = ROOT.$post['list']['path'].'/';
-            $vars['listcount']  = '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=taxonomy_count&listid='.$post['list']['taxonomyid'].'"></script>';
+            $vars['list'] = array(
+                'id'    => $post['list']['taxonomyid'],
+                'name'  => $post['list']['name'],
+                'path'  => ROOT.$post['list']['path'].'/',
+                'count' => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=taxonomy_count&listid='.$post['list']['taxonomyid'].'"></script>',
+            );
             if (isset($post['list']['meta'])) {
                 foreach((array)$post['list']['meta'] as $k=>$v) {
-                    $vars['list.'.$k] = $v;
+                    $vars['list'][$k] = $v;
                 }
             }
         }
@@ -397,9 +424,7 @@ function post_create($postid,&$preid=0,&$nextid=0) {
         tpl_set_var($vars, $tpl);
         // 设置自定义字段
         if (isset($post['meta'])) {
-            foreach((array)$post['meta'] as $k=>$v) {
-                tpl_set_var('post.'.$k, $v, $tpl);
-            }
+            tpl_set_var('post', $post['meta'], $tpl);
         }
         // 文章导航
         $guide = system_category_guide($post['listid']);

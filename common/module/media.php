@@ -222,7 +222,10 @@ function media_delete($id) {
         media_clean_cache($media['mediaid']);
         media_clean_cache($media['sha1sum']);
         get_conn()->delete('#@_media',array('mediaid'=>$id));
-        return unlink($media['path']);
+        // 删除文件
+        $files = glob(dirname($media['path']).'/'.$media['sha1sum'].'*');
+        foreach($files as $file) if (is_file($file)) unlink($file);
+        return true;
     }
     return false;
 }

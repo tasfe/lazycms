@@ -104,12 +104,13 @@ class Image {
 
             // 生成图片
             $imagefun = 'image' . ($type == 'jpg' ? 'jpeg' : $type);
-            // 输出 header
-            header('Content-type: '.$info['mime']);
-            
+
             if ($toname) {
+                $toname = dirname($image) . '/' . $toname . '.' . pathinfo($image, PATHINFO_EXTENSION);
                 mkdirs(dirname($toname)); $imagefun($thumb, $toname);
             } else {
+                // 输出 header
+                header('Content-type: '.$info['mime']);
                 $toname = $image; $imagefun($thumb);
             }
             imagedestroy($thumb); imagedestroy($srcimg);

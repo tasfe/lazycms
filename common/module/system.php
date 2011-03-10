@@ -28,6 +28,7 @@ func_add_callback('tpl_add_plugin', array(
     'system_tpl_categories_plugin',
     'system_tpl_archives_plugin',
     'system_tpl__tags_plugin',
+    'system_tpl__images_plugin',
 ));
 // 添加 CSS
 func_add_callback('loader_add_css', array(
@@ -140,7 +141,7 @@ function system_tpl_plugin($tag_name,$tag,$block,$vars) {
         case '$sitename':
             $result = C('SiteTitle');
             break;
-        case '$inst': case '$webroot':
+        case '$inst': case '$root':
             $result = ROOT;
             break;
         case '$host': case '$domain':
@@ -322,7 +323,8 @@ function system_tpl_list_plugin($tag_name,$tag,$block,$vars) {
     if ($sql) {
         $db = get_conn(); $i = 0;
         $rs = $db->query($sql);
-        $inner = tpl_get_block_inner($block);
+        $inner   = tpl_get_block_inner($block);
+        $suffixs = C('UPIMG-Exts');
         while ($data = $db->fetch($rs)) {
             $post = post_get($data['postid']);
             $post['list'] = taxonomy_get($post['listid']);
@@ -352,15 +354,23 @@ function system_tpl_list_plugin($tag_name,$tag,$block,$vars) {
                 'keywords' => post_get_taxonomy($post['keywords']),
                 'description' => $post['description'],
             );
+            // 设置图片调用标签
+            $images = post_get_medias($post['postid'], $suffixs);
+            foreach($images as $k=>$image) {
+                if ($k == 0) $vars['image'] = $image['url'];
+                $vars['images'][($k+1)] = $image['url'];
+            }
             // 设置分类变量
             if (isset($post['list'])) {
-                $vars['listid']     = $post['list']['taxonomyid'];
-                $vars['listname']   = $post['list']['name'];
-                $vars['listpath']   = ROOT.$post['list']['path'].'/';
-                $vars['listcount']  = '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=taxonomy_count&listid='.$post['list']['taxonomyid'].'"></script>';
+                $vars['list'] = array(
+                    'id'    => $post['list']['taxonomyid'],
+                    'name'  => $post['list']['name'],
+                    'path'  => ROOT.$post['list']['path'].'/',
+                    'count' => '<script type="text/javascript" src="'.ROOT.'common/gateway.php?func=taxonomy_count&listid='.$post['list']['taxonomyid'].'"></script>',
+                );
                 if (isset($post['list']['meta'])) {
                     foreach((array)$post['list']['meta'] as $k=>$v) {
-                        $vars['list.'.$k] = $v;
+                        $vars['list'][$k] = $v;
                     }
                 }
             }
@@ -368,9 +378,7 @@ function system_tpl_list_plugin($tag_name,$tag,$block,$vars) {
             tpl_set_var($vars, $tpl);
             // 设置自定义字段
             if (isset($post['meta'])) {
-                foreach((array)$post['meta'] as $k=>$v) {
-                    tpl_set_var('post.'.$k, $v, $tpl);
-                }
+                tpl_set_var('post', $post['meta'], $tpl);
             }
             // 解析标签
             $result.= tpl_parse($inner, $block, $tpl);
@@ -381,12 +389,6 @@ function system_tpl_list_plugin($tag_name,$tag,$block,$vars) {
 }
 /**
  * 处理tags 标签
- *
- * @param string $tag_name
- * @param string $tag
- * @param array $block
- * @param array $vars
- * @return string|null
  */
 function system_tpl__tags_plugin($tag_name,$tag,$block,$vars) {
     if (!instr($tag_name,'tags,keywords')) return null;
@@ -412,13 +414,31 @@ function system_tpl__tags_plugin($tag_name,$tag,$block,$vars) {
     return $result;
 }
 /**
+ * 处理images 标签
+ */
+function system_tpl__images_plugin($tag_name,$tag,$block,$vars) {
+    if ($tag_name != 'images') return null;
+    $result = null; $i = 1;
+    $images = isset($vars['images']) ? $vars['images'] : null;
+    if ($images) {
+        $tpl    = tpl_init('list-images-plugin');
+        $number = tpl_get_attr($tag,'number');
+        $number = validate_is($number, VALIDATE_IS_NUMERIC) ? $number : null;
+        $block['inner'] = tpl_get_block_inner($block);
+        foreach($images as $image) {
+            if ($number && $i > $number) break;
+            tpl_clean($tpl);
+            tpl_set_var(array(
+                'url'  => $image,
+            ), $tpl);
+            $result.= tpl_parse($block['inner'], $tpl);
+            $i++;
+        }
+    }
+    return $result;
+}
+/**
  * 处理评论
- *
- * @param string $tag_name
- * @param string $tag
- * @param array $block
- * @param array $vars
- * @return string|null
  */
 function system_tpl_comments_contents_plugin($tag_name,$tag,$block,$vars) {
     if (!instr($tag_name,'content,contents')) return null;
@@ -462,9 +482,7 @@ function system_tpl_categories_plugin($tag_name,$tag,$block) {
             tpl_set_var($vars, $tpl);
             // 设置自定义字段
             if (isset($taxonomy['meta'])) {
-                foreach((array)$taxonomy['meta'] as $k=>$v) {
-                    tpl_set_var('list.'.$k, $v, $tpl);
-                }
+                tpl_set_var('list', $taxonomy['meta'], $tpl);
             }
             $result.= tpl_parse($inner, $block, $tpl);
         }

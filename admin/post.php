@@ -203,8 +203,11 @@ switch ($method) {
                 // 获取模型字段值
                 if ($model['fields']) {
                     foreach($model['fields'] as $field) {
-                        $data['meta'][$field['n']] = isset($_POST[$field['_n']])?$_POST[$field['_n']]:null;
-                        if (strlen($data['meta'][$field['n']]) > 40) $post_data.= $data['meta'][$field['n']];
+                        // 没有数据就不保存
+                        if (isset($_POST[$field['_n']]) && $_POST[$field['_n']]) {
+                            $data['meta'][$field['n']] = $_POST[$field['_n']];
+                            if (strlen($data['meta'][$field['n']]) > 40) $post_data.= $data['meta'][$field['n']];
+                        }
                     }
                 }
                 // 获取所有使用的媒体
