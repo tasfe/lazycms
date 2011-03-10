@@ -38,7 +38,7 @@ if (validate_is_post()) {
     validate_check('TPL-Exts',VALIDATE_EMPTY,__('Please input the Template suffix.'));
     validate_check('HTML-Ext',VALIDATE_EMPTY,__('Please input the HTML file suffix.'));
     if (validate_is_ok()) {
-        C($options);
+        C(esc_html($options));
     }
     ajax_success(__('Settings saved.'),"LazyCMS.redirect('".$referer."');");
 } else {

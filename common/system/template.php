@@ -367,7 +367,11 @@ class Template {
         $height = $this->get_attr($tag,'height');
         if (is_scalar($value) && is_numeric($width) && is_numeric($height)) {
             $result = image_thumb(ABS_PATH.$value, $width, $height, basename($value, '.' . pathinfo($value, PATHINFO_EXTENSION)) . '_' . $width . 'x' . $height);
-            $result = substr($result, strlen(ABS_PATH));
+            if ($result) {
+                $result = substr($result, strlen(ABS_PATH));
+            } else {
+                $result = $value;
+            }
         }
         // apply
         $func = $this->get_attr($tag,'func');

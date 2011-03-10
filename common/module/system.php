@@ -463,6 +463,8 @@ function system_tpl_categories_plugin($tag_name,$tag,$block) {
     $tpl = tpl_init('post-sort-plugin');
     // 列表类型
     $listid = tpl_get_attr($tag, 'listid');
+    // 被排除的分类ID
+    $notlid = tpl_get_attr($tag,'listid','!=');
     // 取得
     $sorts  = taxonomy_get_trees($listid);
     if (isset($sorts['subs']))
@@ -472,6 +474,7 @@ function system_tpl_categories_plugin($tag_name,$tag,$block) {
     if ($sorts) {
         $inner = tpl_get_block_inner($block);
         foreach ($sorts as $taxonomyid=>$taxonomy) {
+            if ($notlid && instr($taxonomyid, $notlid)) continue;
             $vars = array(
                 'listid'    => $taxonomyid,
                 'name'      => $taxonomy['name'],

@@ -206,6 +206,7 @@ switch ($method) {
 	// 字段管理
 	case 'field':
 	    current_user_can('model-fields');
+        $_POST = esc_html($_POST);
 	    $id = isset($_POST['id'])?$_POST['id']:null;
 	    $l  = isset($_POST['l'])?$_POST['l']:null;
 	    $h  = isset($_POST['h'])?$_POST['h']:null;

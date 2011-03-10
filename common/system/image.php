@@ -29,6 +29,7 @@ class Image {
      * @return array|bool
      */
     function info($file) {
+        if (!is_file($file)) return false;
         if ($info = getimagesize($file)) {
             return array(
                 'width'  => $info[0],

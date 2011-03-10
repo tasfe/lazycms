@@ -182,7 +182,7 @@ switch ($method) {
                 echo       '<tr id="cmt-'.$data['cmtid'].'">';
                 echo           '<td class="check-column"><input type="checkbox" name="listids[]" value="'.$data['cmtid'].'" /></td>';
                 echo           '<td>';
-                echo                '<div class="avatar"><img src="'.$data['avatar'].'" width="32" height="32" alt="'.esc_html($data['author']).'" /></div>';
+                echo                '<div class="avatar"><img src="'.$data['avatar'].'" width="32" height="32" alt="'.$data['author'].'" /></div>';
                 echo                '<strong>'.$data['author'].'</strong>';
                 if ($data['url'] && $data['url']!='http://') {
                     $url = !strncmp($data['url'],'http://',7) ? substr($data['url'],7) : $data['url'];
@@ -191,7 +191,7 @@ switch ($method) {
                 if ($data['mail']) {
                     echo            '<br /><a href="mailto:'.$data['mail'].'">'.$data['mail'].'</a>';
                 }
-                echo            '<br /><a href="'.PHP_FILE.'?ip='.$data['ipaddr'].'" title="'.esc_html(ip2addr($data['ip'])).'">'.$data['ipaddr'].'</a>';
+                echo            '<br /><a href="'.PHP_FILE.'?ip='.$data['ipaddr'].'" title="'.ip2addr($data['ip']).'">'.$data['ipaddr'].'</a>';
                 echo           '</td>';
                 echo           '<td><div class="submitted-on">'.sprintf(__('Submitted on: <b>%s</b>'),date('Y-m-d H:i:s',$data['date'])).$reply.'</div>';
                 echo               '<div class="content">'.nl2br($data['content']).'</div><div class="row-actions">'.$actions.'</div></td>';

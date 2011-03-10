@@ -39,7 +39,7 @@ if (validate_is_post()) {
         array('CMT-Path',VALIDATE_IS_PATH,sprintf(_x('The path can not contain any of the following characters %s','setting'), esc_html('* : < > | \\'))),
     ));
     if (validate_is_ok()) {
-        C($options);
+        C(esc_html($options));
     }
     ajax_success(__('Settings saved.'),"LazyCMS.redirect('".$referer."');");
 } else {

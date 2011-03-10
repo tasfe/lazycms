@@ -195,7 +195,7 @@ switch ($method) {
                     'category' => $category,
                     'model'    => esc_html($mcode),
                     'template' => esc_html($template),
-                    'keywords' => $keywords,
+                    'keywords' => esc_html($keywords),
                     'comments' => $comments,
                     'description' => esc_html($description),
                 );
@@ -205,8 +205,9 @@ switch ($method) {
                     foreach($model['fields'] as $field) {
                         // 没有数据就不保存
                         if (isset($_POST[$field['_n']]) && $_POST[$field['_n']]) {
-                            $data['meta'][$field['n']] = $_POST[$field['_n']];
-                            if (strlen($data['meta'][$field['n']]) > 40) $post_data.= $data['meta'][$field['n']];
+                            $data['meta'][$field['n']] = instr($field['t'],'basic,editor') ? $_POST[$field['_n']] : esc_html($_POST[$field['_n']]);
+                            if (is_scalar($data['meta'][$field['n']]) && strlen($data['meta'][$field['n']]) > 40)
+                                $post_data.= $data['meta'][$field['n']];
                         }
                     }
                 }
@@ -224,15 +225,15 @@ switch ($method) {
                 
                 // 更新
                 if ($postid) {
-                    $data['path']    = $path;
-                    $data['title']   = $title;
+                    $data['path']    = esc_html($path);
+                    $data['title']   = esc_html($title);
                     $data['content'] = $content;
                     post_edit($postid,$data);
                     $result = __('Post updated.');
                 }
                 // 强力插入
                 else {
-                    $data['author'] = $_USER['name'];
+                    $data['author'] = esc_html($_USER['name']);
                     $data['userid'] = $_USER['userid'];
                     if ($post = post_add($title,$content,$path,$data)) {
                         $postid = $post['postid'];

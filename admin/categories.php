@@ -122,7 +122,10 @@ switch ($method) {
                 // 获取模型字段值
                 if ($model['fields']) {
                     foreach($model['fields'] as $field) {
-                        $data[$field['n']] = isset($_POST[$field['_n']]) ? $_POST[$field['_n']] : null;
+                        if (isset($_POST[$field['_n']]) && $_POST[$field['_n']]) {
+                            $data[$field['n']] = instr($field['t'],'basic,editor') ? $_POST[$field['_n']] : esc_html($_POST[$field['_n']]);
+                        }
+
                     }
                 }
                 // 编辑
