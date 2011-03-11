@@ -214,7 +214,7 @@ function model_get_types($type=null) {
  * @return string
  */
 function model_field2html($field) {
-    $hl = ''; $field['d'] = esc_html($field['d']);
+    $hl = '';
     switch ($field['t']) {
         case 'input':
             $hl.= '<input class="text" id="'.$field['_n'].'" name="'.$field['_n'].'" type="text" style="width:'.$field['w'].'" maxlength="'.$field['c'].'" value="'.$field['d'].'" />';

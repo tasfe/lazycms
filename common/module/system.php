@@ -157,7 +157,7 @@ function system_tpl_plugin($tag_name,$tag,$block,$vars) {
             $result = C('Language');
             break;
         case '$cms': case '$lazycms':
-            $result = '<span id="lazycms">Powered by: <a href="http://lazycms.com/" style="font-weight:bold" target="_blank" title="LazyCMS">LazyCMS</a> '.LAZY_VERSION.'</span>';
+            $result = '<span id="lazycms">Powered by: <a href="http://lazycms.com/" target="_blank" title="LazyCMS">LazyCMS</a> '.LAZY_VERSION.'</span>';
             break;
         case '$guide':
             $name  = tpl_get_attr($tag,'name');
