@@ -58,11 +58,16 @@ class DB_Sqlite2 extends DBQuery {
      */
     function open($dbname, $mode=0666) {
         // 连接数据库
-        if (function_exists('sqlite_popen') && $this->pconnect) {
-            $this->conn = sqlite_popen($dbname, $mode, $error);
-        } elseif (function_exists('sqlite_open')) {
-            $this->conn = sqlite_open($dbname, $mode, $error);
+        if (error_reporting()==0 || $this->is_database($dbname)) {
+            if (function_exists('sqlite_popen') && $this->pconnect) {
+                $this->conn = sqlite_popen($dbname, $mode, $error);
+            } elseif (function_exists('sqlite_open')) {
+                $this->conn = sqlite_open($dbname, $mode, $error);
+            }
+        } else {
+            return throw_error(__('Database is not found!'), E_LAZY_ERROR);
         }
+        
         // 验证连接是否正确
         if (!$this->conn) {
             return throw_error(sprintf(__('Database connect error:%s'), $error), E_LAZY_ERROR);

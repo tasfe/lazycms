@@ -105,7 +105,7 @@ switch($setup) {
                     define('DB_USER',$uname);
                     define('DB_PWD',$pwd);
                 }
-                $db = get_conn();
+                $db = @get_conn();
                 $query = install_schema();
                 // 创建数据表
                 $db->batch($query);

@@ -845,9 +845,9 @@ function mid($content,$start,$end=null,$clear=null){
     }
     $start_len = strlen($start); $result = null;
     $start_pos = stripos($content,$start); if ($start_pos === false) return null;
-    $length    = $end===null ? 0 : stripos(substr($content,-(strlen($content)-$start_pos-$start_len)),$end);
+    $length    = $end===null ? null : stripos(substr($content,-(strlen($content)-$start_pos-$start_len)),$end);
     if ($start_pos !== false) {
-        if ($length === 0) {
+        if ($length === null) {
             $result = trim(substr($content, $start_pos + $start_len));
         } else {
             $result = trim(substr($content, $start_pos + $start_len, $length));

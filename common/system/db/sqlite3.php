@@ -55,10 +55,13 @@ class DB_Sqlite3 extends DBQuery {
      * @return bool
      */
     function open($dbname, $flags=null) {
-        if ($flags === null)
-            $flags = SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE;
-
-        $this->conn = new SQLite3($dbname, $flags, null);
+        if ($flags === null) $flags = SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE;
+        if (error_reporting()==0 || $this->is_database($dbname)) {
+            $this->conn = new SQLite3($dbname, $flags, null);
+        } else {
+            return throw_error(__('Database is not found!'), E_LAZY_ERROR);
+        }
+        
 
         // 验证连接是否正确
         if ($this->conn->lastErrorCode() > 0) {
