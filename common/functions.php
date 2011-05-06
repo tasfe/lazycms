@@ -1206,7 +1206,7 @@ function options($path,$ext,$html,$selected=null){
     foreach ($dirs as $v) {
         if ($ext=='lang') {
             $v   = basename($v,'.mo');
-            $val = __(code2lang($v));
+            $val = code2lang($v);
         } else{
             $val = $v;
         }

@@ -65,7 +65,7 @@ function user_login($username,$password){
             return $user['status'];
         }
         $sha1_pass = sha1($password.$user['authcode']);
-        if ($sha1_pass == $user['pass']) {//var_dump($user,isset($user['MultiPersonLogin']) === false,(isset($user['MultiPersonLogin']) && $user['MultiPersonLogin']=='No'));
+        if ($sha1_pass == $user['pass']) {
             // 不允许多用户同时登录
             if ( isset($user['MultiPersonLogin']) === false
                 || (isset($user['MultiPersonLogin']) && $user['MultiPersonLogin']=='No')) {
